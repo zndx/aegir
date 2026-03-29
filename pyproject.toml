@@ -1,0 +1,46 @@
+[project]
+name = "aegir"
+version = "0.2.0"
+description = "Hierarchical Sequence Modeling with RWKV-7/8 and Dynamic Chunking"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.5.1",
+    "triton>=3.2.0",
+    "einops",
+    "optree",
+    "numpy",
+    "flash-linear-attention>=0.4.2",
+    "sentence-transformers",
+    "scikit-learn",
+    "pandas",
+    "omegaconf",
+]
+
+[project.optional-dependencies]
+flash = ["flash-attn>=2.8.0"]
+mamba = ["mamba-ssm", "causal-conv1d"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["aegir*"]
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
+triton = { index = "pytorch-cu124" }
+
+[tool.uv]
+no-build-isolation-package = ["flash-attn", "mamba-ssm", "causal-conv1d"]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = ["torch", "packaging", "ninja", "psutil"]
+mamba-ssm = ["torch", "packaging", "ninja", "psutil", "wheel"]
+causal-conv1d = ["torch", "packaging", "ninja"]
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel", "torch", "packaging", "ninja"]
+build-backend = "setuptools.build_meta"

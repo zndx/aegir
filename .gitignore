@@ -1,0 +1,22 @@
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+# mdbook build output
+docs/book/
+docs/src/d2/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Training outputs
+outputs/

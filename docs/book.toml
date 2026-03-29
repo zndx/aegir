@@ -1,0 +1,27 @@
+[book]
+title = "Ægir: Hierarchical Sequence Modeling with Dynamic Chunking"
+authors = ["Ryan Hill"]
+language = "en"
+src = "src"
+
+[preprocessor.d2]
+path = "d2"
+layout = "elk"
+inline = false
+output-dir = "d2"
+
+# katex preprocessor disabled (0.9.4 incompatible with mdbook 0.5.2).
+# Using MathJax 3 via client-side JS instead — see theme/mathjax.js
+
+# Disabled: mdbook-mermaid has parsing issues with mdbook 0.5.x in CI
+# Re-enable when adding mermaid diagrams and a compatible version is available
+# [preprocessor.mermaid]
+# command = "mdbook-mermaid"
+
+[output.html]
+default-theme = "light"
+additional-css = ["theme/custom.css"]
+additional-js = ["theme/diagrams.js", "theme/mathjax.js"]
+
+[output.html.print]
+enable = true

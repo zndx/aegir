@@ -1,0 +1,18 @@
+# Summary
+
+- [Introduction](./introduction.md)
+- [Architecture](./architecture.md)
+  - [Hierarchical Dynamic Chunking](./architecture/chunking.md)
+  - [RWKV-7/8 Time Mixing](./architecture/rwkv7.md)
+  - [ROSA Suffix Automaton](./architecture/rosa.md)
+  - [Block Types](./architecture/blocks.md)
+- [Agent Swarm](./agent_swarm.md)
+  - [RWKV State Fusion](./agent_swarm/state_fusion.md)
+  - [LatentMAS Alignment](./agent_swarm/alignment.md)
+  - [K2.5 PARL Orchestrator](./agent_swarm/orchestrator.md)
+- [Roadmap: K2.5 RL Post-Training](./roadmap.md)
+  - [Phase 1: Supervised Bootstrapping](./roadmap/supervised.md)
+  - [Phase 2: Reward Modeling](./roadmap/reward.md)
+  - [Phase 3: PARL Training](./roadmap/parl.md)
+  - [Phase 4: Agent Swarm RL](./roadmap/swarm_rl.md)
+- [Development Guide](./development.md)
