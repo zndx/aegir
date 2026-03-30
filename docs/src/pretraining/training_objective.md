@@ -223,3 +223,5 @@ In production, Aegir's predictions feed into Dempster-Shafer theory (DST) eviden
 - **Hierarchical type predictions** -- these constrain the feasible type space for conjunctive combination
 
 The calibration quality of Aegir's confidence scores matters as much as the accuracy of its top-1 predictions. Training on diverse synthetic data with controlled difficulty (including deliberately confusable types) produces well-calibrated uncertainty estimates, because the model learns from data where the boundary between types is precisely controlled.
+
+The specific self-supervised tasks, corruption strategies, and curriculum design that implement this objective are detailed in [Training Tactics](./training_tactics.md).

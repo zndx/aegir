@@ -11,6 +11,7 @@
   - [Stage 2: Schema Projection](./pretraining/schema_projection.md)
   - [Stage 3: Synthetic Data Generation](./pretraining/synthetic_generation.md)
   - [Stage 4: Training Objective](./pretraining/training_objective.md)
+  - [Training Tactics](./pretraining/training_tactics.md)
   - [End-to-End Example](./pretraining/end_to_end_example.md)
 - [Agent Swarm](./agent_swarm.md)
   - [RWKV State Fusion](./agent_swarm/state_fusion.md)
