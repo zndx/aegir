@@ -542,7 +542,9 @@ class GitTablesFullDataset(TableAnnotationDataset):
         if cache_key in type(self)._label_vocab_cache:
             label_vocab = type(self)._label_vocab_cache[cache_key]
         else:
-            label_vocab = _discover_gittables_labels(self.data_dir, sem_key)
+            label_vocab = _load_or_discover_gittables_labels(
+                self.data_dir, sem_key, self._label_space,
+            )
             type(self)._label_vocab_cache[cache_key] = label_vocab
 
         parquets = sorted(self.data_dir.rglob("*.parquet"))
@@ -602,6 +604,54 @@ class GitTablesFullDataset(TableAnnotationDataset):
                 })
 
         return tables
+
+
+def _load_or_discover_gittables_labels(
+    data_dir: Path, sem_key: str, label_space: str,
+) -> dict[str, int]:
+    """Load the label vocab from disk cache, falling back to a full scan.
+
+    Discovery over the full 562k-parquet corpus takes ~5 minutes — painful
+    for every fresh process. The cache is a tiny JSON sidecar next to the
+    data that invalidates only when you add or remove parquet files (not
+    when you re-run). One file per label space so DBpedia and Schema.org
+    caches don't collide.
+    """
+    import os
+
+    if os.environ.get("AEGIR_GITTABLES_VOCAB_CACHE_DISABLE") == "1":
+        return _discover_gittables_labels(data_dir, sem_key)
+
+    cache_path = data_dir / f".aegir_vocab_{label_space}.json"
+    # Cheap staleness signal: directory mtime. Walking 500k parquets just to
+    # count them defeats the cache — a full rglob on GitTables takes as long
+    # as the discovery itself. If the user wants to force a rescan, either
+    # set AEGIR_GITTABLES_VOCAB_CACHE_DISABLE=1 or delete the sidecar.
+    try:
+        dir_mtime = int(data_dir.stat().st_mtime)
+    except OSError:
+        dir_mtime = 0
+
+    if cache_path.exists():
+        try:
+            payload = json.loads(cache_path.read_text())
+            if payload.get("dir_mtime") == dir_mtime:
+                return {lbl: int(i) for lbl, i in payload["vocab"].items()}
+        except (json.JSONDecodeError, KeyError, ValueError):
+            pass
+
+    vocab = _discover_gittables_labels(data_dir, sem_key)
+    try:
+        cache_path.write_text(
+            json.dumps({
+                "dir_mtime": dir_mtime,
+                "label_space": label_space,
+                "vocab": vocab,
+            })
+        )
+    except OSError:
+        pass
+    return vocab
 
 
 def _discover_gittables_labels(data_dir: Path, sem_key: str) -> dict[str, int]:
