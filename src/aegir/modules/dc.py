@@ -34,48 +34,72 @@ def _ema_scan_sequential(x: torch.Tensor, decay: torch.Tensor) -> torch.Tensor:
     return torch.stack(outputs, dim=1)
 
 
-def _ema_scan_ssd(x: torch.Tensor, decay: torch.Tensor, chunk_size: int = 64) -> torch.Tensor:
+_EMA_SSD_HEADDIM = int(os.environ.get("AEGIR_DECHUNK_SSD_HEADDIM", "64"))
+
+
+def _ema_scan_ssd(
+    x: torch.Tensor, decay: torch.Tensor, chunk_size: int = 64
+) -> torch.Tensor:
     """Parallel EMA scan via mamba-ssm SSD kernel.
 
     Maps EMA to SSM recurrence h[t] = exp(dt*A) * h[t-1] + dt*B*x[t], y[t] = C*h[t]:
-      A = -1, dt[t] = -log(decay[t]), B[t] = (1 - exp(-dt)) / dt, C = 1.
+      A = -1 (per-head, all heads share), dt[t] = -log(decay[t]),
+      B[t] = (1 - exp(-dt)) / dt, C = 1.
     Initial state h[-1] = x[0] with dt[0] = 0 preserves the y[0] = x[0] convention.
 
-    Requires CUDA and mamba_ssm.ops.triton.ssd_combined. Falls back to sequential
-    if imports fail or device is CPU.
+    Because the SSD Triton kernel is tuned for Mamba-2 shapes (many small
+    heads) and allocates shared memory in ~(headdim * chunk_size * dtype-size)
+    per SM, feeding D=384 or D=768 as a single headdim overflows the 100 KB
+    SM limit on Ampere/Ada during the backward CB einsum. Slice D into
+    ``nheads`` heads of size ``_EMA_SSD_HEADDIM`` (default 64) to stay within
+    budget. Each head runs the same EMA dynamics (same A, dt, B, C) on its
+    own slice of features, so the result is numerically identical to the
+    single-head formulation.
 
-    Requires scalar-per-timestep decay (same across D). That's already how
-    DeChunkLayer calls us (decay = (1-p).unsqueeze(-1), p is (B, L)).
+    Requires CUDA and mamba_ssm.ops.triton.ssd_combined. Falls back to
+    sequential via the _ema_scan dispatcher when shape/support conditions
+    aren't met.
     """
     from mamba_ssm.ops.triton.ssd_combined import mamba_chunk_scan_combined
 
     B_sz, L, D = x.shape
     orig_dtype = x.dtype
 
+    # Pick a headdim that evenly divides D. Most of our d_model values are
+    # multiples of 64; 384 → 6 heads, 768 → 12, 192 → 3. If D is smaller than
+    # _EMA_SSD_HEADDIM, fall back to single-head.
+    if D % _EMA_SSD_HEADDIM == 0:
+        headdim = _EMA_SSD_HEADDIM
+    elif D < _EMA_SSD_HEADDIM:
+        headdim = D
+    else:
+        # Find the largest divisor of D that is <= _EMA_SSD_HEADDIM.
+        headdim = next(
+            (d for d in range(_EMA_SSD_HEADDIM, 0, -1) if D % d == 0), D
+        )
+    nheads = D // headdim
+
     if decay.dim() == 3 and decay.shape[-1] == 1:
         d = decay.squeeze(-1).float().clamp(min=1e-4, max=1 - 1e-4)  # (B, L)
     elif decay.dim() == 3 and decay.shape[-1] == D:
-        # Per-feature decay isn't representable with scalar-A SSD. In practice
-        # DeChunkLayer always passes scalar-per-timestep; assert equal across D.
         d = decay[..., 0].float().clamp(min=1e-4, max=1 - 1e-4)
     else:
         raise ValueError(f"decay shape {decay.shape} not supported by SSD path")
 
-    # dt[0] = 0 means no input absorbed at t=0 and h[0] = h[-1] = x[0].
     dt = -torch.log(d)
-    dt = torch.cat([torch.zeros_like(dt[:, :1]), dt[:, 1:]], dim=1)  # (B, L)
-    # B[t] = (1 - exp(-dt[t])) / dt[t] so that dt[t] * B[t] = 1 - decay[t].
-    # At dt→0 the ratio → 1 by L'Hopital; we special-case via where().
+    dt = torch.cat([torch.zeros_like(dt[:, :1]), dt[:, 1:]], dim=1)   # (B, L)
     B_coef = torch.where(
         dt > 0, (1 - torch.exp(-dt)) / dt.clamp(min=1e-8), torch.ones_like(dt)
     )
 
-    x_ssm = x.unsqueeze(2).to(torch.bfloat16)                        # (B, L, 1, D)
-    dt_ssm = dt.unsqueeze(-1).to(torch.bfloat16)                     # (B, L, 1)
-    A_ssm = torch.tensor([-1.0], device=x.device)                    # (1,)
-    B_ssm = B_coef.to(torch.bfloat16).view(B_sz, L, 1, 1)            # (B, L, 1, 1)
+    # Reshape D into (nheads, headdim); broadcast dt/B/C across heads.
+    x_ssm = x.view(B_sz, L, nheads, headdim).to(torch.bfloat16)
+    dt_ssm = dt.unsqueeze(-1).expand(B_sz, L, nheads).to(torch.bfloat16).contiguous()
+    A_ssm = torch.full((nheads,), -1.0, device=x.device)
+    # Single group: B/C shared across heads. shape (B, L, ngroups=1, dstate=1).
+    B_ssm = B_coef.to(torch.bfloat16).view(B_sz, L, 1, 1)
     C_ssm = torch.ones(B_sz, L, 1, 1, device=x.device, dtype=torch.bfloat16)
-    init = x[:, 0].to(torch.bfloat16).contiguous().view(B_sz, 1, D, 1)
+    init = x[:, 0].view(B_sz, nheads, headdim, 1).to(torch.bfloat16).contiguous()
 
     pad = (chunk_size - L % chunk_size) % chunk_size
     if pad:
@@ -87,8 +111,8 @@ def _ema_scan_ssd(x: torch.Tensor, decay: torch.Tensor, chunk_size: int = 64) ->
     y = mamba_chunk_scan_combined(
         x_ssm, dt_ssm, A_ssm, B_ssm, C_ssm,
         chunk_size=chunk_size, initial_states=init,
-    )  # (B, L+pad, 1, D)
-    return y[:, :L, 0, :].to(orig_dtype)
+    )  # (B, L+pad, nheads, headdim)
+    return y[:, :L].reshape(B_sz, L, D).to(orig_dtype)
 
 
 def _choose_ema_backend() -> str:
