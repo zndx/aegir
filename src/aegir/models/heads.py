@@ -30,6 +30,23 @@ class ColumnAnnotationOutput:
     bpred_output: list[RoutingModuleOutput]
 
 
+@dataclass
+class DEDOutput:
+    """Cross-table data-element-discovery head output.
+
+    Attributes:
+        embeddings: (B, N, proj_dim) L2-normalized column embeddings.
+            N is the padded number of column-CLS positions per sample;
+            valid columns are flagged by ``col_mask``.
+        col_mask: (B, N) bool — True for real columns, False for padding.
+        bpred_output: per-stage RoutingModule outputs from the backbone.
+    """
+
+    embeddings: torch.Tensor
+    col_mask: torch.Tensor
+    bpred_output: list[RoutingModuleOutput]
+
+
 class AegirForCausalLM(nn.Module):
     """Language modeling head for pretraining.
 
@@ -255,3 +272,105 @@ class AegirForColumnAnnotation(nn.Module):
         logits = self.classifier(pooled)
 
         return ColumnAnnotationOutput(logits=logits, bpred_output=bpred_output)
+
+
+class AegirForDED(nn.Module):
+    """Cross-table Data Element Discovery head.
+
+    Pools per-column representations from packed multi-table input and
+    projects them into an embedding space suitable for supervised
+    contrastive training (Khosla et al., "Supervised Contrastive Learning",
+    NeurIPS 2020). The head itself emits L2-normalized embeddings; the
+    contrastive loss lives in aegir.utils.train so the training loop can
+    plug into any clustering target (DBpedia type, synthetic ontology entity,
+    hand-labeled data element).
+
+    Column pooling uses the ``cls_indexes`` pattern already established for
+    AegirForColumnAnnotation, but here cls_indexes is 2D (B, N_cols) so a
+    single forward pass produces N embeddings per sample. Padding columns
+    (encoded as ``cls_index = -1``) are zeroed in the output and flagged in
+    ``col_mask`` so the loss can skip them cleanly.
+
+    Args:
+        config: AegirConfig. ``num_labels`` is ignored; use ``proj_dim``.
+        proj_dim: contrastive embedding dimensionality. 128 is standard
+            (MoCo, SimCLR, SupCon). Defaults to 128.
+        max_roles: Maximum distinct role IDs (one per column/table).
+    """
+
+    def __init__(
+        self,
+        config: AegirConfig,
+        proj_dim: int = 128,
+        max_roles: int = 64,
+        device=None,
+        dtype=None,
+    ) -> None:
+        self.config = config
+        self.proj_dim = proj_dim
+        d_embed = config.d_model[0]
+        factory_kwargs = {"device": device, "dtype": dtype}
+        super().__init__()
+        self.embeddings = nn.Embedding(config.vocab_size, d_embed, **factory_kwargs)
+        self.role_embeddings = nn.Embedding(max_roles, d_embed, **factory_kwargs)
+        self.backbone = Aegir(config=config, stage_idx=0, **factory_kwargs)
+        self.pooler = nn.Linear(d_embed, d_embed, **factory_kwargs)
+        # Two-layer MLP head — standard in contrastive pretraining literature.
+        # Acts as a "view-specific" projection that gets dropped at inference
+        # time (use pooler output for downstream clustering).
+        self.proj = nn.Sequential(
+            nn.Linear(d_embed, d_embed, **factory_kwargs),
+            nn.GELU(),
+            nn.Linear(d_embed, proj_dim, **factory_kwargs),
+        )
+
+    def forward(
+        self,
+        input_ids: torch.Tensor,
+        role_ids: torch.Tensor,
+        cls_indexes: torch.Tensor,
+        mask: torch.Tensor = None,
+        **mixer_kwargs,
+    ) -> DEDOutput:
+        """Forward pass returning per-column L2-normalized embeddings.
+
+        Args:
+            input_ids: (B, L) token IDs.
+            role_ids: (B, L) per-token role IDs. Role 0 = padding/global,
+                roles 1..N_tables distinguish concatenated tables.
+            cls_indexes: (B, N) column-CLS positions. Use ``-1`` for padding
+                columns; those rows are zeroed and flagged in col_mask.
+            mask: (B, L) bool. None switches to packed cu_seqlens mode.
+        """
+        hidden_states = self.embeddings(input_ids) + self.role_embeddings(role_ids)
+        B, L, D = hidden_states.shape
+
+        if mask is None:
+            hidden_states = hidden_states.flatten(0, 1)
+            cu_seqlens = torch.arange(B + 1, device=hidden_states.device) * L
+            max_seqlen = torch.tensor(L, dtype=torch.int, device=hidden_states.device)
+        else:
+            cu_seqlens = None
+            max_seqlen = None
+
+        hidden_states, bpred_output = self.backbone(
+            hidden_states,
+            cu_seqlens=cu_seqlens,
+            max_seqlen=max_seqlen,
+            mask=mask,
+            **mixer_kwargs,
+        )
+        hidden_states = hidden_states.view(B, L, D)
+
+        # Clamp -1 padding to 0 before gather, then mask out the resulting
+        # junk rows with col_mask. Gather on a valid index is cheaper than
+        # boolean scatter with ragged N per sample.
+        col_mask = cls_indexes >= 0
+        safe_idx = cls_indexes.clamp(min=0)
+        pooled = _extract_at_indexes(hidden_states, safe_idx)  # (B, N, D)
+        pooled = torch.tanh(self.pooler(pooled))
+        proj = self.proj(pooled)
+        proj = proj / (proj.norm(dim=-1, keepdim=True) + 1e-8)
+        proj = proj * col_mask.unsqueeze(-1)
+
+        return DEDOutput(embeddings=proj, col_mask=col_mask, bpred_output=bpred_output)
