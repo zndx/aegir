@@ -14,6 +14,7 @@ from features.chunking.step_defs.chunking_steps import *  # noqa: F401,F403
 from features.chunking.step_defs.ema_scan_steps import *  # noqa: F401,F403
 from features.inference.step_defs.rosa_step_steps import *  # noqa: F401,F403
 from features.ded.step_defs.ded_head_steps import *  # noqa: F401,F403
+from features.data.step_defs.mmr_cache_steps import *  # noqa: F401,F403
 from features.runs.step_defs.run_artifacts_steps import *  # noqa: F401,F403
 from features.gateway.step_defs.endpoints_steps import *  # noqa: F401,F403
 from features.deploy.step_defs.config_steps import *  # noqa: F401,F403
