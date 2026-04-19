@@ -22,20 +22,20 @@ interface StatsPayload {
 }
 
 function statusLabel(stats: StatsPayload | null): string {
-  if (!stats) return "Unknown";
+  if (!stats?.service) return "Unknown";
   if (!stats.service.ok) return "Disconnected";
   if (!stats.service.runs_dir_exists) return "Degraded";
   return "Connected";
 }
 
 function statusColor(stats: StatsPayload | null): string {
-  if (!stats || !stats.service.ok) return "#ff4d4f";
+  if (!stats?.service?.ok) return "#ff4d4f";
   if (!stats.service.runs_dir_exists) return "#faad14";
   return "#52c41a";
 }
 
 function statusPrefix(stats: StatsPayload | null) {
-  if (!stats || !stats.service.ok) return <CloseCircleOutlined />;
+  if (!stats?.service?.ok) return <CloseCircleOutlined />;
   if (!stats.service.runs_dir_exists) return <WarningOutlined />;
   return <CheckCircleOutlined />;
 }
@@ -82,7 +82,7 @@ function Landing() {
               prefix={statusPrefix(stats)}
               valueStyle={{ color: statusColor(stats) }}
             />
-            {stats?.service.version && (
+            {stats?.service?.version && (
               <Tag color="blue" style={{ marginTop: 8 }}>
                 v{stats.service.version}
               </Tag>
@@ -94,10 +94,10 @@ function Landing() {
             <Card hoverable>
               <Statistic
                 title="Runs"
-                value={stats?.runs.count ?? "—"}
+                value={stats?.runs?.count ?? "—"}
                 prefix={<BarChartOutlined />}
               />
-              {stats?.runs.latest?.task && (
+              {stats?.runs?.latest?.task && (
                 <Text type="secondary" style={{ fontSize: 11 }}>
                   latest: {stats.runs.latest.task}
                 </Text>
@@ -109,7 +109,7 @@ function Landing() {
           <Card>
             <Statistic
               title="Tasks"
-              value={stats?.tasks.count ?? "—"}
+              value={stats?.tasks?.count ?? "—"}
               prefix={<ExperimentOutlined />}
             />
             <Text type="secondary" style={{ fontSize: 11 }}>
@@ -122,7 +122,7 @@ function Landing() {
             <Card hoverable>
               <Statistic
                 title="Terms"
-                value={stats?.terms.count ?? "—"}
+                value={stats?.terms?.count ?? "—"}
                 prefix={<BookOutlined />}
               />
               <Text type="secondary" style={{ fontSize: 11 }}>
