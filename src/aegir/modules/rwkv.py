@@ -79,22 +79,25 @@ class RWKV_ROSA(nn.Module):
     def step(self, x, inference_params):
         """Single-token step for autoregressive decoding.
 
-        Args:
-            x: (B, 1, D) input.
-            inference_params: Contains att_x_prev state.
+        ROSA's suffix automaton is inherently non-incremental at the 1-bit
+        pattern-matching level — a single-token query has no prior context to
+        match against, so the output is structurally ill-defined for this
+        operator. A rolling-window fallback would be possible (replay the last
+        K tokens through forward() and extract the tail) but is non-trivial
+        and not needed today: no registered arch_layout uses r/R blocks, so
+        this path is unreachable from any current training or inference run.
+
+        Fail loud rather than silently returning zeros, which masked a real
+        correctness trap the previous implementation had.
         """
-        state = inference_params.key_value_memory_dict[self.layer_idx]
-        x_prev = state.att_x_prev
-        x_squeezed = x.squeeze(1)  # (B, D)
-        xx = x_prev - x_squeezed
-        q = x_squeezed + xx * self.x_q.squeeze(0).squeeze(0)
-        k = x_squeezed + xx * self.x_k.squeeze(0).squeeze(0)
-        v = x_squeezed + xx * self.x_v.squeeze(0).squeeze(0)
-        state.att_x_prev = x_squeezed.clone()
-        # For single-token step, ROSA needs full context — fall back to zero output
-        # (ROSA is primarily useful during prefill; RNN-mode decoding uses cached state)
-        y = torch.zeros_like(x_squeezed)
-        return self.o(y).unsqueeze(1)
+        raise NotImplementedError(
+            "RWKV_ROSA.step() is not implemented. ROSA requires prior-token "
+            "context to produce meaningful outputs; single-token step-mode "
+            "decoding has no well-defined semantics here. Use prefill mode "
+            "(forward) or replace r/R blocks with w/W (RWKV-7 TimeMix) which "
+            "has a proper O(1) recurrent step(). See src/aegir/modules/rwkv.py "
+            "for notes on a future rolling-window decoder."
+        )
 
     def allocate_inference_cache(self, batch_size, max_seqlen, dtype=None, **kwargs):
         device = self.q.weight.device

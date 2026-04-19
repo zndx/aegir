@@ -12,6 +12,7 @@ from features.annotation.step_defs.context_selection_steps import *  # noqa: F40
 from features.annotation.step_defs.sotab_steps import *  # noqa: F401,F403
 from features.chunking.step_defs.chunking_steps import *  # noqa: F401,F403
 from features.chunking.step_defs.ema_scan_steps import *  # noqa: F401,F403
+from features.inference.step_defs.rosa_step_steps import *  # noqa: F401,F403
 from features.runs.step_defs.run_artifacts_steps import *  # noqa: F401,F403
 from features.gateway.step_defs.endpoints_steps import *  # noqa: F401,F403
 from features.deploy.step_defs.config_steps import *  # noqa: F401,F403
