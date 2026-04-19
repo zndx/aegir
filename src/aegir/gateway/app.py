@@ -360,37 +360,117 @@ def _register_api_routes(app: FastAPI) -> None:
                 detail=f"too many terms ({len(terms)} > {max_terms}); batch and retry",
             )
 
-        suggestions: list[dict] = []
-        for t in terms:
-            if not isinstance(t, dict):
-                continue
-            name = str(t.get("name", "")).strip()
-            if not name:
-                continue
-            suggestions.append(
-                {
-                    "term": name,
-                    "candidates": [
-                        {
-                            "iri": "ICE:DataElement",
-                            "label": "Data Element",
-                            "confidence": 0.05,
-                            "path": ["BFO:Entity", "BFO:Continuant", "BFO:Object",
-                                     "CCO:InformationBearingEntity", "ICE:DataElement"],
-                        }
-                    ],
-                    "reasoning": (
-                        "M1 stub — every term maps to ICE:DataElement at low "
-                        "confidence. M2 replaces this with BERTSubs-style "
-                        "contextual-embedding subsumption prediction."
-                    ),
-                }
-            )
+        suggestions: list[dict] = [
+            _subsume_stub(t) for t in terms
+            if isinstance(t, dict) and str(t.get("name", "")).strip()
+        ]
         return {
             "suggestions": suggestions,
             "count": len(suggestions),
             "predictor": "stub-m1",
         }
+
+
+# Lightweight keyword → (iri, label, path) map used by the stub subsumption
+# predictor. Intentionally shallow — a real BERTSubs-style model will replace
+# this in M2. The point of the heuristic is to give the UI *meaningful*
+# suggestions on common vocab (Customer, Invoice, Order, ...) without waiting
+# for the embedding predictor, so users can exercise the review flow end-to-end.
+_BFO_PATH_OBJECT = [
+    "BFO:Entity",
+    "BFO:Continuant",
+    "BFO:Object",
+    "CCO:Agent",
+]
+_BFO_PATH_INFO = [
+    "BFO:Entity",
+    "BFO:Continuant",
+    "BFO:Object",
+    "CCO:InformationBearingEntity",
+    "ICE:DataElement",
+]
+_BFO_PATH_PROCESS = [
+    "BFO:Entity",
+    "BFO:Occurrent",
+    "BFO:Process",
+]
+_BFO_PATH_ROLE = [
+    "BFO:Entity",
+    "BFO:Continuant",
+    "BFO:Role",
+]
+
+_KEYWORD_HINTS: list[tuple[tuple[str, ...], dict]] = [
+    # Agents / people / organizations — roughly BFO:Object/CCO:Agent.
+    (
+        ("customer", "client", "person", "patient", "employee", "user",
+         "account_holder", "agent", "vendor", "supplier", "provider", "party"),
+        {"iri": "CCO:Agent", "label": "Agent", "confidence": 0.6, "path": _BFO_PATH_OBJECT},
+    ),
+    # Processes / transactions — BFO:Process.
+    (
+        ("transaction", "order", "purchase", "payment", "shipment", "delivery",
+         "encounter", "visit", "session", "event", "process"),
+        {"iri": "BFO:Process", "label": "Process", "confidence": 0.55, "path": _BFO_PATH_PROCESS},
+    ),
+    # Roles — BFO:Role (a specifically dependent continuant borne by an object).
+    (
+        ("role", "job_title", "position", "title", "designation", "rank"),
+        {"iri": "BFO:Role", "label": "Role", "confidence": 0.55, "path": _BFO_PATH_ROLE},
+    ),
+    # Information artefacts — documents / records / identifiers.
+    (
+        ("invoice", "receipt", "document", "record", "report", "statement",
+         "id", "identifier", "number", "code", "reference", "file", "log"),
+        {"iri": "ICE:DataElement", "label": "Data Element", "confidence": 0.5,
+         "path": _BFO_PATH_INFO},
+    ),
+]
+
+
+def _subsume_stub(term: dict) -> dict:
+    """Best-effort keyword-based ontology subsumption — stand-in for BERTSubs.
+
+    Matches the term's name against a small keyword table that maps common
+    data-modeling vocabulary to the three main branches of BFO via CCO. When
+    a match is found, returns that candidate at its tabled confidence; when
+    not, returns ICE:DataElement at low confidence (the catch-all for any
+    column that carries information but isn't recognizably an agent, process
+    or role).
+
+    The shape of the return matches the fully-learned M2 predictor so the
+    UI's upload/review flow stays stable when the real model drops in.
+    """
+    name = str(term.get("name", "")).strip()
+    lower = name.lower()
+    candidate: dict | None = None
+    for keywords, tmpl in _KEYWORD_HINTS:
+        if any(k in lower for k in keywords):
+            candidate = dict(tmpl)
+            break
+    if candidate is None:
+        candidate = {
+            "iri": "ICE:DataElement",
+            "label": "Data Element",
+            "confidence": 0.05,
+            "path": _BFO_PATH_INFO,
+        }
+        reasoning = (
+            "No keyword match — defaulting to ICE:DataElement at low "
+            "confidence. M2 BERTSubs predictor will score this against the "
+            "full ontology neighborhood."
+        )
+    else:
+        reasoning = (
+            f"Matched keyword heuristic for {candidate['label']!r}. "
+            "Placeholder predictor; the M2 scorer will refine confidence "
+            "using contextual embeddings (BERTSubs)."
+        )
+    return {
+        "term": name,
+        "candidates": [candidate],
+        "reasoning": reasoning,
+    }
 
 
 def _task_num_classes(task: str | None) -> int | None:
