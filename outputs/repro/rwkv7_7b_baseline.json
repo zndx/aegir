@@ -1,0 +1,25 @@
+{
+  "checkpoint": "/raid/datasets/rwkv-7-world/rwkv7-g1e-7.2b-20260301-ctx8192.pth",
+  "config": {
+    "n_layer": 32,
+    "n_embd": 4096,
+    "vocab_size": 65536,
+    "head_size": 64,
+    "d_decay": 128,
+    "d_aaa": 128,
+    "d_mv": 96,
+    "d_gate": 480,
+    "d_ffn": 16384
+  },
+  "params": 7199141888,
+  "eval_bytes_total": 200000,
+  "scored_bytes": 199308,
+  "scored_tokens": 43008,
+  "nll_per_token_nats": 2.0124854700905934,
+  "nll_per_byte_nats": 0.4342674408335654,
+  "bits_per_byte": 0.6265154833101262,
+  "ctx_len": 2048,
+  "stride": 1024,
+  "n_windows": 41,
+  "eval_seconds": 55.81910705566406
+}

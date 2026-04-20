@@ -1,0 +1,25 @@
+{
+  "checkpoint": "/raid/datasets/rwkv-7-world/RWKV-x070-World-0.1B-v2.8-20241210-ctx4096.pth",
+  "config": {
+    "n_layer": 12,
+    "n_embd": 768,
+    "vocab_size": 65536,
+    "head_size": 64,
+    "d_decay": 64,
+    "d_aaa": 64,
+    "d_mv": 32,
+    "d_gate": 128,
+    "d_ffn": 3072
+  },
+  "params": 191034624,
+  "eval_bytes_total": 200000,
+  "scored_bytes": 199308,
+  "scored_tokens": 43008,
+  "nll_per_token_nats": 2.886325961067563,
+  "nll_per_byte_nats": 0.6228305282958725,
+  "bits_per_byte": 0.8985545144867084,
+  "ctx_len": 2048,
+  "stride": 1024,
+  "n_windows": 41,
+  "eval_seconds": 16.503419399261475
+}
