@@ -304,6 +304,11 @@ def main() -> int:
     ap.add_argument("--max-grad-norm", type=float, default=1.0)
     ap.add_argument("--parent-loss-weight", type=float, default=0.5,
                     help="α in L = L_leaf + α · L_parent")
+    ap.add_argument("--head-lr-mult", type=float, default=1.0,
+                    help="Multiplier on LR for newly-initialized heads "
+                         "(pooler, leaf_head, parent_head, role_embeddings). "
+                         "Use >1 when fine-tuning from a pretrained backbone "
+                         "so the cold-start heads can catch up.")
     ap.add_argument("--num-workers", type=int, default=4)
     ap.add_argument("--log-every", type=int, default=20)
     ap.add_argument("--eval-every", type=int, default=500)
@@ -393,9 +398,30 @@ def main() -> int:
     n_params = sum(p.numel() for p in model.parameters())
     log.info("model params: %s (leaf=%d parent=%d)", f"{n_params:,}", num_leaf, num_parent)
 
-    param_groups = group_params(model)
+    # Split params into backbone (pretrained, fine-tune at base lr) and heads
+    # (newly-initialized, may need higher lr to escape classifier cold-start).
+    # New-head names are fixed by the AegirForHierarchicalCTA __init__: pooler,
+    # leaf_head, parent_head, role_embeddings. Embeddings are pretrained so
+    # they stay in the backbone group.
+    head_prefixes = ("pooler.", "leaf_head.", "parent_head.", "role_embeddings.")
+    backbone_params: list[nn.Parameter] = []
+    head_params: list[nn.Parameter] = []
+    for name, p in model.named_parameters():
+        if any(name.startswith(pfx) for pfx in head_prefixes):
+            head_params.append(p)
+        else:
+            backbone_params.append(p)
+    log.info(
+        "param split: %d backbone tensors, %d head tensors  (head_lr_mult=%.2f)",
+        len(backbone_params), len(head_params), args.head_lr_mult,
+    )
     optimizer = torch.optim.AdamW(
-        param_groups, lr=args.lr, weight_decay=args.weight_decay
+        [
+            {"params": backbone_params, "lr": args.lr, "_base_lr": args.lr},
+            {"params": head_params, "lr": args.lr * args.head_lr_mult,
+             "_base_lr": args.lr * args.head_lr_mult},
+        ],
+        weight_decay=args.weight_decay,
     )
 
     total_steps = max(100, (len(train_loader) * args.epochs))
@@ -459,7 +485,7 @@ def main() -> int:
             torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_grad_norm)
             lr_scale = _cosine_warmup(step, args.warmup_steps, total_steps)
             for pg in optimizer.param_groups:
-                pg["lr"] = args.lr * lr_scale
+                pg["lr"] = pg["_base_lr"] * lr_scale
             optimizer.step()
             optimizer.zero_grad()
 
