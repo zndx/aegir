@@ -1,0 +1,14 @@
+{
+  "checkpoint": "outputs/repro/20260420T144810Z/final.pt",
+  "n_layer": 12,
+  "d_model": 768,
+  "params": 90749952,
+  "eval_bytes_total": 200000,
+  "scored_bytes": 199680,
+  "nll_per_byte_nats": 1.2296327896607229,
+  "bits_per_byte": 1.7739851277579868,
+  "ctx_len": 2048,
+  "stride": 1024,
+  "n_windows": 194,
+  "eval_seconds": 28.464783430099487
+}

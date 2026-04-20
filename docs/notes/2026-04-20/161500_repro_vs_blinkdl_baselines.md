@@ -16,7 +16,8 @@ and byte-level models are directly comparable.
 
 | Model | Params | Training budget | nll/byte (nats) | bits/byte |
 |---|---|---|---|---|
-| **Aegir flat L12 D768 @ step 20 000** | 90 M | ~320 M bytes on FineWeb-Edu | 1.253 | **1.807** |
+| **Aegir flat L12 D768 @ step 20 000** (intermediate) | 90 M | ~220 M bytes | 1.253 | 1.807 |
+| **Aegir flat L12 D768 FINAL @ step 30 517** | 90 M | ~320 M bytes on FineWeb-Edu | 1.230 | **1.774** |
 | **BlinkDL RWKV-7 World 0.1B v2.8** | 191 M | ~10 B BPE tokens (multi-domain) | 0.623 | **0.899** |
 | **BlinkDL RWKV-7 g1e 7.2B** | 7.20 B | ~30 T tokens | 0.434 | **0.627** |
 
