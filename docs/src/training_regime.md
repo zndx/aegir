@@ -364,7 +364,27 @@ forward-looking indicator of how close each config is getting to the
 next scaling threshold. No surprises when we move from `base` to
 `large`.
 
-## 9. How this relates to v3
+## 9. Empirical validation (overnight, 2026-04-20)
+
+Several claims in this chapter were falsifiable hypotheses when written.
+Stages A and B, kicked off the same evening, delivered verdicts.
+
+| Claim | Section | Verdict | Evidence |
+|---|---|---|---|
+| "This is not a hyperparameter bug, and fixing it is not primarily a hyperparameter change." | §1 | **confirmed** | Stage A hygiene rerun (lr 3e-4 → 5e-5, weight decay 1e-2 → 1e-4, warmup 10% → 15%, grad clip already 1.0) tracks the original collapsed run almost exactly: train loss 4.1281 vs 4.1286, val loss 4.5470 vs 4.5468, best val macro F1 0.0003 vs 0.0007. Four knobs moved coherently changed the outcome by < 1 part in 10³. |
+| §4.2 load-bearing question: "does the architecture converge under its designed training regime?" | §4.2 | **yes** | Stage B byte-level pretraining on raw GitTables descended from loss 5.68 at step 20 (≈ entropy floor for 260-way softmax, `log 260 ≈ 5.56`) to 2.26 at step 3040. 3051 steps, 100M-byte budget, small model, SSD kernel active. Checkpoint at `outputs/pretrain/20260420T002455Z/final.pt`. |
+| §7 geometry criterion: "is the pretrained representation actually alive?" | §7 | **yes** | Post-training, 8 random byte-sequence inputs produced 8 distinct embeddings. Max pairwise L2 = 21.6 on vectors of mean norm 16.0 — collapse ratio 1.35, vs the 0.01 threshold that flagged the SOTAB checkpoint. Per-dimension variance: median 0.34, max 1.76. The representation varies with input at the expected scale. |
+| §8 compute projection: "small-config pretraining has ~18 GB of headroom on a 4090" | §8 | **confirmed** | Peak CUDA memory during Stage B was 5.7 GB (instrumented per-step via `peak_cuda_mem_mb` in `metrics.jsonl`). Stage C fine-tuning on the same hardware is comfortably within budget. |
+| §3.1: "the chunker learns boundaries as a byproduct of next-byte prediction" | §3.1 | *untested in this probe* | Stage B's `boundary_diagnostics` were not logged per-step in this first probe. A follow-on instrumented re-run will confirm. |
+| §6: "path-prediction subsumes dual center loss" | §6 | *untested* | Depends on Stage C. |
+
+The combined verdict — hygiene does not escape sparse-CTA collapse, but
+pretraining does converge and does produce a varied representation —
+is the one the staged plan was designed to distinguish. The chapter's
+argument now has running-code grounding, not just a first-principles
+shape.
+
+## 10. How this relates to v3
 
 The [v3 concept brief](../../build/draft-concept-brief_v3.md) proposes
 a phased plan: Phase 1 (Aegir-only baseline) → Phase 1.5 (Mergekit
@@ -386,7 +406,7 @@ had some baseline representation to align to Nano's; pretraining
 provides that honestly. The Tokensurgeon spike remains the first
 Phase 2 step.
 
-## 10. Further reading
+## 11. Further reading
 
 - [Diagnostic case study: representation collapse on SOTAB-Schema.org](./pretraining/diagnostic_case_study.md)
 - [v3 concept brief](../../build/draft-concept-brief_v3.md) — latent-guided training, Mergekit, Nano
