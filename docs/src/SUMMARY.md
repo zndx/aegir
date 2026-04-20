@@ -13,6 +13,8 @@
   - [Stage 4: Training Objective](./pretraining/training_objective.md)
   - [Training Tactics](./pretraining/training_tactics.md)
   - [End-to-End Example](./pretraining/end_to_end_example.md)
+  - [Diagnostic Case Study: Representation Collapse](./pretraining/diagnostic_case_study.md)
+- [Training Regime: Sparse → Dense](./training_regime.md)
 - [Agent Swarm](./agent_swarm.md)
   - [RWKV State Fusion](./agent_swarm/state_fusion.md)
   - [LatentMAS Alignment](./agent_swarm/alignment.md)

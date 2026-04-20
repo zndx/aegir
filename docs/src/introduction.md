@@ -26,6 +26,17 @@ Target benchmarks:
 - **GitTables** -- Large-scale column type detection across 1M+ CSV tables from GitHub (100% generic column names -- the hardest regime)
 - **WikiTables** -- Column annotation on Wikipedia HTML tables
 
+> **Where we are**: the training regime is under targeted redesign. The
+> first direct-supervision attempt on SOTAB produced complete
+> representation collapse; a three-phase diagnostic (prediction
+> distribution + cluster geometry + MCL inflation sweep, the last
+> borrowed from van Dongen's graph-clustering work) confirmed it and
+> motivated a pivot to **byte-level pretraining on raw tabular corpora**
+> plus **path-prediction fine-tuning** against the ontology hierarchy.
+> See [Training Regime](./training_regime.md) and the
+> [Diagnostic Case Study](./pretraining/diagnostic_case_study.md) for
+> the full reasoning and staged plan.
+
 ## Key Innovations
 
 **Byte-level dynamic chunking as learned tokenization.** Rather than using a fixed tokenizer (BPE, SentencePiece), Aegir operates on raw bytes and learns to segment sequences into variable-length chunks via content-dependent boundary prediction. A routing module measures cosine similarity between consecutive hidden states; high dissimilarity triggers a chunk boundary. This makes the "tokenization" fully differentiable and adapted to the data distribution -- critical for tabular data where delimiters, numeric formats, and encodings vary wildly across sources.
