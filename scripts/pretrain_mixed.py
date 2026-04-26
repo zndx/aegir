@@ -129,6 +129,119 @@ def byte_collate(batch: list[torch.Tensor]) -> dict[str, torch.Tensor]:
     }
 
 
+def _eval_slice(
+    model,
+    files: list[str],
+    seq_len: int,
+    eval_bytes: int,
+    batch_size: int,
+    device,
+) -> tuple[float, int]:
+    """Compute mean nats/byte over up to `eval_bytes` of byte windows from
+    a slice's file list. Sequential read; no shuffling. Returns (mean
+    nats/byte, bytes seen)."""
+    total_bytes = 0
+    nll_sum = 0.0
+    nll_n = 0
+    buf = bytearray()
+    file_iter = iter(files)
+    fh = None
+    CHUNK = 1 << 20
+    seq_window = seq_len + 1
+    batch_buf: list[torch.Tensor] = []
+
+    def flush(batch: list[torch.Tensor]) -> tuple[float, int]:
+        if not batch:
+            return 0.0, 0
+        x = torch.stack(batch).to(device, non_blocking=True)
+        ids = x[:, :-1]
+        tgt = x[:, 1:]
+        with torch.no_grad():
+            out = model(input_ids=ids, mask=torch.ones_like(ids, dtype=torch.bool))
+            loss = F.cross_entropy(
+                out.logits.view(-1, out.logits.size(-1)).float(),
+                tgt.reshape(-1), reduction="sum",
+            )
+        return loss.item(), tgt.numel()
+
+    while total_bytes < eval_bytes:
+        if len(buf) < seq_window:
+            if fh is None:
+                try:
+                    nxt = next(file_iter)
+                except StopIteration:
+                    break
+                try:
+                    fh = open(nxt, "rb")
+                except FileNotFoundError:
+                    fh = None
+                    continue
+            block = fh.read(CHUNK)
+            if not block:
+                fh.close()
+                fh = None
+                continue
+            buf.extend(block)
+            continue
+        chunk = bytes(buf[:seq_window])
+        del buf[:seq_len]
+        batch_buf.append(torch.frombuffer(chunk, dtype=torch.uint8).long())
+        total_bytes += seq_len
+        if len(batch_buf) >= batch_size:
+            s, n = flush(batch_buf)
+            nll_sum += s
+            nll_n += n
+            batch_buf = []
+    if batch_buf:
+        s, n = flush(batch_buf)
+        nll_sum += s
+        nll_n += n
+    if fh is not None:
+        fh.close()
+    mean_nats = nll_sum / max(nll_n, 1)
+    return mean_nats, total_bytes
+
+
+def run_eval(
+    model,
+    eval_manifest: dict,
+    seq_len: int,
+    eval_bytes: int,
+    batch_size: int,
+    device,
+    metrics_path: Path,
+    step: int,
+) -> dict[str, float]:
+    """Run stratified per-slice eval. Writes one JSONL row per slice
+    to `metrics_path`. Returns {slice_name: bits_per_byte}."""
+    was_training = model.training
+    model.eval()
+    results: dict[str, float] = {}
+    for slc in eval_manifest["slices"]:
+        try:
+            nats_per_byte, seen = _eval_slice(
+                model, list(slc["files"]), seq_len, eval_bytes, batch_size, device,
+            )
+        except Exception as e:
+            log.warning("eval slice %s failed: %s", slc["name"], e)
+            continue
+        bpb = nats_per_byte / math.log(2)
+        results[slc["name"]] = bpb
+        log.info("  EVAL %-26s  %.4f bits/byte  (%.1f MB seen)",
+                 slc["name"], bpb, seen / 2**20)
+        with open(metrics_path, "a") as fh:
+            fh.write(json.dumps({
+                "step": step,
+                "slice": slc["name"],
+                "nats_per_byte": nats_per_byte,
+                "bits_per_byte": bpb,
+                "bytes_seen": seen,
+            }) + "\n")
+    if was_training:
+        model.train()
+    return results
+
+
 def _repro_config(vocab_size: int = 260, n_layer: int = 12, d_model: int = 768) -> AegirConfig:
     return AegirConfig(
         arch_layout=[f"w{n_layer}"],
@@ -177,6 +290,13 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=4649)
     ap.add_argument("--out-dir", type=Path, default=Path("outputs/mixed"))
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    # Stratified eval
+    ap.add_argument("--eval-manifest", type=Path, default=None,
+                    help="Held-out manifest; if set, runs per-slice bits/byte eval.")
+    ap.add_argument("--eval-every", type=int, default=5000,
+                    help="Run stratified eval every N optimizer steps.")
+    ap.add_argument("--eval-bytes", type=int, default=16_000_000,
+                    help="Bytes per slice in each eval pass.")
     args = ap.parse_args()
 
     torch.manual_seed(args.seed)
@@ -195,6 +315,15 @@ def main() -> int:
         log.info("  %-22s  w=%.3f  files=%d  %.2f MB",
                  s["name"], s.get("weight_normalised", 0),
                  s["n_files"], s["bytes"] / 2**20)
+
+    eval_manifest = None
+    if args.eval_manifest is not None:
+        eval_manifest = json.loads(args.eval_manifest.read_text())
+        log.info("Eval manifest: %d held-out slices",
+                 len(eval_manifest["slices"]))
+        for s in eval_manifest["slices"]:
+            log.info("  EVAL %-22s  files=%d  %.2f MB",
+                     s["name"], s["n_files"], s["bytes"] / 2**20)
 
     ds = MixedCorpusStream(
         slices=manifest["slices"],
@@ -306,11 +435,24 @@ def main() -> int:
                 torch.save(model.state_dict(), out_dir / f"ckpt_{step:06d}.pt")
                 log.info("saved checkpoint at step %d", step)
 
+            if eval_manifest is not None and step > 0 and step % args.eval_every == 0:
+                run_eval(
+                    model, eval_manifest, args.seq_len, args.eval_bytes,
+                    args.batch_size, device,
+                    out_dir / "metrics_eval.jsonl", step,
+                )
+
             if step >= total_steps:
                 break
     except KeyboardInterrupt:
         log.info("interrupted by user")
 
+    if eval_manifest is not None:
+        run_eval(
+            model, eval_manifest, args.seq_len, args.eval_bytes,
+            args.batch_size, device,
+            out_dir / "metrics_eval.jsonl", step,
+        )
     torch.save(model.state_dict(), out_dir / "final.pt")
     log.info("saved final.pt at step %d", step)
     return 0
