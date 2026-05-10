@@ -1,0 +1,28 @@
+# Cloudera AI Inference Service (AIIS) overlay.
+#
+# M1 is read-only leaderboard serving — not a KServe InferenceService yet.
+# This overlay annotates the gateway Deployment so Cloudera's control plane
+# can discover it as a "workspace app" and surface it in the AIIS UI with
+# the right policies (Ranger resource tagging, KNOX auth integration).
+# The ingress + gateway Service shape remains the same; only the Deployment
+# metadata changes.
+#
+# When M3 introduces a KServe InferenceService predictor for Aegir
+# inference, that manifest lands in a separate component alongside this
+# one.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aegir-gateway
+  namespace: aegir
+  annotations:
+    # Makes the workspace visible to Cloudera AIIS's service registry.
+    cloudera.com/workspace-app: "aegir-leaderboard"
+    # Ranger tag for RBAC binding at ingress time.
+    cloudera.com/ranger-resource-tag: "aegir"
+    # AIIS pulls from its mirrored registry; this lets CNC-audited
+    # pulls pass policy.
+    cloudera.com/registry-source: "cdp-mirror"
+  labels:
+    cloudera.com/ai-workspace: "aegir"

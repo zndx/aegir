@@ -1,0 +1,18 @@
+# Pinned deps for the Aegir gateway image. Versions frozen for air-gap
+# reproducibility. Keep this list *minimal* — only what the gateway
+# imports at runtime. Training + model deps (torch, fla, flash-attn)
+# do NOT belong here; M1 serves the leaderboard, not inference.
+
+fastapi==0.118.0
+uvicorn[standard]==0.36.0
+pydantic==2.9.2
+sqlalchemy==2.0.49
+psycopg[binary]==3.3.3
+pyhocon==0.3.63
+# Holoviews + bokeh are imported only by aegir.utils.runs when emitting
+# static plots. The gateway doesn't render plots — it serves the JSON that
+# train.py emitted. But we keep them in the runtime image so the training
+# container and gateway container can share this base image if desired.
+holoviews==1.20.0
+bokeh==3.6.2
+numpy==2.1.3

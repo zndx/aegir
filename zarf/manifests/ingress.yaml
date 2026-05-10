@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aegir-gateway
+  namespace: aegir
+  labels:
+    app: aegir-gateway
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  ingressClassName: "###ZARF_VAR_INGRESS_CLASS###"
+  rules:
+    - host: aegir.###ZARF_VAR_INGRESS_DOMAIN###
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aegir-gateway
+                port:
+                  number: 80

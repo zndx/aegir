@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aegir-gateway-config
+  namespace: aegir
+data:
+  # Port inside the container; ingress / Service routes to this.
+  AEGIR_GATEWAY_PORT: "8091"
+  AEGIR_GATEWAY_HOST: "0.0.0.0"
+  # Points at the cluster Postgres service.
+  AEGIR_DB_URL: "postgresql+psycopg://aegir:###ZARF_VAR_POSTGRES_PASSWORD###@aegir-postgres.aegir.svc:5432/aegir?sslmode=disable"
+  AEGIR_QDRANT_HOST: "aegir-qdrant.aegir.svc"
+  AEGIR_QDRANT_HTTP_PORT: "6355"
+  AEGIR_QDRANT_GRPC_PORT: "6356"
+  # Mounted from the runs PVC.
+  AEGIR_RUNS_DIR: "/data/runs"
+  AEGIR_UI_DIST: "/app/ui/dist"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: aegir-runs
+  namespace: aegir
+spec:
+  accessModes: [ReadWriteMany]
+  resources:
+    requests:
+      storage: "###ZARF_VAR_RUNS_PVC_SIZE###"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aegir-gateway
+  namespace: aegir
+  labels:
+    app: aegir-gateway
+    app.kubernetes.io/name: aegir-gateway
+    app.kubernetes.io/component: gateway
+spec:
+  replicas: ###ZARF_VAR_GATEWAY_REPLICAS###
+  selector:
+    matchLabels:
+      app: aegir-gateway
+  template:
+    metadata:
+      labels:
+        app: aegir-gateway
+    spec:
+      containers:
+        - name: gateway
+          image: localhost:5555/aegir-gateway:0.1.0
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: aegir-gateway-config
+          ports:
+            - containerPort: 8091
+              name: http
+          volumeMounts:
+            - name: runs
+              mountPath: /data/runs
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8091
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8091
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1
+              memory: 2Gi
+      volumes:
+        - name: runs
+          persistentVolumeClaim:
+            claimName: aegir-runs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aegir-gateway
+  namespace: aegir
+  labels:
+    app: aegir-gateway
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8091
+      name: http
+  selector:
+    app: aegir-gateway

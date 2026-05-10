@@ -1,0 +1,54 @@
+# Aegir gateway image — bundles the FastAPI app + pinned Python deps +
+# the built React UI (ui/dist) + SQL migrations.
+#
+# Model weights are NOT baked in at M1 — the leaderboard is read-only and
+# doesn't need them. M3+ will add a GPU-flavored variant that includes the
+# trained checkpoint.
+#
+# Build from the repo root:
+#   podman build -t localhost:5555/aegir-gateway:0.1.0 \
+#     -f zarf/images/Dockerfile.aegir-gateway .
+
+FROM python:3.12-slim
+
+LABEL org.opencontainers.image.title="Aegir Gateway"
+LABEL org.opencontainers.image.description="FastAPI gateway for Aegir leaderboard UI"
+LABEL org.opencontainers.image.version="0.1.0"
+
+# System deps — curl only, for the HEALTHCHECK.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pinned Python deps first (separate layer for cache).
+COPY zarf/images/requirements-gateway.txt /tmp/requirements-gateway.txt
+RUN pip install --no-cache-dir -r /tmp/requirements-gateway.txt && \
+    rm /tmp/requirements-gateway.txt
+
+WORKDIR /app
+
+# Copy the Python package.
+COPY src/aegir /app/aegir
+COPY db/migrations /app/db/migrations
+COPY config /app/config
+
+# Copy the built React bundle. In CI this is produced by `just ui-build`
+# (cd ui && pnpm install && pnpm build). If you need to build it in the
+# image itself, add a Node stage — kept out of M1 to keep the image small.
+COPY ui/dist /app/ui/dist
+
+# Install our package in editable mode so imports resolve.
+RUN pip install --no-cache-dir -e . || echo "warning: editable install skipped (no pyproject.toml copied)"
+
+ENV PYTHONUNBUFFERED=1
+ENV AEGIR_UI_DIST=/app/ui/dist
+ENV AEGIR_RUNS_DIR=/data/runs
+ENV AEGIR_GATEWAY_HOST=0.0.0.0
+ENV AEGIR_GATEWAY_PORT=8091
+
+EXPOSE 8091
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -fsS http://localhost:8091/api/health || exit 1
+
+CMD ["python", "-m", "aegir.gateway"]

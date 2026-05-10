@@ -1,0 +1,196 @@
+kind: ZarfPackageConfig
+metadata:
+  name: aegir-leaderboard
+  description: |
+    Air-gap deployment package for Aegir's leaderboard gateway + UI.
+    Targets both AWS EKS and Cloudera AI Inference Service (KServe).
+    Package contents: aegir-gateway image (FastAPI + static React bundle),
+    Postgres 16 with pgvector, Qdrant, and the initial SQL migration.
+  version: "0.1.0"
+  architecture: amd64
+  authors: Aegir
+  url: https://github.com/zndx/aegir
+  documentation: https://github.com/zndx/aegir/blob/main/zarf/README.md
+
+variables:
+  - name: INGRESS_CLASS
+    description: Kubernetes ingress controller class
+    default: traefik
+
+  - name: INGRESS_DOMAIN
+    description: Base domain for ingress hostnames (aegir will be reachable at aegir.{domain})
+    default: aegir.local
+
+  - name: POSTGRES_PASSWORD
+    description: Password for the aegir postgres user (StatefulSet)
+    default: aegir
+    sensitive: true
+
+  - name: GATEWAY_REPLICAS
+    description: Number of gateway pod replicas
+    default: "2"
+
+  - name: RUNS_PVC_SIZE
+    description: PVC size for run artifacts (outputs/runs sidecars + Bokeh JSON)
+    default: "5Gi"
+
+  - name: POSTGRES_PVC_SIZE
+    description: PVC size for the Postgres StatefulSet data volume
+    default: "10Gi"
+
+  - name: QDRANT_PVC_SIZE
+    description: PVC size for Qdrant storage (empty in M1 but provisioned)
+    default: "5Gi"
+
+  # When TARGET=cloudera-aiis, the cloudera-aiis-annotations component is
+  # applied, which adds KServe InferenceService-compatible labels/annotations
+  # to the gateway Deployment. Empty/"generic" skips that overlay (stock K8s /
+  # AWS EKS path).
+  - name: TARGET
+    description: Deployment target — "generic" (default) or "cloudera-aiis"
+    default: generic
+
+components:
+  # ==========================================================================
+  # Storage provisioner — match Cybersec's convention so bare RKE2 gets a
+  # default StorageClass. Skip on clusters that already have one (EKS does;
+  # Cloudera ECS does too).
+  # ==========================================================================
+  - name: local-path-provisioner
+    required: false
+    default: true
+    description: Rancher local-path-provisioner (default StorageClass for bare RKE2)
+    images:
+      - rancher/local-path-provisioner:v0.0.30
+      - busybox:1.37
+    manifests:
+      - name: local-path-provisioner
+        files:
+          - manifests/local-path-provisioner.yaml
+
+  # ==========================================================================
+  # Core images — the aegir-gateway image bundles the FastAPI app + static
+  # React bundle + Aegir Python source. Built locally via
+  # ``just zarf-build``; tagged ``localhost:5555/...`` per Zarf convention
+  # (rewritten to Zarf's internal registry at deploy time).
+  # ==========================================================================
+  - name: aegir-images
+    required: true
+    description: Aegir gateway container image (FastAPI + React bundle + migrations)
+    images:
+      - localhost:5555/aegir-gateway:0.1.0
+      - pgvector/pgvector:pg16
+      - qdrant/qdrant:v1.12.4
+
+  # ==========================================================================
+  # Namespace
+  # ==========================================================================
+  - name: aegir-namespace
+    required: true
+    description: Aegir namespace
+    manifests:
+      - name: aegir-namespace
+        files:
+          - manifests/namespace.yaml
+
+  # ==========================================================================
+  # Postgres 16 + pgvector StatefulSet
+  # ==========================================================================
+  - name: postgres
+    required: true
+    description: Postgres 16 StatefulSet with pgvector (empty in M1 but provisioned)
+    manifests:
+      - name: postgres
+        files:
+          - manifests/postgres.yaml
+    actions:
+      onDeploy:
+        after:
+          - wait:
+              cluster:
+                kind: Pod
+                name: app=aegir-postgres
+                namespace: aegir
+                condition: Ready
+            maxTotalSeconds: 120
+            description: Wait for Postgres StatefulSet
+
+  # ==========================================================================
+  # Qdrant StatefulSet
+  # ==========================================================================
+  - name: qdrant
+    required: false
+    default: true
+    description: Qdrant vector store StatefulSet (empty in M1; reserved for M2+)
+    manifests:
+      - name: qdrant
+        files:
+          - manifests/qdrant.yaml
+    actions:
+      onDeploy:
+        after:
+          - wait:
+              cluster:
+                kind: Pod
+                name: app=aegir-qdrant
+                namespace: aegir
+                condition: Ready
+            maxTotalSeconds: 120
+
+  # ==========================================================================
+  # Gateway deployment (FastAPI + static UI)
+  # ==========================================================================
+  - name: aegir-gateway
+    required: true
+    description: Aegir FastAPI gateway + static React bundle
+    manifests:
+      - name: aegir-gateway
+        files:
+          - manifests/gateway-deployment.yaml
+    actions:
+      onDeploy:
+        before:
+          # Run migrations via a one-shot Job against the Postgres StatefulSet.
+          # Idempotent; safe to re-run on every deploy.
+          - cmd: |
+              kubectl -n aegir delete job aegir-db-bootstrap --ignore-not-found
+              kubectl -n aegir create job aegir-db-bootstrap --image=localhost:5555/aegir-gateway:0.1.0 -- \
+                python -m aegir.db.bootstrap || true
+            description: Apply SQL migrations to Postgres
+        after:
+          - wait:
+              cluster:
+                kind: Pod
+                name: app=aegir-gateway
+                namespace: aegir
+                condition: Ready
+            maxTotalSeconds: 180
+
+  # ==========================================================================
+  # Ingress (Traefik by default; works with nginx-ingress as well).
+  # ==========================================================================
+  - name: ingress
+    required: false
+    default: true
+    description: Ingress resources for external access (requires Traefik or nginx)
+    manifests:
+      - name: aegir-ingress
+        files:
+          - manifests/ingress.yaml
+
+  # ==========================================================================
+  # Cloudera AI Inference Service annotations (overlay).
+  # Only applied when ``--set TARGET=cloudera-aiis`` at deploy time.
+  # ==========================================================================
+  - name: cloudera-aiis-annotations
+    required: false
+    default: false
+    description: KServe InferenceService-compatible labels/annotations for Cloudera AIIS
+    only:
+      cluster:
+        distros:
+          - cloudera
+    manifests:
+      - name: cloudera-aiis-annotations
+        files:
+          - manifests/cloudera-aiis-annotations.yaml
