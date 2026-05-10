@@ -14,7 +14,168 @@ set positional-arguments
 default:
     @just --list
 
-bdd-0:
+# ── Dependency sync ───────────────────────────────────────────
+#
+# ``just sync`` is the single entry point that reliably brings the
+# venv to a consistent state. It runs ``uv sync`` and then re-applies
+# the patched flash-attn / mamba-ssm / causal-conv1d wheels under
+# ``build/wheels/`` — those wheels are ABI-patched per CLAUDE.md and
+# are clobbered by every plain ``uv sync``. Idempotent; safe to run
+# any number of times.
+#
+# Use ``just sync`` after pulling new commits, after editing
+# pyproject.toml, or any time the venv feels stale. The devenv
+# post-uv-sync hook (in devenv.nix) calls the same restore logic so
+# ``devenv up`` / ``devenv shell`` users do not need to remember.
+#
+# If ``build/wheels/`` is empty, ``just sync`` skips the restore step
+# and prints a hint. To populate it, run ``just cuda-deps`` (or
+# ``just build-flash-attn`` for the aggressive 25-min path).
+sync:
+    uv sync
+    @just _restore-patched-wheels
+
+# Hidden recipe — used by ``just sync`` and by devenv's
+# aegir:cuda-ext-reinstall task. Single canonical implementation.
+# Works whether invoked from inside ``devenv shell`` (VIRTUAL_ENV is
+# already set) or directly (we fall back to the devenv-managed venv
+# under .devenv/state/venv).
+_restore-patched-wheels:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "$(git rev-parse --show-toplevel)"
+    if [ -z "${VIRTUAL_ENV:-}" ]; then
+        if [ -d ".devenv/state/venv" ]; then
+            export VIRTUAL_ENV="$PWD/.devenv/state/venv"
+        else
+            echo "[aegir] no VIRTUAL_ENV set and no .devenv/state/venv found — run 'devenv up' first or activate the venv"
+            exit 1
+        fi
+    fi
+    shopt -s nullglob
+    wheels=(build/wheels/*.whl)
+    if [ "${#wheels[@]}" -eq 0 ]; then
+        echo "[aegir] no patched wheels under build/wheels/ — run 'just cuda-deps' to populate"
+        exit 0
+    fi
+    echo "[aegir] restoring patched CUDA extensions: ${wheels[*]##*/}"
+    uv pip install --reinstall --no-deps "${wheels[@]}" >/dev/null
+
+check-ontology-schema:
+    uv run --no-sync python scripts/check_ontology_schema.py
+
+# Run the SDG runtime verifier on a composition. P1b-α scope:
+# R_A + R_B + R_C; R_D stubbed at 0.0 until P1b-β.
+#   just aegir-verify path/to/composition.json
+#   echo '{"templates":[...]}' | just aegir-verify -
+aegir-verify composition='-':
+    uv run --no-sync python scripts/aegir-verify.py --composition {{composition}}
+
+# Run the offline DeepOnto pass over a candidate catalog JSON,
+# populating is_complex/verbal_template/mean_verbal_length per
+# template. Bootstraps the surgical LD_LIBRARY_PATH the JVM
+# needs; see scripts/setup_jvm_env.sh.
+build-catalog input output:
+    bash -c 'source scripts/setup_jvm_env.sh && uv run --no-sync python scripts/build_catalog.py {{input}} {{output}}'
+
+# Fit T_I on the pinned input corpus (held-out SchemaPile +
+# FinePDFs-lab) and compute the null distribution over the
+# combined catalog. Caches T_I to src/aegir/ontology/catalog/T_I.pkl
+# and writes null_stats.json there.
+build-topic-model *args:
+    bash -c 'source scripts/setup_jvm_env.sh && uv run --no-sync python scripts/build_topic_model.py {{args}}'
+
+# C1 verifier validation: build labeled test set, score each
+# ontology end-to-end, sweep aggregation weights {a, b, c} for
+# AUC, report results.
+c1-validate:
+    uv run --no-sync python scripts/build_test_set.py
+    bash -c 'source scripts/setup_jvm_env.sh && uv run --no-sync python scripts/tune_verifier_weights.py'
+
+# P4 smoke test: single GRPO group iteration over the locked
+# verifier — validates reward-signal propagation, determinism,
+# and quality discrimination without committing to actual model
+# training. See `scripts/p4_smoke_test.py` for the design rationale.
+p4-smoke:
+    bash -c 'source scripts/setup_jvm_env.sh && uv run --no-sync python scripts/p4_smoke_test.py'
+
+# P5 launcher: full GRPO/RLVR training of SAE-Res-Qwen3.5-27B
+# against the locked SDG verifier. Sharded across 6× RTX 4090
+# via FSDP (accelerate-managed). TP is not viable at TP=6 for
+# Qwen3.5-27B's GQA config (num_kv_heads=4); FSDP avoids the
+# divisibility constraint and uses all 6 GPUs at ~9 GB base
+# weights per GPU.
+#
+# Pass --dry-run for pre-flight summary (no GPU work,
+# no trainer.train()), or no args to start the 200 GPU-hour
+# run. --resume picks up from the latest checkpoint under
+# outputs/p5/ with the strict-by-default drift check;
+# --no-strict-resume to accept drift explicitly. See
+# ``scripts/p5_train.py`` for full options.
+#
+#   just p5-train --dry-run                     # pre-flight (single process, no FSDP)
+#   just p5-train                               # 200 GPU-hours, 6× RTX 4090 via FSDP
+#   just p5-train --resume                      # resume strict
+#   just p5-train --resume --no-strict-resume   # override
+#
+# Dry-run uses plain python; real runs use accelerate launch
+# with FSDP across all 6 GPUs.
+p5-train *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source scripts/setup_jvm_env.sh
+    if [[ " {{args}} " == *" --dry-run "* ]]; then
+        uv run --no-sync python scripts/p5_train.py {{args}}
+    else
+        # Per-rank error files: torch-elastic captures each rank's
+        # exception as JSON so multi-process failures surface
+        # properly (rather than the generic <NO_OTHER_FAILURES>).
+        # Logs land under /raid/checkpoints/p5/launch-logs/.
+        log_dir="/raid/checkpoints/p5/launch-logs"
+        mkdir -p "$log_dir"
+        export TORCHELASTIC_ERROR_FILE="$log_dir/rank_\${RANK}_error.json"
+        # FSDP knobs:
+        #  * sharding_strategy FULL_SHARD     — params, grads, optimizer all sharded
+        #  * cpu_ram_efficient_loading true   — only rank 0 reads weights from disk;
+        #                                       other ranks init on meta and sync.
+        #                                       Without this, every rank tries to
+        #                                       materialize the full 54 GB model on
+        #                                       its single 24 GB GPU before sharding,
+        #                                       OOMing at FSDP _move_module_to_device.
+        #  * sync_module_states true          — broadcast init from rank 0
+        #  * transformer_layer_cls_to_wrap
+        #      Qwen3_5DecoderLayer            — the layer FSDP wraps as a unit.
+        #                                       TRANSFORMER_BASED_WRAP needs this
+        #                                       hint to find the right granularity.
+        #  * use_orig_params true             — needed for LoRA-on-FSDP compatibility
+        #                                       (peft attaches new params after FSDP
+        #                                       wrap; orig_params=True keeps them
+        #                                       trainable).
+        # No --mixed_precision flag: the model is already loaded
+        # as bf16 by ``load_policy`` (torch_dtype="bfloat16") and
+        # all LoRA params are cast to bf16 in ``policy.py``. With
+        # accelerate's MixedPrecisionPolicy, FSDP would try to
+        # unshard params at a "mp param dtype" that diverges from
+        # the original ``lora_A.weight.dtype`` peft reads at the
+        # call site, producing the ``mat1/mat2 dtype mismatch``
+        # observed in the GRPO generation forward pass. Letting the
+        # native bf16 dtype propagate end-to-end keeps both sides
+        # of every matmul aligned.
+        uv run --no-sync accelerate launch \
+            --num_processes 6 \
+            --use_fsdp \
+            --fsdp_sharding_strategy FULL_SHARD \
+            --fsdp_auto_wrap_policy TRANSFORMER_BASED_WRAP \
+            --fsdp_transformer_layer_cls_to_wrap Qwen3_5DecoderLayer \
+            --fsdp_cpu_ram_efficient_loading true \
+            --fsdp_sync_module_states true \
+            --fsdp_use_orig_params true \
+            --log_dir "$log_dir" \
+            --tee 3 \
+            scripts/p5_train.py {{args}}
+    fi
+
+bdd-0: check-ontology-schema
     AEGIR_BDD_TIER=0 uv run --no-sync behave features/
 
 bdd-1:
@@ -114,7 +275,7 @@ get-benchmarks:
 #                                                  expected to land below
 #                                                  REVEAL's 0.815 until we
 #                                                  add pretraining per
-#                                                  docs/src/pretraining.md)
+#                                                  docs/current/pretraining.md)
 
 benchmarks-quick:
     #!/usr/bin/env bash
@@ -185,7 +346,7 @@ benchmarks-full:
 # same 8-MMR-context serialization, same ~2kB per-column budget,
 # 50 epochs to match their fine-tuning runs. Honest-comparison row for
 # the leaderboard; expected numbers below 0.815 until we layer in
-# ontology-grounded pretraining (docs/src/pretraining.md).
+# ontology-grounded pretraining (docs/current/pretraining.md).
 #
 # Override: ``REVEAL_TASKS="sotab sotab-re" just benchmarks-reveal-match``
 benchmarks-reveal-match:
