@@ -28,7 +28,7 @@ build/draft-*.md
 build/config/
 
 # Devenv runtime state (postgres data dir, qdrant init sentinel)
-db/
+/db/
 .qdrant-initialized
 
 # UI build artifacts + dependency tree
