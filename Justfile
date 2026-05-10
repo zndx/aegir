@@ -11,8 +11,48 @@
 
 set positional-arguments
 
+# ── Worktree role (primary | secondary) ───────────────────────
+#
+# git worktree-add creates linked checkouts whose ``.git`` is a
+# *file* pointing back to the original repo's ``.git/worktrees/<name>/``
+# rather than a real directory. ``bin/detect-worktree-role.sh``
+# reads that distinction and prints ``primary`` (original) or
+# ``secondary`` (linked).
+#
+# Convention: the **primary** checkout owns shared state (devenv
+# services, /raid checkpoint writes). Any **secondary** checkout
+# is a satellite — read-mostly UI / scripting work that connects
+# to the primary's running services. Recipes that bind ports or
+# touch shared state branch on this value:
+#
+#   * services that conflict on port (gateway, vite-dev) refuse
+#     to start in a secondary worktree unless ``ALLOW_SECONDARY=1``
+#     is set, with a hint pointing at the primary;
+#   * services that write shared state (p5-train) refuse to run
+#     in a secondary worktree unconditionally.
+#
+# devenv.nix reads the same value via ``AEGIR_WORKTREE_ROLE``
+# and gates ``services.postgres`` / ``services.qdrant`` on it
+# so ``devenv up`` in a secondary checkout doesn't try to bind
+# the primary's ports.
+worktree_role := `if [ -n "${AEGIR_WORKTREE_ROLE:-}" ]; then echo "$AEGIR_WORKTREE_ROLE"; else bin/detect-worktree-role.sh 2>/dev/null || echo primary; fi`
+
 default:
     @just --list
+
+# Print this checkout's worktree role + the relevant shared-state
+# defaults. Use this for a quick sanity-check before launching
+# services; if it says ``secondary`` and you didn't expect that,
+# investigate before running ``just gateway`` etc.
+whoami:
+    @echo "worktree_role     = {{worktree_role}}"
+    @echo "git toplevel      = $(git rev-parse --show-toplevel)"
+    @echo "common git dir    = $(git rev-parse --git-common-dir)"
+    @echo "branch            = $(git rev-parse --abbrev-ref HEAD)"
+    @echo "p5 output_dir     = ${AEGIR_P5_OUTPUT_DIR:-/raid/checkpoints/p5}"
+    @echo "gateway port      = ${AEGIR_GATEWAY_PORT:-8091}"
+    @echo "all worktrees:"
+    @git worktree list | sed 's/^/  /'
 
 # ── Dependency sync ───────────────────────────────────────────
 #
@@ -133,6 +173,22 @@ p5-train *args:
     #!/usr/bin/env bash
     set -euo pipefail
     source scripts/setup_jvm_env.sh
+    # Refuse in secondary worktrees: p5-train writes to a shared
+    # /raid/checkpoints/p5/ tree (per-checkpoint dirs + the live SAE
+    # JSONL the gateway streams). Two concurrent runs would clobber
+    # each other's checkpoints and corrupt the live tail. ALLOW_SECONDARY=1
+    # overrides for the rare deliberate dual-train scenario.
+    if [ "{{worktree_role}}" = "secondary" ] && [ "${ALLOW_SECONDARY:-0}" != "1" ] \
+            && [[ " {{args}} " != *" --dry-run "* ]]; then
+        cat <<EOF >&2
+    [aegir] worktree role = secondary; refusing p5-train.
+    p5-train writes to ${AEGIR_P5_OUTPUT_DIR:-/raid/checkpoints/p5}/, shared
+    state across worktrees. Run in the primary worktree, or set
+    ALLOW_SECONDARY=1 with a distinct AEGIR_P5_OUTPUT_DIR if you really
+    need a parallel run.
+    EOF
+        exit 2
+    fi
     is_single_gpu=true
     if [[ " {{args}} " == *" --policy-preset 27b-fsdp-"* ]]; then
         is_single_gpu=false
@@ -405,6 +461,18 @@ resolve-config:
     uv run --no-sync python bin/resolve-config.py
 
 gateway:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "{{worktree_role}}" = "secondary" ] && [ "${ALLOW_SECONDARY:-0}" != "1" ]; then
+        cat <<EOF >&2
+    [aegir] worktree role = secondary; refusing to bind gateway port.
+    The primary worktree owns the gateway. Either:
+      - run "just gateway" in the primary worktree, or
+      - export ALLOW_SECONDARY=1 to run a satellite gateway here
+        (set AEGIR_GATEWAY_PORT to avoid the primary's :8091).
+    EOF
+        exit 2
+    fi
     uv run --no-sync python -m aegir.gateway
 
 ui-dev:

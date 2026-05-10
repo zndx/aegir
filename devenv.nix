@@ -1,6 +1,25 @@
 { pkgs, lib, config, inputs, ... }:
 
-{
+let
+  # Worktree role detection. ``git worktree add <path>`` creates a
+  # *secondary* checkout whose ``.git`` is a file pointing back at
+  # the primary's ``.git/worktrees/<name>/`` rather than a real
+  # directory. The convention this file enforces:
+  #
+  #   primary    → owns shared state; runs postgres + qdrant +
+  #                gateway + vite-dev under ``devenv up``.
+  #   secondary  → satellite; skips those services entirely so two
+  #                concurrent ``devenv up`` invocations don't bind
+  #                colliding ports / corrupt the same DB cluster.
+  #
+  # ``bin/detect-worktree-role.sh`` (committed) prints the role at
+  # the shell. devenv reads ``AEGIR_WORKTREE_ROLE`` from the
+  # environment so the user (or ``.envrc``) can set it once at
+  # entry. Defaults to "primary" when unset, preserving existing
+  # single-worktree behavior.
+  worktreeRole = lib.maybeEnv "AEGIR_WORKTREE_ROLE" "primary";
+  isPrimary = worktreeRole == "primary";
+in {
   # https://devenv.sh/packages/
   packages = with pkgs; [
     just
@@ -57,7 +76,20 @@
     HF_HUB_CACHE = "/raid/cache/huggingface/hub";
     HUGGINGFACE_HUB_CACHE = "/raid/cache/huggingface/hub";
     TRANSFORMERS_CACHE = "/raid/cache/huggingface/hub";
+    # Re-export the resolved role into the shell so ``just``
+    # recipes and downstream scripts read the same value devenv
+    # used to gate services.
+    AEGIR_WORKTREE_ROLE = worktreeRole;
   };
+
+  enterShell = ''
+    if [ "${worktreeRole}" != "primary" ]; then
+      echo "[aegir] devenv: worktree role = ${worktreeRole}; skipping postgres/qdrant/gateway/vite-dev."
+      echo "        These services run only in the primary checkout to avoid port collisions."
+      echo "        Connect to the primary's services from here, or set AEGIR_WORKTREE_ROLE=primary"
+      echo "        to override (and accept the responsibility for collision-free port choice)."
+    fi
+  '';
 
   # ── PostgreSQL 16 with pgvector ─────────────────────────────
   #
@@ -67,7 +99,7 @@
   # pgvector is load-bearing for M2+ (column-embedding similarity search);
   # provisioned here so migrations can `CREATE EXTENSION vector` unconditionally.
   services.postgres = {
-    enable = true;
+    enable = isPrimary;
     package = pkgs.postgresql_16;
     port = 5555;
     listen_addresses = "127.0.0.1";
@@ -83,7 +115,10 @@
   # materialized config file is strictly required in the devenv loop.
   # ``just resolve-config`` materializes build/config/aegir.{env,json}
   # for conftest / BDD / CI.
-  processes = {
+  # Service processes are skipped entirely in secondary worktrees.
+  # Each worktree gets its own ``processes`` set; here we either
+  # populate it (primary) or leave it empty (secondary).
+  processes = lib.mkIf isPrimary {
     # Qdrant vector store — HTTP 6355, gRPC 6356.
     # Storage under DEVENV_STATE survives devenv restarts but is excluded
     # from git.  Provisioned empty in M1; populated in M2.

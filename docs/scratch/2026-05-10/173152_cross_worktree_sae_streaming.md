@@ -23,9 +23,47 @@ needed:
 | Vite dev port | Pick one worktree to run it | `:5173` |
 | `/raid/checkpoints/p5/` | Single writer (training side) | `aegir.config.P5Cfg.output_dir` |
 
-Run the gateway + Vite dev in **either** worktree (it's the same
-recipe via `just gateway` and `just ui-dev`). The training process is
-always the systems worktree.
+## Worktree role detection
+
+`bin/detect-worktree-role.sh` prints `primary` or `secondary` based on
+whether `.git` is a directory (primary) or a file pointing at the
+shared `.git/worktrees/<name>/` (secondary, created by
+`git worktree add`). Both `just` and `devenv` consume this:
+
+- **`just whoami`** prints the current role + key shared-state
+  defaults. First thing to run when picking up a worktree session.
+- **`just p5-train`** refuses in secondary worktrees (writes to
+  `/raid/checkpoints/p5/`, shared state). `--dry-run` is exempt;
+  `ALLOW_SECONDARY=1` overrides if you've set a distinct
+  `AEGIR_P5_OUTPUT_DIR`.
+- **`just gateway`** refuses in secondary worktrees by default
+  (port collision). `ALLOW_SECONDARY=1` + a distinct
+  `AEGIR_GATEWAY_PORT` override.
+- **`just ui-dev`** has no role guard — secondary is its natural home;
+  Vite picks an alternate port automatically if `:5173` is taken.
+- **`devenv up`** in a secondary worktree skips `services.postgres`,
+  the `processes` block (qdrant + gateway + vite-dev), and prints a
+  hint at shell entry. The secondary worktree connects to the
+  primary's services via `localhost:<port>`.
+
+The env var `AEGIR_WORKTREE_ROLE` overrides the script's output, so
+exotic layouts (a third worktree, a CI harness mocking secondary)
+can opt in/out explicitly.
+
+Convention: the **primary** checkout owns shared state (training,
+postgres, qdrant, gateway). The **secondary** checkout is a satellite
+(UI dev, ad-hoc scripts) that connects to the primary's services.
+
+## Per-worktree role mapping
+
+| Worktree | Role | Runs |
+|---|---|---|
+| `aegir` (this) | primary | `devenv up` (postgres + qdrant + gateway), `just p5-train` |
+| `ae-ui-dev` | secondary | `just ui-dev` (Vite dev), connects to primary's `:8091` |
+
+Run the gateway + Vite dev in **either** worktree if you really want
+(set `ALLOW_SECONDARY=1`); the convention above is the default to
+avoid accidental dual-launch.
 
 ## SAE-stream pipeline
 
