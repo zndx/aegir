@@ -2,7 +2,13 @@
 title = "Ægir: Hierarchical Sequence Modeling with Dynamic Chunking"
 authors = ["Ryan Hill"]
 language = "en"
-src = "current"
+# Standard ``mdbook init`` layout — sources at ``src/``, theme at
+# ``theme/``, generated HTML at ``book/`` — all relative to this
+# config file's directory (``docs/current/``). Per-session scratch
+# notes and archived chapters live outside this book root, under
+# ``docs/scratch/`` and ``docs/archive/`` respectively, so the book
+# build picks up only curated content.
+src = "src"
 
 [preprocessor.d2]
 path = "d2"

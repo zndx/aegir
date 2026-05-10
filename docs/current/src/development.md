@@ -168,8 +168,22 @@ aegir/
 Build and serve the documentation locally:
 
 ```bash
-mdbook build docs/
-mdbook serve docs/    # serves at http://localhost:3000
+just docs-build           # → docs/current/book/
+just docs-serve           # http://localhost:3000
+
+# Equivalent invocations without just:
+mdbook build docs/current
+mdbook serve docs/current
 ```
 
-The documentation uses mdbook with katex (math), mermaid (diagrams), and d2 (architecture diagrams) plugins, all provisioned by devenv.
+The mdbook layout is the standard ``mdbook init`` shape, rooted at
+``docs/current/``: configuration in ``docs/current/book.toml``,
+sources under ``docs/current/src/``, theme overrides in
+``docs/current/theme/``, generated HTML emitted to
+``docs/current/book/``. Per-session scratch notes and archived
+chapters live outside this book root, under ``docs/scratch/`` and
+``docs/archive/`` respectively, so the build picks up only curated
+content.
+
+The book uses mdbook with d2 (architecture diagrams) and a
+client-side MathJax 3 shim for math, all provisioned by devenv.
