@@ -239,7 +239,12 @@ def main() -> int:
           f"{schema_size:,} chars  (backend={decoding_cfg.backend})")
 
     # ---- 4. Reward function (closure over catalog + verifier paths) -
-    def reward_fn(_prompts, completions, **_kwargs):
+    # TRL invokes reward_func via keyword args: ``reward_func(prompts=...,
+    # completions=...)``. Parameter names must match exactly — the
+    # underscore-prefix convention for "unused parameter" doesn't apply
+    # to keyword-callable APIs (it just renames the parameter).
+    def reward_fn(prompts, completions, **kwargs):
+        del prompts, kwargs  # unused; closure provides catalog + verifier paths
         rs: list[float] = []
         for completion_text in completions:
             entries_raw = parse_compositions(completion_text)
