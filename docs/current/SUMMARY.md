@@ -29,3 +29,5 @@
   - [Phase 3: PARL Training](./roadmap/parl.md)
   - [Phase 4: Agent Swarm RL](./roadmap/swarm_rl.md)
 - [Development Guide](./development.md)
+- [Worktree Aware Development](./worktree_aware.md)
+  - [Cross-worktree SAE streaming](./worktree_aware/sae_streaming.md)
