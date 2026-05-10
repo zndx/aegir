@@ -1,0 +1,122 @@
+{
+  "good_lab_measurement.ttl": {
+    "label": "good",
+    "kind": "lab_measurement"
+  },
+  "good_database_metadata.ttl": {
+    "label": "good",
+    "kind": "database_metadata"
+  },
+  "good_trace_telemetry.ttl": {
+    "label": "good",
+    "kind": "trace_telemetry"
+  },
+  "good_governance_policy.ttl": {
+    "label": "good",
+    "kind": "governance_policy"
+  },
+  "good_lims_clinical.ttl": {
+    "label": "good",
+    "kind": "lims_clinical"
+  },
+  "good_macrobase_outliers.ttl": {
+    "label": "good",
+    "kind": "macrobase_outliers"
+  },
+  "good_otel_semconv.ttl": {
+    "label": "good",
+    "kind": "otel_semconv"
+  },
+  "good_observation_event.ttl": {
+    "label": "good",
+    "kind": "observation_event"
+  },
+  "good_dataquality_profile.ttl": {
+    "label": "good",
+    "kind": "dataquality_profile"
+  },
+  "good_iam_security.ttl": {
+    "label": "good",
+    "kind": "iam_security"
+  },
+  "good_workflow_orchestration.ttl": {
+    "label": "good",
+    "kind": "workflow_orchestration"
+  },
+  "good_metadata_governance.ttl": {
+    "label": "good",
+    "kind": "metadata_governance"
+  },
+  "good_sample_provenance.ttl": {
+    "label": "good",
+    "kind": "sample_provenance"
+  },
+  "good_ebpf_observability.ttl": {
+    "label": "good",
+    "kind": "ebpf_observability"
+  },
+  "good_sysml_blocks.ttl": {
+    "label": "good",
+    "kind": "sysml_blocks"
+  },
+  "bad_empty.ttl": {
+    "label": "bad",
+    "kind": "empty"
+  },
+  "bad_trivial.ttl": {
+    "label": "bad",
+    "kind": "trivial"
+  },
+  "bad_no_labels.ttl": {
+    "label": "bad",
+    "kind": "no_labels"
+  },
+  "bad_no_complex.ttl": {
+    "label": "bad",
+    "kind": "no_complex"
+  },
+  "bad_truncated_lab.ttl": {
+    "label": "bad",
+    "kind": "truncated_lab"
+  },
+  "bad_random_gibberish.ttl": {
+    "label": "bad",
+    "kind": "random_gibberish"
+  },
+  "bad_off_domain_music.ttl": {
+    "label": "bad",
+    "kind": "off_domain_music"
+  },
+  "bad_off_domain_cooking.ttl": {
+    "label": "bad",
+    "kind": "off_domain_cooking"
+  },
+  "bad_circular.ttl": {
+    "label": "bad",
+    "kind": "circular"
+  },
+  "bad_only_disjoint.ttl": {
+    "label": "bad",
+    "kind": "only_disjoint"
+  },
+  "bad_single_class_chain.ttl": {
+    "label": "bad",
+    "kind": "single_class_chain"
+  },
+  "bad_meaningless_iris.ttl": {
+    "label": "bad",
+    "kind": "meaningless_iris"
+  },
+  "bad_two_classes.ttl": {
+    "label": "bad",
+    "kind": "two_classes"
+  },
+  "bad_corrupted_labels.ttl": {
+    "label": "bad",
+    "kind": "corrupted_labels"
+  },
+  "bad_one_axiom_per_class.ttl": {
+    "label": "bad",
+    "kind": "one_axiom_per_class"
+  }
+}

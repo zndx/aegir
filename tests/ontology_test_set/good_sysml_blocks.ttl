@@ -1,0 +1,62 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/sysml-blocks> a owl:Ontology .
+
+ex:SystemBlock a owl:Class ;
+    rdfs:label "system block" ;
+    skos:definition "A modular system element that can be parameterized and connected to other blocks." ;
+    rdfs:subClassOf cco:Artifact ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty bfo:0000051 ;
+                      owl:minCardinality 0 ] .
+
+ex:Part a owl:Class ;
+    rdfs:label "system part" ;
+    skos:definition "A nested constituent of a containing system block." ;
+    rdfs:subClassOf cco:Artifact ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty bfo:0000050 ;
+                      owl:someValuesFrom ex:SystemBlock ] .
+
+ex:Port a owl:Class ;
+    rdfs:label "block port" ;
+    skos:definition "An interface point on a system block enabling connection to other blocks." ;
+    rdfs:subClassOf cco:Artifact .
+
+ex:Connection a owl:Class ;
+    rdfs:label "block connection" ;
+    skos:definition "A relationship linking ports of different system blocks." ;
+    rdfs:subClassOf cco:Artifact .
+
+ex:Action a owl:Class ;
+    rdfs:label "system action" ;
+    skos:definition "A behavioral occurrence performed by a system block." ;
+    rdfs:subClassOf bfo:0000015 .
+
+ex:State a owl:Class ;
+    rdfs:label "system state" ;
+    skos:definition "A condition of the system at a given point in time." ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:Requirement a owl:Class ;
+    rdfs:label "system requirement" ;
+    skos:definition "A directive specifying a property the system must satisfy." ;
+    rdfs:subClassOf cco:DirectiveICE .
+
+ex:VerificationCase a owl:Class ;
+    rdfs:label "verification case" ;
+    skos:definition "A test that demonstrates a requirement is satisfied." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:verifies ;
+                      owl:someValuesFrom ex:Requirement ] .
+
+ex:verifies a owl:ObjectProperty ; rdfs:label "verifies" .

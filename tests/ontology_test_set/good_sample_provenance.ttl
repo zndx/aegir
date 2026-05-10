@@ -1,0 +1,54 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/sample-provenance> a owl:Ontology .
+
+ex:Specimen a owl:Class ;
+    rdfs:label "biological specimen" ;
+    skos:definition "A physical sample of biological material under tracked custody." ;
+    rdfs:subClassOf cco:Artifact ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:wasDerivedFrom ;
+                      owl:maxCardinality 1 ] .
+
+ex:CollectionEvent a owl:Class ;
+    rdfs:label "specimen collection event" ;
+    skos:definition "A clinical event in which a biological specimen is collected from a subject." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:produced ;
+                      owl:someValuesFrom ex:Specimen ] .
+
+ex:ProcessingStep a owl:Class ;
+    rdfs:label "specimen processing step" ;
+    skos:definition "An action that transforms a specimen for downstream analysis." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:transforms ;
+                      owl:someValuesFrom ex:Specimen ] .
+
+ex:Aliquot a owl:Class ;
+    rdfs:label "specimen aliquot" ;
+    skos:definition "A sub-portion of a parent specimen prepared for a specific analysis." ;
+    rdfs:subClassOf ex:Specimen .
+
+ex:CustodyTransfer a owl:Class ;
+    rdfs:label "chain of custody transfer" ;
+    skos:definition "A documented transfer of specimen custody between handlers." ;
+    rdfs:subClassOf bfo:0000015 .
+
+ex:Operator a owl:Class ;
+    rdfs:label "laboratory operator" ;
+    skos:definition "A person who performs sample processing or analysis." ;
+    rdfs:subClassOf cco:Person .
+
+ex:wasDerivedFrom a owl:ObjectProperty ; rdfs:label "was derived from" .
+ex:produced a owl:ObjectProperty ; rdfs:label "produced" .
+ex:transforms a owl:ObjectProperty ; rdfs:label "transforms" .

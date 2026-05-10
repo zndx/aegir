@@ -1,0 +1,70 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/governance-policy> a owl:Ontology .
+
+ex:Policy a owl:Class ;
+    rdfs:label "governance policy" ;
+    skos:definition "A directive that governs handling of resources within an organization." ;
+    rdfs:subClassOf cco:DirectiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:appliesTo ;
+                      owl:minCardinality 1 ] .
+
+ex:DataRetentionPolicy a owl:Class ;
+    rdfs:label "data retention policy" ;
+    skos:definition "A policy specifying how long data may be retained." ;
+    rdfs:subClassOf ex:Policy ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:appliesTo ;
+                      owl:someValuesFrom ex:Dataset ] .
+
+ex:AccessControlPolicy a owl:Class ;
+    rdfs:label "access control policy" ;
+    skos:definition "A policy specifying who may read or write resources." ;
+    rdfs:subClassOf ex:Policy .
+
+ex:Control a owl:Class ;
+    rdfs:label "compliance control" ;
+    skos:definition "A directive that constrains operations to ensure compliance." ;
+    rdfs:subClassOf cco:DirectiveICE .
+
+ex:EncryptionControl a owl:Class ;
+    rdfs:label "encryption control" ;
+    rdfs:subClassOf ex:Control .
+
+ex:AuditLoggingControl a owl:Class ;
+    rdfs:label "audit logging control" ;
+    rdfs:subClassOf ex:Control .
+
+ex:Audit a owl:Class ;
+    rdfs:label "compliance audit" ;
+    skos:definition "A process verifying that controls are effective." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:appliesTo ;
+                      owl:someValuesFrom ex:Control ] .
+
+ex:Attestation a owl:Class ;
+    rdfs:label "compliance attestation" ;
+    skos:definition "A formal declaration that controls have been implemented." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:supports ;
+                      owl:someValuesFrom ex:Control ] .
+
+ex:Dataset a owl:Class ;
+    rdfs:label "governed dataset" ;
+    rdfs:subClassOf cco:Artifact .
+
+ex:appliesTo a owl:ObjectProperty ;
+    rdfs:label "applies to" .
+ex:supports a owl:ObjectProperty ;
+    rdfs:label "supports" .

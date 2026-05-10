@@ -1,0 +1,69 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/macrobase-outliers> a owl:Ontology .
+
+ex:OutlierClaim a owl:Class ;
+    rdfs:label "outlier explanation claim" ;
+    skos:definition "A statistical explanation pointing to attribute combinations that distinguish anomalies." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasAttributeSet ;
+                      owl:minCardinality 1 ] .
+
+ex:AttributeSet a owl:Class ;
+    rdfs:label "explanation attribute set" ;
+    skos:definition "A combination of attribute values that jointly characterize an outlier population." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasAttribute ;
+                      owl:minCardinality 1 ] .
+
+ex:Lift a owl:Class ;
+    rdfs:label "statistical lift score" ;
+    skos:definition "A ratio of foreground to background frequencies for an attribute set." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:ofAttributeSet ;
+                      owl:someValuesFrom ex:AttributeSet ] .
+
+ex:Aggregation a owl:Class ;
+    rdfs:label "aggregation" ;
+    skos:definition "A summary statistic over a group of underlying measurements." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:aggregates ;
+                      owl:someValuesFrom ex:Measurement ] .
+
+ex:Measurement a owl:Class ;
+    rdfs:label "measurement" ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:LatencyMeasurement a owl:Class ;
+    rdfs:label "latency measurement" ;
+    rdfs:subClassOf ex:Measurement .
+
+ex:CountMeasurement a owl:Class ;
+    rdfs:label "count measurement" ;
+    rdfs:subClassOf ex:Measurement .
+
+ex:OutlierDetection a owl:Class ;
+    rdfs:label "outlier detection process" ;
+    skos:definition "A statistical analysis process that produces outlier explanation claims." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:produces ;
+                      owl:someValuesFrom ex:OutlierClaim ] .
+
+ex:hasAttributeSet a owl:ObjectProperty ; rdfs:label "has attribute set" .
+ex:hasAttribute a owl:ObjectProperty ; rdfs:label "has attribute" .
+ex:ofAttributeSet a owl:ObjectProperty ; rdfs:label "of attribute set" .
+ex:aggregates a owl:ObjectProperty ; rdfs:label "aggregates" .
+ex:produces a owl:ObjectProperty ; rdfs:label "produces" .

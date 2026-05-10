@@ -1,0 +1,99 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/lab-measurement> a owl:Ontology .
+
+ex:Sample a owl:Class ;
+    rdfs:label "specimen sample" ;
+    skos:definition "A specimen taken from a subject for analysis." ;
+    rdfs:subClassOf cco:Artifact .
+
+ex:BloodSample a owl:Class ;
+    rdfs:label "blood sample" ;
+    skos:definition "A blood specimen taken from a patient for laboratory analysis." ;
+    rdfs:subClassOf ex:Sample .
+
+ex:Instrument a owl:Class ;
+    rdfs:label "laboratory instrument" ;
+    skos:definition "A device used for laboratory measurements." ;
+    rdfs:subClassOf cco:Artifact .
+
+ex:Spectrometer a owl:Class ;
+    rdfs:label "spectrometer" ;
+    skos:definition "An optical instrument that measures intensity at different wavelengths." ;
+    rdfs:subClassOf ex:Instrument ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:producesMeasurement ;
+                      owl:someValuesFrom ex:SpectralReading ] .
+
+ex:Measurement a owl:Class ;
+    rdfs:label "measurement" ;
+    skos:definition "A quantitative observation produced by a laboratory instrument." ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:SpectralReading a owl:Class ;
+    rdfs:label "spectral reading" ;
+    skos:definition "A measurement of light intensity at a specific wavelength." ;
+    rdfs:subClassOf ex:Measurement ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasUnit ;
+                      owl:someValuesFrom ex:Nanometer ] .
+
+ex:Unit a owl:Class ;
+    rdfs:label "unit of measurement" ;
+    skos:definition "A standard quantity used to express measurements." ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:Nanometer a owl:Class ;
+    rdfs:label "nanometer unit" ;
+    rdfs:subClassOf ex:Unit .
+
+ex:Celsius a owl:Class ;
+    rdfs:label "celsius unit" ;
+    rdfs:subClassOf ex:Unit .
+
+ex:LabRun a owl:Class ;
+    rdfs:label "laboratory run" ;
+    skos:definition "A laboratory analysis process that produces measurements from samples." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasInputSample ;
+                      owl:someValuesFrom ex:Sample ] ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:produces ;
+                      owl:someValuesFrom ex:Measurement ] .
+
+ex:CalibrationProtocol a owl:Class ;
+    rdfs:label "calibration protocol" ;
+    skos:definition "A directive specifying instrument calibration steps." ;
+    rdfs:subClassOf cco:DirectiveICE .
+
+ex:QualityControl a owl:Class ;
+    rdfs:label "quality control check" ;
+    skos:definition "A process verifying that measurements meet quality criteria." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:appliesTo ;
+                      owl:someValuesFrom ex:Measurement ] .
+
+ex:producesMeasurement a owl:ObjectProperty ;
+    rdfs:label "produces measurement" .
+
+ex:hasUnit a owl:ObjectProperty ;
+    rdfs:label "has unit" .
+
+ex:hasInputSample a owl:ObjectProperty ;
+    rdfs:label "has input sample" .
+
+ex:produces a owl:ObjectProperty ;
+    rdfs:label "produces" .
+
+ex:appliesTo a owl:ObjectProperty ;
+    rdfs:label "applies to" .

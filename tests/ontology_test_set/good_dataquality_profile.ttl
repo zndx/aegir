@@ -1,0 +1,52 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/dataquality-profile> a owl:Ontology .
+
+ex:ColumnProfile a owl:Class ;
+    rdfs:label "column profile" ;
+    skos:definition "A statistical summary of values in a database column." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasNullRate ;
+                      owl:cardinality 1 ] ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasCardinality ;
+                      owl:cardinality 1 ] .
+
+ex:NullRate a owl:Class ;
+    rdfs:label "null rate statistic" ;
+    skos:definition "The fraction of values in a column that are null or missing." ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:Cardinality a owl:Class ;
+    rdfs:label "cardinality statistic" ;
+    skos:definition "The number of distinct values in a column." ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:DistributionSummary a owl:Class ;
+    rdfs:label "value distribution summary" ;
+    skos:definition "A histogram or quantile sketch describing how values are distributed." ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:NumericProfile a owl:Class ;
+    rdfs:label "numeric column profile" ;
+    rdfs:subClassOf ex:ColumnProfile ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasDistribution ;
+                      owl:someValuesFrom ex:DistributionSummary ] .
+
+ex:CategoricalProfile a owl:Class ;
+    rdfs:label "categorical column profile" ;
+    rdfs:subClassOf ex:ColumnProfile .
+
+ex:hasNullRate a owl:ObjectProperty ; rdfs:label "has null rate" .
+ex:hasCardinality a owl:ObjectProperty ; rdfs:label "has cardinality" .
+ex:hasDistribution a owl:ObjectProperty ; rdfs:label "has distribution" .

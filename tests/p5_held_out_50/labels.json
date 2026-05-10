@@ -1,0 +1,1923 @@
+[
+  {
+    "ontology_id": "good_00_compliant_lab_run",
+    "scenario_text": "A compliant lab run that records a reading, attests to a SOC2 control, and emits provenance.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "annotation_classifies_artifact",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge"
+        }
+      },
+      {
+        "template_id": "annotation_with_confidence",
+        "slot_fillers": {
+          "X": "sdg:Sample",
+          "Y": "cco:Artifact"
+        }
+      },
+      {
+        "template_id": "syscall_audited_by",
+        "slot_fillers": {
+          "X": "sdg:Sample"
+        }
+      },
+      {
+        "template_id": "annotation_only_about_artifact",
+        "slot_fillers": {
+          "X": "sdg:LabRun"
+        }
+      },
+      {
+        "template_id": "bpf_helper_called_by",
+        "slot_fillers": {
+          "X": "bfo:0000015",
+          "Y": "bfo:0000015"
+        }
+      },
+      {
+        "template_id": "annotation_with_confidence",
+        "slot_fillers": {
+          "X": "sdg:KernelHook",
+          "Y": "sdg:Claim"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_01_ebpf_observability",
+    "scenario_text": "An eBPF program that attaches to a kernel hook and captures a syscall under audit.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "artifact_max_one_owner",
+        "slot_fillers": {
+          "X": "sdg:Sample",
+          "Y": "sdg:HipaaRule"
+        }
+      },
+      {
+        "template_id": "nonbreaking_change_subclass",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "sdg:LabRun"
+        }
+      },
+      {
+        "template_id": "column_added_at_version",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:LineageEdge"
+        }
+      },
+      {
+        "template_id": "evidence_refutes_claim",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge",
+          "Y": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "column_version_subclass",
+        "slot_fillers": {
+          "X": "cco:Artifact",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "artifact_not_deprecated",
+        "slot_fillers": {
+          "X": "sdg:Reading",
+          "Y": "sdg:ColumnPolicy"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_02_column_lineage_for_pii",
+    "scenario_text": "Column-level lineage from a PII source column to a derived dataset, governed by a GDPR directive.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "attribute_set_subclass",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "attribute_set_max_attrs",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "attribute_set_subclass",
+        "slot_fillers": {
+          "X": "bfo:0000015"
+        }
+      },
+      {
+        "template_id": "verification_traces_requirement",
+        "slot_fillers": {
+          "X": "bfo:0000015"
+        }
+      },
+      {
+        "template_id": "audit_conducted_by",
+        "slot_fillers": {
+          "X": "sdg:LabRun"
+        }
+      },
+      {
+        "template_id": "audit_targets_data_artifact",
+        "slot_fillers": {
+          "X": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "verification_traces_requirement",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_03_dst_belief_combination",
+    "scenario_text": "A belief structure combining two evidence pieces via Dempster's rule for a privacy claim.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "kernelhook_for_subsystem",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "transformation_min_one_output",
+        "slot_fillers": {
+          "X": "bfo:0000015",
+          "Y": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "transformation_starts_at",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "kernelhook_with_hook_kind",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "sdg:Evidence"
+        }
+      },
+      {
+        "template_id": "transformation_starts_at",
+        "slot_fillers": {
+          "X": "bfo:0000015",
+          "Y": "sdg:HipaaRule"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_04_schema_evolution_event",
+    "scenario_text": "A schema migration that adds a column at version v3, governed by a backwards-compatibility directive.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "artifact_described_by_attrkey",
+        "slot_fillers": {
+          "X": "sdg:Claim"
+        }
+      },
+      {
+        "template_id": "attestation_about_compliance_claim",
+        "slot_fillers": {
+          "X": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "syscall_governed_by_directive",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule"
+        }
+      },
+      {
+        "template_id": "process_produces_ice",
+        "slot_fillers": {
+          "X": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "schema_evolution_under_directive",
+        "slot_fillers": {
+          "X": "cco:Artifact"
+        }
+      },
+      {
+        "template_id": "transformation_governed_by",
+        "slot_fillers": {
+          "X": "sdg:KernelHook"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_05_telemetry_anomaly",
+    "scenario_text": "A telemetry span observing an anomaly, supported by evidence and triggering an alert.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "profiling_targets_dataset",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval"
+        }
+      },
+      {
+        "template_id": "verification_traces_requirement",
+        "slot_fillers": {
+          "X": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "profiling_with_method",
+        "slot_fillers": {
+          "X": "cco:Artifact",
+          "Y": "sdg:Claim"
+        }
+      },
+      {
+        "template_id": "profiling_produces_profile",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "profiling_with_method",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy",
+          "Y": "sdg:Evidence"
+        }
+      },
+      {
+        "template_id": "directive_union_constraint_or_policy",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "sdg:ColumnPolicy",
+          "Z": "cco:Artifact"
+        }
+      },
+      {
+        "template_id": "verification_traces_requirement",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_06_medical_directive_hipaa",
+    "scenario_text": "A HIPAA technical safeguard governing the storage of PHI columns in a clinical-trial dataset.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "requirement_only_satisfied_by",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge",
+          "Y": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "requirement_only_satisfied_by",
+        "slot_fillers": {
+          "X": "bfo:0000015",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "requirement_satisfies",
+        "slot_fillers": {
+          "X": "sdg:Evidence",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "requirement_only_satisfied_by",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "cco:Artifact"
+        }
+      },
+      {
+        "template_id": "requirement_only_satisfied_by",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "cco:Artifact"
+        }
+      },
+      {
+        "template_id": "requirement_has_priority",
+        "slot_fillers": {
+          "X": "bfo:0000015",
+          "Y": "sdg:Claim"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_07_attestation_audit",
+    "scenario_text": "An attestation activity producing audit evidence about an artifact's compliance to NIST 800-53.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "lift_with_support_count",
+        "slot_fillers": {
+          "X": "sdg:LabRun",
+          "Y": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "policy_authored_by",
+        "slot_fillers": {
+          "X": "sdg:Sample",
+          "Y": "sdg:BeliefInterval"
+        }
+      },
+      {
+        "template_id": "lift_with_baseline_rate",
+        "slot_fillers": {
+          "X": "sdg:KernelHook",
+          "Y": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "dataset_revision_of",
+        "slot_fillers": {
+          "X": "sdg:KernelHook",
+          "Y": "sdg:HipaaRule"
+        }
+      },
+      {
+        "template_id": "policy_applies_to",
+        "slot_fillers": {
+          "X": "sdg:LabRun",
+          "Y": "sdg:Evidence"
+        }
+      },
+      {
+        "template_id": "directive_only_governs",
+        "slot_fillers": {
+          "X": "cco:Artifact",
+          "p": "sdg:HipaaRule",
+          "Y": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "dataset_was_attributed_to",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:Claim"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_08_schemaorg_person_dataset",
+    "scenario_text": "A schema.org-aligned dataset describing person columns: name, email, affiliation.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "transformation_with_input_dataset",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "audit_targets_data_artifact",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval"
+        }
+      },
+      {
+        "template_id": "profile_has_distribution",
+        "slot_fillers": {
+          "X": "sdg:LabRun",
+          "Y": "sdg:Sample"
+        }
+      },
+      {
+        "template_id": "transformation_not_recoverable",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "profile_has_null_rate",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:LabRun"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_09_kernel_security_event",
+    "scenario_text": "A kernel security event observed by an XDP program, attributed to a suspicious syscall.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "process_with_participant",
+        "slot_fillers": {
+          "X": "bfo:0000015",
+          "p": "sdg:eBPFProgram",
+          "Y": "sdg:Claim"
+        }
+      },
+      {
+        "template_id": "process_with_participant",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge",
+          "p": "sdg:Claim",
+          "Y": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "audit_targets_data_artifact",
+        "slot_fillers": {
+          "X": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "lineage_edge_max_one_target",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy",
+          "Y": "sdg:BeliefInterval"
+        }
+      },
+      {
+        "template_id": "audit_targets_data_artifact",
+        "slot_fillers": {
+          "X": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "verification_traces_requirement",
+        "slot_fillers": {
+          "X": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "audit_targets_data_artifact",
+        "slot_fillers": {
+          "X": "sdg:LabRun"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_10_compliant_lab_run",
+    "scenario_text": "A compliant lab run that records a reading, attests to a SOC2 control, and emits provenance.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "constraint_subclass",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval",
+          "Y": "sdg:Sample"
+        }
+      },
+      {
+        "template_id": "artifact_with_min_two_parts",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule"
+        }
+      },
+      {
+        "template_id": "policy_authored_by",
+        "slot_fillers": {
+          "X": "sdg:Syscall",
+          "Y": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "instrument_with_function",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "artifact_with_universal",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval",
+          "p": "sdg:Sample",
+          "Y": "sdg:Syscall"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_11_ebpf_observability",
+    "scenario_text": "An eBPF program that attaches to a kernel hook and captures a syscall under audit.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "verification_traces_requirement",
+        "slot_fillers": {
+          "X": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "verification_traces_requirement",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "instrument_emits_signal",
+        "slot_fillers": {
+          "X": "bfo:0000015",
+          "Y": "sdg:Claim"
+        }
+      },
+      {
+        "template_id": "artifact_with_universal",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "p": "cco:Artifact",
+          "Y": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "requirement_refines",
+        "slot_fillers": {
+          "X": "sdg:Evidence",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "evidence_refutes_claim",
+        "slot_fillers": {
+          "X": "sdg:Claim",
+          "Y": "sdg:LineageEdge"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_12_column_lineage_for_pii",
+    "scenario_text": "Column-level lineage from a PII source column to a derived dataset, governed by a GDPR directive.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "constraint_with_severity_classification",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval",
+          "Y": "cco:Artifact"
+        }
+      },
+      {
+        "template_id": "kernel_event_with_tid",
+        "slot_fillers": {
+          "X": "sdg:LabRun",
+          "Y": "sdg:BeliefInterval"
+        }
+      },
+      {
+        "template_id": "annotation_governed_by_classification_policy",
+        "slot_fillers": {
+          "X": "bfo:0000015"
+        }
+      },
+      {
+        "template_id": "measurement_with_op_artifact",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "constraint_check_subclass",
+        "slot_fillers": {
+          "X": "sdg:KernelHook",
+          "Y": "bfo:0000015"
+        }
+      },
+      {
+        "template_id": "outlier_claim_supported_by_lift",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "sdg:Claim",
+          "Z": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "outlier_claim_supported_by_lift",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:HipaaRule",
+          "Z": "sdg:KernelHook"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_13_dst_belief_combination",
+    "scenario_text": "A belief structure combining two evidence pieces via Dempster's rule for a privacy claim.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "constraint_check_subclass",
+        "slot_fillers": {
+          "X": "cco:Artifact",
+          "Y": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "transformation_with_output_dataset",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval",
+          "Y": "sdg:HipaaRule"
+        }
+      },
+      {
+        "template_id": "transformation_min_one_input",
+        "slot_fillers": {
+          "X": "cco:Artifact",
+          "Y": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "transformation_associated_with_agent",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval",
+          "Y": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "constraint_evaluated_during",
+        "slot_fillers": {
+          "X": "bfo:0000015",
+          "Y": "cco:Artifact"
+        }
+      },
+      {
+        "template_id": "constraint_min_one_check",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy",
+          "Y": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "constraint_with_predicate",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge",
+          "Y": "sdg:BeliefInterval"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_14_schema_evolution_event",
+    "scenario_text": "A schema migration that adds a column at version v3, governed by a backwards-compatibility directive.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "classification_subclass",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "policy_authored_by",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval",
+          "Y": "sdg:LabRun"
+        }
+      },
+      {
+        "template_id": "directive_union_constraint_or_policy",
+        "slot_fillers": {
+          "X": "sdg:Reading",
+          "Y": "sdg:ColumnPolicy",
+          "Z": "sdg:Evidence"
+        }
+      },
+      {
+        "template_id": "classification_under_taxonomy",
+        "slot_fillers": {
+          "X": "sdg:Claim",
+          "Y": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "classification_assigns_tier",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:Evidence"
+        }
+      },
+      {
+        "template_id": "policy_subclass",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "sdg:HipaaRule"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_15_telemetry_anomaly",
+    "scenario_text": "A telemetry span observing an anomaly, supported by evidence and triggering an alert.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "kernelhook_observes_event_class",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy",
+          "Y": "sdg:Evidence"
+        }
+      },
+      {
+        "template_id": "ebpfprogram_writes_to_map_xref",
+        "slot_fillers": {
+          "X": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "ebpfprogram_governed_by_security_policy",
+        "slot_fillers": {
+          "X": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "dataset_was_derived_from",
+        "slot_fillers": {
+          "X": "cco:Artifact",
+          "Y": "sdg:Sample"
+        }
+      },
+      {
+        "template_id": "schema_migration_subclass",
+        "slot_fillers": {
+          "X": "sdg:Reading",
+          "Y": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "backward_compatible_with",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy",
+          "Y": "sdg:Transformation"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_16_medical_directive_hipaa",
+    "scenario_text": "A HIPAA technical safeguard governing the storage of PHI columns in a clinical-trial dataset.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "constraint_with_severity_classification",
+        "slot_fillers": {
+          "X": "sdg:LabRun",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "attestation_signed_by",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "artifact_has_id",
+        "slot_fillers": {
+          "X": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "attestation_with_supporting_evidence",
+        "slot_fillers": {
+          "X": "sdg:Syscall",
+          "Y": "sdg:LabRun"
+        }
+      },
+      {
+        "template_id": "attestation_min_one_signer",
+        "slot_fillers": {
+          "X": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "constraint_min_one_check",
+        "slot_fillers": {
+          "X": "sdg:KernelHook",
+          "Y": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "state_of_system_block",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_17_attestation_audit",
+    "scenario_text": "An attestation activity producing audit evidence about an artifact's compliance to NIST 800-53.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "schemaorg_product_price",
+        "slot_fillers": {
+          "X": "sdg:KernelHook",
+          "Y": "sdg:HipaaRule"
+        }
+      },
+      {
+        "template_id": "soc2_privacy_subclass",
+        "slot_fillers": {
+          "X": "cco:Artifact",
+          "Y": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "xdp_action_redirect",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval",
+          "Y": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "reference_within_dataset",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge",
+          "Y": "sdg:Sample",
+          "Z": "bfo:0000015"
+        }
+      },
+      {
+        "template_id": "nist80053_high_impact",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:BeliefInterval"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_18_schemaorg_person_dataset",
+    "scenario_text": "A schema.org-aligned dataset describing person columns: name, email, affiliation.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "lineage_describes_transformation",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "telemetry_span_observes_syscall",
+        "slot_fillers": {
+          "X": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "syscall_audited_by",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule"
+        }
+      },
+      {
+        "template_id": "nist80053_high_impact",
+        "slot_fillers": {
+          "X": "sdg:Claim",
+          "Y": "sdg:Claim"
+        }
+      },
+      {
+        "template_id": "syscall_audited_by",
+        "slot_fillers": {
+          "X": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "metric_observed_by_event",
+        "slot_fillers": {
+          "X": "sdg:Transformation"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_19_kernel_security_event",
+    "scenario_text": "A kernel security event observed by an XDP program, attributed to a suspicious syscall.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "syscall_subclass",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "constraint_min_one_check",
+        "slot_fillers": {
+          "X": "sdg:Claim",
+          "Y": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "attestation_min_one_signer",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval"
+        }
+      },
+      {
+        "template_id": "attestation_subclass",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge"
+        }
+      },
+      {
+        "template_id": "syscall_with_argument_count",
+        "slot_fillers": {
+          "X": "sdg:Evidence",
+          "Y": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "constraint_evaluated_during",
+        "slot_fillers": {
+          "X": "sdg:BeliefInterval",
+          "Y": "sdg:Claim"
+        }
+      },
+      {
+        "template_id": "constraint_with_predicate",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy",
+          "Y": "sdg:Syscall"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_20_compliant_lab_run",
+    "scenario_text": "A compliant lab run that records a reading, attests to a SOC2 control, and emits provenance.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "existential_with_part_of",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "equiv_intersect_basic",
+        "slot_fillers": {
+          "X": "sdg:Claim",
+          "Y": "sdg:HipaaRule",
+          "Z": "sdg:Claim"
+        }
+      },
+      {
+        "template_id": "iso27001_clause_subclass",
+        "slot_fillers": {
+          "X": "sdg:Syscall",
+          "Y": "sdg:BeliefInterval"
+        }
+      },
+      {
+        "template_id": "iso27001_clause_subclass",
+        "slot_fillers": {
+          "X": "sdg:Claim",
+          "Y": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "nist80053_control_subclass",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "nist80053_moderate_impact",
+        "slot_fillers": {
+          "X": "sdg:KernelHook",
+          "Y": "sdg:Transformation"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_21_ebpf_observability",
+    "scenario_text": "An eBPF program that attaches to a kernel hook and captures a syscall under audit.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "trace_with_root_span",
+        "slot_fillers": {
+          "X": "sdg:Evidence",
+          "Y": "sdg:Evidence"
+        }
+      },
+      {
+        "template_id": "ebpfprogram_only_attached_to_kprobe",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule",
+          "Y": "sdg:Transformation"
+        }
+      },
+      {
+        "template_id": "log_with_resource_attribute",
+        "slot_fillers": {
+          "X": "sdg:Sample",
+          "Y": "sdg:LabRun"
+        }
+      },
+      {
+        "template_id": "agent_with_role",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "provenance_agent_subclass",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "agent_with_role",
+        "slot_fillers": {
+          "X": "sdg:Transformation",
+          "Y": "sdg:KernelHook"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_22_column_lineage_for_pii",
+    "scenario_text": "Column-level lineage from a PII source column to a derived dataset, governed by a GDPR directive.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "control_with_classification_tier",
+        "slot_fillers": {
+          "X": "cco:Artifact"
+        }
+      },
+      {
+        "template_id": "directive_supersedes_directive",
+        "slot_fillers": {
+          "X": "sdg:Sample"
+        }
+      },
+      {
+        "template_id": "directive_traces_to_requirement",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "requirement_has_priority",
+        "slot_fillers": {
+          "X": "sdg:Reading",
+          "Y": "sdg:LabRun"
+        }
+      },
+      {
+        "template_id": "equiv_union_basic",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge",
+          "Y": "sdg:LabRun",
+          "Z": "sdg:BeliefInterval"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_23_dst_belief_combination",
+    "scenario_text": "A belief structure combining two evidence pieces via Dempster's rule for a privacy claim.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "aggregation_grouped_by",
+        "slot_fillers": {
+          "X": "sdg:Syscall"
+        }
+      },
+      {
+        "template_id": "aggregation_grouped_by",
+        "slot_fillers": {
+          "X": "sdg:Sample"
+        }
+      },
+      {
+        "template_id": "mass_function_subclass",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:eBPFProgram"
+        }
+      },
+      {
+        "template_id": "aggregation_grouped_by",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "mass_function_min_one_focal",
+        "slot_fillers": {
+          "X": "sdg:Syscall",
+          "Y": "sdg:KernelHook"
+        }
+      },
+      {
+        "template_id": "aggregation_grouped_by",
+        "slot_fillers": {
+          "X": "sdg:LabRun"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "good_24_schema_evolution_event",
+    "scenario_text": "A schema migration that adds a column at version v3, governed by a backwards-compatibility directive.",
+    "label": 1,
+    "expected_composition": [
+      {
+        "template_id": "profile_of_column",
+        "slot_fillers": {
+          "X": "cco:Artifact",
+          "Y": "sdg:Reading"
+        }
+      },
+      {
+        "template_id": "profile_has_cardinality",
+        "slot_fillers": {
+          "X": "sdg:LineageEdge",
+          "Y": "sdg:Claim"
+        }
+      },
+      {
+        "template_id": "attestation_min_one_signer",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "profiling_only_targets_datasets",
+        "slot_fillers": {
+          "X": "sdg:ColumnPolicy"
+        }
+      },
+      {
+        "template_id": "profiling_only_targets_datasets",
+        "slot_fillers": {
+          "X": "sdg:HipaaRule"
+        }
+      },
+      {
+        "template_id": "profile_has_cardinality",
+        "slot_fillers": {
+          "X": "sdg:eBPFProgram",
+          "Y": "sdg:Claim"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_00_compliant_lab_run",
+    "scenario_text": "A compliant lab run that records a reading, attests to a SOC2 control, and emits provenance.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "completely_invented_template_8417",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_2064",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_1036",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_1125",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_01_ebpf_observability",
+    "scenario_text": "An eBPF program that attaches to a kernel hook and captures a syscall under audit.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "completely_invented_template_5081",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_1847",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_7398",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_8394",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_02_column_lineage_for_pii",
+    "scenario_text": "Column-level lineage from a PII source column to a derived dataset, governed by a GDPR directive.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "transformation_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "equiv_union_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub",
+          "Y": "sdg:Stub",
+          "Z": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "measurement_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "ebpfprogram_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_03_dst_belief_combination",
+    "scenario_text": "A belief structure combining two evidence pieces via Dempster's rule for a privacy claim.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "subclass_not_basic",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "ebpfprogram_equiv_typed_with_hook",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "requirement_min_one_verification",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "ebpfprogram_not_unloaded",
+        "slot_fillers": {}
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_04_schema_evolution_event",
+    "scenario_text": "A schema migration that adds a column at version v3, governed by a backwards-compatibility directive.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "audit_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "lift_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "lift_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "attestation_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_05_telemetry_anomaly",
+    "scenario_text": "A telemetry span observing an anomaly, supported by evidence and triggering an alert.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "policy_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "profile_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "constraint_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "state_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_06_medical_directive_hipaa",
+    "scenario_text": "A HIPAA technical safeguard governing the storage of PHI columns in a clinical-trial dataset.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "outlier_detection_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "evidence_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "ebpfprogram_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "outlier_detection_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_07_attestation_audit",
+    "scenario_text": "An attestation activity producing audit evidence about an artifact's compliance to NIST 800-53.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "aggregation_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "measurement_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "outlier_detection_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "outlier_claim_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_08_schemaorg_person_dataset",
+    "scenario_text": "A schema.org-aligned dataset describing person columns: name, email, affiliation.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "schemaorg_label_alignment",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "dempster_combinant_second",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "constraint_with_predicate",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "aggregation_over_time_window",
+        "slot_fillers": {}
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_09_kernel_security_event",
+    "scenario_text": "A kernel security event observed by an XDP program, attributed to a suspicious syscall.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "profile_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "subclass_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub",
+          "Y": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "transformation_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "claim_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_10_compliant_lab_run",
+    "scenario_text": "A compliant lab run that records a reading, attests to a SOC2 control, and emits provenance.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "outlier_detection_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "aggregation_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "aggregation_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "ebpfprogram_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_11_ebpf_observability",
+    "scenario_text": "An eBPF program that attaches to a kernel hook and captures a syscall under audit.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "nist80053_high_impact",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "dempster_combination_subclass",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "ebpfprogram_not_unloaded",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "ebpfmap_with_max_entries",
+        "slot_fillers": {}
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_12_column_lineage_for_pii",
+    "scenario_text": "Column-level lineage from a PII source column to a derived dataset, governed by a GDPR directive.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "outlier_detection_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "subclass_not_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub",
+          "Y": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "measurement_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "profiling_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_13_dst_belief_combination",
+    "scenario_text": "A belief structure combining two evidence pieces via Dempster's rule for a privacy claim.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "completely_invented_template_3175",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_4686",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_5840",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_8822",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_14_schema_evolution_event",
+    "scenario_text": "A schema migration that adds a column at version v3, governed by a backwards-compatibility directive.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "completely_invented_template_6628",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_5407",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_434",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_8889",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_15_telemetry_anomaly",
+    "scenario_text": "A telemetry span observing an anomaly, supported by evidence and triggering an alert.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "measurement_observed_at",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "syscall_only_in_kernel_subsystem",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "instrument_with_function",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "attestation_at_period",
+        "slot_fillers": {}
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_16_medical_directive_hipaa",
+    "scenario_text": "A HIPAA technical safeguard governing the storage of PHI columns in a clinical-trial dataset.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "process_min_one_input",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "gdpr_article_subclass",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "policy_classification_tier",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "lift_with_baseline_rate",
+        "slot_fillers": {}
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_17_attestation_audit",
+    "scenario_text": "An attestation activity producing audit evidence about an artifact's compliance to NIST 800-53.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "backward_compatible_with",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "entity_type_belongs_to",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "transformation_starts_at",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "perf_event_subclass",
+        "slot_fillers": {}
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_18_schemaorg_person_dataset",
+    "scenario_text": "A schema.org-aligned dataset describing person columns: name, email, affiliation.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "completely_invented_template_9443",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_6379",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_3548",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_8944",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_19_kernel_security_event",
+    "scenario_text": "A kernel security event observed by an XDP program, attributed to a suspicious syscall.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "process_min_one_input",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "outlier_detection_produces_claim",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "allocation_subclass",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "measurement_with_method",
+        "slot_fillers": {}
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_20_compliant_lab_run",
+    "scenario_text": "A compliant lab run that records a reading, attests to a SOC2 control, and emits provenance.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "completely_invented_template_9112",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_4118",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_7999",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_7088",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_21_ebpf_observability",
+    "scenario_text": "An eBPF program that attaches to a kernel hook and captures a syscall under audit.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "completely_invented_template_2488",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_5302",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_315",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_4426",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_22_column_lineage_for_pii",
+    "scenario_text": "Column-level lineage from a PII source column to a derived dataset, governed by a GDPR directive.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "evidence_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "ebpf_event_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "aggregation_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "audit_basic",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_23_dst_belief_combination",
+    "scenario_text": "A belief structure combining two evidence pieces via Dempster's rule for a privacy claim.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "directive_union_constraint_or_policy",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "aggregation_aggregates_measurement",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "identifier_unique",
+        "slot_fillers": {}
+      },
+      {
+        "template_id": "column_lineage_for_table_column",
+        "slot_fillers": {}
+      }
+    ]
+  },
+  {
+    "ontology_id": "bad_24_schema_evolution_event",
+    "scenario_text": "A schema migration that adds a column at version v3, governed by a backwards-compatibility directive.",
+    "label": 0,
+    "expected_composition": [
+      {
+        "template_id": "completely_invented_template_5993",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_9035",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_4253",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      },
+      {
+        "template_id": "completely_invented_template_9157",
+        "slot_fillers": {
+          "X": "sdg:Stub"
+        }
+      }
+    ]
+  }
+]

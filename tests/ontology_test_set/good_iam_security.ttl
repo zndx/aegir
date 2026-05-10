@@ -1,0 +1,60 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/iam-security> a owl:Ontology .
+
+ex:Identity a owl:Class ;
+    rdfs:label "identity" ;
+    skos:definition "An identifier representing a human or service principal in an access control system." ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:UserIdentity a owl:Class ;
+    rdfs:label "user identity" ;
+    rdfs:subClassOf ex:Identity .
+
+ex:ServiceIdentity a owl:Class ;
+    rdfs:label "service identity" ;
+    rdfs:subClassOf ex:Identity .
+
+ex:Role a owl:Class ;
+    rdfs:label "access role" ;
+    skos:definition "A named collection of permissions granted to identities." ;
+    rdfs:subClassOf cco:DesignativeICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasPermission ;
+                      owl:minCardinality 1 ] .
+
+ex:Permission a owl:Class ;
+    rdfs:label "permission" ;
+    skos:definition "An authorized operation on a target resource." ;
+    rdfs:subClassOf cco:DirectiveICE .
+
+ex:ReadPermission a owl:Class ;
+    rdfs:label "read permission" ;
+    rdfs:subClassOf ex:Permission .
+
+ex:WritePermission a owl:Class ;
+    rdfs:label "write permission" ;
+    rdfs:subClassOf ex:Permission .
+
+ex:DeletePermission a owl:Class ;
+    rdfs:label "delete permission" ;
+    rdfs:subClassOf ex:Permission .
+
+ex:AccessPolicy a owl:Class ;
+    rdfs:label "access policy" ;
+    skos:definition "A directive specifying which identities may perform which operations on which resources." ;
+    rdfs:subClassOf cco:DirectiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:grantsRole ;
+                      owl:someValuesFrom ex:Role ] .
+
+ex:hasPermission a owl:ObjectProperty ; rdfs:label "has permission" .
+ex:grantsRole a owl:ObjectProperty ; rdfs:label "grants role" .

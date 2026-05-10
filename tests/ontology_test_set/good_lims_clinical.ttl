@@ -1,0 +1,79 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/lims-clinical> a owl:Ontology .
+
+ex:ClinicalTrial a owl:Class ;
+    rdfs:label "clinical trial" ;
+    skos:definition "A research study evaluating a medical intervention in human participants." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasParticipant ;
+                      owl:minCardinality 1 ] .
+
+ex:Patient a owl:Class ;
+    rdfs:label "patient" ;
+    skos:definition "A human research participant from whom samples are collected." ;
+    rdfs:subClassOf cco:Person .
+
+ex:Visit a owl:Class ;
+    rdfs:label "patient visit" ;
+    skos:definition "A clinical encounter at which observations and samples are recorded." ;
+    rdfs:subClassOf bfo:0000015 .
+
+ex:BiologicalSample a owl:Class ;
+    rdfs:label "biological sample" ;
+    skos:definition "A specimen of biological tissue, fluid, or cell material taken for analysis." ;
+    rdfs:subClassOf cco:Artifact ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:collectedFrom ;
+                      owl:someValuesFrom ex:Patient ] .
+
+ex:BloodDraw a owl:Class ;
+    rdfs:label "blood draw" ;
+    rdfs:subClassOf ex:BiologicalSample .
+
+ex:UrineSample a owl:Class ;
+    rdfs:label "urine sample" ;
+    rdfs:subClassOf ex:BiologicalSample .
+
+ex:Assay a owl:Class ;
+    rdfs:label "laboratory assay" ;
+    skos:definition "A laboratory analysis procedure run on a biological sample." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:appliedTo ;
+                      owl:someValuesFrom ex:BiologicalSample ] .
+
+ex:HematologyAssay a owl:Class ;
+    rdfs:label "hematology assay" ;
+    rdfs:subClassOf ex:Assay .
+
+ex:GenotypingAssay a owl:Class ;
+    rdfs:label "genotyping assay" ;
+    rdfs:subClassOf ex:Assay .
+
+ex:LabResult a owl:Class ;
+    rdfs:label "laboratory result" ;
+    skos:definition "A measurement value produced by a laboratory assay." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:producedBy ;
+                      owl:someValuesFrom ex:Assay ] .
+
+ex:Diagnosis a owl:Class ;
+    rdfs:label "clinical diagnosis" ;
+    skos:definition "A medical interpretation derived from clinical findings." ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:hasParticipant a owl:ObjectProperty ; rdfs:label "has participant" .
+ex:collectedFrom a owl:ObjectProperty ; rdfs:label "collected from" .
+ex:appliedTo a owl:ObjectProperty ; rdfs:label "applied to" .
+ex:producedBy a owl:ObjectProperty ; rdfs:label "produced by" .

@@ -1,0 +1,63 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/otel-semconv> a owl:Ontology .
+
+ex:Span a owl:Class ;
+    rdfs:label "telemetry span" ;
+    skos:definition "A single timed operation in a distributed trace." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasAttribute ;
+                      owl:minCardinality 1 ] .
+
+ex:HttpServerSpan a owl:Class ;
+    rdfs:label "http server span" ;
+    skos:definition "A span representing handling of an inbound HTTP request." ;
+    rdfs:subClassOf ex:Span ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasAttribute ;
+                      owl:someValuesFrom ex:HttpMethodAttribute ] .
+
+ex:DatabaseClientSpan a owl:Class ;
+    rdfs:label "database client span" ;
+    rdfs:subClassOf ex:Span ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasAttribute ;
+                      owl:someValuesFrom ex:DbSystemAttribute ] .
+
+ex:HttpMethodAttribute a owl:Class ;
+    rdfs:label "http.method attribute" ;
+    skos:definition "An attribute key naming the HTTP method (GET, POST, PUT, DELETE)." ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:DbSystemAttribute a owl:Class ;
+    rdfs:label "db.system attribute" ;
+    skos:definition "An attribute key naming the database system (postgres, mysql, mongodb)." ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:LatencyMetric a owl:Class ;
+    rdfs:label "latency metric" ;
+    skos:definition "A measurement of operation duration in milliseconds." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:hasUnit ;
+                      owl:someValuesFrom ex:Millisecond ] .
+
+ex:RequestCountMetric a owl:Class ;
+    rdfs:label "request count metric" ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:Millisecond a owl:Class ;
+    rdfs:label "millisecond unit" ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:hasAttribute a owl:ObjectProperty ; rdfs:label "has attribute" .
+ex:hasUnit a owl:ObjectProperty ; rdfs:label "has unit" .

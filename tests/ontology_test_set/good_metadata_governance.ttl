@@ -1,0 +1,57 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/metadata-governance> a owl:Ontology .
+
+ex:Tag a owl:Class ;
+    rdfs:label "metadata tag" ;
+    skos:definition "A classification label attached to a data resource." ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:Classification a owl:Class ;
+    rdfs:label "data classification" ;
+    skos:definition "A categorization of data sensitivity, ownership, or domain." ;
+    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:atTier ;
+                      owl:someValuesFrom ex:SensitivityTier ] .
+
+ex:SensitivityTier a owl:Class ;
+    rdfs:label "sensitivity tier" ;
+    skos:definition "A graded level of data sensitivity." ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:PublicTier a owl:Class ;
+    rdfs:label "public tier" ;
+    rdfs:subClassOf ex:SensitivityTier .
+
+ex:InternalTier a owl:Class ;
+    rdfs:label "internal tier" ;
+    rdfs:subClassOf ex:SensitivityTier .
+
+ex:RestrictedTier a owl:Class ;
+    rdfs:label "restricted tier" ;
+    rdfs:subClassOf ex:SensitivityTier .
+
+ex:DataOwner a owl:Class ;
+    rdfs:label "data owner" ;
+    skos:definition "An identity accountable for governance of a data resource." ;
+    rdfs:subClassOf cco:Person .
+
+ex:Steward a owl:Class ;
+    rdfs:label "data steward" ;
+    skos:definition "An identity responsible for day-to-day operational governance of data." ;
+    rdfs:subClassOf cco:Person .
+
+ex:Glossary a owl:Class ;
+    rdfs:label "business glossary entry" ;
+    rdfs:subClassOf cco:DescriptiveICE .
+
+ex:atTier a owl:ObjectProperty ; rdfs:label "at tier" .

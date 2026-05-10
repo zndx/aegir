@@ -1,0 +1,57 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix iao:     <http://purl.obolibrary.org/obo/IAO_> .
+@prefix ex:      <http://example.org/test#> .
+
+<http://example.org/test/ebpf-observability> a owl:Ontology .
+
+ex:EbpfProgram a owl:Class ;
+    rdfs:label "ebpf program" ;
+    skos:definition "A small kernel-attachable program that captures observability events." ;
+    rdfs:subClassOf cco:Artifact .
+
+ex:KprobeProgram a owl:Class ;
+    rdfs:label "kprobe ebpf program" ;
+    rdfs:subClassOf ex:EbpfProgram .
+
+ex:XdpProgram a owl:Class ;
+    rdfs:label "xdp ebpf program" ;
+    rdfs:subClassOf ex:EbpfProgram .
+
+ex:KernelHook a owl:Class ;
+    rdfs:label "kernel hook attachment point" ;
+    skos:definition "A site in the kernel where an ebpf program may be attached." ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:Syscall a owl:Class ;
+    rdfs:label "system call" ;
+    skos:definition "An entry point through which a process invokes kernel functionality." ;
+    rdfs:subClassOf cco:DesignativeICE .
+
+ex:OpenSyscall a owl:Class ;
+    rdfs:label "open system call" ;
+    rdfs:subClassOf ex:Syscall .
+
+ex:KernelEvent a owl:Class ;
+    rdfs:label "kernel event" ;
+    skos:definition "A kernel-level occurrence captured by an attached ebpf program." ;
+    rdfs:subClassOf bfo:0000015 ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:capturedBy ;
+                      owl:someValuesFrom ex:EbpfProgram ] ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                      owl:onProperty ex:atHook ;
+                      owl:someValuesFrom ex:KernelHook ] .
+
+ex:Map a owl:Class ;
+    rdfs:label "ebpf map" ;
+    skos:definition "An in-kernel data structure shared between an ebpf program and userspace." ;
+    rdfs:subClassOf cco:Artifact .
+
+ex:capturedBy a owl:ObjectProperty ; rdfs:label "captured by" .
+ex:atHook a owl:ObjectProperty ; rdfs:label "at hook" .
