@@ -44,6 +44,12 @@ sys.path.insert(0, str(REPO / "src"))
 
 logger = logging.getLogger("p5-train")
 
+# Default policy preset. ``just p5-train`` runs this on the Tinybox
+# out of the box. Override only when you specifically want a
+# different scale or L0 sparsity; see ``POLICY_PRESETS`` in
+# ``aegir.rl.policy``.
+DEFAULT_POLICY_PRESET = "9b-fsdp-l0-50"
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
@@ -90,16 +96,16 @@ def parse_args() -> argparse.Namespace:
                    help="Optional git SHA of the v0.5 concept brief used to "
                         "drive this run. Recorded in RunMetadata for "
                         "post-hoc traceability.")
-    p.add_argument("--policy-preset", default="9b-local-l0-50",
+    p.add_argument("--policy-preset", default=DEFAULT_POLICY_PRESET,
                    choices=("9b-local-l0-50", "9b-local-l0-100",
                             "9b-fsdp-l0-50", "9b-fsdp-l0-100",
                             "27b-fsdp-l0-100"),
-                   help="Pre-baked (base_model, sae_adapter, parallelism) "
-                        "tuple. ``9b-local-*`` runs unsharded on a single "
-                        "4090 (fast iteration); ``9b-fsdp-*`` runs 9B "
-                        "FSDP-sharded across 2 GPUs on the Tinybox; "
-                        "``27b-fsdp-l0-100`` is the LambdaLabs production "
-                        "target. Defaults to 9b-local-l0-50.")
+                   help="Advanced override; ``just p5-train`` already "
+                        "selects the right preset for the Tinybox "
+                        "(9b-fsdp-l0-50 — 2 GPUs, comfy headroom). "
+                        "Override only when you specifically want a "
+                        "different scale or L0 sparsity, e.g. for the "
+                        "27B-FSDP LambdaLabs target.")
     p.add_argument("--sae-attach", choices=("auto", "off"), default="auto",
                    help="Attach SAE residual-stream observers. ``auto`` "
                         "downloads + attaches the default 8-layer subset; "
@@ -270,11 +276,17 @@ def main() -> int:
         print("[8/9] (dry-run) skipping GRPOTrainer instantiation")
         print("[9/9] dry-run complete — ready to launch")
         print()
-        print("Launch with:")
+        # Use the bare ``just p5-train`` form when the default preset
+        # is selected (the common case); show the explicit
+        # ``--policy-preset`` form only when the user overrode the
+        # default. Keeps the "happy path" message a one-liner.
+        flag = "" if args.policy_preset == DEFAULT_POLICY_PRESET else f" --policy-preset {args.policy_preset}"
         if policy_cfg.parallelism_strategy == "single":
-            print(f"  just p5-train --policy-preset {args.policy_preset}   # plain uv run python (single GPU)")
+            note = "plain uv run python (single GPU)"
         else:
-            print(f"  just p5-train --policy-preset {args.policy_preset}   # accelerate launch --use_fsdp --num_processes {policy_cfg.n_gpus}")
+            note = f"accelerate launch --use_fsdp --num_processes {policy_cfg.n_gpus}"
+        print("Launch with:")
+        print(f"  just p5-train{flag}   # {note}")
         return 0
 
     # ---- 6. Policy + tokenizer (HEAVY) -------------------------------
