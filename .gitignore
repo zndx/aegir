@@ -11,7 +11,7 @@ devenv.local.yaml
 
 # mdbook build output
 docs/book/
-docs/src/d2/
+docs/current/d2/
 
 # Python
 __pycache__/
@@ -20,3 +20,23 @@ __pycache__/
 
 # Training outputs
 outputs/
+build/patched-src/
+build/wheels/
+
+# Draft / staging artifacts under build/
+build/draft-*.md
+build/config/
+
+# Devenv runtime state (postgres data dir, qdrant init sentinel)
+db/
+.qdrant-initialized
+
+# UI build artifacts + dependency tree
+ui/node_modules/
+ui/dist/
+ui/tsconfig.tsbuildinfo
+
+# Per-session scratch (research notes, screenshots, ad-hoc dumps)
+*.png
+domain-choice.txt
+micans*.txt
