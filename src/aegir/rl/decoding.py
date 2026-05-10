@@ -1,0 +1,129 @@
+"""Constrained decoding for the (template_id, slot_fillers) emission.
+
+A composition is a JSON list of ``CompositionEntry``-shaped dicts.
+The policy must emit valid JSON in this shape or R_A clamps the
+reward to zero. Constrained decoding eliminates that failure mode
+during early training when the policy hasn't yet learned the
+JSON envelope.
+
+Two backends are supported (lazy imports — neither is a hard
+dependency until P5 actually starts):
+
+- ``outlines`` — regex / JSON-schema constrained sampling.
+- ``lm-format-enforcer`` — token-level format enforcement via a
+  TokenEnforcer that fits into a HuggingFace ``LogitsProcessor``.
+
+The default backend is ``outlines`` because its JSON-schema
+support is the most direct match for the ``CompositionEntry``
+shape.
+"""
+
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from typing import Any
+
+from aegir.ontology.schema import Catalog
+
+
+@dataclass
+class DecodingConfig:
+    backend: str = "outlines"  # "outlines" | "lmformatenforcer"
+    max_new_tokens: int = 512
+    temperature: float = 0.9
+    top_p: float = 0.95
+    n_compositions_per_prompt: int = 8  # group_size for GRPO
+
+
+def composition_json_schema(catalog: Catalog) -> dict:
+    """Build a JSON Schema constraining the policy to emit a list
+    of ``CompositionEntry`` items whose ``template_id`` is in the
+    catalog and whose ``slot_fillers`` match the declared slot
+    names for that template.
+
+    The returned schema uses an ``oneOf`` over per-template
+    schemas so that for a chosen ``template_id`` only the slots
+    declared by that template are required. This is a
+    discriminated-union pattern that constrained-decoding
+    backends parse efficiently.
+    """
+    one_of: list[dict] = []
+    for tmpl in catalog.templates:
+        slot_props = {
+            slot_name: {"type": "string", "minLength": 1}
+            for slot_name in tmpl.slot_types.keys()
+        }
+        per_template_schema = {
+            "type": "object",
+            "properties": {
+                "template_id": {"type": "string", "const": tmpl.template_id},
+                "slot_fillers": {
+                    "type": "object",
+                    "properties": slot_props,
+                    "required": list(tmpl.slot_types.keys()),
+                    "additionalProperties": False,
+                },
+            },
+            "required": ["template_id", "slot_fillers"],
+            "additionalProperties": False,
+        }
+        one_of.append(per_template_schema)
+
+    return {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 32,
+        "items": {"oneOf": one_of},
+    }
+
+
+def make_outlines_generator(model, tokenizer, schema: dict):
+    """Outlines JSON-schema generator. Lazy import."""
+    import outlines
+    schema_str = json.dumps(schema)
+    omodel = outlines.models.Transformers(model, tokenizer)
+    return outlines.generate.json(omodel, schema_str)
+
+
+def make_lmfe_logits_processor(tokenizer, schema: dict):
+    """lm-format-enforcer LogitsProcessor. Lazy import."""
+    from lmformatenforcer import JsonSchemaParser
+    from lmformatenforcer.integrations.transformers import (
+        build_transformers_prefix_allowed_tokens_fn,
+    )
+    parser = JsonSchemaParser(schema)
+    return build_transformers_prefix_allowed_tokens_fn(tokenizer, parser)
+
+
+def parse_compositions(raw: str) -> list[dict[str, Any]]:
+    """Parse the constrained-decode output back into a list of
+    composition-entry dicts. Returns ``[]`` on malformed JSON
+    (in which case R_A will clamp the reward to zero — this is
+    the expected failure mode and we surface it as zero-length
+    rather than raising)."""
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError:
+        return []
+    if not isinstance(parsed, list):
+        return []
+    return [
+        e for e in parsed
+        if isinstance(e, dict)
+        and "template_id" in e
+        and isinstance(e.get("slot_fillers"), dict)
+    ]
+
+
+def schema_dry_run(catalog: Catalog) -> dict:
+    """Return summary of the constrained-decode schema without
+    invoking outlines or lmformatenforcer."""
+    schema = composition_json_schema(catalog)
+    return {
+        "backend_default": "outlines",
+        "n_template_branches": len(schema["items"]["oneOf"]),
+        "min_items": schema["minItems"],
+        "max_items": schema["maxItems"],
+        "schema_size_chars": len(json.dumps(schema)),
+    }
