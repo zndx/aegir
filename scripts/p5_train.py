@@ -90,6 +90,14 @@ def parse_args() -> argparse.Namespace:
                    help="Optional git SHA of the v0.5 concept brief used to "
                         "drive this run. Recorded in RunMetadata for "
                         "post-hoc traceability.")
+    p.add_argument("--policy-preset", default="9b-local-l0-50",
+                   choices=("9b-local-l0-50", "9b-local-l0-100", "27b-fsdp-l0-100"),
+                   help="Pre-baked (base_model, sae_adapter, parallelism) "
+                        "tuple. ``9b-local-l0-*`` runs unsharded on a "
+                        "single 4090 (fast iteration on the Tinybox); "
+                        "``27b-fsdp-l0-100`` requires FSDP via "
+                        "``accelerate launch`` (LambdaLabs production "
+                        "target). Defaults to 9b-local-l0-50.")
     p.add_argument("--sae-attach", choices=("auto", "off"), default="auto",
                    help="Attach SAE residual-stream observers. ``auto`` "
                         "downloads + attaches the default 8-layer subset; "
@@ -128,11 +136,11 @@ def main() -> int:
         parse_compositions,
     )
     from aegir.rl.policy import (
-        PolicyConfig,
         attach_sae_adapters,
         default_layers_to_hook,
         download_sae_adapters,
         load_policy,
+        policy_preset,
     )
     from aegir.rl.prompt import PromptConfig, build_messages
     from aegir.rl.sae_logging import SAELogConfig, SAELogger
@@ -159,7 +167,12 @@ def main() -> int:
             pass
 
     # ---- 1. Configs --------------------------------------------------
-    policy_cfg = PolicyConfig()
+    policy_cfg = policy_preset(args.policy_preset)
+    print(f"[policy] preset            = {args.policy_preset}")
+    print(f"[policy] base_model_id     = {policy_cfg.base_model_id}")
+    print(f"[policy] sae_adapter       = {policy_cfg.sae_adapter_repo_id}")
+    print(f"[policy] parallelism       = {policy_cfg.parallelism_strategy} "
+          f"(n_gpus={policy_cfg.n_gpus})")
     decoding_cfg = DecodingConfig(
         max_new_tokens=args.max_new_tokens,
         temperature=args.temperature,
@@ -275,53 +288,82 @@ def main() -> int:
     print(f"[6/9] prompt dataset built ({args.n_prompts} rows)")
 
     # ---- 7. SAE feature logging --------------------------------------
-    # Download SAE adapter files upfront (file I/O only, no GPU
-    # cost), but defer the actual ``attach_sae_adapters`` call to a
-    # ``TrainerCallback.on_train_begin`` event. Rationale: GRPOTrainer's
-    # ``accelerator.prepare()`` (called inside ``train()``) FSDP-wraps
-    # the base model and broadcasts params layer-by-layer to each
-    # rank's GPU. If 14 GB of SAE weights sit on rank 0's cuda:0
-    # before that broadcast runs, the broadcast OOMs (observed:
-    # rank-0 OOM at ``_sync_module_params_and_buffers`` allocating
-    # 340 MiB into a card already at 21.3 / 23.5 GiB usage). Attaching
-    # AFTER FSDP wrap completes lets the SAEs slot into the post-shard
-    # memory envelope rather than competing with the broadcast staging.
+    # Two attachment paths depending on parallelism strategy:
+    #
+    # - "single" (9B-local): attach inline now. The model is already
+    #   on cuda:0 unsharded, no FSDP broadcast to wait for, no
+    #   GPU-memory collision. Inline attach gives the fastest feedback
+    #   loop for the iteration we're optimising for here.
+    #
+    # - "fsdp" (27B-LambdaLabs): defer to a TrainerCallback that fires
+    #   on ``on_train_begin``. ``accelerator.prepare()`` (called inside
+    #   ``trainer.train()``) FSDP-wraps the base model and broadcasts
+    #   params layer-by-layer to each rank's GPU. Keeping ~7-14 GB of
+    #   SAE weights on cuda:0 before that broadcast OOMs the staging
+    #   path (observed at 27B + 8 SAE layers). Attaching AFTER FSDP
+    #   shard completes lets the SAEs slot into the post-shard memory
+    #   envelope.
     sae_logger = SAELogger(SAELogConfig())
     sae_attach_callback = None
     if args.sae_attach == "auto":
-        chosen_layers = default_layers_to_hook(num_layers=64, n=args.sae_num_layers)
+        # Read the actual transformer-layer count from the model
+        # config so the layer-spread computation works for any base
+        # (40 layers on Qwen3.5-9B-Base; 64 on 27B).
+        model_cfg = getattr(model, "config", None)
+        cfg_layers = getattr(model_cfg, "num_hidden_layers", None)
+        if cfg_layers is None:
+            text_cfg = getattr(model_cfg, "text_config", None)
+            cfg_layers = getattr(text_cfg, "num_hidden_layers", None)
+        if cfg_layers is None:
+            cfg_layers = 64  # last-resort default
+        chosen_layers = default_layers_to_hook(num_layers=cfg_layers,
+                                                n=args.sae_num_layers)
         print(f"      SAE attach: downloading {len(chosen_layers)} layer adapters "
               f"({sorted(chosen_layers)}) from {policy_cfg.sae_adapter_repo_id}")
-        sae_paths = download_sae_adapters(policy_cfg, layers=chosen_layers)
-        from transformers import TrainerCallback
+        sae_paths = download_sae_adapters(policy_cfg, num_layers=cfg_layers,
+                                          layers=chosen_layers)
 
-        sae_device_setting = args.sae_device
+        if policy_cfg.parallelism_strategy == "single":
+            # Inline attach: model already lives on cuda:0; no FSDP
+            # to wait for. ``rank0_only=True`` is benign (rank=0 in
+            # single-process) and keeps the same code path active
+            # in case the launcher is later run under torchrun.
+            attach_sae_adapters(
+                model, sae_paths, sae_logger,
+                layers_to_hook=chosen_layers, device=args.sae_device,
+            )
+            print(f"      SAE hooks active: {len(sae_logger._hook_handles)}")
+        else:
+            from transformers import TrainerCallback
 
-        class SAEAttachCallback(TrainerCallback):
-            """Attach SAE residual hooks once FSDP shard is in
-            place. Keyed off ``on_train_begin`` because that fires
-            after ``accelerator.prepare()`` completes — by then,
-            rank 0's cuda:0 is at ~9 GB (1/6 FSDP shard), leaving
-            headroom for the SAE weights without colliding with the
-            broadcast/staging path that triggers FSDP wrap."""
-            _attached = False
+            sae_device_setting = args.sae_device
 
-            def on_train_begin(self, args, state, control, model=None, **_kw):
-                del args, state, control
-                if self._attached:
-                    return
-                if model is None:
-                    logger.warning("SAEAttachCallback: no model passed; skipping attach")
-                    return
-                attach_sae_adapters(
-                    model, sae_paths, sae_logger,
-                    layers_to_hook=chosen_layers, device=sae_device_setting,
-                )
-                self._attached = True
+            class SAEAttachCallback(TrainerCallback):
+                """Attach SAE residual hooks once FSDP shard is in
+                place. Keyed off ``on_train_begin`` because that
+                fires after ``accelerator.prepare()`` completes —
+                by then, rank 0's cuda:0 is at ~9 GB (1/N FSDP
+                shard), leaving headroom for the SAE weights
+                without colliding with the broadcast/staging
+                path that triggers FSDP wrap."""
+                _attached = False
 
-        sae_attach_callback = SAEAttachCallback()
-        print(f"      SAE attach deferred to on_train_begin "
-              f"(post-FSDP wrap; {len(sae_paths)} adapter files cached locally)")
+                def on_train_begin(self, args, state, control, model=None, **_kw):
+                    del args, state, control
+                    if self._attached:
+                        return
+                    if model is None:
+                        logger.warning("SAEAttachCallback: no model passed; skipping attach")
+                        return
+                    attach_sae_adapters(
+                        model, sae_paths, sae_logger,
+                        layers_to_hook=chosen_layers, device=sae_device_setting,
+                    )
+                    self._attached = True
+
+            sae_attach_callback = SAEAttachCallback()
+            print(f"      SAE attach deferred to on_train_begin "
+                  f"(post-FSDP wrap; {len(sae_paths)} adapter files cached locally)")
     else:
         print("      SAE attach: off (--sae-attach=off)")
 

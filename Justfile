@@ -99,32 +99,47 @@ c1-validate:
 p4-smoke:
     bash -c 'source scripts/setup_jvm_env.sh && uv run --no-sync python scripts/p4_smoke_test.py'
 
-# P5 launcher: full GRPO/RLVR training of SAE-Res-Qwen3.5-27B
-# against the locked SDG verifier. Sharded across 6× RTX 4090
-# via FSDP (accelerate-managed). TP is not viable at TP=6 for
-# Qwen3.5-27B's GQA config (num_kv_heads=4); FSDP avoids the
-# divisibility constraint and uses all 6 GPUs at ~9 GB base
-# weights per GPU.
+# P5 launcher: GRPO/RLVR training of an SAE-Res-Qwen3.5 base
+# against the locked SDG verifier.
 #
-# Pass --dry-run for pre-flight summary (no GPU work,
-# no trainer.train()), or no args to start the 200 GPU-hour
-# run. --resume picks up from the latest checkpoint under
-# outputs/p5/ with the strict-by-default drift check;
-# --no-strict-resume to accept drift explicitly. See
-# ``scripts/p5_train.py`` for full options.
+# Two parallelism regimes, routed by ``--policy-preset``:
 #
-#   just p5-train --dry-run                     # pre-flight (single process, no FSDP)
-#   just p5-train                               # 200 GPU-hours, 6× RTX 4090 via FSDP
-#   just p5-train --resume                      # resume strict
-#   just p5-train --resume --no-strict-resume   # override
+#   ``9b-local-l0-{50,100}`` (default 9b-local-l0-50):
+#     Qwen3.5-9B-Base unsharded on a single 4090. No FSDP,
+#     plain ``uv run python``. The fast-iteration loop on the
+#     Tinybox; everything from policy load through SAE attach
+#     to the first GRPO step lands in ~2 min wall-clock.
 #
-# Dry-run uses plain python; real runs use accelerate launch
-# with FSDP across all 6 GPUs.
+#   ``27b-fsdp-l0-100`` (LambdaLabs production target):
+#     Qwen3.5-27B FSDP-sharded across N GPUs via accelerate.
+#     TP is not viable at TP=6 (GQA num_kv_heads=4 doesn't
+#     divide 6); FSDP avoids the divisibility constraint.
+#     Run on a host with adequate VRAM (8× A100 80GB or
+#     equivalent on LambdaLabs).
+#
+# Examples:
+#
+#   just p5-train --dry-run                            # pre-flight
+#   just p5-train                                      # 9B-local default
+#   just p5-train --policy-preset 9b-local-l0-100      # denser SAE ablation
+#   just p5-train --policy-preset 27b-fsdp-l0-100      # FSDP path
+#   just p5-train --resume                             # strict-resume
+#   just p5-train --resume --no-strict-resume          # override
+#
+# Routing logic: any ``--dry-run`` or ``9b-local-*`` invocation
+# uses plain ``uv run python``. Only the explicit ``27b-fsdp-*``
+# path goes through ``accelerate launch --use_fsdp``.
 p5-train *args:
     #!/usr/bin/env bash
     set -euo pipefail
     source scripts/setup_jvm_env.sh
+    is_single_gpu=true
+    if [[ " {{args}} " == *" --policy-preset 27b-fsdp-"* ]]; then
+        is_single_gpu=false
+    fi
     if [[ " {{args}} " == *" --dry-run "* ]]; then
+        uv run --no-sync python scripts/p5_train.py {{args}}
+    elif $is_single_gpu; then
         uv run --no-sync python scripts/p5_train.py {{args}}
     else
         # Per-rank error files: torch-elastic captures each rank's

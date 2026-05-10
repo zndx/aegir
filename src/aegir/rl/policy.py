@@ -31,31 +31,47 @@ logger = logging.getLogger(__name__)
 class PolicyConfig:
     """Hyper-parameters for the P5 policy load.
 
-    **Parallelism strategy: FSDP over 6× RTX 4090.** Tensor
-    parallelism is *not* viable at TP=6 because the
-    Qwen3.5-27B config has ``num_key_value_heads = 4`` (GQA),
-    ``intermediate_size = 17408`` and ``hidden_size = 5120``,
-    none of which divide cleanly by 6. Legal TP sizes are
-    {1, 2, 4}; TP=4 fits but wastes 2 of 6 GPUs. FSDP shards
-    by parameter rather than by attention head, so 6-GPU
-    sharding is clean: ~9 GB base weights per GPU (27 B / 6 ×
-    bf16), with comfortable headroom in the 24 GB envelope
-    for activations + KV cache + LoRA optimizer state.
+    Two parallelism regimes are supported, selected by
+    ``parallelism_strategy``:
 
-    Launch via ``accelerate launch --use_fsdp --num_processes 6
-    scripts/p5_train.py``; TRL's GRPOTrainer consumes the
-    accelerate-managed FSDP wrapping transparently.
+    - ``"single"`` — fits the base model unsharded on a single
+      GPU. Used for the **9B-local fast-iteration loop on the
+      6× RTX 4090 Tinybox**. Qwen3.5-9B-Base + LoRA + 4 SAE
+      adapters lands at ~22 GB bf16 on one 4090 (9 GB base +
+      ~7 GB SAE + ~3 GB activations + ~3 GB KV cache), with
+      head-room. The other 5 GPUs are free for parallel
+      experiments / data prep / UI dev.
+
+    - ``"fsdp"`` — sharded across multiple GPUs via accelerate.
+      Used for the **27B-LambdaLabs production target**.
+      Tensor parallelism is not viable at TP=6 for Qwen3.5-27B
+      (GQA num_kv_heads=4 doesn't divide 6); FSDP shards by
+      parameter rather than by attention head and works at any
+      n_gpus ≥ 2. Launch via ``accelerate launch --use_fsdp
+      --num_processes <N> scripts/p5_train.py``.
+
+    Use ``policy_preset(name)`` to construct ready-made
+    configs for the workflow targets we actually run:
+    ``9b-local-l0-50``, ``9b-local-l0-100``,
+    ``27b-fsdp-l0-100``.
+
+    The 9B-local path has *none* of the FSDP+PEFT+bf16
+    interactions that bit us at 27B (no FSDP unshard, no
+    accelerate fp32-upcast of LoRA params, no rank-0-only SAE
+    workaround). The forward pre-hook + LoRA whole-model bf16
+    cast in ``load_policy`` are kept on for both paths
+    because they are cheap no-ops in the single-GPU regime.
     """
 
     # ── Base LLM ──────────────────────────────────────────────
-    base_model_id: str = "Qwen/Qwen3.5-27B"
+    base_model_id: str = "Qwen/Qwen3.5-9B-Base"
     base_model_revision: str | None = None
     dtype: str = "bfloat16"
-    parallelism_strategy: str = "fsdp"  # "fsdp" | "tp4" | "pp3_tp2"
-    n_gpus: int = 6
-    trust_remote_code: bool = False  # Qwen3.5-27B uses standard arch
+    parallelism_strategy: str = "single"  # "single" | "fsdp"
+    n_gpus: int = 1
+    trust_remote_code: bool = False
     # ── SAE adapter (residual-stream interpretability hooks) ──
-    sae_adapter_repo_id: str = "Qwen/SAE-Res-Qwen3.5-27B-W80K-L0_100"
+    sae_adapter_repo_id: str = "Qwen/SAE-Res-Qwen3.5-9B-Base-W64K-L0_50"
     sae_adapter_revision: str | None = None
     # ── LoRA fine-tune surface ────────────────────────────────
     lora_rank: int = 16
@@ -71,32 +87,85 @@ class PolicyConfig:
     leave_sae_untouched: bool = True
 
 
+# Preset configs for the workflow targets we actually run.
+# Each preset is a (kwargs) dict consumed by ``policy_preset(name)``.
+#
+# - 9b-local-l0-50:    fast-iteration default on the Tinybox; sparser
+#                      SAE (L0=50, W=64K) makes the interpretability
+#                      readout cleaner.
+# - 9b-local-l0-100:   denser SAE for capacity ablation against L0=50.
+# - 27b-fsdp-l0-100:   LambdaLabs production target; same architecture
+#                      as L0=50 but on the 27B base with the wider
+#                      W=80K dictionary.
+POLICY_PRESETS: dict[str, dict] = {
+    "9b-local-l0-50": dict(
+        base_model_id="Qwen/Qwen3.5-9B-Base",
+        sae_adapter_repo_id="Qwen/SAE-Res-Qwen3.5-9B-Base-W64K-L0_50",
+        parallelism_strategy="single",
+        n_gpus=1,
+    ),
+    "9b-local-l0-100": dict(
+        base_model_id="Qwen/Qwen3.5-9B-Base",
+        sae_adapter_repo_id="Qwen/SAE-Res-Qwen3.5-9B-Base-W64K-L0_100",
+        parallelism_strategy="single",
+        n_gpus=1,
+    ),
+    "27b-fsdp-l0-100": dict(
+        base_model_id="Qwen/Qwen3.5-27B",
+        sae_adapter_repo_id="Qwen/SAE-Res-Qwen3.5-27B-W80K-L0_100",
+        parallelism_strategy="fsdp",
+        n_gpus=6,
+    ),
+}
+
+
+def policy_preset(name: str, **overrides) -> PolicyConfig:
+    """Return a ``PolicyConfig`` for the named preset, with optional
+    field overrides. Raises ``KeyError`` on an unknown preset name.
+
+    Example::
+
+        cfg = policy_preset("9b-local-l0-50", lora_rank=32)
+    """
+    if name not in POLICY_PRESETS:
+        raise KeyError(
+            f"unknown policy preset {name!r}; available: "
+            f"{sorted(POLICY_PRESETS)}"
+        )
+    kwargs = dict(POLICY_PRESETS[name])
+    kwargs.update(overrides)
+    return PolicyConfig(**kwargs)
+
+
 def load_policy(cfg: PolicyConfig):
     """Instantiate the policy + LoRA adapters and return a tuple
     ``(model, tokenizer)`` ready for GRPO rollout.
 
-    Heavy: the 27B base load is the rate-limiting step at ~54 GB
-    bf16 weights. Two placement strategies depending on launch
-    context:
+    Three placement paths, decided by ``cfg.parallelism_strategy``
+    + the LOCAL_RANK / WORLD_SIZE env vars set by torchrun:
 
-    - **Distributed launch (FSDP under accelerate)**. Detected
-      via ``LOCAL_RANK`` / ``WORLD_SIZE`` env vars set by torch-
-      elastic. Load to CPU (no ``device_map``); accelerate's
-      FSDP wrapper shards across ranks downstream. Using
-      ``device_map="auto"`` here would have every rank try to
-      place a full copy of the model on GPU 0 in parallel,
-      OOMing immediately.
-    - **Single-process** (debug / smoke). Use
-      ``device_map="auto"`` so transformers's auto-placement +
-      CPU offload makes the 27B model loadable on a single
-      4090.
+    - ``"single"`` (default, 9B-local). No FSDP, no
+      ``device_map``. The full base + LoRA + (post-attach) SAE
+      land on cuda:0 unsharded. Qwen3.5-9B-Base bf16 is ~18 GB,
+      well within the 24 GB envelope.
 
-    The SAE adapter `.pt` files from
-    ``cfg.sae_adapter_repo_id`` are downloaded but NOT attached
-    here; that wiring lives in ``attach_sae_adapters`` because
-    it depends on having the model's transformer-layer module
-    paths available, which requires a successful base load
-    first.
+    - ``"fsdp"`` under distributed launch (LOCAL_RANK set).
+      Load to CPU; accelerate's FSDP wrapper shards once
+      ``accelerator.prepare()`` runs inside ``GRPOTrainer``.
+      ``device_map="auto"`` would have every rank materialize a
+      full model on GPU 0 in parallel and OOM immediately.
+
+    - ``"fsdp"`` invoked single-process (no LOCAL_RANK). Falls
+      back to ``device_map="auto"`` for transformers's auto-
+      placement + CPU offload. Useful for the 27B-local debug
+      path; production 27B uses the distributed path on
+      LambdaLabs.
+
+    The SAE adapter `.pt` files from ``cfg.sae_adapter_repo_id``
+    are downloaded but NOT attached here; that wiring lives in
+    ``attach_sae_adapters`` because it depends on having the
+    model's transformer-layer module paths available, which
+    requires a successful base load first.
     """
     import os
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -123,15 +192,28 @@ def load_policy(cfg: PolicyConfig):
         "torch_dtype": cfg.dtype,
         "trust_remote_code": cfg.trust_remote_code,
     }
-    if not is_distributed:
-        # Single-process: rely on transformers's auto-placement
-        # + CPU offload for the 27B load.
+    if cfg.parallelism_strategy == "single":
+        # 9B-local: load on CPU, then move to cuda:0 in one shot
+        # below. No device_map, no FSDP, no LoRA-vs-FSDP-bf16
+        # interaction surface.
+        pass
+    elif is_distributed:
+        # FSDP under accelerate: load to CPU; FSDP shards after
+        # accelerator.prepare() inside GRPOTrainer.
+        pass
+    else:
+        # FSDP invoked single-process (debug). Fall back to
+        # transformers auto-placement + CPU offload.
         load_kwargs["device_map"] = "auto"
-    # Else: load to CPU; accelerate's FSDP wrapper does the
-    # sharding once GRPOTrainer.__init__ → accelerator.prepare()
-    # runs on each rank.
 
     model = AutoModelForCausalLM.from_pretrained(cfg.base_model_id, **load_kwargs)
+
+    if cfg.parallelism_strategy == "single":
+        # Move to cuda:0 once (FSDP path leaves model on CPU for
+        # accelerator.prepare() to shard).
+        import torch as _torch
+        device = "cuda" if _torch.cuda.is_available() else "cpu"
+        model = model.to(device)
 
     if cfg.leave_sae_untouched:
         logger.info("leaving SAE residual bottleneck untouched (no LoRA on residual SAE)")
