@@ -16,7 +16,7 @@ general high-quality prose (FinePDFs-Edu), code-centric data-systems
 material (Stack v2 relevant-language slices + GitHub issues), SQL task
 pairs (Spider, sql-create-context), ontology/vocabulary raw text
 (Schema.org OWL, DBpedia dumps, BFO/CCO OWL), and synthetic augmentation
-from our ontology-grounded pipeline (docs/src/pretraining.md).**
+from our ontology-grounded pipeline (docs/current/pretraining.md).**
 
 Rationale: breadth (prose) for general language fluency, depth (code +
 schemas) for syntactic competence in our domain, annotation (SQL pairs
@@ -166,7 +166,7 @@ Target total byte budget: **~40 GB raw text** (before deduplication).
 | **Ontology raw** | Schema.org + DBpedia + BFO/CCO + picks from OBO/LOV | 1 GB | Vocabulary + hierarchy anchor |
 | **Ontology as text** | Auto-generated "class definitions as prose" from the above, one per line | 1 GB | Makes the ontology content usable by a byte LM |
 | **GitHub issues (data-systems)** | the-stack-github-issues filtered by SQL/Spark/Flink/dbt keywords | 2 GB | Real-world problem formulation |
-| **Synthetic tables + schema** | Our pretraining pipeline (docs/src/pretraining.md) with byte-serialized output | 2 GB | Distribution control for rare entity types |
+| **Synthetic tables + schema** | Our pretraining pipeline (docs/current/pretraining.md) with byte-serialized output | 2 GB | Distribution control for rare entity types |
 
 Deduplication + shuffling post-composition. End-state: ~30 GB after
 exact-dupe dedup.
@@ -198,7 +198,7 @@ Public data has coverage gaps our downstream task will feel:
    known mapping (column renames, type promotions). Extremely rare in
    public data; easy to synthesise.
 
-The pipeline in `docs/src/pretraining.md` already specifies Stages 1-5
+The pipeline in `docs/current/pretraining.md` already specifies Stages 1-5
 for this. Stage 4 output (populated tables + schema) feeds directly
 into our byte-level pretraining stream.
 
@@ -242,7 +242,7 @@ into our byte-level pretraining stream.
    Properties include..." one definition per line. ~1 GB of
    structured text from ~3 MB of OWL.
 5. **Synthetic augmentation** — stand up the first stage of the
-   pipeline in docs/src/pretraining.md. Start with Schema.org because
+   pipeline in docs/current/pretraining.md. Start with Schema.org because
    it's the smallest and we have the benchmarks.
 
 Each item 1-5 is a day of work and produces a measurable corpus

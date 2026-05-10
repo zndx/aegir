@@ -13,13 +13,13 @@ the [Retrieve-and-Verify](https://arxiv.org/abs/2508.17203) paradigm. Includes
 an air-gap leaderboard UI as a minimal, self-contained alternative to
 W&B/MLflow for this workload.
 
-Pre-alpha; v0.2.0.
+Pre-alpha; v0.3.0.
 
 ## What works today
 
 | Area | Status |
 |------|--------|
-| **Training** | End-to-end on real `gt-signals-dbpedia` GitTables benchmark (120 DBpedia labels / 814 tables). F1 metrics + per-stage boundary diagnostics logged per epoch. |
+| **Training** | End-to-end on real `gt-signals-dbpedia` GitTables benchmark (120 DBpedia labels / 814 tables). **v2 mixed-corpus byte-level pretrain** finished 2026-04-27 — 122k steps over 2 GB (FineWeb-Edu + SQaLe + SchemaPile + FinePDFs-lab), stratified held-out eval shows non-degenerate representations and ~2 bpb drops on domain-targeted slices. F1 metrics + per-stage boundary diagnostics logged per epoch. |
 | **Run artifacts** | JSON sidecars (`outputs/runs/{run_id}/…`) with pre-rendered static Bokeh plots — readable by the gateway without a tracking daemon. |
 | **Leaderboard gateway** | FastAPI on port 8091 serving the React UI + `/api/{health,leaderboard,runs,ontology,classifications}`. All endpoints read-only, no auth, air-gap-friendly. |
 | **React UI** | Ant Design shell with Leaderboards / Classifications / Ontologies panels; BokehJS bundled locally, no CDN. |
@@ -150,15 +150,28 @@ on either extension.
 
 ## Status & roadmap
 
-- **M0** — end-to-end BDD-backed training on real `gt-signals-dbpedia`, boundary
-  diagnostics visible per epoch. ✅
+- **M0** — end-to-end BDD-backed training on real `gt-signals-dbpedia`,
+  boundary diagnostics visible per epoch. ✅
 - **M1** — leaderboard gateway + UI, air-gap deployment envelope (devenv /
   CAI / Zarf), ABI-patched CUDA extensions. ✅
-- **M2** — external-baseline harness (Nemotron 3 Nano, OpenAI OSS 20b, REVEAL
-  reimpl), ontology editor with Postgres write paths, per-class F1 bars.
-- **M3** — KServe `InferenceService` predictor for online Ægir inference on
-  Cloudera AI Inference Service, GPU-flavored Zarf image bundling a trained
-  checkpoint, Datashader/Dask for large-run visualization.
+- **M2** — *in progress.*  v2 → SOTAB head fine-tune with liveness gate
+  (≥ 0.10 macro F1, ≥ 3 MCL clusters, ≥ 10 distinct predicted labels);
+  ontology + synth ownership migration (`src/aegir/ontology/` and
+  `src/aegir/synth/` greenfield); `_LABEL_DIMS["sotab"] = 91 → 82`
+  reconciliation; `vocab_label_map.json` v1.0.0 as the first outward
+  contract; external-baseline harness (Nemotron 3 Nano, OpenAI OSS 20b,
+  REVEAL reimpl); per-class F1 bars in the leaderboard UI.
+- **M3** — vocabulary expansion past the migrated baseline (Ægir-defined,
+  not externally-tiered); multi-GPU step-up (8 GB on 6×4090 ≈ 7 h);
+  v3 corpus mix; KServe `InferenceService` predictor for online inference
+  on Cloudera AI Inference Service; GPU-flavored Zarf image bundling a
+  trained checkpoint; Datashader/Dask for large-run visualization.
+- **M4** — competitive F1 against published baselines on SOTAB-CTA,
+  GitTables, WikiTables; `base` config (~500M params).
+
+Full roadmap with empirical gates and the far-future K2.5 RL post-training
+track is in `docs/current/roadmap.md`. The ontology contract and migration
+plan are in `docs/current/ontology/`.
 
 ## References
 

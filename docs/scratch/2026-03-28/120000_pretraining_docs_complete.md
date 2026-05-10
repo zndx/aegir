@@ -5,13 +5,13 @@
 Created 7 new documentation pages for the ontology-grounded pretraining methodology:
 
 ### New Files
-- `docs/src/pretraining.md` -- Overview with master pipeline D2 diagram, novelty table, scaling argument
-- `docs/src/pretraining/ontology_extraction.md` -- Stage 1: Text → BFO ontology extraction
-- `docs/src/pretraining/schema_projection.md` -- Stage 2: Ontology → SysMLv2 → data objects → relational schema
-- `docs/src/pretraining/synthetic_generation.md` -- Stage 3: Schema population + diversity + confusable type injection
-- `docs/src/pretraining/training_objective.md` -- Stage 4: Entity recovery task formulation with multi-task loss
-- `docs/src/pretraining/end_to_end_example.md` -- Complete walkthrough: hospital ED domain from text → validated training example
-- `docs/src/SUMMARY.md` -- Updated with new section between Architecture and Agent Swarm
+- `docs/current/pretraining.md` -- Overview with master pipeline D2 diagram, novelty table, scaling argument
+- `docs/current/pretraining/ontology_extraction.md` -- Stage 1: Text → BFO ontology extraction
+- `docs/current/pretraining/schema_projection.md` -- Stage 2: Ontology → SysMLv2 → data objects → relational schema
+- `docs/current/pretraining/synthetic_generation.md` -- Stage 3: Schema population + diversity + confusable type injection
+- `docs/current/pretraining/training_objective.md` -- Stage 4: Entity recovery task formulation with multi-task loss
+- `docs/current/pretraining/end_to_end_example.md` -- Complete walkthrough: hospital ED domain from text → validated training example
+- `docs/current/SUMMARY.md` -- Updated with new section between Architecture and Agent Swarm
 
 ### D2 Diagrams
 - Master pipeline diagram (5 color-coded stages, vertical flow)

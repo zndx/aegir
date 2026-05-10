@@ -55,7 +55,7 @@ Both `mamba-ssm` and `flash-attn` have a `CachedWheelsCommand` in their `setup.p
 
 3. Patch `setup.py` in each extension to add explicit `_abi_flag` matching torch's ABI.
 
-Patched source trees are kept in `/tmp/mamba_src/` and `/tmp/flash_src/`. See `docs/notes/2026-03-28/010808_deps_smoke_train.md` for the full step-by-step procedure.
+Patched source trees are kept in `/tmp/mamba_src/` and `/tmp/flash_src/`. See `docs/scratch/2026-03-28/010808_deps_smoke_train.md` for the full step-by-step procedure.
 
 ### Verifying the Build
 

@@ -81,7 +81,7 @@ There is no pytest suite; `main.py` and `train.py --smoke-test` are the primary 
 
 flash-attn and (optionally) mamba-ssm/causal-conv1d require patched builds due to CXX11 ABI mismatch between the nix/devenv environment (GCC 15, `_GLIBCXX_USE_CXX11_ABI=1`) and torch's cu124 wheels (`_GLIBCXX_USE_CXX11_ABI=0`).
 
-**To rebuild**: Use `env -i` with system GCC-11, patch setup.py to add explicit `_abi_flag = "-D_GLIBCXX_USE_CXX11_ABI=0"` on both CXX and NVCC args, and set `MAMBA_FORCE_BUILD=TRUE` / `FLASH_ATTENTION_FORCE_BUILD=TRUE` (skips the `CachedWheelsCommand` prebuilt-wheel download). Patched source trees live in `/tmp/mamba_src/`, `/tmp/flash_src/`. See `docs/notes/2026-03-28/010808_deps_smoke_train.md` for the full procedure.
+**To rebuild**: Use `env -i` with system GCC-11, patch setup.py to add explicit `_abi_flag = "-D_GLIBCXX_USE_CXX11_ABI=0"` on both CXX and NVCC args, and set `MAMBA_FORCE_BUILD=TRUE` / `FLASH_ATTENTION_FORCE_BUILD=TRUE` (skips the `CachedWheelsCommand` prebuilt-wheel download). Patched source trees live in `/tmp/mamba_src/`, `/tmp/flash_src/`. See `docs/scratch/2026-03-28/010808_deps_smoke_train.md` for the full procedure.
 
 **Prevent clobbering**: Always use `uv run --no-sync`.
 
@@ -124,7 +124,7 @@ Working versions: flash-attn 2.8.3, mamba-ssm 2.3.1, causal-conv1d 1.6.1, Python
   - `data/` — `serialization` (table→bytes), `context_select` (MMR), `table_dataset` (CTA/CPA benchmarks)
   - `utils/train.py` — `load_balancing_loss`, `group_params`, `f1_score_multilabel`
 - `ref/` — Reference papers (PDFs)
-- `docs/` — mdbook site; `docs/notes/YYYY-MM-DD/HHMMSS_*.md` for work summaries (per global `CLAUDE.md` convention)
+- `docs/` — mdbook site; `docs/scratch/YYYY-MM-DD/HHMMSS_*.md` for work summaries (per global `CLAUDE.md` convention)
 
 ## Key Reference Codebases (checked out locally)
 

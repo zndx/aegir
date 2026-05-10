@@ -384,33 +384,153 @@ is the one the staged plan was designed to distinguish. The chapter's
 argument now has running-code grounding, not just a first-principles
 shape.
 
-## 10. How this relates to v3
+## 10. v2 mixed-corpus pretrain (2026-04-27)
+
+The Apr 20 single-slice GitTables pretrain (Stage B) demonstrated that
+the architecture converges under its native objective. v2 extends that
+result to a 2 GB mixed-corpus pretrain across nine slices and produces
+the project's first real backbone — the empirical anchor that the
+M2/M3 milestones build on.
+
+**Run mechanics:**
+
+- Wall clock: 2026-04-26 23:22 → 2026-04-27 09:26 MDT (~10 h 4 m,
+  single GPU 0)
+- Training steps: 122,070
+- Checkpoint: `outputs/mixed-v2/20260426T232240Z/final.pt` (~174 MB,
+  small config)
+- Intermediate checkpoints retained every 5,000 steps (24 total)
+- Metrics: `metrics.jsonl` (per-step), `metrics_eval.jsonl`
+  (4 trained-time eval slices × 25 evals)
+
+**Headline:** final training-loader bits-per-byte = **1.179** (vs. v1
+mixed at 1.202, vs. FineWeb-only baseline at 1.774). The headline gain
+is small because the mixture distribution itself shifted between v1
+and v2; the actual story is in the stratified held-out eval.
+
+**Stratified held-out comparison (apples-to-apples, both finals on
+the same 5 slices):**
+
+| Held-out slice | v1 final | v2 final | Δ (v2 − v1) | What it measures |
+|---|---|---|---|---|
+| `eval.fineweb-held` | 1.601 | 1.608 | +0.007 | General prose perplexity |
+| `eval.finepdfs-lab-held` | 1.882 | **1.784** | **−0.098** | Lab/clinical/regulatory prose |
+| `eval.schemapile-held` | 2.888 | **0.997** | **−1.891** | Real-world DDL syntax |
+| `eval.sqale-held` | 2.819 | **0.810** | **−2.009** | NL+DDL+SQL alignment |
+| `eval.spider` | 0.752* | 2.155 | n/a | *v1 trained on Spider; 0.752 is contamination, not held-out competence. v2 holds Spider out cleanly; 2.155 is genuine generalization from SQaLe. |
+
+**What this validates:**
+
+1. **Architecture is learning, not just enjoying easier distribution.**
+   v1's headline gain over the FineWeb-only baseline could have been
+   pure distribution effect. The stratified eval shows ~2 bpb drops on
+   the *specific* slices the v2 mixture targeted, while general prose
+   stays statistically flat. That is targeted learning.
+2. **Trimming FineWeb 0.55 → 0.35 did not hurt prose.**
+   `eval.fineweb-held` is statistically indistinguishable
+   (1.601 → 1.608, +0.4%). 700 MB of FineWeb training (35% × 2 GB) is
+   sufficient at this budget.
+3. **FinePDFs-lab vocabulary transfer is real.** v2 trained on
+   lab/clinical prose for the first time and held-out prose of the
+   same flavor saw a consistent 0.098 bpb drop.
+4. **SQaLe → Spider transfer works.** v2 never saw Spider during
+   training; Spider bpb dropped from random-init ~4.5 to 2.155. SQaLe
+   was generated against Spider/BIRD as NL exemplars, and the
+   alignment transfers to the source distribution.
+
+**Curve shapes:** all four trained-time eval slices descended
+monotonically and plateaued in the last 5–10 evals.
+`eval.schemapile-held` and `eval.sqale-held` are saturating at the 2 GB
+budget; `eval.fineweb-held` and `eval.spider` could still use more
+bytes.
+
+**Forward implications:**
+
+- **Multi-GPU step-up justified at the next byte-budget bump.** 8 GB on
+  6 × 4090 ≈ 7 h, vs. v2's 10 h on a single GPU at 2 GB. DDP path is
+  proven; what's new is the budget.
+- **v3 corpus mix has a clean baseline to beat.** Any v3 mixture must
+  keep `eval.fineweb-held` ≤ 1.61, push `eval.finepdfs-lab-held` below
+  1.78, and not regress on schemapile/sqale.
+- **BIRD held-out as a second transfer probe** in v3 — same logic as
+  Spider in v2, cleaner test.
+
+**The session note** at
+`docs/scratch/2026-04-27/131700_v2_vs_v1_stratified_comparison.md`
+contains the full comparison narrative including the v1 cross-eval
+that produced the comparison table.
+
+## 11. The v2 → SOTAB head fine-tune gate
+
+The v2 backbone is healthy in the unsupervised pretraining regime.
+**It has not yet been validated on a supervised CTA objective.** The
+2026-04-19 representation collapse on direct-from-random SOTAB CTA was
+the open wound that motivated v2 in the first place; closing that loop
+requires a fine-tune from `outputs/mixed-v2/20260426T232240Z/final.pt`
+that produces non-degenerate per-class F1.
+
+This is the M2 empirical gate, defined formally in the
+[Ontology Charter](./ontology/charter.md#empirical-gate-before-any-vocabulary-expansion).
+Three liveness thresholds:
+
+- ≥ 3 distinct embedding clusters at coarse MCL inflation (vs. the
+  single cluster that flagged collapse in April)
+- ≥ 0.10 macro F1 on the held-out SOTAB v2 Schema.org CTA validation
+  set
+- Predictions distributed across ≥ 10 distinct labels (no mode-class
+  collapse)
+
+These are deliberately undemanding. They distinguish "the model is
+alive" from "the model has collapsed." If they fail, the underlying
+problem is architectural, not vocabulary-related, and vocabulary
+expansion work pauses until it is debugged.
+
+If they pass, the [Phase 1 supervised
+roadmap](./roadmap/supervised.md) becomes meaningful — competitive F1
+numbers against published baselines (SOTAB-CTA macro F1 > 0.85 easy,
+> 0.65 hard, etc.) become legitimate next targets, vocabulary
+expansion past the copied baseline begins, and `vocab_label_map.json`
+v1.0.0 ships as the first outward release.
+
+## 12. How this relates to v3
 
 The [v3 concept brief](../../build/draft-concept-brief_v3.md) proposes
 a phased plan: Phase 1 (Aegir-only baseline) → Phase 1.5 (Mergekit
 specialist fusion) → Phase 2 (conditional Nano latent alignment). All
 three phases assumed "a working Aegir baseline." The story in this
 chapter is what "working" means: Aegir cannot be trained from random
-on sparse classification — it needs pretraining + hierarchical
-supervision. Phase 1 in the brief is therefore the union of Stages B
-and C above, not the direct-CTA sweep we originally intended.
+on sparse classification — it needs pretraining + supervised fine-tune
+from a healthy backbone. The v2 mixed-corpus pretrain provides the
+backbone; the M2 head fine-tune provides the supervised half.
 
-Phase 1.5 Mergekit fusion becomes **stronger** under the new plan. The
+Phase 1.5 Mergekit fusion becomes **stronger** under this picture. The
 specialists it fuses will each be pretrained-then-task-finetuned, so
 the task-vectors it combines have genuine semantic structure rather
-than just the small delta between random init and a barely-moved
+than the small delta between random init and a barely-moved
 classifier.
 
 Phase 2 Nano alignment becomes **better grounded**. v3 assumed Aegir
-had some baseline representation to align to Nano's; pretraining
-provides that honestly. The Tokensurgeon spike remains the first
-Phase 2 step.
+had some baseline representation to align to Nano's; the v2 stratified
+eval confirms that representation exists in the unsupervised regime.
+The supervised half of the alignment story still requires the M2 gate
+to clear.
 
-## 11. Further reading
+## 13. Further reading
 
 - [Diagnostic case study: representation collapse on SOTAB-Schema.org](./pretraining/diagnostic_case_study.md)
-- [v3 concept brief](../../build/draft-concept-brief_v3.md) — latent-guided training, Mergekit, Nano
-- [Training tactics](./pretraining/training_tactics.md) — the pre-existing
+- [Ontology Charter](./ontology/charter.md) — the empirical gate
+  formally specified, plus the outward contract Ægir publishes
+- [Phase 1 supervised roadmap](./roadmap/supervised.md) — current
+  fine-tune-from-v2 plan that supersedes the from-random approach
+- [v3 concept brief](../../build/draft-concept-brief_v3.md) —
+  latent-guided training, Mergekit, Nano
+- [Training tactics](./pretraining/training_tactics.md) — pre-existing
   ontology-side training objectives
-- Session notes for this discussion are in
-  `docs/notes/2026-04-19/` and `docs/notes/2026-04-20/`
+- Session notes:
+  - `docs/scratch/2026-04-19/` and `docs/scratch/2026-04-20/` — Stage A/B
+    findings
+  - `docs/scratch/2026-04-21/061600_overnight_corpus_and_mixed_training.md`
+    — v1 mixed-corpus run
+  - `docs/scratch/2026-04-23/232400_v2_corpus_kickoff.md` — v2 setup
+  - `docs/scratch/2026-04-27/131700_v2_vs_v1_stratified_comparison.md`
+    — the headline result this section summarizes

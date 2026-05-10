@@ -153,8 +153,8 @@ scripts/bench_ema_scan.py                            (A.1 micro-bench)
 scripts/train_ded_smoke.py                           (B.4 smoke trainer)
 Justfile                                             (ded-smoke recipe)
 CLAUDE.md                                            (env knobs + session-era updates)
-docs/notes/2026-04-19/091337_a1_ema_scan_ssd.md      (A.1 engineering note)
-docs/notes/2026-04-19/094204_session_m2_progress.md  (this file)
+docs/scratch/2026-04-19/091337_a1_ema_scan_ssd.md      (A.1 engineering note)
+docs/scratch/2026-04-19/094204_session_m2_progress.md  (this file)
 ```
 
 ## Memory touched

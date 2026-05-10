@@ -26,16 +26,21 @@ Target benchmarks:
 - **GitTables** -- Large-scale column type detection across 1M+ CSV tables from GitHub (100% generic column names -- the hardest regime)
 - **WikiTables** -- Column annotation on Wikipedia HTML tables
 
-> **Where we are**: the training regime is under targeted redesign. The
-> first direct-supervision attempt on SOTAB produced complete
-> representation collapse; a three-phase diagnostic (prediction
-> distribution + cluster geometry + MCL inflation sweep, the last
-> borrowed from van Dongen's graph-clustering work) confirmed it and
-> motivated a pivot to **byte-level pretraining on raw tabular corpora**
-> plus **path-prediction fine-tuning** against the ontology hierarchy.
-> See [Training Regime](./training_regime.md) and the
-> [Diagnostic Case Study](./pretraining/diagnostic_case_study.md) for
-> the full reasoning and staged plan.
+> **Where we are (2026-05-09).** The first direct-supervision attempt
+> on SOTAB v2 (April 2026) produced complete representation collapse.
+> The pivot to **byte-level pretraining on real corpora** has since
+> produced a healthy backbone — the **v2 mixed-corpus pretrain**
+> finished 2026-04-27, 122k steps over 2 GB of mixed text (FineWeb-Edu
+> + SQaLe + SchemaPile + FinePDFs-lab), with stratified held-out eval
+> showing non-degenerate representations and ~2 bpb drops on
+> domain-targeted slices. See [Training Regime
+> §10](./training_regime.md#10-v2-mixed-corpus-pretrain-2026-04-27) for
+> the headline. The next gate — fine-tuning a CTA head from the v2
+> checkpoint and clearing a liveness threshold — is the M2 milestone
+> that closes the loop on the original collapse incident. See
+> [Roadmap](./roadmap.md) and [Ontology Charter](./ontology/charter.md)
+> for the current plan; the Diagnostic Case Study below remains
+> historically relevant as the failure mode the v2 pretrain addresses.
 
 ## Key Innovations
 

@@ -1,10 +1,21 @@
 # Pretraining: Ontology-Grounded Synthetic Data
 
+> **Status (2026-05-09).** This chapter describes the *long-term
+> ontology-driven synthetic-data pipeline*, the destination, not the
+> current operational state. The current state is the **v2
+> mixed-corpus byte-level pretrain** — FineWeb-Edu + SQaLe +
+> SchemaPile + FinePDFs-lab, 2 GB, 122k steps, finished
+> 2026-04-27. See [Training Regime §10](./training_regime.md#10-v2-mixed-corpus-pretrain-2026-04-27)
+> for the empirical anchor. The pipeline below is what the [Ontology
+> charter](./ontology/charter.md) and v3 work eventually feed back
+> into; it is not a description of how the current `final.pt` was
+> produced.
+
 How do you train a structured information model at LLM scale when labeled relational data is scarce and expensive?
 
 Conventional approaches to semantic column annotation rely on manually labeled benchmark datasets -- SOTAB, GitTables, WikiTables -- that are costly to create, domain-limited, and rarely capture the cross-table relationships needed for data element discovery. Self-supervised pretraining on raw tables (as in DODUO and TURL) learns useful representations, but the "ground truth" for column semantics remains noisy or absent.
 
-Aegir takes a fundamentally different approach: **we generate the training data from first principles, so the ground truth is always known by construction.**
+Aegir's long-term direction is to **generate the training data from first principles, so the ground truth is always known by construction.** This chapter describes that direction. The v2 pretrain is a stepping stone — it validates that the architecture converges under byte-level pretraining on real corpora, which is the precondition for any ontology-grounded synthetic regime to be worth attempting.
 
 ## The Core Insight
 

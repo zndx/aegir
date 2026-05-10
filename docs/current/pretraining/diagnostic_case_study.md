@@ -1,7 +1,7 @@
 # Diagnostic Case Study: Representation Collapse on SOTAB
 
 *A short postmortem of the first SOTAB training attempt. The detailed
-technical note lives in `docs/notes/2026-04-19/234700_sotab_diagnostic_representation_collapse.md`;
+technical note lives in `docs/scratch/2026-04-19/234700_sotab_diagnostic_representation_collapse.md`;
 this chapter extracts the reusable methodology and the lessons.*
 
 ## 1. The signal
