@@ -1,0 +1,3290 @@
+{
+  "version": "0.7.0-long-tail-candidate",
+  "templates": [
+    {
+      "template_id": "schemaorg_person_named",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasFullName some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has full name {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_person_email",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasEmail some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has email {Y}",
+      "mean_verbal_length": 35.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_person_birthplace",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasBirthplace some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has birthplace {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_person_affiliation",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasAffiliation some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has affiliation {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_person_roleat",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasRoleAt some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has role at {Y}",
+      "mean_verbal_length": 37.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_org_country",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasCountry some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has country {Y}",
+      "mean_verbal_length": 37.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_org_taxid",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasTaxID some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has tax id {Y}",
+      "mean_verbal_length": 36.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_org_legalname",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasLegalName some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has legal name {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_place_address",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasPostalAddress some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has postal address {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_place_geocoord",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasGeoCoordinates some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has geo coordinates {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_place_latitude",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasLatitude some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has latitude {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_place_longitude",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasLongitude some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has longitude {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_event_starttime",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasEventStartTime some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has event start time {Y}",
+      "mean_verbal_length": 46.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_event_endtime",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasEventEndTime some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has event end time {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_event_location",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasEventLocation some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has event location {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_event_organizer",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasOrganizer some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has organizer {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_creativework_author",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasAuthor some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has author {Y}",
+      "mean_verbal_length": 36.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_creativework_date",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasDatePublished some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has date published {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_creativework_publisher",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasPublisher some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has publisher {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_product_brand",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasBrand some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has brand {Y}",
+      "mean_verbal_length": 35.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_product_sku",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasSKU some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has sku {Y}",
+      "mean_verbal_length": 33.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_product_price",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasPrice some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has price {Y}",
+      "mean_verbal_length": 35.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_review_rating",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasReviewRating some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has review rating {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_review_author",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasReviewAuthor some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has review author {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "schemaorg_review_target",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:reviewsItem some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that reviews item {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SOTAB"
+      }
+    },
+    {
+      "template_id": "column_tag_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:annotatesColumn some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that annotates column {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "column_tag_at_confidence",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasTagConfidence some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has tag confidence {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "column_tag_from_annotator",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:byAnnotator some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that by annotator {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "column_property_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:annotatesPropertyOf some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that annotates property of {Y}",
+      "mean_verbal_length": 47.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "column_pair_subject",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasSubjectColumn some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has subject column {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "column_pair_object",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasObjectColumn some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has object column {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "table_topic_tag",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasTableTopic some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has table topic {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "entity_match_link",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:matchesEntity some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that matches entity {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "foreign_key_relation",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:foreignKeyTo some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that foreign key to {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "primary_key_designation",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:isPrimaryKeyOf some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that is primary key of {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "functional_dependency_lhs",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasFDLeftHandSide some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has fdleft hand side {Y}",
+      "mean_verbal_length": 46.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "functional_dependency_rhs",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasFDRightHandSide some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has fdright hand side {Y}",
+      "mean_verbal_length": 47.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "column_distinctness",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasDistinctnessRatio some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has distinctness ratio {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "column_nullability_state",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasNullabilityState some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has nullability state {Y}",
+      "mean_verbal_length": 47.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "column_value_distribution",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasValueDistribution some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has value distribution {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "table_provenance_source",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:sourcedFromTable some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that sourced from table {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "entity_type_belongs_to",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:entityTypeBelongsTo some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that entity type belongs to {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "ontology_class_match",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:matchesOntologyClass some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that matches ontology class {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "schemaorg_label_alignment",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:alignedToSchemaOrgLabel some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that aligned to schema org label {Y}",
+      "mean_verbal_length": 53.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "dbpedia_label_alignment",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:alignedToDBpediaLabel some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that aligned to dbpedia label {Y}",
+      "mean_verbal_length": 50.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.CTACPA"
+      }
+    },
+    {
+      "template_id": "nist80053_control_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:nist80053Control some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that nist80053 control {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "nist80053_low_impact",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:atNISTImpactLevel some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at nistimpact level {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "nist80053_moderate_impact",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:atNISTImpactLevel some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at nistimpact level {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "nist80053_high_impact",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:atNISTImpactLevel some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at nistimpact level {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "iso27001_clause_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:iso27001Clause some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that iso27001 clause {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "iso27001_annexa_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:iso27001AnnexA some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that iso27001 annex a {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "soc2_trust_criterion",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:soc2TrustCriterion some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that soc2 trust criterion {Y}",
+      "mean_verbal_length": 46.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "soc2_security_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:forSOC2Domain some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that for soc2 domain {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "soc2_availability_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:forSOC2Domain some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that for soc2 domain {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "soc2_confidentiality_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:forSOC2Domain some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that for soc2 domain {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "soc2_processing_integrity",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:forSOC2Domain some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that for soc2 domain {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "soc2_privacy_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:forSOC2Domain some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that for soc2 domain {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "gdpr_article_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:gdprArticle some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that gdpr article {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "gdpr_lawful_basis",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hasLawfulBasis some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has lawful basis {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "gdpr_data_subject_right",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:grantsDataSubjectRight some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that grants data subject right {Y}",
+      "mean_verbal_length": 51.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "hipaa_safeguard_admin",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hipaaSafeguard some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that hipaa safeguard {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "hipaa_safeguard_physical",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hipaaSafeguard some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that hipaa safeguard {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "hipaa_safeguard_technical",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hipaaSafeguard some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that hipaa safeguard {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "pci_dss_requirement",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:pciDssRequirement some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that pci dss requirement {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "policy_only_for_high_impact",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:atNISTImpactLevel only {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at nistimpact level {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F3-universal",
+        "branch": "DirectiveICE.Compliance"
+      }
+    },
+    {
+      "template_id": "dempster_combination_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:combinesViaDempster some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that combines via dempster {Y}",
+      "mean_verbal_length": 47.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "dempster_combinant_first",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasFirstCombinant some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has first combinant {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "dempster_combinant_second",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasSecondCombinant some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has second combinant {Y}",
+      "mean_verbal_length": 46.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "dempster_conflict_mass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasConflictMass some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has conflict mass {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "conjunctive_combination",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:conjunctivelyCombines some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that conjunctively combines {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "disjunctive_combination",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:disjunctivelyCombines some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that disjunctively combines {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "yager_combination",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:yagerCombines some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that yager combines {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "frame_refinement",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:refinesFrame some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that refines frame {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "frame_coarsening",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:coarsensFrame some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that coarsens frame {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "pignistic_transformation",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasPignisticTransform some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has pignistic transform {Y}",
+      "mean_verbal_length": 49.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "plausibility_function_for",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:plausibilityForClaim some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that plausibility for claim {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "belief_function_for",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:beliefForClaim some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that belief for claim {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "evidence_independent_of",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:evidenceIndependentOf some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that evidence independent of {Y}",
+      "mean_verbal_length": 49.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "evidence_correlated_with",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:evidenceCorrelatedWith some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that evidence correlated with {Y}",
+      "mean_verbal_length": 50.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "mass_function_normalized_form",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasNormalizedForm some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has normalized form {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DescriptiveICE.DSTOps"
+      }
+    },
+    {
+      "template_id": "schema_version_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasSchemaVersion some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has schema version {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "schema_revision_of",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:schemaRevisionOf some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that schema revision of {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "column_version_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasColumnVersion some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has column version {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "column_renamed_from",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:renamedFrom some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that renamed from {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "column_type_changed_from",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:typeChangedFrom some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that type changed from {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "column_added_at_version",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:addedAtSchemaVersion some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that added at schema version {Y}",
+      "mean_verbal_length": 49.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "column_dropped_at_version",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:droppedAtSchemaVersion some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that dropped at schema version {Y}",
+      "mean_verbal_length": 51.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "dataset_snapshot_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:snapshotOf some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that snapshot of {Y}",
+      "mean_verbal_length": 37.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "dataset_at_version",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:atDatasetVersion some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at dataset version {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "breaking_change_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:breakingChangeFor some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that breaking change for {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "nonbreaking_change_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:nonBreakingChangeFor some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that non breaking change for {Y}",
+      "mean_verbal_length": 49.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "schema_migration_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:migratesSchemaTo some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that migrates schema to {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "rollback_relation",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:rollsBackTo some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that rolls back to {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "forward_compatible_with",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:forwardCompatibleWith some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that forward compatible with {Y}",
+      "mean_verbal_length": 49.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "backward_compatible_with",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:backwardCompatibleWith some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that backward compatible with {Y}",
+      "mean_verbal_length": 50.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.SchemaEvolution"
+      }
+    },
+    {
+      "template_id": "opentelemetry_span_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasSpanContext some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has span context {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "span_with_parent",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasParentSpan some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has parent span {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "span_with_trace_id",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasTraceId some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has trace id {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "span_with_attribute",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasSpanAttribute some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has span attribute {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "span_with_status",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasSpanStatus some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has span status {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "metric_emission_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:emitsMetric some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that emits metric {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "metric_with_unit",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasMetricUnit some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has metric unit {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "metric_with_aggregation",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasAggregationTemporality some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has aggregation temporality {Y}",
+      "mean_verbal_length": 53.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "counter_metric_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasMetricKind some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has metric kind {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "gauge_metric_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasMetricKind some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has metric kind {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "histogram_metric_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasMetricKind some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has metric kind {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "summary_metric_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasMetricKind some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has metric kind {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "log_record_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasLogSeverity some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has log severity {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "log_with_resource_attribute",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasResourceAttribute some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has resource attribute {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "log_within_span_context",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:withinSpanContext some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that within span context {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "trace_with_root_span",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasRootSpan some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has root span {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "trace_with_service_name",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasServiceName some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has service name {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "anomaly_in_metric",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:anomalyInMetric some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that anomaly in metric {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "baseline_for_metric",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:baselineFor some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that baseline for {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "alert_triggered_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:triggeredByMetric some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that triggered by metric {Y}",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Process.Telemetry"
+      }
+    },
+    {
+      "template_id": "uretprobe_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:attachesToReturnHook some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that attaches to return hook {Y}",
+      "mean_verbal_length": 49.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "perf_event_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasPerfEventConfig some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has perf event config {Y}",
+      "mean_verbal_length": 47.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "bpf_helper_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasBPFHelperFunction some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has bpfhelper function {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "bpf_helper_called_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:calledByProgram some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that called by program {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "ringbuf_map_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasRingBufferConfig some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has ring buffer config {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "perf_buffer_map_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasPerfBufferConfig some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has perf buffer config {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "lru_hash_map_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasLRUHashConfig some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has lruhash config {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "xdp_action_drop",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasXDPAction some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has xdpaction {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "xdp_action_pass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasXDPAction some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has xdpaction {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "xdp_action_redirect",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasXDPAction some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has xdpaction {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "tc_classifier_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasTCDirection some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has tcdirection {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "cgroup_skb_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:attachesToCgroup some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that attaches to cgroup {Y}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "kernel_event_with_pid",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:withProcessId some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that with process id {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "kernel_event_with_tid",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:withThreadId some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that with thread id {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "kernel_event_with_comm",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:withProcessComm some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that with process comm {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "Artifact.eBPFExtension"
+      }
+    },
+    {
+      "template_id": "trace_supports_claim",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:supportsClaim some cco:DescriptiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that supports claim descriptive information content entity",
+      "mean_verbal_length": 75.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "audit_produces_evidence",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:producesEvidence some cco:DescriptiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that produces evidence descriptive information content entity",
+      "mean_verbal_length": 78.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "transformation_governed_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:governedBy some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that governed by directive information content entity",
+      "mean_verbal_length": 70.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "ebpf_program_governed_by_directive",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:governedBy some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that governed by directive information content entity",
+      "mean_verbal_length": 70.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "lineage_describes_transformation",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:describesTransformation some bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that describes transformation process",
+      "mean_verbal_length": 54.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "syscall_governed_by_directive",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DesignativeICE, sdg:governedBy some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that governed by directive information content entity",
+      "mean_verbal_length": 70.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "claim_observed_by_event",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:observedAt some bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a descriptive information content entity",
+      "mean_verbal_length": 47.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "metric_observed_by_event",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:observedAt some bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a descriptive information content entity",
+      "mean_verbal_length": 47.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "policy_attests_artifact",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:attestsToArtifact some cco:Artifact",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that attests to artifact artifact",
+      "mean_verbal_length": 50.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "evidence_for_audit",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:evidenceForProcess some bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that evidence for process process",
+      "mean_verbal_length": 50.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "provenance_agent_signs_audit",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:signsProcess some bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that signs process process",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "dataset_under_audit",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:underAudit some bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that under audit process",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "schema_evolution_under_directive",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:governedBy some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that governed by directive information content entity",
+      "mean_verbal_length": 70.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "kernel_anomaly_supports_claim",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:supportsClaim some cco:DescriptiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that supports claim descriptive information content entity",
+      "mean_verbal_length": 75.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "telemetry_span_observes_syscall",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:observesSyscall some cco:DesignativeICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that observes syscall designative information content entity",
+      "mean_verbal_length": 77.0,
+      "bfo_anchor_path": [
+        "cco:DesignativeICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "attestation_about_compliance_claim",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:attestsToClaim some cco:DescriptiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that attests to claim descriptive information content entity",
+      "mean_verbal_length": 77.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "dempster_combines_audit_evidences",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:combinesViaDempster some cco:DescriptiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that combines via dempster descriptive information content entity",
+      "mean_verbal_length": 82.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "column_lineage_for_compliance_claim",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:supportsClaim some cco:DescriptiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that supports claim descriptive information content entity",
+      "mean_verbal_length": 75.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "alert_governed_by_runbook",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:governedBy some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that governed by directive information content entity",
+      "mean_verbal_length": 70.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "frozen_artifact_governed_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:governedBy some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that governed by directive information content entity",
+      "mean_verbal_length": 70.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "CrossBranch.density"
+      }
+    },
+    {
+      "template_id": "artifact_min_one_owner",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasOwner min 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a artifact",
+      "mean_verbal_length": 17.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "artifact_max_one_owner",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasOwner max 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a artifact",
+      "mean_verbal_length": 17.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "descriptive_only_about_artifact",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:isAbout only {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that is about {Y}",
+      "mean_verbal_length": 34.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F3-universal",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "directive_only_governs_artifact",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:governs only {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that governs {Y}",
+      "mean_verbal_length": 33.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F3-universal",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "process_min_one_input",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasInput min 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "process_min_one_output",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasOutput min 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "process_max_one_operator",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasOperator max 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "artifact_either_active_or_archived",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:Artifact and ({Y:Class} or {Z:Class})",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is equivalent to artifact and {Y} or {Z}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F6-union",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "artifact_either_internal_or_external",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:Artifact and ({Y:Class} or {Z:Class})",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is equivalent to artifact and {Y} or {Z}",
+      "mean_verbal_length": 44.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F6-union",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "descriptive_either_evidence_or_claim",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:DescriptiveICE and ({Y:Class} or {Z:Class})",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is equivalent to descriptive information content entity and {Y} or {Z}",
+      "mean_verbal_length": 74.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F6-union",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "artifact_not_deprecated",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, not {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is not {Y}",
+      "mean_verbal_length": 14.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F7-negation",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "artifact_not_revoked",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, not {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is not {Y}",
+      "mean_verbal_length": 14.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F7-negation",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "descriptive_not_retracted",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, not {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is not {Y}",
+      "mean_verbal_length": 14.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F7-negation",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "directive_not_superseded",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, not {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is not {Y}",
+      "mean_verbal_length": 14.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F7-negation",
+        "branch": "AxiomFamily.boosters"
+      }
+    },
+    {
+      "template_id": "process_either_started_or_completed",
+      "manchester_template": "Class: {X:Class} EquivalentTo: bfo:0000015 and ({Y:Class} or {Z:Class})",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is equivalent to process and {Y} or {Z}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F6-union",
+        "branch": "AxiomFamily.boosters"
+      }
+    }
+  ],
+  "null_stats": {}
+}

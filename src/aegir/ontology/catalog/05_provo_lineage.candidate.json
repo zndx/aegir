@@ -1,0 +1,412 @@
+{
+  "version": "0.5.0-provo-lineage-candidate",
+  "templates": [
+
+    {
+      "template_id": "transformation_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:usesEntity some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_generates_entity",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:generatesEntity some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_associated_with_agent",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:wasAssociatedWith some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_starts_at",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:startedAtTime some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_ends_at",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:endedAtTime some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_informed_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:informedBy some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_with_input_dataset",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasInputDataset some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_with_output_dataset",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasOutputDataset some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_only_uses_datasets",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:usesEntity only {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F3-universal", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_min_one_input",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasInputDataset min 1 {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F4-cardinality", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_min_one_output",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasOutputDataset min 1 {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F4-cardinality", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015",
+      "slot_types": {"X": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F1-subclass", "branch": "Process.Transformation"}
+    },
+
+    {
+      "template_id": "lineage_edge_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:fromSource some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_to_target",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:toTarget some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_via_transformation",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:viaTransformation some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_at_run_time",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:atRunTime some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_describes_column_flow",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:describesColumnFlow some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_with_provenance",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:withProvenance some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_within_dataset_only",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:withinDataset only {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F3-universal", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_max_one_target",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:toTarget max 1 {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F4-cardinality", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "column_lineage_describes_pair",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:fromColumn some {Y:Class}, sdg:toColumn some {Z:Class}",
+      "slot_types": {"X": "Class", "Y": "Class", "Z": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F5-intersection", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_with_confidence",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasConfidence some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.LineageEdge"}
+    },
+    {
+      "template_id": "lineage_edge_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE",
+      "slot_types": {"X": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F1-subclass", "branch": "DescriptiveICE.LineageEdge"}
+    },
+
+    {
+      "template_id": "allocation_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:executesTransformation some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_at_run_id",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:atRunIdentifier some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_with_input_facets",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasInputFacet some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_with_output_facets",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasOutputFacet some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_completed_at",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:completedAt some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_with_run_status",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasRunStatus some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_associated_with_agent",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:wasAssociatedWith some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_exactly_one_run_id",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:atRunIdentifier exactly 1 {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F4-cardinality", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015",
+      "slot_types": {"X": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F1-subclass", "branch": "Process.Allocation"}
+    },
+    {
+      "template_id": "allocation_succeeded_or_failed",
+      "manchester_template": "Class: {X:Class} EquivalentTo: bfo:0000015 and ({Y:Class} or {Z:Class})",
+      "slot_types": {"X": "Class", "Y": "Class", "Z": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F6-union", "branch": "Process.Allocation"}
+    },
+
+    {
+      "template_id": "provenance_agent_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasResponsibility some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.ProvenanceAgent"}
+    },
+    {
+      "template_id": "agent_acts_on_behalf_of",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:actedOnBehalfOf some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.ProvenanceAgent"}
+    },
+    {
+      "template_id": "agent_with_role",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasAgentRole some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.ProvenanceAgent"}
+    },
+    {
+      "template_id": "agent_responsible_for",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:responsibleFor some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.ProvenanceAgent"}
+    },
+    {
+      "template_id": "agent_identified_by_uri",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:identifiedByURI some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.ProvenanceAgent"}
+    },
+    {
+      "template_id": "agent_at_organization",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:atOrganization some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.ProvenanceAgent"}
+    },
+    {
+      "template_id": "agent_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact",
+      "slot_types": {"X": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F1-subclass", "branch": "Artifact.ProvenanceAgent"}
+    },
+    {
+      "template_id": "agent_software_or_human",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:Artifact and ({Y:Class} or {Z:Class})",
+      "slot_types": {"X": "Class", "Y": "Class", "Z": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F6-union", "branch": "Artifact.ProvenanceAgent"}
+    },
+
+    {
+      "template_id": "dataset_was_derived_from",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:wasDerivedFrom some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.cross"}
+    },
+    {
+      "template_id": "dataset_revision_of",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:wasRevisionOf some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.cross"}
+    },
+    {
+      "template_id": "dataset_was_generated_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:wasGeneratedBy some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.cross"}
+    },
+    {
+      "template_id": "dataset_was_attributed_to",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:Artifact, sdg:wasAttributedTo some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:Artifact"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "Artifact.cross"}
+    },
+    {
+      "template_id": "lineage_governed_by_directive",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:governedBy some cco:DirectiveICE",
+      "slot_types": {"X": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.cross"}
+    },
+    {
+      "template_id": "lineage_observed_by_event",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:observedAt some bfo:0000015",
+      "slot_types": {"X": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.cross"}
+    },
+    {
+      "template_id": "column_lineage_for_table_column",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasColumn some {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["cco:DescriptiveICE"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F2-existential", "branch": "DescriptiveICE.cross"}
+    },
+    {
+      "template_id": "transformation_not_recoverable",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, not {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F7-negation", "branch": "Process.Transformation"}
+    },
+    {
+      "template_id": "transformation_equiv_io_intersection",
+      "manchester_template": "Class: {X:Class} EquivalentTo: bfo:0000015 and (sdg:hasInputDataset some {Y:Class}) and (sdg:hasOutputDataset some {Z:Class})",
+      "slot_types": {"X": "Class", "Y": "Class", "Z": "Class"},
+      "is_complex": false, "verbal_template": "", "mean_verbal_length": 0.0,
+      "bfo_anchor_path": ["bfo:Process"],
+      "provenance": {"author": "scaffolding", "date": "2026-05-10", "family": "F5-intersection", "branch": "Process.Transformation"}
+    }
+
+  ],
+  "null_stats": {}
+}

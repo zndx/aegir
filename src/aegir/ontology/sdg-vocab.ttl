@@ -1,0 +1,1445 @@
+## ----------------------------------------------------------------------
+## Signals Data Governance (SDG) Ontology — sdg-vocab.ttl
+## ----------------------------------------------------------------------
+##
+## Bespoke vocabulary for the Aegir / Signals 360 semantic engine.
+## Authored fresh against BFO 2020 + CCO + public taxonomies; no
+## term inherits from any proprietary annotations corpus (per
+## `docs/current/ontology/charter.md#provenance-discipline`).
+##
+## v0.1.0 — Batch 1 foundation. Declares the classes and object
+## properties referenced by `catalog/01_foundation.json`. Future
+## batches (P1a kickoff plan) extend this file with their own
+## branch-specific terms.
+##
+## License: Apache-2.0
+## ----------------------------------------------------------------------
+
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix sdg:     <https://signals360.example.org/sdg#> .
+
+<https://signals360.example.org/sdg> a owl:Ontology ;
+    rdfs:label "Signals Data Governance Ontology" ;
+    dcterms:title "Signals Data Governance (SDG) Ontology" ;
+    dcterms:description
+        "A bespoke OWL ontology grounded in BFO 2020 and the Common Core Ontologies, covering observable artifacts, designative / descriptive / directive information content entities, observation processes, derivation lineage, governance processes, and a Dempster-Shafer belief structure. Authored as the basis for Aegir's RLVR-trained ontology generation policy and downstream byte-level pretraining."@en ;
+    dcterms:creator "Signals 360" ;
+    owl:versionIRI <https://signals360.example.org/sdg/v0.1.0> ;
+    owl:versionInfo "0.1.0-foundation" .
+
+## ======================================================================
+## Object properties
+## ======================================================================
+
+sdg:producesMeasurement a owl:ObjectProperty ;
+    rdfs:label "produces measurement" ;
+    skos:definition "Relates an instrument or program to a measurement it produces during an observation process. Instances of the domain emit data values that the range class characterizes." ;
+    rdfs:domain cco:Artifact ;
+    rdfs:range cco:DescriptiveICE .
+
+sdg:emitsSignal a owl:ObjectProperty ;
+    rdfs:label "emits signal" ;
+    skos:definition "Relates an instrument to a signal it emits during operation. Distinct from produces-measurement: a signal is the raw output a measurement is derived from." ;
+    rdfs:domain cco:Artifact .
+
+sdg:realizesFunction a owl:ObjectProperty ;
+    rdfs:label "realizes function" ;
+    skos:definition "Relates an artifact to the BFO function it realizes when in operation. Indirect equivalent of bfo:0000055 (realizes) when the realized entity is a function." ;
+    rdfs:domain cco:Artifact .
+
+sdg:hasRole a owl:ObjectProperty ;
+    rdfs:label "has role" ;
+    skos:definition "Relates an entity to a role it bears in some context. Specialization of bfo-style role bearing for governance and provenance use." ;
+    rdfs:range bfo:0000023 .
+
+sdg:hasColumn a owl:ObjectProperty ;
+    rdfs:label "has column" ;
+    skos:definition "Relates a tabular dataset to one of its columns. Foundational for column-type-annotation use cases that the Aegir model targets." ;
+    rdfs:domain cco:Artifact .
+
+sdg:hasRecord a owl:ObjectProperty ;
+    rdfs:label "has record" ;
+    skos:definition "Relates a tabular or event-log dataset to a contained record. Cardinality restrictions on this property express minimum population thresholds." ;
+    rdfs:domain cco:Artifact .
+
+sdg:hasInput a owl:ObjectProperty ;
+    rdfs:label "has input" ;
+    skos:definition "Relates a program or process to an artifact it consumes as input." .
+
+sdg:hasOutput a owl:ObjectProperty ;
+    rdfs:label "has output" ;
+    skos:definition "Relates a program or process to an artifact it produces as output." .
+
+sdg:hasEntryPoint a owl:ObjectProperty ;
+    rdfs:label "has entry point" ;
+    skos:definition "Relates a program to its execution entry point. Cardinality typically restricted to exactly one for deterministic-entry programs." ;
+    rdfs:domain cco:Artifact .
+
+sdg:processedBy a owl:ObjectProperty ;
+    rdfs:label "processed by" ;
+    skos:definition "Relates a sample to the process or instrument that has handled it. Foundational for laboratory-information-management lineage." .
+
+sdg:collectedFrom a owl:ObjectProperty ;
+    rdfs:label "collected from" ;
+    skos:definition "Relates a sample to the site or source from which it was originally collected." .
+
+sdg:identifies a owl:ObjectProperty ;
+    rdfs:label "identifies" ;
+    skos:definition "Relates a designative information content entity (e.g., an identifier) to the entity it picks out. Inverse-functional in practice for unique identifiers." ;
+    rdfs:domain cco:DesignativeICE .
+
+sdg:describesProperty a owl:ObjectProperty ;
+    rdfs:label "describes property" ;
+    skos:definition "Relates an attribute key to the property of a target entity that it names. Used for OpenTelemetry SemConv and EAV-style attribute modeling." ;
+    rdfs:domain cco:DesignativeICE .
+
+sdg:hasValueType a owl:ObjectProperty ;
+    rdfs:label "has value type" ;
+    skos:definition "Relates an attribute key to the data type of values associated with it. Bridges to schema.org / DBpedia / OTel SemConv typed attributes." ;
+    rdfs:domain cco:DesignativeICE .
+
+sdg:pointsTo a owl:ObjectProperty ;
+    rdfs:label "points to" ;
+    skos:definition "Relates a reference (foreign key, cross-table pointer, OpenLineage facet) to its target entity." ;
+    rdfs:domain cco:DesignativeICE .
+
+sdg:assignedBy a owl:ObjectProperty ;
+    rdfs:label "assigned by" ;
+    skos:definition "Relates a designative information content entity to the agent or organization that issued or assigned it. Enables identifier-namespace governance." ;
+    rdfs:domain cco:DesignativeICE .
+
+sdg:hasIdentifier a owl:ObjectProperty ;
+    rdfs:label "has identifier" ;
+    skos:definition "Inverse of sdg:identifies. Relates an entity to a designative information content entity that picks it out." ;
+    rdfs:range cco:DesignativeICE .
+
+sdg:describedBy a owl:ObjectProperty ;
+    rdfs:label "described by" ;
+    skos:definition "Relates an entity to an information content entity that characterizes it. Bridges artifacts to their descriptive metadata." .
+
+sdg:isAbout a owl:ObjectProperty ;
+    rdfs:label "is about" ;
+    skos:definition "Relates an information content entity to the entity it concerns. Inverse of sdg:describedBy in many usage patterns; aligned with iao:is_about (IAO_0000136)." ;
+    rdfs:domain cco:InformationContentEntity .
+
+sdg:constrains a owl:ObjectProperty ;
+    rdfs:label "constrains" ;
+    skos:definition "Relates a directive information content entity (constraint) to the entity it constrains. Foundation for SQL CHECK constraints and SysMLv2 Constraint patterns." ;
+    rdfs:domain cco:DirectiveICE .
+
+sdg:onViolation a owl:ObjectProperty ;
+    rdfs:label "on violation" ;
+    skos:definition "Relates a constraint to the consequence triggered when the constraint is violated. Captures alarm / event / governance-action linkages." ;
+    rdfs:domain cco:DirectiveICE .
+
+sdg:governs a owl:ObjectProperty ;
+    rdfs:label "governs" ;
+    skos:definition "Relates a policy to the entities or processes it governs. Specialization of cco:DirectiveICE relations for governance and compliance." ;
+    rdfs:domain cco:DirectiveICE .
+
+sdg:appliesTo a owl:ObjectProperty ;
+    rdfs:label "applies to" ;
+    skos:definition "Relates a policy or rule to the scope of entities it applies to. Universal restriction on this property captures policy-scope boundaries." ;
+    rdfs:domain cco:DirectiveICE .
+
+sdg:authoredBy a owl:ObjectProperty ;
+    rdfs:label "authored by" ;
+    skos:definition "Relates a policy or document to the agent that authored it. Aligned with prov:wasAttributedTo for provenance tracking." ;
+    rdfs:domain cco:DirectiveICE .
+
+sdg:effectiveDuring a owl:ObjectProperty ;
+    rdfs:label "effective during" ;
+    skos:definition "Relates a policy to the temporal interval during which it is in force. Range typically aligns with bfo:0000038 (one-dimensional temporal region)." ;
+    rdfs:domain cco:DirectiveICE .
+
+sdg:governedBy a owl:ObjectProperty ;
+    rdfs:label "governed by" ;
+    skos:definition "Inverse of sdg:governs. Relates an entity or process to the policies that govern it." ;
+    rdfs:range cco:DirectiveICE .
+
+sdg:uses a owl:ObjectProperty ;
+    rdfs:label "uses" ;
+    skos:definition "Relates a process to an artifact it makes use of during execution. Aligned with prov:used." .
+
+sdg:produces a owl:ObjectProperty ;
+    rdfs:label "produces" ;
+    skos:definition "Relates a process to an information content entity it produces. Aligned with prov:wasGeneratedBy (inverse direction)." .
+
+## ======================================================================
+## Batch 2 — observation processes + descriptive ICE
+## ======================================================================
+##
+## Properties added at v0.2.0 to support the
+## `02_observation_measurement.json` catalog. Covers LIMS lab runs,
+## OTel traces, eBPF events, profiling, outlier detection, plus
+## DescriptiveICE branches for measurement, profile, state,
+## annotation, outlier claim, attribute set, lift, aggregation.
+
+# --- LabRun + Trace participants ---
+
+sdg:hasInputSample a owl:ObjectProperty ;
+    rdfs:label "has input sample" ;
+    skos:definition "Relates an observation process (typically a lab run) to a sample it consumes as input." .
+
+sdg:followsProtocol a owl:ObjectProperty ;
+    rdfs:label "follows protocol" ;
+    skos:definition "Relates an observation process to a directive information content entity that prescribes its conduct (sample-handling protocol, SOP, calibration procedure)." .
+
+sdg:hasOperator a owl:ObjectProperty ;
+    rdfs:label "has operator" ;
+    skos:definition "Relates an observation process to the agent (typically a person or service) that operates the underlying instrument or program." .
+
+sdg:hasSpans a owl:ObjectProperty ;
+    rdfs:label "has spans" ;
+    skos:definition "Relates an OTel-style trace to the spans it contains. Spans are part-of the trace via bfo:0000050." .
+
+sdg:originatesFrom a owl:ObjectProperty ;
+    rdfs:label "originates from" ;
+    skos:definition "Relates a trace, signal, or measurement to the artifact (instrument, exporter, eBPF probe) it originated at." .
+
+sdg:inService a owl:ObjectProperty ;
+    rdfs:label "in service" ;
+    skos:definition "Relates a trace or telemetry event to the service or system block it was emitted within. Aligned with OpenTelemetry resource semantics." .
+
+sdg:hasAttribute a owl:ObjectProperty ;
+    rdfs:label "has attribute" ;
+    skos:definition "Relates an entity (typically a trace, event, or measurement) to a designative attribute key it carries. Foundation for OpenTelemetry SemConv attribute modeling and Macrobase attribute-set explanations." .
+
+sdg:hasResource a owl:ObjectProperty ;
+    rdfs:label "has resource" ;
+    skos:definition "Relates a telemetry event to the resource (deployment unit, host, container) it pertains to. Aligned with OpenTelemetry Resource model." .
+
+sdg:hasObservedAt a owl:ObjectProperty ;
+    rdfs:label "has observed at" ;
+    skos:definition "Relates an event or measurement to the temporal entity at which it was observed." .
+
+# --- Profiling + OutlierDetection ---
+
+sdg:targets a owl:ObjectProperty ;
+    rdfs:label "targets" ;
+    skos:definition "Relates a profiling or outlier-detection process to the artifact (dataset, table, column) it targets for analysis." .
+
+sdg:appliesMethod a owl:ObjectProperty ;
+    rdfs:label "applies method" ;
+    skos:definition "Relates a profiling or analysis process to the method or algorithm it employs (e.g., quantile estimation, M5 outlier detection, association-rule mining)." .
+
+sdg:against a owl:ObjectProperty ;
+    rdfs:label "against" ;
+    skos:definition "Relates an outlier-detection process or outlier claim to the baseline distribution or population it is contrasted against." .
+
+# --- eBPF event participants ---
+
+sdg:capturedBy a owl:ObjectProperty ;
+    rdfs:label "captured by" ;
+    skos:definition "Relates an eBPF event to the program (kprobe, uprobe, tracepoint, XDP) that captured it." .
+
+sdg:atHook a owl:ObjectProperty ;
+    rdfs:label "at hook" ;
+    skos:definition "Relates an eBPF event to the kernel hook (kprobe site, tracepoint, perf event) at which it was triggered." .
+
+sdg:forSyscall a owl:ObjectProperty ;
+    rdfs:label "for syscall" ;
+    skos:definition "Relates an eBPF event to the system call it observes." .
+
+sdg:writesToMap a owl:ObjectProperty ;
+    rdfs:label "writes to map" ;
+    skos:definition "Relates an eBPF event or program to the eBPF map it updates as a side effect." .
+
+sdg:observesPid a owl:ObjectProperty ;
+    rdfs:label "observes pid" ;
+    skos:definition "Relates an eBPF event to the process identifier it observed." .
+
+sdg:records a owl:ObjectProperty ;
+    rdfs:label "records" ;
+    skos:definition "Relates an observation process to a state or measurement it produces as a record. Distinct from sdg:produces in that records are typically point-in-time snapshots tied to specific observed entities." .
+
+# --- Measurement properties ---
+
+sdg:hasDimension a owl:ObjectProperty ;
+    rdfs:label "has dimension" ;
+    skos:definition "Relates a measurement to its dimensional kind (e.g., length, time, temperature, count). Aligns with the BFO Dimensions of Quality framework." .
+
+sdg:hasUnit a owl:ObjectProperty ;
+    rdfs:label "has unit" ;
+    skos:definition "Relates a measurement to its unit of measure. Aligned with QUDT / OBO UO unit ontologies for downstream interop." .
+
+sdg:observedAt a owl:ObjectProperty ;
+    rdfs:label "observed at" ;
+    skos:definition "Relates a measurement, state observation, or annotation to the temporal entity at which it was observed." .
+
+sdg:producedBy a owl:ObjectProperty ;
+    rdfs:label "produced by" ;
+    skos:definition "Relates an information content entity (measurement, profile, claim) to the process that produced it. Aligned with prov:wasGeneratedBy." .
+
+sdg:hasPrecision a owl:ObjectProperty ;
+    rdfs:label "has precision" ;
+    skos:definition "Relates a measurement to a precision specification (significant figures, tolerance, repeatability bound)." .
+
+sdg:viaMethod a owl:ObjectProperty ;
+    rdfs:label "via method" ;
+    skos:definition "Relates a measurement to the method by which it was obtained. Specialization for measurement-method provenance." .
+
+sdg:hasNumericValue a owl:ObjectProperty ;
+    rdfs:label "has numeric value" ;
+    skos:definition "Relates a measurement to its numeric value entity. Decoupled from the bare data property to allow units, precision, and uncertainty annotations." .
+
+sdg:aggregatedInto a owl:ObjectProperty ;
+    rdfs:label "aggregated into" ;
+    skos:definition "Relates a fine-grained measurement to a coarser aggregation it has contributed to (e.g., a single OTel histogram bucket aggregated from per-request latency measurements)." .
+
+# --- Profile properties ---
+
+sdg:hasCardinality a owl:ObjectProperty ;
+    rdfs:label "has cardinality" ;
+    skos:definition "Relates a column or attribute profile to its cardinality summary (distinct value count, density)." .
+
+sdg:hasNullRate a owl:ObjectProperty ;
+    rdfs:label "has null rate" ;
+    skos:definition "Relates a column profile to its null / missing-value rate, expressed as an information content entity." .
+
+sdg:hasDistribution a owl:ObjectProperty ;
+    rdfs:label "has distribution" ;
+    skos:definition "Relates a profile to a distributional summary (histogram, quantile sketch, kernel-density estimate) of the underlying values." .
+
+sdg:overTimeWindow a owl:ObjectProperty ;
+    rdfs:label "over time window" ;
+    skos:definition "Relates a profile or aggregation to the temporal window over which it was computed." .
+
+# --- OutlierClaim properties ---
+
+sdg:explainsAnomalyIn a owl:ObjectProperty ;
+    rdfs:label "explains anomaly in" ;
+    skos:definition "Relates a Macrobase-style outlier claim to the dataset, profile, or measurement set whose anomaly it explains." .
+
+sdg:hasAttributeSet a owl:ObjectProperty ;
+    rdfs:label "has attribute set" ;
+    skos:definition "Relates an outlier claim to the attribute set whose joint occurrence characterizes the explanation." .
+
+sdg:hasConfidence a owl:ObjectProperty ;
+    rdfs:label "has confidence" ;
+    skos:definition "Relates a claim, annotation, or outlier explanation to its confidence value (typically a numeric or probabilistic information content entity)." .
+
+sdg:supportedBy a owl:ObjectProperty ;
+    rdfs:label "supported by" ;
+    skos:definition "Relates a claim or annotation to evidence supporting it (lift score, prior aggregation, witness measurement)." .
+
+# --- State properties ---
+
+sdg:transitionsFrom a owl:ObjectProperty ;
+    rdfs:label "transitions from" ;
+    skos:definition "Relates a state observation to the prior state from which the system transitioned. Foundation for SysMLv2 StateMachine modeling." .
+
+sdg:transitionsTo a owl:ObjectProperty ;
+    rdfs:label "transitions to" ;
+    skos:definition "Relates a state observation to the subsequent state to which the system transitioned." .
+
+# --- Annotation properties ---
+
+sdg:classifies a owl:ObjectProperty ;
+    rdfs:label "classifies" ;
+    skos:definition "Relates an annotation (CTA / CPA label, governance classification) to the entity it classifies." .
+
+sdg:atTier a owl:ObjectProperty ;
+    rdfs:label "at tier" ;
+    skos:definition "Relates an annotation to its sensitivity tier (governance classification level). Aligned with NIST PII categories and ISO 19944 frameworks." .
+
+# --- AttributeSet / Lift / Aggregation (Macrobase) properties ---
+
+sdg:supports a owl:ObjectProperty ;
+    rdfs:label "supports" ;
+    skos:definition "Relates an attribute set to the outlier claim or hypothesis it supports. Inverse of sdg:supportedBy in many usage patterns." .
+
+sdg:ofAttributeSet a owl:ObjectProperty ;
+    rdfs:label "of attribute set" ;
+    skos:definition "Relates a lift score to the attribute set it characterizes." .
+
+sdg:hasBaselineRate a owl:ObjectProperty ;
+    rdfs:label "has baseline rate" ;
+    skos:definition "Relates a Macrobase-style lift score to its baseline-population rate (the denominator of the lift ratio)." .
+
+sdg:hasSupportCount a owl:ObjectProperty ;
+    rdfs:label "has support count" ;
+    skos:definition "Relates a Macrobase-style lift score to the number of supporting observations in the foreground partition." .
+
+sdg:aggregates a owl:ObjectProperty ;
+    rdfs:label "aggregates" ;
+    skos:definition "Relates an aggregation to the underlying measurements or events it summarizes." .
+
+sdg:usesAggregationFunction a owl:ObjectProperty ;
+    rdfs:label "uses aggregation function" ;
+    skos:definition "Relates an aggregation to the function (sum, mean, count, p99, etc.) it applies. Foundation for KPI and OTel metric aggregation modeling." .
+
+sdg:groupedBy a owl:ObjectProperty ;
+    rdfs:label "grouped by" ;
+    skos:definition "Relates an aggregation to the attribute key(s) it groups by. Aligned with SQL GROUP BY and OTel metric attribute-set semantics." .
+
+## ======================================================================
+## Batch 3 — directive ICE + governance processes
+## ======================================================================
+##
+## Properties added at v0.3.0 to support the
+## `03_directive_governance.json` catalog. Covers the
+## Requirement / Control / Policy / Constraint subbranches of
+## DirectiveICE and the Verification / Attestation / Classification
+## / Audit subbranches of GovernanceProcess. SysMLv2-aligned
+## requirements traceability, NIST-style control families, and
+## standard governance lifecycle properties.
+
+# --- Requirement ---
+
+sdg:specifies a owl:ObjectProperty ;
+    rdfs:label "specifies" ;
+    skos:definition "Relates a requirement to a property the system or artifact must satisfy." .
+
+sdg:verifiedBy a owl:ObjectProperty ;
+    rdfs:label "verified by" ;
+    skos:definition "Relates a requirement or directive to the verification process or evidence that demonstrates compliance." .
+
+sdg:verifies a owl:ObjectProperty ;
+    rdfs:label "verifies" ;
+    skos:definition "Relates a verification process to the requirement or directive it confirms." .
+
+sdg:hasPriority a owl:ObjectProperty ;
+    rdfs:label "has priority" ;
+    skos:definition "Relates a requirement to its prioritization rank within a system specification." .
+
+sdg:tracesTo a owl:ObjectProperty ;
+    rdfs:label "traces to" ;
+    skos:definition "Relates a requirement to a higher-level requirement, stakeholder need, or regulatory source it derives from. Foundational for SysMLv2 traceability." .
+
+sdg:refines a owl:ObjectProperty ;
+    rdfs:label "refines" ;
+    skos:definition "Relates a derived requirement to the parent requirement whose intent it makes more specific." .
+
+sdg:satisfies a owl:ObjectProperty ;
+    rdfs:label "satisfies" ;
+    skos:definition "Relates a system element or artifact to a requirement it fulfills." .
+
+sdg:satisfiedBy a owl:ObjectProperty ;
+    rdfs:label "satisfied by" ;
+    skos:definition "Inverse of sdg:satisfies. Relates a requirement to the elements that fulfill it." .
+
+sdg:underStandard a owl:ObjectProperty ;
+    rdfs:label "under standard" ;
+    skos:definition "Relates a requirement to the standard or reference framework that scopes its scope and authority." .
+
+# --- Control ---
+
+sdg:mitigates a owl:ObjectProperty ;
+    rdfs:label "mitigates" ;
+    skos:definition "Relates a control to the threat, hazard, or risk it reduces. Aligned with NIST and ISO 31000 risk-management frames." .
+
+sdg:implements a owl:ObjectProperty ;
+    rdfs:label "implements" ;
+    skos:definition "Relates a control to the higher-level requirement, framework, or policy it operationalizes." .
+
+sdg:addressesRisk a owl:ObjectProperty ;
+    rdfs:label "addresses risk" ;
+    skos:definition "Relates a control to a risk class within a risk taxonomy." .
+
+sdg:hasOwner a owl:ObjectProperty ;
+    rdfs:label "has owner" ;
+    skos:definition "Relates a control or directive to the agent accountable for its operation." ;
+    rdfs:range cco:Person .
+
+sdg:requiresEvidence a owl:ObjectProperty ;
+    rdfs:label "requires evidence" ;
+    skos:definition "Relates a control to a class of evidence artifacts needed to demonstrate effective implementation." .
+
+sdg:atSeverity a owl:ObjectProperty ;
+    rdfs:label "at severity" ;
+    skos:definition "Relates a control or constraint to a severity tier (informational, low, medium, high, critical)." .
+
+sdg:observedVia a owl:ObjectProperty ;
+    rdfs:label "observed via" ;
+    skos:definition "Relates a control to the observation process, telemetry, or monitor that detects its operation or violation." .
+
+sdg:underFramework a owl:ObjectProperty ;
+    rdfs:label "under framework" ;
+    skos:definition "Relates a control to the compliance framework (e.g., SOC 2, ISO 27001, NIST 800-53) under which it is scoped." .
+
+# --- Policy ---
+
+sdg:governsScope a owl:ObjectProperty ;
+    rdfs:label "governs scope" ;
+    skos:definition "Relates a policy to the scope of artifacts, processes, or data it governs. Distinct from sdg:governs in that scope is more granular." .
+
+sdg:hasJurisdiction a owl:ObjectProperty ;
+    rdfs:label "has jurisdiction" ;
+    skos:definition "Relates a policy to its administrative or regulatory jurisdiction (org unit, region, regulatory body)." .
+
+sdg:supersedes a owl:ObjectProperty ;
+    rdfs:label "supersedes" ;
+    skos:definition "Relates a directive to an earlier directive it replaces. Foundational for policy lifecycle management." .
+
+sdg:hasReviewCycle a owl:ObjectProperty ;
+    rdfs:label "has review cycle" ;
+    skos:definition "Relates a policy to its mandated periodic review cadence." .
+
+sdg:enforcedBy a owl:ObjectProperty ;
+    rdfs:label "enforced by" ;
+    skos:definition "Relates a policy to the agent or system component responsible for its enforcement." .
+
+sdg:atClassificationTier a owl:ObjectProperty ;
+    rdfs:label "at classification tier" ;
+    skos:definition "Relates a directive or artifact to a sensitivity classification tier (public, internal, confidential, restricted)." .
+
+# --- Constraint ---
+
+sdg:checks a owl:ObjectProperty ;
+    rdfs:label "checks" ;
+    skos:definition "Relates a constraint to the property or relation it verifies. Foundational for SQL CHECK and OWL cardinality constraint patterns." .
+
+sdg:hasPredicate a owl:ObjectProperty ;
+    rdfs:label "has predicate" ;
+    skos:definition "Relates a constraint to the logical predicate that defines its truth condition." .
+
+sdg:evaluatedDuring a owl:ObjectProperty ;
+    rdfs:label "evaluated during" ;
+    skos:definition "Relates a constraint to the process or transaction during which it is checked." .
+
+sdg:hasSeverity a owl:ObjectProperty ;
+    rdfs:label "has severity" ;
+    skos:definition "Relates a constraint to its severity classification when violated." .
+
+# --- Verification ---
+
+sdg:producesEvidence a owl:ObjectProperty ;
+    rdfs:label "produces evidence" ;
+    skos:definition "Relates a verification process to the evidence artifact it generates." .
+
+sdg:viaVerificationMethod a owl:ObjectProperty ;
+    rdfs:label "via verification method" ;
+    skos:definition "Relates a verification process to the method it employs (test, inspection, analysis, demonstration)." .
+
+sdg:targetsArtifact a owl:ObjectProperty ;
+    rdfs:label "targets artifact" ;
+    skos:definition "Relates a verification, audit, or analysis process to the artifact under examination." .
+
+sdg:concludesWith a owl:ObjectProperty ;
+    rdfs:label "concludes with" ;
+    skos:definition "Relates a process to its terminal verdict or outcome (pass, fail, inconclusive, exception)." .
+
+# --- Attestation ---
+
+sdg:attestsToControl a owl:ObjectProperty ;
+    rdfs:label "attests to control" ;
+    skos:definition "Relates an attestation to the control whose effective implementation it formally declares." .
+
+sdg:signedBy a owl:ObjectProperty ;
+    rdfs:label "signed by" ;
+    skos:definition "Relates a formal artifact (attestation, audit report) to the agent who signed it." ;
+    rdfs:range cco:Person .
+
+sdg:atAttestationPeriod a owl:ObjectProperty ;
+    rdfs:label "at attestation period" ;
+    skos:definition "Relates an attestation to the temporal interval over which it is valid." .
+
+sdg:withSupportingEvidence a owl:ObjectProperty ;
+    rdfs:label "with supporting evidence" ;
+    skos:definition "Relates an attestation to the evidence artifacts that ground it." .
+
+# --- Classification ---
+
+sdg:classifiesArtifact a owl:ObjectProperty ;
+    rdfs:label "classifies artifact" ;
+    skos:definition "Relates a classification process to the artifact it tags with a sensitivity or governance label." .
+
+sdg:assignsTier a owl:ObjectProperty ;
+    rdfs:label "assigns tier" ;
+    skos:definition "Relates a classification process to the tier it applies." .
+
+sdg:underTaxonomy a owl:ObjectProperty ;
+    rdfs:label "under taxonomy" ;
+    skos:definition "Relates a classification or controlled vocabulary to the source taxonomy or framework defining its terms." .
+
+# --- Audit ---
+
+sdg:auditsControl a owl:ObjectProperty ;
+    rdfs:label "audits control" ;
+    skos:definition "Relates an audit process to the control(s) it evaluates for effectiveness." .
+
+sdg:hasFindings a owl:ObjectProperty ;
+    rdfs:label "has findings" ;
+    skos:definition "Relates an audit to its findings — observations of control effectiveness, gaps, or exceptions." .
+
+sdg:conductedBy a owl:ObjectProperty ;
+    rdfs:label "conducted by" ;
+    skos:definition "Relates an audit, assessment, or verification process to the agent or organization performing it." ;
+    rdfs:range cco:Person .
+
+sdg:forAuditPeriod a owl:ObjectProperty ;
+    rdfs:label "for audit period" ;
+    skos:definition "Relates an audit to the temporal interval its findings cover." .
+
+## ======================================================================
+## Class anchors used in Batch 1
+## ======================================================================
+##
+## SDG does not introduce new top-level class subbranches in Batch 1
+## beyond what the catalog templates parameterize. The Batch 1 catalog
+## composes axioms over public-namespace anchors (cco:Artifact,
+## cco:DesignativeICE, cco:DescriptiveICE, cco:DirectiveICE,
+## cco:InformationContentEntity, bfo:0000004, bfo:0000015) plus the
+## sdg:* object properties declared above. Subsequent batches
+## (sdg:LabRun, sdg:Trace, sdg:OutlierClaim, sdg:eBPFProgram,
+## sdg:KernelHook, etc.) populate the remaining bespoke classes per
+## the Batch 2-7 plan in `docs/scratch/2026-05-09/235104_p1a_kickoff.md`.
+
+## ======================================================================
+## DirectiveICE shorthand bridge
+## ======================================================================
+##
+## CCO's canonical IRI cco:ont00000965 carries
+## rdfs:label "Prescriptive Information Content Entity". SDG names
+## this branch "Directive ICE" because directive better captures
+## the normative sense (requirements, controls, policies,
+## constraints) than prescriptive. The bridge is declared as
+## owl:equivalentClass so all CCO-side deductions remain available;
+## only the displayed label changes. See
+## `docs/current/ontology/charter.md#naming-note--directiveice-vs-ccos-prescriptiveice`.
+
+cco:DirectiveICE owl:equivalentClass <http://www.commoncoreontologies.org/ont00000965> ;
+    rdfs:label "directive information content entity" ;
+    rdfs:comment "SDG-named alias for the CCO 'Prescriptive Information Content Entity' branch (cco:ont00000965). Captures normative content: requirements, controls, policies, constraints." .
+
+## ======================================================================
+## Batch 4 — eBPF kernel granularity (sdg:eBPFProgram / KernelHook /
+## Syscall / Map subbranches and supporting predicates).
+## ======================================================================
+
+sdg:attachesToHook a owl:ObjectProperty ;
+    rdfs:label "attaches to hook" ;
+    skos:definition "Relates an eBPF program to a kernel hook (kprobe, tracepoint, XDP attach point, etc.) to which it is bound." .
+
+sdg:hasProgramType a owl:ObjectProperty ;
+    rdfs:label "has program type" ;
+    skos:definition "Relates an eBPF program to its program-type designator (kprobe, tracepoint, XDP, perf_event, etc.)." .
+
+sdg:hasLicense a owl:ObjectProperty ;
+    rdfs:label "has license" ;
+    skos:definition "Relates an eBPF program to its license designator (e.g., GPL-only programs may call kernel-internal helpers)." .
+
+sdg:loadedIn a owl:ObjectProperty ;
+    rdfs:label "loaded in" ;
+    skos:definition "Relates an eBPF program to the kernel context (subsystem, runtime image) into which it is verified and loaded." .
+
+sdg:verifiedSafeBy a owl:ObjectProperty ;
+    rdfs:label "verified safe by" ;
+    skos:definition "Relates an eBPF program to the in-kernel verifier that has approved it for loading." .
+
+sdg:atKernelFunction a owl:ObjectProperty ;
+    rdfs:label "at kernel function" ;
+    skos:definition "Relates a kernel hook to the kernel-function symbol it intercepts." .
+
+sdg:inKernelModule a owl:ObjectProperty ;
+    rdfs:label "in kernel module" ;
+    skos:definition "Relates a kernel hook to the kernel module that owns the symbol it attaches to." .
+
+sdg:hasAttachedProgram a owl:ObjectProperty ;
+    rdfs:label "has attached program" ;
+    skos:definition "Inverse of sdg:attachesToHook. Relates a kernel hook to an eBPF program currently attached to it." .
+
+sdg:forKernelSubsystem a owl:ObjectProperty ;
+    rdfs:label "for kernel subsystem" ;
+    skos:definition "Relates a kernel hook or syscall to the kernel subsystem (vfs, net, sched, mm, etc.) it instruments." .
+
+sdg:hasHookKind a owl:ObjectProperty ;
+    rdfs:label "has hook kind" ;
+    skos:definition "Relates a kernel hook to its kind designator (kprobe, kretprobe, uprobe, tracepoint, raw_tracepoint, etc.)." .
+
+sdg:observesEvent a owl:ObjectProperty ;
+    rdfs:label "observes event" ;
+    skos:definition "Relates a kernel hook (or eBPF program) to a class of kernel events it can capture." .
+
+sdg:inSyscallSubsystem a owl:ObjectProperty ;
+    rdfs:label "in syscall subsystem" ;
+    skos:definition "Relates a syscall designator to the kernel subsystem it belongs to (fs, net, ipc, time, etc.)." .
+
+sdg:invokedByEvent a owl:ObjectProperty ;
+    rdfs:label "invoked by event" ;
+    skos:definition "Relates a syscall to the kernel event class that triggers its invocation in a given trace." .
+
+sdg:hasReturnType a owl:ObjectProperty ;
+    rdfs:label "has return type" ;
+    skos:definition "Relates a syscall to its return-type designator (long, ssize_t, fd, etc.)." .
+
+sdg:hasArgumentCount a owl:ObjectProperty ;
+    rdfs:label "has argument count" ;
+    skos:definition "Relates a syscall to a designator of its argument arity." .
+
+sdg:traceableBy a owl:ObjectProperty ;
+    rdfs:label "traceable by" ;
+    skos:definition "Relates a syscall to the eBPF program type or tooling capable of tracing it." .
+
+sdg:atSecurityTier a owl:ObjectProperty ;
+    rdfs:label "at security tier" ;
+    skos:definition "Relates a syscall (or kernel-facing artifact) to a designator of its security/privilege tier (CAP_SYS_ADMIN, ring0, etc.)." .
+
+sdg:hasMapType a owl:ObjectProperty ;
+    rdfs:label "has map type" ;
+    skos:definition "Relates an eBPF map to its map-type designator (HASH, ARRAY, RINGBUF, LRU, PERCPU_*, etc.)." .
+
+sdg:hasKeyType a owl:ObjectProperty ;
+    rdfs:label "has key type" ;
+    skos:definition "Relates an eBPF map to the type designator of its key field." .
+
+sdg:hasValueTypeMap a owl:ObjectProperty ;
+    rdfs:label "has value type (map)" ;
+    skos:definition "Relates an eBPF map to the type designator of its value field. Distinct from sdg:hasValueType used for column-level types so the eBPF subbranch keeps its own range." .
+
+sdg:hasMaxEntries a owl:ObjectProperty ;
+    rdfs:label "has max entries" ;
+    skos:definition "Relates an eBPF map to the designator of its maximum entry count." .
+
+sdg:usedByProgram a owl:ObjectProperty ;
+    rdfs:label "used by program" ;
+    skos:definition "Relates an eBPF map to the eBPF programs that read from or write to it." .
+
+sdg:pinnedAtPath a owl:ObjectProperty ;
+    rdfs:label "pinned at path" ;
+    skos:definition "Relates an eBPF map to its bpffs pin-path designator." .
+
+sdg:viaProgram a owl:ObjectProperty ;
+    rdfs:label "via program" ;
+    skos:definition "Relates an eBPF observation event to the eBPF program that materialized it." .
+
+sdg:atKernelHook a owl:ObjectProperty ;
+    rdfs:label "at kernel hook" ;
+    skos:definition "Relates an eBPF observation event to the kernel hook at which it was captured." .
+
+sdg:observesSyscall a owl:ObjectProperty ;
+    rdfs:label "observes syscall" ;
+    skos:definition "Relates an eBPF program, kernel hook, or observation event to the syscall designator it captures." .
+
+sdg:auditedBy a owl:ObjectProperty ;
+    rdfs:label "audited by" ;
+    skos:definition "Relates a syscall (or other privileged kernel artifact) to the audit/governance process that monitors it." .
+
+## ======================================================================
+## Batch 5 — PROV-O / OpenLineage lineage (sdg:Transformation,
+## sdg:LineageEdge, sdg:Allocation, sdg:ProvenanceAgent and
+## supporting predicates aligned with W3C PROV-O / OpenLineage).
+## ======================================================================
+
+sdg:usesEntity a owl:ObjectProperty ;
+    rdfs:label "uses entity" ;
+    skos:definition "PROV-O alignment: relates a transformation (prov:Activity) to an entity it consumes during execution." .
+
+sdg:generatesEntity a owl:ObjectProperty ;
+    rdfs:label "generates entity" ;
+    skos:definition "PROV-O alignment: relates a transformation (prov:Activity) to an entity it produces." .
+
+sdg:wasAssociatedWith a owl:ObjectProperty ;
+    rdfs:label "was associated with" ;
+    skos:definition "PROV-O alignment: relates a transformation or allocation to the agent responsible for it (prov:wasAssociatedWith)." .
+
+sdg:startedAtTime a owl:ObjectProperty ;
+    rdfs:label "started at time" ;
+    skos:definition "PROV-O alignment: relates a transformation/allocation to the timestamp designator at which it began (prov:startedAtTime)." .
+
+sdg:endedAtTime a owl:ObjectProperty ;
+    rdfs:label "ended at time" ;
+    skos:definition "PROV-O alignment: relates a transformation/allocation to the timestamp designator at which it concluded (prov:endedAtTime)." .
+
+sdg:informedBy a owl:ObjectProperty ;
+    rdfs:label "informed by" ;
+    skos:definition "PROV-O alignment: relates a transformation to a prior transformation that produced an input it depends on (prov:wasInformedBy)." .
+
+sdg:hasInputDataset a owl:ObjectProperty ;
+    rdfs:label "has input dataset" ;
+    skos:definition "OpenLineage alignment: relates a transformation/allocation to a dataset it reads as input." .
+
+sdg:hasOutputDataset a owl:ObjectProperty ;
+    rdfs:label "has output dataset" ;
+    skos:definition "OpenLineage alignment: relates a transformation/allocation to a dataset it writes as output." .
+
+sdg:fromSource a owl:ObjectProperty ;
+    rdfs:label "from source" ;
+    skos:definition "Relates a lineage edge to its source-side endpoint (column, dataset, table)." .
+
+sdg:toTarget a owl:ObjectProperty ;
+    rdfs:label "to target" ;
+    skos:definition "Relates a lineage edge to its target-side endpoint (column, dataset, table)." .
+
+sdg:viaTransformation a owl:ObjectProperty ;
+    rdfs:label "via transformation" ;
+    skos:definition "Relates a lineage edge to the transformation through which the source contributed to the target." .
+
+sdg:atRunTime a owl:ObjectProperty ;
+    rdfs:label "at run time" ;
+    skos:definition "Relates a lineage edge or allocation to the runtime epoch designator at which the lineage was observed." .
+
+sdg:describesColumnFlow a owl:ObjectProperty ;
+    rdfs:label "describes column flow" ;
+    skos:definition "Relates a lineage edge to the column-level data-flow it represents (OpenLineage column-lineage facet)." .
+
+sdg:withProvenance a owl:ObjectProperty ;
+    rdfs:label "with provenance" ;
+    skos:definition "Relates a lineage edge to the provenance record (run, agent, timestamp) attached to it." .
+
+sdg:withinDataset a owl:ObjectProperty ;
+    rdfs:label "within dataset" ;
+    skos:definition "Relates a lineage edge to the dataset within which both endpoints live (intra-dataset lineage)." .
+
+sdg:fromColumn a owl:ObjectProperty ;
+    rdfs:label "from column" ;
+    skos:definition "Relates a column-lineage edge to its source column (OpenLineage column-lineage)." .
+
+sdg:toColumn a owl:ObjectProperty ;
+    rdfs:label "to column" ;
+    skos:definition "Relates a column-lineage edge to its target column (OpenLineage column-lineage)." .
+
+sdg:executesTransformation a owl:ObjectProperty ;
+    rdfs:label "executes transformation" ;
+    skos:definition "Relates an allocation (specific run instance) to the transformation type it instantiates." .
+
+sdg:atRunIdentifier a owl:ObjectProperty ;
+    rdfs:label "at run identifier" ;
+    skos:definition "Relates an allocation to its OpenLineage run-identifier designator (typically a UUID)." .
+
+sdg:hasInputFacet a owl:ObjectProperty ;
+    rdfs:label "has input facet" ;
+    skos:definition "OpenLineage alignment: relates an allocation to an input-side facet (schema, version, source link)." .
+
+sdg:hasOutputFacet a owl:ObjectProperty ;
+    rdfs:label "has output facet" ;
+    skos:definition "OpenLineage alignment: relates an allocation to an output-side facet (schema, version, statistics)." .
+
+sdg:completedAt a owl:ObjectProperty ;
+    rdfs:label "completed at" ;
+    skos:definition "Relates an allocation to the wall-clock timestamp designator at which it terminated (success or failure)." .
+
+sdg:hasRunStatus a owl:ObjectProperty ;
+    rdfs:label "has run status" ;
+    skos:definition "Relates an allocation to its OpenLineage event-state designator (START / RUNNING / COMPLETE / FAIL / ABORT)." .
+
+sdg:hasResponsibility a owl:ObjectProperty ;
+    rdfs:label "has responsibility" ;
+    skos:definition "Relates a provenance agent to the responsibility scope (steward, owner, processor) it holds." .
+
+sdg:actedOnBehalfOf a owl:ObjectProperty ;
+    rdfs:label "acted on behalf of" ;
+    skos:definition "PROV-O alignment: relates a delegated agent to the principal on whose behalf it acted (prov:actedOnBehalfOf)." .
+
+sdg:hasAgentRole a owl:ObjectProperty ;
+    rdfs:label "has agent role" ;
+    skos:definition "Relates a provenance agent to its functional role (writer, reviewer, executor, system) in a transformation." .
+
+sdg:responsibleFor a owl:ObjectProperty ;
+    rdfs:label "responsible for" ;
+    skos:definition "Inverse-style: relates a provenance agent to the artifact, transformation, or dataset it is accountable for." .
+
+sdg:identifiedByURI a owl:ObjectProperty ;
+    rdfs:label "identified by URI" ;
+    skos:definition "Relates a provenance agent (or any first-class lineage entity) to a stable URI designator that names it across systems." .
+
+sdg:atOrganization a owl:ObjectProperty ;
+    rdfs:label "at organization" ;
+    skos:definition "Relates a provenance agent to the organization it belongs to (relevant for multi-tenant lineage and audit-trail attribution)." .
+
+sdg:wasDerivedFrom a owl:ObjectProperty ;
+    rdfs:label "was derived from" ;
+    skos:definition "PROV-O alignment: relates a derived dataset/entity to one or more source datasets/entities it draws from (prov:wasDerivedFrom)." .
+
+sdg:wasRevisionOf a owl:ObjectProperty ;
+    rdfs:label "was revision of" ;
+    skos:definition "PROV-O alignment: relates a revised dataset/entity to its prior version (prov:wasRevisionOf), distinct from derivation by being a same-identity update." .
+
+sdg:wasGeneratedBy a owl:ObjectProperty ;
+    rdfs:label "was generated by" ;
+    skos:definition "PROV-O alignment: relates a dataset/entity to the transformation that produced it (prov:wasGeneratedBy)." .
+
+sdg:wasAttributedTo a owl:ObjectProperty ;
+    rdfs:label "was attributed to" ;
+    skos:definition "PROV-O alignment: relates a dataset/entity to the responsible agent (prov:wasAttributedTo)." .
+
+## ======================================================================
+## Batch 6 — BeliefStructure (Dempster-Shafer theory primitives:
+## sdg:MassFunction, sdg:BeliefInterval, sdg:Evidence, sdg:Claim
+## under cco:DescriptiveICE, with supporting predicates).
+##
+## DST integration enables explicit uncertainty handling in the
+## RL signal layer: MassFunction encodes belief over a frame of
+## discernment, BeliefInterval is the [bel, pl] interval bracketed
+## by lower/upper probability, Evidence supports/refutes Claim,
+## and Claim has a BeliefInterval. Aligns with Atelier's existing
+## DST module so cross-project state fusion can consume the same
+## structural vocabulary.
+## ======================================================================
+
+sdg:overFrameOfDiscernment a owl:ObjectProperty ;
+    rdfs:label "over frame of discernment" ;
+    skos:definition "Relates a mass function (or belief structure) to its frame of discernment Θ — the set of mutually-exclusive hypotheses over which mass is distributed." .
+
+sdg:assignsMassTo a owl:ObjectProperty ;
+    rdfs:label "assigns mass to" ;
+    skos:definition "Relates a mass function to a subset of its frame of discernment that receives non-zero mass m(A) > 0 (a focal element)." .
+
+sdg:hasNormalizationConstant a owl:ObjectProperty ;
+    rdfs:label "has normalization constant" ;
+    skos:definition "Relates a mass function to the normalization constant K used to redistribute conflict (Dempster's rule); K=1 corresponds to no conflict." .
+
+sdg:hasFocalElement a owl:ObjectProperty ;
+    rdfs:label "has focal element" ;
+    skos:definition "Relates a mass function to one of its focal elements — a subset A ⊆ Θ with m(A) > 0. A mass function with a single focal element corresponds to a categorical distribution; the empty set as focal element represents conflict." .
+
+sdg:hasBeliefLowerBound a owl:ObjectProperty ;
+    rdfs:label "has belief lower bound" ;
+    skos:definition "Relates a belief interval to its lower bound bel(A) — the total mass of subsets that imply A (the credibility lower bound in Dempster-Shafer)." .
+
+sdg:hasPlausibilityUpperBound a owl:ObjectProperty ;
+    rdfs:label "has plausibility upper bound" ;
+    skos:definition "Relates a belief interval to its upper bound pl(A) — the total mass of subsets that are consistent with A (the plausibility upper bound in Dempster-Shafer)." .
+
+sdg:forClaim a owl:ObjectProperty ;
+    rdfs:label "for claim" ;
+    skos:definition "Relates a belief interval to the claim it brackets. A belief interval [bel, pl] is always relative to a particular proposition." .
+
+sdg:atConfidenceLevel a owl:ObjectProperty ;
+    rdfs:label "at confidence level" ;
+    skos:definition "Relates a belief interval to a confidence-level designator (e.g., 0.95) under which the [bel, pl] bracket is reported." .
+
+sdg:supportsClaim a owl:ObjectProperty ;
+    rdfs:label "supports claim" ;
+    skos:definition "Relates a piece of evidence to the claim it confirms or strengthens. Evidence may support multiple claims with varying mass distributions." .
+
+sdg:refutesClaim a owl:ObjectProperty ;
+    rdfs:label "refutes claim" ;
+    skos:definition "Relates a piece of evidence to the claim it disconfirms. In Dempster-Shafer, refuting evidence shifts mass towards the complement of the claim within the frame of discernment." .
+
+sdg:hasEvidenceSource a owl:ObjectProperty ;
+    rdfs:label "has evidence source" ;
+    skos:definition "Relates a piece of evidence to its origin (a measurement, an audit, a witness statement, a sensor reading, etc.). Distinct from `sdg:producedBy` which is process-level." .
+
+sdg:atQualityTier a owl:ObjectProperty ;
+    rdfs:label "at quality tier" ;
+    skos:definition "Relates a piece of evidence to its quality-tier designator (e.g., direct measurement, derived statistic, expert testimony). Used for evidence-source reliability weighting in Dempster-Shafer combination." .
+
+sdg:hasMassFunction a owl:ObjectProperty ;
+    rdfs:label "has mass function" ;
+    skos:definition "Relates a piece of evidence to the mass function it induces over the relevant frame of discernment. The reverse direction of `sdg:overFrameOfDiscernment` from the evidence side." .
+
+sdg:claimAbout a owl:ObjectProperty ;
+    rdfs:label "claim about" ;
+    skos:definition "Relates a claim to the entity (artifact, process, or other claim) it asserts something about." .
+
+sdg:supportedByEvidence a owl:ObjectProperty ;
+    rdfs:label "supported by evidence" ;
+    skos:definition "Inverse of `sdg:supportsClaim`. Relates a claim to the evidence pieces that support it." .
+
+sdg:refutedByEvidence a owl:ObjectProperty ;
+    rdfs:label "refuted by evidence" ;
+    skos:definition "Inverse of `sdg:refutesClaim`. Relates a claim to the evidence pieces that refute it." .
+
+sdg:hasBeliefInterval a owl:ObjectProperty ;
+    rdfs:label "has belief interval" ;
+    skos:definition "Relates a claim to the belief interval [bel, pl] that bracket the credal state about it under the available evidence." .
+## ======================================================================
+## Batch 7 — long tail / benchmark gap-filling.
+##
+## Properties enumerated below are the procedurally-generated
+## tail covering SOTAB schema.org alignment, CTA/CPA annotation,
+## compliance frame depth (NIST/ISO/SOC2/GDPR/HIPAA/PCI), DST
+## combination operators, schema evolution, telemetry, eBPF
+## helpers, and cross-branch density. Definitions are synthesised
+## from name patterns and are intentionally generic — sharpen by
+## hand on a per-property basis if a particular term carries
+## non-obvious semantics that the synthesised gloss misses.
+## ======================================================================
+
+sdg:addedAtSchemaVersion a owl:ObjectProperty ;
+    rdfs:label "added at schema version" ;
+    skos:definition "Relates an entity to the associated added at schema version." .
+
+sdg:alignedToDBpediaLabel a owl:ObjectProperty ;
+    rdfs:label "aligned to d bpedia label" ;
+    skos:definition "Relates an entity to the to d bpedia label alignment under cross-vocabulary mapping." .
+
+sdg:alignedToSchemaOrgLabel a owl:ObjectProperty ;
+    rdfs:label "aligned to schema org label" ;
+    skos:definition "Relates an entity to the to schema org label alignment under cross-vocabulary mapping." .
+
+sdg:annotatesColumn a owl:ObjectProperty ;
+    rdfs:label "annotates column" ;
+    skos:definition "Relates an annotation to the column it labels." .
+
+sdg:annotatesPropertyOf a owl:ObjectProperty ;
+    rdfs:label "annotates property of" ;
+    skos:definition "Relates an annotation to the property of it labels." .
+
+sdg:anomalyInMetric a owl:ObjectProperty ;
+    rdfs:label "anomaly in metric" ;
+    skos:definition "Relates an anomaly description to the in metric in which it manifests." .
+
+sdg:atDatasetVersion a owl:ObjectProperty ;
+    rdfs:label "at dataset version" ;
+    skos:definition "Relates an entity to the contextual dataset version at which it is located, observed, or evaluated." .
+
+sdg:atNISTImpactLevel a owl:ObjectProperty ;
+    rdfs:label "at nist impact level" ;
+    skos:definition "Relates an entity to the contextual nist impact level at which it is located, observed, or evaluated." .
+
+sdg:attachesToCgroup a owl:ObjectProperty ;
+    rdfs:label "attaches to cgroup" ;
+    skos:definition "Relates an entity to the to cgroup to which it attaches at runtime." .
+
+sdg:attachesToReturnHook a owl:ObjectProperty ;
+    rdfs:label "attaches to return hook" ;
+    skos:definition "Relates an entity to the to return hook to which it attaches at runtime." .
+
+sdg:attestsToArtifact a owl:ObjectProperty ;
+    rdfs:label "attests to artifact" ;
+    skos:definition "Relates a directive or attestation to the to artifact it certifies." .
+
+sdg:attestsToClaim a owl:ObjectProperty ;
+    rdfs:label "attests to claim" ;
+    skos:definition "Relates a directive or attestation to the to claim it certifies." .
+
+sdg:backwardCompatibleWith a owl:ObjectProperty ;
+    rdfs:label "backward compatible with" ;
+    skos:definition "Relates an artifact version to the compatible with it remains backward-compatible with." .
+
+sdg:baselineFor a owl:ObjectProperty ;
+    rdfs:label "baseline for" ;
+    skos:definition "Relates a baseline description to the for it serves as a reference for." .
+
+sdg:beliefForClaim a owl:ObjectProperty ;
+    rdfs:label "belief for claim" ;
+    skos:definition "Relates a Dempster-Shafer belief value to the for claim it scores." .
+
+sdg:breakingChangeFor a owl:ObjectProperty ;
+    rdfs:label "breaking change for" ;
+    skos:definition "Relates a breaking change to the change for it impacts." .
+
+sdg:byAnnotator a owl:ObjectProperty ;
+    rdfs:label "by annotator" ;
+    skos:definition "Relates an entity to the annotator responsible for or attached to it." .
+
+sdg:calledByProgram a owl:ObjectProperty ;
+    rdfs:label "called by program" ;
+    skos:definition "Relates an artifact to the by program that calls or invokes it." .
+
+sdg:coarsensFrame a owl:ObjectProperty ;
+    rdfs:label "coarsens frame" ;
+    skos:definition "Relates a frame coarsening to the frame it coarsens to." .
+
+sdg:combinesViaDempster a owl:ObjectProperty ;
+    rdfs:label "combines via dempster" ;
+    skos:definition "Relates a combined description to the via dempster via its combination operator." .
+
+sdg:conjunctivelyCombines a owl:ObjectProperty ;
+    rdfs:label "conjunctively combines" ;
+    skos:definition "Relates a conjunctive combination to the combines." .
+
+sdg:describesTransformation a owl:ObjectProperty ;
+    rdfs:label "describes transformation" ;
+    skos:definition "Relates a description to the transformation it characterizes." .
+
+sdg:disjunctivelyCombines a owl:ObjectProperty ;
+    rdfs:label "disjunctively combines" ;
+    skos:definition "Relates a disjunctive combination to the combines." .
+
+sdg:droppedAtSchemaVersion a owl:ObjectProperty ;
+    rdfs:label "dropped at schema version" ;
+    skos:definition "Relates a column to the at schema version at which it was dropped." .
+
+sdg:emitsMetric a owl:ObjectProperty ;
+    rdfs:label "emits metric" ;
+    skos:definition "Relates a process to the metric it produces as observable output." .
+
+sdg:entityTypeBelongsTo a owl:ObjectProperty ;
+    rdfs:label "entity type belongs to" ;
+    skos:definition "Relates an entity-type tag to the type belongs to it is grouped under." .
+
+sdg:evidenceCorrelatedWith a owl:ObjectProperty ;
+    rdfs:label "evidence correlated with" ;
+    skos:definition "Relates a piece of evidence to the correlated with relevant to its evidential strength." .
+
+sdg:evidenceForProcess a owl:ObjectProperty ;
+    rdfs:label "evidence for process" ;
+    skos:definition "Relates a piece of evidence to the for process relevant to its evidential strength." .
+
+sdg:evidenceIndependentOf a owl:ObjectProperty ;
+    rdfs:label "evidence independent of" ;
+    skos:definition "Relates a piece of evidence to the independent of relevant to its evidential strength." .
+
+sdg:forSOC2Domain a owl:ObjectProperty ;
+    rdfs:label "for so c2 domain" ;
+    skos:definition "Relates an entity to the so c2 domain it pertains to or is intended for." .
+
+sdg:foreignKeyTo a owl:ObjectProperty ;
+    rdfs:label "foreign key to" ;
+    skos:definition "Relates a foreign-key column to the key to it references." .
+
+sdg:forwardCompatibleWith a owl:ObjectProperty ;
+    rdfs:label "forward compatible with" ;
+    skos:definition "Relates an artifact version to the compatible with it remains forward-compatible with." .
+
+sdg:gdprArticle a owl:ObjectProperty ;
+    rdfs:label "gdpr article" ;
+    skos:definition "Relates a directive to the article from the GDPR text under which it is grounded." .
+
+sdg:grantsDataSubjectRight a owl:ObjectProperty ;
+    rdfs:label "grants data subject right" ;
+    skos:definition "Relates a directive to the data subject right it confers." .
+
+sdg:hasAffiliation a owl:ObjectProperty ;
+    rdfs:label "has affiliation" ;
+    skos:definition "Relates an entity to its associated affiliation value or designator." .
+
+sdg:hasAggregationTemporality a owl:ObjectProperty ;
+    rdfs:label "has aggregation temporality" ;
+    skos:definition "Relates an entity to its associated aggregation temporality value or designator." .
+
+sdg:hasAuthor a owl:ObjectProperty ;
+    rdfs:label "has author" ;
+    skos:definition "Relates an entity to its associated author value or designator." .
+
+sdg:hasBPFHelperFunction a owl:ObjectProperty ;
+    rdfs:label "has bpf helper function" ;
+    skos:definition "Relates an entity to its associated bpf helper function value or designator." .
+
+sdg:hasBirthplace a owl:ObjectProperty ;
+    rdfs:label "has birthplace" ;
+    skos:definition "Relates an entity to its associated birthplace value or designator." .
+
+sdg:hasBrand a owl:ObjectProperty ;
+    rdfs:label "has brand" ;
+    skos:definition "Relates an entity to its associated brand value or designator." .
+
+sdg:hasColumnVersion a owl:ObjectProperty ;
+    rdfs:label "has column version" ;
+    skos:definition "Relates an entity to its associated column version value or designator." .
+
+sdg:hasConflictMass a owl:ObjectProperty ;
+    rdfs:label "has conflict mass" ;
+    skos:definition "Relates an entity to its associated conflict mass value or designator." .
+
+sdg:hasCountry a owl:ObjectProperty ;
+    rdfs:label "has country" ;
+    skos:definition "Relates an entity to its associated country value or designator." .
+
+sdg:hasDatePublished a owl:ObjectProperty ;
+    rdfs:label "has date published" ;
+    skos:definition "Relates an entity to its associated date published value or designator." .
+
+sdg:hasDistinctnessRatio a owl:ObjectProperty ;
+    rdfs:label "has distinctness ratio" ;
+    skos:definition "Relates an entity to its associated distinctness ratio value or designator." .
+
+sdg:hasEmail a owl:ObjectProperty ;
+    rdfs:label "has email" ;
+    skos:definition "Relates an entity to its associated email value or designator." .
+
+sdg:hasEventEndTime a owl:ObjectProperty ;
+    rdfs:label "has event end time" ;
+    skos:definition "Relates an entity to its associated event end time value or designator." .
+
+sdg:hasEventLocation a owl:ObjectProperty ;
+    rdfs:label "has event location" ;
+    skos:definition "Relates an entity to its associated event location value or designator." .
+
+sdg:hasEventStartTime a owl:ObjectProperty ;
+    rdfs:label "has event start time" ;
+    skos:definition "Relates an entity to its associated event start time value or designator." .
+
+sdg:hasFDLeftHandSide a owl:ObjectProperty ;
+    rdfs:label "has fd left hand side" ;
+    skos:definition "Relates an entity to its associated fd left hand side value or designator." .
+
+sdg:hasFDRightHandSide a owl:ObjectProperty ;
+    rdfs:label "has fd right hand side" ;
+    skos:definition "Relates an entity to its associated fd right hand side value or designator." .
+
+sdg:hasFirstCombinant a owl:ObjectProperty ;
+    rdfs:label "has first combinant" ;
+    skos:definition "Relates an entity to its associated first combinant value or designator." .
+
+sdg:hasFullName a owl:ObjectProperty ;
+    rdfs:label "has full name" ;
+    skos:definition "Relates an entity to its associated full name value or designator." .
+
+sdg:hasGeoCoordinates a owl:ObjectProperty ;
+    rdfs:label "has geo coordinates" ;
+    skos:definition "Relates an entity to its associated geo coordinates value or designator." .
+
+sdg:hasLRUHashConfig a owl:ObjectProperty ;
+    rdfs:label "has lru hash config" ;
+    skos:definition "Relates an entity to its associated lru hash config value or designator." .
+
+sdg:hasLatitude a owl:ObjectProperty ;
+    rdfs:label "has latitude" ;
+    skos:definition "Relates an entity to its associated latitude value or designator." .
+
+sdg:hasLawfulBasis a owl:ObjectProperty ;
+    rdfs:label "has lawful basis" ;
+    skos:definition "Relates an entity to its associated lawful basis value or designator." .
+
+sdg:hasLegalName a owl:ObjectProperty ;
+    rdfs:label "has legal name" ;
+    skos:definition "Relates an entity to its associated legal name value or designator." .
+
+sdg:hasLogSeverity a owl:ObjectProperty ;
+    rdfs:label "has log severity" ;
+    skos:definition "Relates an entity to its associated log severity value or designator." .
+
+sdg:hasLongitude a owl:ObjectProperty ;
+    rdfs:label "has longitude" ;
+    skos:definition "Relates an entity to its associated longitude value or designator." .
+
+sdg:hasMetricKind a owl:ObjectProperty ;
+    rdfs:label "has metric kind" ;
+    skos:definition "Relates an entity to its associated metric kind value or designator." .
+
+sdg:hasMetricUnit a owl:ObjectProperty ;
+    rdfs:label "has metric unit" ;
+    skos:definition "Relates an entity to its associated metric unit value or designator." .
+
+sdg:hasNormalizedForm a owl:ObjectProperty ;
+    rdfs:label "has normalized form" ;
+    skos:definition "Relates an entity to its associated normalized form value or designator." .
+
+sdg:hasNullabilityState a owl:ObjectProperty ;
+    rdfs:label "has nullability state" ;
+    skos:definition "Relates an entity to its associated nullability state value or designator." .
+
+sdg:hasObjectColumn a owl:ObjectProperty ;
+    rdfs:label "has object column" ;
+    skos:definition "Relates an entity to its associated object column value or designator." .
+
+sdg:hasOrganizer a owl:ObjectProperty ;
+    rdfs:label "has organizer" ;
+    skos:definition "Relates an entity to its associated organizer value or designator." .
+
+sdg:hasParentSpan a owl:ObjectProperty ;
+    rdfs:label "has parent span" ;
+    skos:definition "Relates an entity to its associated parent span value or designator." .
+
+sdg:hasPerfBufferConfig a owl:ObjectProperty ;
+    rdfs:label "has perf buffer config" ;
+    skos:definition "Relates an entity to its associated perf buffer config value or designator." .
+
+sdg:hasPerfEventConfig a owl:ObjectProperty ;
+    rdfs:label "has perf event config" ;
+    skos:definition "Relates an entity to its associated perf event config value or designator." .
+
+sdg:hasPignisticTransform a owl:ObjectProperty ;
+    rdfs:label "has pignistic transform" ;
+    skos:definition "Relates an entity to its associated pignistic transform value or designator." .
+
+sdg:hasPostalAddress a owl:ObjectProperty ;
+    rdfs:label "has postal address" ;
+    skos:definition "Relates an entity to its associated postal address value or designator." .
+
+sdg:hasPrice a owl:ObjectProperty ;
+    rdfs:label "has price" ;
+    skos:definition "Relates an entity to its associated price value or designator." .
+
+sdg:hasPublisher a owl:ObjectProperty ;
+    rdfs:label "has publisher" ;
+    skos:definition "Relates an entity to its associated publisher value or designator." .
+
+sdg:hasResourceAttribute a owl:ObjectProperty ;
+    rdfs:label "has resource attribute" ;
+    skos:definition "Relates an entity to its associated resource attribute value or designator." .
+
+sdg:hasReviewAuthor a owl:ObjectProperty ;
+    rdfs:label "has review author" ;
+    skos:definition "Relates an entity to its associated review author value or designator." .
+
+sdg:hasReviewRating a owl:ObjectProperty ;
+    rdfs:label "has review rating" ;
+    skos:definition "Relates an entity to its associated review rating value or designator." .
+
+sdg:hasRingBufferConfig a owl:ObjectProperty ;
+    rdfs:label "has ring buffer config" ;
+    skos:definition "Relates an entity to its associated ring buffer config value or designator." .
+
+sdg:hasRoleAt a owl:ObjectProperty ;
+    rdfs:label "has role at" ;
+    skos:definition "Relates an entity to its associated role at value or designator." .
+
+sdg:hasRootSpan a owl:ObjectProperty ;
+    rdfs:label "has root span" ;
+    skos:definition "Relates an entity to its associated root span value or designator." .
+
+sdg:hasSKU a owl:ObjectProperty ;
+    rdfs:label "has sku" ;
+    skos:definition "Relates an entity to its associated sku value or designator." .
+
+sdg:hasSchemaVersion a owl:ObjectProperty ;
+    rdfs:label "has schema version" ;
+    skos:definition "Relates an entity to its associated schema version value or designator." .
+
+sdg:hasSecondCombinant a owl:ObjectProperty ;
+    rdfs:label "has second combinant" ;
+    skos:definition "Relates an entity to its associated second combinant value or designator." .
+
+sdg:hasServiceName a owl:ObjectProperty ;
+    rdfs:label "has service name" ;
+    skos:definition "Relates an entity to its associated service name value or designator." .
+
+sdg:hasSpanAttribute a owl:ObjectProperty ;
+    rdfs:label "has span attribute" ;
+    skos:definition "Relates an entity to its associated span attribute value or designator." .
+
+sdg:hasSpanContext a owl:ObjectProperty ;
+    rdfs:label "has span context" ;
+    skos:definition "Relates an entity to its associated span context value or designator." .
+
+sdg:hasSpanStatus a owl:ObjectProperty ;
+    rdfs:label "has span status" ;
+    skos:definition "Relates an entity to its associated span status value or designator." .
+
+sdg:hasSubjectColumn a owl:ObjectProperty ;
+    rdfs:label "has subject column" ;
+    skos:definition "Relates an entity to its associated subject column value or designator." .
+
+sdg:hasTCDirection a owl:ObjectProperty ;
+    rdfs:label "has tc direction" ;
+    skos:definition "Relates an entity to its associated tc direction value or designator." .
+
+sdg:hasTableTopic a owl:ObjectProperty ;
+    rdfs:label "has table topic" ;
+    skos:definition "Relates an entity to its associated table topic value or designator." .
+
+sdg:hasTagConfidence a owl:ObjectProperty ;
+    rdfs:label "has tag confidence" ;
+    skos:definition "Relates an entity to its associated tag confidence value or designator." .
+
+sdg:hasTaxID a owl:ObjectProperty ;
+    rdfs:label "has tax id" ;
+    skos:definition "Relates an entity to its associated tax id value or designator." .
+
+sdg:hasTraceId a owl:ObjectProperty ;
+    rdfs:label "has trace id" ;
+    skos:definition "Relates an entity to its associated trace id value or designator." .
+
+sdg:hasValueDistribution a owl:ObjectProperty ;
+    rdfs:label "has value distribution" ;
+    skos:definition "Relates an entity to its associated value distribution value or designator." .
+
+sdg:hasXDPAction a owl:ObjectProperty ;
+    rdfs:label "has xdp action" ;
+    skos:definition "Relates an entity to its associated xdp action value or designator." .
+
+sdg:hipaaSafeguard a owl:ObjectProperty ;
+    rdfs:label "hipaa safeguard" ;
+    skos:definition "Relates a directive to the safeguard from the HIPAA framework it implements." .
+
+sdg:isPrimaryKeyOf a owl:ObjectProperty ;
+    rdfs:label "is primary key of" ;
+    skos:definition "Relates an entity to a structural relationship in which it serves as the primary key of." .
+
+sdg:iso27001AnnexA a owl:ObjectProperty ;
+    rdfs:label "iso27001 annex a" ;
+    skos:definition "Relates a directive to the annex a from the corresponding ISO/IEC standard text." .
+
+sdg:iso27001Clause a owl:ObjectProperty ;
+    rdfs:label "iso27001 clause" ;
+    skos:definition "Relates a directive to the clause from the corresponding ISO/IEC standard text." .
+
+sdg:matchesEntity a owl:ObjectProperty ;
+    rdfs:label "matches entity" ;
+    skos:definition "Relates an entity to the entity it is identified with under entity-matching." .
+
+sdg:matchesOntologyClass a owl:ObjectProperty ;
+    rdfs:label "matches ontology class" ;
+    skos:definition "Relates an entity to the ontology class it is identified with under entity-matching." .
+
+sdg:migratesSchemaTo a owl:ObjectProperty ;
+    rdfs:label "migrates schema to" ;
+    skos:definition "Relates a schema-migration process to the schema to it produces." .
+
+sdg:nist80053Control a owl:ObjectProperty ;
+    rdfs:label "nist80053 control" ;
+    skos:definition "Relates a directive to the control from NIST 800-53." .
+
+sdg:nonBreakingChangeFor a owl:ObjectProperty ;
+    rdfs:label "non breaking change for" ;
+    skos:definition "Relates a non-breaking change to the breaking change for it modifies." .
+
+sdg:pciDssRequirement a owl:ObjectProperty ;
+    rdfs:label "pci dss requirement" ;
+    skos:definition "Relates a directive to the dss requirement from PCI DSS." .
+
+sdg:plausibilityForClaim a owl:ObjectProperty ;
+    rdfs:label "plausibility for claim" ;
+    skos:definition "Relates a Dempster-Shafer plausibility value to the for claim it scores." .
+
+sdg:refinesFrame a owl:ObjectProperty ;
+    rdfs:label "refines frame" ;
+    skos:definition "Relates a frame refinement to the frame it refines." .
+
+sdg:renamedFrom a owl:ObjectProperty ;
+    rdfs:label "renamed from" ;
+    skos:definition "Relates a column-version to the from it was renamed from." .
+
+sdg:reviewsItem a owl:ObjectProperty ;
+    rdfs:label "reviews item" ;
+    skos:definition "Relates a review-content entity to the item it reviews." .
+
+sdg:rollsBackTo a owl:ObjectProperty ;
+    rdfs:label "rolls back to" ;
+    skos:definition "Relates a rollback record to the back to it rolls back to." .
+
+sdg:schemaRevisionOf a owl:ObjectProperty ;
+    rdfs:label "schema revision of" ;
+    skos:definition "Relates a schema artifact to the revision of it stands in lineage with." .
+
+sdg:signsProcess a owl:ObjectProperty ;
+    rdfs:label "signs process" ;
+    skos:definition "Relates a signing agent to the process it signs off on." .
+
+sdg:snapshotOf a owl:ObjectProperty ;
+    rdfs:label "snapshot of" ;
+    skos:definition "Relates a dataset snapshot to the of it captures." .
+
+sdg:soc2TrustCriterion a owl:ObjectProperty ;
+    rdfs:label "soc2 trust criterion" ;
+    skos:definition "Relates an entity to the associated soc2 trust criterion." .
+
+sdg:sourcedFromTable a owl:ObjectProperty ;
+    rdfs:label "sourced from table" ;
+    skos:definition "Relates a derived record to the from table it was sourced from." .
+
+sdg:triggeredByMetric a owl:ObjectProperty ;
+    rdfs:label "triggered by metric" ;
+    skos:definition "Relates an alert event to the by metric that triggered it." .
+
+sdg:typeChangedFrom a owl:ObjectProperty ;
+    rdfs:label "type changed from" ;
+    skos:definition "Relates a column-version to the changed from from which its type changed." .
+
+sdg:underAudit a owl:ObjectProperty ;
+    rdfs:label "under audit" ;
+    skos:definition "Relates an entity to the audit under which it falls." .
+
+sdg:withProcessComm a owl:ObjectProperty ;
+    rdfs:label "with process comm" ;
+    skos:definition "Relates an entity to the process comm it carries as context." .
+
+sdg:withProcessId a owl:ObjectProperty ;
+    rdfs:label "with process id" ;
+    skos:definition "Relates an entity to the process id it carries as context." .
+
+sdg:withThreadId a owl:ObjectProperty ;
+    rdfs:label "with thread id" ;
+    skos:definition "Relates an entity to the thread id it carries as context." .
+
+sdg:withinSpanContext a owl:ObjectProperty ;
+    rdfs:label "within span context" ;
+    skos:definition "Relates an entity to the span context within which it is contained." .
+
+sdg:yagerCombines a owl:ObjectProperty ;
+    rdfs:label "yager combines" ;
+    skos:definition "Relates a Yager combination to the combines via the Yager rule of combination." .

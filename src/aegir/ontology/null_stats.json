@@ -1,0 +1,14 @@
+{
+  "null_mean": 0.4137202173471451,
+  "null_std": 0.00943382292055237,
+  "null_p5": 0.3985669881105423,
+  "null_p95": 0.4301204741001129,
+  "n_samples": 200,
+  "tv_k": 12,
+  "ti_k": 100,
+  "n_templates_per_composition": 24,
+  "catalog_files": [
+    "src/aegir/ontology/catalog/combined.json"
+  ],
+  "ti_cache": "src/aegir/ontology/T_I.pkl"
+}

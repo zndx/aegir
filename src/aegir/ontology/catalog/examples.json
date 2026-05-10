@@ -1,0 +1,62 @@
+{
+  "version": "0.0.1-examples",
+  "templates": [
+    {
+      "template_id": "subclass_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: {Y:Class}",
+      "slot_types": {"X": "Class", "Y": "Class"},
+      "is_complex": false,
+      "verbal_template": "",
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-09",
+        "gate_version": "pre-P1a"
+      }
+    },
+    {
+      "template_id": "existential_restriction",
+      "manchester_template": "Class: {X:Class} SubClassOf: {p:ObjectProperty} some {Y:Class}",
+      "slot_types": {"X": "Class", "p": "ObjectProperty", "Y": "Class"},
+      "is_complex": true,
+      "verbal_template": "",
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-09",
+        "gate_version": "pre-P1a"
+      }
+    },
+    {
+      "template_id": "equivalent_intersection",
+      "manchester_template": "Class: {X:Class} EquivalentTo: {Y:Class} and {Z:Class}",
+      "slot_types": {"X": "Class", "Y": "Class", "Z": "Class"},
+      "is_complex": true,
+      "verbal_template": "",
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-09",
+        "gate_version": "pre-P1a"
+      }
+    },
+    {
+      "template_id": "cardinality_min_one",
+      "manchester_template": "Class: {X:Class} SubClassOf: {p:ObjectProperty} min 1 {Y:Class}",
+      "slot_types": {"X": "Class", "p": "ObjectProperty", "Y": "Class"},
+      "is_complex": true,
+      "verbal_template": "",
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-09",
+        "gate_version": "pre-P1a"
+      }
+    }
+  ],
+  "null_stats": {}
+}

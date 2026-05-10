@@ -1,0 +1,1371 @@
+{
+  "version": "0.3.0-directive-governance-candidate",
+  "templates": [
+    {
+      "template_id": "requirement_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:specifies some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that specifies {Y}",
+      "mean_verbal_length": 35.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_applies_to_system",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:appliesTo some cco:Artifact",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_verified_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:verifiedBy some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that verified by {Y}",
+      "mean_verbal_length": 37.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_has_priority",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hasPriority some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has priority {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_traces_to",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:tracesTo some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that traces to {Y}",
+      "mean_verbal_length": 35.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_refines",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:refines some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that refines {Y}",
+      "mean_verbal_length": 33.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_satisfies",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:satisfies some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that satisfies {Y}",
+      "mean_verbal_length": 35.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_under_standard",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:underStandard some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that under standard {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_only_satisfied_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:satisfiedBy only {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that satisfied by {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F3-universal",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_min_one_verification",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:verifiedBy min 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F1-subclass",
+        "branch": "DirectiveICE.Requirement"
+      }
+    },
+    {
+      "template_id": "requirement_equiv_specifies_target",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:DirectiveICE and (sdg:specifies some {Y:Class}) and (sdg:appliesTo some {Z:Class})",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "",
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F5-intersection",
+        "branch": "DirectiveICE.Requirement",
+        "deeponto_error_kind": "verbalize",
+        "deeponto_error": "no verbalizable axiom found for head class"
+      }
+    },
+    {
+      "template_id": "control_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:mitigates some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that mitigates {Y}",
+      "mean_verbal_length": 35.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_implements",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:implements some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that implements {Y}",
+      "mean_verbal_length": 36.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_addresses_risk",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:addressesRisk some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that addresses risk {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_with_owner",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hasOwner some cco:Person",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_with_evidence_requirement",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:requiresEvidence some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that requires evidence {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_at_severity",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:atSeverity some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at severity {Y}",
+      "mean_verbal_length": 37.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_observed_via",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:observedVia some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that observed via {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_under_framework",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:underFramework some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that under framework {Y}",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_only_addresses_threat_class",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:addressesRisk only {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that addresses risk {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F3-universal",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_min_one_owner",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hasOwner min 1 cco:Person",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F1-subclass",
+        "branch": "DirectiveICE.Control"
+      }
+    },
+    {
+      "template_id": "control_equiv_implements_with_owner",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:DirectiveICE and (sdg:implements some {Y:Class}) and (sdg:hasOwner some cco:Person)",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "",
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F5-intersection",
+        "branch": "DirectiveICE.Control",
+        "deeponto_error_kind": "verbalize",
+        "deeponto_error": "no verbalizable axiom found for head class"
+      }
+    },
+    {
+      "template_id": "policy_subclass_governs",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:governsScope some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that governs scope {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_with_jurisdiction",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hasJurisdiction some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has jurisdiction {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_supersedes",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:supersedes some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that supersedes {Y}",
+      "mean_verbal_length": 36.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_with_review_cycle",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hasReviewCycle some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has review cycle {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_enforced_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:enforcedBy some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that enforced by {Y}",
+      "mean_verbal_length": 37.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_classification_tier",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:atClassificationTier some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at classification tier {Y}",
+      "mean_verbal_length": 48.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_only_governs_artifacts",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:governsScope only cco:Artifact",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F3-universal",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_min_one_enforcer",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:enforcedBy min 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F1-subclass",
+        "branch": "DirectiveICE.Policy"
+      }
+    },
+    {
+      "template_id": "policy_equiv_jurisdiction_and_scope",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:DirectiveICE and (sdg:hasJurisdiction some {Y:Class}) and (sdg:governsScope some {Z:Class})",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "",
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F5-intersection",
+        "branch": "DirectiveICE.Policy",
+        "deeponto_error_kind": "verbalize",
+        "deeponto_error": "no verbalizable axiom found for head class"
+      }
+    },
+    {
+      "template_id": "constraint_check_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:checks some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that checks {Y}",
+      "mean_verbal_length": 32.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Constraint"
+      }
+    },
+    {
+      "template_id": "constraint_with_predicate",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hasPredicate some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has predicate {Y}",
+      "mean_verbal_length": 39.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Constraint"
+      }
+    },
+    {
+      "template_id": "constraint_evaluated_during",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:evaluatedDuring some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that evaluated during {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Constraint"
+      }
+    },
+    {
+      "template_id": "constraint_with_severity_classification",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:hasSeverity some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has severity {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.Constraint"
+      }
+    },
+    {
+      "template_id": "constraint_min_one_check",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:checks min 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "DirectiveICE.Constraint"
+      }
+    },
+    {
+      "template_id": "constraint_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "{X} is a directive information content entity",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F1-subclass",
+        "branch": "DirectiveICE.Constraint"
+      }
+    },
+    {
+      "template_id": "verification_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:verifies some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that verifies directive information content entity",
+      "mean_verbal_length": 67.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Verification"
+      }
+    },
+    {
+      "template_id": "verification_produces_evidence",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:producesEvidence some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that produces evidence {Y}",
+      "mean_verbal_length": 43.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Verification"
+      }
+    },
+    {
+      "template_id": "verification_with_method",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:viaVerificationMethod some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that via verification method {Y}",
+      "mean_verbal_length": 49.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Verification"
+      }
+    },
+    {
+      "template_id": "verification_targets_artifact",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:targetsArtifact some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that targets artifact {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Verification"
+      }
+    },
+    {
+      "template_id": "verification_concludes_with",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:concludesWith some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that concludes with {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Verification"
+      }
+    },
+    {
+      "template_id": "verification_min_one_evidence",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:producesEvidence min 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "GovernanceProcess.Verification"
+      }
+    },
+    {
+      "template_id": "verification_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F1-subclass",
+        "branch": "GovernanceProcess.Verification"
+      }
+    },
+    {
+      "template_id": "attestation_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:attestsToControl some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that attests to control directive information content entity",
+      "mean_verbal_length": 77.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Attestation"
+      }
+    },
+    {
+      "template_id": "attestation_signed_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:signedBy some cco:Person",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that signed by person",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Attestation"
+      }
+    },
+    {
+      "template_id": "attestation_at_period",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:atAttestationPeriod some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at attestation period {Y}",
+      "mean_verbal_length": 47.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Attestation"
+      }
+    },
+    {
+      "template_id": "attestation_with_supporting_evidence",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:withSupportingEvidence some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that with supporting evidence {Y}",
+      "mean_verbal_length": 50.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Attestation"
+      }
+    },
+    {
+      "template_id": "attestation_min_one_signer",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:signedBy min 1 cco:Person",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F4-cardinality",
+        "branch": "GovernanceProcess.Attestation"
+      }
+    },
+    {
+      "template_id": "attestation_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F1-subclass",
+        "branch": "GovernanceProcess.Attestation"
+      }
+    },
+    {
+      "template_id": "classification_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:classifiesArtifact some cco:Artifact",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that classifies artifact artifact",
+      "mean_verbal_length": 50.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Classification"
+      }
+    },
+    {
+      "template_id": "classification_assigns_tier",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:assignsTier some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that assigns tier {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Classification"
+      }
+    },
+    {
+      "template_id": "classification_under_taxonomy",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:underTaxonomy some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that under taxonomy {Y}",
+      "mean_verbal_length": 40.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Classification"
+      }
+    },
+    {
+      "template_id": "classification_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F1-subclass",
+        "branch": "GovernanceProcess.Classification"
+      }
+    },
+    {
+      "template_id": "audit_subclass",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:auditsControl some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that audits control directive information content entity",
+      "mean_verbal_length": 73.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Audit"
+      }
+    },
+    {
+      "template_id": "audit_with_findings",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasFindings some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that has findings {Y}",
+      "mean_verbal_length": 38.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Audit"
+      }
+    },
+    {
+      "template_id": "audit_conducted_by",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:conductedBy some cco:Person",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that conducted by person",
+      "mean_verbal_length": 41.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Audit"
+      }
+    },
+    {
+      "template_id": "audit_for_period",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:forAuditPeriod some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that for audit period {Y}",
+      "mean_verbal_length": 42.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.Audit"
+      }
+    },
+    {
+      "template_id": "audit_basic",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "{X} is a process",
+      "mean_verbal_length": 16.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F1-subclass",
+        "branch": "GovernanceProcess.Audit"
+      }
+    },
+    {
+      "template_id": "directive_supersedes_directive",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:supersedes some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that supersedes directive information content entity",
+      "mean_verbal_length": 69.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.cross"
+      }
+    },
+    {
+      "template_id": "directive_traces_to_requirement",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:tracesTo some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that traces to directive information content entity",
+      "mean_verbal_length": 68.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.cross"
+      }
+    },
+    {
+      "template_id": "audit_targets_data_artifact",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:auditsControl some cco:Artifact",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that audits control artifact",
+      "mean_verbal_length": 45.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.cross"
+      }
+    },
+    {
+      "template_id": "verification_traces_requirement",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:verifies some cco:DirectiveICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that verifies directive information content entity",
+      "mean_verbal_length": 67.0,
+      "bfo_anchor_path": [
+        "bfo:Process"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "GovernanceProcess.cross"
+      }
+    },
+    {
+      "template_id": "control_with_classification_tier",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:atClassificationTier some cco:DesignativeICE",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is something that at classification tier designative information content entity",
+      "mean_verbal_length": 83.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F2-existential",
+        "branch": "DirectiveICE.cross"
+      }
+    },
+    {
+      "template_id": "directive_union_constraint_or_policy",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:DirectiveICE and ({Y:Class} or {Z:Class})",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is equivalent to directive information content entity and {Y} or {Z}",
+      "mean_verbal_length": 72.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F6-union",
+        "branch": "DirectiveICE"
+      }
+    },
+    {
+      "template_id": "directive_not_obsolete",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, not {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "{X} is not {Y}",
+      "mean_verbal_length": 14.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "provenance": {
+        "author": "scaffolding",
+        "date": "2026-05-10",
+        "family": "F7-negation",
+        "branch": "DirectiveICE"
+      }
+    }
+  ],
+  "null_stats": {}
+}
