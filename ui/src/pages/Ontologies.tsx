@@ -357,7 +357,7 @@ export default function Ontologies() {
                   The upper-level alignment that bespoke vocabularies map
                   into. M1 ships a skeleton; M2 replaces it with the
                   ontology-extraction pipeline output described in{" "}
-                  <Text code>docs/src/pretraining.md</Text>.
+                  <Text code>docs/current/pretraining.md</Text>.
                 </Paragraph>
                 {vocab ? (
                   <Table
