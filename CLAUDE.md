@@ -59,9 +59,9 @@ uv run --no-sync python train.py --smoke-test --model-size tiny --epochs 3  # Tr
 # Multi-GPU training (e.g. 6x RTX 4090)
 uv run --no-sync torchrun --nproc_per_node=6 train.py --smoke-test --model-size small --epochs 30
 
-# Docs
-mdbook build docs/
-mdbook serve docs/
+# Docs (mdbook layout: book root at docs/current/, sources at docs/current/src/)
+just docs-build           # → docs/current/book/
+just docs-serve           # → http://localhost:3000
 
 # Package management — `uv sync` and bare `uv run` will re-resolve deps and wipe patched wheels
 uv add <package>

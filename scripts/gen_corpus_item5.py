@@ -2,7 +2,7 @@
 """Corpus item 5: synthetic Schema.org tables with known-ground-truth labels.
 
 This is the scaffolded (no-LLM-required) first pass of the ontology-grounded
-synthetic-data pipeline described in docs/current/pretraining.md. The full
+synthetic-data pipeline described in docs/current/src/pretraining.md. The full
 pipeline uses LLM calls (GLM-4.7 / Cerebras) to generate semantically-
 rich text from BFO-aligned ontologies; here we replace the LLM with a
 templated generator that still produces useful byte-level pretraining

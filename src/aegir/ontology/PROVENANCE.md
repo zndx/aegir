@@ -4,7 +4,7 @@ This document is for code reviewers of any PR that touches the
 ontology — `sdg-vocab.ttl`, `catalog/*.json`, or any
 `aegir.ontology.*` Python module. It distills the editorial
 discipline from
-[`docs/current/ontology/charter.md#provenance-discipline`](../../docs/current/ontology/charter.md)
+[`docs/current/src/ontology/charter.md#provenance-discipline`](../../docs/current/src/ontology/charter.md)
 into a checklist that a reviewer can run through in five minutes.
 
 The discipline is editorial — there is no script that decides
@@ -64,7 +64,7 @@ come from?" is part of demonstrating belonging.
 ## What this guide is not
 
 - It is **not** a script. The mechanical CI checks
-  ([Charter §Mechanical checks](../../docs/current/ontology/charter.md#mechanical-checks))
+  ([Charter §Mechanical checks](../../docs/current/src/ontology/charter.md#mechanical-checks))
   cover structural integrity (TTL parses, label + definition
   present, BFO ancestry for `sdg:` terms, label-map JSON
   consistency, SPARQL totality). They do not assess provenance.

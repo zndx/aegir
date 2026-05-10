@@ -2,7 +2,7 @@
 
 Implements the topic-alignment piece of the four-component
 verifier R(O, I) defined in
-``docs/current/ontology/concept_brief.md`` v0.5. The brief commits
+``docs/current/src/ontology/concept_brief.md`` v0.5. The brief commits
 to BERTopic + Hungarian matching; this module implements the
 methodologically-equivalent **sentence-embedding + KMeans
 clustering + Hungarian matching** chain that captures the same

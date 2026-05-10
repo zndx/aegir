@@ -170,8 +170,8 @@ on either extension.
   GitTables, WikiTables; `base` config (~500M params).
 
 Full roadmap with empirical gates and the far-future K2.5 RL post-training
-track is in `docs/current/roadmap.md`. The ontology contract and migration
-plan are in `docs/current/ontology/`.
+track is in `docs/current/src/roadmap.md`. The ontology contract and migration
+plan are in `docs/current/src/ontology/`.
 
 ## References
 
@@ -181,5 +181,5 @@ plan are in `docs/current/ontology/`.
 - RWKV-7 kernels: [flash-linear-attention](https://github.com/fla-org/flash-linear-attention)
 - LatentMAS (inspiration, not direct port): [Latent Collaboration in Multi-Agent Systems](https://arxiv.org/abs/2511.20639)
 - Kimi K2.5 PARL (inspiration): [Visual Agentic Intelligence](https://arxiv.org/abs/2602.02276)
-- Project docs: `docs/` (built via `mdbook build docs/`). Architecture
-  details: `CLAUDE.md` for the traps + block-type truth table.
+- Project docs: `docs/current/` (mdbook root; build via `just docs-build`).
+  Architecture details: `CLAUDE.md` for the traps + block-type truth table.

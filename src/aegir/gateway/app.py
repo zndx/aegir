@@ -330,7 +330,7 @@ def _register_api_routes(app: FastAPI) -> None:
             ],
             "note": (
                 "M1 skeleton; M2 expands via the ontology-extraction pipeline "
-                "(docs/current/pretraining.md, Stage 2)."
+                "(docs/current/src/pretraining.md, Stage 2)."
             ),
         }
 

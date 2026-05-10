@@ -104,6 +104,27 @@ _restore-patched-wheels:
 check-ontology-schema:
     uv run --no-sync python scripts/check_ontology_schema.py
 
+# ── mdbook documentation ──────────────────────────────────────
+#
+# The book lives at ``docs/current/`` (standard ``mdbook init``
+# layout): config at ``docs/current/book.toml``, sources under
+# ``docs/current/src/``, theme at ``docs/current/theme/``, generated
+# HTML at ``docs/current/book/``. Per-session scratch + archived
+# chapters live outside this book root and are excluded from the
+# build.
+#
+# These recipes work identically from any worktree because they
+# pin the absolute book path rather than relying on a relative
+# cwd.
+docs-build:
+    mdbook build docs/current
+
+docs-serve:
+    mdbook serve docs/current --open
+
+docs-clean:
+    rm -rf docs/current/book docs/current/src/d2
+
 # Run the SDG runtime verifier on a composition. P1b-α scope:
 # R_A + R_B + R_C; R_D stubbed at 0.0 until P1b-β.
 #   just aegir-verify path/to/composition.json
@@ -346,7 +367,7 @@ get-benchmarks:
 #                                                  expected to land below
 #                                                  REVEAL's 0.815 until we
 #                                                  add pretraining per
-#                                                  docs/current/pretraining.md)
+#                                                  docs/current/src/pretraining.md)
 
 benchmarks-quick:
     #!/usr/bin/env bash
@@ -417,7 +438,7 @@ benchmarks-full:
 # same 8-MMR-context serialization, same ~2kB per-column budget,
 # 50 epochs to match their fine-tuning runs. Honest-comparison row for
 # the leaderboard; expected numbers below 0.815 until we layer in
-# ontology-grounded pretraining (docs/current/pretraining.md).
+# ontology-grounded pretraining (docs/current/src/pretraining.md).
 #
 # Override: ``REVEAL_TASKS="sotab sotab-re" just benchmarks-reveal-match``
 benchmarks-reveal-match:

@@ -10,8 +10,15 @@ devenv.local.yaml
 .pre-commit-config.yaml
 
 # mdbook build output
-docs/book/
-docs/current/d2/
+# The book lives at ``docs/current/`` (mdbook init layout). Both of the
+# below are reproducible from ``docs/current/src/`` via
+# ``mdbook build docs/current`` (or ``just docs-build``):
+#   - ``docs/current/book/``     — generated HTML
+#   - ``docs/current/src/d2/``   — d2 preprocessor SVGs (relative
+#                                  to the source dir per the d2
+#                                  plugin's ``output-dir = "d2"``)
+docs/current/book/
+docs/current/src/d2/
 
 # Python
 __pycache__/

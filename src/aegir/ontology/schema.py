@@ -1,7 +1,7 @@
 """Catalog schema for the procedural ontology pipeline.
 
 The catalog *C* is the central data artifact of the ontology / RLVR
-research thread (see ``docs/current/ontology/concept_brief.md``).
+research thread (see ``docs/current/src/ontology/concept_brief.md``).
 Each row is an OWL Manchester-syntax template with typed slots,
 plus DeepOnto-derived metadata cached at catalog-construction time.
 At runtime the verifier and the policy consume *C* by lookup; no
