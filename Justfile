@@ -163,33 +163,44 @@ p4-smoke:
 # P5 launcher: GRPO/RLVR training of an SAE-Res-Qwen3.5 base
 # against the locked SDG verifier.
 #
-# Two parallelism regimes, routed by ``--policy-preset``:
+# Three parallelism regimes, routed by ``--policy-preset``:
 #
 #   ``9b-local-l0-{50,100}`` (default 9b-local-l0-50):
 #     Qwen3.5-9B-Base unsharded on a single 4090. No FSDP,
-#     plain ``uv run python``. The fast-iteration loop on the
-#     Tinybox; everything from policy load through SAE attach
-#     to the first GRPO step lands in ~2 min wall-clock.
+#     plain ``uv run python``. Tightest memory envelope on a
+#     24 GB card — works with ``--sae-num-layers 2`` but
+#     leaves little headroom for the 8-way GRPO generation
+#     batch.
+#
+#   ``9b-fsdp-l0-{50,100}``:
+#     Qwen3.5-9B-Base FSDP-sharded across 2 4090s on the
+#     Tinybox. ~9 GB param shard per GPU, leaving ~15 GB
+#     headroom for SAE (rank 0), LoRA state, activations, KV
+#     cache. The other 4 GPUs stay free for UI / secondary
+#     worktree work. Use this when 9b-local OOMs on the first
+#     generation step.
 #
 #   ``27b-fsdp-l0-100`` (LambdaLabs production target):
-#     Qwen3.5-27B FSDP-sharded across N GPUs via accelerate.
-#     TP is not viable at TP=6 (GQA num_kv_heads=4 doesn't
-#     divide 6); FSDP avoids the divisibility constraint.
-#     Run on a host with adequate VRAM (8× A100 80GB or
-#     equivalent on LambdaLabs).
+#     Qwen3.5-27B FSDP-sharded across 6 GPUs on the Tinybox or
+#     more on LambdaLabs. TP is not viable at TP=6 (GQA
+#     num_kv_heads=4 doesn't divide 6); FSDP avoids the
+#     divisibility constraint.
 #
 # Examples:
 #
 #   just p5-train --dry-run                            # pre-flight
 #   just p5-train                                      # 9B-local default
+#   just p5-train --policy-preset 9b-fsdp-l0-50        # 2 GPUs, comfy headroom
 #   just p5-train --policy-preset 9b-local-l0-100      # denser SAE ablation
-#   just p5-train --policy-preset 27b-fsdp-l0-100      # FSDP path
+#   just p5-train --policy-preset 27b-fsdp-l0-100      # 27B FSDP path
 #   just p5-train --resume                             # strict-resume
 #   just p5-train --resume --no-strict-resume          # override
 #
-# Routing logic: any ``--dry-run`` or ``9b-local-*`` invocation
-# uses plain ``uv run python``. Only the explicit ``27b-fsdp-*``
-# path goes through ``accelerate launch --use_fsdp``.
+# Routing logic: any ``--dry-run`` invocation uses plain
+# ``uv run python``. ``9b-local-*`` runs single-process.
+# ``9b-fsdp-*`` and ``27b-fsdp-*`` go through
+# ``accelerate launch --use_fsdp`` with ``--num_processes``
+# matching the preset (2 for 9b-fsdp, 6 for 27b-fsdp).
 p5-train *args:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -210,9 +221,25 @@ p5-train *args:
     EOF
         exit 2
     fi
+    # Reduce fragmentation: the 24 GB envelope on a single 4090 is
+    # tight at 9B + LoRA + 2 SAE layers + 8-way GRPO generation
+    # activations + KV cache. ``expandable_segments:True`` lets
+    # PyTorch's caching allocator grow segments rather than fragment
+    # into many fixed-size blocks; observed OOMs at "21.9 GB allocated,
+    # 564 MiB reserved-but-unallocated" recover with this flag.
+    export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+    # Detect parallelism + num_processes from the policy preset.
+    # ``*-fsdp-*`` presets route through accelerate launch with the
+    # preset's matching num_processes; everything else (default
+    # 9b-local-l0-50, ``--dry-run`` anywhere) runs single-process.
     is_single_gpu=true
-    if [[ " {{args}} " == *" --policy-preset 27b-fsdp-"* ]]; then
+    num_processes=1
+    if [[ " {{args}} " == *" --policy-preset 9b-fsdp-"* ]]; then
         is_single_gpu=false
+        num_processes=2
+    elif [[ " {{args}} " == *" --policy-preset 27b-fsdp-"* ]]; then
+        is_single_gpu=false
+        num_processes=6
     fi
     if [[ " {{args}} " == *" --dry-run "* ]]; then
         uv run --no-sync python scripts/p5_train.py {{args}}
@@ -254,7 +281,7 @@ p5-train *args:
         # native bf16 dtype propagate end-to-end keeps both sides
         # of every matmul aligned.
         uv run --no-sync accelerate launch \
-            --num_processes 6 \
+            --num_processes "$num_processes" \
             --use_fsdp \
             --fsdp_sharding_strategy FULL_SHARD \
             --fsdp_auto_wrap_policy TRANSFORMER_BASED_WRAP \

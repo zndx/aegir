@@ -91,13 +91,15 @@ def parse_args() -> argparse.Namespace:
                         "drive this run. Recorded in RunMetadata for "
                         "post-hoc traceability.")
     p.add_argument("--policy-preset", default="9b-local-l0-50",
-                   choices=("9b-local-l0-50", "9b-local-l0-100", "27b-fsdp-l0-100"),
+                   choices=("9b-local-l0-50", "9b-local-l0-100",
+                            "9b-fsdp-l0-50", "9b-fsdp-l0-100",
+                            "27b-fsdp-l0-100"),
                    help="Pre-baked (base_model, sae_adapter, parallelism) "
-                        "tuple. ``9b-local-l0-*`` runs unsharded on a "
-                        "single 4090 (fast iteration on the Tinybox); "
-                        "``27b-fsdp-l0-100`` requires FSDP via "
-                        "``accelerate launch`` (LambdaLabs production "
-                        "target). Defaults to 9b-local-l0-50.")
+                        "tuple. ``9b-local-*`` runs unsharded on a single "
+                        "4090 (fast iteration); ``9b-fsdp-*`` runs 9B "
+                        "FSDP-sharded across 2 GPUs on the Tinybox; "
+                        "``27b-fsdp-l0-100`` is the LambdaLabs production "
+                        "target. Defaults to 9b-local-l0-50.")
     p.add_argument("--sae-attach", choices=("auto", "off"), default="auto",
                    help="Attach SAE residual-stream observers. ``auto`` "
                         "downloads + attaches the default 8-layer subset; "

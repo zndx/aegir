@@ -98,6 +98,13 @@ class PolicyConfig:
 #                      as L0=50 but on the 27B base with the wider
 #                      W=80K dictionary.
 POLICY_PRESETS: dict[str, dict] = {
+    # ── 9B local (single 4090) ──────────────────────────────
+    #
+    # 9B-bf16 = 18 GB, plus 2 SAE layers (~2 GB) + LoRA state +
+    # generation activations + KV cache. Sits at the 24 GB
+    # envelope edge; OOM was observed during the first GRPO
+    # step's 8-way generation. Use the FSDP variants below
+    # when more headroom is needed.
     "9b-local-l0-50": dict(
         base_model_id="Qwen/Qwen3.5-9B-Base",
         sae_adapter_repo_id="Qwen/SAE-Res-Qwen3.5-9B-Base-W64K-L0_50",
@@ -110,6 +117,26 @@ POLICY_PRESETS: dict[str, dict] = {
         parallelism_strategy="single",
         n_gpus=1,
     ),
+    # ── 9B FSDP (2× 4090) ────────────────────────────────────
+    #
+    # FSDP FULL_SHARD across 2 GPUs: ~9 GB param shard per GPU,
+    # leaving ~15 GB headroom for SAE (rank 0), LoRA state,
+    # activations, KV cache. Comfortable on the Tinybox without
+    # consuming all 6 GPUs. The other 4 GPUs are free for
+    # parallel UI work, secondary worktree experiments, etc.
+    "9b-fsdp-l0-50": dict(
+        base_model_id="Qwen/Qwen3.5-9B-Base",
+        sae_adapter_repo_id="Qwen/SAE-Res-Qwen3.5-9B-Base-W64K-L0_50",
+        parallelism_strategy="fsdp",
+        n_gpus=2,
+    ),
+    "9b-fsdp-l0-100": dict(
+        base_model_id="Qwen/Qwen3.5-9B-Base",
+        sae_adapter_repo_id="Qwen/SAE-Res-Qwen3.5-9B-Base-W64K-L0_100",
+        parallelism_strategy="fsdp",
+        n_gpus=2,
+    ),
+    # ── 27B FSDP (6× 4090, or LambdaLabs 8× A100) ──────────
     "27b-fsdp-l0-100": dict(
         base_model_id="Qwen/Qwen3.5-27B",
         sae_adapter_repo_id="Qwen/SAE-Res-Qwen3.5-27B-W80K-L0_100",
