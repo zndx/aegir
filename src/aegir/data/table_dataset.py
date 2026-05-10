@@ -33,7 +33,7 @@ GT_SIGNALS_DBPEDIA_DEFAULT_DIR = Path(
 # benchmarks, used by ``train.py::make_model`` when the dataset hasn't
 # been loaded yet (e.g. smoke-test path).
 TASK_NUM_CLASSES = {
-    "sotab": 91,           # Schema.org CTA
+    "sotab": 82,           # Schema.org CTA — verified at the union of v2 train/val/test/robustness CSVs
     "sotab-re": 176,       # Schema.org CPA
     "sotab-dbp": 101,      # DBpedia CTA (official: 101 types)
     "sotab-dbp-re": 53,    # DBpedia CPA

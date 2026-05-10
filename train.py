@@ -26,8 +26,41 @@ from torch.utils.data import DataLoader, Dataset, DistributedSampler, RandomSamp
 
 from aegir.models.config import AegirConfig, SSMConfig, AttnConfig, RWKVConfig
 from aegir.models.heads import AegirForColumnAnnotation, ColumnAnnotationOutput
-from aegir.utils.train import load_balancing_loss, group_params, f1_score_multilabel
-from aegir.data.table_dataset import TASK_NUM_CLASSES, CPA_TASKS
+from aegir.utils.runs import RunArtifacts
+from aegir.utils.train import (
+    load_balancing_loss,
+    group_params,
+    f1_score_multilabel,
+    boundary_diagnostics,
+    format_boundary_diagnostics,
+)
+from aegir.data.table_dataset import (
+    TASK_NUM_CLASSES,
+    CPA_TASKS,
+    GitTablesSignalsDataset,
+    GitTablesDbpediaDataset,
+    GitTablesSchemaorgDataset,
+    SotabCTADataset,
+    SotabCPADataset,
+    SotabCTADbpediaDataset,
+    SotabCPADbpediaDataset,
+)
+from aegir.data.tokenizer import ByteTokenizer
+
+
+# Task id → Dataset class. train.py uses this to dispatch real-data
+# loading when the user passes ``--task <id>`` without ``--smoke-test``.
+# ``just benchmarks`` iterates over this table (minus smoke aliases) so
+# registering a new benchmark here is the only wiring required.
+TASK_DATASET_CLASSES = {
+    "gt-signals-dbpedia":   GitTablesSignalsDataset,
+    "sotab":                SotabCTADataset,
+    "sotab-re":             SotabCPADataset,
+    "sotab-dbp":            SotabCTADbpediaDataset,
+    "sotab-dbp-re":         SotabCPADbpediaDataset,
+    "gittables-dbpedia":    GitTablesDbpediaDataset,
+    "gittables-schemaorg":  GitTablesSchemaorgDataset,
+}
 
 
 def set_seed(seed: int):
@@ -51,7 +84,7 @@ def get_cosine_schedule_with_warmup(optimizer, num_warmup_steps, num_training_st
 class SyntheticTableDataset(Dataset):
     """Synthetic dataset for smoke testing — no real data needed."""
 
-    def __init__(self, num_samples=256, seq_len=64, vocab_size=65536, num_classes=91):
+    def __init__(self, num_samples=256, seq_len=64, vocab_size=65536, num_classes=82):
         self.num_samples = num_samples
         self.seq_len = seq_len
         self.vocab_size = vocab_size
@@ -100,9 +133,91 @@ def collate_fn(batch):
     }
 
 
+def _make_datasets(args, is_main: bool):
+    """Build (train, val) datasets. Smoke-test uses synthetic; otherwise
+    dispatches via TASK_DATASET_CLASSES and requires the real data on disk.
+
+    Keeps dataset construction out of main() so num_classes can be
+    reconciled against the real label vocab before the model is built.
+    """
+    if args.smoke_test:
+        num_classes = args.num_classes or TASK_NUM_CLASSES.get(args.task, 82)
+        train_dataset = SyntheticTableDataset(
+            num_samples=256, seq_len=args.max_length,
+            vocab_size=args.vocab_size, num_classes=num_classes,
+        )
+        val_dataset = SyntheticTableDataset(
+            num_samples=64, seq_len=args.max_length,
+            vocab_size=args.vocab_size, num_classes=num_classes,
+        )
+        if is_main:
+            print(f"Using synthetic data: {len(train_dataset)} train, {len(val_dataset)} val")
+        return train_dataset, val_dataset
+
+    if args.task not in TASK_DATASET_CLASSES:
+        raise NotImplementedError(
+            f"Real dataset loading for task={args.task!r} is not yet implemented. "
+            f"Supported: {sorted(TASK_DATASET_CLASSES)}. "
+            f"Pass --smoke-test to use synthetic data instead."
+        )
+    dataset_cls = TASK_DATASET_CLASSES[args.task]
+    tokenizer = ByteTokenizer()
+    train_dataset = dataset_cls(
+        data_dir=args.data_dir,
+        split="train",
+        tokenizer=tokenizer,
+        max_length=args.max_length,
+        max_context_cols=args.max_context_cols,
+    )
+    val_dataset = dataset_cls(
+        data_dir=args.data_dir,
+        split="val",
+        tokenizer=tokenizer,
+        max_length=args.max_length,
+        max_context_cols=args.max_context_cols,
+    )
+    if is_main:
+        print(f"Loaded {args.task}: {len(train_dataset)} train, {len(val_dataset)} val")
+    return train_dataset, val_dataset
+
+
+def _observed_num_classes(*datasets) -> int | None:
+    """Return ``max(label)+1`` across the provided datasets, or None if empty.
+
+    Treats each dataset sample's ``label`` field as either an int or a
+    sequence (multi-label CPA). None/empty datasets → None.
+    """
+    top = -1
+    for ds in datasets:
+        if ds is None or len(ds) == 0:
+            continue
+        for i in range(len(ds)):
+            lbl = ds[i]["label"]
+            if hasattr(lbl, "max"):
+                v = int(lbl.max())
+            else:
+                v = int(lbl)
+            if v > top:
+                top = v
+    return top + 1 if top >= 0 else None
+
+
 def make_model(args) -> AegirForColumnAnnotation:
-    """Create model from args."""
-    num_classes = TASK_NUM_CLASSES.get(args.task, args.num_classes)
+    """Create model from args.
+
+    Respects ``args.num_classes`` when explicitly set (e.g. train.py has
+    already probed the loaded dataset and knows the *real* vocab size);
+    otherwise falls back to the pinned ``TASK_NUM_CLASSES`` entry. This
+    matters for datasets whose label vocab is discovered at load time
+    (GitTables 1M has ~1100+ DBpedia IRIs, not the 835 figure the paper
+    headlines — properties + classes combined).
+    """
+    num_classes = args.num_classes or TASK_NUM_CLASSES.get(args.task)
+    if num_classes is None:
+        raise ValueError(
+            f"num_classes undetermined for task={args.task!r}. "
+            f"Set --num-classes explicitly or register in TASK_NUM_CLASSES."
+        )
 
     if args.model_size == "tiny":
         config = AegirConfig(
@@ -146,6 +261,17 @@ def make_model(args) -> AegirForColumnAnnotation:
     return AegirForColumnAnnotation(config)
 
 
+def _accumulate_boundary(accum: dict[str, float], diag: dict[str, float]) -> None:
+    for k, v in diag.items():
+        accum[k] = accum.get(k, 0.0) + v
+
+
+def _finalize_boundary(accum: dict[str, float], num_batches: int) -> dict[str, float]:
+    if num_batches == 0:
+        return {}
+    return {k: v / num_batches for k, v in accum.items()}
+
+
 def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args):
     """Run one training epoch."""
     model.train()
@@ -156,8 +282,12 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args):
     all_labels = []
     is_cpa = args.task in CPA_TASKS
     num_batches = 0
+    boundary_accum: dict[str, float] = {}
 
-    for batch in loader:
+    max_steps = getattr(args, "max_train_steps", 0) or 0
+    for step_idx, batch in enumerate(loader):
+        if max_steps and step_idx >= max_steps:
+            break
         input_ids = batch["input_ids"].to(device)
         role_ids = batch["role_ids"].to(device)
         cls_indexes = batch["cls_indexes"].to(device)
@@ -193,6 +323,11 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args):
         total_lb_loss += lb_loss.item()
         num_batches += 1
 
+        _accumulate_boundary(
+            boundary_accum,
+            boundary_diagnostics(output.bpred_output, target_N=args.downsample_factor),
+        )
+
         if is_cpa:
             preds = (output.logits.detach() >= 0.0).int().cpu().numpy()
         else:
@@ -212,6 +347,7 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args):
         "lb_loss": avg_lb_loss,
         "micro_f1": micro_f1,
         "macro_f1": macro_f1,
+        "boundary": _finalize_boundary(boundary_accum, num_batches),
     }
 
 
@@ -224,6 +360,7 @@ def evaluate(model, loader, loss_fn, device, args):
     all_labels = []
     is_cpa = args.task in CPA_TASKS
     num_batches = 0
+    boundary_accum: dict[str, float] = {}
 
     for batch in loader:
         input_ids = batch["input_ids"].to(device)
@@ -241,6 +378,11 @@ def evaluate(model, loader, loss_fn, device, args):
         total_loss += loss.item()
         num_batches += 1
 
+        _accumulate_boundary(
+            boundary_accum,
+            boundary_diagnostics(output.bpred_output, target_N=args.downsample_factor),
+        )
+
         if is_cpa:
             preds = (output.logits >= 0.0).int().cpu().numpy()
         else:
@@ -255,6 +397,7 @@ def evaluate(model, loader, loss_fn, device, args):
         "loss": avg_loss,
         "micro_f1": micro_f1,
         "macro_f1": macro_f1,
+        "boundary": _finalize_boundary(boundary_accum, num_batches),
     }
 
 
@@ -289,6 +432,16 @@ def main():
     parser.add_argument("--output-dir", type=str, default="outputs")
     parser.add_argument("--smoke-test", action="store_true", help="Use synthetic data for smoke testing")
     parser.add_argument("--log-interval", type=int, default=10)
+    # Fast-path flags for benchmark smoke runs. Non-zero caps truncate
+    # the respective loader so a single tiny-model pass through every
+    # registered benchmark stays under 5-10 min. Defaults 0 = unlimited
+    # (production behaviour).
+    parser.add_argument("--max-train-samples", type=int, default=0,
+                        help="Truncate train set to N samples (0 = full set).")
+    parser.add_argument("--max-val-samples", type=int, default=0,
+                        help="Truncate val set to N samples (0 = full set).")
+    parser.add_argument("--max-train-steps", type=int, default=0,
+                        help="Cap optimizer steps per epoch (0 = full train loader).")
 
     args = parser.parse_args()
     if args.no_amp:
@@ -318,11 +471,50 @@ def main():
         print(f"AMP: {args.amp}")
         print()
 
+    # Run artifact writer (only on rank 0 — avoid duplicate sidecars under DDP).
+    run = None
+    if is_main:
+        run = RunArtifacts.start(args, runs_root=Path(args.output_dir) / "runs")
+        print(f"Run ID: {run.run_id}")
+
+    # ── Dataset first, so num_classes can be discovered from the actual
+    # label vocab before we build a model of the wrong output shape. ──
+    train_dataset, val_dataset = _make_datasets(args, is_main)
+
+    # Optional subsampling for fast benchmark smoke runs.
+    if args.max_train_samples and len(train_dataset) > args.max_train_samples:
+        from torch.utils.data import Subset
+        train_dataset = Subset(train_dataset, list(range(args.max_train_samples)))
+        if is_main:
+            print(f"Subsampled train to first {args.max_train_samples} samples")
+    if args.max_val_samples and len(val_dataset) > args.max_val_samples:
+        from torch.utils.data import Subset
+        val_dataset = Subset(val_dataset, list(range(args.max_val_samples)))
+        if is_main:
+            print(f"Subsampled val to first {args.max_val_samples} samples")
+
+    # Reconcile num_classes against the dataset's actual label vocab
+    # (matters for GitTables where the paper's 835 figure differs from
+    # the live data). Prefer max(label)+1 over len(vocab) because sparse
+    # label indices also work.
+    actual_num_classes = _observed_num_classes(train_dataset, val_dataset)
+    task_default = TASK_NUM_CLASSES.get(args.task)
+    if actual_num_classes is not None:
+        args.num_classes = max(actual_num_classes, task_default or 0)
+        if is_main and task_default and actual_num_classes > task_default:
+            print(f"Note: observed {actual_num_classes} label classes in dataset, "
+                  f"exceeds TASK_NUM_CLASSES[{args.task!r}]={task_default}. "
+                  f"Using {args.num_classes}.")
+    else:
+        args.num_classes = task_default
+
     # Model
     model = make_model(args)
     num_params = sum(p.numel() for p in model.parameters())
     if is_main:
         print(f"Parameters: {num_params:,}")
+        if run is not None:
+            run.set_num_params(num_params)
 
     model = model.to(device)
 
@@ -332,25 +524,7 @@ def main():
     else:
         raw_model = model
 
-    # Dataset
-    if args.smoke_test or args.data_dir is None:
-        num_classes = TASK_NUM_CLASSES.get(args.task, args.num_classes)
-        train_dataset = SyntheticTableDataset(
-            num_samples=256, seq_len=args.max_length,
-            vocab_size=args.vocab_size, num_classes=num_classes,
-        )
-        val_dataset = SyntheticTableDataset(
-            num_samples=64, seq_len=args.max_length,
-            vocab_size=args.vocab_size, num_classes=num_classes,
-        )
-        if is_main:
-            print(f"Using synthetic data: {len(train_dataset)} train, {len(val_dataset)} val")
-    else:
-        raise NotImplementedError(
-            "Real dataset loading not yet implemented. "
-            "Use --smoke-test for testing with synthetic data."
-        )
-
+    # Dataset already built above; the DataLoaders come from it.
     # DataLoaders
     if is_distributed:
         train_sampler = DistributedSampler(train_dataset, shuffle=True)
@@ -414,6 +588,25 @@ def main():
                 f"F1={val_metrics['micro_f1']:.3f}/{val_metrics['macro_f1']:.3f} | "
                 f"{train_time:.1f}s"
             )
+            train_chunk_line = format_boundary_diagnostics(train_metrics.get("boundary", {}))
+            if train_chunk_line:
+                print(f"  train {train_chunk_line}")
+            val_chunk_line = format_boundary_diagnostics(val_metrics.get("boundary", {}))
+            if val_chunk_line:
+                print(f"  val   {val_chunk_line}")
+
+            if run is not None:
+                run.add_epoch_metrics({
+                    "epoch": epoch + 1,
+                    "train_loss": train_metrics["loss"],
+                    "train_task_loss": train_metrics.get("task_loss"),
+                    "train_lb_loss": train_metrics.get("lb_loss"),
+                    "val_loss": val_metrics["loss"],
+                    "micro_f1": val_metrics["micro_f1"],
+                    "macro_f1": val_metrics["macro_f1"],
+                    "boundary": val_metrics.get("boundary", {}),
+                    "wall_seconds": train_time,
+                })
 
             if val_metrics["macro_f1"] > best_val_f1:
                 best_val_f1 = val_metrics["macro_f1"]
@@ -426,6 +619,9 @@ def main():
         if best_model_state is not None:
             torch.save(best_model_state, output_dir / "best_model.pt")
             print(f"Best model saved to {output_dir / 'best_model.pt'}")
+        if run is not None:
+            run.finalize()
+            print(f"Run artifacts: {run.run_dir}")
 
     if is_distributed:
         torch.distributed.destroy_process_group()
