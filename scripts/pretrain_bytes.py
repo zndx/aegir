@@ -2,7 +2,7 @@
 """Byte-level pretraining for Aegir on raw GitTables (Stage B).
 
 This is the "dense-supervision" half of the sparse→dense reframe
-(see docs/src/training_regime.md). Reads GitTables parquets,
+(see docs/current/training_regime.md). Reads GitTables parquets,
 serializes each table to a byte stream, feeds Aegir its native
 next-byte prediction objective via AegirForCausalLM.
 

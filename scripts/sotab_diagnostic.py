@@ -34,7 +34,7 @@ Outputs at build/diagnostics/sotab/{run_id}/:
 Why MCL: we report hierarchical-F1 alongside exact-F1 at eval time, but
 we never VERIFY that the embedding geometry actually has hierarchy
 recoverable from raw similarity. MCL-inflation-sweep is the audit —
-see docs/notes/2026-04-19/ for the reasoning chain.
+see docs/scratch/2026-04-19/ for the reasoning chain.
 """
 from __future__ import annotations
 

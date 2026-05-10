@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Corpus survey item 1: pull the small high-signal pieces.
 
-Per docs/notes/2026-04-20/162800_corpus_survey_metadata_domain.md,
+Per docs/scratch/2026-04-20/162800_corpus_survey_metadata_domain.md,
 these are the cheap wins — small enough to fetch in minutes, concentrated
 enough in our domain to justify inclusion by themselves.
 
@@ -36,7 +36,7 @@ log = logging.getLogger("corpus_item1")
 DEFAULT_DEST = Path("/raid/datasets/aegir-corpus-v1")
 
 # Direct-download ontology URLs (stable, no auth).
-# Verified 2026-04-20; see docs/notes/2026-04-20/162800 survey.
+# Verified 2026-04-20; see docs/scratch/2026-04-20/162800 survey.
 ONTOLOGY_URLS = {
     "schemaorg.jsonld":  "https://schema.org/version/latest/schemaorg-current-https.jsonld",
     # DBpedia ontology: served from the mappings server; the dbpedia.org
