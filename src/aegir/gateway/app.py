@@ -30,7 +30,7 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from aegir.config import Config, load_config
@@ -370,6 +370,94 @@ def _register_api_routes(app: FastAPI) -> None:
             "predictor": "stub-m1",
         }
 
+    # ── /api/p5/runs ──────────────────────────────────────────
+    #
+    # P5 GRPO/RLVR run discovery. Walks ``cfg.p5.output_dir`` for
+    # ``checkpoint-N`` subdirs, returns one row per checkpoint with
+    # the run's RunMetadata sidecar + a count of SAE feature
+    # records spilled to that checkpoint. The UI uses this to
+    # render the run list and pick a run to subscribe to.
+
+    @app.get("/api/p5/runs")
+    def p5_runs() -> dict:
+        cfg: Config = app.state.cfg
+        p5_dir = Path(cfg.p5.output_dir)
+        if not p5_dir.exists():
+            return {
+                "rows": [],
+                "p5_dir": str(p5_dir),
+                "p5_dir_exists": False,
+            }
+
+        rows = _list_p5_checkpoints(p5_dir, cfg.p5.metadata_filename, cfg.p5.sae_log_filename)
+        return {
+            "rows": rows,
+            "count": len(rows),
+            "p5_dir": str(p5_dir),
+            "p5_dir_exists": True,
+        }
+
+    # ── /api/p5/sae/stream ────────────────────────────────────
+    #
+    # Server-sent-events stream of SAE feature records as the
+    # trainer spills them. The training process writes
+    # ``checkpoint-N/sae_features.jsonl`` on every save event;
+    # this endpoint tails the latest file and emits one SSE
+    # ``data:`` line per JSON record. When the trainer rolls a
+    # new checkpoint we emit a synthetic ``event: checkpoint``
+    # marker so the UI can reset its plot state.
+    #
+    # Cross-worktree: the training process runs in this repo's
+    # worktree, the UI in another worktree, both share the
+    # ``p5.output_dir`` filesystem path. No additional IPC needed.
+
+    @app.get("/api/p5/sae/stream")
+    async def p5_sae_stream() -> StreamingResponse:
+        cfg: Config = app.state.cfg
+        p5_dir = Path(cfg.p5.output_dir)
+        sae_filename = cfg.p5.sae_log_filename
+
+        async def event_gen():
+            import asyncio
+            last_step = -1
+            last_pos = 0
+            heartbeat_every = 20  # cycles of poll_seconds → ~10s
+            tick = 0
+            poll_seconds = 0.5
+            while True:
+                ck = _latest_p5_checkpoint(p5_dir)
+                if ck is None:
+                    yield "event: idle\ndata: {\"reason\": \"no checkpoints yet\"}\n\n"
+                    await asyncio.sleep(2.0)
+                    continue
+                step = _checkpoint_step(ck)
+                sae_path = ck / sae_filename
+                if step != last_step:
+                    last_step = step
+                    last_pos = 0
+                    yield (
+                        f"event: checkpoint\n"
+                        f"data: {json.dumps({'step': step, 'checkpoint': ck.name})}\n\n"
+                    )
+                if sae_path.exists():
+                    try:
+                        with sae_path.open() as f:
+                            f.seek(last_pos)
+                            for line in f:
+                                line = line.strip()
+                                if not line:
+                                    continue
+                                yield f"data: {line}\n\n"
+                            last_pos = f.tell()
+                    except FileNotFoundError:
+                        pass  # checkpoint rolled mid-read; pick up next tick
+                tick += 1
+                if tick % heartbeat_every == 0:
+                    yield "event: heartbeat\ndata: {}\n\n"
+                await asyncio.sleep(poll_seconds)
+
+        return StreamingResponse(event_gen(), media_type="text/event-stream")
+
 
 # Lightweight keyword → (iri, label, path) map used by the stub subsumption
 # predictor. Intentionally shallow — a real BERTSubs-style model will replace
@@ -426,6 +514,74 @@ _KEYWORD_HINTS: list[tuple[tuple[str, ...], dict]] = [
          "path": _BFO_PATH_INFO},
     ),
 ]
+
+
+def _checkpoint_step(checkpoint_dir: Path) -> int:
+    """Parse ``N`` out of ``checkpoint-N``. Returns -1 on a malformed
+    directory name so callers can sort robustly."""
+    name = checkpoint_dir.name
+    if not name.startswith("checkpoint-"):
+        return -1
+    try:
+        return int(name.split("-", 1)[1])
+    except (ValueError, IndexError):
+        return -1
+
+
+def _latest_p5_checkpoint(p5_dir: Path) -> Path | None:
+    """Return the highest-numbered ``checkpoint-N`` directory under
+    ``p5_dir``, or ``None`` if no valid checkpoints exist. Mirrors
+    ``aegir.rl.checkpointing.latest_checkpoint`` so the gateway has
+    no run-time dependency on the rl package."""
+    if not p5_dir.exists():
+        return None
+    candidates: list[tuple[int, Path]] = []
+    for entry in p5_dir.iterdir():
+        if not entry.is_dir():
+            continue
+        step = _checkpoint_step(entry)
+        if step >= 0:
+            candidates.append((step, entry))
+    if not candidates:
+        return None
+    candidates.sort()
+    return candidates[-1][1]
+
+
+def _list_p5_checkpoints(p5_dir: Path, metadata_filename: str,
+                         sae_log_filename: str) -> list[dict]:
+    """Walk ``p5_dir`` and return one row per ``checkpoint-N`` dir
+    with the run's metadata + a count of SAE feature records spilled
+    to that checkpoint. Skips dirs whose metadata sidecar is missing
+    or unreadable rather than 500-ing on a partial run."""
+    rows: list[dict] = []
+    if not p5_dir.exists():
+        return rows
+    for entry in sorted(p5_dir.iterdir()):
+        step = _checkpoint_step(entry)
+        if step < 0:
+            continue
+        meta_path = entry / metadata_filename
+        try:
+            metadata = json.loads(meta_path.read_text()) if meta_path.exists() else None
+        except Exception:  # noqa: BLE001 — partial write tolerated
+            metadata = None
+        sae_path = entry / sae_log_filename
+        n_sae = 0
+        if sae_path.exists():
+            try:
+                with sae_path.open() as f:
+                    n_sae = sum(1 for line in f if line.strip())
+            except OSError:
+                n_sae = 0
+        rows.append({
+            "step": step,
+            "checkpoint": entry.name,
+            "metadata": metadata,
+            "n_sae_records": n_sae,
+            "checkpoint_dir": str(entry),
+        })
+    return rows
 
 
 def _subsume_stub(term: dict) -> dict:

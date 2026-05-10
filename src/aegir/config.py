@@ -61,6 +61,23 @@ class UiCfg:
 
 
 @dataclass
+class P5Cfg:
+    """P5 GRPO/RLVR checkpoint surface. The gateway exposes a
+    list-runs endpoint + an SSE stream of SAE feature records
+    spilled by ``aegir.rl.sae_logging.SAELogger.spill_to_disk``
+    on every ``Trainer`` save event.
+
+    The default ``output_dir`` matches
+    ``aegir.rl.checkpointing.CheckpointConfig.output_dir`` so
+    a default-config gateway sees the artifacts of a default-
+    config training run with no extra wiring.
+    """
+    output_dir: str = "/raid/checkpoints/p5"
+    sae_log_filename: str = "sae_features.jsonl"
+    metadata_filename: str = "aegir_metadata.json"
+
+
+@dataclass
 class Config:
     gateway: GatewayCfg = field(default_factory=GatewayCfg)
     db: DbCfg = field(default_factory=DbCfg)
@@ -68,6 +85,7 @@ class Config:
     runs: RunsCfg = field(default_factory=RunsCfg)
     data: DataCfg = field(default_factory=DataCfg)
     ui: UiCfg = field(default_factory=UiCfg)
+    p5: P5Cfg = field(default_factory=P5Cfg)
 
     def to_flat_env(self) -> dict[str, str]:
         """Materialize for shell sourcing. Keys in ``AEGIR_*`` form."""
@@ -81,6 +99,7 @@ class Config:
             "AEGIR_RUNS_DIR": self.runs.dir,
             "AEGIR_GITTABLES_DIR": self.data.gittables_signals_dir,
             "AEGIR_UI_DIST": self.ui.dist_dir,
+            "AEGIR_P5_OUTPUT_DIR": self.p5.output_dir,
         }
 
     def to_json_dict(self) -> dict:
@@ -95,6 +114,11 @@ class Config:
             "runs": {"dir": self.runs.dir},
             "data": {"gittables_signals_dir": self.data.gittables_signals_dir},
             "ui": {"dist_dir": self.ui.dist_dir},
+            "p5": {
+                "output_dir": self.p5.output_dir,
+                "sae_log_filename": self.p5.sae_log_filename,
+                "metadata_filename": self.p5.metadata_filename,
+            },
         }
 
 
@@ -144,6 +168,11 @@ def load_config(path: Path | str | None = None) -> Config:
         runs=RunsCfg(dir=_g("runs", "dir", "outputs/runs")),
         data=DataCfg(gittables_signals_dir=_g("data", "gittables_signals_dir", DataCfg.gittables_signals_dir)),
         ui=UiCfg(dist_dir=_g("ui", "dist_dir", "ui/dist")),
+        p5=P5Cfg(
+            output_dir=_g("p5", "output_dir", P5Cfg.output_dir),
+            sae_log_filename=_g("p5", "sae_log_filename", P5Cfg.sae_log_filename),
+            metadata_filename=_g("p5", "metadata_filename", P5Cfg.metadata_filename),
+        ),
     )
     return _apply_env_overrides(cfg)
 
@@ -178,6 +207,8 @@ def _apply_env_overrides(cfg: Config) -> Config:
         cfg.data.gittables_signals_dir = v
     if (v := g("AEGIR_UI_DIST")):
         cfg.ui.dist_dir = v
+    if (v := g("AEGIR_P5_OUTPUT_DIR")):
+        cfg.p5.output_dir = v
     return cfg
 
 
