@@ -77,6 +77,16 @@ class CheckpointConfig:
     sae_log_filename: str = "sae_features.jsonl"
     grpo_metrics_filename: str = "grpo_metrics.jsonl"
 
+    # Live SAE log: a single growing JSONL file at the run root
+    # (``<output_dir>/<sae_live_log_filename>``) flushed every
+    # ``sae_live_spill_every_n_steps`` GRPO steps. The gateway's
+    # SSE stream prefers this over the per-checkpoint snapshots
+    # so the UI worktree sees feature activity in near-real-time
+    # rather than only on checkpoint save (every 50 steps by
+    # default = 30-60 min wall-clock between updates).
+    sae_live_log_filename: str = "sae_features.live.jsonl"
+    sae_live_spill_every_n_steps: int = 1
+
 
 @dataclass
 class RunMetadata:
@@ -253,6 +263,24 @@ def make_sidecar_callback(metadata: RunMetadata, sae_logger=None,
     bound_cfg: CheckpointConfig = cfg if cfg is not None else CheckpointConfig()
 
     class SidecarCallback(TrainerCallback):
+        def on_step_end(self, args, state, _control, **_kwargs):
+            # Live SAE spill: append in-memory records to the
+            # run-root live JSONL every ``sae_live_spill_every_n_steps``
+            # global steps. ``clear=True`` so spilled records aren't
+            # double-counted at the next checkpoint save (the same
+            # record won't appear in both the live tail and the
+            # per-checkpoint snapshot — checkpoints get only the
+            # records produced *between* spill cycles).
+            if not state.is_world_process_zero:
+                return
+            if sae_logger is None or not sae_logger.records:
+                return
+            cadence = max(1, bound_cfg.sae_live_spill_every_n_steps)
+            if state.global_step % cadence != 0:
+                return
+            live_path = Path(args.output_dir) / bound_cfg.sae_live_log_filename
+            sae_logger.spill_to_disk(live_path, clear=True)
+
         def on_save(self, args, state, _control, **_kwargs):
             if not state.is_world_process_zero:
                 return

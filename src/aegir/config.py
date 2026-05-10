@@ -64,16 +64,28 @@ class UiCfg:
 class P5Cfg:
     """P5 GRPO/RLVR checkpoint surface. The gateway exposes a
     list-runs endpoint + an SSE stream of SAE feature records
-    spilled by ``aegir.rl.sae_logging.SAELogger.spill_to_disk``
-    on every ``Trainer`` save event.
+    spilled by ``aegir.rl.sae_logging.SAELogger.spill_to_disk``.
 
-    The default ``output_dir`` matches
-    ``aegir.rl.checkpointing.CheckpointConfig.output_dir`` so
+    Two log files in ``output_dir`` participate in the SSE
+    stream:
+
+    - ``sae_live_log_filename`` (run root) — appended every
+      ``sae_live_spill_every_n_steps`` GRPO steps by
+      ``SidecarCallback.on_step_end``. The gateway tails this
+      preferentially when present, so the UI sees feature
+      activity in near-real-time rather than only on save.
+    - ``sae_log_filename`` (per-checkpoint) — point-in-time
+      snapshot written on every save; primary source for
+      post-hoc analysis and the fallback for the SSE stream
+      when no live log exists.
+
+    Defaults match ``aegir.rl.checkpointing.CheckpointConfig`` so
     a default-config gateway sees the artifacts of a default-
     config training run with no extra wiring.
     """
     output_dir: str = "/raid/checkpoints/p5"
     sae_log_filename: str = "sae_features.jsonl"
+    sae_live_log_filename: str = "sae_features.live.jsonl"
     metadata_filename: str = "aegir_metadata.json"
 
 
@@ -117,6 +129,7 @@ class Config:
             "p5": {
                 "output_dir": self.p5.output_dir,
                 "sae_log_filename": self.p5.sae_log_filename,
+                "sae_live_log_filename": self.p5.sae_live_log_filename,
                 "metadata_filename": self.p5.metadata_filename,
             },
         }
@@ -171,6 +184,7 @@ def load_config(path: Path | str | None = None) -> Config:
         p5=P5Cfg(
             output_dir=_g("p5", "output_dir", P5Cfg.output_dir),
             sae_log_filename=_g("p5", "sae_log_filename", P5Cfg.sae_log_filename),
+            sae_live_log_filename=_g("p5", "sae_live_log_filename", P5Cfg.sae_live_log_filename),
             metadata_filename=_g("p5", "metadata_filename", P5Cfg.metadata_filename),
         ),
     )

@@ -415,42 +415,72 @@ def _register_api_routes(app: FastAPI) -> None:
     async def p5_sae_stream() -> StreamingResponse:
         cfg: Config = app.state.cfg
         p5_dir = Path(cfg.p5.output_dir)
-        sae_filename = cfg.p5.sae_log_filename
+        live_filename = cfg.p5.sae_live_log_filename
+        snapshot_filename = cfg.p5.sae_log_filename
 
         async def event_gen():
             import asyncio
-            last_step = -1
+            # Prefer the run-root live JSONL when present (updated
+            # every ``sae_live_spill_every_n_steps`` GRPO steps);
+            # fall back to the latest checkpoint's snapshot when
+            # the trainer hasn't started spilling live yet.
+            live_path = p5_dir / live_filename
+            last_source = ""  # "live" | "snapshot:<name>" | ""
             last_pos = 0
             heartbeat_every = 20  # cycles of poll_seconds → ~10s
             tick = 0
             poll_seconds = 0.5
             while True:
-                ck = _latest_p5_checkpoint(p5_dir)
-                if ck is None:
-                    yield "event: idle\ndata: {\"reason\": \"no checkpoints yet\"}\n\n"
-                    await asyncio.sleep(2.0)
-                    continue
-                step = _checkpoint_step(ck)
-                sae_path = ck / sae_filename
-                if step != last_step:
-                    last_step = step
-                    last_pos = 0
-                    yield (
-                        f"event: checkpoint\n"
-                        f"data: {json.dumps({'step': step, 'checkpoint': ck.name})}\n\n"
-                    )
-                if sae_path.exists():
+                if live_path.exists():
+                    if last_source != "live":
+                        last_source = "live"
+                        last_pos = 0
+                        yield (
+                            f"event: source\n"
+                            f"data: {json.dumps({'source': 'live', 'path': str(live_path)})}\n\n"
+                        )
+                    yielded = 0
                     try:
-                        with sae_path.open() as f:
+                        with live_path.open() as f:
                             f.seek(last_pos)
                             for line in f:
                                 line = line.strip()
                                 if not line:
                                     continue
                                 yield f"data: {line}\n\n"
+                                yielded += 1
                             last_pos = f.tell()
                     except FileNotFoundError:
-                        pass  # checkpoint rolled mid-read; pick up next tick
+                        last_source = ""
+                        last_pos = 0
+                else:
+                    ck = _latest_p5_checkpoint(p5_dir)
+                    if ck is None:
+                        yield "event: idle\ndata: {\"reason\": \"no live log and no checkpoints yet\"}\n\n"
+                        await asyncio.sleep(2.0)
+                        continue
+                    src = f"snapshot:{ck.name}"
+                    if last_source != src:
+                        last_source = src
+                        last_pos = 0
+                        step = _checkpoint_step(ck)
+                        yield (
+                            f"event: checkpoint\n"
+                            f"data: {json.dumps({'step': step, 'checkpoint': ck.name})}\n\n"
+                        )
+                    sae_path = ck / snapshot_filename
+                    if sae_path.exists():
+                        try:
+                            with sae_path.open() as f:
+                                f.seek(last_pos)
+                                for line in f:
+                                    line = line.strip()
+                                    if not line:
+                                        continue
+                                    yield f"data: {line}\n\n"
+                                last_pos = f.tell()
+                        except FileNotFoundError:
+                            pass
                 tick += 1
                 if tick % heartbeat_every == 0:
                     yield "event: heartbeat\ndata: {}\n\n"
