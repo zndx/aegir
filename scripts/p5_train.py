@@ -103,13 +103,15 @@ def parse_args() -> argparse.Namespace:
                         "downloads + attaches the default 8-layer subset; "
                         "``off`` disables SAE entirely (faster init, no "
                         "interpretability dividend).")
-    p.add_argument("--sae-num-layers", type=int, default=4,
+    p.add_argument("--sae-num-layers", type=int, default=2,
                    help="How many evenly-spaced layers to attach SAEs to. "
-                        "Default 4 (out of 64 base layers) keeps GPU memory "
-                        "footprint at ~7 GB bf16 on rank 0 — leaving room "
-                        "for FSDP shards + activations + KV cache. Push "
-                        "higher only if rank 0's cuda:0 has been verified "
-                        "to have headroom at the chosen batch/length.")
+                        "Default 2 sized for the 9B-local case on a 24 GB "
+                        "4090: 9B bf16 (18 GB) + 2 SAE layers (~2 GB at "
+                        "hidden=4096, W=64K, bf16) + activations + KV "
+                        "cache fits with margin. Push to 4-8 only on the "
+                        "27B-FSDP path where each rank holds only 1/N of "
+                        "the base shard, leaving more headroom for SAE "
+                        "weights on rank 0.")
     p.add_argument("--sae-device", default="cuda", choices=("cuda", "cpu"),
                    help="Where to hold SAE weights. Default cuda; cpu "
                         "saves GPU memory but adds host-device transfer.")
@@ -267,7 +269,10 @@ def main() -> int:
         print("[9/9] dry-run complete — ready to launch")
         print()
         print("Launch with:")
-        print("  just p5-train          # routes through accelerate launch --use_fsdp --num_processes 6")
+        if policy_cfg.parallelism_strategy == "single":
+            print(f"  just p5-train --policy-preset {args.policy_preset}   # plain uv run python (single GPU)")
+        else:
+            print(f"  just p5-train --policy-preset {args.policy_preset}   # accelerate launch --use_fsdp --num_processes {policy_cfg.n_gpus}")
         return 0
 
     # ---- 6. Policy + tokenizer (HEAVY) -------------------------------
