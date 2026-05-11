@@ -314,6 +314,68 @@ def load_policy(cfg: PolicyConfig):
     return model, tokenizer
 
 
+def load_lora_adapter_into_policy(model, adapter_dir: str) -> None:
+    """Load SFT-trained LoRA adapter weights into an already-loaded
+    PEFT policy and zero out the optimizer's old state (since the
+    GRPO optimizer should start fresh against the new init point).
+
+    Used by ``p5_train.py --init-checkpoint <path>`` to warm-start GRPO
+    from a rejection-sampling-SFT'd checkpoint. The adapter directory
+    must be the output of ``trainer.save_model()`` from ``p5_sft.py``,
+    i.e. it contains ``adapter_model.safetensors`` + ``adapter_config.json``.
+
+    The policy's base model is preserved; only the LoRA delta is
+    replaced. Residual-stream activations are therefore close to Base's
+    (LoRA-mediated drift only), so the SAE adapter remains valid.
+    """
+    import os
+    from peft import PeftModel  # noqa: F401 — runtime import guard
+
+    if not os.path.isdir(adapter_dir):
+        raise FileNotFoundError(
+            f"init-checkpoint {adapter_dir!r} is not a directory; "
+            f"expected the output of trainer.save_model() from p5_sft.py."
+        )
+    config_path = os.path.join(adapter_dir, "adapter_config.json")
+    weights_st = os.path.join(adapter_dir, "adapter_model.safetensors")
+    weights_pt = os.path.join(adapter_dir, "adapter_model.bin")
+    if not os.path.isfile(config_path):
+        raise FileNotFoundError(
+            f"{config_path} not found — not a PEFT adapter checkpoint?"
+        )
+    if not (os.path.isfile(weights_st) or os.path.isfile(weights_pt)):
+        raise FileNotFoundError(
+            f"adapter weights not found in {adapter_dir!r} "
+            f"(looked for adapter_model.safetensors / .bin)."
+        )
+
+    # ``set_adapter_model_state_dict`` is the supported way to swap LoRA
+    # weights in-place on an existing PeftModel. Use safetensors when
+    # available; fall back to torch.load.
+    import torch
+    if os.path.isfile(weights_st):
+        from safetensors.torch import load_file
+        sd = load_file(weights_st)
+    else:
+        sd = torch.load(weights_pt, map_location="cpu", weights_only=True)
+
+    # PEFT prefixes adapter weight names with ``base_model.model.``; the
+    # saved state dict already uses this convention, so direct load works.
+    missing, unexpected = model.load_state_dict(sd, strict=False)
+    # Filter the expected misses: every non-LoRA param will be "missing"
+    # by design (we only loaded LoRA deltas). Real surprise = unexpected.
+    n_lora_loaded = len([k for k in sd if "lora_" in k])
+    if unexpected:
+        logger.warning(
+            "unexpected keys when loading init-checkpoint LoRA: %r",
+            unexpected[:5],
+        )
+    logger.info(
+        "loaded SFT init-checkpoint: %d LoRA weight tensors from %s",
+        n_lora_loaded, adapter_dir,
+    )
+
+
 def default_layers_to_hook(num_layers: int = 64, n: int = 8) -> list[int]:
     """Pick ``n`` evenly-spaced layer indices across a model with
     ``num_layers`` transformer layers. Default: 8 layers across

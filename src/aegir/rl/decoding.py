@@ -36,6 +36,45 @@ class DecodingConfig:
     n_compositions_per_prompt: int = 8  # group_size for GRPO
 
 
+def composition_json_schema_lite(catalog: Catalog | None = None) -> dict:
+    """Loose JSON Schema: just enforces the array-of-objects shape with
+    ``template_id`` (any string) and ``slot_fillers`` (any object).
+
+    Compared to :func:`composition_json_schema`, this skips the
+    discriminated ``oneOf`` over all 540 catalog templates — that
+    enumeration is what makes lmfe's per-token ``prefix_allowed_tokens_fn``
+    expensive (each step traverses 540-branch state). The lite schema
+    runs ~10-50× faster while still guaranteeing parseability.
+
+    Trade-off: the policy can emit a ``template_id`` that isn't in the
+    catalog. ``verify()``'s R_A hard gate rejects unknown template_ids
+    (clamps reward to 0), so the lite schema doesn't change reward
+    landscape correctness — it just allows the policy to "waste" some
+    of its sample budget on hallucinated templates.
+
+    For early-stage bootstrap (when the policy hasn't learned the
+    catalog yet anyway) the lite schema is the better trade.
+    """
+    del catalog  # signature kept symmetric with composition_json_schema
+    return {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 32,
+        "items": {
+            "type": "object",
+            "properties": {
+                "template_id": {"type": "string", "minLength": 1},
+                "slot_fillers": {
+                    "type": "object",
+                    "additionalProperties": {"type": "string"},
+                },
+            },
+            "required": ["template_id", "slot_fillers"],
+            "additionalProperties": False,
+        },
+    }
+
+
 def composition_json_schema(catalog: Catalog) -> dict:
     """Build a JSON Schema constraining the policy to emit a list
     of ``CompositionEntry`` items whose ``template_id`` is in the
@@ -47,6 +86,10 @@ def composition_json_schema(catalog: Catalog) -> dict:
     declared by that template are required. This is a
     discriminated-union pattern that constrained-decoding
     backends parse efficiently.
+
+    See :func:`composition_json_schema_lite` for a much faster loose
+    schema that doesn't enumerate template_ids (relies on R_A to reject
+    unknown ones post-hoc).
     """
     one_of: list[dict] = []
     for tmpl in catalog.templates:
@@ -86,14 +129,39 @@ def make_outlines_generator(model, tokenizer, schema: dict):
     return outlines.generate.json(omodel, schema_str)
 
 
-def make_lmfe_logits_processor(tokenizer, schema: dict):
-    """lm-format-enforcer LogitsProcessor. Lazy import."""
+def make_lmfe_prefix_allowed_tokens_fn(tokenizer, schema: dict):
+    """Build the lm-format-enforcer ``prefix_allowed_tokens_fn`` compatible
+    with ``transformers.GenerationMixin.generate``.
+
+    Newer transformers releases moved ``PreTrainedTokenizerBase`` out of
+    ``transformers.tokenization_utils`` (it now lives in
+    ``tokenization_utils_base``). lm-format-enforcer 0.11.3 still imports
+    from the old path, so we shim the attribute back on before importing
+    its integration module.
+    """
+    import transformers.tokenization_utils as _ttu  # type: ignore[import-not-found]
+    from transformers import PreTrainedTokenizerBase as _PTB
+
+    if not hasattr(_ttu, "PreTrainedTokenizerBase"):
+        _ttu.PreTrainedTokenizerBase = _PTB
+
     from lmformatenforcer import JsonSchemaParser
     from lmformatenforcer.integrations.transformers import (
         build_transformers_prefix_allowed_tokens_fn,
     )
     parser = JsonSchemaParser(schema)
     return build_transformers_prefix_allowed_tokens_fn(tokenizer, parser)
+
+
+def make_lmfe_logits_processor(tokenizer, schema: dict):
+    """Backwards-compatible alias for :func:`make_lmfe_prefix_allowed_tokens_fn`.
+
+    The "logits processor" name is misleading — lm-format-enforcer's
+    transformers integration actually returns a ``prefix_allowed_tokens_fn``,
+    not a ``LogitsProcessor`` instance. New code should use the function
+    with the accurate name.
+    """
+    return make_lmfe_prefix_allowed_tokens_fn(tokenizer, schema)
 
 
 def parse_compositions(raw: str) -> list[dict[str, Any]]:

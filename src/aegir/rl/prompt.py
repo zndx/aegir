@@ -61,38 +61,65 @@ slot names. Emit a single JSON list and nothing else.
 """
 
 
-def render_few_shot(catalog: Catalog, n: int = 3) -> list[dict]:
+def render_few_shot(
+    catalog: Catalog, n: int = 3, seed: int | None = None,
+) -> list[dict]:
     """Pick a small set of complex catalog rows as few-shot examples.
 
-    The few-shot set is deterministic given catalog ordering: we take
-    the first ``n`` rows whose ``is_complex=True`` and whose
-    ``slot_types`` contain at least two slots, biasing toward F2 or
-    F5 patterns rather than F1 basic forms.
+    When ``seed`` is ``None`` (the default, used for GRPO training where
+    the prompt should be stable), the few-shot set is deterministic given
+    catalog ordering: the first ``n`` rows whose ``is_complex=True`` and
+    whose ``slot_types`` contain at least two slots.
+
+    When ``seed`` is set (used by ``p5_rejection_sample`` to vary which
+    templates appear across prompt variations), the eligible templates
+    are shuffled by a seeded RNG before the first-``n`` cut. This is
+    critical for the rejection-sampling SFT corpus — the Base model
+    pattern-completes from the few-shot examples, so a constant few-shot
+    set yields a corpus that only covers 3 of the 540 templates.
+    Varying the seed across prompt variations rotates the few-shot
+    examples and gives the SFT corpus broader template coverage.
     """
-    out: list[dict] = []
+    eligible: list = []
     for tmpl in catalog.templates:
         if not tmpl.is_complex:
             continue
         if len(tmpl.slot_types) < 2:
             continue
-        # toy fillers for the demo
+        eligible.append(tmpl)
+
+    if seed is not None:
+        import random as _random
+        rng = _random.Random(seed)
+        rng.shuffle(eligible)
+
+    out: list[dict] = []
+    for tmpl in eligible[:n]:
         fillers = {
             slot_name: f"sdg:Demo{i}{slot_name}"
             for i, slot_name in enumerate(tmpl.slot_types.keys())
         }
         out.append({"template_id": tmpl.template_id, "slot_fillers": fillers})
-        if len(out) >= n:
-            break
     return out
 
 
 def build_messages(
     catalog: Catalog,
     cfg: PromptConfig,
+    few_shot_seed: int | None = None,
 ) -> list[dict]:
     """Build a chat-format message list ready to feed the tokenizer's
-    ``apply_chat_template`` method."""
-    examples = render_few_shot(catalog, n=cfg.n_few_shot_examples)
+    ``apply_chat_template`` method.
+
+    ``few_shot_seed=None`` (default) gives the stable few-shot set used
+    during GRPO training. ``p5_rejection_sample`` passes a per-variation
+    seed so the few-shot examples rotate across prompt variations, which
+    is essential for getting template diversity in the self-distilled
+    SFT corpus.
+    """
+    examples = render_few_shot(
+        catalog, n=cfg.n_few_shot_examples, seed=few_shot_seed,
+    )
     examples_block = "Few-shot examples:\n"
     import json as _json
     for ex in examples:

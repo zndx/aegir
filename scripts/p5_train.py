@@ -85,6 +85,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--eval-steps", type=int, default=50)
     p.add_argument("--logging-steps", type=int, default=5)
     p.add_argument("--learning-rate", type=float, default=1e-5)
+    p.add_argument("--max-steps", type=int, default=-1,
+                   help="Hard cap on training steps. -1 (default) defers to "
+                        "TRL's epoch-based budget computed from the prompt "
+                        "dataset size × num_generations. Set to a small "
+                        "positive int (e.g. 15) for short validation runs "
+                        "before committing to the full 6000-step regime.")
     p.add_argument("--strict-resume", action="store_true", default=True,
                    help="Default policy: refuse to resume if catalog version, "
                         "locked verifier weights, or null stats drifted.")
@@ -96,6 +102,13 @@ def parse_args() -> argparse.Namespace:
                    help="Optional git SHA of the v0.5 concept brief used to "
                         "drive this run. Recorded in RunMetadata for "
                         "post-hoc traceability.")
+    p.add_argument("--init-checkpoint", default=None,
+                   help="Warm-start LoRA adapter from a prior SFT run "
+                        "(typically scripts/p5_sft.py's output directory). "
+                        "The base model is still loaded fresh; only the "
+                        "LoRA delta is replaced. Use this after rejection-"
+                        "sampling SFT to give GRPO a non-zero-reward "
+                        "starting policy. Mutually exclusive with --resume.")
     p.add_argument("--policy-preset", default=DEFAULT_POLICY_PRESET,
                    choices=("9b-local-l0-50", "9b-local-l0-100",
                             "9b-fsdp-l0-50", "9b-fsdp-l0-100",
@@ -143,12 +156,14 @@ def main() -> int:
     from aegir.rl.decoding import (
         DecodingConfig,
         composition_json_schema,
+        make_lmfe_prefix_allowed_tokens_fn,
         parse_compositions,
     )
     from aegir.rl.policy import (
         attach_sae_adapters,
         default_layers_to_hook,
         download_sae_adapters,
+        load_lora_adapter_into_policy,
         load_policy,
         policy_preset,
     )
@@ -277,6 +292,12 @@ def main() -> int:
               f" = {args.n_prompts * args.num_generations} completions")
         print(f"[6/9] (dry-run) skipping policy load "
               f"(strategy={policy_cfg.parallelism_strategy}, n_gpus={policy_cfg.n_gpus})")
+        if args.init_checkpoint:
+            print(f"      (dry-run) would warm-start LoRA from: "
+                  f"{args.init_checkpoint}")
+        print("[6b/9] (dry-run) constrained decoding: would wrap model.generate "
+              f"with lm-format-enforcer prefix_allowed_tokens_fn "
+              f"({len(schema['items']['oneOf'])} schema branches)")
         print("[7/9] (dry-run) skipping TRL GRPOConfig + SidecarCallback")
         print("[8/9] (dry-run) skipping GRPOTrainer instantiation")
         print("[9/9] dry-run complete — ready to launch")
@@ -302,6 +323,20 @@ def main() -> int:
 
     model, tokenizer = load_policy(policy_cfg)
 
+    # Optional SFT warm-start. After rejection-sampling SFT
+    # (scripts/p5_rejection_sample.py → scripts/p5_sft.py), this loads
+    # the resulting LoRA delta into the freshly-loaded base, giving
+    # GRPO a policy that already produces non-zero-reward compositions.
+    if args.init_checkpoint:
+        if args.resume:
+            raise ValueError(
+                "--init-checkpoint and --resume are mutually exclusive. "
+                "--resume continues from a prior GRPO checkpoint; "
+                "--init-checkpoint warm-starts a fresh GRPO run from SFT."
+            )
+        print(f"[5b/9] loading SFT init-checkpoint from {args.init_checkpoint}")
+        load_lora_adapter_into_policy(model, args.init_checkpoint)
+
     chat_messages = build_messages(catalog, prompt_cfg)
     prompt_text = tokenizer.apply_chat_template(
         chat_messages, tokenize=False, add_generation_prompt=True
@@ -310,6 +345,32 @@ def main() -> int:
         [{"prompt": prompt_text} for _ in range(args.n_prompts)]
     )
     print(f"[6/9] prompt dataset built ({args.n_prompts} rows)")
+
+    # ---- 6b. Wire constrained decoding into the generation path ------
+    # TRL's GRPOTrainer calls ``model.generate(**generate_inputs,
+    # generation_config=self.generation_config)`` internally; ``GenerationConfig``
+    # has no field for ``prefix_allowed_tokens_fn``, so the only reliable hook
+    # is to wrap ``model.generate`` so every call carries the constraint.
+    #
+    # WITHOUT this wrap, the policy emits free-form text, ``parse_compositions``
+    # returns ``[]``, reward is uniformly zero, and GRPO has no learning signal.
+    # The 24-hour 0-reward / 0-variance run on 2026-05-11 was caused by exactly
+    # this oversight — the schema was built but never connected to ``generate``.
+    print("[6b/9] building constrained-decode prefix_allowed_tokens_fn…")
+    import time as _time
+    _t0 = _time.time()
+    _prefix_fn = make_lmfe_prefix_allowed_tokens_fn(tokenizer, schema)
+    print(f"       ready in {_time.time()-_t0:.1f}s "
+          f"(540-branch schema → token-level constraint)")
+    _original_generate = model.generate
+
+    def _generate_with_constraint(*g_args, **g_kwargs):
+        if "prefix_allowed_tokens_fn" not in g_kwargs:
+            g_kwargs["prefix_allowed_tokens_fn"] = _prefix_fn
+        return _original_generate(*g_args, **g_kwargs)
+
+    model.generate = _generate_with_constraint
+    print("       model.generate wrapped — every TRL generate() call is now schema-constrained")
 
     # ---- 7. SAE feature logging --------------------------------------
     # Two attachment paths depending on parallelism strategy:
@@ -408,6 +469,7 @@ def main() -> int:
         temperature=args.temperature,
         top_p=args.top_p,
         bf16=True,
+        max_steps=args.max_steps,
     )
     sidecar_cb = make_sidecar_callback(
         metadata, sae_logger=sae_logger, cfg=checkpoint_cfg,
