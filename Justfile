@@ -273,6 +273,37 @@ p5-train *args:
             scripts/p5_train.py {{args}}
     fi
 
+# P5 rejection-sampling SFT data generator. Reads the C1-locked verifier
+# + the constrained-decode schema, samples K compositions per prompt
+# variation, scores each with verify(), and writes high-reward samples
+# to /raid/checkpoints/p5/sft-corpus/rejection_samples.jsonl.
+#
+# Single-GPU inference (9B-bf16 fits in 24 GB with 384-token KV cache
+# and the lmfe prefix_allowed_tokens_fn state). The other 5 GPUs stay
+# free for parallel work (UI session, secondary worktree experiments).
+p5-rejection-sample *args:
+    bash -c 'source scripts/setup_jvm_env.sh && uv run --no-sync python scripts/p5_rejection_sample.py {{args}}'
+
+# P5 SFT trainer. Consumes the rejection-sampled corpus and produces a
+# LoRA adapter that warm-starts GRPO. The output directory feeds
+# ``just p5-train --init-checkpoint <dir>``. FSDP across 2 GPUs by
+# default; matches the 9b-fsdp-l0-50 envelope of p5-train.
+p5-sft *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source scripts/setup_jvm_env.sh
+    export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+    uv run --no-sync accelerate launch \
+        --num_processes 2 \
+        --use_fsdp \
+        --fsdp_sharding_strategy FULL_SHARD \
+        --fsdp_auto_wrap_policy TRANSFORMER_BASED_WRAP \
+        --fsdp_transformer_layer_cls_to_wrap Qwen3_5DecoderLayer \
+        --fsdp_cpu_ram_efficient_loading true \
+        --fsdp_sync_module_states true \
+        --fsdp_use_orig_params true \
+        scripts/p5_sft.py {{args}}
+
 bdd-0: check-ontology-schema
     AEGIR_BDD_TIER=0 uv run --no-sync behave features/
 
