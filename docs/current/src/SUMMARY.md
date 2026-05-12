@@ -1,6 +1,7 @@
 # Summary
 
 - [Introduction](./introduction.md)
+- [Personas](./personas.md)
 - [Architecture](./architecture.md)
   - [Hierarchical Dynamic Chunking](./architecture/chunking.md)
   - [RWKV-7/8 Time Mixing](./architecture/rwkv7.md)
