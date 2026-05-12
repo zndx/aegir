@@ -1,5 +1,15 @@
 # Training Tactics
 
+> **Deferred framing.** This page describes self-supervised tactics
+> for the entity-recovery objective in an earlier exploratory
+> SysMLv2 / ORM pipeline; the operational v2 mixed-corpus pretrain
+> uses next-byte prediction. Hygiene parameters (LR schedule, warmup,
+> gradient clipping) for the operational run are documented in
+> [Training Regime](../training_regime.md). The tactical content
+> below may be revisited if any of it transfers cleanly to the
+> next-byte regime; for now it is preserved in the repository for
+> archival continuity.
+
 The [training objective](./training_objective.md) defines *what* Aegir learns -- ontological entity recovery from serialized relational tables. This page defines *how*: the specific self-supervised tasks, corruption strategies, and curriculum design that compose the pretraining regiment. Each tactic is adapted from a proven LLM pretraining method but re-targeted at the structural properties of relational data with known ontological provenance.
 
 ## Tactic Overview

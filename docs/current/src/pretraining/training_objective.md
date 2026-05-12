@@ -1,5 +1,15 @@
 # Stage 4: Training Objective
 
+> **Deferred framing.** This page describes a training objective
+> (ontological-entity recovery from synthetic tables) tied to an
+> earlier exploratory SysMLv2 / ORM pipeline that has been
+> superseded. The operational v2 mixed-corpus pretrain uses
+> next-byte prediction over real text corpora; see the parent
+> [Pretraining chapter](../pretraining.md) and
+> [Training Regime §10](../training_regime.md) for the actual
+> objective and result. This page is preserved in the repository
+> for archival continuity.
+
 The training objective is the key departure from standard pretraining: Aegir does not learn to predict the next token. It learns to recover the ontological entities -- **data elements** -- that were used to generate the relational data it observes. This is possible because the generation pipeline (Stages 1--3) preserves a complete mapping from every column back to its source ontological entity.
 
 ## Task Formulation

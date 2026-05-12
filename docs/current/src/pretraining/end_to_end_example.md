@@ -1,5 +1,13 @@
 # End-to-End Example
 
+> **Deferred framing.** This walkthrough traces a passage through
+> the earlier exploratory SysMLv2 / ORM pipeline for
+> ontology-grounded synthetic data that has been superseded. The
+> active synthetic-data pipeline is the closed-loop diagram
+> (Figure 3.1) in the [semantic-engine authoritative
+> reference](../ontology/production_state.md). This page is
+> preserved in the repository for archival continuity.
+
 This walkthrough traces a single educational text passage through the entire pretraining pipeline -- from raw text to a validated training example. Every intermediate representation is shown concretely, making the abstract pipeline tangible.
 
 ## Hero Diagram
