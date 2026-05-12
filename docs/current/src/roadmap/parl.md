@@ -1,5 +1,14 @@
 # Phase 3: PARL Training
 
+> **Deferred work.** This page describes a multi-agent training plan
+> (PARL on frozen specialists) that has been deferred indefinitely.
+> The active training pipeline is the single-policy GRPO loop on
+> Qwen3.5-9B described in the
+> [semantic-engine authoritative reference](../ontology/production_state.md).
+> The PARL plan below remains in the repository for archival
+> continuity; see [Roadmap](../roadmap.md) for the active two-track
+> work.
+
 Train the `SwarmOrchestrator` using Parallel Agent Reinforcement Learning, following the K2.5 framework (arXiv:2602.02276). The primary model learns to route inputs to frozen specialists and fuse their recurrent states, optimized via token-level clipping RL.
 
 ## Setup

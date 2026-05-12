@@ -1,5 +1,14 @@
 # Phase 2: Reward Modeling
 
+> **Deferred work.** This page describes a multi-agent
+> reward-modeling plan tied to the earlier K2.5 PARL roadmap, which
+> has been superseded by the two-track structure in
+> [Roadmap](../roadmap.md). The project's active reward modeling is
+> the four-component deterministic verifier *R(O, I)* described in
+> the [semantic-engine authoritative reference](../ontology/production_state.md);
+> the `r_perf` / `r_parallel` / `r_finish` design below is preserved
+> for archival continuity and is not currently being implemented.
+
 Design and validate the three reward components that will drive PARL training in Phase 3. The goal is to ensure each reward signal produces meaningful, non-degenerate gradients before combining them into the full PARL objective.
 
 ## Reward Components

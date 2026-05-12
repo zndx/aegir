@@ -1,5 +1,13 @@
 # Phase 4: Agent Swarm RL
 
+> **Deferred work.** This page describes a multi-specialist swarm
+> RL plan that has been deferred indefinitely. The agent-swarm
+> modules in `src/aegir/swarm/` remain in the codebase as
+> infrastructure scaffolding, but no operational training currently
+> uses them. See [Roadmap](../roadmap.md) for the active two-track
+> work and [Agent Swarm](../agent_swarm.md) for the module-level
+> scope statement.
+
 Scale from a single specialist to a full multi-specialist swarm with dynamic spawning, wide/deep search patterns, and adaptive specialist allocation based on table complexity.
 
 ## Search Patterns
