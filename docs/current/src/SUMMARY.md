@@ -15,6 +15,7 @@
   - [Migration](./ontology/migration.md)
   - [Concept brief — RLVR for ontology generation](./ontology/concept_brief.md)
   - [Semantic engine — authoritative reference](./ontology/production_state.md)
+  - [RLVR for ontology generation](./ontology/rlvr.md)
 - [Agent Swarm](./agent_swarm.md)
   - [RWKV State Fusion](./agent_swarm/state_fusion.md)
   - [LatentMAS Alignment](./agent_swarm/alignment.md)

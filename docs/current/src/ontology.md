@@ -54,3 +54,9 @@ those suggestions on its own roadmap.
   four-component verifier with locked weights and empirical
   validation, the closed-loop synthetic-data pipeline, and the
   current empirical test of the GRPO policy warm-start
+- [RLVR for ontology generation](./ontology/rlvr.md) — the
+  externally-readable methodological chapter for paper 1: the
+  verifiable-reward setting, the four-component verifier *R(O, I)*,
+  the GRPO training program, and how the verifier generalizes as
+  the project scales beyond a single policy (GEPA-style prompt
+  evolution, Agent-Lightning-style agent RL)
