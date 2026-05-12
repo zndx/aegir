@@ -3,7 +3,7 @@ name: Deploy Documentation
 on:
   push:
     branches:
-      - main
+      - trunk
     paths:
       - 'docs/**'
       - '.github/workflows/docs.yml'
@@ -48,7 +48,7 @@ jobs:
 
       - name: Build documentation
         run: |
-          cd docs
+          cd docs/current
           mdbook build
 
       - name: Setup Pages
@@ -57,7 +57,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'docs/book'
+          path: 'docs/current/book'
 
   deploy:
     environment:
