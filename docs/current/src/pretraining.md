@@ -1,21 +1,37 @@
 # Pretraining: Ontology-Grounded Synthetic Data
 
-> **Status (2026-05-09).** This chapter describes the *long-term
-> ontology-driven synthetic-data pipeline*, the destination, not the
-> current operational state. The current state is the **v2
-> mixed-corpus byte-level pretrain** — FineWeb-Edu + SQaLe +
-> SchemaPile + FinePDFs-lab, 2 GB, 122k steps, finished
-> 2026-04-27. See [Training Regime §10](./training_regime.md#10-v2-mixed-corpus-pretrain-2026-04-27)
-> for the empirical anchor. The pipeline below is what the [Ontology
-> charter](./ontology/charter.md) and v3 work eventually feed back
-> into; it is not a description of how the current `final.pt` was
-> produced.
+This chapter describes the byte-level pretraining track. The
+operational pretraining run is the v2 mixed-corpus pretrain on
+FineWeb-Edu + SQaLe + SchemaPile + FinePDFs-lab (2 GB, 122k steps),
+summarized in [Training Regime §10](./training_regime.md#10-v2-mixed-corpus-pretrain-2026-04-27).
+The chapter's later sections describe a longer-term
+ontology-grounded synthetic-data direction; the procedural-catalog
+approach that emerged from that direction's first iterations is
+documented in the [SDG ontology chapter](./ontology.md), and the
+operational closed-loop pipeline is documented in the
+[semantic-engine authoritative reference](./ontology/production_state.md).
+The five-stage pipeline that follows preserves an earlier
+exploratory framing for archival continuity; the production
+implementation has converged on the procedural-catalog approach.
 
-How do you train a structured information model at LLM scale when labeled relational data is scarce and expensive?
+How do you train a structured information model at scale when
+labeled relational data is scarce and expensive?
 
-Conventional approaches to semantic column annotation rely on manually labeled benchmark datasets -- SOTAB, GitTables, WikiTables -- that are costly to create, domain-limited, and rarely capture the cross-table relationships needed for data element discovery. Self-supervised pretraining on raw tables (as in DODUO and TURL) learns useful representations, but the "ground truth" for column semantics remains noisy or absent.
+Conventional approaches to semantic column annotation rely on
+manually labeled benchmark datasets — SOTAB, GitTables, WikiTables —
+that are costly to create, domain-limited, and rarely capture the
+cross-table relationships needed for data element discovery.
+Self-supervised pretraining on raw tables (as in DODUO and TURL)
+learns useful representations, but the ground-truth for column
+semantics remains noisy or absent.
 
-Aegir's long-term direction is to **generate the training data from first principles, so the ground truth is always known by construction.** This chapter describes that direction. The v2 pretrain is a stepping stone — it validates that the architecture converges under byte-level pretraining on real corpora, which is the precondition for any ontology-grounded synthetic regime to be worth attempting.
+The project's long-term direction is to generate the training data
+from first principles, so the ground truth is always known by
+construction. This chapter sketches that direction. The v2 pretrain
+is a stepping stone: it establishes that the architecture converges
+under byte-level pretraining on real corpora, which is the
+precondition for any ontology-grounded synthetic regime to be worth
+attempting.
 
 ## The Core Insight
 

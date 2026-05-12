@@ -1,11 +1,12 @@
 # Phase 1: Supervised Bootstrapping
 
-> **Updated 2026-05-09.** The original Phase 1 plan — train from random
-> initialization on Column Type Annotation — was invalidated by the
-> 2026-04-19 representation collapse incident on SOTAB v2 Schema.org
-> CTA. Phase 1 today is **fine-tune a CTA/CPA head from the v2
-> mixed-corpus pretrain checkpoint**, not from random. The pretrain is
-> done; the fine-tune is the M2 empirical gate.
+Phase 1 fine-tunes a CTA/CPA head from the v2 mixed-corpus pretrain
+checkpoint, *not* from random initialization. The original Phase 1
+plan (train from random on Column Type Annotation) was invalidated by
+the 2026-04-19 representation-collapse incident on SOTAB v2
+Schema.org CTA; the v2 byte-level pretrain (2026-04-27) produces the
+well-conditioned starting point that the fine-tune proceeds from. The
+fine-tune is the M2 empirical gate.
 
 Train the Aegir column-annotation head on Column Type Annotation (CTA)
 and Column Property Annotation (CPA) benchmarks, **starting from the

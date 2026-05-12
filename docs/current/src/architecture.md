@@ -90,4 +90,4 @@ The `chunk_rwkv7` kernel from flash-linear-attention enables training with paral
 | Exact retrieval | Via ROSA blocks | No | Via full attention |
 | FFN pairing | CMix (relu^2) or SwiGLU | SwiGLU or none | SwiGLU or none |
 
-In practice, RWKV-7 blocks (`w`/`W`) are the default choice at all stages. Mamba-2 (`m`/`M`) and MHA (`t`/`T`) blocks are available for ablation studies and hybrid configurations. ROSA (`r`/`R`) blocks provide exact substring matching as a complement to learned recurrent processing.
+In practice, RWKV-7 blocks (`w`/`W`) are the default at every stage and are the only block code used in any current `arch_layout` (`main.py`, `train.py` for tiny / small / base). Mamba-2 (`m`/`M`) is available as an optional dependency for ablation and hybrid configurations. ROSA (`r`/`R`) implements a RWKV-8 suffix automaton for exact substring retrieval; it is functional in the block factory but is not part of any current default arch_layout — available for hybrid configurations and ablations. MHA (`t`/`T`) codes are declared in the block factory but the implementing module is not currently shipped.

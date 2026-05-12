@@ -6,29 +6,27 @@ empirical gates. The **far-future RL post-training track** (Phase 1–4)
 is the long-horizon architectural plan that the milestone track
 eventually converges into.
 
-A reader looking for "what is Ægir doing this quarter" wants the
-milestone track. A reader looking for "what is the Ægir architecture
-ultimately for" wants the RL track.
+The milestone track describes operational deliverables in their
+delivery order. The RL track describes the longer-horizon
+architectural plan that the milestone track is intended to converge
+into.
 
 ## Near-term milestones
 
-### M0 — End-to-end training pipeline ✅
+### M0 — End-to-end training pipeline
 
-Status as of project handoff: complete.
+Delivered. End-to-end BDD-backed training on the real
+`gt-signals-dbpedia` benchmark (120 DBpedia labels, 814 tables).
+Boundary diagnostics visible per epoch. Checkpoint discipline
+(`outputs/runs/{run_id}/…`) with sidecars and pre-rendered Bokeh
+plots.
 
-End-to-end BDD-backed training on the real `gt-signals-dbpedia`
-benchmark (120 DBpedia labels, 814 tables). Boundary diagnostics
-visible per epoch. Checkpoint discipline (`outputs/runs/{run_id}/…`)
-with sidecars and pre-rendered Bokeh plots.
+### M1 — Air-gap leaderboard envelope
 
-### M1 — Air-gap leaderboard envelope ✅
-
-Status: complete.
-
-FastAPI gateway on port 8091, React UI, ABI-patched flash-attn / mamba-ssm
-build path. Deployment targets: devenv (local), CAI (PGlite), Zarf
-air-gap K8s. The leaderboard reads `outputs/runs/` directly — no
-tracking daemon, no W&B, no MLflow.
+Delivered. FastAPI gateway on port 8091, React UI, ABI-patched
+flash-attn / mamba-ssm build path. Deployment targets: devenv
+(local), CAI (PGlite), Zarf air-gap K8s. The leaderboard reads
+`outputs/runs/` directly — no tracking daemon, no W&B, no MLflow.
 
 ### M2 — Pretraining baseline + ontology ownership
 
@@ -40,8 +38,9 @@ training steps on a 2 GB mixed corpus (FineWeb-Edu + SQaLe + SchemaPile
 eval shows non-degenerate representations across all four trained-time
 slices and ~2 bpb drops on domain-targeted data with general prose
 held flat. See [Training Regime](./training_regime.md) §10 for the
-full table; the headline result is that the architecture is learning
-real structure rather than just exploiting an easier distribution.
+full table; the result establishes that the architecture is learning
+real structure across all four stratified-eval slices rather than
+exploiting an easier distribution.
 
 **M2 scope (in progress):**
 

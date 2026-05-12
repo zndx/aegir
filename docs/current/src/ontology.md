@@ -1,12 +1,13 @@
 # Ontology
 
-> **Scope (2026-05-09).** Ægir is the canonical owner of the bespoke
-> BFO/CCO-grounded vocabulary used by the metadata-tagging stack, and of
-> the synthetic data generators that produce in-distribution training
-> bytes against that vocabulary. Vocabulary, generators, and the
-> `vocab_label_map.json` artifact published outward all live here. This
-> section sets the contract, the directory layout, and the empirical
-> gate that has to clear before any vocabulary expansion work begins.
+Aegir is the canonical owner of the bespoke BFO/CCO-grounded
+vocabulary used by the metadata-tagging stack, and of the
+synthetic-data generators that produce in-distribution training
+bytes against that vocabulary. Vocabulary, generators, and the
+`vocab_label_map.json` artifact published outward all live in this
+chapter. The chapter covers the outward contract, the directory
+layout, and the empirical gate that any vocabulary expansion must
+clear.
 
 The label space conditions everything downstream — what the model is
 asked to predict, what synthetic data the pretraining corpus can include,

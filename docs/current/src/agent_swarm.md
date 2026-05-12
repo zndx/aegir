@@ -1,8 +1,10 @@
 # Agent Swarm Architecture
 
-Aegir's agent swarm infrastructure enables multi-agent collaboration through RWKV recurrent state fusion. Rather than exchanging text messages or attention KV caches between agents, the swarm shares compact recurrent state tensors -- a fundamentally more efficient communication medium for recurrent architectures.
+The agent-swarm modules in `src/aegir/swarm/` are infrastructure for future multi-agent training. The system's current operational training pipeline (described in the [semantic-engine authoritative reference](./ontology/production_state.md)) is single-policy; this chapter documents the design of the swarm modules and the architectural rationale for landing them in the codebase ahead of an operational multi-agent task.
 
-## Why RWKV State Sharing
+The swarm shares compact RWKV recurrent state tensors between agents rather than exchanging text messages or attention KV caches — a communication medium that is uniquely efficient for recurrent architectures.
+
+## Why RWKV state sharing
 
 The central insight is that RWKV's recurrent state is **constant in sequence length**. Each layer's state is a matrix of shape `(H, K, V)` where `H` is the number of heads and `K = V = head_size`. The total state size per layer is:
 

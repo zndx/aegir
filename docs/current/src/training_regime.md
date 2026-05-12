@@ -533,4 +533,4 @@ to clear.
     — v1 mixed-corpus run
   - `docs/scratch/2026-04-23/232400_v2_corpus_kickoff.md` — v2 setup
   - `docs/scratch/2026-04-27/131700_v2_vs_v1_stratified_comparison.md`
-    — the headline result this section summarizes
+    — the v2-vs-v1 stratified result this section reports

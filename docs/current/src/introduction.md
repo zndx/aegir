@@ -1,67 +1,140 @@
 # Introduction
 
-Aegir is a hierarchical sequence model for **semantic column annotation** and **cross-table data element discovery** on relational data. Given one or more tables, Aegir predicts semantic types for individual columns (Column Type Annotation), identifies properties and relationships between columns (Column Property Annotation), and discovers coherent **data elements** -- groups of semantically related columns that span multiple tables in a data warehouse.
+Aegir is a hierarchical byte-level sequence model for semantic
+annotation of relational data. Given one or more tables, it predicts
+the semantic type of each column (Column Type Annotation, **CTA**),
+the relationships between columns (Column Property Annotation,
+**CPA**), and the cross-table groupings that constitute coherent
+real-world *data elements* — for example, a `PaymentCard` data
+element spanning `card_number`, `expiry`, and `cardholder` columns
+across billing, transaction, and customer tables. The model is paired
+with the **Signals Data Governance (SDG) ontology** and a
+deterministic four-component verifier *R(O, I)* over OWL ontology
+compositions; together they constitute a closed loop between the
+model and the structured-knowledge representation it learns from.
 
-## Problem Setting
+## Two coupled research outputs
 
-Enterprise data warehouses contain thousands of tables with columns whose meaning is often opaque: generic names (`col0`, `field_42`), inconsistent conventions across teams, and no machine-readable metadata. Understanding what each column represents -- and which columns across different tables refer to the same real-world concept -- is foundational to data governance, privacy compliance, and integration.
+The project produces two outputs that are cited together:
 
-Current approaches to this problem fall into two categories:
+1. **A hierarchical byte-level sequence model.** All-RWKV-7
+   time-mixing with H-Net dynamic chunking, trained byte-level on a
+   mixed corpus and fine-tuned for the column-annotation tasks above.
+   The architecture is described in [Architecture](./architecture.md);
+   the operational pretraining work is described in
+   [Pretraining](./pretraining.md) and
+   [Training Regime](./training_regime.md).
 
-**Pattern and heuristic-based methods** identify column types through regex detectors (email, SSN, credit card patterns), name matching, embedding similarity, and gradient-boosted classifiers trained on hand-engineered features. These methods work well for structurally distinct types but struggle with **confusable pairs** -- columns whose value distributions are nearly identical but whose semantic types differ (e.g., advertising IDs vs GUIDs, bank account numbers vs payment card numbers). They also require manual enumeration of data element patterns and cannot generalize to novel relationship types.
+2. **An RLVR-trained policy for OWL ontology generation.** A
+   language-model policy trained with Group Relative Policy
+   Optimization (GRPO) that emits OWL compositions scored by a
+   deterministic four-component verifier with locked aggregation
+   weights. The verifier, the policy, and the procedural catalog they
+   share are described in the [SDG ontology chapter](./ontology.md)
+   and the [semantic-engine authoritative
+   reference](./ontology/production_state.md).
 
-**Learned sequence models** (DODUO, RECA, REVEAL) treat the table as a token sequence and classify columns via fine-tuned transformers. REVEAL's key insight is that **context column selection matters**: choosing the right neighboring columns (via MMR diversity sampling) dramatically improves annotation accuracy. However, these models operate on single tables in isolation and use fixed subword tokenizers that fragment tabular data unpredictably.
+The two outputs share substrate — the SDG ontology, the 540-template
+procedural catalog, the verbalization pipeline — and are coupled
+downstream: the RLVR policy produces ontology compositions whose
+verbalizations feed back into the byte-level pretraining corpus. The
+[concept brief](./ontology/concept_brief.md) documents the two-paper
+research structure in full.
 
-Aegir bridges these approaches. It is designed to be trained **in situ** alongside evidence-based classification pipelines -- consuming the same serialized table representations, but learning cross-column and cross-table relationships end-to-end rather than relying on manually enumerated patterns. Specifically:
+## Problem setting
 
-- **Column Type Annotation (CTA)**: Classify individual columns into a semantic taxonomy (e.g., SIGDG ontology categories, Schema.org types, DBpedia classes).
-- **Column Property Annotation (CPA)**: Identify properties and relationships between column pairs (e.g., "city is-located-in country").
-- **Data Element Discovery**: Identify groups of related columns across tables that constitute coherent real-world entities (e.g., a PaymentCard data element spanning `card_number`, `expiry`, `cardholder` columns across billing, transaction, and customer tables).
+Enterprise data warehouses contain thousands of tables with columns
+whose meaning is often opaque: generic names (`col0`, `field_42`),
+inconsistent conventions across teams, no machine-readable metadata.
+Understanding what each column represents — and which columns across
+different tables refer to the same real-world concept — is foundational
+to data governance, privacy compliance, and integration.
 
-The third task -- cross-table data element discovery -- is where the greatest value lies for enterprise governance. Current pipelines discover data elements through keyword-based schema matching and post-classification co-occurrence analysis. A model that learns these relationships from data can generalize beyond enumerated patterns, handle non-English and abbreviated column names, and resolve confusable pairs by leveraging cross-table structural context that no single-table classifier can access.
+Two families of prior approaches exist. **Pattern and heuristic
+methods** identify column types through regex detectors, name
+matching, embedding similarity, and gradient-boosted classifiers on
+hand-engineered features. They work well for structurally distinct
+types but struggle with *confusable pairs* — columns whose value
+distributions are nearly identical but whose semantic types differ
+(advertising IDs versus GUIDs, bank account numbers versus payment
+card numbers). They also require manual enumeration of data-element
+patterns and do not generalize to novel relationship types. **Learned
+sequence models** — DODUO, RECA, REVEAL — treat the table as a token
+sequence and classify columns via fine-tuned transformers. REVEAL's
+central insight is that *context-column selection matters*: choosing
+the right neighboring columns (via MMR diversity sampling) materially
+improves annotation accuracy. These models operate on single tables
+in isolation and use fixed subword tokenizers that fragment tabular
+data unpredictably.
 
-Target benchmarks:
+Aegir bridges the two families. It is trained byte-level — no fixed
+tokenizer — and is designed to be deployed *in situ* alongside
+evidence-based classification pipelines: consuming the same serialized
+table representations as the surrounding stack, but learning
+cross-column and cross-table relationships end-to-end rather than
+relying on enumerated patterns. Target benchmarks are **SOTAB**
+(Schema.org types over web tables), **GitTables** (large-scale column
+type detection across 1M+ CSV tables from GitHub — the hardest regime
+for generic column names), and **WikiTables** (column annotation on
+Wikipedia HTML tables).
 
-- **SOTAB** -- Semantic column annotation on Web tables (Schema.org types)
-- **GitTables** -- Large-scale column type detection across 1M+ CSV tables from GitHub (100% generic column names -- the hardest regime)
-- **WikiTables** -- Column annotation on Wikipedia HTML tables
+## Methodological contributions
 
-> **Where we are (2026-05-09).** The first direct-supervision attempt
-> on SOTAB v2 (April 2026) produced complete representation collapse.
-> The pivot to **byte-level pretraining on real corpora** has since
-> produced a healthy backbone — the **v2 mixed-corpus pretrain**
-> finished 2026-04-27, 122k steps over 2 GB of mixed text (FineWeb-Edu
-> + SQaLe + SchemaPile + FinePDFs-lab), with stratified held-out eval
-> showing non-degenerate representations and ~2 bpb drops on
-> domain-targeted slices. See [Training Regime
-> §10](./training_regime.md#10-v2-mixed-corpus-pretrain-2026-04-27) for
-> the headline. The next gate — fine-tuning a CTA head from the v2
-> checkpoint and clearing a liveness threshold — is the M2 milestone
-> that closes the loop on the original collapse incident. See
-> [Roadmap](./roadmap.md) and [Ontology Charter](./ontology/charter.md)
-> for the current plan; the Diagnostic Case Study below remains
-> historically relevant as the failure mode the v2 pretrain addresses.
+**Algorithms.** Byte-level dynamic chunking as differentiable
+tokenization: a routing module predicts boundary probabilities from
+consecutive hidden-state cosine similarity, and chunk representatives
+propagate to the next hierarchical stage. The H-Net primitive treats
+tokenization as a learned property of the architecture rather than a
+fixed preprocessing decision. Chunked-mode RWKV-7 time-mixing through
+flash-linear-attention Triton kernels provides constant-state
+recurrent computation with parallel training throughput. A
+four-component deterministic verifier *R(O, I)* scores OWL ontology
+compositions across structural (*R_A*), complexity-density (*R_B*),
+semantic-richness (*R_C*), and corpus-alignment (*R_D*) axes, with
+aggregation weights locked from a 30-ontology authored discrimination
+sweep at AUC 0.9956. The verifier supplies the dense, hash-stable
+reward signal that the GRPO policy targets.
 
-## Key Innovations
+**Architecture.** A recursive hierarchy in which each stage selects
+its own block-type mix from a block factory. Every current default
+arch_layout uses RWKV-7 time-mix at every stage; ROSA (a RWKV-8
+suffix automaton for exact substring retrieval) and Mamba-2 SSD are
+additional block codes that the factory supports for hybrid
+configurations and ablations. The recursion alternates encoding,
+dynamic chunking, recursive inner processing, EMA dechunking, and
+decoding; the recurrent state at every RWKV-7 stage is constant in
+sequence length. This makes the recurrent state a fixed-size object
+that can be serialized, transmitted, and algebraically combined
+across agents — the substrate for the multi-agent state-fusion
+infrastructure described in [Agent Swarm](./agent_swarm.md).
 
-**Byte-level dynamic chunking as learned tokenization.** Rather than using a fixed tokenizer (BPE, SentencePiece), Aegir operates on raw bytes and learns to segment sequences into variable-length chunks via content-dependent boundary prediction. A routing module measures cosine similarity between consecutive hidden states; high dissimilarity triggers a chunk boundary. This makes the "tokenization" fully differentiable and adapted to the data distribution -- critical for tabular data where delimiters, numeric formats, and encodings vary wildly across sources.
+**Objectives.** The system pursues two complementary objectives. The
+first is competitive accuracy on stratified column-annotation
+benchmarks — the application of the byte-level model. The second is
+a measurably high-quality stream of OWL ontology compositions,
+evaluated by an intrinsic (rather than judge-mediated) deterministic
+verifier — the research output of the RLVR policy. The two objectives
+share the SDG ontology and procedural catalog as substrate; the
+second feeds the first downstream as a training corpus once the RLVR
+policy's outputs are verifier-passing at scale.
 
-**All-RWKV recurrent architecture.** The primary sequence processing blocks use RWKV-7 time mixing with flash-linear-attention Triton kernels. RWKV-7 maintains a constant-size recurrent state matrix of shape `(B, H, head_size, head_size)` regardless of sequence length. This gives O(1) memory per token during inference and, critically, makes the recurrent state a fixed-size object that can be serialized, transmitted, and algebraically combined across agents.
+## Reading this document
 
-**ROSA suffix automaton for exact pattern retrieval.** The ROSA (RWKV Online Suffix Automaton) module provides lossless infinite-range retrieval by constructing an online suffix automaton over binarized hidden representations. While RWKV-7 learns smooth sequence-level patterns, ROSA can retrieve exact substring matches from arbitrarily far in the past -- enabling precise pattern detection (email formats, card number structures) that complements the learned recurrent state.
+- A reader interested in the **model architecture** should read
+  [Architecture](./architecture.md) and its sub-pages on RWKV-7 time
+  mixing, dynamic chunking, ROSA, and the block factory.
+- A reader interested in the **ontology, verifier, and RLVR program**
+  should read the [SDG ontology](./ontology.md) chapter and the
+  [semantic-engine authoritative
+  reference](./ontology/production_state.md).
+- A reader interested in **byte-level pretraining and downstream
+  fine-tune** should read [Pretraining](./pretraining.md) and
+  [Training Regime](./training_regime.md).
+- A reader interested in **who the system is built for and what
+  workflows it commits to** should read [Personas](./personas.md).
+- A reader interested in **the operational milestones and what has
+  been delivered** should read [Roadmap](./roadmap.md).
 
-**Agent swarm with state fusion for cross-table reasoning.** Multiple specialist agents can process different tables or column families in parallel. Because RWKV recurrent states are fixed-size matrices, they can be fused via attention-weighted combination, learned gating, or projection -- far more efficiently than merging transformer KV caches, which grow linearly with sequence length. This architecture enables cross-table data element discovery: each agent processes a table, and the fused state captures inter-table relationships that no single-table model can learn.
-
-**In-situ training within evidence pipelines.** Aegir is designed to integrate with Dempster-Shafer theory (DST) evidence fusion pipelines as a learned evidence source. Its predictions -- with calibrated confidence -- feed into the same conjunctive combination framework alongside cosine similarity, gradient boosting, pattern detectors, and name matching. The model learns from the pipeline's own bootstrap labels and SAGE-validated features, creating a self-improving loop where Aegir's learned representations replace hand-engineered heuristics as they prove their value.
-
-## Architecture at a Glance
-
-Aegir uses a recursive hierarchy defined by nested layout strings:
-
-```
-arch_layout = ["w2", ["w2", ["w4"], "w2"], "w2"]
-```
-
-This reads as: 2 RWKV-7 encoder blocks, then a sub-hierarchy (2 encoder blocks, 4 main blocks, 2 decoder blocks), then 2 RWKV-7 decoder blocks. At each non-innermost stage, dynamic chunking downsamples the sequence before passing it to the next level, and an EMA-based dechunking module reconstructs the full resolution on the way back up.
-
-The block types -- RWKV-7, ROSA, MHA, Mamba-2 -- can be freely mixed within any stage using compact layout strings like `"w4T1r2"`.
+The [development guide](./development.md) and the [worktree-aware
+development](./worktree_aware.md) chapter cover operational concerns
+and the CUDA-extension build path that Aegir's runtime depends on.
