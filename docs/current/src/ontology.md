@@ -47,3 +47,9 @@ those suggestions on its own roadmap.
   scope: paper 1 establishes verifier discrimination + RLVR
   optimizability; paper 2 (follow-on) tests downstream pretraining
   utility
+- [Semantic engine — authoritative reference](./ontology/production_state.md)
+  — the external/advisory-facing canonical description of the
+  operational state: SDG ontology + procedural catalog, the
+  four-component verifier with locked weights and empirical
+  validation, the closed-loop synthetic-data pipeline, and the
+  current empirical test of the GRPO policy warm-start
