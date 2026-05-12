@@ -73,6 +73,17 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--num-generations", type=int, default=8,
                    help="GRPO group size (number of completions per prompt). "
                         "Defaults to 8 per the v0.5 concept brief.")
+    p.add_argument("--per-device-batch-size", type=int, default=2,
+                   help="``per_device_train_batch_size`` for TRL GRPOConfig. "
+                        "Each rank generates ``batch_size × num_generations`` "
+                        "sequences per step. The 24GB 4090 envelope on the "
+                        "9b-fsdp preset (9GB sharded model + ~2GB LoRA/SAE/"
+                        "optimizer + ~10GB KV cache + activations) means "
+                        "batch_size=2 × num_generations=8 = 16 sequences is "
+                        "the practical ceiling; TRL's default of 8 (= 64 "
+                        "sequences per rank) OOMs at backward. Lower to 1 "
+                        "if running parallel runs on the same box, or "
+                        "raising num_generations.")
     p.add_argument("--n-prompts", type=int, default=2000,
                    help="Number of prompt rows in the training dataset. The "
                         "policy generates ``num_generations`` completions per "
@@ -258,6 +269,16 @@ def main() -> int:
     # completions=...)``. Parameter names must match exactly — the
     # underscore-prefix convention for "unused parameter" doesn't apply
     # to keyword-callable APIs (it just renames the parameter).
+    #
+    # The ``verify()`` call is wrapped in try/except because the R_D
+    # topic-alignment scorer (sklearn KMeans on sentence-transformers
+    # embeddings) can raise on degenerate inputs the base policy emits
+    # early in training: empty/whitespace-only completion text yields
+    # NaN embeddings → ``ValueError: Input X contains NaN`` → the whole
+    # rank crashes mid-step. A failed verify() is conceptually equivalent
+    # to a parse failure: the completion is too pathological to score,
+    # so it gets R=0 and the run continues. Matches the rejection-
+    # sampling script's behavior.
     def reward_fn(prompts, completions, **kwargs):
         del prompts, kwargs  # unused; closure provides catalog + verifier paths
         rs: list[float] = []
@@ -273,12 +294,17 @@ def main() -> int:
             if not entries:
                 rs.append(0.0)
                 continue
-            res = verify(
-                entries, catalog,
-                t_i_cache_path=args.t_i_cache,
-                null_stats_path=args.null_stats,
-            )
-            rs.append(res.R)
+            try:
+                res = verify(
+                    entries, catalog,
+                    t_i_cache_path=args.t_i_cache,
+                    null_stats_path=args.null_stats,
+                )
+                rs.append(res.R)
+            except Exception as exc:
+                logger.warning("verify() failed on a completion (%s); "
+                               "scoring as R=0", type(exc).__name__)
+                rs.append(0.0)
         return rs
 
     print(f"[4/9] reward_fn bound (verifier hash = {metadata.locked_weights_hash})")
@@ -470,6 +496,7 @@ def main() -> int:
         top_p=args.top_p,
         bf16=True,
         max_steps=args.max_steps,
+        per_device_train_batch_size=args.per_device_batch_size,
     )
     sidecar_cb = make_sidecar_callback(
         metadata, sae_logger=sae_logger, cfg=checkpoint_cfg,
