@@ -98,6 +98,13 @@ def parse_args() -> argparse.Namespace:
                         "safe single-4090 default. Push higher only after "
                         "verifying you have GPU headroom.")
     p.add_argument("--base-model-id", default="Qwen/Qwen3.5-9B-Base")
+    p.add_argument("--init-checkpoint", default=None,
+                   help="Optional LoRA adapter directory (e.g. "
+                        "/raid/checkpoints/p5-sft-r1/) to use as the "
+                        "rollout policy. Without it, samples come from "
+                        "the base model. With an SFT-trained adapter, "
+                        "the rejection-sampled corpus represents the "
+                        "next round of iterated self-distillation.")
     p.add_argument("--device", default="cuda")
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--log-every", type=int, default=4,
@@ -174,8 +181,41 @@ def main() -> int:
         args.base_model_id, torch_dtype="bfloat16",
     )
     model = model.to(args.device)
-    model.eval()
     print(f"      loaded in {time.time()-t0:.1f}s")
+
+    if args.init_checkpoint:
+        from peft import LoraConfig, get_peft_model
+        from safetensors.torch import load_file
+
+        adapter_dir = Path(args.init_checkpoint)
+        adapter_file = adapter_dir / "adapter_model.safetensors"
+        if not adapter_file.exists():
+            raise FileNotFoundError(
+                f"adapter not found at {adapter_file}. "
+                f"Run scripts/p5_sft.py first, which auto-emits PEFT "
+                f"adapter_model.safetensors after training."
+            )
+        print(f"      loading LoRA adapter from {adapter_dir}…")
+        cfg_json = json.loads(
+            (adapter_dir / "adapter_config.json").read_text()
+        )
+        lora_cfg = LoraConfig(
+            r=cfg_json["r"],
+            lora_alpha=cfg_json["lora_alpha"],
+            lora_dropout=cfg_json["lora_dropout"],
+            target_modules=cfg_json["target_modules"],
+            task_type="CAUSAL_LM",
+        )
+        model = get_peft_model(model, lora_cfg, autocast_adapter_dtype=False)
+        model = model.to(torch.bfloat16)
+        sd = load_file(str(adapter_file))
+        missing, unexpected = model.load_state_dict(sd, strict=False)
+        if unexpected:
+            logger.warning("unexpected keys when loading adapter: %r",
+                           unexpected[:3])
+        print(f"      adapter loaded: {len(sd)} LoRA tensors")
+
+    model.eval()
 
     # Constrained-decode hook: backend choice determines which generation
     # kwarg the per-batch call uses.
