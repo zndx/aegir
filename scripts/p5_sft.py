@@ -220,6 +220,90 @@ def main() -> int:
     print("[5/5] trainer.train()")
     trainer.train()
     trainer.save_model()
+
+    # ---- 6. Convert FSDP-sharded checkpoint → PEFT adapter format ----
+    # Under FSDP, ``trainer.save_model()`` emits sharded ``.distcp`` files
+    # under ``checkpoint-*/pytorch_model_fsdp_0/`` rather than the
+    # PEFT-format ``adapter_model.safetensors`` that
+    # ``p5_train.py --init-checkpoint`` expects. Convert in-place on rank 0
+    # so the SFT output is immediately consumable downstream.
+    #
+    # Mapping the FSDP keys to PEFT convention:
+    #   FSDP:   model.base_model.model.<...>.lora_A.weight
+    #   PEFT:   base_model.model.<...>.lora_A.default.weight
+    # (strip leading ``model.``, insert ``.default`` between ``lora_X`` and
+    # ``weight`` because PEFT stores LoRA layers in an nn.ModuleDict keyed
+    # by adapter name; the default adapter is ``"default"``).
+    if is_distributed:
+        import torch.distributed as dist
+        is_rank0 = dist.get_rank() == 0 if dist.is_initialized() else True
+    else:
+        is_rank0 = True
+
+    if is_rank0:
+        out_root = Path(args.output_dir)
+        ckpts = sorted(
+            [d for d in out_root.iterdir() if d.name.startswith("checkpoint-")],
+            key=lambda p: int(p.name.split("-")[1]),
+        )
+        if ckpts:
+            ckpt = ckpts[-1]
+            distcp_dir = ckpt / "pytorch_model_fsdp_0"
+            if distcp_dir.is_dir():
+                print(f"[6/6] converting FSDP checkpoint → PEFT adapter "
+                      f"({ckpt.name})…")
+                import torch.distributed.checkpoint as dcp
+                from safetensors.torch import save_file
+
+                reader = dcp.FileSystemReader(str(distcp_dir))
+                meta = reader.read_metadata()
+                state_dict = {}
+                for fqn, prop in meta.state_dict_metadata.items():
+                    if hasattr(prop, "size") and hasattr(prop, "properties"):
+                        state_dict[fqn] = torch.empty(
+                            prop.size, dtype=prop.properties.dtype,
+                        )
+                dcp.load(state_dict, storage_reader=reader)
+
+                peft_sd: dict[str, torch.Tensor] = {}
+                for k, v in state_dict.items():
+                    new_k = k[len("model."):] if k.startswith("model.") else k
+                    new_k = new_k.replace(".lora_A.weight",
+                                          ".lora_A.default.weight")
+                    new_k = new_k.replace(".lora_B.weight",
+                                          ".lora_B.default.weight")
+                    peft_sd[new_k] = v
+
+                save_file(peft_sd, str(out_root / "adapter_model.safetensors"))
+
+                adapter_config = {
+                    "peft_type": "LORA",
+                    "task_type": "CAUSAL_LM",
+                    "r": args.lora_rank,
+                    "lora_alpha": args.lora_alpha,
+                    "lora_dropout": args.lora_dropout,
+                    "target_modules": [
+                        "q_proj", "k_proj", "v_proj", "o_proj",
+                        "gate_proj", "up_proj", "down_proj",
+                    ],
+                    "modules_to_save": [],
+                    "base_model_name_or_path": args.base_model_id,
+                    "bias": "none",
+                    "fan_in_fan_out": False,
+                    "inference_mode": False,
+                    "init_lora_weights": True,
+                    "use_rslora": False,
+                }
+                with (out_root / "adapter_config.json").open("w") as f:
+                    json.dump(adapter_config, f, indent=2)
+                print(f"       wrote adapter_model.safetensors "
+                      f"({len(peft_sd)} LoRA tensors) + adapter_config.json")
+            else:
+                print(f"[6/6] no FSDP .distcp dir in {ckpt} — "
+                      f"skipping conversion (single-GPU path?)")
+        else:
+            print("[6/6] no checkpoint-* directory — nothing to convert")
+
     print()
     print("=== SFT complete ===")
     print(f"  LoRA adapter saved to: {args.output_dir}")
