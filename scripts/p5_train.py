@@ -128,6 +128,18 @@ def parse_args() -> argparse.Namespace:
                         "than lmfe at our 248K-vocab × 540-branch scale. "
                         "``lmfe`` is the legacy backend "
                         "(prefix_allowed_tokens_fn, O(V) per token).")
+    p.add_argument("--verify-workers", type=int, default=0,
+                   help="ProcessPoolExecutor workers for parallel verify() "
+                        "calls inside the reward function. Default 0 = "
+                        "serial. Measurement on 2026-05-16 showed warm "
+                        "verify is only ~16ms per completion — not the "
+                        "actual GRPO step-time bottleneck. The pool helps "
+                        "modestly (~2.7× on 8 workers) when compositions "
+                        "are longer or verify cost is dominant in other "
+                        "loops (e.g. eval, rejection sampling). The 18 "
+                        "min/step GRPO floor on this box is elsewhere "
+                        "(FSDP summon_full_params + peft + xgrammar "
+                        "bitmask overhead per token).")
     p.add_argument("--policy-preset", default=DEFAULT_POLICY_PRESET,
                    choices=("9b-local-l0-50", "9b-local-l0-100",
                             "9b-fsdp-l0-50", "9b-fsdp-l0-100",
@@ -279,20 +291,46 @@ def main() -> int:
     # underscore-prefix convention for "unused parameter" doesn't apply
     # to keyword-callable APIs (it just renames the parameter).
     #
-    # The ``verify()`` call is wrapped in try/except because the R_D
-    # topic-alignment scorer (sklearn KMeans on sentence-transformers
-    # embeddings) can raise on degenerate inputs the base policy emits
-    # early in training: empty/whitespace-only completion text yields
-    # NaN embeddings → ``ValueError: Input X contains NaN`` → the whole
-    # rank crashes mid-step. A failed verify() is conceptually equivalent
-    # to a parse failure: the completion is too pathological to score,
-    # so it gets R=0 and the run continues. Matches the rejection-
-    # sampling script's behavior.
+    # Verify() can raise on degenerate completions (sklearn NaN
+    # propagation through KMeans is the most common path). A failed
+    # verify() is conceptually equivalent to a parse failure: the
+    # completion is too pathological to score, so it gets R=0 and the
+    # run continues. The parallel-verify worker handles this internally
+    # too; both paths converge on the same fail-soft semantics.
+    #
+    # Verifier parallelism: when ``--verify-workers > 0``, the per-
+    # completion verify() calls are dispatched to a ProcessPoolExecutor
+    # rather than run serially. The verifier's R_D path
+    # (sentence-transformer encode + KMeans cluster, all CPU) is the
+    # dominant cost at 8-16 completions/step on this box — measured
+    # at ~18 min/step on 2026-05-16. With workers=4 we expect ~4× the
+    # throughput, putting step time near ~5 min.
+    use_pool = args.verify_workers > 0
+    if use_pool:
+        from aegir.rl.parallel_verify import batch_verify_compositions
+        print(f"[4/9] reward_fn bound + ProcessPool(workers={args.verify_workers}) "
+              f"(verifier hash = {metadata.locked_weights_hash})")
+    else:
+        print(f"[4/9] reward_fn bound (serial; verifier hash = "
+              f"{metadata.locked_weights_hash})")
+
     def reward_fn(prompts, completions, **kwargs):
         del prompts, kwargs  # unused; closure provides catalog + verifier paths
+        parsed_list = [parse_compositions(text) for text in completions]
+
+        if use_pool:
+            return batch_verify_compositions(
+                parsed_list,
+                catalog_path=args.catalog,
+                t_i_cache_path=args.t_i_cache,
+                null_stats_path=args.null_stats,
+                n_workers=args.verify_workers,
+            )
+
+        # Serial fallback (kept for the --verify-workers=0 escape hatch
+        # and for direct comparison).
         rs: list[float] = []
-        for completion_text in completions:
-            entries_raw = parse_compositions(completion_text)
+        for entries_raw in parsed_list:
             entries = [
                 CompositionEntry(
                     template_id=e["template_id"],
@@ -316,7 +354,6 @@ def main() -> int:
                 rs.append(0.0)
         return rs
 
-    print(f"[4/9] reward_fn bound (verifier hash = {metadata.locked_weights_hash})")
 
     # ---- 5. Dry-run early exit ---------------------------------------
     # Pre-flight is complete. Print the launch summary and return without
