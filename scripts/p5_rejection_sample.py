@@ -103,16 +103,24 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--log-every", type=int, default=4,
                    help="Print progress every N prompt-variation batches.")
     p.add_argument("--schema-mode", choices=("lite", "full", "none"),
-                   default="lite",
-                   help="Constrained-decode schema strictness. ``lite`` "
-                        "(default) enforces array-of-objects with "
-                        "template_id+slot_fillers shape but doesn't "
-                        "enumerate the 540 catalog template_ids — runs "
-                        "~10-50× faster. ``full`` enumerates all 540 "
-                        "template_ids via discriminated oneOf (~3 min "
-                        "per batch on 4× sequences on 4090). ``none`` "
-                        "skips constraint entirely (fastest, but Base "
-                        "model rarely emits JSON unprompted).")
+                   default="full",
+                   help="Constrained-decode schema strictness. ``full`` "
+                        "(default) enumerates all 540 catalog template_ids "
+                        "via discriminated oneOf — guarantees the policy "
+                        "picks valid template_ids, no R_A hallucination "
+                        "rejections. With xgrammar backend this is ~0.7s "
+                        "to compile and O(1) per-token. ``lite`` enforces "
+                        "only the array-of-objects shape (template_id "
+                        "free string, R_A rejects hallucinations post-hoc). "
+                        "``none`` skips constraint entirely.")
+    p.add_argument("--decode-backend", choices=("xgrammar", "lmfe"),
+                   default="xgrammar",
+                   help="Constrained-decode backend. ``xgrammar`` (default) "
+                        "pre-compiles a token-trie automaton at schema-build "
+                        "time and runs O(1) per token — 5-15× faster than "
+                        "lmfe at our 248K-vocab × 540-branch scale. ``lmfe`` "
+                        "is the fallback (prefix_allowed_tokens_fn, O(V) "
+                        "per token).")
     return p.parse_args()
 
 
@@ -127,6 +135,7 @@ def main() -> int:
         composition_json_schema,
         composition_json_schema_lite,
         make_lmfe_prefix_allowed_tokens_fn,
+        make_xgrammar_logits_processor_factory,
         parse_compositions,
     )
     from aegir.rl.prompt import PromptConfig, build_messages
@@ -168,15 +177,41 @@ def main() -> int:
     model.eval()
     print(f"      loaded in {time.time()-t0:.1f}s")
 
+    # Constrained-decode hook: backend choice determines which generation
+    # kwarg the per-batch call uses.
+    prefix_fn = None
+    xgrammar_factory = None
     if schema is not None:
-        print("[3/5] building prefix_allowed_tokens_fn…")
-        t0 = time.time()
-        prefix_fn = make_lmfe_prefix_allowed_tokens_fn(tokenizer, schema)
-        print(f"      ready in {time.time()-t0:.1f}s "
-              f"(schema_mode={args.schema_mode})")
+        if args.decode_backend == "xgrammar":
+            # xgrammar needs the *model's* LM-head vocab size, not the
+            # tokenizer's. For Qwen3.5-9B-Base: tokenizer.vocab_size=248044
+            # but model.config.vocab_size=248320 (the LM head is padded for
+            # alignment). Sampling from the LM head can produce token ids
+            # >= tokenizer.vocab_size; if the grammar matcher was built
+            # against 248044, those out-of-range tokens trigger
+            # ``AssertionError: accept_token returned False``.
+            cfg_vocab = (
+                getattr(model.config, "vocab_size", None)
+                or getattr(getattr(model.config, "text_config", None),
+                           "vocab_size", None)
+                or tokenizer.vocab_size
+            )
+            print("[3/5] building xgrammar LogitsProcessor factory…")
+            t0 = time.time()
+            xgrammar_factory = make_xgrammar_logits_processor_factory(
+                tokenizer, schema, vocab_size=cfg_vocab,
+            )
+            print(f"      ready in {time.time()-t0:.1f}s "
+                  f"(schema_mode={args.schema_mode}, backend=xgrammar, "
+                  f"vocab_size={cfg_vocab})")
+        else:  # lmfe
+            print("[3/5] building lmfe prefix_allowed_tokens_fn…")
+            t0 = time.time()
+            prefix_fn = make_lmfe_prefix_allowed_tokens_fn(tokenizer, schema)
+            print(f"      ready in {time.time()-t0:.1f}s "
+                  f"(schema_mode={args.schema_mode}, backend=lmfe)")
     else:
-        print("[3/5] schema=none: skipping prefix_allowed_tokens_fn build")
-        prefix_fn = None
+        print("[3/5] schema=none: skipping constrained-decode build")
 
     # Pre-render every prompt variation once. Each variation gets its
     # own few-shot seed so the in-prompt examples rotate across the
@@ -233,6 +268,9 @@ def main() -> int:
                     )
                     if prefix_fn is not None:
                         gen_kwargs["prefix_allowed_tokens_fn"] = prefix_fn
+                    if xgrammar_factory is not None:
+                        # xgrammar LogitsProcessor is single-use — fresh per call
+                        gen_kwargs["logits_processor"] = [xgrammar_factory()]
                     out = model.generate(**gen_kwargs)
                     completion_ids = out[:, prompt_len:]
                     for i in range(b_size):
