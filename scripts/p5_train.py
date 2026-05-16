@@ -120,6 +120,14 @@ def parse_args() -> argparse.Namespace:
                         "LoRA delta is replaced. Use this after rejection-"
                         "sampling SFT to give GRPO a non-zero-reward "
                         "starting policy. Mutually exclusive with --resume.")
+    p.add_argument("--decode-backend", choices=("xgrammar", "lmfe"),
+                   default="xgrammar",
+                   help="Constrained-decode backend for GRPO generation. "
+                        "``xgrammar`` (default) pre-compiles a token-trie "
+                        "automaton and runs O(1) per token — 4-15× faster "
+                        "than lmfe at our 248K-vocab × 540-branch scale. "
+                        "``lmfe`` is the legacy backend "
+                        "(prefix_allowed_tokens_fn, O(V) per token).")
     p.add_argument("--policy-preset", default=DEFAULT_POLICY_PRESET,
                    choices=("9b-local-l0-50", "9b-local-l0-100",
                             "9b-fsdp-l0-50", "9b-fsdp-l0-100",
@@ -168,6 +176,7 @@ def main() -> int:
         DecodingConfig,
         composition_json_schema,
         make_lmfe_prefix_allowed_tokens_fn,
+        make_xgrammar_logits_processor_factory,
         parse_compositions,
     )
     from aegir.rl.policy import (
@@ -321,9 +330,13 @@ def main() -> int:
         if args.init_checkpoint:
             print(f"      (dry-run) would warm-start LoRA from: "
                   f"{args.init_checkpoint}")
-        print("[6b/9] (dry-run) constrained decoding: would wrap model.generate "
-              f"with lm-format-enforcer prefix_allowed_tokens_fn "
-              f"({len(schema['items']['oneOf'])} schema branches)")
+        _backend = args.decode_backend
+        _hook = ("xgrammar LogitsProcessor factory"
+                 if _backend == "xgrammar"
+                 else "lm-format-enforcer prefix_allowed_tokens_fn")
+        print(f"[6b/9] (dry-run) constrained decoding: would wrap "
+              f"model.generate with {_hook} "
+              f"(backend={_backend}, {len(schema['items']['oneOf'])} schema branches)")
         print("[7/9] (dry-run) skipping TRL GRPOConfig + SidecarCallback")
         print("[8/9] (dry-run) skipping GRPOTrainer instantiation")
         print("[9/9] dry-run complete — ready to launch")
@@ -375,28 +388,60 @@ def main() -> int:
     # ---- 6b. Wire constrained decoding into the generation path ------
     # TRL's GRPOTrainer calls ``model.generate(**generate_inputs,
     # generation_config=self.generation_config)`` internally; ``GenerationConfig``
-    # has no field for ``prefix_allowed_tokens_fn``, so the only reliable hook
-    # is to wrap ``model.generate`` so every call carries the constraint.
+    # has no field for ``prefix_allowed_tokens_fn`` or ``logits_processor``,
+    # so the only reliable hook is to wrap ``model.generate`` so every call
+    # carries the constraint.
     #
     # WITHOUT this wrap, the policy emits free-form text, ``parse_compositions``
     # returns ``[]``, reward is uniformly zero, and GRPO has no learning signal.
     # The 24-hour 0-reward / 0-variance run on 2026-05-11 was caused by exactly
     # this oversight — the schema was built but never connected to ``generate``.
-    print("[6b/9] building constrained-decode prefix_allowed_tokens_fn…")
+    #
+    # Backend choice: xgrammar (default) compiles a token-trie automaton and
+    # runs O(1) per token; lmfe walks the full vocab per token (O(V)). On
+    # Qwen3.5-9B-Base + 540-branch schema, xgrammar is 4-15× faster.
     import time as _time
-    _t0 = _time.time()
-    _prefix_fn = make_lmfe_prefix_allowed_tokens_fn(tokenizer, schema)
-    print(f"       ready in {_time.time()-_t0:.1f}s "
-          f"(540-branch schema → token-level constraint)")
     _original_generate = model.generate
 
-    def _generate_with_constraint(*g_args, **g_kwargs):
-        if "prefix_allowed_tokens_fn" not in g_kwargs:
-            g_kwargs["prefix_allowed_tokens_fn"] = _prefix_fn
-        return _original_generate(*g_args, **g_kwargs)
+    if args.decode_backend == "xgrammar":
+        # xgrammar needs the *model's* LM-head vocab size, not the tokenizer's
+        # (Qwen3.5-9B-Base: 248320 vs 248044). The LM head can sample tokens
+        # in [tokenizer.vocab_size, config.vocab_size); a grammar built on
+        # the smaller range raises AssertionError on those tokens.
+        _cfg_vocab = (
+            getattr(model.config, "vocab_size", None)
+            or getattr(getattr(model.config, "text_config", None),
+                       "vocab_size", None)
+            or tokenizer.vocab_size
+        )
+        print("[6b/9] building xgrammar LogitsProcessor factory…")
+        _t0 = _time.time()
+        _xgrammar_factory = make_xgrammar_logits_processor_factory(
+            tokenizer, schema, vocab_size=_cfg_vocab,
+        )
+        print(f"       ready in {_time.time()-_t0:.1f}s "
+              f"(backend=xgrammar, vocab={_cfg_vocab})")
+
+        def _generate_with_constraint(*g_args, **g_kwargs):
+            # xgrammar processors maintain matcher state and are single-use;
+            # instantiate fresh per generate() call.
+            existing = g_kwargs.get("logits_processor", None) or []
+            g_kwargs["logits_processor"] = list(existing) + [_xgrammar_factory()]
+            return _original_generate(*g_args, **g_kwargs)
+    else:  # lmfe
+        print("[6b/9] building lmfe prefix_allowed_tokens_fn…")
+        _t0 = _time.time()
+        _prefix_fn = make_lmfe_prefix_allowed_tokens_fn(tokenizer, schema)
+        print(f"       ready in {_time.time()-_t0:.1f}s "
+              f"(backend=lmfe, 540-branch schema)")
+
+        def _generate_with_constraint(*g_args, **g_kwargs):
+            if "prefix_allowed_tokens_fn" not in g_kwargs:
+                g_kwargs["prefix_allowed_tokens_fn"] = _prefix_fn
+            return _original_generate(*g_args, **g_kwargs)
 
     model.generate = _generate_with_constraint
-    print("       model.generate wrapped — every TRL generate() call is now schema-constrained")
+    print(f"       model.generate wrapped (backend={args.decode_backend})")
 
     # ---- 7. SAE feature logging --------------------------------------
     # Two attachment paths depending on parallelism strategy:
