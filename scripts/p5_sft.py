@@ -234,9 +234,21 @@ def main() -> int:
     # (strip leading ``model.``, insert ``.default`` between ``lora_X`` and
     # ``weight`` because PEFT stores LoRA layers in an nn.ModuleDict keyed
     # by adapter name; the default adapter is ``"default"``).
+    # Sync ranks and tear down the process group BEFORE conversion. The
+    # ``dcp.load`` call below uses ``torch.distributed`` for coordination
+    # by default; with rank 1 already exited (since this is post-train),
+    # rank 0 would hang in a barrier waiting for a peer that's gone.
+    # Destroying the process group makes ``dcp.load`` fall back to
+    # single-process mode, which is what we want for this single-rank
+    # conversion step.
     if is_distributed:
         import torch.distributed as dist
-        is_rank0 = dist.get_rank() == 0 if dist.is_initialized() else True
+        if dist.is_initialized():
+            dist.barrier()  # wait for all ranks to finish save_model()
+            is_rank0 = dist.get_rank() == 0
+            dist.destroy_process_group()
+        else:
+            is_rank0 = True
     else:
         is_rank0 = True
 
