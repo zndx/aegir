@@ -20,6 +20,11 @@ priority.
 | `scripts/split_pretrain_parquet.py` | Deterministic seeded train/val split for the pretrain parquet |
 | `src/aegir/data/synth_table_qa.py` | TAPAS-style synthetic SQL grammar — 3 statement patterns (A: agg op constant, B: cell op constant, C: agg op agg), 5 aggregations (SUM/MIN/MAX/AVG/COUNT), 6 operators with multiple verbalizations, rejection-sampled label balance |
 | `scripts/generate_synth_sql.py` | Phase 0.5 corpus driver — reads TAPAS interactions.txtpb.gz → emits (table_bytes, statement_bytes, label) parquet. Smoke: ~4 examples/table, 50/50 label balance |
+| `src/aegir/data/synth_counterfactual.py` | TAPAS-style counterfactual generator — finds cell values that appear as substrings of surrounding text (word-boundary aware, min-len 4) and swaps one for a different value from the same column. Original→False, perturbed→True. |
+| `scripts/generate_synth_counterfactual.py` | Phase 0.5 corpus driver for counterfactuals. Smoke: ~712 examples/5K records, 50/50 label balance, diverse cross-column swaps |
+| `src/aegir/data/tokenizer.py` | Added `TRUE_TOKEN_ID=6`, `FALSE_TOKEN_ID=7` so binary labels can be expressed as single tokens — reuses LM head, no classification head needed |
+| `src/aegir/data/phase05.py` | `Phase05Dataset` — reads synth-SQL + counterfactual parquets and emits `[BOS] table [SEP] second [SEP] [LABEL] [EOS]` byte sequences for `train_pretrain.py` |
+| `train_pretrain.py` (extended) | Now accepts `--phase05-synth-sql` / `--phase05-counterfactual` flags as alternative to `--train-parquet`/`--val-parquet`. Same loss, same boundary diagnostics, same checkpoint logic. |
 
 ## What's on-disk (not in git)
 
@@ -124,12 +129,49 @@ The trainer for Phase 0.5 isn't built yet — needs to:
    (b) classification head with 2 labels. (a) reuses train_pretrain.py
    with minimal change; (b) reuses train.py with `--num-classes 2`.
 
-Still TODO for Phase 0.5:
-- Counterfactual generator (`src/aegir/data/synth_counterfactual.py`):
-  swap one entity in TITLE/DESCRIPTION/SEGMENT_TEXT for a plausible
-  alternative from the same column; binary "corrupted?" label.
-- Phase 0.5 train script (small wrapper around train_pretrain.py or
-  train.py depending on chosen modality).
+**Both Phase 0.5 generators + trainer wiring landed tonight.** Sunday
+afternoon execution is just `torchrun train_pretrain.py --phase05-*`
+once the corpora are generated:
+
+```bash
+# Step 1 — generate both Phase 0.5 corpora (CPU, ~50 min each in parallel)
+LD_LIBRARY_PATH=/tmp/jvm-libs uv run --no-sync python \
+    scripts/generate_synth_sql.py \
+    --input /raid/datasets/tapas/interactions.txtpb.gz \
+    --output /raid/datasets/tapas/aegir_synth_sql_v0.parquet \
+    --per-table 4 --seed 4649 &
+
+LD_LIBRARY_PATH=/tmp/jvm-libs uv run --no-sync python \
+    scripts/generate_synth_counterfactual.py \
+    --input /raid/datasets/tapas/interactions.txtpb.gz \
+    --output /raid/datasets/tapas/aegir_synth_cf_v0.parquet \
+    --pairs-per-table 2 --seed 4649 &
+
+wait
+
+# Step 2 — Phase 0.5 training (after Phase 0 produces a backbone)
+PYTHONUNBUFFERED=1 LD_LIBRARY_PATH=/tmp/jvm-libs uv run --no-sync torchrun \
+  --nproc_per_node=6 --master_port=29504 train_pretrain.py \
+    --phase05-synth-sql /raid/datasets/tapas/aegir_synth_sql_v0.parquet \
+    --phase05-counterfactual /raid/datasets/tapas/aegir_synth_cf_v0.parquet \
+    --model-size small --epochs 4 --batch-size 8 --lr 5e-5 \
+    --warmup-ratio 0.05 --weight-decay 0.01 \
+    --max-length 1024 --num-workers 4 --log-interval 50 \
+    --output-dir /raid/checkpoints/aegir-phase05-v0.2 \
+    --resume-from /raid/checkpoints/aegir-pretrain-v0.2/runs/<phase0-run-id>/best_model.pt \
+    2>&1 | tee /tmp/aegir-phase05-v0.2.log
+```
+
+(The `--resume-from` flag doesn't exist yet — would need a small
+addition to load state_dict from a Phase 0 checkpoint before training
+starts. Easy 10-line patch Sunday morning, or skip it and re-init,
+losing Phase 0's learning. Recommend implementing it before launch.)
+
+Eval semantics for Phase 0.5: condition on the prefix up to the second
+`[SEP]`, examine `argmax(logits[TRUE_TOKEN_ID], logits[FALSE_TOKEN_ID])`,
+compare to label. Could add this as a dedicated eval mode in
+`train_pretrain.py:evaluate` but the byte-level ppl on the full sequence
+is also a reasonable proxy in the short term.
 
 ## Scale strategy — small → 2x "fire for effect"
 
