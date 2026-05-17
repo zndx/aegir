@@ -272,7 +272,8 @@ def _finalize_boundary(accum: dict[str, float], num_batches: int) -> dict[str, f
     return {k: v / num_batches for k, v in accum.items()}
 
 
-def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args):
+def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
+                epoch_idx: int = 0, is_main: bool = True):
     """Run one training epoch."""
     model.train()
     total_loss = 0.0
@@ -284,7 +285,12 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args):
     num_batches = 0
     boundary_accum: dict[str, float] = {}
 
+    log_interval = getattr(args, "log_interval", 10) or 10
     max_steps = getattr(args, "max_train_steps", 0) or 0
+    epoch_start = time.time()
+    window_start = epoch_start
+    window_loss = 0.0
+    window_count = 0
     for step_idx, batch in enumerate(loader):
         if max_steps and step_idx >= max_steps:
             break
@@ -334,6 +340,29 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args):
             preds = output.logits.detach().argmax(dim=-1).cpu().numpy()
         all_preds.extend(preds.tolist())
         all_labels.extend(labels.cpu().numpy().tolist())
+
+        # Step-level logging: every log_interval steps, print a windowed
+        # mean loss + step time. Without this, multi-epoch runs surface
+        # zero feedback until the epoch boundary — fine for tiny runs but
+        # catastrophic when a single epoch is hours long.
+        window_loss += loss.item()
+        window_count += 1
+        if is_main and log_interval > 0 and (step_idx + 1) % log_interval == 0:
+            now = time.time()
+            window_elapsed = now - window_start
+            steps_per_sec = window_count / max(window_elapsed, 1e-9)
+            cur_lr = optimizer.param_groups[0]["lr"]
+            print(
+                f"  [e{epoch_idx} step {step_idx+1:6d}]  "
+                f"loss={window_loss/window_count:.4f}  "
+                f"lr={cur_lr:.2e}  "
+                f"{steps_per_sec:.2f} step/s "
+                f"({window_elapsed:.1f}s for {window_count} steps)",
+                flush=True,
+            )
+            window_start = now
+            window_loss = 0.0
+            window_count = 0
 
     avg_loss = total_loss / max(num_batches, 1)
     avg_task_loss = total_task_loss / max(num_batches, 1)
@@ -576,7 +605,10 @@ def main():
             train_sampler.set_epoch(epoch)
 
         t0 = time.time()
-        train_metrics = train_epoch(model, train_loader, optimizer, scheduler, loss_fn, device, args)
+        train_metrics = train_epoch(
+            model, train_loader, optimizer, scheduler, loss_fn, device, args,
+            epoch_idx=epoch + 1, is_main=is_main,
+        )
         train_time = time.time() - t0
 
         val_metrics = evaluate(raw_model, val_loader, loss_fn, device, args)
