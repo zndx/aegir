@@ -125,9 +125,24 @@ Both generators consume the same parquet output as Phase 0.
 
 ## Risks parked
 
-- `train_pretrain.py` smoke test is still incomplete — needed GPU,
-  GPUs were occupied by A1. Run a 5-min single-GPU smoke first thing
-  Sunday before launching the multi-GPU pretrain.
+- `train_pretrain.py` smoke test is still incomplete — CPU smoke
+  confirmed imports + model build + parquet load + collate shapes,
+  but the forward pass needs CUDA (fla `chunk_rwkv7` is Triton/GPU
+  only). Run this single-GPU smoke first thing Sunday before
+  launching the multi-GPU pretrain — should take ~30s wall-clock:
+  ```bash
+  cd /home/rch/local/src/zndx/aegir
+  LD_LIBRARY_PATH=/tmp/jvm-libs uv run --no-sync python train_pretrain.py \
+    --train-parquet /tmp/aegir_bytes_smoke.parquet \
+    --val-parquet /tmp/aegir_bytes_smoke.parquet \
+    --model-size tiny --epochs 1 --batch-size 4 --lr 1e-4 \
+    --max-length 512 --num-workers 0 --log-interval 5 \
+    --output-dir /tmp/aegir-pretrain-smoke
+  ```
+  Pass criteria: loss decreases over the first few steps, val ppl
+  drops below the random baseline `exp(ln(65536)) ≈ 65536`, no NaN
+  in train_loss / val_loss, boundary diagnostics emit non-zero
+  values for stage0 and stage1.
 - Pyright noise on torch private imports — pre-existing, not introduced
   tonight, not a real bug.
 - TAPAS proto bindings (`scripts/protos/interaction_pb2.py`) are
