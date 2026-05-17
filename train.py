@@ -339,7 +339,9 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args):
     avg_task_loss = total_task_loss / max(num_batches, 1)
     avg_lb_loss = total_lb_loss / max(num_batches, 1)
 
-    micro_f1, macro_f1, _ = f1_score_multilabel(all_labels, all_preds, num_classes=model.config.num_labels)
+    # DDP-wrapped models hide .config behind .module; unwrap defensively.
+    num_classes = getattr(model, "module", model).config.num_labels
+    micro_f1, macro_f1, _ = f1_score_multilabel(all_labels, all_preds, num_classes=num_classes)
 
     return {
         "loss": avg_loss,
@@ -391,7 +393,8 @@ def evaluate(model, loader, loss_fn, device, args):
         all_labels.extend(labels.cpu().numpy().tolist())
 
     avg_loss = total_loss / max(num_batches, 1)
-    micro_f1, macro_f1, _ = f1_score_multilabel(all_labels, all_preds, num_classes=model.config.num_labels)
+    num_classes = getattr(model, "module", model).config.num_labels
+    micro_f1, macro_f1, _ = f1_score_multilabel(all_labels, all_preds, num_classes=num_classes)
 
     return {
         "loss": avg_loss,
