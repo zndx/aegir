@@ -131,19 +131,63 @@ DoDuo / TURL-class results on the same task.
 
 ## Plan for v0.2 publication path
 
-1. **Phase 0 — backbone pretraining (FinePDF-Edu / dense text mix).**
-   Default LR ≤ 1e-4 (chunker-safe). Watch boundary diagnostics each
-   epoch — if stage-1 chunker stays in target range there, the
-   prescription transfers cleanly.
-2. **Phase 1 — SOTAB-CTA fine-tune** with `AegirForColumnAnnotation`
+The original two-phase plan (dense-text pretrain → SOTAB fine-tune)
+under-specified the bridge between the two. TAPAS
+([google-research/tapas](https://github.com/google-research/tapas),
+archived 2024-07-22 but methodology still valid) shows that a
+**dense-supervision intermediate pretrain on synthetic table-grounded
+binary tasks** is the missing curriculum step between unsupervised
+LM and sparse-reward tabular tasks. Their recipe produced ~7.8M
+examples (3.7M synthetic SQL-like comparisons + 4.1M counterfactual
+entity swaps) and gave a measurable lift on every downstream task
+they tried (WTQ, WikiSQL, TabFact, SQA). Adopting that recipe gives
+us:
+
+1. **Phase 0 — backbone pretraining (dense text + table-text mix).**
+   Combine FinePDF-Edu / C4 with TAPAS's 6.2M Wikipedia table-text
+   pairs (`gs://tapas_models/2020_05_11/interactions.txtpb.gz`,
+   protobuf text format — we'll need a byte-level converter from
+   their `interaction.proto`). Default LR ≤ 1e-4 (chunker-safe).
+   Watch boundary diagnostics each epoch — if stage-1 chunker stays
+   in target range there, the prescription transfers cleanly.
+
+2. **Phase 0.5 — intermediate pretrain (TAPAS-style dense-supervision
+   bridge).** Generate ~5–10M binary-classification examples over the
+   table-text corpus:
+   - **Synthetic SQL-grounded statements** — random grammar produces
+     comparisons / aggregations over the table; binary truth label.
+     ("*X is greater than the sum of Y when Z is K*" → True/False.)
+     Cheap to generate at arbitrary scale; teaches numerical reasoning
+     grounded in the table.
+   - **Counterfactual entity swaps** — take a sentence near the table,
+     swap one entity for a plausible alternative from the same column;
+     binary "corrupted?" label. Teaches entity-grounding.
+
+   Architectural note: TAPAS gained +1-2% from
+   `reset_position_index_per_cell` — feeding explicit cell-boundary
+   priors. For Aegir, this suggests adding sentinel bytes at cell
+   boundaries in the serialization rather than relying solely on the
+   dynamic chunker to discover them via cosine-similarity routing.
+   Worth A/B-ing during Phase 0.5 since we already know the chunker
+   is the load-bearing structure.
+
+3. **Phase 1 — SOTAB-CTA fine-tune** with `AegirForColumnAnnotation`
    head, frozen or low-LR backbone. The infrastructure published here
    (`scripts/aegir_eval_sotab.py`, `scripts/aegir_push_to_hf.py`,
    `data/aegir-sotab-cta-v0.1/README.md`) all carries forward
-   unchanged.
-3. **Phase 2 — robustness eval** on all five SOTAB-v2 splits via the
+   unchanged. With a backbone that's already seen ~13M table-grounded
+   examples by this point, 117K SOTAB-CTA labels should suffice.
+
+4. **Phase 2 — robustness eval** on all five SOTAB-v2 splits via the
    already-built eval driver. Push checkpoint to HF when val F1 macro
    on the main test split clears a publishable threshold
    (≥ 0.1 minimum, 0.5+ for a credible release).
+
+**Methodology references (read before Phase 0):**
+- Herzig et al., *TAPAS: Weakly Supervised Table Parsing via Pre-
+  training*, ACL 2020.
+- Eisenschlos et al., *Understanding Tables with Intermediate Pre-
+  training*, EMNLP Findings 2020.
 
 ## Optional sharpening before the dense-text pass
 
