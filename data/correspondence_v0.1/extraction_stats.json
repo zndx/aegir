@@ -1,0 +1,16 @@
+{
+  "n_rows": 1405,
+  "n_drift_rows": 0,
+  "n_skip_rows": 0,
+  "policy_counts": {
+    "base": 665,
+    "sft-r1": 740
+  },
+  "r_mean": 0.5171022190215763,
+  "r_median": 0.525625,
+  "r_min": 0.31635416666666666,
+  "r_max": 0.9805208333333333,
+  "r_std": 0.11808042996792413,
+  "unique_template_ids": 183,
+  "elapsed_sec": 41.233967781066895
+}

@@ -47,3 +47,8 @@ ui/tsconfig.tsbuildinfo
 *.png
 domain-choice.txt
 micans*.txt
+
+# Extracted dataset artifacts published to HuggingFace separately —
+# the cards live in-repo; the binary parquet / npy do not.
+data/correspondence_*/correspondence.parquet
+data/correspondence_*/T_I_centroids.npy

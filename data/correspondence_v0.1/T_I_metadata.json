@@ -1,0 +1,9 @@
+{
+  "k": 100,
+  "n_docs": 10000,
+  "encoder_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "config": {
+    "random_state": 4649,
+    "requested_k": 100
+  }
+}
