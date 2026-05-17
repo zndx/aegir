@@ -17,6 +17,9 @@ priority.
 | `scripts/protos/interaction_pb2.py` | `protoc`-generated bindings |
 | `scripts/tapas_proto_to_aegir.py` | Reads `interactions.txtpb.gz` → emits parquet of (table_id, byte_ids, length). Uses BOS/SEP/BOUNDARY/EOS specials. Filters <2 col / <2 row tables. |
 | `train_pretrain.py` | Pretraining entry point — `AegirForCausalLM` head, byte-level next-token CE, held-out perplexity eval, boundary diagnostics + metrics.json + checkpoint on val improvement |
+| `scripts/split_pretrain_parquet.py` | Deterministic seeded train/val split for the pretrain parquet |
+| `src/aegir/data/synth_table_qa.py` | TAPAS-style synthetic SQL grammar — 3 statement patterns (A: agg op constant, B: cell op constant, C: agg op agg), 5 aggregations (SUM/MIN/MAX/AVG/COUNT), 6 operators with multiple verbalizations, rejection-sampled label balance |
+| `scripts/generate_synth_sql.py` | Phase 0.5 corpus driver — reads TAPAS interactions.txtpb.gz → emits (table_bytes, statement_bytes, label) parquet. Smoke: ~4 examples/table, 50/50 label balance |
 
 ## What's on-disk (not in git)
 
@@ -101,18 +104,60 @@ the Sunday window if started by ~10 MDT.
 
 ## Block C — Phase 0.5 (intermediate pretrain, TAPAS-style)
 
-Pending Block B's Phase 0 producing a usable backbone. Synthetic-SQL
-+ counterfactual generators don't exist yet — write them Sunday
-afternoon while Phase 0 finishes.
+**Synth-SQL grammar + corpus driver are committed.** Generation can
+run during/after Phase 0 on a held-back CPU while GPUs train Phase 0:
 
-- `src/aegir/data/synth_table_qa.py` — grammar producing
-  *"X is greater than the sum of Y when Z is K"* statements; binary
-  truth label evaluated against the table.
-- `src/aegir/data/synth_counterfactual.py` — take the surrounding
-  `questions` text (TITLE/DESCRIPTION/SEGMENT_TEXT), swap one entity
-  for another from the same column; binary "corrupted?" label.
+```bash
+LD_LIBRARY_PATH=/tmp/jvm-libs uv run --no-sync python \
+    scripts/generate_synth_sql.py \
+    --input /raid/datasets/tapas/interactions.txtpb.gz \
+    --output /raid/datasets/tapas/aegir_synth_sql_v0.parquet \
+    --per-table 4 --seed 4649
+```
 
-Both generators consume the same parquet output as Phase 0.
+Expected: ~3.5M examples (smoke shows ~4 examples / usable table, ~700
+usable tables per 5K input records). ~50 min wall on a single CPU core.
+
+The trainer for Phase 0.5 isn't built yet — needs to:
+1. Concatenate (table_bytes + statement_bytes) into a single input.
+2. Decide modality: (a) append `True`/`False` and train as LM continuation;
+   (b) classification head with 2 labels. (a) reuses train_pretrain.py
+   with minimal change; (b) reuses train.py with `--num-classes 2`.
+
+Still TODO for Phase 0.5:
+- Counterfactual generator (`src/aegir/data/synth_counterfactual.py`):
+  swap one entity in TITLE/DESCRIPTION/SEGMENT_TEXT for a plausible
+  alternative from the same column; binary "corrupted?" label.
+- Phase 0.5 train script (small wrapper around train_pretrain.py or
+  train.py depending on chosen modality).
+
+## Scale strategy — small → 2x "fire for effect"
+
+After small (~56M) Phase 0 validates the pipeline, the recommended 2x
+config for the production checkpoint:
+
+```
+d_model       = [384, 512, 512]      # 1.5x hidden vs small
+arch_layout   = ["w6", ["w6", ["w12"], "w6"], "w6"]   # 1.5x depth
+params        = ~120M  (~2.1x small)
+```
+
+Or depth-only variant (~110M):
+```
+d_model       = [256, 384, 384]      # same as small
+arch_layout   = ["w8", ["w8", ["w16"], "w8"], "w8"]   # 2x depth
+```
+
+Hold fixed across both: `lr=1e-4` (chunker-safe), `max_length=1024`,
+`λ_lb=0.1`, `downsample_factor=2.0`, bf16 AMP, cosine + warmup 5%.
+
+Green-light to 2x once small Phase 0 shows: (a) per-epoch
+`stage1_abs_ratio_err < 0.10` (chunker stable), (b) val ppl trending
+below the random baseline `e^11.09 ≈ 65,536`, (c) no NaN spikes.
+
+Estimated wall: small 8-epoch ≈ 14h; 2x 8-epoch ≈ 28h (or 4 epochs in
+14h for same token budget). Both fit before Monday close if small
+kicks off Sunday morning.
 
 ## Decision points before sleeping tonight
 
