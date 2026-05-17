@@ -300,8 +300,16 @@ def evaluate(model, loader, loss_fn, device, args):
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--train-parquet", required=True)
-    p.add_argument("--val-parquet", required=True)
+    p.add_argument("--train-parquet", default=None,
+                   help="Phase 0 byte-level corpus from tapas_proto_to_aegir.py")
+    p.add_argument("--val-parquet", default=None,
+                   help="Phase 0 held-out parquet")
+    p.add_argument("--phase05-synth-sql", default=None,
+                   help="Phase 0.5: synth-SQL parquet from generate_synth_sql.py")
+    p.add_argument("--phase05-counterfactual", default=None,
+                   help="Phase 0.5: counterfactual parquet")
+    p.add_argument("--phase05-val-frac", type=float, default=0.02,
+                   help="Phase 0.5: held-out fraction for val (deterministic seed-shuffle)")
     p.add_argument("--max-length", type=int, default=1024)
     p.add_argument("--model-size", type=str, default="small",
                    choices=["tiny", "small", "base"])
@@ -360,14 +368,50 @@ def main() -> int:
         print(f"Val:   {args.val_parquet}")
         print(f"Distributed: {is_distributed}  AMP: {args.amp}")
 
-    # Datasets
-    train_ds = ParquetByteDataset(args.train_parquet, max_length=args.max_length)
-    val_ds = ParquetByteDataset(args.val_parquet, max_length=args.max_length)
-    if args.max_train_samples and args.max_train_samples < len(train_ds):
-        train_ds.byte_ids = train_ds.byte_ids[: args.max_train_samples]
-        train_ds.lengths = train_ds.lengths[: args.max_train_samples]
-    if is_main:
-        print(f"Loaded train={len(train_ds):,}  val={len(val_ds):,}")
+    # Datasets — either Phase 0 (byte LM) or Phase 0.5 (table+text+label)
+    if args.phase05_synth_sql or args.phase05_counterfactual:
+        from aegir.data.phase05 import Phase05Dataset
+
+        full = Phase05Dataset(
+            synth_sql_parquet=args.phase05_synth_sql,
+            counterfactual_parquet=args.phase05_counterfactual,
+            max_length=args.max_length,
+        )
+        n_total = len(full)
+        n_val = max(1, int(n_total * args.phase05_val_frac))
+        rng_np = np.random.default_rng(args.seed)
+        perm = rng_np.permutation(n_total)
+        val_idx = sorted(perm[:n_val].tolist())
+        train_idx = sorted(perm[n_val:].tolist())
+
+        class _Subset(torch.utils.data.Dataset):
+            def __init__(self, base, idx):
+                self.base = base
+                self.idx = idx
+
+            def __len__(self):
+                return len(self.idx)
+
+            def __getitem__(self, i):
+                return self.base[self.idx[i]]
+
+        train_ds = _Subset(full, train_idx)
+        val_ds = _Subset(full, val_idx)
+        if is_main:
+            print(f"Phase 0.5 dataset: train={len(train_ds):,}  val={len(val_ds):,}")
+    else:
+        if not args.train_parquet or not args.val_parquet:
+            raise SystemExit(
+                "Either --train-parquet/--val-parquet (Phase 0) or "
+                "--phase05-* (Phase 0.5) sources must be provided."
+            )
+        train_ds = ParquetByteDataset(args.train_parquet, max_length=args.max_length)
+        val_ds = ParquetByteDataset(args.val_parquet, max_length=args.max_length)
+        if args.max_train_samples and args.max_train_samples < len(train_ds):
+            train_ds.byte_ids = train_ds.byte_ids[: args.max_train_samples]
+            train_ds.lengths = train_ds.lengths[: args.max_train_samples]
+        if is_main:
+            print(f"Phase 0 dataset: train={len(train_ds):,}  val={len(val_ds):,}")
 
     if is_distributed:
         train_sampler = DistributedSampler(train_ds, shuffle=True)
