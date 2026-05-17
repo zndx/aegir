@@ -84,12 +84,47 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--audit-run", required=True,
                    help="Path to coverage_v0/<run_id>/ for topic_coverage + template_density")
     p.add_argument("--output", default="/raid/checkpoints/aegir-artifacts/chapters_v0/")
-    p.add_argument("--model", default="cerebras/zai-glm-4.7")
-    p.add_argument("--max-tokens", type=int, default=4096)
+    p.add_argument("--mix",
+                   default="cerebras/zai-glm-4.7:0.6,xai/grok-4.3:0.4",
+                   help="Comma-separated model:weight pairs. Weighted sampling "
+                        "per chapter. Default 60/40 GLM/Grok. Both emit native "
+                        "reasoning_content channels — confirmed via probe — so "
+                        "both populate HX.response_reasoning uniformly. GLM-4.7 "
+                        "on Cerebras = volume + speed (1000+ tok/s); Grok 4.3 "
+                        "on xAI = depth + complex cross-joinable LIMS-style "
+                        "relational tables. (NOT grok-4-1-fast-non-reasoning — "
+                        "that variant emits no reasoning channel and is also "
+                        "no longer in the xAI catalog as of 2026-05.)")
+    p.add_argument("--max-tokens", type=int, default=8192,
+                   help="Bumped from 4096 — initial run hit truncation at 4096; "
+                        "8192 gives room for cross-joinable schema chapters.")
     p.add_argument("--temperature", type=float, default=0.4)
     p.add_argument("--seed", type=int, default=4649)
     p.add_argument("--catalog-dir", default="src/aegir/ontology/catalog")
     return p.parse_args()
+
+
+def parse_mix(spec: str) -> list[tuple[str, float]]:
+    """Parse 'model_a:w_a,model_b:w_b' into normalized (model, weight) pairs."""
+    out = []
+    for tok in spec.split(","):
+        tok = tok.strip()
+        if not tok:
+            continue
+        model, _, w = tok.rpartition(":")
+        if not model or not w:
+            raise SystemExit(f"bad --mix entry: {tok!r}")
+        out.append((model, float(w)))
+    total = sum(w for _, w in out)
+    if total <= 0:
+        raise SystemExit(f"--mix weights must sum to positive: {spec!r}")
+    return [(m, w / total) for m, w in out]
+
+
+def select_model(mix: list[tuple[str, float]], rng: np.random.Generator) -> str:
+    """Sample one model from the weighted mix."""
+    models, weights = zip(*mix)
+    return str(rng.choice(models, p=weights))
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -167,7 +202,7 @@ def pick_templates(templates: list[dict], template_density,
 # Prompt
 # ─────────────────────────────────────────────────────────────────────────
 
-CHAPTER_PROMPT_TEMPLATE = """You are writing one chapter of a technical textbook. The chapter
+GLM_PROMPT_TEMPLATE = """You are writing one chapter of a technical textbook. The chapter
 must teach a small number of related concepts precisely, with embedded
 data tables, in the style of professional technical documentation
 (audit reports, compliance handbooks, governance frameworks, regulatory
@@ -223,6 +258,116 @@ include explanations of what you generated. Just the chapter.
 """
 
 
+# Grok prompt — depth + max ontology grounding + cross-joinable LIMS-style
+# relational tables. The Grok output is where the multi-hop relational
+# structure lives that lets TAPEX-style table reasoning emerge.
+GROK_PROMPT_TEMPLATE = """You are writing one chapter of a technical reference book. This
+chapter teaches a small set of related ontological concepts AND
+demonstrates them through a relational data model: 3-5 tables that
+share primary/foreign keys, queryable as a small schema. Reader should
+be able to cross-join across tables to answer multi-hop questions
+(e.g., "what is the result of the test on sample S using equipment E
+operated by technician T?").
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 1 — STYLE REFERENCES (the chapter should LOOK LIKE these)
+═══════════════════════════════════════════════════════════════════════
+
+These are real passages from a technical-document corpus. Match the
+register, structure, density, and use of evidence. DO NOT copy their
+subject matter — they are style anchors, not content sources.
+
+{style_section}
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 2 — ONTOLOGY AXIOMS (the chapter must explain THESE concepts)
+═══════════════════════════════════════════════════════════════════════
+
+The following are formal axioms from an OWL ontology. Every named
+entity in your chapter that maps to an ontology slot must be
+introduced via one of these axioms. The tables you produce must
+embody the relationships these axioms describe — cell values should
+be derivable instances of the slot types.
+
+{axiom_section}
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 3 — RELATIONAL SCHEMA REQUIREMENTS (this is the key difference)
+═══════════════════════════════════════════════════════════════════════
+
+Pick a concrete domain where cross-joinable relational data is
+natural and the chosen domain instances cleanly satisfy the ontology
+axioms above. Examples (pick ONE; prefer one most natural for the
+axioms):
+
+  - Laboratory Information Management (LIMS): Samples, Tests, Results,
+    Methods, Equipment, Technicians — each test references a Sample
+    and a Method; each Result references a Test and an Equipment.
+  - Audit trail systems: Subjects, Controls, Tests, Findings,
+    Evidence — Findings reference Tests, which reference Controls,
+    which reference Subjects, with Evidence linked to Findings.
+  - Clinical trials: Subjects, Protocols, Visits, Measurements,
+    Outcomes — Visits link Subjects to Protocols; Measurements
+    reference Visits.
+  - Supply chain quality: Products, Lots, Shipments, QualityChecks,
+    Auditors — QualityChecks reference Shipments which reference Lots
+    which reference Products.
+
+Produce 3-5 tables with these properties:
+
+  TABLE STRUCTURE
+  - Each table has a clear PRIMARY KEY column (named explicitly,
+    e.g., ``sample_id`` or ``test_id``).
+  - At least 3 of the 5 tables have FOREIGN KEY columns referencing
+    other tables' primary keys.
+  - 4-8 data rows per table (enough to demonstrate cross-joins;
+    not so many the chapter becomes a database dump).
+  - For each table, write a short paragraph BEFORE the table
+    explaining: (a) which ontology axiom(s) it embodies, (b) which
+    columns are PK / FK, (c) one example cross-join query the
+    reader can run mentally.
+
+  CROSS-JOIN DEMONSTRATION
+  - Include AT LEAST ONE worked example after the tables that shows
+    how to answer a multi-hop question by walking PK/FK links across
+    2-3 tables. Show the resulting joined row(s) inline.
+
+═══════════════════════════════════════════════════════════════════════
+INSTRUCTIONS
+═══════════════════════════════════════════════════════════════════════
+
+Write a single chapter approximately 2000-3500 words. Open with a
+short scope/preamble paragraph. Number sections (1, 1.1, 1.2, 2, ...).
+Maintain the dense register of the style references — no marketing
+language, no padding, no exclamation marks.
+
+OUTPUT FORMAT: pure markdown starting with a level-1 heading
+(# Chapter title). Do not include preamble like "Here is the chapter:".
+Do not include explanations of what you generated. Just the chapter.
+(Your chain-of-thought is captured separately via the model's native
+reasoning channel; no need to inline it.)
+"""
+
+# Default prompt template per provider. Cerebras gets the GLM template
+# (general textbook, native reasoning channel). xAI gets the schema-rich
+# Grok template (LIMS-style cross-joinable tables, simulated <thinking>).
+PROMPT_TEMPLATES = {
+    "cerebras": "glm",
+    "xai":      "grok",
+}
+
+PROMPT_BY_KIND = {
+    "glm":  GLM_PROMPT_TEMPLATE,
+    "grok": GROK_PROMPT_TEMPLATE,
+}
+
+
+def prompt_kind_for_model(model: str) -> str:
+    """Pick which prompt template based on model id (provider prefix)."""
+    provider = model.split("/", 1)[0]
+    return PROMPT_TEMPLATES.get(provider, "glm")
+
+
 def build_style_section(anchors: list[dict]) -> str:
     lines = []
     for i, a in enumerate(anchors, 1):
@@ -252,12 +397,17 @@ def build_axiom_section(templates: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def build_prompt(anchors: list[dict], templates: list[dict]) -> str:
-    return CHAPTER_PROMPT_TEMPLATE.format(
-        style_section=build_style_section(anchors),
-        axiom_section=build_axiom_section(templates),
-        n_templates=len(templates),
-    )
+def build_prompt(anchors: list[dict], templates: list[dict], kind: str) -> str:
+    tpl = PROMPT_BY_KIND[kind]
+    # The Grok template doesn't substitute n_templates (it picks domain
+    # freely). The GLM template does.
+    fmt_kwargs = {
+        "style_section": build_style_section(anchors),
+        "axiom_section": build_axiom_section(templates),
+    }
+    if "{n_templates}" in tpl:
+        fmt_kwargs["n_templates"] = len(templates)
+    return tpl.format(**fmt_kwargs)
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -297,12 +447,34 @@ def main() -> int:
     from gaius.hx.exchange import ExchangeRecord
     from aegir.hx import append_exchange
 
-    lm = dspy.LM(
-        model=args.model,
-        api_key=os.environ.get("CEREBRAS_API_KEY"),
-        max_tokens=args.max_tokens,
-        temperature=args.temperature,
-    )
+    # Parse the mix; build a per-model dspy.LM client cache (instantiating
+    # is cheap but caching avoids repeated env-var lookups).
+    mix = parse_mix(args.mix)
+    logger.info(f"model mix: {mix}")
+
+    provider_keys = {
+        "cerebras": os.environ.get("CEREBRAS_API_KEY"),
+        "xai":      os.environ.get("XAI_API_KEY"),
+    }
+    lm_cache: dict[str, dspy.LM] = {}
+
+    def get_lm(model: str) -> dspy.LM:
+        if model in lm_cache:
+            return lm_cache[model]
+        provider = model.split("/", 1)[0]
+        api_key = provider_keys.get(provider)
+        if not api_key:
+            raise SystemExit(
+                f"missing API key for provider {provider!r} "
+                f"(model {model!r}); set "
+                f"{provider.upper()}_API_KEY"
+            )
+        lm = dspy.LM(
+            model=model, api_key=api_key,
+            max_tokens=args.max_tokens, temperature=args.temperature,
+        )
+        lm_cache[model] = lm
+        return lm
 
     # Output schema for the chapters table
     chapter_schema = pa.schema([
@@ -311,6 +483,7 @@ def main() -> int:
         ("template_ids", pa.list_(pa.string())),
         ("style_topic_ids", pa.list_(pa.int32())),
         ("model", pa.string()),
+        ("prompt_kind", pa.string()),
         ("temperature", pa.float32()),
         ("seed", pa.int32()),
         ("prompt_chars", pa.int32()),
@@ -323,23 +496,31 @@ def main() -> int:
         ("audit_run_id", pa.string()),
     ])
     chapter_rows = []
+    mix_seed_rng = np.random.default_rng(args.seed)
 
     for i in range(args.n_chapters):
         seed_offset = i
         rng_local = np.random.default_rng(args.seed + seed_offset)
 
+        # Pick model from the weighted mix for this chapter
+        model = select_model(mix, mix_seed_rng)
+        provider = model.split("/", 1)[0]
+        kind = prompt_kind_for_model(model)
+
         anchors = pick_style_anchors(topic_cov, args.family,
                                       args.style_anchors, rng_local)
         chosen = pick_templates(templates, template_density,
                                 args.templates_per_chapter, rng_local)
-        prompt = build_prompt(anchors, chosen)
-        chapter_id = compute_chapter_id(prompt, args.model, seed_offset)
+        prompt = build_prompt(anchors, chosen, kind=kind)
+        chapter_id = compute_chapter_id(prompt, model, seed_offset)
 
         logger.info(f"chapter {i+1}/{args.n_chapters} (id={chapter_id}):")
+        logger.info(f"  model: {model}  (prompt kind: {kind})")
         logger.info(f"  templates: {[t['template_id'] for t in chosen]}")
         logger.info(f"  style anchor topics: {[a['topic_id'] for a in anchors]}")
 
-        # Generate
+        # Generate via the appropriate model
+        lm = get_lm(model)
         t0 = time.time()
         result = lm(messages=[{"role": "user", "content": prompt}])
         latency_ms = int((time.time() - t0) * 1000)
@@ -356,24 +537,25 @@ def main() -> int:
                     f"response: {len(response_text)} chars, "
                     f"reasoning: {len(response_reasoning or '')} chars")
 
-        # Capture in HX
+        # Capture in HX. provider tag matches what's in the model id.
         record = ExchangeRecord(
-            provider="cerebras",
+            provider=provider,
             request_messages=[{"role": "user", "content": prompt}],
-            request_model=args.model,
+            request_model=model,
             request_params={"max_tokens": args.max_tokens,
                             "temperature": args.temperature,
                             "seed": args.seed + seed_offset},
             response_content=response_text,
-            response_model=args.model.split("/")[-1],
+            response_model=model.split("/")[-1],
             response_reasoning=response_reasoning,
             latency_ms=latency_ms,
             source_context={
                 "aegir_module": "generate_chapter",
                 "chapter_id": chapter_id,
                 "family": args.family,
+                "prompt_kind": kind,
                 "template_ids": [t["template_id"] for t in chosen],
-                "style_topic_ids": [a["topic_id"] for a in anchors],
+                "style_topic_ids": [str(a["topic_id"]) for a in anchors],
                 "audit_run_id": audit_run.name,
             },
         )
@@ -386,7 +568,8 @@ def main() -> int:
             "family": args.family,
             "template_ids": [t["template_id"] for t in chosen],
             "style_topic_ids": [int(a["topic_id"]) for a in anchors],
-            "model": args.model,
+            "model": model,
+            "prompt_kind": kind,
             "temperature": float(args.temperature),
             "seed": int(args.seed + seed_offset),
             "prompt_chars": len(prompt),
@@ -401,7 +584,7 @@ def main() -> int:
 
     # Write chapters parquet
     run_id = hashlib.sha256(
-        f"{args.family}:{args.n_chapters}:{args.seed}:{args.model}".encode()
+        f"{args.family}:{args.n_chapters}:{args.seed}:{args.mix}".encode()
     ).hexdigest()[:16]
     out_run_dir = output_dir / run_id
     out_run_dir.mkdir(parents=True, exist_ok=True)
