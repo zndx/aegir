@@ -52,3 +52,4 @@ micans*.txt
 # the cards live in-repo; the binary parquet / npy do not.
 data/correspondence_*/correspondence.parquet
 data/correspondence_*/T_I_centroids.npy
+build/jvm-libs/

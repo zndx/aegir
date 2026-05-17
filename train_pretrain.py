@@ -104,19 +104,50 @@ def _weighted_ce(logits: torch.Tensor, labels: torch.Tensor,
 # ─────────────────────────────────────────────────────────────────────────
 
 class ParquetByteDataset(Dataset):
-    """Loads a parquet of (table_id, byte_ids, length) rows in memory."""
+    """Rank-sharded lazy parquet reader for (byte_ids, length) rows.
 
-    def __init__(self, path: str | Path, max_length: int):
-        table = pq.read_table(str(path), columns=["byte_ids", "length"])
-        self.byte_ids = table["byte_ids"].to_pylist()
-        self.lengths = table["length"].to_numpy()
+    Each DDP rank loads ONLY its 1/world_size shard from the parquet
+    via row-groups. With 2.1M rows / 6 ranks = ~350K rows/rank,
+    in-memory footprint per rank drops from ~14 GB (full table) to
+    ~2.3 GB.
+
+    Sample access is lazy: each ``__getitem__`` materializes one row's
+    list[int]; nothing is held except the row's transient Python
+    list.
+
+    History: a previous attempt that did ``to_pylist()`` on the full
+    table per rank exhausted RAM (28 bytes/Python-int × 1.8 B tokens
+    = ~50 GB/rank) and triggered a system OOM cascade after 6+ hours.
+    Then a version that did full-table load per rank (no to_pylist)
+    still came to ~14 GB/rank × 6 = 84 GB which collides with DataLoader
+    fork overhead. Row-group sharding fixes both.
+
+    Use ``RandomSampler`` (not ``DistributedSampler``) with this
+    dataset since each rank already holds a disjoint shard.
+    """
+
+    def __init__(self, path: str | Path, max_length: int,
+                 rank: int = 0, world_size: int = 1):
+        pf = pq.ParquetFile(str(path), memory_map=True)
+        n_rg = pf.num_row_groups
+        # Round-robin row-group assignment so each rank gets roughly
+        # equal share even when n_rg isn't divisible by world_size.
+        my_rgs = list(range(rank, n_rg, world_size))
+        self.table = pf.read_row_groups(my_rgs, columns=["byte_ids", "length"])
+        self._byte_ids = self.table.column("byte_ids")  # ChunkedArray, lazy
+        self.lengths = self.table.column("length").to_numpy()
         self.max_length = max_length
+        self._n = self.table.num_rows
+        self.rank = rank
+        self.world_size = world_size
+        self.n_row_groups_local = len(my_rgs)
+        self.n_row_groups_global = n_rg
 
     def __len__(self) -> int:
-        return len(self.byte_ids)
+        return self._n
 
     def __getitem__(self, idx):
-        ids = self.byte_ids[idx][: self.max_length]
+        ids = self._byte_ids[idx].as_py()[: self.max_length]
         return torch.tensor(ids, dtype=torch.long)
 
 
@@ -517,21 +548,55 @@ def main() -> int:
         val_ds = _Subset(full, val_idx)
         if is_main:
             print(f"Phase 0.5 dataset: train={len(train_ds):,}  val={len(val_ds):,}")
+        rank_shards_disjoint = False  # Phase 0.5 holds full dataset per rank
     else:
         if not args.train_parquet or not args.val_parquet:
             raise SystemExit(
                 "Either --train-parquet/--val-parquet (Phase 0) or "
                 "--phase05-* (Phase 0.5) sources must be provided."
             )
-        train_ds = ParquetByteDataset(args.train_parquet, max_length=args.max_length)
-        val_ds = ParquetByteDataset(args.val_parquet, max_length=args.max_length)
+        # Rank-shard the parquet so each rank holds only 1/world_size of
+        # the byte_ids buffer. Combined with lazy as_py() row access,
+        # peak per-rank memory drops from ~14 GB (full table) to
+        # ~2.3 GB (1/6 shard).
+        train_ds = ParquetByteDataset(
+            args.train_parquet, max_length=args.max_length,
+            rank=rank, world_size=world_size,
+        )
+        val_ds = ParquetByteDataset(
+            args.val_parquet, max_length=args.max_length,
+            rank=rank, world_size=world_size,
+        )
         if args.max_train_samples and args.max_train_samples < len(train_ds):
-            train_ds.byte_ids = train_ds.byte_ids[: args.max_train_samples]
-            train_ds.lengths = train_ds.lengths[: args.max_train_samples]
-        if is_main:
-            print(f"Phase 0 dataset: train={len(train_ds):,}  val={len(val_ds):,}")
+            full_ds = train_ds
 
-    if is_distributed:
+            class _Subset(torch.utils.data.Dataset):
+                def __init__(self, base, n):
+                    self.base = base
+                    self.n = n
+
+                def __len__(self):
+                    return self.n
+
+                def __getitem__(self, i):
+                    return self.base[i]
+
+            train_ds = _Subset(full_ds, args.max_train_samples)
+        if is_main:
+            import resource
+            rss_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+            print(f"Phase 0 dataset (rank-sharded): "
+                  f"train_local={len(train_ds):,}  "
+                  f"val_local={len(val_ds):,}  rank0_rss={rss_mb:.0f} MB",
+                  flush=True)
+        # Each rank already holds a disjoint shard, so we use
+        # RandomSampler (not DistributedSampler) for Phase 0.
+        rank_shards_disjoint = True
+
+    if rank_shards_disjoint:
+        train_sampler = RandomSampler(train_ds)
+        val_sampler = None
+    elif is_distributed:
         train_sampler = DistributedSampler(train_ds, shuffle=True)
         val_sampler = DistributedSampler(val_ds, shuffle=False)
     else:
@@ -632,7 +697,7 @@ def main() -> int:
     metrics_log: list[dict] = []
     best_val_loss = float("inf")
     for epoch in range(args.epochs):
-        if is_distributed:
+        if hasattr(train_sampler, "set_epoch"):
             train_sampler.set_epoch(epoch)
 
         train_metrics = train_epoch(

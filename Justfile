@@ -132,6 +132,12 @@ docs-clean:
 aegir-verify composition='-':
     uv run --no-sync python scripts/aegir-verify.py --composition {{composition}}
 
+# Bootstrap the surgical LD_LIBRARY_PATH symlinks under build/jvm-libs.
+# Re-run after a reboot if /tmp was your old jvm-libs location, or any
+# time the system libs at /usr/lib/x86_64-linux-gnu move. Idempotent.
+setup-libs:
+    bash scripts/setup_jvm_env.sh && ls build/jvm-libs/
+
 # Run the offline DeepOnto pass over a candidate catalog JSON,
 # populating is_complex/verbal_template/mean_verbal_length per
 # template. Bootstraps the surgical LD_LIBRARY_PATH the JVM

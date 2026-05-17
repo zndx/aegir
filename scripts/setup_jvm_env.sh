@@ -21,7 +21,12 @@
 
 set -euo pipefail
 
-JVM_LIBS_DIR="${JVM_LIBS_DIR:-/tmp/jvm-libs}"
+# Default to <repo>/build/jvm-libs (already gitignored under build/) so the
+# symlinks survive reboots without /tmp being cleared. Resolve from this
+# script's path so the default works regardless of caller cwd.
+_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_repo_root="$(cd "$_script_dir/.." && pwd)"
+JVM_LIBS_DIR="${JVM_LIBS_DIR:-$_repo_root/build/jvm-libs}"
 
 # System paths to the masked libraries.
 declare -A SURGICAL_LIBS=(
