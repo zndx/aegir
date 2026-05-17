@@ -25,7 +25,9 @@ SEP_TOKEN_ID = 2
 BOS_TOKEN_ID = 3
 EOS_TOKEN_ID = 4
 CELL_BOUNDARY_TOKEN_ID = 5  # explicit cell-boundary prior (TAPAS-style)
-# 6..15 reserved for future special IDs
+TRUE_TOKEN_ID = 6   # Phase 0.5 label-as-token (binary classification via LM head)
+FALSE_TOKEN_ID = 7  # Phase 0.5 label-as-token
+# 8..15 reserved for future special IDs
 _BYTE_OFFSET = 16
 
 
