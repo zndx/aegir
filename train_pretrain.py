@@ -329,6 +329,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--log-interval", type=int, default=20)
     p.add_argument("--max-train-samples", type=int, default=0,
                    help="If >0, subsample the train set for debugging.")
+    p.add_argument("--resume-from", type=str, default=None,
+                   help="Path to a state_dict checkpoint (e.g. a Phase 0 "
+                        "best_model.pt) to load before training starts. "
+                        "Used to chain Phase 0 → Phase 0.5 without "
+                        "discarding the backbone's learning.")
     return p.parse_args()
 
 
@@ -434,6 +439,25 @@ def main() -> int:
     if is_main:
         n_params = sum(p.numel() for p in model.parameters())
         print(f"Model params: {n_params:,}")
+
+    if args.resume_from:
+        ckpt_path = Path(args.resume_from)
+        if not ckpt_path.exists():
+            raise SystemExit(f"--resume-from path not found: {ckpt_path}")
+        if is_main:
+            print(f"Loading state_dict from {ckpt_path}")
+        state = torch.load(ckpt_path, map_location="cpu", weights_only=True)
+        # Allow shape mismatches on the LM head (e.g., vocab change) by
+        # surfacing strict-load failures with the offending keys.
+        missing, unexpected = model.load_state_dict(state, strict=False)
+        if is_main:
+            if missing:
+                print(f"  missing keys: {missing[:10]}"
+                      + (f" ... (+{len(missing)-10} more)" if len(missing) > 10 else ""))
+            if unexpected:
+                print(f"  unexpected keys: {unexpected[:10]}"
+                      + (f" ... (+{len(unexpected)-10} more)" if len(unexpected) > 10 else ""))
+            print(f"  loaded {n_params - sum(p.numel() for n, p in model.named_parameters() if n in missing):,} of {n_params:,} params")
 
     if is_distributed:
         model = torch.nn.parallel.DistributedDataParallel(
