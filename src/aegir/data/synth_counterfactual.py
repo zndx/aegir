@@ -49,27 +49,27 @@ _WORD_BOUNDARY = re.compile(r"[A-Za-z0-9]")
 def _find_match(text: str, needle: str) -> tuple[int, int] | None:
     """Case-insensitive first-match search with word-boundary check.
 
-    Returns ``(start, end)`` indices into ``text`` or None. The boundary
-    check prevents accidentally substring-matching e.g. "Norman" inside
-    "Normandy".
+    Returns ``(start, end)`` indices into ``text`` or None. Uses regex
+    with IGNORECASE so we never rely on ``str.lower()`` returning a
+    string of the same length as the original — important because some
+    Unicode characters (e.g., Turkish dotted-I) change length under
+    lowercase, which would invalidate index arithmetic against ``text``.
     """
     if len(needle) < _MIN_ENTITY_LEN:
         return None
-    lt = text.lower()
-    ln = needle.lower()
-    pos = 0
-    while True:
-        i = lt.find(ln, pos)
-        if i < 0:
-            return None
-        # Word boundary check before and after the match.
+    try:
+        pattern = re.compile(re.escape(needle), re.IGNORECASE)
+    except re.error:
+        return None
+    for m in pattern.finditer(text):
+        i, end = m.start(), m.end()
+        if end > len(text):  # defensive — shouldn't happen, but safe
+            continue
         before_ok = i == 0 or not _WORD_BOUNDARY.match(text[i - 1])
-        after_ok = i + len(needle) == len(text) or not _WORD_BOUNDARY.match(
-            text[i + len(needle)]
-        )
+        after_ok = end == len(text) or not _WORD_BOUNDARY.match(text[end])
         if before_ok and after_ok:
-            return i, i + len(needle)
-        pos = i + 1
+            return i, end
+    return None
 
 
 def _column_alternatives(column_values: list[str], used_value: str,
