@@ -48,6 +48,7 @@ from torch.utils.data import DataLoader, Dataset, DistributedSampler, RandomSamp
 REPO = Path(__file__).resolve().parent
 sys.path.insert(0, str(REPO / "src"))
 
+from aegir.data.tokenizer import TRUE_TOKEN_ID, FALSE_TOKEN_ID
 from aegir.models.config import AegirConfig, AttnConfig, RWKVConfig, SSMConfig
 from aegir.models.heads import AegirForCausalLM
 from aegir.utils.train import (
@@ -55,6 +56,47 @@ from aegir.utils.train import (
     group_params,
     load_balancing_loss,
 )
+
+
+def _weighted_ce(logits: torch.Tensor, labels: torch.Tensor,
+                 label_token_weight: float) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Per-position cross-entropy with label-token up-weighting.
+
+    Phase 0.5 sequences have ~1020 byte-position targets and 1
+    TRUE/FALSE label-token target. Mean CE would put <0.1% of the
+    gradient on the actual classification objective. We up-weight
+    positions whose target is TRUE_TOKEN_ID or FALSE_TOKEN_ID by
+    ``label_token_weight``; padded positions (ignore_index=-100)
+    contribute nothing.
+
+    Returns (weighted_mean_loss, label_only_loss, n_label_positions).
+    label_only_loss is the unweighted mean over the label positions
+    alone — the headline Phase 0.5 metric. n_label_positions is the
+    count of label positions in the batch (useful for averaging
+    across batches).
+    """
+    B, L, V = logits.shape
+    flat_logits = logits.reshape(B * L, V)
+    flat_labels = labels.reshape(B * L)
+    per_pos = nn.functional.cross_entropy(
+        flat_logits, flat_labels,
+        ignore_index=-100, reduction="none",
+    )
+    valid = (flat_labels != -100).float()
+    is_label = ((flat_labels == TRUE_TOKEN_ID) |
+                (flat_labels == FALSE_TOKEN_ID)).float()
+
+    if label_token_weight == 1.0:
+        # Vanilla path — equivalent to mean CE with ignore_index.
+        weighted = (per_pos * valid).sum() / valid.sum().clamp(min=1.0)
+    else:
+        weights = valid * (1.0 + (label_token_weight - 1.0) * is_label)
+        weighted = (per_pos * weights).sum() / weights.sum().clamp(min=1.0)
+
+    label_loss_sum = (per_pos * is_label).sum()
+    n_label = is_label.sum()
+    label_only = label_loss_sum / n_label.clamp(min=1.0)
+    return weighted, label_only, n_label
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -181,16 +223,20 @@ def _finalize(accum: dict[str, float], n: int) -> dict[str, float]:
 
 def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
                 epoch_idx: int = 0, is_main: bool = True):
-    """One pretrain epoch — next-token CE + load-balancing loss."""
+    """One pretrain epoch — next-token CE (optionally label-weighted) + load-balancing."""
     model.train()
     total_loss = 0.0
     total_task_loss = 0.0
+    total_label_loss = 0.0
     total_lb_loss = 0.0
+    total_label_positions = 0
+    n_label_batches = 0
     n_batches = 0
     n_tokens = 0
     boundary_accum: dict[str, float] = {}
 
     log_interval = getattr(args, "log_interval", 20) or 20
+    label_w = getattr(args, "label_token_weight", 1.0) or 1.0
     epoch_start = time.time()
     window_start = epoch_start
     window_loss = 0.0
@@ -205,8 +251,9 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
             output = model(input_ids, mask=mask)
             logits = output.logits
 
-            B, L, V = logits.shape
-            task_loss = loss_fn(logits.reshape(B * L, V), labels.reshape(B * L))
+            task_loss, label_only_loss, n_label = _weighted_ce(
+                logits, labels, label_token_weight=label_w,
+            )
 
             lb_loss = torch.tensor(0.0, device=device)
             if output.bpred_output:
@@ -226,6 +273,11 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
         total_loss += loss.item()
         total_task_loss += task_loss.item()
         total_lb_loss += lb_loss.item()
+        n_label_f = float(n_label.item())
+        if n_label_f > 0:
+            total_label_loss += label_only_loss.item()
+            total_label_positions += int(n_label_f)
+            n_label_batches += 1
         n_batches += 1
         n_tokens += int((labels != -100).sum().item())
 
@@ -242,9 +294,13 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
             steps_per_sec = window_count / max(window_elapsed, 1e-9)
             cur_lr = optimizer.param_groups[0]["lr"]
             avg_loss = window_loss / window_count
+            label_loss_str = (
+                f" label_loss={label_only_loss.item():.4f}"
+                if n_label_f > 0 else ""
+            )
             print(
                 f"  [e{epoch_idx} step {step_idx+1:6d}]  "
-                f"loss={avg_loss:.4f}  ppl={math.exp(min(avg_loss, 20)):.2f}  "
+                f"loss={avg_loss:.4f}  ppl={math.exp(min(avg_loss, 20)):.2f}{label_loss_str}  "
                 f"lr={cur_lr:.2e}  "
                 f"{steps_per_sec:.2f} step/s ({window_elapsed:.1f}s for {window_count} steps)",
                 flush=True,
@@ -256,19 +312,37 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
     return {
         "train_loss": total_loss / max(n_batches, 1),
         "train_task_loss": total_task_loss / max(n_batches, 1),
+        "train_label_loss": (
+            total_label_loss / n_label_batches
+            if n_label_batches > 0 else None
+        ),
         "train_lb_loss": total_lb_loss / max(n_batches, 1),
         "boundary": _finalize(boundary_accum, n_batches),
         "n_tokens": n_tokens,
+        "n_label_positions": total_label_positions,
         "wall_seconds": time.time() - epoch_start,
     }
 
 
 @torch.no_grad()
 def evaluate(model, loader, loss_fn, device, args):
-    """Held-out perplexity."""
+    """Held-out byte-level perplexity + (when present) label-position metrics.
+
+    Reports four metrics:
+    - ``val_loss``: unweighted mean CE over all valid positions (Phase 0 headline).
+    - ``val_ppl``: exp(val_loss).
+    - ``val_label_loss``: mean CE on TRUE/FALSE positions only (Phase 0.5 headline).
+    - ``val_label_acc``: argmax accuracy on TRUE/FALSE positions
+        restricted to {TRUE_TOKEN_ID, FALSE_TOKEN_ID} — the actual
+        binary-classification metric, ignoring the rest of the vocab.
+    """
     model.eval()
     total_nll = 0.0
     total_tokens = 0
+    total_label_nll = 0.0
+    total_label_tokens = 0
+    total_label_correct = 0
+
     for batch in loader:
         input_ids = batch["input_ids"].to(device, non_blocking=True)
         labels = batch["labels"].to(device, non_blocking=True)
@@ -277,21 +351,51 @@ def evaluate(model, loader, loss_fn, device, args):
         with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=args.amp):
             output = model(input_ids, mask=mask)
             logits = output.logits
-            B, L, V = logits.shape
-            # Use sum reduction so per-token NLL aggregates correctly across batches.
-            nll = nn.functional.cross_entropy(
-                logits.reshape(B * L, V),
-                labels.reshape(B * L),
-                ignore_index=-100,
-                reduction="sum",
-            )
-            n_valid = int((labels != -100).sum().item())
 
-        total_nll += float(nll.item())
-        total_tokens += n_valid
+            B, L, V = logits.shape
+            flat_logits = logits.reshape(B * L, V)
+            flat_labels = labels.reshape(B * L)
+
+            per_pos = nn.functional.cross_entropy(
+                flat_logits, flat_labels,
+                ignore_index=-100, reduction="none",
+            )
+            valid = flat_labels != -100
+            is_label = (flat_labels == TRUE_TOKEN_ID) | (flat_labels == FALSE_TOKEN_ID)
+
+            nll_sum = (per_pos * valid.float()).sum()
+            label_nll_sum = (per_pos * is_label.float()).sum()
+            label_count = int(is_label.sum().item())
+
+            # Binary accuracy restricted to {TRUE, FALSE} logits at label positions.
+            if label_count > 0:
+                label_idx = is_label.nonzero(as_tuple=True)[0]
+                label_logits = flat_logits[label_idx]  # (n_label, V)
+                bin_logits = torch.stack(
+                    [label_logits[:, FALSE_TOKEN_ID], label_logits[:, TRUE_TOKEN_ID]],
+                    dim=-1,
+                )  # (n_label, 2)
+                bin_pred = bin_logits.argmax(dim=-1)  # 0 → FALSE, 1 → TRUE
+                bin_target = (flat_labels[label_idx] == TRUE_TOKEN_ID).long()
+                total_label_correct += int((bin_pred == bin_target).sum().item())
+
+        total_nll += float(nll_sum.item())
+        total_tokens += int(valid.sum().item())
+        total_label_nll += float(label_nll_sum.item())
+        total_label_tokens += label_count
 
     val_loss = total_nll / max(total_tokens, 1)
-    return {"val_loss": val_loss, "val_ppl": math.exp(min(val_loss, 20)), "val_tokens": total_tokens}
+    out = {
+        "val_loss": val_loss,
+        "val_ppl": math.exp(min(val_loss, 20)),
+        "val_tokens": total_tokens,
+    }
+    if total_label_tokens > 0:
+        out["val_label_loss"] = total_label_nll / total_label_tokens
+        out["val_label_ppl"] = math.exp(min(out["val_label_loss"], 20))
+        out["val_label_acc"] = total_label_correct / total_label_tokens
+        out["val_label_tokens"] = total_label_tokens
+    return out
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -322,6 +426,15 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-grad-norm", type=float, default=1.0)
     p.add_argument("--lambda-lb", type=float, default=0.1)
     p.add_argument("--downsample-factor", type=float, default=2.0)
+    p.add_argument("--label-token-weight", type=float, default=1.0,
+                   help="Multiplier on per-position CE loss for positions "
+                        "whose target is TRUE_TOKEN_ID or FALSE_TOKEN_ID. "
+                        "Phase 0 (no labels): leave at 1.0. Phase 0.5: set "
+                        "to ~100-500 so the binary-classification objective "
+                        "actually drives gradients — otherwise a ~1020-byte "
+                        "context vs single-label-token target dilutes the "
+                        "Phase 0.5 signal into the byte-LM noise floor "
+                        "(<0.1%% of gradient on the actual task).")
     p.add_argument("--amp", action="store_true", default=True)
     p.add_argument("--seed", type=int, default=4649)
     p.add_argument("--num-workers", type=int, default=4)
@@ -502,6 +615,7 @@ def main() -> int:
                 "max_length": args.max_length,
                 "downsample_factor": args.downsample_factor,
                 "lambda_lb": args.lambda_lb,
+                "label_token_weight": args.label_token_weight,
                 "amp": args.amp,
                 "git_short_sha": git_short,
                 "git_full_sha": git_full,
@@ -528,12 +642,22 @@ def main() -> int:
         val_metrics = evaluate(model, val_loader, loss_fn, device, args)
 
         if is_main:
+            train_label_str = (
+                f" tlabel={train_metrics['train_label_loss']:.4f}"
+                if train_metrics.get('train_label_loss') is not None else ""
+            )
+            val_label_str = (
+                f" vlabel={val_metrics['val_label_loss']:.4f} "
+                f"vlabel_acc={val_metrics['val_label_acc']:.4f}"
+                if 'val_label_loss' in val_metrics else ""
+            )
             print(
                 f"Epoch {epoch+1:3d}/{args.epochs} | "
                 f"train loss={train_metrics['train_loss']:.4f} "
                 f"(task={train_metrics['train_task_loss']:.4f} "
-                f"lb={train_metrics['train_lb_loss']:.4f}) | "
-                f"val loss={val_metrics['val_loss']:.4f} ppl={val_metrics['val_ppl']:.2f} | "
+                f"lb={train_metrics['train_lb_loss']:.4f}){train_label_str} | "
+                f"val loss={val_metrics['val_loss']:.4f} "
+                f"ppl={val_metrics['val_ppl']:.2f}{val_label_str} | "
                 f"{train_metrics['wall_seconds']:.1f}s",
                 flush=True,
             )
@@ -547,12 +671,21 @@ def main() -> int:
             with open(run_dir / "metrics.json", "w") as f:
                 json.dump({"epochs": metrics_log, "final": None}, f, indent=2)
 
-            # Checkpoint on improvement.
-            if val_metrics["val_loss"] < best_val_loss:
-                best_val_loss = val_metrics["val_loss"]
+            # Checkpoint on improvement. For Phase 0.5 (label_token_weight > 1
+            # OR val_label_loss present), use label loss as the gate so we
+            # don't keep checkpoints that overfit byte reconstruction at the
+            # expense of label accuracy.
+            if 'val_label_loss' in val_metrics:
+                gate = val_metrics['val_label_loss']
+                gate_name = 'val_label_loss'
+            else:
+                gate = val_metrics['val_loss']
+                gate_name = 'val_loss'
+            if gate < best_val_loss:
+                best_val_loss = gate
                 ckpt_path = run_dir / "best_model.pt"
                 torch.save(raw_model.state_dict(), ckpt_path)
-                print(f"  saved best_model.pt (val_loss={best_val_loss:.4f})")
+                print(f"  saved best_model.pt ({gate_name}={best_val_loss:.4f})")
 
         if is_distributed:
             dist.barrier()
