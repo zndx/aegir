@@ -18,13 +18,14 @@ is benign for CTA/CPA tasks. We remap bytes 0..15 → 16..31 to keep the
 from __future__ import annotations
 
 
-# Special token IDs — kept in sync with serialization.py (CLS_TOKEN_ID=1, SEP_TOKEN_ID=2)
+# Special token IDs — kept in sync with serialization.py
 PAD_TOKEN_ID = 0
 CLS_TOKEN_ID = 1
 SEP_TOKEN_ID = 2
 BOS_TOKEN_ID = 3
 EOS_TOKEN_ID = 4
-# 5..15 reserved for future special IDs
+CELL_BOUNDARY_TOKEN_ID = 5  # explicit cell-boundary prior (TAPAS-style)
+# 6..15 reserved for future special IDs
 _BYTE_OFFSET = 16
 
 

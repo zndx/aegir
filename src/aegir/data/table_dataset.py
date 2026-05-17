@@ -78,6 +78,7 @@ class TableAnnotationDataset(Dataset):
         max_length: int = 512,
         max_context_cols: int = 8,
         lambda_param: float = 0.5,
+        cell_boundary_sentinel: bool = False,
     ):
         self.data_dir = Path(data_dir)
         self.task = task
@@ -86,6 +87,7 @@ class TableAnnotationDataset(Dataset):
         self.max_length = max_length
         self.max_context_cols = max_context_cols
         self.lambda_param = lambda_param
+        self.cell_boundary_sentinel = cell_boundary_sentinel
         self.num_classes = TASK_NUM_CLASSES[task]
         self.is_multilabel = task in CPA_TASKS
 
@@ -140,6 +142,7 @@ class TableAnnotationDataset(Dataset):
                 context_col_names=context_names,
                 tokenizer=self.tokenizer,
                 max_length=self.max_length,
+                cell_boundary_sentinel=self.cell_boundary_sentinel,
             )
 
             samples.append({

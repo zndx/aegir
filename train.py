@@ -168,6 +168,7 @@ def _make_datasets(args, is_main: bool):
         tokenizer=tokenizer,
         max_length=args.max_length,
         max_context_cols=args.max_context_cols,
+        cell_boundary_sentinel=args.cell_boundary_sentinel,
     )
     val_dataset = dataset_cls(
         data_dir=args.data_dir,
@@ -175,6 +176,7 @@ def _make_datasets(args, is_main: bool):
         tokenizer=tokenizer,
         max_length=args.max_length,
         max_context_cols=args.max_context_cols,
+        cell_boundary_sentinel=args.cell_boundary_sentinel,
     )
     if is_main:
         print(f"Loaded {args.task}: {len(train_dataset)} train, {len(val_dataset)} val")
@@ -440,6 +442,12 @@ def main():
     parser.add_argument("--data-dir", type=str, default=None)
     parser.add_argument("--max-length", type=int, default=128)
     parser.add_argument("--max-context-cols", type=int, default=8)
+    parser.add_argument("--cell-boundary-sentinel", action="store_true",
+                        help="Emit explicit cell-boundary sentinel byte "
+                             "before each cell value (TAPAS-style prior). "
+                             "Gives the dynamic chunker an explicit "
+                             "cell-start signal beyond byte-content "
+                             "cosine similarity.")
 
     # Model
     parser.add_argument("--model-size", type=str, default="tiny", choices=["tiny", "small", "base"])

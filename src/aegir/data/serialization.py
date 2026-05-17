@@ -28,9 +28,10 @@ class SerializedTable:
     cls_index: int
 
 
-# Special token IDs (RWKV tokenizer specific — these map to common tokens)
-CLS_TOKEN_ID = 1  # Placeholder — should be configured per tokenizer
-SEP_TOKEN_ID = 2  # Placeholder — should be configured per tokenizer
+# Special token IDs (kept in sync with aegir.data.tokenizer)
+CLS_TOKEN_ID = 1
+SEP_TOKEN_ID = 2
+CELL_BOUNDARY_TOKEN_ID = 5  # explicit cell-boundary prior (TAPAS-style)
 
 
 def serialize_table(
@@ -41,6 +42,7 @@ def serialize_table(
     tokenizer,
     max_length: int = 512,
     adaptive_length: bool = True,
+    cell_boundary_sentinel: bool = False,
 ) -> SerializedTable:
     """Serialize a table into a token sequence with role markers.
 
@@ -56,6 +58,11 @@ def serialize_table(
         tokenizer: Tokenizer with encode() method.
         max_length: Maximum total token length.
         adaptive_length: Whether to distribute token budget proportionally.
+        cell_boundary_sentinel: If True, emit ``CELL_BOUNDARY_TOKEN_ID``
+            *before* each cell value (in addition to the trailing SEP).
+            Gives the dynamic chunker an explicit cell-start prior so it
+            isn't relying solely on byte-content cosine similarity to find
+            boundaries — analogous to TAPAS's per-cell position reset.
 
     Returns:
         SerializedTable with token_ids, role_ids, and cls_index.
@@ -78,13 +85,16 @@ def serialize_table(
         tokens.append(SEP_TOKEN_ID)
 
         remaining = per_col_budget - len(tokens)
+        boundary_cost = 1 if cell_boundary_sentinel else 0
         for val in col_values:
             val_tokens = tokenizer.encode(str(val))
-            if len(val_tokens) + 1 > remaining:
+            if len(val_tokens) + 1 + boundary_cost > remaining:
                 break
+            if cell_boundary_sentinel:
+                tokens.append(CELL_BOUNDARY_TOKEN_ID)
             tokens.extend(val_tokens)
             tokens.append(SEP_TOKEN_ID)
-            remaining -= len(val_tokens) + 1
+            remaining -= len(val_tokens) + 1 + boundary_cost
 
         return tokens
 
