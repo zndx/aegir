@@ -86,7 +86,17 @@ The next experiment must be **downstream training**: do we get a measurably bett
 
 ## Note on the audit / verifier methodology
 
-R_topic in the verifier still shows ~0.22 across full and no-schema arms, consistent with the known length-asymmetry issue (#114 task). But the topic-correspondence analyzer (which uses chapter-vs-topic-centroid cosine directly, not chapter-vs-anchor) shows clear signal: 0.218 (full) vs 0.365 (no-ontology). The same measurement methodology produces a 67% gap — methodology consistency holds; the difference between arms is real, not artifact.
+**Earlier**: R_topic v1 collapsed to ~0.22 across all arms due to all-mpnet-base-v2's 384-token cap truncating the chapter while anchors were embedded in full — a length asymmetry that hid the inter-arm signal.
+
+**Now (R_topic v2, fixed 00:40 UTC)**: chunked-similarity scoring (~700-char chunks, take per-anchor max over chapter chunks, mean across anchors). Numbers now align with the independent topic-correspondence analyzer:
+
+| arm | R_topic v1 | R_topic v2 | R_axiom | R_comp v2 |
+|---|---:|---:|---:|---:|
+| full | 0.218 | 0.303 | 0.546 | 0.600 |
+| no_ontology | (collapsed) | **0.440** | 0.009 | 0.056 |
+| no_schema | 0.219 | 0.347 | 0.474 | 0.607 |
+
+The no-ontology arm correctly emerges with HIGHER R_topic (matches its 80% hit@1 in the topic correspondence analyzer); the composite differential (full ≈ no_schema ≫ no_ontology) is now driven by R_axiom collapse in no-ontology, not by a measurement artifact in R_topic.
 
 ## Concrete recommendation
 
@@ -108,3 +118,21 @@ The full-pipeline chapters look subjectively excellent (we read one in detail ea
 If this interpretation is right, the chapters are higher-value than no-ontology even from a corpus-density-per-byte perspective: they're carrying signal the FinePDFs corpus alone doesn't carry. The byte-LM should benefit from that.
 
 The Aegir-tiny training settles which interpretation is correct.
+
+## UPDATE 00:38 UTC — Aegir-tiny pilot training (10 chapters/arm)
+
+Ran the training infrastructure end-to-end on the 10-chapter pilot data (well under-Chinchilla; pure capacity probe).
+
+| arm | val_loss ↓ |
+|---|---:|
+| **full** | **12.96** |
+| no_schema | 14.17 |
+| no_ontology | 14.68 |
+
+The full pipeline produces a measurably more learnable corpus for a byte-LM, even at this tiny scale. Two possible mechanisms:
+1. **Repetition advantage** — ontology chapters re-use the same slot vocab across all 10 chapters (`requirement_id`, `control_id`, ...). At low data scale, repetition trumps diversity for capacity-limited memorization.
+2. **Genuine grounding payoff** — the structural regularities the ontology induces give the model a stronger learning signal per byte.
+
+Distinguishing 1 from 2 requires an out-of-distribution eval (held-out FinePDFs slice, NOT same-arm held-out), which the ablation_v1 (200-per-arm) run will support once it completes.
+
+**But:** the directional signal is already there, and it lines up with the structural alignment finding (ontology-vocab dominates full-arm column headers): the ontology is producing a corpus character that IS measurably different and IS learnable. The remaining question is whether the differential survives scale and whether it transfers to a real downstream task.

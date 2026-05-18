@@ -87,27 +87,86 @@ _TABLE_HEADER_SEP_RE = re.compile(r"^\s*\|[\s|:\-]+\|\s*$")
 _NAMED_ENT_RE = re.compile(r"\b([A-Z][a-z]+(?:[A-Z][a-z]+)+|\b[A-Z]{2,}\b)")
 
 
+_TOPIC_CHUNK_CHARS = 700  # ~150-250 tokens — well under all-mpnet-base-v2's 384 cap
+
+
+def _chunk_text(text: str, chunk_chars: int = _TOPIC_CHUNK_CHARS) -> list[str]:
+    """Split text into approximate paragraph-aware chunks of ~chunk_chars.
+
+    Greedy: accumulate paragraphs until the chunk would exceed ``chunk_chars``,
+    then emit. Falls back to hard-character split if a single paragraph is
+    longer than ``chunk_chars``. Returns at least one chunk even for short text.
+    """
+    text = (text or "").strip()
+    if not text:
+        return []
+    if len(text) <= chunk_chars:
+        return [text]
+    paragraphs = [p for p in text.split("\n\n") if p.strip()]
+    chunks: list[str] = []
+    cur = ""
+    for p in paragraphs:
+        if len(p) > chunk_chars:
+            if cur:
+                chunks.append(cur)
+                cur = ""
+            for i in range(0, len(p), chunk_chars):
+                chunks.append(p[i:i + chunk_chars])
+            continue
+        if cur and len(cur) + 2 + len(p) > chunk_chars:
+            chunks.append(cur)
+            cur = p
+        else:
+            cur = f"{cur}\n\n{p}" if cur else p
+    if cur:
+        chunks.append(cur)
+    return chunks or [text[:chunk_chars]]
+
+
 def score_topic(chapter_text: str, anchors: list[str],
                 embedder) -> float:
-    """R_topic: mean cosine sim of chapter to FinePDFs style anchors.
+    """R_topic v2: length-invariant chapter↔anchor alignment.
 
-    Higher = chapter looks like the FinePDFs distribution we want
-    the byte-LM to learn.
+    Both chapter and each anchor are chunked into ~``_TOPIC_CHUNK_CHARS``-char
+    pieces. We compute the full pairwise (chapter_chunk × anchor_chunk) cosine
+    matrix and score as:
+
+        per-anchor:  max over (chapter_chunks)  of  max over (this anchor's chunks)
+        overall:     mean over anchors
+
+    Rationale: v1 embedded the FULL chapter (truncated to 8K chars) against
+    each anchor as a single vector. all-mpnet-base-v2 truncates at 384 tokens
+    so the chapter embedding was a partial-view; the asymmetry (anchors fully
+    embedded vs chapter partially) collapsed similarity to ~0.22 across all
+    arms regardless of true alignment. Length-invariant chunked scoring
+    recovers genuine differential signal across arms.
     """
     if not anchors:
         return 0.0
-    chapter_text = (chapter_text or "")[:8000]  # cap so a 50K-char chapter
-                                                   # isn't compared as a giant doc
-    if not chapter_text.strip():
+    chapter_chunks = _chunk_text(chapter_text)
+    if not chapter_chunks:
         return 0.0
-    embs = embedder.encode([chapter_text] + list(anchors),
-                            normalize_embeddings=True,
-                            show_progress_bar=False,
-                            convert_to_numpy=True)
-    chapter_vec = embs[0]
-    anchor_vecs = embs[1:]
-    sims = anchor_vecs @ chapter_vec
-    return float(np.mean(sims))
+    # Embed chapter chunks once; for each anchor, embed its chunks and
+    # take best-chunk-vs-best-chunk match.
+    chap_embs = embedder.encode(chapter_chunks,
+                                 normalize_embeddings=True,
+                                 show_progress_bar=False,
+                                 convert_to_numpy=True)
+    per_anchor_max = []
+    for anc in anchors:
+        anc_chunks = _chunk_text(anc)
+        if not anc_chunks:
+            continue
+        anc_embs = embedder.encode(anc_chunks,
+                                    normalize_embeddings=True,
+                                    show_progress_bar=False,
+                                    convert_to_numpy=True)
+        # (n_chap_chunks, n_anc_chunks) cosine matrix
+        sim = chap_embs @ anc_embs.T
+        per_anchor_max.append(float(sim.max()))
+    if not per_anchor_max:
+        return 0.0
+    return float(np.mean(per_anchor_max))
 
 
 def score_iri(chapter_text: str, cited_templates: list[dict]) -> float:
@@ -415,7 +474,8 @@ def main() -> int:
     print(f"  status: {accepted} accepted / {borderline} borderline / {rejected} rejected"
           f"  (n={len(rows)})")
     print()
-    for kind in ("glm", "grok"):
+    kinds_present = sorted({r["prompt_kind"] for r in rows})
+    for kind in kinds_present:
         subset = [r for r in rows if r["prompt_kind"] == kind]
         if not subset:
             continue
