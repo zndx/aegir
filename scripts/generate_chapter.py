@@ -101,6 +101,18 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--temperature", type=float, default=0.4)
     p.add_argument("--seed", type=int, default=4649)
     p.add_argument("--catalog-dir", default="src/aegir/ontology/catalog")
+    p.add_argument("--ablation", default="full",
+                   choices=("full", "no-ontology", "no-schema"),
+                   help="Ablation mode for value-add experiments. "
+                        "'full' = ontology axioms + style anchors + schema-rich prompt "
+                        "(the production pipeline). "
+                        "'no-ontology' = style anchors + schema-rich prompt only "
+                        "(topic source = anchor passages, no axiom citations) — "
+                        "tests whether ontology grounding adds value. "
+                        "'no-schema' = ontology axioms + style anchors + standard "
+                        "textbook prompt (no LIMS-schema instruction) — tests "
+                        "whether the schema-rich Grok prompt adds value vs "
+                        "ontology+style alone.")
     return p.parse_args()
 
 
@@ -348,18 +360,122 @@ Do not include explanations of what you generated. Just the chapter.
 reasoning channel; no need to inline it.)
 """
 
+# ─────────────────────────────────────────────────────────────────────────
+# Ablation prompts — "no-ontology" keeps schema + style but removes the
+# ontology axioms; "no-schema" keeps ontology + style but removes the
+# LIMS-style cross-joinable instruction.
+# Used by --ablation flag for the load-bearing experiment.
+
+NO_ONTOLOGY_PROMPT_TEMPLATE = """You are writing one chapter of a technical reference book on a
+topic that fits the style references below. The chapter demonstrates
+your topic through a relational data model: 3-5 tables that share
+primary/foreign keys, queryable as a small schema. Reader should be
+able to cross-join across tables to answer multi-hop questions.
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 1 — STYLE REFERENCES (the chapter should LOOK LIKE these)
+═══════════════════════════════════════════════════════════════════════
+
+These are real passages from a technical-document corpus. Match the
+register, structure, density, and use of evidence. Identify a topic
+that would naturally appear in this kind of corpus, and write a
+chapter on it.
+
+{style_section}
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 2 — RELATIONAL SCHEMA REQUIREMENTS
+═══════════════════════════════════════════════════════════════════════
+
+Pick a concrete domain where cross-joinable relational data is
+natural (LIMS, audit trails, clinical trials, supply chain, etc.).
+Produce 3-5 tables with these properties:
+
+  - Each table has an explicit PRIMARY KEY column.
+  - At least 3 of the 5 tables have FOREIGN KEY columns referencing
+    other tables' primary keys.
+  - 4-8 data rows per table.
+  - For each table, write a short paragraph before it explaining what
+    relationship it captures and which columns are PK / FK.
+  - Include at least one worked cross-join example after the tables.
+
+═══════════════════════════════════════════════════════════════════════
+INSTRUCTIONS
+═══════════════════════════════════════════════════════════════════════
+
+Write a single chapter approximately 2000-3500 words. Open with a
+short scope/preamble paragraph. Number sections. Maintain the dense
+register of the style references — no marketing language, no padding.
+
+OUTPUT FORMAT: pure markdown starting with a level-1 heading.
+"""
+
+
+NO_SCHEMA_PROMPT_TEMPLATE = """You are writing one chapter of a technical textbook. The chapter
+must teach a small number of related ontological concepts precisely,
+with embedded data tables, in the style of professional technical
+documentation (audit reports, compliance handbooks, governance
+frameworks, regulatory guides).
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 1 — STYLE REFERENCES (the chapter should LOOK LIKE these)
+═══════════════════════════════════════════════════════════════════════
+
+These are real passages from a technical-document corpus. Match the
+register, structure, density, and use of evidence. DO NOT copy their
+subject matter — they are style anchors, not content sources.
+
+{style_section}
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 2 — ONTOLOGY AXIOMS (the chapter must explain THESE concepts)
+═══════════════════════════════════════════════════════════════════════
+
+The following are formal axioms from an OWL ontology, expressed both
+in Manchester syntax and natural-language verbalization. Every named
+entity in your chapter that maps to an ontology slot must be
+introduced via one of these axioms.
+
+{axiom_section}
+
+═══════════════════════════════════════════════════════════════════════
+INSTRUCTIONS
+═══════════════════════════════════════════════════════════════════════
+
+Write a single textbook chapter approximately 1500-3000 words long.
+Open with a short scope paragraph. Introduce each of the {n_templates}
+ontology concepts in a dedicated numbered section. Include at least 2
+markdown tables in the chapter body, each with a header row and 3-7
+data rows.
+
+OUTPUT FORMAT: pure markdown starting with a level-1 heading.
+"""
+
+
 # Default prompt template per provider. Cerebras gets the GLM template
 # (general textbook, native reasoning channel). xAI gets the schema-rich
-# Grok template (LIMS-style cross-joinable tables, simulated <thinking>).
+# Grok template (LIMS-style cross-joinable tables, native reasoning).
 PROMPT_TEMPLATES = {
     "cerebras": "glm",
     "xai":      "grok",
 }
 
 PROMPT_BY_KIND = {
-    "glm":  GLM_PROMPT_TEMPLATE,
-    "grok": GROK_PROMPT_TEMPLATE,
+    "glm":           GLM_PROMPT_TEMPLATE,
+    "grok":          GROK_PROMPT_TEMPLATE,
+    "no-ontology":   NO_ONTOLOGY_PROMPT_TEMPLATE,
+    "no-schema":     NO_SCHEMA_PROMPT_TEMPLATE,
 }
+
+
+def prompt_kind_for_ablation(ablation: str, model: str) -> str:
+    """Pick prompt template based on (ablation, model). full → model-default;
+    no-ontology and no-schema override with their dedicated templates."""
+    if ablation == "no-ontology":
+        return "no-ontology"
+    if ablation == "no-schema":
+        return "no-schema"
+    return prompt_kind_for_model(model)
 
 
 def prompt_kind_for_model(model: str) -> str:
@@ -480,6 +596,7 @@ def main() -> int:
     chapter_schema = pa.schema([
         ("chapter_id", pa.string()),
         ("family", pa.string()),
+        ("ablation", pa.string()),
         ("template_ids", pa.list_(pa.string())),
         ("style_topic_ids", pa.list_(pa.int32())),
         ("model", pa.string()),
@@ -505,10 +622,12 @@ def main() -> int:
         # Pick model from the weighted mix for this chapter
         model = select_model(mix, mix_seed_rng)
         provider = model.split("/", 1)[0]
-        kind = prompt_kind_for_model(model)
+        kind = prompt_kind_for_ablation(args.ablation, model)
 
         anchors = pick_style_anchors(topic_cov, args.family,
                                       args.style_anchors, rng_local)
+        # For no-ontology arm, we still pick templates (for HX provenance
+        # tracking) but they don't enter the prompt
         chosen = pick_templates(templates, template_density,
                                 args.templates_per_chapter, rng_local)
         prompt = build_prompt(anchors, chosen, kind=kind)
@@ -554,6 +673,7 @@ def main() -> int:
                 "chapter_id": chapter_id,
                 "family": args.family,
                 "prompt_kind": kind,
+                "ablation": args.ablation,
                 "template_ids": [t["template_id"] for t in chosen],
                 "style_topic_ids": [str(a["topic_id"]) for a in anchors],
                 "audit_run_id": audit_run.name,
@@ -566,6 +686,7 @@ def main() -> int:
         chapter_rows.append({
             "chapter_id": chapter_id,
             "family": args.family,
+            "ablation": args.ablation,
             "template_ids": [t["template_id"] for t in chosen],
             "style_topic_ids": [int(a["topic_id"]) for a in anchors],
             "model": model,
@@ -582,9 +703,9 @@ def main() -> int:
             "audit_run_id": audit_run.name,
         })
 
-    # Write chapters parquet
+    # Write chapters parquet (include ablation in run_id so arms don't collide)
     run_id = hashlib.sha256(
-        f"{args.family}:{args.n_chapters}:{args.seed}:{args.mix}".encode()
+        f"{args.family}:{args.n_chapters}:{args.seed}:{args.mix}:{args.ablation}".encode()
     ).hexdigest()[:16]
     out_run_dir = output_dir / run_id
     out_run_dir.mkdir(parents=True, exist_ok=True)
