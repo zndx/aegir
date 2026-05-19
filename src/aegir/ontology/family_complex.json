@@ -1,0 +1,115 @@
+{
+  "r_axiom_floor": 0.45,
+  "min_count": 2,
+  "computed_at": "2026-05-19T05:02:02+00:00",
+  "source_runs": [
+    "ac7a2e508204f128"
+  ],
+  "maximal_simplices": [
+    {
+      "vertices": [
+        "01_foundation",
+        "03_directive_governance",
+        "06_belief_structure",
+        "07_long_tail"
+      ],
+      "r_axiom_mean": 0.5,
+      "r_axiom_std": 0.1414,
+      "r_iri_mean": 1.0,
+      "r_density_mean": 0.7867,
+      "accepted_frac": 1.0,
+      "n": 2
+    },
+    {
+      "vertices": [
+        "01_foundation",
+        "02_observation_measurement",
+        "04_ebpf_kernel",
+        "07_long_tail"
+      ],
+      "r_axiom_mean": 0.4521,
+      "r_axiom_std": 0.0501,
+      "r_iri_mean": 1.0,
+      "r_density_mean": 0.87,
+      "accepted_frac": 0.5,
+      "n": 2
+    },
+    {
+      "vertices": [
+        "02_observation_measurement",
+        "03_directive_governance"
+      ],
+      "r_axiom_mean": 0.4867,
+      "r_axiom_std": 0.0662,
+      "r_iri_mean": 1.0,
+      "r_density_mean": 0.8267,
+      "accepted_frac": 0.5,
+      "n": 4
+    }
+  ],
+  "measured_below_floor": [
+    {
+      "vertices": [
+        "01_foundation",
+        "04_ebpf_kernel"
+      ],
+      "r_axiom_mean": 0.0625,
+      "r_axiom_std": 0.1083,
+      "r_iri_mean": 1.0,
+      "r_density_mean": 0.8,
+      "accepted_frac": 0.0,
+      "n": 3
+    },
+    {
+      "vertices": [
+        "04_ebpf_kernel",
+        "07_long_tail"
+      ],
+      "r_axiom_mean": 0.2846,
+      "r_axiom_std": 0.0902,
+      "r_iri_mean": 1.0,
+      "r_density_mean": 0.8221,
+      "accepted_frac": 0.0,
+      "n": 4
+    },
+    {
+      "vertices": [
+        "01_foundation",
+        "07_long_tail"
+      ],
+      "r_axiom_mean": 0.3011,
+      "r_axiom_std": 0.1212,
+      "r_iri_mean": 1.0,
+      "r_density_mean": 0.8444,
+      "accepted_frac": 0.3333,
+      "n": 3
+    },
+    {
+      "vertices": [
+        "01_foundation",
+        "04_ebpf_kernel",
+        "07_long_tail"
+      ],
+      "r_axiom_mean": 0.15,
+      "r_axiom_std": 0.0236,
+      "r_iri_mean": 1.0,
+      "r_density_mean": 0.79,
+      "accepted_frac": 0.0,
+      "n": 2
+    },
+    {
+      "vertices": [
+        "02_observation_measurement",
+        "03_directive_governance",
+        "05_provo_lineage",
+        "07_long_tail"
+      ],
+      "r_axiom_mean": 0.0333,
+      "r_axiom_std": 0.0471,
+      "r_iri_mean": 1.0,
+      "r_density_mean": 0.84,
+      "accepted_frac": 0.0,
+      "n": 2
+    }
+  ]
+}

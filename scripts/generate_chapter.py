@@ -111,6 +111,15 @@ def parse_args() -> argparse.Namespace:
                    help="Disable family-diverse selection; pick top-K by "
                         "similarity regardless of family. Use to A/B against "
                         "the family-diverse run.")
+    p.add_argument("--family-complex",
+                   default="src/aegir/ontology/family_complex.json",
+                   help="Data-driven simplicial complex over family axis. "
+                        "After topic-first template selection, the chosen "
+                        "family-set is checked against this complex. If it's "
+                        "not allowed (outside closure of maximal simplices, "
+                        "or in the measured-below-floor puncture set), "
+                        "templates are filtered down to the largest allowed "
+                        "face. Pass --family-complex '' to disable.")
     p.add_argument("--audit-run", required=True,
                    help="Path to coverage_v0/<run_id>/ for topic_coverage + template_density")
     p.add_argument("--output", default="/raid/checkpoints/aegir-artifacts/chapters_v0/")
@@ -685,6 +694,26 @@ def main() -> int:
         f"tau_anchor={args.tau_anchor}"
     )
 
+    # Load the family complex if provided. Empty string disables the guard.
+    family_complex = None
+    if args.family_complex:
+        from aegir.ontology.complex import FamilyComplex
+        complex_path = Path(args.family_complex)
+        if not complex_path.is_absolute():
+            complex_path = REPO / complex_path
+        if complex_path.exists():
+            family_complex = FamilyComplex.from_json(complex_path)
+            logger.info(
+                f"family complex: {len(family_complex.maximal_simplices)} "
+                f"maximal simplices, {len(family_complex.measured_below_floor)} "
+                f"punctures, vertices={sorted(family_complex.vertices)}"
+            )
+        else:
+            logger.warning(
+                f"family-complex file not found: {complex_path} — "
+                f"running without simplex guard"
+            )
+
     # Topic-usage tracker drives the anti-repetition weighting across a run.
     topic_usage: dict[int, int] = {}
 
@@ -785,6 +814,30 @@ def main() -> int:
                 f"tau_template={args.tau_template}; redrawing"
             )
             continue
+
+        # Family-complex guard: if the chosen family-set isn't allowed by
+        # the empirical complex, filter templates to the largest allowed
+        # face. The data-driven complex prevents drawing combinations we
+        # know fail R_axiom (e.g. {01_foundation, 04_ebpf_kernel} pair,
+        # any simplex containing 05_provo_lineage).
+        if family_complex is not None:
+            current_fams = frozenset(t["_family"] for t in chosen)
+            allowed_fams = family_complex.best_face(current_fams)
+            if allowed_fams != current_fams:
+                dropped = current_fams - allowed_fams
+                chosen = [t for t in chosen if t["_family"] in allowed_fams]
+                logger.info(
+                    f"  simplex-guard: filtered {sorted(current_fams)} → "
+                    f"{sorted(allowed_fams)} (dropped families: "
+                    f"{sorted(dropped)})"
+                )
+            if not chosen:
+                logger.warning(
+                    f"chapter {i+1}/{args.n_chapters}: no allowable face "
+                    f"for target topic {int(target.topic_id)} families "
+                    f"{sorted(current_fams)}; redrawing"
+                )
+                continue
 
         template_families = sorted({t["_family"] for t in chosen})
         # Modal family — most common across the chosen templates; ties
