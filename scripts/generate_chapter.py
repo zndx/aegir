@@ -54,6 +54,7 @@ import logging
 import os
 import sys
 import time
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -74,13 +75,42 @@ logger = logging.getLogger("generate-chapter")
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--family", default="03_directive_governance",
-                   help="Ontology family file stem (e.g., '03_directive_governance')")
+    p.add_argument("--restrict-families", default=None,
+                   help="Optional comma-separated family allowlist (e.g., "
+                        "'03_directive_governance,07_long_tail'). When set, the "
+                        "topic-first sampler only considers templates whose "
+                        "family is in this list. Default (None) = all 7 "
+                        "families eligible. Replaces the old --family flag.")
     p.add_argument("--n-chapters", type=int, default=5)
     p.add_argument("--templates-per-chapter", type=int, default=4,
                    help="How many ontology templates to ground a chapter on")
     p.add_argument("--style-anchors", type=int, default=3,
-                   help="Number of FinePDFs passages to include as style refs")
+                   help="Number of FinePDFs passages to include as style refs. "
+                        "First passage is the target topic's repr_text "
+                        "(also drives axiom selection); remainder are style "
+                        "siblings picked by the same anti-repetition sampler.")
+    p.add_argument("--tau-anchor", type=float, default=0.20,
+                   help="Minimum coverage_score for a topic to be eligible as "
+                        "a target/anchor. Below this, the audit shows the "
+                        "ontology has no good template match — anchoring "
+                        "there would force template citations the ontology "
+                        "can't support, breaking R_axiom integrity. The "
+                        "audit run baseline shows 160/200 topics qualify at "
+                        "0.20, covering 86%% of FinePDFs docs.")
+    p.add_argument("--tau-template", type=float, default=0.15,
+                   help="Minimum per-topic similarity for a candidate "
+                        "template to be selectable. Filters the topic's "
+                        "top_templates list before family-diverse selection.")
+    p.add_argument("--prefer-family-diverse", action="store_true", default=True,
+                   help="When ≥2 families pass tau-template, round-robin pick "
+                        "one per family (highest similarity first). Forces "
+                        "cross-family axiom citations on the ~160/200 topics "
+                        "whose top-5 templates already span multiple families.")
+    p.add_argument("--no-family-diverse", dest="prefer_family_diverse",
+                   action="store_false",
+                   help="Disable family-diverse selection; pick top-K by "
+                        "similarity regardless of family. Use to A/B against "
+                        "the family-diverse run.")
     p.add_argument("--audit-run", required=True,
                    help="Path to coverage_v0/<run_id>/ for topic_coverage + template_density")
     p.add_argument("--output", default="/raid/checkpoints/aegir-artifacts/chapters_v0/")
@@ -143,16 +173,32 @@ def select_model(mix: list[tuple[str, float]], rng: np.random.Generator) -> str:
 # Inputs
 # ─────────────────────────────────────────────────────────────────────────
 
-def load_family_templates(catalog_dir: Path, family: str) -> list[dict]:
-    """Load all templates from one family file."""
-    path = catalog_dir / f"{family}.json"
-    if not path.exists():
-        raise SystemExit(f"family file not found: {path}")
-    data = json.loads(path.read_text())
-    templates = data.get("templates", [])
-    for t in templates:
-        t["_family"] = family
-    return templates
+def load_all_templates(catalog_dir: Path,
+                       restrict_families: set[str] | None = None
+                       ) -> dict[str, dict]:
+    """Load templates from every family file in the catalog directory.
+
+    Returns a dict keyed by template_id, with `_family` tag added per
+    template. Used by the topic-first sampler to enrich the audit's
+    top_templates entries (which carry only template_id + family +
+    similarity + manchester_template) with full catalog data
+    (verbal_template, slot_types, etc.) needed by build_axiom_section.
+
+    `restrict_families` (optional) filters templates to a given allowlist.
+    """
+    all_templates: dict[str, dict] = {}
+    for p in sorted(catalog_dir.glob("0*.json")):
+        if "candidate" in p.name:
+            continue
+        family = p.stem
+        if restrict_families is not None and family not in restrict_families:
+            continue
+        data = json.loads(p.read_text())
+        for t in data.get("templates", []):
+            t = dict(t)
+            t["_family"] = family
+            all_templates[t["template_id"]] = t
+    return all_templates
 
 
 def load_audit(audit_run: Path) -> tuple[Any, Any, Any]:
@@ -163,21 +209,52 @@ def load_audit(audit_run: Path) -> tuple[Any, Any, Any]:
     return topic_cov, template_density, family_density
 
 
-def pick_style_anchors(topic_cov, family: str, k: int,
-                       rng: np.random.Generator) -> list[dict]:
-    """Pick top-K FinePDFs passages whose nearest template is in this family."""
-    candidates = topic_cov[topic_cov.top_family == family].sort_values(
-        "coverage_score", ascending=False
-    )
-    if len(candidates) == 0:
-        # Fall back: top-K topics overall by coverage_score
-        candidates = topic_cov.sort_values("coverage_score", ascending=False)
-    n_take = min(k, len(candidates))
-    picks = candidates.head(max(n_take * 3, k))  # widen pool, then sample
-    if len(picks) > n_take:
-        idx = rng.choice(picks.index.to_numpy(), size=n_take, replace=False)
-        picks = picks.loc[idx]
-    return [
+def pick_topic_and_anchors(topic_cov, usage: dict[int, int], n_anchors: int,
+                           rng: np.random.Generator,
+                           tau_anchor: float,
+                           ) -> tuple[Any, list[dict]]:
+    """Pick a target topic + (n_anchors-1) style siblings via anti-repetition.
+
+    Topic-first sampler. Returns (target_row, anchors) where:
+      - target_row is the topic that drives axiom selection (its top_templates
+        is the candidate pool for `pick_topic_templates`).
+      - anchors is the full list of (target + siblings) for the prompt's
+        style section.
+
+    Eligibility filter: ``coverage_score >= tau_anchor``. This keeps the
+    sampler in topics where the audit shows the ontology has real template
+    support, so anchoring axioms there won't force the LLM to fabricate
+    template→topic alignment that doesn't exist.
+
+    Anti-repetition: per-topic weight ∝ 1/(1+usage_count). Within a single
+    run, hot topics get pushed down on each subsequent draw, naturally
+    spreading the corpus across the eligible pool. Updates ``usage`` in
+    place — caller does not need to.
+    """
+    eligible = topic_cov[topic_cov.coverage_score >= tau_anchor]
+    if len(eligible) == 0:
+        raise SystemExit(
+            f"no audit topics with coverage_score >= {tau_anchor}; "
+            f"lower --tau-anchor or extend the ontology"
+        )
+    if len(eligible) < n_anchors:
+        # Pool smaller than requested anchors — sample without replacement
+        # against the whole eligible set, no anti-repetition possible.
+        n_anchors = len(eligible)
+
+    weights = 1.0 / (1.0 + np.array(
+        [usage.get(int(t), 0) for t in eligible.topic_id], dtype=float
+    ))
+    weights = weights / weights.sum()
+    idx = rng.choice(eligible.index.to_numpy(), size=n_anchors,
+                      replace=False, p=weights)
+    picks = eligible.loc[idx]
+
+    for tid in picks.topic_id:
+        tid_int = int(tid)
+        usage[tid_int] = usage.get(tid_int, 0) + 1
+
+    anchors = [
         {
             "topic_id": int(r.topic_id),
             "coverage_score": float(r.coverage_score),
@@ -186,28 +263,69 @@ def pick_style_anchors(topic_cov, family: str, k: int,
         }
         for _, r in picks.iterrows()
     ]
+    return picks.iloc[0], anchors
 
 
-def pick_templates(templates: list[dict], template_density,
-                   k: int, rng: np.random.Generator) -> list[dict]:
-    """Pick K templates from the family, biased toward ones with topic coverage.
+def pick_topic_templates(target: Any, all_templates: dict[str, dict],
+                         k: int, tau_template: float,
+                         prefer_family_diverse: bool,
+                         restrict_families: set[str] | None = None,
+                         ) -> list[dict]:
+    """Pick K templates from the target topic's top_templates list.
 
-    Coverage-density-weighted sampling: templates that the audit shows
-    actually match FinePDFs topics are preferred, since they're the
-    ones whose generated content has the strongest style/substrate
-    alignment opportunity.
+    The audit's ``top_templates`` field already encodes "which templates
+    best match this topic" (similarity-ranked). We filter to
+    ``similarity >= tau_template`` then either round-robin across
+    families (default, exposes the ~160/200 topics whose top-5 templates
+    span ≥2 families) or take top-K by similarity.
+
+    Each chosen entry is enriched with the full catalog template fields
+    (verbal_template, slot_types) since the audit row carries only a
+    summary subset.
     """
-    td = template_density.set_index("template_id")
-    # Score each template by its in_topk count + 1 (smoothing)
-    ids = [t["template_id"] for t in templates]
-    weights = np.array([
-        td.loc[tid, "n_topics_in_topk"] + 1 if tid in td.index else 1
-        for tid in ids
-    ], dtype=float)
-    weights /= weights.sum()
-    n_take = min(k, len(templates))
-    chosen_idx = rng.choice(len(templates), size=n_take, replace=False, p=weights)
-    return [templates[i] for i in chosen_idx]
+    candidates = list(target.top_templates) if target.top_templates is not None else []
+    candidates = [t for t in candidates if t.get("similarity", 0.0) >= tau_template]
+    if restrict_families is not None:
+        candidates = [t for t in candidates if t.get("family") in restrict_families]
+    if not candidates:
+        return []
+
+    if prefer_family_diverse and len(candidates) > 1:
+        by_fam: dict[str, list[dict]] = {}
+        for t in sorted(candidates, key=lambda t: -t.get("similarity", 0.0)):
+            by_fam.setdefault(t["family"], []).append(t)
+        chosen: list[dict] = []
+        families = list(by_fam.keys())
+        while len(chosen) < k and any(by_fam.values()):
+            for fam in families:
+                if not by_fam[fam]:
+                    continue
+                chosen.append(by_fam[fam].pop(0))
+                if len(chosen) == k:
+                    break
+    else:
+        chosen = sorted(candidates, key=lambda t: -t.get("similarity", 0.0))[:k]
+
+    enriched: list[dict] = []
+    for c in chosen:
+        full = all_templates.get(c["template_id"])
+        if full is None:
+            # Template_id missing from catalog (should not happen but is
+            # defensive — audit data may pre-date a catalog edit).
+            enriched.append({
+                "template_id": c["template_id"],
+                "manchester_template": c.get("manchester_template", ""),
+                "verbal_template": "",
+                "slot_types": {},
+                "_family": c.get("family", ""),
+                "_similarity": float(c.get("similarity", 0.0)),
+            })
+            continue
+        t = dict(full)
+        t["_family"] = c.get("family", t.get("_family", ""))
+        t["_similarity"] = float(c.get("similarity", 0.0))
+        enriched.append(t)
+    return enriched
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -517,7 +635,7 @@ def build_prompt(anchors: list[dict], templates: list[dict], kind: str) -> str:
     tpl = PROMPT_BY_KIND[kind]
     # The Grok template doesn't substitute n_templates (it picks domain
     # freely). The GLM template does.
-    fmt_kwargs = {
+    fmt_kwargs: dict[str, Any] = {
         "style_section": build_style_section(anchors),
         "axiom_section": build_axiom_section(templates),
     }
@@ -549,14 +667,26 @@ def main() -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Inputs
-    templates = load_family_templates(catalog_dir, args.family)
-    logger.info(f"loaded {len(templates)} templates from family={args.family}")
-    topic_cov, template_density, family_density = load_audit(audit_run)
-    logger.info(f"loaded audit run from {audit_run}")
+    restrict_families = (
+        set(s.strip() for s in args.restrict_families.split(","))
+        if args.restrict_families else None
+    )
+    all_templates = load_all_templates(catalog_dir, restrict_families)
+    logger.info(
+        f"loaded {len(all_templates)} templates across "
+        f"{len({t['_family'] for t in all_templates.values()})} "
+        f"families (restrict={restrict_families or 'all'})"
+    )
+    topic_cov, _template_density, _family_density = load_audit(audit_run)
+    eligible_topics = int((topic_cov.coverage_score >= args.tau_anchor).sum())
+    logger.info(
+        f"loaded audit run from {audit_run}: "
+        f"{eligible_topics}/{len(topic_cov)} topics eligible at "
+        f"tau_anchor={args.tau_anchor}"
+    )
 
-    # Style anchors are picked once and reused across chapters
-    # (consistent style; varied content via different template subsets)
-    rng = np.random.default_rng(args.seed)
+    # Topic-usage tracker drives the anti-repetition weighting across a run.
+    topic_usage: dict[int, int] = {}
 
     # Lazy LLM import
     import dspy
@@ -592,10 +722,16 @@ def main() -> int:
         lm_cache[model] = lm
         return lm
 
-    # Output schema for the chapters table
+    # Output schema for the chapters table. With topic-first sampling, the
+    # `family` column is the modal family across selected templates (still
+    # a useful single-value tag for grouping/filtering); the new
+    # `template_families` column carries the full list when chapters span
+    # multiple families.
     chapter_schema = pa.schema([
         ("chapter_id", pa.string()),
         ("family", pa.string()),
+        ("template_families", pa.list_(pa.string())),
+        ("target_topic_id", pa.int32()),
         ("ablation", pa.string()),
         ("template_ids", pa.list_(pa.string())),
         ("style_topic_ids", pa.list_(pa.int32())),
@@ -624,18 +760,47 @@ def main() -> int:
         provider = model.split("/", 1)[0]
         kind = prompt_kind_for_ablation(args.ablation, model)
 
-        anchors = pick_style_anchors(topic_cov, args.family,
-                                      args.style_anchors, rng_local)
-        # For no-ontology arm, we still pick templates (for HX provenance
-        # tracking) but they don't enter the prompt
-        chosen = pick_templates(templates, template_density,
-                                args.templates_per_chapter, rng_local)
+        # Topic-first: pick the target topic + style siblings via anti-rep
+        # weighting on the eligible (>= tau_anchor) topic pool. Updates
+        # topic_usage in place so the next chapter sees this draw's
+        # contribution to the repetition penalty.
+        target, anchors = pick_topic_and_anchors(
+            topic_cov, topic_usage, args.style_anchors, rng_local,
+            tau_anchor=args.tau_anchor,
+        )
+        chosen = pick_topic_templates(
+            target, all_templates,
+            k=args.templates_per_chapter,
+            tau_template=args.tau_template,
+            prefer_family_diverse=args.prefer_family_diverse,
+            restrict_families=restrict_families,
+        )
+        if not chosen:
+            # No templates above tau_template for this topic. Skip and let
+            # the loop re-draw — the anti-rep tracker still penalizes the
+            # used topic so we don't repeatedly hit the same dead end.
+            logger.warning(
+                f"chapter {i+1}/{args.n_chapters}: target topic "
+                f"{int(target.topic_id)} has no templates above "
+                f"tau_template={args.tau_template}; redrawing"
+            )
+            continue
+
+        template_families = sorted({t["_family"] for t in chosen})
+        # Modal family — most common across the chosen templates; ties
+        # broken by sort order. Used as the chapter's `family` tag.
+        primary_family = Counter(t["_family"] for t in chosen).most_common(1)[0][0]
+
         prompt = build_prompt(anchors, chosen, kind=kind)
         chapter_id = compute_chapter_id(prompt, model, seed_offset)
 
         logger.info(f"chapter {i+1}/{args.n_chapters} (id={chapter_id}):")
         logger.info(f"  model: {model}  (prompt kind: {kind})")
+        logger.info(f"  target topic: {int(target.topic_id)} "
+                    f"(coverage_score={float(target.coverage_score):.3f})")
         logger.info(f"  templates: {[t['template_id'] for t in chosen]}")
+        logger.info(f"  template families: {template_families}  "
+                    f"(primary={primary_family})")
         logger.info(f"  style anchor topics: {[a['topic_id'] for a in anchors]}")
 
         # Generate via the appropriate model
@@ -671,12 +836,15 @@ def main() -> int:
             source_context={
                 "aegir_module": "generate_chapter",
                 "chapter_id": chapter_id,
-                "family": args.family,
+                "family": primary_family,
+                "template_families": ";".join(template_families),
+                "target_topic_id": str(int(target.topic_id)),
                 "prompt_kind": kind,
                 "ablation": args.ablation,
                 "template_ids": [t["template_id"] for t in chosen],
                 "style_topic_ids": [str(a["topic_id"]) for a in anchors],
                 "audit_run_id": audit_run.name,
+                "sampler": "topic-first",
             },
         )
         append_exchange(record)
@@ -685,7 +853,9 @@ def main() -> int:
         # Stage chapter row
         chapter_rows.append({
             "chapter_id": chapter_id,
-            "family": args.family,
+            "family": primary_family,
+            "template_families": template_families,
+            "target_topic_id": int(target.topic_id),
             "ablation": args.ablation,
             "template_ids": [t["template_id"] for t in chosen],
             "style_topic_ids": [int(a["topic_id"]) for a in anchors],
@@ -703,10 +873,15 @@ def main() -> int:
             "audit_run_id": audit_run.name,
         })
 
-    # Write chapters parquet (include ablation in run_id so arms don't collide)
-    run_id = hashlib.sha256(
-        f"{args.family}:{args.n_chapters}:{args.seed}:{args.mix}:{args.ablation}".encode()
-    ).hexdigest()[:16]
+    # Write chapters parquet. Run_id encodes the sampler+restriction so
+    # topic-first runs don't collide with legacy family-first artifacts.
+    run_id_inputs = (
+        f"topic-first:{args.restrict_families or 'all'}:{args.n_chapters}:"
+        f"{args.seed}:{args.mix}:{args.ablation}:"
+        f"tau_anchor={args.tau_anchor}:tau_template={args.tau_template}:"
+        f"fam_div={args.prefer_family_diverse}"
+    )
+    run_id = hashlib.sha256(run_id_inputs.encode()).hexdigest()[:16]
     out_run_dir = output_dir / run_id
     out_run_dir.mkdir(parents=True, exist_ok=True)
     pq.write_table(
