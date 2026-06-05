@@ -27,12 +27,10 @@ __pycache__/
 
 # Training outputs
 outputs/
-build/patched-src/
-build/wheels/
 
-# Draft / staging artifacts under build/
-build/draft-*.md
-build/config/
+# Build outputs — regenerable from source; ignored by convention
+# (covers patched-src/, wheels/, jvm-libs/, draft-*.md, config/, experiments/ …)
+build/
 
 # Devenv runtime state (postgres data dir, qdrant init sentinel)
 /db/
@@ -47,9 +45,13 @@ ui/tsconfig.tsbuildinfo
 *.png
 domain-choice.txt
 micans*.txt
+docs/scratch/
 
 # Extracted dataset artifacts published to HuggingFace separately —
 # the cards live in-repo; the binary parquet / npy do not.
 data/correspondence_*/correspondence.parquet
 data/correspondence_*/T_I_centroids.npy
-build/jvm-libs/
+
+# Local environment + secrets (devenv dotenv) and Claude Code local state
+.env
+.claude/
