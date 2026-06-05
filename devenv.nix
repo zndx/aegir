@@ -49,6 +49,8 @@ in {
     #              # follow cybersec's convention: fetch via curl in CI or vendor
   ];
 
+  dotenv.enable = true;
+
   # https://devenv.sh/languages/
   languages.python = {
     enable = true;
@@ -58,6 +60,9 @@ in {
     venv.enable = true;
   };
 
+  languages.rust = {
+    enable = true;
+  };
   # ── Disk routing for model weights + caches ──────────────────
   #
   # The system drive (/) is space-constrained (~15 GB free at

@@ -4,7 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Aegir is a hierarchical sequence modeling system using an all-RWKV-7 architecture with H-Net-style dynamic chunking for adaptive segmentation. Primary use case is relational data warehouse metadata tagging (Column Type Annotation and Column Property Annotation for wide tables). Includes agent swarm scaffold (LatentMAS-style RWKV state fusion + K2.5 PARL orchestration). Pre-alpha stage (v0.2.0).
+Aegir is a hierarchical sequence modeling system using an all-RWKV-7 architecture with H-Net-style dynamic chunking for adaptive segmentation. Primary use case is relational data warehouse metadata tagging (Column Type Annotation and Column Property Annotation for wide tables). Includes agent swarm scaffold (LatentMAS-style RWKV state fusion + K2.5 PARL orchestration). Pre-alpha stage.
+
+The project has two parallel tracks:
+- **The model** (v0.2, `src/aegir/models|modules|swarm/`): the RWKV-7 + dynamic-chunking backbone, documented under [Architecture](#architecture).
+- **The ontology-grounded synthetic-corpus pipeline** (v0.3, `src/aegir/ontology/` + `scripts/`): the current focus of active work. A 540-template OWL/BFO ontology drives LLM generation of verifiable, attribution-clean textbook chapters used as byte-level pretraining data. Documented under [Ontology & Synthetic Corpus Pipeline](#ontology--synthetic-corpus-pipeline-v03). See `docs/scratch/2026-05-18/004500_v0_3_plan_of_record.md` for the 9-artifact release plan.
 
 Reference papers in `ref/`: H-Net (Dynamic Chunking), Retrieve-and-Verify, ROSA-Tuning.
 
@@ -45,6 +49,28 @@ Non-innermost stages flow: encoder (Isotropic) → RoutingModule → ChunkLayer 
 - `FrozenSpecialist`: wraps any Aegir model with `requires_grad_(False)`
 - `SwarmOrchestrator`: routing + fusion + PARL reward structure
 
+## Ontology & Synthetic Corpus Pipeline (v0.3)
+
+The v0.3 thesis: a byte-level model trained on deterministically-verifiable, ontology-grounded synthetic textbook chapters can match TAPAS/TAPEX-class column-annotation performance **while** producing a corpus that is itself publishable and attribution-clean. The pipeline is a closed loop: ontology → coverage audit → chapter generation → verification → (optionally) byte-pretraining corpus.
+
+### Ontology (`src/aegir/ontology/`)
+A 540-template OWL catalog grounded in BFO 2020 / CCO, split into 7 families. Each template is a Manchester-syntax axiom skeleton with typed slots (`{name:Type}` / `{name:Type:Bound}` — see `SLOT_DSL.md`).
+
+- `schema.py` — `CatalogTemplate` / `Catalog` dataclasses + `load_catalog`/`save_catalog`. Templates carry `manchester_template`, `slot_types`, `is_complex`, `verbal_template` (DeepOnto-derived), `bfo_anchor_path`, and `provenance`.
+- `catalog/` — the seven family JSON files (`01_foundation` … `07_long_tail`), plus `.candidate.json` staging copies, `combined.json`, and per-family `null_stats` for R_D normalization. **Edit the family `.json` files, not `combined.json`** (which is regenerated).
+- `verifier.py` — the runtime efficacy score **R = R_A·(0.50·R_B + 0.05·R_C + 0.45·R_D)** (weights locked from a P2 sweep; `tune_verifier_weights.py` re-derives them). `R_A` is a hard structural type-gate (slots present + type-match), `R_B` complexity saturation, `R_C` semantic richness, `R_D` topic alignment to corpus.
+- `topic_alignment.py` — `R_D`: encode (all-MiniLM-L6-v2) → KMeans → Hungarian-matched cosine between generated-text centroids and the cached corpus topic model (`T_I.pkl`, fit by `build_topic_model.py`). Encoder is cached in-process.
+- `complex.py` — **family simplicial complex**: the family-set a chapter cites is a simplex; `family_complex.json` records empirically-measured `maximal_simplices` (R_axiom ≥ floor, n ≥ min_count) and `measured_below_floor` "punctures" (simplices observed to fail — these do **not** propagate to supersets). `FamilyComplex.is_allowed(simplex)` gates generation; `best_face(candidate)` returns the largest allowed subset so the sampler can drop offending templates. Built by `build_family_complex.py` from chapter runs.
+- `deeponto_harness.py` — **offline-only** JVM harness (DeepOnto verbalizer) run at catalog-build time to populate `verbal_template`/`is_complex`/`mean_verbal_length`. Gotchas: DeepOnto calls `click.prompt()` at import (hangs non-interactively until the JVM starts), and system openjdk-11 needs a bootstrapped `libz.so.1` because Nix masks `/usr/lib` — hence the `LD_LIBRARY_PATH=$(pwd)/build/jvm-libs` prefix on ontology commands.
+
+### Chapter generation & verification (`scripts/`)
+- `generate_chapter.py` — ontology-grounded chapter synthesis. **Topic-first sampler**: pick a target FinePDFs topic + style siblings with anti-repetition weighting (∝ 1/(1+usage)), select K templates (family-diverse round-robin by default), enforce the family complex via `best_face`, verbalize axioms + attach style-anchor passages, then call a weighted **GLM-4.7 / Grok-4.3 mix** (`--mix cerebras/zai-glm-4.7:0.6,xai/grok-4.3:0.4`). Three ablation arms via `--ablation {full,no-ontology,no-schema}` (each has its own prompt template). Full exchange (incl. `reasoning_content`) is captured to an Iceberg `raw.exchange` table; chapters land in `chapters.parquet` + per-chapter `.md`. Requires `--audit-run <coverage_v0/run_id>/`.
+- `verify_chapters.py` — **4-scorer verification loop**: `R_topic` (sentence-transformer cosine to style anchors), `R_iri` (cited-template keyword presence in prose), `R_density` (markdown-table structure: ≥2 tables GLM / ≥3 with cross-FKs Grok), `R_axiom` (table headers match slot types). Composite = geometric mean; status = accepted (≥`--tau-accept` 0.50) / borderline / rejected (<`--tau-review` 0.30). `--write-to-iceberg` appends to `raw.chapter_verification`.
+- `ontology_coverage_audit.py` — produces the `coverage_v0/<run_id>/` inputs both scripts consume: `topic_coverage.parquet`, `template_density.parquet`, `family_density.parquet` (KMeans-cluster FinePDFs, score cosine similarity of each topic to all 540 templates).
+- `scripts/experiment_*.py` — standalone exploratory probes (BERTopic at various scales, loose-Grok scaffolding tests, topic-recovery-rate measurement, SDG verbalization). Not production; safe to read for intent, not wired into the pipeline.
+
+Key finding (per the plan-of-record): the ontology is **load-bearing for slot-type prediction (CPA)** but **trades raw FinePDFs distribution alignment** — so the v0.2 SOTAB-CTA target may be the wrong eval. Don't assume SOTAB-CTA is the goal without checking the current plan.
+
 ## Development Environment
 
 Managed by **devenv** (Nix) with **direnv** auto-activation via `.envrc`. Python 3.12 + **uv**; devenv also provides just, cmake, ninja, protobuf, flatbuffers, grpcurl, and mdbook with d2/katex/mermaid plugins.
@@ -59,6 +85,15 @@ uv run --no-sync python train.py --smoke-test --model-size tiny --epochs 3  # Tr
 # Multi-GPU training (e.g. 6x RTX 4090)
 uv run --no-sync torchrun --nproc_per_node=6 train.py --smoke-test --model-size small --epochs 30
 
+# Byte-level pretraining on the synthetic corpus (Phase 0 / 0.5; rank-sharded parquet)
+uv run --no-sync python train_pretrain.py --resume-from <ckpt> --phase05-... # see module docstring
+
+# v0.3 ontology pipeline — note the LD_LIBRARY_PATH prefix (DeepOnto/JVM, see ontology section)
+LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/ontology_coverage_audit.py --output-dir <coverage_v0/>
+LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/generate_chapter.py --audit-run <coverage_v0/run/> --n-chapters 100 --output <chapters_v0/>
+LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/verify_chapters.py --chapters-run <chapters_v0/run/> --audit-run <coverage_v0/run/>
+just check-ontology-schema   # mechanical CI: TTL parses, labels/definitions present, BFO ancestry, SPARQL totality
+
 # Docs (mdbook layout: book root at docs/current/, sources at docs/current/src/)
 just docs-build           # → docs/current/book/
 just docs-serve           # → http://localhost:3000
@@ -67,7 +102,7 @@ just docs-serve           # → http://localhost:3000
 uv add <package>
 ```
 
-There is no pytest suite; `main.py` and `train.py --smoke-test` are the primary verification path. Checkpoints land in `outputs/best_model.pt`.
+There is no pytest suite; `main.py` and `train.py --smoke-test` are the primary verification path for the model, and `just check-ontology-schema` for the ontology. Checkpoints land in `outputs/best_model.pt`.
 
 ### Model sizes (defined in `train.py::make_model`)
 
@@ -108,8 +143,11 @@ Working versions: flash-attn 2.8.3, mamba-ssm 2.3.1, causal-conv1d 1.6.1, Python
 ## Project Structure
 
 - `main.py` — Forward-pass smoke tests
-- `train.py` — DDP/AMP training with cosine LR, load balancing loss, and a synthetic data mode
+- `train.py` — DDP/AMP training (CTA/CPA heads) with cosine LR, load balancing loss, and a synthetic data mode
+- `train_pretrain.py` — Byte-level Phase 0 / 0.5 pretraining on the synthetic/TAPAS-style corpus; rank-sharded parquet (avoids OOM cascade), `--label-token-weight`, label-aware eval metrics, `--resume-from` checkpoint chaining
+- `scripts/` — the v0.3 ontology pipeline (see [Ontology section](#ontology--synthetic-corpus-pipeline-v03)): `ontology_coverage_audit.py`, `generate_chapter.py`, `verify_chapters.py`, `build_catalog.py`, `build_family_complex.py`, `build_topic_model.py`, `tune_verifier_weights.py`, `check_ontology_schema.py`, plus corpus download/eval/`experiment_*` probes
 - `src/aegir/`
+  - `ontology/` — `schema`, `verifier`, `topic_alignment`, `complex` (family simplicial complex), `deeponto_harness` (offline JVM); `catalog/*.json` (540 templates, 7 families), `family_complex.json`, `T_I.pkl`, `null_stats.json`, `sdg-vocab.ttl`, `SLOT_DSL.md`
   - `models/config.py` — `AegirConfig`, `SSMConfig`, `AttnConfig`, `RWKVConfig` dataclasses
   - `models/aegir.py` — Recursive hierarchical backbone (adapted from H-Net)
   - `models/heads.py` — `AegirForCausalLM` + `AegirForColumnAnnotation` (CTA single-label / CPA multi-label)
