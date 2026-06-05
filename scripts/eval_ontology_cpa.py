@@ -5,7 +5,7 @@ Downstream-validation stage of the v0.3 procedure (pairs with
 ``build_ontology_cpa_eval.py``). Loads a byte-level pretraining checkpoint
 for one arm, attaches the column-annotation head, fine-tunes (or
 linear-probes with ``--freeze-backbone``) on the SHARED ontology-CPA task,
-and reports multi-label F1 on the held-out test split.
+and reports multi-label metrics on the held-out test split.
 
 Run it once per arm against the same built task to get the downstream
 ranking, then compare to the proxy ranking (verifier ``r_composite`` in each
@@ -13,7 +13,19 @@ arm's ``verification.parquet``). That comparison IS the calibration: does
 corpus-level ontology/schema grounding translate into a model that better
 recognizes ontological structure, and does the proxy predict it?
 
-The tiny config here is a verbatim copy of ``train_pretrain.py``'s
+Metrics. The task is sparse multi-label (~4 of 59 templates per chapter, a
+~7% positive rate), so a 0.5-threshold F1 collapses to the trivial
+all-negative predictor and reads 0 for *every* model — it hides the signal.
+The ground-truth signal is therefore carried by **ranking** metrics, which
+are threshold-free:
+  * micro-AUC          — random = 0.50
+  * micro-mAP          — random ~= positive rate (~0.07)
+  * R-precision        — per chapter, fraction of the true-count top-scored
+                         labels that are correct; random ~= positive rate
+F1@0.5 is kept as a diagnostic. Training uses ``pos_weight`` so the head
+actually fires rather than collapsing.
+
+The tiny config is a verbatim copy of ``train_pretrain.py``'s
 ``make_pretrain_model('tiny')`` so the arm checkpoints (produced by
 ``train_ablation_all.sh`` -> ``train_pretrain.py``) load with identical
 backbone shapes and behavior; only the head (role_embeddings/pooler/
@@ -21,14 +33,10 @@ classifier) is fresh.
 
 Usage::
 
-    # one arm:
     uv run --no-sync python scripts/eval_ontology_cpa.py \\
         --eval-dir   /raid/checkpoints/aegir-artifacts/ontology_cpa_v0 \\
-        --pretrained /raid/checkpoints/aegir-artifacts/ablation_v1_ckpts/full/best_model.pt \\
+        --pretrained /raid/checkpoints/aegir-artifacts/ablation_v1_ckpts/full/runs/<ts>/best_model.pt \\
         --arm full
-
-    # pipeline smoke (random init, tiny, fast) — verifies end-to-end:
-    uv run --no-sync python scripts/eval_ontology_cpa.py --eval-dir <dir> --smoke
 """
 from __future__ import annotations
 
@@ -40,6 +48,7 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
@@ -54,8 +63,7 @@ from aegir.utils.train import f1_score_multilabel  # noqa: E402
 
 log = logging.getLogger("eval-ontology-cpa")
 
-# Heads are the only fresh tensors; everything else is loaded from the arm's
-# byte-LM checkpoint. Kept in one place so the param-split and freeze logic agree.
+# Heads are the only fresh tensors; everything else loads from the byte-LM ckpt.
 HEAD_PREFIXES = ("role_embeddings.", "pooler.", "classifier.")
 
 
@@ -129,13 +137,21 @@ def load_pretrained(model, ckpt_path) -> dict:
             "pretrained_total": len(state), "first_skipped": skipped[:5]}
 
 
+def _fmt(x) -> str:
+    return f"{x:.4f}" if isinstance(x, (int, float)) else "n/a"
+
+
 @torch.no_grad()
 def evaluate(model, loader, device, num_labels, threshold=0.5) -> dict:
+    """Threshold-free ranking metrics carry the signal (see module docstring);
+    F1@0.5 kept as a diagnostic."""
     if len(loader.dataset) == 0:
-        return {"val_loss": 0.0, "micro_f1": None, "macro_f1": None, "n": 0, "skipped": True}
+        return {"val_loss": 0.0, "micro_f1": None, "macro_f1": None,
+                "mAP_micro": None, "micro_auc": None, "r_precision": None,
+                "n": 0, "skipped": True}
     model.eval()
     lossf = nn.BCEWithLogitsLoss()
-    preds, trues = [], []
+    scores, trues = [], []
     tot_loss, n = 0.0, 0
     for batch in loader:
         out = model(input_ids=batch["input_ids"].to(device),
@@ -146,12 +162,35 @@ def evaluate(model, loader, device, num_labels, threshold=0.5) -> dict:
         y = batch["labels"].to(device)
         tot_loss += lossf(logits, y).item() * y.shape[0]
         n += y.shape[0]
-        preds.extend((torch.sigmoid(logits) >= threshold).int().cpu().tolist())
-        trues.extend(y.int().cpu().tolist())
+        scores.append(torch.sigmoid(logits).cpu().numpy())
+        trues.append(y.cpu().numpy())
     model.train()
-    micro, macro, _ = f1_score_multilabel(trues, preds, num_classes=num_labels)
-    return {"val_loss": tot_loss / max(1, n), "micro_f1": float(micro),
-            "macro_f1": float(macro), "n": n}
+
+    S = np.concatenate(scores)
+    Y = np.concatenate(trues).astype(int)
+    P = (S >= threshold).astype(int)
+    micro, macro, _ = f1_score_multilabel(Y.tolist(), P.tolist(), num_classes=num_labels)
+    res = {"val_loss": tot_loss / max(1, n), "micro_f1": float(micro),
+           "macro_f1": float(macro), "n": n}
+
+    # Threshold-free ranking signal.
+    yf, sf = Y.ravel(), S.ravel()
+    try:
+        from sklearn.metrics import average_precision_score, roc_auc_score
+        if 0 < yf.sum() < yf.size:
+            res["micro_auc"] = float(roc_auc_score(yf, sf))
+            res["mAP_micro"] = float(average_precision_score(yf, sf))
+    except Exception as e:  # degenerate batch / sklearn edge
+        res["rank_err"] = str(e)
+    rp = []
+    for i in range(Y.shape[0]):
+        k = int(Y[i].sum())
+        if k == 0:
+            continue
+        topk = np.argsort(-S[i])[:k]
+        rp.append(float(Y[i][topk].sum()) / k)
+    res["r_precision"] = float(np.mean(rp)) if rp else None
+    return res
 
 
 def main() -> int:
@@ -166,12 +205,14 @@ def main() -> int:
     ap.add_argument("--out-dir", default=None)
     ap.add_argument("--max-length", type=int, default=4096)
     ap.add_argument("--batch-size", type=int, default=8)
-    ap.add_argument("--epochs", type=int, default=8)
-    ap.add_argument("--lr", type=float, default=2e-4)
+    ap.add_argument("--epochs", type=int, default=12)
+    ap.add_argument("--lr", type=float, default=3e-4)
     ap.add_argument("--head-lr-mult", type=float, default=5.0,
                     help="LR multiplier for the cold-start head vs the pretrained backbone.")
     ap.add_argument("--weight-decay", type=float, default=1e-4)
     ap.add_argument("--warmup-frac", type=float, default=0.1)
+    ap.add_argument("--pos-weight-cap", type=float, default=50.0,
+                    help="Clamp on per-label neg/pos weighting (multi-label imbalance).")
     ap.add_argument("--freeze-backbone", action="store_true",
                     help="Linear-probe: train only the head — a cleaner measure of "
                          "what the pretraining representation already encodes.")
@@ -256,7 +297,20 @@ def main() -> int:
     if head_params:
         groups.append({"params": head_params, "_base_lr": args.lr * args.head_lr_mult})
     opt = torch.optim.AdamW(groups, lr=args.lr, weight_decay=args.weight_decay)
-    lossf = nn.BCEWithLogitsLoss()
+
+    # Multi-label imbalance: ~4 of 59 positive per chapter. Without pos_weight,
+    # BCE collapses to the all-negative predictor (F1 -> 0). Weight positives by
+    # the per-label neg/pos ratio (clamped) so the head actually fires.
+    counts = np.zeros(num_labels, dtype=np.float64)
+    for r in by_split["train"]:
+        for idx in r["label_idx"]:
+            if 0 <= idx < num_labels:
+                counts[idx] += 1.0
+    n_train = max(1, len(by_split["train"]))
+    pos_weight = torch.tensor(
+        np.clip((n_train - counts) / np.clip(counts, 1.0, None), 1.0, args.pos_weight_cap),
+        dtype=torch.float32, device=device)
+    lossf = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
 
     total_steps = max(1, len(train_loader) * args.epochs)
     warmup = max(1, int(total_steps * args.warmup_frac))
@@ -271,7 +325,7 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     step = 0
-    best_val_macro = -1.0
+    best_val_map = -1.0
     history = []
     last_loss = float("nan")
     model.train()
@@ -284,7 +338,8 @@ def main() -> int:
                         mask=batch["mask"].to(device))
             loss = lossf(out.logits.float(), batch["labels"].to(device))
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            torch.nn.utils.clip_grad_norm_(
+                [p for p in model.parameters() if p.requires_grad], 1.0)
             scale = lr_scale(step)
             for pg in opt.param_groups:
                 pg["lr"] = pg["_base_lr"] * scale
@@ -294,19 +349,17 @@ def main() -> int:
             last_loss = loss.item()
         ev = evaluate(model, val_loader, device, num_labels)
         history.append({"epoch": epoch + 1, "val": ev})
-        log.info("epoch %d/%d  train_loss %.4f  val micro/macro F1 %s/%s",
+        log.info("epoch %d/%d  train_loss %.4f  val mAP %s  R-prec %s  AUC %s  F1@.5 %s",
                  epoch + 1, args.epochs, last_loss,
-                 f"{ev['micro_f1']:.4f}" if ev["micro_f1"] is not None else "n/a",
-                 f"{ev['macro_f1']:.4f}" if ev["macro_f1"] is not None else "n/a")
-        if ev["macro_f1"] is not None:
-            best_val_macro = max(best_val_macro, ev["macro_f1"])
+                 _fmt(ev.get("mAP_micro")), _fmt(ev.get("r_precision")),
+                 _fmt(ev.get("micro_auc")), _fmt(ev.get("micro_f1")))
+        if isinstance(ev.get("mAP_micro"), float):
+            best_val_map = max(best_val_map, ev["mAP_micro"])
 
     test = evaluate(model, test_loader, device, num_labels)
-    log.info("TEST [%s]  micro F1 %s  macro F1 %s  (%.1fs)",
-             args.arm,
-             f"{test['micro_f1']:.4f}" if test["micro_f1"] is not None else "n/a",
-             f"{test['macro_f1']:.4f}" if test["macro_f1"] is not None else "n/a",
-             time.time() - t0)
+    log.info("TEST [%s]  mAP %s  R-prec %s  AUC %s  F1@.5 %s  (%.1fs)",
+             args.arm, _fmt(test.get("mAP_micro")), _fmt(test.get("r_precision")),
+             _fmt(test.get("micro_auc")), _fmt(test.get("micro_f1")), time.time() - t0)
 
     result = {
         "arm": args.arm,
@@ -315,7 +368,7 @@ def main() -> int:
         "num_labels": num_labels,
         "max_length": args.max_length,
         "epochs": args.epochs, "lr": args.lr, "head_lr_mult": args.head_lr_mult,
-        "best_val_macro_f1": best_val_macro,
+        "best_val_mAP_micro": best_val_map,
         "test": test,
         "history": history,
         "splits": {s: len(by_split[s]) for s in by_split},
