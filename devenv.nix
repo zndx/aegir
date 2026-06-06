@@ -120,6 +120,22 @@ in {
     initialDatabases = [{ name = "aegir"; }];
   };
 
+  services.caddy = {
+    enable = true;
+    # One origin for the control-plane UI, fronting both governance surfaces:
+    #   /api/atlas/* -> the real Apache Atlas v2 service (forked, AGE backend) on :21000
+    #   /api/*       -> the aegir gateway (control API + extended OpenLineage variant)
+    # handle blocks are first-match, so the more specific /api/atlas/* precedes /api/*.
+    virtualHosts."http://localhost:8080".extraConfig = ''
+      handle /api/atlas/* {
+        reverse_proxy 127.0.0.1:21000
+      }
+      handle /api/* {
+        reverse_proxy 127.0.0.1:8091
+      }
+    '';
+  };
+
   # ── Process management ──────────────────────────────────────
   #
   # ``devenv up`` starts every process below. Python services call

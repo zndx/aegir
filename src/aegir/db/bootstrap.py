@@ -68,7 +68,10 @@ def run_migrations(db_url: str, migrations_dir: str | Path = "migrations") -> No
                 log.warning("migration %s has no -- migrate:up block, skipping", version)
                 continue
             for stmt in _split_statements(up_sql):
-                conn.execute(text(stmt))
+                # exec_driver_sql: raw to the driver — migration DDL must NOT be
+                # subject to SQLAlchemy's ":name" bind-param parsing (Cypher/comments
+                # legitimately contain colons, e.g. [:INPUT_TO], chapter:foo).
+                conn.exec_driver_sql(stmt)
             conn.execute(
                 text("INSERT INTO schema_migrations (version) VALUES (:v)"),
                 {"v": version},

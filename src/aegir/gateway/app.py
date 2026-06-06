@@ -63,6 +63,9 @@ def create_app(cfg: Config | None = None) -> FastAPI:
     app.state.cfg = cfg
 
     _register_api_routes(app)
+    # Extended OpenLineage variant over aegir_hx (/api/v1/lineage, /api/lineage/*).
+    from aegir.governance.ol import make_router as _ol_router
+    app.include_router(_ol_router())
     _mount_static_bundle(app, cfg)
     return app
 
