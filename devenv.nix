@@ -108,7 +108,11 @@ in {
     package = pkgs.postgresql_16;
     port = 5555;
     listen_addresses = "127.0.0.1";
-    extensions = extensions: [ extensions.pgvector ];
+    extensions = extensions: [
+      extensions.age
+      extensions.pg_cron
+      extensions.pgvector
+    ];
     initialDatabases = [{ name = "aegir"; }];
   };
 
