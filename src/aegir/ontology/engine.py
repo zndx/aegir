@@ -20,7 +20,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from aegir.ontology.schema import Catalog
-from aegir.ontology.skills.base import Gates, unit_passes
+from aegir.ontology.skills.base import Gates, unit_gate_scores, unit_passes
 from aegir.ontology.skills.library import (
     cross_reference,
     default_generate_fn,
@@ -50,6 +50,7 @@ class EpisodeResult:
     topic_recovery: float
     r_axiom: float             # the table unit's structure score
     per_unit_ok: bool
+    rewards: dict = field(default_factory=dict)   # dense per-axis reward (MOPD-style); gates stay hard
     decisions: list[str] = field(default_factory=list)
     chapter_md: str = ""
 
@@ -130,10 +131,20 @@ def run_episode(seed: Seed, catalog: Catalog,
     table_axiom = next((r_axiom(u.schema, catalog)[0] for u in units
                         if u.kind == "table" and u.schema), 0.0)
 
+    # Dense per-axis reward (MOPD-style): the continuous gate scores exposed as a
+    # reward vector for the calibration / on-policy phase. Admission stays the HARD
+    # conjunction below — rewards never gate.
+    axis: dict[str, list[float]] = {}
+    for u in units:
+        for k, v in unit_gate_scores(u, units, catalog, ev_ids).items():
+            axis.setdefault(k, []).append(v)
+    rewards = {k: sum(vs) / len(vs) for k, vs in axis.items()}
+    rewards["topic_recovery"] = tr
+
     admitted = (tr >= gates.tau_topic) and per_unit_ok   # hard conjunction; F not consulted
     decisions.append(f"chapter topic_recovery={tr:.3f} (τ={gates.tau_topic}) → "
                      f"{'ADMIT' if admitted else 'REJECT'}")
 
     return EpisodeResult(units=units, admitted=admitted, topic_recovery=tr,
-                         r_axiom=table_axiom, per_unit_ok=per_unit_ok,
+                         r_axiom=table_axiom, per_unit_ok=per_unit_ok, rewards=rewards,
                          decisions=decisions, chapter_md=chapter_md)
