@@ -136,6 +136,13 @@ in {
     '';
   };
 
+  # JDK 21 + Maven to build/run the forked Apache Atlas (AGE backend on aegir_hx).
+  languages.java = {
+    enable = true;
+    jdk.package = pkgs.jdk21;
+    maven.enable = true;
+  };
+
   # ── Process management ──────────────────────────────────────
   #
   # ``devenv up`` starts every process below. Python services call
@@ -184,6 +191,59 @@ in {
       };
     };
 
+    # Apache Atlas (forked, AGE backend) on the SHARED aegir_hx graph — :21000.
+    # Atlas v2 entities live in aegir_hx alongside our provenance (one graph, no
+    # duplication). Gated on db-bootstrap so aegir_hx + its labels exist first.
+    # Requires a one-time build: `devenv tasks run atlas:build`.
+    atlas = {
+      exec = ''
+        set -e
+        ATLAS_DIR="$PWD/components/atlas"
+        ATLAS_WEBAPP="$ATLAS_DIR/webapp/target/atlas-webapp-3.0.0-SNAPSHOT"
+        ATLAS_CONF="$PWD/config/atlas"
+        ATLAS_HOME="$PWD/.devenv/atlas"
+        mkdir -p "$ATLAS_HOME/data" "$ATLAS_HOME/logs" "$ATLAS_HOME/conf"
+        cp -n "$ATLAS_CONF/users-credentials.properties" "$ATLAS_HOME/conf/" 2>/dev/null || true
+        cp -n "$ATLAS_CONF/atlas-simple-authz-policy.json" "$ATLAS_HOME/conf/" 2>/dev/null || true
+        if [ ! -d "$ATLAS_WEBAPP/WEB-INF" ]; then
+          echo "Atlas webapp not built. Run: devenv tasks run atlas:build"; exit 1
+        fi
+        echo "Starting Atlas on http://localhost:21000 (AGE backend -> aegir_hx)..."
+        exec java \
+          -Datlas.home="$ATLAS_HOME" -Datlas.conf="$ATLAS_CONF" \
+          -Datlas.log.dir="$ATLAS_HOME/logs" -Datlas.log.file=application \
+          -Datlas.data="$ATLAS_HOME/data" \
+          -Dlogback.configurationFile="$ATLAS_DIR/distro/src/conf/atlas-logback.xml" \
+          -Datlas.graphdb.backend=org.apache.atlas.repository.graphdb.age.AtlasAgeGraphDatabase \
+          -Djava.net.preferIPv4Stack=true \
+          --add-opens java.base/java.lang=ALL-UNNAMED \
+          --add-opens java.base/java.lang.reflect=ALL-UNNAMED \
+          --add-opens java.base/java.io=ALL-UNNAMED \
+          --add-opens java.base/java.net=ALL-UNNAMED \
+          --add-opens java.base/java.util=ALL-UNNAMED \
+          --add-opens java.base/java.util.concurrent=ALL-UNNAMED \
+          --add-opens java.base/sun.nio.ch=ALL-UNNAMED \
+          --add-opens java.base/sun.security.action=ALL-UNNAMED \
+          --add-opens java.security.jgss/sun.security.krb5=ALL-UNNAMED \
+          -server -Xmx1024m \
+          -cp "$ATLAS_CONF:$ATLAS_WEBAPP/WEB-INF/classes:$ATLAS_WEBAPP/WEB-INF/lib/*" \
+          org.apache.atlas.Atlas -app "$ATLAS_WEBAPP" -port 21000
+      '';
+      process-compose = {
+        depends_on = {
+          postgres.condition = "process_healthy";
+          db-bootstrap.condition = "process_completed_successfully";
+        };
+        readiness_probe = {
+          exec.command = "curl -sf http://127.0.0.1:21000/api/atlas/admin/status";
+          initial_delay_seconds = 15;
+          period_seconds = 10;
+          timeout_seconds = 5;
+          failure_threshold = 30;
+        };
+      };
+    };
+
     # Gateway (FastAPI). Applies migrations inline before launching
     # uvicorn so the gateway never sees an un-bootstrapped schema.
     # Folding bootstrap into the startup command (instead of a
@@ -226,6 +286,18 @@ in {
   # sync and reinstalls the patched wheels from build/wheels/ when
   # they exist. No-op on a fresh clone (the user runs ``just
   # build-flash-attn`` once to populate build/wheels/).
+  # Build the forked Apache Atlas webapp with the AGE graph provider (one-time, ~minutes).
+  tasks."atlas:build" = {
+    description = "Build the forked Apache Atlas webapp (AGE backend)";
+    exec = ''
+      cd "$DEVENV_ROOT/components/atlas"
+      mkdir -p webapp/target/api/v2/apidocs/ui
+      mvn package -pl webapp -am -Dmaven.test.skip=true -DskipUTs=true \
+        -DGRAPH-PROVIDER=age -Dcheckstyle.skip=true -DskipEnunciate=true \
+        --no-transfer-progress
+    '';
+  };
+
   tasks."aegir:cuda-ext-reinstall" = {
     description = "Reinstall ABI-patched CUDA extensions from build/wheels/";
     after = [ "devenv:python:uv" ];
