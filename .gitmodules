@@ -1,0 +1,4 @@
+[submodule "components/atlas"]
+	path = components/atlas
+	url = git@github.com:rch/asf-atlas.git
+	branch = rch/signals
