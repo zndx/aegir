@@ -53,12 +53,18 @@ class Gates:
     tau_x: float = 0.90         # cross-modal consistency (diagrams)
 
 
+# Hard admission gates = the re-grounding INVARIANT components only (structure =
+# r_axiom, no-drift = claim_grounding; fidelity = topic_recovery is chapter-level).
+# cross_modal (diagram↔table consistency) is a QUALITY signal, NOT an invariant
+# component, so it is reward-only (ranking) rather than a hard gate — per the
+# DOF-walk gate/rank split. (Refinement to amendment #3, motivated by the pilot:
+# diagram flakiness must not reject chapters that pass fidelity/structure/no-drift.)
 GATES_BY_KIND: dict[str, tuple[str, ...]] = {
     "table": ("r_axiom", "claim_grounding"),
     "prose": ("claim_grounding",),
     "example": ("claim_grounding",),
     "links": ("claim_grounding",),
-    "diagram": ("cross_modal",),
+    "diagram": (),
 }
 
 

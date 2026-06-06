@@ -103,11 +103,15 @@ def _prompt_prose(skill_id, refs, evidence, catalog, repair) -> str:
 
 def _prompt_s3(refs, evidence, catalog, repair) -> str:
     return (
-        "Draw an entity-relationship diagram (Mermaid) over these templates' classes, "
-        "with one edge per object-property relation.\n\nTemplates → typed slots:\n"
-        + _slot_block(refs, catalog) + "\n\nEvidence:\n" + _ev_block(evidence)
-        + '\n\nReturn ONLY a ```json fenced object:\n'
-        '{"mermaid":"graph TD; ...","edges":[["<src col>","<dst col>"]],"claims":[]}'
+        "Draw an entity-relationship diagram (Mermaid) over these templates' classes.\n"
+        "CRITICAL: every edge endpoint MUST be one of the templates' CLASS slot names "
+        "EXACTLY as listed below — these are the table's column names, and each edge must "
+        "match a real relation. Emit one edge per ObjectProperty slot, connecting the two "
+        "class slots it relates (domain class slot → range class slot).\n\n"
+        "Templates → typed slots:\n" + _slot_block(refs, catalog) + "\n\nEvidence:\n"
+        + _ev_block(evidence)
+        + '\n\nReturn ONLY a ```json fenced object (edges use the class slot names verbatim):\n'
+        '{"mermaid":"graph TD; ...","edges":[["<class slot>","<class slot>"]],"claims":[]}'
     )
 
 

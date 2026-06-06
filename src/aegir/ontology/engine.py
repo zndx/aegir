@@ -20,7 +20,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from aegir.ontology.schema import Catalog
-from aegir.ontology.skills.base import Gates, unit_gate_scores, unit_passes
+from aegir.ontology.skills.base import Gates, cross_modal, unit_gate_scores, unit_passes
 from aegir.ontology.skills.library import (
     cross_reference,
     default_generate_fn,
@@ -140,6 +140,10 @@ def run_episode(seed: Seed, catalog: Catalog,
             axis.setdefault(k, []).append(v)
     rewards = {k: sum(vs) / len(vs) for k, vs in axis.items()}
     rewards["topic_recovery"] = tr
+    # cross_modal is reward-only (not a hard gate) — diagram↔table consistency quality.
+    cm = [cross_modal(u, units) for u in units if u.kind == "diagram"]
+    if cm:
+        rewards["cross_modal"] = sum(cm) / len(cm)
 
     admitted = (tr >= gates.tau_topic) and per_unit_ok   # hard conjunction; F not consulted
     decisions.append(f"chapter topic_recovery={tr:.3f} (τ={gates.tau_topic}) → "

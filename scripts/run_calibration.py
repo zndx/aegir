@@ -31,36 +31,40 @@ import pyarrow as pa  # noqa: E402
 import pyarrow.parquet as pq  # noqa: E402
 
 from aegir.ontology.bindings import make_generate_fn, make_topic_recovery_fn, partition_clusters  # noqa: E402
-from aegir.ontology.bindings.topic_recovery import DEFAULT_CALIB, score_text  # noqa: E402
+from aegir.ontology.bindings.topic_recovery import (  # noqa: E402
+    DEFAULT_CALIB, _encoder, _load_centroids, score_text,
+)
 from aegir.ontology.engine import Seed, run_episode  # noqa: E402
 from aegir.ontology.schema import load_catalog  # noqa: E402
 from aegir.ontology.skills.base import Gates  # noqa: E402
 from aegir.ontology.skills.s2_relational_table import SourceSpan  # noqa: E402
 
 
-def candidate_templates(catalog):
-    """Structure-bearing templates (an object-property + ≥2 class slots) so S2 has
-    relational structure to instantiate; family-diverse sampling happens at draw time."""
-    op = [t for t in catalog.templates
-          if "ObjectProperty" in t.slot_types.values()
-          and sum(1 for v in t.slot_types.values() if v != "ObjectProperty") >= 2]
-    return op or [t for t in catalog.templates if len(t.slot_types) >= 2]
+def template_embeddings(catalog):
+    """mpnet-embed each template's verbalization (or Manchester axiom) once, in the
+    SAME space as the topic centroids — giving the topic→template relevance the
+    coverage audit provides, computed inline. Swappable to the precomputed coverage_v0
+    audit (or to ColBERT-MaxSim relevance when that lands)."""
+    texts = [(t.verbal_template or t.manchester_template or t.template_id)
+             for t in catalog.templates]
+    return np.asarray(_encoder().encode(texts, normalize_embeddings=True,
+                                        batch_size=64, show_progress_bar=False))
 
 
 def build_seeds(n, train_topics, calib_dir, refs_per, catalog, rng):
+    centroids, _topic_ids, id_to_row = _load_centroids(str(calib_dir))
     df = pq.read_table(Path(calib_dir) / "finepdfs_sample.parquet").to_pandas()
     distr = np.load(Path(calib_dir) / "topic_distr.npy")
-    topic_ids = [int(t) for t in json.loads((Path(calib_dir) / "topic_ids.json").read_text())]
-    id_to_col = {t: i for i, t in enumerate(topic_ids)}
-    cand = candidate_templates(catalog)
+    tmpl_embs = template_embeddings(catalog)          # (n_templates, 768)
+    tmpls = catalog.templates
     seeds = []
     for _ in range(n):
         T = int(rng.choice(train_topics))
-        col = id_to_col[T]
-        top = np.argsort(-distr[:, col])[:3]
+        row = id_to_row[T]
+        top = np.argsort(-distr[:, row])[:3]          # FinePDFs docs strongest in T → evidence
         evidence = [SourceSpan(f"finepdfs_{int(j)}", str(df.iloc[int(j)]["text"])[:1200]) for j in top]
-        refs = list(dict.fromkeys(cand[int(rng.integers(len(cand)))].template_id
-                                  for _ in range(refs_per + 1)))[:refs_per]
+        rel = tmpl_embs @ centroids[row]              # topic→template relevance (cosine)
+        refs = [tmpls[int(j)].template_id for j in np.argsort(-rel)[:refs_per]]
         seeds.append(Seed(f"cluster_T{T}", T, refs, evidence))
     return seeds
 
