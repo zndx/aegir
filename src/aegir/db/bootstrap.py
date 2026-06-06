@@ -161,6 +161,20 @@ def _split_statements(sql: str) -> list[str]:
                         continue
                     break
             continue
+        if ch == "$":
+            # dollar-quoted body ($$…$$ or $tag$…$tag$): semicolons inside are literal,
+            # so DO blocks and function bodies survive statement splitting.
+            j = i + 1
+            while j < n and (sql[j].isalnum() or sql[j] == "_"):
+                j += 1
+            if j < n and sql[j] == "$":
+                tag = sql[i:j + 1]
+                end = sql.find(tag, j + 1)
+                if end == -1:
+                    buf.append(sql[i:]); i = n
+                else:
+                    buf.append(sql[i:end + len(tag)]); i = end + len(tag)
+                continue
         if ch == ";":
             stmt = "".join(buf).strip()
             if stmt:
