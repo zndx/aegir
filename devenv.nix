@@ -203,6 +203,7 @@ in {
         ATLAS_CONF="$PWD/config/atlas"
         ATLAS_HOME="$PWD/.devenv/atlas"
         mkdir -p "$ATLAS_HOME/data" "$ATLAS_HOME/logs" "$ATLAS_HOME/conf"
+        ln -sfn "$ATLAS_DIR/addons/models" "$ATLAS_HOME/models"   # type-system bootstrap source
         cp -n "$ATLAS_CONF/users-credentials.properties" "$ATLAS_HOME/conf/" 2>/dev/null || true
         cp -n "$ATLAS_CONF/atlas-simple-authz-policy.json" "$ATLAS_HOME/conf/" 2>/dev/null || true
         if [ ! -d "$ATLAS_WEBAPP/WEB-INF" ]; then
