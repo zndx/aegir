@@ -155,6 +155,19 @@ in {
       };
     };
 
+    # Graph-substrate bootstrap (one-shot). After Postgres is healthy, applies
+    # migrations/ — CREATE EXTENSION age + create_graph(aegir_hx) + labels — so the
+    # provenance graph is ensured on every ``devenv up``, implicitly, for everyone.
+    # NOTHING depends on it (no process-compose sequencing race); it fails loud if
+    # AGE is absent from the build (no fallback). Idempotent via schema_migrations.
+    db-bootstrap = {
+      exec = "uv run --no-sync python -m aegir.db.bootstrap";
+      process-compose = {
+        depends_on.postgres.condition = "process_healthy";
+        availability.restart = "no";
+      };
+    };
+
     # Gateway (FastAPI). Applies migrations inline before launching
     # uvicorn so the gateway never sees an un-bootstrapped schema.
     # Folding bootstrap into the startup command (instead of a

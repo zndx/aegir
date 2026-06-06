@@ -4,8 +4,9 @@ Pattern is a light port of Atelier's ``src/atelier/db/bootstrap.py``:
 
 1. Ensure ``schema_migrations`` table exists (dbmate-compatible shape:
    single ``version VARCHAR`` column).
-2. For each ``db/migrations/*.sql`` file, extract the ``-- migrate:up``
+2. For each ``migrations/*.sql`` file, extract the ``-- migrate:up``
    block and apply it if the version hasn't already been recorded.
+   (Tracked at top-level ``migrations/`` — ``db/`` is devenv runtime state.)
 3. Skip keystone-data seeding — M1 has no agents/catalog to upsert;
    migration content is schema-only.
 
@@ -29,7 +30,7 @@ log = logging.getLogger(__name__)
 # ── Migration runner ────────────────────────────────────────────
 
 
-def run_migrations(db_url: str, migrations_dir: str | Path = "db/migrations") -> None:
+def run_migrations(db_url: str, migrations_dir: str | Path = "migrations") -> None:
     """Apply SQL migrations from the migrations directory.
 
     Reads ``-- migrate:up`` blocks from migration files and executes them in
@@ -47,6 +48,7 @@ def run_migrations(db_url: str, migrations_dir: str | Path = "db/migrations") ->
         return
 
     with engine.begin() as conn:
+        _assert_age_available(conn)
         conn.execute(text(
             "CREATE TABLE IF NOT EXISTS schema_migrations ("
             "  version VARCHAR(128) PRIMARY KEY"
@@ -75,6 +77,28 @@ def run_migrations(db_url: str, migrations_dir: str | Path = "db/migrations") ->
 
     engine.dispose()
     log.info("migrations complete")
+
+
+def _assert_age_available(conn) -> None:
+    """No-fallback gate: refuse to migrate if Apache AGE is absent from the build.
+
+    aegir's provenance graph is AGE-only — there is no relational fallback, so a
+    missing extension is a loud, actionable failure rather than silent degradation.
+    """
+    from sqlalchemy import text
+
+    have = {r[0] for r in conn.execute(text(
+        "SELECT name FROM pg_available_extensions WHERE name IN ('age', 'pg_cron')"))}
+    if "age" not in have:
+        raise RuntimeError(
+            "Apache AGE is not in the running Postgres build (age.control absent).\n"
+            "The graph-centric architecture has NO fallback — rebuild the devenv server:\n"
+            "    direnv reload && devenv processes down && devenv up -d\n"
+            "(watch postgresql-and-plugins recompile with age + pg_cron), then re-run\n"
+            "    uv run --no-sync python -m aegir.db.bootstrap"
+        )
+    if "pg_cron" not in have:
+        log.warning("pg_cron unavailable — async graph materialization disabled.")
 
 
 def _extract_up_block(content: str) -> str | None:
