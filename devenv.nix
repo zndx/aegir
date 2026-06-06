@@ -113,6 +113,10 @@ in {
       extensions.pg_cron
       extensions.pgvector
     ];
+    # age + pg_cron must be preloaded at server start (pg_cron requires it; age
+    # loads its shared lib so cypher() resolves). Matches the working sibling
+    # configs (signals "age,pg_cron", gaius "pg_cron,age"). pgvector needs no preload.
+    settings.shared_preload_libraries = "age,pg_cron";
     initialDatabases = [{ name = "aegir"; }];
   };
 
