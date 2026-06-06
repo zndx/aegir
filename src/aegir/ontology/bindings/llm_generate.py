@@ -155,10 +155,12 @@ def make_generate_fn(catalog: Catalog,
                      max_tokens: int = 4096, temperature: float = 0.7, seed: int = 0):
     """Return a ``generate_fn(skill_id, refs, evidence, repair=False)`` bound to the mix."""
     import dspy
+    import threading
 
     models, weights = parse_mix(mix)
     cache: dict[str, "dspy.LM"] = {}
     rng = np.random.default_rng(seed)
+    _lock = threading.Lock()    # guards rng draw + client cache under concurrent episodes
 
     def get_lm(model: str):
         if model not in cache:
@@ -171,8 +173,10 @@ def make_generate_fn(catalog: Catalog,
         return cache[model]
 
     def _call(prompt: str) -> str:
-        model = models[int(rng.choice(len(models), p=weights))]
-        r = get_lm(model)(messages=[{"role": "user", "content": prompt}])
+        with _lock:                       # fast: model pick + client cache
+            model = models[int(rng.choice(len(models), p=weights))]
+            lm = get_lm(model)
+        r = lm(messages=[{"role": "user", "content": prompt}])   # slow API call runs concurrently
         if isinstance(r, list) and r:
             item = r[0]
             return (item.get("text") or "") if isinstance(item, dict) else str(item)

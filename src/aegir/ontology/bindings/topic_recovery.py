@@ -13,9 +13,12 @@ from __future__ import annotations
 
 import functools
 import json
+import threading
 from pathlib import Path
 
 import numpy as np
+
+_ENCODE_LOCK = threading.Lock()   # serialize the shared encoder under concurrent episodes
 
 REPO = Path(__file__).resolve().parents[4]
 DEFAULT_CALIB = REPO / "build/experiments/topic_recovery_v0/calibration"
@@ -41,7 +44,8 @@ def score_text(text: str, target_topic_id: int, calib_dir: str | Path = DEFAULT_
     """Cosine of the text's embedding to every frozen topic centroid; report the
     target topic's cosine and rank (0 = nearest)."""
     centroids, _topic_ids, id_to_row = _load_centroids(str(calib_dir))
-    emb = _encoder().encode([text[:8000]], normalize_embeddings=True)[0]   # (768,)
+    with _ENCODE_LOCK:
+        emb = _encoder().encode([text[:8000]], normalize_embeddings=True)[0]   # (768,)
     sims = centroids @ emb                                                  # cosine (centroids normalized)
     order = np.argsort(-sims)
     row = id_to_row.get(int(target_topic_id))
