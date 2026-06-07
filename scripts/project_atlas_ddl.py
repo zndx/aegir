@@ -1,0 +1,439 @@
+#!/usr/bin/env python3
+"""Atlas DDL-native projector (supersedes project_atlas_relational.py).
+
+Projects the ontology's relational footprint into Apache Atlas v2 as the honest
+**rdbms_*** model (no Hive), driven by the SQL DDL spine (``aegir.ontology.ddl``):
+
+  - footprint = ``rdbms_db`` of ``rdbms_table`` (type=TABLE) from the DDL spine;
+    columns are ``rdbms_column`` with data_type / isPrimaryKey / isNullable read
+    from the deterministic lowering (and the DDL text is validated by polyglot —
+    the projection is gated on real SQL validity).
+  - cross-family joins = ``rdbms_foreign_key`` entities (the family-complex-
+    sanctioned join structure the corpus views exploit).
+  - corpus = ``rdbms_table`` (type=VIEW) over the footprint; per-view SQL is run
+    through ``polyglot_sql.openlineage_run_event`` and ingested via
+    ``aegir.governance.ol`` → **column-level** lineage (view.col ← base.col) in aegir_hx.
+  - classifications (CTA per column OWL type, domain per family, CPA complex),
+    business metadata (OntologyProvenance), glossary (per-family categories,
+    per-template terms) — as before, retyped to rdbms_*.
+
+Degrades gracefully if polyglot isn't built yet (skips validation + column lineage;
+entities/classifications/BM/glossary still project). Idempotent (upsert by qn).
+
+Run:  uv run --no-sync python scripts/project_atlas_ddl.py [--per-family 8] [--reset]
+"""
+from __future__ import annotations
+
+import argparse
+import itertools
+import sys
+from pathlib import Path
+
+import requests
+
+REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO / "src"))
+from aegir.governance import ol  # noqa: E402
+from aegir.ontology import ddl as D  # noqa: E402
+from aegir.ontology.complex import FamilyComplex  # noqa: E402
+from aegir.ontology.schema import load_catalog  # noqa: E402
+
+ATLAS = "http://127.0.0.1:21000"
+CLUSTER = "aegir"
+CATALOG_DIR = REPO / "src/aegir/ontology/catalog"
+FC_PATH = REPO / "src/aegir/ontology/family_complex.json"
+FAMILIES = ["01_foundation", "02_observation_measurement", "03_directive_governance",
+            "04_ebpf_kernel", "05_provo_lineage", "06_belief_structure", "07_long_tail"]
+
+S = requests.Session()
+S.auth = ("admin", "admin")
+S.headers["Content-Type"] = "application/json"
+
+
+def api(method: str, path: str, timeout: int = 120, **kw):
+    return S.request(method, f"{ATLAS}/api/atlas/v2/{path}", timeout=timeout, **kw)
+
+
+def _post_chunk(ents):
+    r = api("POST", "entity/bulk", json={"entities": ents}, timeout=600)
+    if not r.ok:
+        print("   chunk FAILED:", r.status_code, r.text[:300])
+        return {}
+    return r.json().get("guidAssignments", {})
+
+
+def fam_label(f: str) -> str:
+    return f.split("_", 1)[1]
+
+
+# ── type system ──────────────────────────────────────────────────────────────
+OWL_TYPES = ["Class", "ObjectProperty", "DataProperty", "Individual", "Datatype", "AnnotationProperty"]
+
+
+def _attr(name, tn="string", **opts):
+    a = {"name": name, "typeName": tn, "isOptional": True, "cardinality": "SINGLE",
+         "valuesMinCount": 0, "valuesMaxCount": 1, "isUnique": False, "isIndexable": True}
+    a.update(opts)
+    return a
+
+
+def ensure_types():
+    existing = {h["name"] for h in api("GET", "types/typedefs/headers").json()}
+    # A prior hive run may have created OntologyProvenance with applicableEntityTypes=hive_*,
+    # which 404s on rdbms_table. Force-refresh it so it targets rdbms_table/rdbms_column.
+    if "OntologyProvenance" in existing:
+        d = api("GET", "types/businessmetadatadef/name/OntologyProvenance")
+        if not (d.ok and "rdbms_table" in d.text):  # stale hive-only def → refresh for rdbms_*
+            api("DELETE", "types/typedef/name/OntologyProvenance")
+            existing.discard("OntologyProvenance")
+    class_defs, bm_defs = [], []
+
+    def cdef(name, desc):
+        return {"name": name, "description": desc, "superTypes": [],
+                "attributeDefs": [_attr("confidence"), _attr("evidence")]}
+
+    for o in OWL_TYPES:
+        if (n := f"cta_{o.lower()}") not in existing:
+            class_defs.append(cdef(n, f"CTA: column whose ontology slot type is OWL {o}"))
+    for f in FAMILIES:
+        if (n := f"domain_{fam_label(f)}") not in existing:
+            class_defs.append(cdef(n, f"Domain: table realized from ontology family {f}"))
+    for n, d in [("cpa_complex_axiom", "CPA: column from a complex (DeepOnto) axiom template"),
+                 ("cpa_bfo_process", "CPA: table anchored under bfo:Process")]:
+        if n not in existing:
+            class_defs.append(cdef(n, d))
+
+    if "OntologyProvenance" not in existing:
+        def bm_attr(name, tn="string"):
+            return _attr(name, tn, options={
+                "applicableEntityTypes": "[\"rdbms_table\",\"rdbms_column\"]",
+                "maxStrLength": "2000"})
+        bm_defs.append({"name": "OntologyProvenance",
+                        "description": "Provenance from the grounding ontology",
+                        "attributeDefs": [bm_attr("template_id"), bm_attr("family"),
+                                          bm_attr("bfo_anchor"), bm_attr("manchester"),
+                                          bm_attr("is_complex", "boolean")]})
+
+    if class_defs or bm_defs:
+        r = api("POST", "types/typedefs", json={
+            "classificationDefs": class_defs, "businessMetadataDefs": bm_defs,
+            "enumDefs": [], "structDefs": [], "entityDefs": [], "relationshipDefs": []})
+        print(f"  types: +{len(class_defs)} classifications, +{len(bm_defs)} businessMetadata -> {r.status_code}")
+        if not r.ok:
+            print("   ", r.text[:400])
+    else:
+        print("  types: already present")
+
+
+# ── spine (DDL) ──────────────────────────────────────────────────────────────
+def build_spine(per_family):
+    spine = []
+    for f in FAMILIES:
+        cat = load_catalog(CATALOG_DIR / f"{f}.json")
+        for t in cat.templates[:per_family]:
+            spine.append(D.template_to_table(t, f))
+    fks, _ = D.cross_family_fks(spine, FamilyComplex.from_json(FC_PATH))
+    n_valid = 0
+    try:
+        for st in spine:
+            st_fks = [e for e in fks if e.src_table == st.table.name]
+            if all(d.valid for d in D.validate_ddl(D.render_ddl(st, st_fks))):
+                n_valid += 1
+        print(f"  spine: {len(spine)} tables, {len(fks)} cross-family FKs, "
+              f"validated {n_valid}/{len(spine)} (trino∩spark)")
+    except RuntimeError as e:
+        print(f"  spine: {len(spine)} tables, {len(fks)} cross-family FKs "
+              f"(validation skipped — {str(e)[:60]})")
+    return spine, fks
+
+
+# ── entities ─────────────────────────────────────────────────────────────────
+def build_and_create(per_family):
+    spine, fks = build_spine(per_family)
+    by_tname = {st.table.name: st for st in spine}
+    gid = itertools.count(1)
+    neg = lambda: f"-{next(gid)}"  # noqa: E731
+
+    inst = _post_chunk([{"typeName": "rdbms_instance", "guid": "-1", "attributes": {
+        "qualifiedName": f"aegir@{CLUSTER}", "name": "aegir", "rdbms_type": "iceberg",
+        "platform": "aegir / polyglot-verified DDL"}}]).get("-1")
+    gdb = _post_chunk([
+        {"typeName": "rdbms_db", "guid": "-1", "attributes": {
+            "qualifiedName": f"footprint@{CLUSTER}", "name": "footprint",
+            "comment": "Ontology relational footprint — base tables (the warehouse the corpus views project from)"},
+            "relationshipAttributes": {"instance": {"guid": inst}}},
+        {"typeName": "rdbms_db", "guid": "-2", "attributes": {
+            "qualifiedName": f"corpus@{CLUSTER}", "name": "corpus",
+            "comment": "Textbook-corpus tables modeled as VIEWS over the footprint"},
+            "relationshipAttributes": {"instance": {"guid": inst}}},
+    ])
+    db_fp, db_co = gdb.get("-1"), gdb.get("-2")
+    print(f"  instance={inst is not None} dbs: footprint={db_fp is not None} corpus={db_co is not None}")
+
+    entities = []
+    base = {}  # template_id -> {tref, cols{colname:cref}, st}
+    for st in spine:
+        tref = neg()
+        qn = f"footprint.{st.table.name}@{CLUSTER}"
+        entities.append({"typeName": "rdbms_table", "guid": tref, "attributes": {
+            "qualifiedName": qn, "name": st.table.name, "type": "TABLE", "contact_info": "aegir",
+            "comment": D.build_table_comment(st.template, st.family)[:1000]},
+            "relationshipAttributes": {"db": {"guid": db_fp}}})
+        cols = {}
+        for cd in D.column_dicts(st):
+            cref = neg()
+            entities.append({"typeName": "rdbms_column", "guid": cref, "attributes": {
+                "qualifiedName": f"footprint.{st.table.name}.{cd['name']}@{CLUSTER}",
+                "name": cd["name"], "data_type": cd["sql_type"],
+                "isPrimaryKey": cd["pk"], "isNullable": cd["nullable"]},
+                "relationshipAttributes": {"table": {"guid": tref}}})
+            cols[cd["name"]] = cref
+        base[st.template.template_id] = {"tref": tref, "cols": cols, "st": st}
+
+    # synthesized corpus views (projection + family-simplex join), with view SQL for lineage
+    views = []
+    by_fam = {}
+    for st in spine:
+        by_fam.setdefault(st.family, []).append(st)
+    for sts in by_fam.values():
+        for st in sts[:3]:
+            b = base[st.template.template_id]
+            vref = neg()
+            vqn = f"corpus.view_{st.table.name}@{CLUSTER}"
+            proj = list(b["cols"])[:max(1, len(b["cols"]) - 1)]
+            entities.append({"typeName": "rdbms_table", "guid": vref, "attributes": {
+                "qualifiedName": vqn, "name": f"view_{st.table.name}", "type": "VIEW", "contact_info": "aegir",
+                "comment": f"corpus view: projection over footprint.{st.table.name}"},
+                "relationshipAttributes": {"db": {"guid": db_co}}})
+            for c in proj:
+                entities.append({"typeName": "rdbms_column", "guid": neg(), "attributes": {
+                    "qualifiedName": f"{vqn}.{c}", "name": c, "data_type": "VARCHAR(255)"},
+                    "relationshipAttributes": {"table": {"guid": vref}}})
+            sql = f"SELECT {', '.join(proj)} FROM footprint.{st.table.name}"
+            views.append({"vref": vref, "name": f"view_{st.table.name}", "sql": sql})
+        for sa, sc in list(zip(sts, sts[1:]))[:2]:
+            a, c = sa.table.name, sc.table.name
+            vref = neg()
+            vqn = f"corpus.join_{a}__{c}@{CLUSTER}"
+            ca = list(base[sa.template.template_id]["cols"])[:2]
+            cc = list(base[sc.template.template_id]["cols"])[:2]
+            entities.append({"typeName": "rdbms_table", "guid": vref, "attributes": {
+                "qualifiedName": vqn, "name": f"join_{a}__{c}", "type": "VIEW", "contact_info": "aegir",
+                "comment": f"corpus view: join footprint.{a} ⋈ footprint.{c} (family-simplex)"},
+                "relationshipAttributes": {"db": {"guid": db_co}}})
+            sel = [f"a.{x} AS a_{x}" for x in ca] + [f"c.{x} AS c_{x}" for x in cc]
+            for x in ca:
+                entities.append({"typeName": "rdbms_column", "guid": neg(), "attributes": {
+                    "qualifiedName": f"{vqn}.a_{x}", "name": f"a_{x}", "data_type": "VARCHAR(255)"},
+                    "relationshipAttributes": {"table": {"guid": vref}}})
+            for x in cc:
+                entities.append({"typeName": "rdbms_column", "guid": neg(), "attributes": {
+                    "qualifiedName": f"{vqn}.c_{x}", "name": f"c_{x}", "data_type": "VARCHAR(255)"},
+                    "relationshipAttributes": {"table": {"guid": vref}}})
+            sql = (f"SELECT {', '.join(sel)} "
+                   f"FROM footprint.{a} a JOIN footprint.{c} c ON a.id = c.id")
+            views.append({"vref": vref, "name": f"join_{a}__{c}", "sql": sql})
+
+    print(f"  creating {len(entities)} entities (rdbms tables/columns/views) in chunks ...")
+    ga = {}
+    chunk = []
+    for e in entities:
+        if e["typeName"] == "rdbms_table" and len(chunk) >= 25:
+            ga.update(_post_chunk(chunk))
+            chunk = []
+        chunk.append(e)
+    if chunk:
+        ga.update(_post_chunk(chunk))
+    print(f"   -> {len(ga)} guids assigned across chunks")
+
+    # ── rdbms_foreign_key entities (2nd pass: real guids) ──
+    fk_ents = []
+    for e in fks:
+        sb = by_tname.get(e.src_table)
+        db_ = by_tname.get(e.dst_table)
+        if not sb or not db_:
+            continue
+        bs, bd = base[sb.template.template_id], base[db_.template.template_id]
+        src_tg, dst_tg = ga.get(bs["tref"]), ga.get(bd["tref"])
+        src_cg, dst_cg = ga.get(bs["cols"].get(e.src_col)), ga.get(bd["cols"].get(e.dst_col))
+        if not all([src_tg, dst_tg, src_cg, dst_cg]):
+            continue
+        fk_ents.append({"typeName": "rdbms_foreign_key", "guid": neg(), "attributes": {
+            "qualifiedName": f"footprint.{e.src_table}.{e.src_col}__fk__{e.dst_table}@{CLUSTER}",
+            "name": f"{e.src_table}.{e.src_col} -> {e.dst_table}.id"},
+            "relationshipAttributes": {
+                "table": {"guid": src_tg}, "key_columns": [{"guid": src_cg}],
+                "references_table": {"guid": dst_tg}, "references_columns": [{"guid": dst_cg}]}})
+    if fk_ents:
+        r = api("POST", "entity/bulk", json={"entities": fk_ents}, timeout=600)
+        print(f"  foreign keys: {len(fk_ents)} rdbms_foreign_key -> {r.status_code}"
+              + ("" if r.ok else f"  {r.text[:200]}"))
+
+    # ── column-level lineage via polyglot OpenLineage → ol.ingest_run_event ──
+    n_lin = 0
+    try:
+        import datetime as _dt
+        import uuid as _uuid
+
+        import polyglot_sql as pg
+        evt_time = _dt.datetime.now(_dt.timezone.utc).isoformat()
+        for v in views:
+            try:
+                evt = pg.openlineage_run_event(v["sql"], {
+                    "producer": ol.PRODUCER, "datasetNamespace": "footprint",
+                    "outputDataset": {"namespace": "corpus", "name": v["name"]},
+                    "jobNamespace": "aegir", "jobName": "ddl_project",
+                    "eventType": "COMPLETE", "eventTime": evt_time,
+                    "runId": str(_uuid.uuid5(_uuid.NAMESPACE_URL, f"ddl-project:{v['name']}"))})
+                payload = evt["event"] if isinstance(evt, dict) and "event" in evt else evt
+                n_lin += ol.ingest_run_event(payload).get("columns", 0)
+            except Exception as ex:
+                print(f"   lineage[{v['name']}] skipped: {str(ex)[:90]}")
+        print(f"  column lineage: {n_lin} DERIVES_FROM edges from {len(views)} views")
+    except ImportError:
+        print("  column lineage: skipped (polyglot_sql not built)")
+
+    return base, {tid: ga.get(b["tref"]) for tid, b in base.items()}, \
+        {tid: {c: ga.get(g) for c, g in b["cols"].items()} for tid, b in base.items()}
+
+
+# ── glossary ─────────────────────────────────────────────────────────────────
+def ensure_glossary(base):
+    gr = api("GET", "glossary")
+    glos = gr.json() if gr.ok and gr.text.strip() else []
+    g = next((x for x in glos if x.get("name") == "Aegir Ontology"), None)
+    if g is None:
+        g = api("POST", "glossary", json={"name": "Aegir Ontology",
+                "shortDescription": "BFO/CCO-grounded ontology terms backing the relational footprint"}).json()
+    gguid = g["guid"]
+    dr = api("GET", f"glossary/{gguid}/detailed")
+    detail = dr.json() if dr.ok and dr.text.strip() else {}
+    cat_guid = {c["displayText"]: c["categoryGuid"] for c in detail.get("categories", [])}
+    term_guid = {t["displayText"]: t["termGuid"] for t in detail.get("terms", [])}
+
+    for f in FAMILIES:
+        cname = fam_label(f)
+        if cname not in cat_guid:
+            r = api("POST", "glossary/category", json={"name": cname, "anchor": {"glossaryGuid": gguid}})
+            if r.ok:
+                cat_guid[cname] = r.json().get("guid")
+    made = 0
+    for tid, b in base.items():
+        if tid in term_guid:
+            continue
+        cname = fam_label(b["st"].family)
+        r = api("POST", "glossary/term", json={
+            "name": tid, "anchor": {"glossaryGuid": gguid},
+            "shortDescription": b["st"].template.manchester_template[:240],
+            "categories": [{"categoryGuid": cat_guid[cname]}] if cname in cat_guid else []})
+        if r.ok:
+            term_guid[tid] = r.json()["guid"]
+            made += 1
+    print(f"  glossary: {len(cat_guid)} categories, +{made} terms ({len(term_guid)} total)")
+    return term_guid
+
+
+def assign_terms(term_guid, base_tbl_guid):
+    n = 0
+    for tid, tguid in term_guid.items():
+        eg = base_tbl_guid.get(tid)
+        if eg:
+            r = api("POST", f"glossary/terms/{tguid}/assignedEntities",
+                    json=[{"guid": eg, "typeName": "rdbms_table"}])
+            n += 1 if r.ok else 0
+    print(f"  glossary: assigned {n} terms to tables")
+
+
+# ── classifications + business metadata ──────────────────────────────────────
+def classify(base, base_tbl_guid, base_col_guid):
+    by_type: dict[str, list[str]] = {}
+    for tid, b in base.items():
+        st = b["st"]
+        bfo = st.template.bfo_anchor_path[-1] if st.template.bfo_anchor_path else ""
+        if (tg := base_tbl_guid.get(tid)):
+            by_type.setdefault(f"domain_{fam_label(st.family)}", []).append(tg)
+            if bfo == "bfo:Process":
+                by_type.setdefault("cpa_bfo_process", []).append(tg)
+        for slot, owl in st.template.slot_types.items():
+            if owl == "ObjectProperty":
+                continue
+            cg = base_col_guid.get(tid, {}).get(D.col_name(slot))
+            if not cg:
+                continue
+            by_type.setdefault(f"cta_{owl.lower()}", []).append(cg)
+            if st.template.is_complex:
+                by_type.setdefault("cpa_complex_axiom", []).append(cg)
+
+    applied = 0
+    for tname, guids in by_type.items():
+        guids = list(dict.fromkeys(guids))
+        for i in range(0, len(guids), 50):
+            batch = guids[i:i + 50]
+            r = api("POST", "entity/bulk/classification", timeout=600, json={
+                "classification": {"typeName": tname, "attributes": {
+                    "confidence": "0.95", "evidence": "ontology slot/anchor (DDL spine)"}},
+                "entityGuids": batch})
+            if r.status_code in (200, 204) or "ATLAS-409" in r.text or "already associated" in r.text:
+                applied += len(batch)
+            else:
+                print(f"   classify {tname}: {r.status_code} {r.text[:160]}")
+    print(f"  classifications: {applied} applications across {len(by_type)} types")
+
+    bm_set = 0
+    for tid, b in base.items():
+        tg = base_tbl_guid.get(tid)
+        if not tg:
+            continue
+        st = b["st"]
+        bfo = st.template.bfo_anchor_path[-1] if st.template.bfo_anchor_path else ""
+        r = api("POST", f"entity/guid/{tg}/businessmetadata?isOverwrite=true", timeout=600, json={
+            "OntologyProvenance": {"template_id": tid, "family": st.family, "bfo_anchor": bfo,
+                                   "manchester": st.template.manchester_template[:1900],
+                                   "is_complex": st.template.is_complex}})
+        bm_set += 1 if r.ok else 0
+    print(f"  business metadata: set on {bm_set} tables")
+
+
+def reset():
+    for tn, q in [("rdbms_column", "footprint."), ("rdbms_column", "corpus."),
+                  ("rdbms_foreign_key", "footprint."),
+                  ("rdbms_table", "footprint."), ("rdbms_table", "corpus."),
+                  ("hive_column", "footprint."), ("hive_column", "corpus."),
+                  ("hive_table", "footprint."), ("hive_table", "corpus."), ("Process", "corpus.")]:
+        body = {"typeName": tn, "excludeDeletedEntities": True, "limit": 1000,
+                "entityFilters": {"attributeName": "qualifiedName", "operator": "startsWith",
+                                  "attributeValue": q}}
+        res = api("POST", "search/basic", json=body)
+        guids = [e["guid"] for e in res.json().get("entities", [])] if res.ok else []
+        for i in range(0, len(guids), 50):
+            api("DELETE", "entity/bulk", params=[("guid", g) for g in guids[i:i + 50]])
+        if guids:
+            print(f"  reset {tn} {q}*: {len(guids)} deleted")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--per-family", type=int, default=8)
+    ap.add_argument("--reset", action="store_true")
+    args = ap.parse_args()
+
+    if args.reset:
+        print("RESET projection:")
+        reset()
+        return
+
+    print(f"Atlas DDL-native projector — families={len(FAMILIES)} per_family={args.per_family}")
+    print("1) types"); ensure_types()
+    print("2) entities (rdbms) + foreign keys + column lineage")
+    base, base_tbl_guid, base_col_guid = build_and_create(args.per_family)
+    print("3) glossary")
+    try:
+        assign_terms(ensure_glossary(base), base_tbl_guid)
+    except Exception as e:
+        print(f"   glossary step failed (non-fatal): {e}")
+    print("4) classifications + business metadata"); classify(base, base_tbl_guid, base_col_guid)
+    print("done.")
+
+
+if __name__ == "__main__":
+    main()

@@ -29,6 +29,43 @@ def _ds_props(ds: dict) -> dict:
     return p
 
 
+def _ingest_column_lineage(conn, ds: dict, out_qn: str) -> int:
+    """Project an OpenLineage ``columnLineage`` facet into column-level graph edges.
+
+    Creates ``(Column)`` nodes keyed ``dataset:#col``, ``(Dataset)-[:HAS_COLUMN]->(Column)``
+    membership, and ``(Column)-[:DERIVES_FROM]->(Column)`` derivation edges (output→input),
+    so view-column ← base-column lineage rides the same aegir_hx graph as the entities.
+    Tolerant of the facet's ``fields`` being a map (output_col → spec) or a list; no-op when
+    the facet is absent. Returns the number of derivation edges written.
+    """
+    facet = (ds.get("facets") or {}).get("columnLineage") or {}
+    fields = facet.get("fields") or {}
+    items = (fields.items() if isinstance(fields, dict)
+             else [(f.get("name") or f.get("field"), f) for f in fields])
+    out_ns = ds.get("namespace", "aegir")
+    n = 0
+    for out_col, spec in items:
+        if not out_col or not isinstance(spec, dict):
+            continue
+        out_col_qn = f"{out_qn}#{out_col}"
+        G.merge_node(conn, "Column", {"qualifiedName": out_col_qn},
+                     {"dataset": out_qn, "column": out_col})
+        G.merge_edge(conn, "Dataset", {"qualifiedName": out_qn}, "HAS_COLUMN",
+                     "Column", {"qualifiedName": out_col_qn})
+        for inf in (spec.get("inputFields") or []):
+            in_qn = f"{inf.get('namespace', out_ns)}:{inf.get('name', '')}"
+            in_col = inf.get("field") or inf.get("inputField") or inf.get("column") or ""
+            in_col_qn = f"{in_qn}#{in_col}"
+            G.merge_node(conn, "Column", {"qualifiedName": in_col_qn},
+                         {"dataset": in_qn, "column": in_col})
+            G.merge_edge(conn, "Dataset", {"qualifiedName": in_qn}, "HAS_COLUMN",
+                         "Column", {"qualifiedName": in_col_qn})
+            G.merge_edge(conn, "Column", {"qualifiedName": out_col_qn}, "DERIVES_FROM",
+                         "Column", {"qualifiedName": in_col_qn})
+            n += 1
+    return n
+
+
 def ingest_run_event(event: dict) -> dict:
     """Project an OpenLineage RunEvent into aegir_hx. Idempotent (MERGE)."""
     run = event.get("run") or {}
@@ -47,7 +84,7 @@ def ingest_run_event(event: dict) -> dict:
         G.merge_node(conn, "Job", {"namespace": job_ns, "name": job_name})
         G.merge_edge(conn, "Job", {"namespace": job_ns, "name": job_name}, "EXECUTES",
                      "Run", {"run_id": run_id})
-        n_in = n_out = 0
+        n_in = n_out = n_cols = 0
         for ds in event.get("inputs") or []:
             qn = _ds_qn(ds)
             G.merge_node(conn, "Dataset", {"qualifiedName": qn}, _ds_props(ds))
@@ -58,7 +95,8 @@ def ingest_run_event(event: dict) -> dict:
             G.merge_node(conn, "Dataset", {"qualifiedName": qn}, _ds_props(ds))
             G.merge_edge(conn, "Run", {"run_id": run_id}, "OUTPUTS", "Dataset", {"qualifiedName": qn})
             n_out += 1
-    return {"run_id": run_id, "eventType": state, "inputs": n_in, "outputs": n_out}
+            n_cols += _ingest_column_lineage(conn, ds, qn)
+    return {"run_id": run_id, "eventType": state, "inputs": n_in, "outputs": n_out, "columns": n_cols}
 
 
 def run_lineage(run_id: str) -> dict:
