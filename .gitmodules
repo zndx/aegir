@@ -2,3 +2,7 @@
 	path = components/atlas
 	url = git@github.com:rch/asf-atlas.git
 	branch = rch/signals
+[submodule "components/polyglot"]
+	path = components/polyglot
+	url = git@github.com:zndx/oss-polyglot.git
+	branch = rch/devenv

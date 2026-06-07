@@ -44,6 +44,7 @@ in {
     protobuf
     presenterm
     flatbuffers
+    maturin        # build polyglot-sql (Rust/PyO3) Python extension
     sops           # air-gap secret decryption (bin/bootstrap-secrets.sh)
     # zarf         # uncomment when pkgs.zarf is upstreamed; for now
     #              # follow cybersec's convention: fetch via curl in CI or vendor
@@ -302,6 +303,17 @@ in {
       mvn package -pl webapp -am -Dmaven.test.skip=true -DskipUTs=true \
         -DGRAPH-PROVIDER=age -Dcheckstyle.skip=true -DskipEnunciate=true \
         --no-transfer-progress
+    '';
+  };
+
+  # Build the polyglot-sql Python extension (Rust/PyO3 via maturin) into the venv.
+  # Like the patched CUDA wheels, this is task-built (NOT a uv source) so ``uv sync``
+  # never rebuilds the Rust crate. One-time / on submodule bump (~minutes).
+  tasks."polyglot:build" = {
+    description = "Build polyglot-sql (maturin develop --release) into the devenv venv";
+    exec = ''
+      cd "$DEVENV_ROOT/components/polyglot/crates/polyglot-sql-python"
+      maturin develop --release
     '';
   };
 
