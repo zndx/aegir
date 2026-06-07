@@ -6,3 +6,7 @@
 	path = components/polyglot
 	url = git@github.com:zndx/oss-polyglot.git
 	branch = rch/devenv
+[submodule "corpora"]
+	path = corpora
+	url = git@github.com:zndx/sdg-corpora.git
+	branch = trunk
