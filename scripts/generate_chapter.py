@@ -85,6 +85,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--budget-usd", type=float, default=None,
                    help="Hard stop once cumulative generation cost reaches this (USD). "
                         "Cost from litellm usage × RATES_USD_PER_M.")
+    p.add_argument("--flush-every", type=int, default=100,
+                   help="Checkpoint chapters.parquet every N chapters (long-run durability).")
     p.add_argument("--templates-per-chapter", type=int, default=4,
                    help="How many ontology templates to ground a chapter on")
     p.add_argument("--style-anchors", type=int, default=3,
@@ -739,7 +741,7 @@ def usage_and_cost(lm, model: str) -> tuple[int, int, int, float]:
     try:
         h = lm.history[-1]
         u = h.get("usage") or {}
-        get = u.get if isinstance(u, dict) else (lambda k, d=0: getattr(u, k, d))
+        get = u.get if isinstance(u, dict) else (lambda k, d=None: getattr(u, k, d))
         pt = int(get("prompt_tokens", 0) or 0)
         ct = int(get("completion_tokens", 0) or 0)
         det = get("completion_tokens_details", None)  # a wrapper object OR dict OR None
@@ -888,6 +890,25 @@ def main() -> int:
     cum_cost = 0.0
     mix_seed_rng = np.random.default_rng(args.seed)
 
+    # Run id (encodes sampler+restriction) computed up front so the parquet can be
+    # checkpointed periodically — a transient failure or budget stop never loses a long run.
+    run_id_inputs = (
+        f"topic-first:{args.restrict_families or 'all'}:{args.n_chapters}:"
+        f"{args.seed}:{args.mix}:{args.ablation}:"
+        f"tau_anchor={args.tau_anchor}:tau_template={args.tau_template}:"
+        f"fam_div={args.prefer_family_diverse}"
+    )
+    run_id = hashlib.sha256(run_id_inputs.encode()).hexdigest()[:16]
+    out_run_dir = output_dir / run_id
+    out_run_dir.mkdir(parents=True, exist_ok=True)
+
+    def flush_chapters():
+        if chapter_rows:
+            pq.write_table(
+                pa.Table.from_pylist(chapter_rows, schema=chapter_schema),
+                out_run_dir / "chapters.parquet", compression="zstd",
+            )
+
     for i in range(args.n_chapters):
         seed_offset = i
         rng_local = np.random.default_rng(args.seed + seed_offset)
@@ -967,7 +988,12 @@ def main() -> int:
         # Generate via the appropriate model
         lm = get_lm(model)
         t0 = time.time()
-        result = lm(messages=[{"role": "user", "content": prompt}])
+        try:
+            result = lm(messages=[{"role": "user", "content": prompt}])
+        except Exception as exc:  # noqa: BLE001 — a transient API error must not abort a long run
+            logger.warning(f"chapter {i+1}/{args.n_chapters}: generation failed "
+                           f"({type(exc).__name__}: {str(exc)[:120]}); skipping")
+            continue
         latency_ms = int((time.time() - t0) * 1000)
 
         if isinstance(result, list):
@@ -1013,7 +1039,10 @@ def main() -> int:
                 "sampler": "topic-first",
             },
         )
-        append_exchange(record)
+        try:
+            append_exchange(record)
+        except Exception as exc:  # noqa: BLE001 — HX capture is best-effort; never lose the chapter
+            logger.warning(f"  HX capture failed ({type(exc).__name__}); continuing")
         hx_exchange_id = record.id
 
         # Stage chapter row
@@ -1043,27 +1072,17 @@ def main() -> int:
             "audit_run_id": audit_run.name,
         })
 
+        if len(chapter_rows) % args.flush_every == 0:
+            flush_chapters()
+            logger.info(f"  [checkpoint] flushed {len(chapter_rows)} chapters to parquet")
+
         if args.budget_usd and cum_cost >= args.budget_usd:
             logger.info(f"budget reached: ${cum_cost:.2f} >= ${args.budget_usd:.2f} "
                         f"after {len(chapter_rows)} chapters — stopping run.")
             break
 
-    # Write chapters parquet. Run_id encodes the sampler+restriction so
-    # topic-first runs don't collide with legacy family-first artifacts.
-    run_id_inputs = (
-        f"topic-first:{args.restrict_families or 'all'}:{args.n_chapters}:"
-        f"{args.seed}:{args.mix}:{args.ablation}:"
-        f"tau_anchor={args.tau_anchor}:tau_template={args.tau_template}:"
-        f"fam_div={args.prefer_family_diverse}"
-    )
-    run_id = hashlib.sha256(run_id_inputs.encode()).hexdigest()[:16]
-    out_run_dir = output_dir / run_id
-    out_run_dir.mkdir(parents=True, exist_ok=True)
-    pq.write_table(
-        pa.Table.from_pylist(chapter_rows, schema=chapter_schema),
-        out_run_dir / "chapters.parquet",
-        compression="zstd",
-    )
+    # Final checkpoint (run_id / out_run_dir computed up front; flushed periodically above).
+    flush_chapters()
 
     # Also dump each chapter as a standalone markdown file for human inspection
     for row in chapter_rows:
