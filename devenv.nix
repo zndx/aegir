@@ -126,7 +126,7 @@ in {
     #   /api/atlas/* -> the real Apache Atlas v2 service (forked, AGE backend) on :21000
     #   /api/*       -> the aegir gateway (control API + extended OpenLineage variant)
     # handle blocks are first-match, so the more specific /api/atlas/* precedes /api/*.
-    virtualHosts."http://localhost:8080".extraConfig = ''
+    virtualHosts.":8080".extraConfig = ''
       handle /api/atlas/* {
         reverse_proxy 127.0.0.1:21000
       }
@@ -204,14 +204,20 @@ in {
         ATLAS_HOME="$PWD/.devenv/atlas"
         mkdir -p "$ATLAS_HOME/data" "$ATLAS_HOME/logs" "$ATLAS_HOME/conf"
         ln -sfn "$ATLAS_DIR/addons/models" "$ATLAS_HOME/models"   # type-system bootstrap source
-        cp -n "$ATLAS_CONF/users-credentials.properties" "$ATLAS_HOME/conf/" 2>/dev/null || true
-        cp -n "$ATLAS_CONF/atlas-simple-authz-policy.json" "$ATLAS_HOME/conf/" 2>/dev/null || true
+        # Materialize Atlas config with the LIVE PGPORT — Atlas reads the file and does
+        # NOT reliably interpolate ${env:...}, so substitute the real port at start.
+        sed "s|localhost:[0-9]*/aegir|localhost:$PGPORT/aegir|" "$ATLAS_CONF/atlas-application.properties" > "$ATLAS_HOME/conf/atlas-application.properties"
+        cp -f "$ATLAS_CONF/users-credentials.properties" "$ATLAS_HOME/conf/" 2>/dev/null || true
+        cp -f "$ATLAS_CONF/atlas-simple-authz-policy.json" "$ATLAS_HOME/conf/" 2>/dev/null || true
         if [ ! -d "$ATLAS_WEBAPP/WEB-INF" ]; then
           echo "Atlas webapp not built. Run: devenv tasks run atlas:build"; exit 1
         fi
-        echo "Starting Atlas on http://localhost:21000 (AGE backend -> aegir_hx)..."
+        # Atlas's HikariPool fail-fasts (no retry) if Postgres isn't accepting yet —
+        # wait for the live port so a startup race can't wedge Atlas in a 503 loop.
+        for _i in $(seq 1 90); do pg_isready -h localhost -p "$PGPORT" -q && break; sleep 1; done
+        echo "Starting Atlas on http://localhost:21000 (AGE backend -> aegir_hx, pg :$PGPORT)..."
         exec java \
-          -Datlas.home="$ATLAS_HOME" -Datlas.conf="$ATLAS_CONF" \
+          -Datlas.home="$ATLAS_HOME" -Datlas.conf="$ATLAS_HOME/conf" \
           -Datlas.log.dir="$ATLAS_HOME/logs" -Datlas.log.file=application \
           -Datlas.data="$ATLAS_HOME/data" \
           -Dlogback.configurationFile="$ATLAS_DIR/distro/src/conf/atlas-logback.xml" \
@@ -227,7 +233,7 @@ in {
           --add-opens java.base/sun.security.action=ALL-UNNAMED \
           --add-opens java.security.jgss/sun.security.krb5=ALL-UNNAMED \
           -server -Xmx1024m \
-          -cp "$ATLAS_CONF:$ATLAS_WEBAPP/WEB-INF/classes:$ATLAS_WEBAPP/WEB-INF/lib/*" \
+          -cp "$ATLAS_HOME/conf:$ATLAS_WEBAPP/WEB-INF/classes:$ATLAS_WEBAPP/WEB-INF/lib/*" \
           org.apache.atlas.Atlas -app "$ATLAS_WEBAPP" -port 21000
       '';
       process-compose = {
