@@ -191,6 +191,19 @@ def load_config(path: Path | str | None = None) -> Config:
     return _apply_env_overrides(cfg)
 
 
+def _discover_pg_port(url: str) -> str:
+    """Use devenv's live ``PGPORT`` as the DB port. devenv does not always land on the
+    configured ``services.postgres.port``, but it always exports ``PGPORT`` for the
+    running cluster — so PGPORT is the source of truth, not a hardcoded port. Leaves the
+    url untouched when PGPORT is unset (non-devenv contexts)."""
+    import re
+
+    port = os.environ.get("PGPORT")
+    if port:
+        url = re.sub(r"(://(?:[^@/]+@)?[^:/?]+):\d+", rf"\g<1>:{port}", url, count=1)
+    return url
+
+
 def _apply_env_overrides(cfg: Config) -> Config:
     """Final-pass overrides to guarantee env-var precedence."""
     g = os.environ.get
@@ -203,6 +216,9 @@ def _apply_env_overrides(cfg: Config) -> Config:
             pass
     if (v := g("AEGIR_DB_URL")):
         cfg.db.url = v
+    # Discover the live Postgres port from devenv's PGPORT (devenv may not land on the
+    # configured port; PGPORT is what it actually exports). Source of truth over hardcoding.
+    cfg.db.url = _discover_pg_port(cfg.db.url)
     if (v := g("AEGIR_QDRANT_HOST")) or (v := g("QDRANT_HOST")):
         cfg.qdrant.host = v
     if (v := g("AEGIR_QDRANT_HTTP_PORT")) or (v := g("QDRANT_HTTP_PORT")):
