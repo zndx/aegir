@@ -640,13 +640,75 @@ def build_axiom_section(templates: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def build_prompt(anchors: list[dict], templates: list[dict], kind: str) -> str:
+def build_axiom_section_with_ddl(templates: list[dict], family_complex=None) -> str:
+    """Axiom section with the deterministic DDL footprint injected (load-bearing ontology).
+
+    Each cited template carries its rendered CREATE TABLE schema — slot-typed columns +
+    family-complex-sanctioned FOREIGN KEY constraints, from the DDL spine — so the model
+    populates a *given* relational structure rather than inventing one. This is what makes
+    the ontology grounding load-bearing; the no-schema arm (plain ``build_axiom_section``)
+    conspicuously lacks it, isolating the DDL's value-add.
+    """
+    from aegir.ontology.ddl import cross_family_fks, render_ddl, template_to_table
+    from aegir.ontology.schema import CatalogTemplate
+
+    spine, by_id = [], {}
+    for t in templates:
+        ct = CatalogTemplate(
+            template_id=t["template_id"],
+            manchester_template=t.get("manchester_template", ""),
+            slot_types=t.get("slot_types", {}),
+            is_complex=t.get("is_complex", False),
+            verbal_template=t.get("verbal_template", ""),
+            bfo_anchor_path=t.get("bfo_anchor_path", []),
+        )
+        st = template_to_table(ct, t.get("_family", ""))
+        spine.append(st)
+        by_id[t["template_id"]] = st
+
+    fks_by_src: dict[str, list] = {}
+    if family_complex is not None:
+        edges, _ = cross_family_fks(spine, family_complex)
+        for e in edges:
+            fks_by_src.setdefault(e.src_table, []).append(e)
+
+    lines = [
+        "Each axiom below is paired with the RELATIONAL SCHEMA it projects to "
+        "(deterministically derived from its slot structure). Populate THESE exact tables "
+        "with realistic, axiom-consistent rows grounded in the style passages — do not "
+        "invent different columns. Column types follow the slot types (Class/Individual = "
+        "entity reference, DataProperty = typed literal); FOREIGN KEY constraints are the "
+        "sanctioned cross-table joins. Before each table, explain in one or two sentences "
+        "which axiom it embodies and what its primary-key / foreign-key structure means.",
+        "",
+    ]
+    for i, t in enumerate(templates, 1):
+        st = by_id[t["template_id"]]
+        slots_fmt = ", ".join(f"{k}: {v}" for k, v in t.get("slot_types", {}).items())
+        lines.append(f"  AXIOM {i} (template_id: {t['template_id']}):")
+        lines.append(f"    Manchester:   {t.get('manchester_template','')}")
+        if t.get("verbal_template"):
+            lines.append(f"    Verbalization: {t['verbal_template']}")
+        lines.append(f"    Slot types:    {slots_fmt}")
+        lines.append("    RELATIONAL SCHEMA:")
+        lines.append("      " + render_ddl(st, fks_by_src.get(st.table.name, [])).replace("\n", "\n      "))
+        lines.append("")
+    return "\n".join(lines)
+
+
+def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
+                 family_complex=None) -> str:
     tpl = PROMPT_BY_KIND[kind]
-    # The Grok template doesn't substitute n_templates (it picks domain
-    # freely). The GLM template does.
+    # full (glm/grok) gets the DDL-footprint schemas injected (load-bearing ontology);
+    # no-schema keeps the axioms as plain text WITHOUT the DDL — the load-bearing contrast.
+    if kind in ("glm", "grok"):
+        axiom_section = build_axiom_section_with_ddl(templates, family_complex)
+    else:
+        axiom_section = build_axiom_section(templates)
+    # The Grok template doesn't substitute n_templates (it picks domain freely); GLM does.
     fmt_kwargs: dict[str, Any] = {
         "style_section": build_style_section(anchors),
-        "axiom_section": build_axiom_section(templates),
+        "axiom_section": axiom_section,
     }
     if "{n_templates}" in tpl:
         fmt_kwargs["n_templates"] = len(templates)
@@ -844,7 +906,7 @@ def main() -> int:
         # broken by sort order. Used as the chapter's `family` tag.
         primary_family = Counter(t["_family"] for t in chosen).most_common(1)[0][0]
 
-        prompt = build_prompt(anchors, chosen, kind=kind)
+        prompt = build_prompt(anchors, chosen, kind=kind, family_complex=family_complex)
         chapter_id = compute_chapter_id(prompt, model, seed_offset)
 
         logger.info(f"chapter {i+1}/{args.n_chapters} (id={chapter_id}):")
