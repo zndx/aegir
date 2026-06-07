@@ -82,6 +82,9 @@ def parse_args() -> argparse.Namespace:
                         "family is in this list. Default (None) = all 7 "
                         "families eligible. Replaces the old --family flag.")
     p.add_argument("--n-chapters", type=int, default=5)
+    p.add_argument("--budget-usd", type=float, default=None,
+                   help="Hard stop once cumulative generation cost reaches this (USD). "
+                        "Cost from litellm usage × RATES_USD_PER_M.")
     p.add_argument("--templates-per-chapter", type=int, default=4,
                    help="How many ontology templates to ground a chapter on")
     p.add_argument("--style-anchors", type=int, default=3,
@@ -721,6 +724,38 @@ def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
     return tpl.format(**fmt_kwargs)
 
 
+# Approximate provider pricing ($/M tokens: input, output). ADJUST to current rates —
+# litellm's own per-call cost is preferred at runtime when it knows the model.
+RATES_USD_PER_M: dict[str, tuple[float, float]] = {
+    "cerebras/zai-glm-4.7": (0.50, 1.50),
+    "xai/grok-4.3": (3.00, 15.00),
+}
+_RATES_DEFAULT = (2.0, 10.0)
+
+
+def usage_and_cost(lm, model: str) -> tuple[int, int, int, float]:
+    """(prompt_tokens, completion_tokens, reasoning_tokens, cost_usd) for the last call,
+    read from the dspy/litellm history. Cost = litellm's if known, else RATES_USD_PER_M."""
+    try:
+        h = lm.history[-1]
+        u = h.get("usage") or {}
+        get = u.get if isinstance(u, dict) else (lambda k, d=0: getattr(u, k, d))
+        pt = int(get("prompt_tokens", 0) or 0)
+        ct = int(get("completion_tokens", 0) or 0)
+        det = get("completion_tokens_details", None)  # a wrapper object OR dict OR None
+        rt = getattr(det, "reasoning_tokens", None)
+        if rt is None and isinstance(det, dict):
+            rt = det.get("reasoning_tokens", 0)
+        rt = int(rt or 0)
+        cost = h.get("cost")  # litellm's own cost when it knows the model (preferred)
+        if not cost:
+            rin, rout = RATES_USD_PER_M.get(model, _RATES_DEFAULT)
+            cost = pt / 1e6 * rin + ct / 1e6 * rout
+        return pt, ct, rt, float(cost or 0.0)
+    except Exception:
+        return 0, 0, 0, 0.0
+
+
 # ─────────────────────────────────────────────────────────────────────────
 # Main
 # ─────────────────────────────────────────────────────────────────────────
@@ -842,10 +877,15 @@ def main() -> int:
         ("response_reasoning", pa.string()),
         ("hx_exchange_id", pa.string()),
         ("latency_ms", pa.int32()),
+        ("prompt_tokens", pa.int32()),
+        ("completion_tokens", pa.int32()),
+        ("reasoning_tokens", pa.int32()),
+        ("cost_usd", pa.float32()),
         ("created_at", pa.timestamp("us", tz="UTC")),
         ("audit_run_id", pa.string()),
     ])
     chapter_rows = []
+    cum_cost = 0.0
     mix_seed_rng = np.random.default_rng(args.seed)
 
     for i in range(args.n_chapters):
@@ -941,6 +981,11 @@ def main() -> int:
         logger.info(f"  latency: {latency_ms}ms, "
                     f"response: {len(response_text)} chars, "
                     f"reasoning: {len(response_reasoning or '')} chars")
+        pt, ct, rt, cost = usage_and_cost(lm, model)
+        cum_cost += cost
+        logger.info(f"  tokens: {pt} in / {ct} out ({rt} reasoning) | "
+                    f"cost ${cost:.3f} | cumulative ${cum_cost:.2f}"
+                    + (f" / ${args.budget_usd:.0f}" if args.budget_usd else ""))
 
         # Capture in HX. provider tag matches what's in the model id.
         record = ExchangeRecord(
@@ -990,9 +1035,18 @@ def main() -> int:
             "response_reasoning": response_reasoning or "",
             "hx_exchange_id": hx_exchange_id,
             "latency_ms": latency_ms,
+            "prompt_tokens": pt,
+            "completion_tokens": ct,
+            "reasoning_tokens": rt,
+            "cost_usd": float(cost),
             "created_at": datetime.now(timezone.utc),
             "audit_run_id": audit_run.name,
         })
+
+        if args.budget_usd and cum_cost >= args.budget_usd:
+            logger.info(f"budget reached: ${cum_cost:.2f} >= ${args.budget_usd:.2f} "
+                        f"after {len(chapter_rows)} chapters — stopping run.")
+            break
 
     # Write chapters parquet. Run_id encodes the sampler+restriction so
     # topic-first runs don't collide with legacy family-first artifacts.
