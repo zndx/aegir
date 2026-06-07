@@ -681,6 +681,12 @@ def build_axiom_section_with_ddl(templates: list[dict], family_complex=None) -> 
         "sanctioned cross-table joins. Before each table, explain in one or two sentences "
         "which axiom it embodies and what its primary-key / foreign-key structure means.",
         "",
+        "After the chapter body, append a single fenced ```json code block giving the rows "
+        "you placed in each table, as: {\"tables\": [{\"name\": \"<exact table name above>\", "
+        "\"rows\": [[<one value per column in the schema's column order, including id>], ...]}]}. "
+        "This lets the populated relational structure be verified against the deterministic "
+        "schema (column slot-types and foreign-key validity).",
+        "",
     ]
     for i, t in enumerate(templates, 1):
         st = by_id[t["template_id"]]
