@@ -853,6 +853,7 @@ def main() -> int:
             model=model, api_key=api_key,
             max_tokens=args.max_tokens, temperature=args.temperature,
             cache=False,  # corpus build: fresh generations + real per-call usage (no disk-cache hits)
+            timeout=180, num_retries=2,  # bound stalled calls; ride out transient API blips
         )
         lm_cache[model] = lm
         return lm
