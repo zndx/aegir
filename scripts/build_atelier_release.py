@@ -50,7 +50,8 @@ def main() -> int:
     import pyarrow.parquet as pq
 
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--corpus-run", required=True, help="dir containing chapters.parquet")
+    ap.add_argument("--corpus-run", nargs="+", required=True,
+                    help="one or more dirs containing chapters.parquet (folded into one release)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-values", type=int, default=25, help="sample values kept per column")
     args = ap.parse_args()
@@ -59,10 +60,13 @@ def main() -> int:
 
     tmap = load_template_map()
     code_map = load_code_map()
-    chapters = pq.read_table(Path(args.corpus_run) / "chapters.parquet").to_pylist()
+    chapters = []
+    for run in args.corpus_run:
+        chapters.extend(pq.read_table(Path(run) / "chapters.parquet").to_pylist())
 
     col_rows: list[dict] = []
     ref_rows: list[dict] = []
+    tbl_ids: dict = {}  # (chapter_id, t_<template>) → opaque id; anonymizes the name→code shortcut
     n_ok = n_fail = n_tables = 0
     covered: set[str] = set()
     reasoning_tokens = 0
@@ -95,6 +99,8 @@ def main() -> int:
             n_tables += 1
             covered.add(tid)
             code = code_map.get(tid.lower(), "")
+            # opaque, name-free table id so the public columns carry no label shortcut
+            table_id = tbl_ids.setdefault((ch["chapter_id"], name), f"tbl_{len(tbl_ids):06d}")
             for pos, c in enumerate(cols):
                 if getattr(c, "slot_ref", "") == "__pk__":
                     continue  # surrogate PK — not a semantic column
@@ -102,15 +108,15 @@ def main() -> int:
                         if isinstance(r, list) and len(r) > pos and r[pos] is not None]
                 if not vals:
                     continue
-                col_rows.append({
-                    "chapter_id": ch["chapter_id"], "table_name": name,
-                    "column_name": c.name, "column_position": pos,
+                col_id = f"{table_id}_c{pos}"
+                col_rows.append({  # PUBLIC release: no table_name / template / chapter link
+                    "table_id": table_id, "column_id": col_id, "column_name": c.name,
                     "n_rows": len(vals), "sample_values": vals[:args.max_values],
                 })
-                ref_rows.append({
-                    "chapter_id": ch["chapter_id"], "table_name": name,
-                    "column_name": c.name, "reference_code": code,
+                ref_rows.append({  # HELD-BACK key: the de-anonymisation + answer
+                    "table_id": table_id, "column_id": col_id, "reference_code": code,
                     "slot_type": getattr(c, "slot_type", ""), "template_id": tid,
+                    "source_table": name, "chapter_id": ch["chapter_id"],
                 })
 
     pq.write_table(pa.Table.from_pylist(col_rows), out / "corpus_columns.parquet")
