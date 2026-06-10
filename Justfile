@@ -353,6 +353,9 @@ get-sotab:
 get-gittables:
     uv run --no-sync python scripts/download_gittables.py
 
+get-schemapile:
+    uv run --no-sync python scripts/download_schemapile.py
+
 get-gittables-quick *args:
     # Fetch only the first N zips — for smoke tests / limited-bandwidth setups.
     uv run --no-sync python scripts/download_gittables.py --limit 5 {{args}}

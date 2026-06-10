@@ -89,12 +89,42 @@ def summarize(label, vals):
           f"p90 {p(0.9):4.0f} | max {max(vals):4.0f}")
 
 
+def measure_schemapile(path: str, sample: int = 3000) -> None:
+    """Empirical real-world target distribution from the SchemaPile structured parquet."""
+    import random
+    import pyarrow.parquet as pq
+    rows = pq.read_table(path, columns=["TABLES"]).to_pylist()
+    rng = random.Random(0)
+    if len(rows) > sample:
+        rows = rng.sample(rows, sample)
+    cpt, tps, types = [], [], Counter()
+    fk_tables = ntot = 0
+    for r in rows:
+        tabs = r.get("TABLES") or []
+        tps.append(len(tabs))
+        for tb in tabs:
+            cols = tb.get("COLUMNS") or []
+            cpt.append(len(cols))
+            ntot += 1
+            if tb.get("FOREIGN_KEYS"):
+                fk_tables += 1
+            for c in cols:
+                types[str(c.get("TYPE"))] += 1
+    print(f"  (SchemaPile, {len(rows)} real schemas)")
+    summarize("columns/table (real)", cpt)
+    summarize("tables/schema (real)", tps)
+    print(f"  top column types: {[t for t, _ in types.most_common(10)]}")
+    print(f"  tables with a FOREIGN_KEYS list: {100 * fk_tables / max(ntot, 1):.0f}%")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--corpus-run", nargs="*", default=[],
                     help="dir(s) with chapters.parquet for per-chapter coherence")
     ap.add_argument("--realized-only", action="store_true",
                     help="restrict to templates actually realized in --corpus-run")
+    ap.add_argument("--schemapile", default=None,
+                    help="SchemaPile structured parquet — measure the real target distribution")
     args = ap.parse_args()
 
     objs, fam_of = load_catalog_objs()
@@ -176,9 +206,13 @@ def main() -> int:
         print(f"  chapters whose tables form ONE connected FK schema: "
               f"{connected}/{multi} ({100*connected/max(multi,1):.0f}% of multi-table chapters)")
 
-    print("\nWILD REFERENCE (SchemaPile / real RDBMS rules of thumb):")
-    print("  columns/table median ~7-10 (we are narrow); schemas show star/snowflake hubs,")
-    print("  normalized FK chains (depth 3-6), and junction tables for M:N relations.")
+    print("\nWILD REFERENCE (real-world target):")
+    if args.schemapile:
+        measure_schemapile(args.schemapile)
+    else:
+        print("  SchemaPile rules of thumb — columns/table median ~5-7 (we are narrow); real schemas")
+        print("  show typed columns (Varchar>Int>Timestamp>Text>Date), FK-connected tables, junction tables.")
+        print("  (pass --schemapile <parquet> for the measured distribution)")
     return 0
 
 
