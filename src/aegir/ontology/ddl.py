@@ -223,6 +223,16 @@ class SpineTable:
     not_null: set[str] = field(default_factory=set)   # column names that are NOT NULL
 
 
+_DP_RANGE_RE = re.compile(
+    r"\{(?P<slot>\w+):DataProperty\}\s+(?:some|only|value|exactly\s+\d+|min\s+\d+|max\s+\d+)?\s*"
+    r"(?P<rng>xsd:\w+)")
+
+
+def _dataprop_ranges(manchester: str) -> dict[str, str]:
+    """Map each {slot:DataProperty} to the xsd range parsed from its Manchester restriction."""
+    return {m.group("slot"): m.group("rng") for m in _DP_RANGE_RE.finditer(manchester)}
+
+
 def template_to_table(template: CatalogTemplate, family: str) -> SpineTable:
     """Lower one catalog template to a :class:`TableSpec` + constraint notes.
 
@@ -236,10 +246,12 @@ def template_to_table(template: CatalogTemplate, family: str) -> SpineTable:
     notes: list[CheckNote] = []
     not_null: set[str] = set()
 
+    dp_ranges = _dataprop_ranges(template.manchester_template)
     for slot, owl in template.slot_types.items():
         if owl == "ObjectProperty":
             continue  # relation, represented as a FK / note, not a column
-        cols.append(ColumnSpec(name=col_name(slot), slot_type=owl, slot_ref=slot))
+        st = dp_ranges.get(slot, owl) if owl == "DataProperty" else owl
+        cols.append(ColumnSpec(name=col_name(slot), slot_type=st, slot_ref=slot))
 
     # Typed attribute columns derived from the ontology's DataProperties whose domain
     # subsumes this template's bfo_anchor (the seed crystal; the generator extends it).
