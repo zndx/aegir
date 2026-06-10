@@ -39,6 +39,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from aegir.ontology.schema import CatalogTemplate
 from aegir.ontology.type_check import ColumnSpec, FKEdge, TableSpec, UnitSchema, infer_value_type
@@ -51,16 +52,24 @@ ICEBERG_DIALECT = "spark"  # Iceberg DDL is expressed via the Spark dialect
 _ENTITY_OWL = {"Class", "Individual", "NamedIndividual"}
 _DATA_OWL = {"DataProperty", "Datatype", "Literal", "Data"}
 _ENTITY_SQL = "VARCHAR(255)"
+# Typed DataProperty ranges (xsd) → SQL, keyed to the SchemaPile-frequent types.
+_XSD_SQL = {
+    "xsd:string": "VARCHAR(255)", "xsd:dateTime": "TIMESTAMP", "xsd:date": "DATE",
+    "xsd:decimal": "DECIMAL(38,9)", "xsd:double": "DOUBLE", "xsd:float": "DOUBLE",
+    "xsd:integer": "INTEGER", "xsd:int": "INTEGER", "xsd:long": "BIGINT", "xsd:boolean": "BOOLEAN",
+}
 
 
 def sql_type_for_slot(owl_type: str, sample_values: list[str] | None = None) -> str:
-    """Map an OWL slot meta-type to a SQL column type.
+    """Map an OWL slot meta-type (or an ``xsd:`` DataProperty range) to a SQL column type.
 
-    Entity-like slots (Class/Individual) are reference columns (``VARCHAR(255)``).
-    DataProperty slots are refined from sample values via the same heuristic the
-    structural verifier uses (:func:`type_check.infer_value_type`); with no samples
-    (the pure schema spine) they default to ``VARCHAR(255)``.
+    Typed DataProperty ranges (``xsd:*``) map directly — referential-integrity-clean, the
+    type traces to the ontology range, not sample inference. Entity-like slots
+    (Class/Individual) are reference columns (``VARCHAR(255)``); untyped DataProperty slots
+    fall back to :func:`type_check.infer_value_type` on samples.
     """
+    if owl_type in _XSD_SQL:
+        return _XSD_SQL[owl_type]
     if owl_type in _ENTITY_OWL:
         return _ENTITY_SQL
     if owl_type in _DATA_OWL:
@@ -85,6 +94,78 @@ def table_name(template_id: str) -> str:
 
 def col_name(slot: str) -> str:
     return re.sub(r"\W+", "_", slot).strip("_").lower() or "col"
+
+
+# ── ontology DataProperties → typed attribute columns ─────────────────────────
+_VOCAB_PATH = Path(__file__).resolve().parent / "sdg-vocab.ttl"
+_NS = {
+    "http://purl.obolibrary.org/obo/BFO_": "bfo:",
+    "http://www.commoncoreontologies.org/": "cco:",
+    "https://signals360.example.org/sdg#": "sdg:",
+    "http://www.w3.org/2001/XMLSchema#": "xsd:",
+}
+# anchor → parent anchor, so a table inherits its ancestors' typed attributes.
+_ANCHOR_PARENTS = {
+    "cco:Artifact": "bfo:IndependentContinuant",
+    "cco:DescriptiveICE": "cco:InformationContentEntity",
+    "cco:DirectiveICE": "cco:InformationContentEntity",
+    "cco:DesignativeICE": "cco:InformationContentEntity",
+}
+_DATAPROP_CACHE: "dict[str, list[tuple[str, str, str]]] | None" = None
+
+
+def _prefixed(uri) -> str:
+    s = str(uri)
+    for ns, p in _NS.items():
+        if s.startswith(ns):
+            return p + s[len(ns):]
+    return s
+
+
+def _dataprop_col(prop_prefixed: str) -> str:
+    local = prop_prefixed.split(":")[-1]
+    local = re.sub(r"^(has|is)([A-Z])", r"\2", local)        # hasStartTime → StartTime
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", local).lower()    # StartTime → start_time
+
+
+def _data_properties() -> "dict[str, list[tuple[str, str, str]]]":
+    """{domain-anchor → [(column_name, xsd_range, property_iri)]} from sdg-vocab.ttl (cached)."""
+    global _DATAPROP_CACHE
+    if _DATAPROP_CACHE is not None:
+        return _DATAPROP_CACHE
+    out: "dict[str, list[tuple[str, str, str]]]" = {}
+    try:
+        import rdflib
+        g = rdflib.Graph(); g.parse(str(_VOCAB_PATH), format="turtle")
+        for prop in g.subjects(rdflib.RDF.type, rdflib.OWL.DatatypeProperty):
+            dom = g.value(prop, rdflib.RDFS.domain)
+            rng = g.value(prop, rdflib.RDFS.range)
+            if dom is None or rng is None:
+                continue
+            pp = _prefixed(prop)
+            out.setdefault(_prefixed(dom), []).append((_dataprop_col(pp), _prefixed(rng), pp))
+        for k in out:
+            out[k].sort()
+    except Exception:
+        out = {}
+    _DATAPROP_CACHE = out
+    return out
+
+
+def anchor_attributes(anchor: str) -> "list[tuple[str, str, str]]":
+    """Typed attribute columns (column, xsd_range, property_iri) for a table whose
+    bfo_anchor is ``anchor`` — the anchor's DataProperties plus its ancestors'."""
+    by_dom = _data_properties()
+    out: "list[tuple[str, str, str]]" = []
+    seen: set[str] = set()
+    cur = anchor
+    while cur:
+        for col, rng, iri in by_dom.get(cur, []):
+            if col not in seen:
+                seen.add(col)
+                out.append((col, rng, iri))
+        cur = _ANCHOR_PARENTS.get(cur)
+    return out
 
 
 # ── ObjectProperty / quantified-restriction resolution from Manchester ─────────
@@ -159,6 +240,16 @@ def template_to_table(template: CatalogTemplate, family: str) -> SpineTable:
         if owl == "ObjectProperty":
             continue  # relation, represented as a FK / note, not a column
         cols.append(ColumnSpec(name=col_name(slot), slot_type=owl, slot_ref=slot))
+
+    # Typed attribute columns derived from the ontology's DataProperties whose domain
+    # subsumes this template's bfo_anchor (the seed crystal; the generator extends it).
+    anchor = template.bfo_anchor_path[-1] if template.bfo_anchor_path else None
+    if anchor:
+        existing = {c.name for c in cols}
+        for col, xsd_range, prop_iri in anchor_attributes(anchor):
+            if col not in existing:
+                existing.add(col)
+                cols.append(ColumnSpec(name=col, slot_type=xsd_range, slot_ref=f"data:{prop_iri}"))
 
     for r in parse_restrictions(template):
         tgt = col_name(r.target_slot)
@@ -264,8 +355,7 @@ def render_ddl(st: SpineTable, fks: list[FKEdge], *,
         if c.slot_ref == "__pk__":
             lines.append("  id VARCHAR(255)")
             continue
-        owl = st.template.slot_types.get(c.slot_ref, "Class")
-        sqltype = sql_type_for_slot(owl, sample)
+        sqltype = sql_type_for_slot(c.slot_type, sample)
         nn = " NOT NULL" if c.name in st.not_null else ""
         lines.append(f"  {c.name} {sqltype}{nn}")
 

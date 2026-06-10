@@ -1443,3 +1443,102 @@ sdg:withinSpanContext a owl:ObjectProperty ;
 sdg:yagerCombines a owl:ObjectProperty ;
     rdfs:label "yager combines" ;
     skos:definition "Relates a Yager combination to the combines via the Yager rule of combination." .
+
+## ======================================================================
+## Data properties (typed-attribute seed — Phase 1).
+## Each: rdfs:domain = a BFO/CCO anchor, rdfs:range = an xsd type. `ddl.template_to_table`
+## attaches these as typed columns to any table whose bfo_anchor subsumes the domain
+## (anchor inheritance: Artifact◁IndependentContinuant; *ICE◁InformationContentEntity).
+## These are the seed crystal the FinePDFs→ontology generator extends.
+## ======================================================================
+
+sdg:hasStartTime a owl:DatatypeProperty ;
+    rdfs:label "has start time" ;
+    skos:definition "The time at which a process began." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:dateTime .
+sdg:hasEndTime a owl:DatatypeProperty ;
+    rdfs:label "has end time" ;
+    skos:definition "The time at which a process completed." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:dateTime .
+sdg:hasStatus a owl:DatatypeProperty ;
+    rdfs:label "has status" ;
+    skos:definition "The lifecycle status of a process (pending / running / complete / failed)." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+sdg:hasDurationSeconds a owl:DatatypeProperty ;
+    rdfs:label "has duration seconds" ;
+    skos:definition "The duration of a process in seconds." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:decimal .
+
+sdg:hasName a owl:DatatypeProperty ;
+    rdfs:label "has name" ;
+    skos:definition "The human-readable name of a continuant." ;
+    rdfs:domain bfo:IndependentContinuant ; rdfs:range xsd:string .
+sdg:hasLocation a owl:DatatypeProperty ;
+    rdfs:label "has location" ;
+    skos:definition "A location descriptor for a continuant." ;
+    rdfs:domain bfo:IndependentContinuant ; rdfs:range xsd:string .
+
+sdg:hasIdentifier a owl:DatatypeProperty ;
+    rdfs:label "has identifier" ;
+    skos:definition "An external identifier string for an artifact." ;
+    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+sdg:hasCreatedDate a owl:DatatypeProperty ;
+    rdfs:label "has created date" ;
+    skos:definition "The date an artifact was created." ;
+    rdfs:domain cco:Artifact ; rdfs:range xsd:date .
+sdg:hasVersion a owl:DatatypeProperty ;
+    rdfs:label "has version" ;
+    skos:definition "The integer version number of an artifact." ;
+    rdfs:domain cco:Artifact ; rdfs:range xsd:integer .
+
+sdg:hasLabelText a owl:DatatypeProperty ;
+    rdfs:label "has label text" ;
+    skos:definition "A short label for an information content entity." ;
+    rdfs:domain cco:InformationContentEntity ; rdfs:range xsd:string .
+sdg:hasLanguage a owl:DatatypeProperty ;
+    rdfs:label "has language" ;
+    skos:definition "The language code of an information content entity." ;
+    rdfs:domain cco:InformationContentEntity ; rdfs:range xsd:string .
+
+sdg:hasValue a owl:DatatypeProperty ;
+    rdfs:label "has value" ;
+    skos:definition "The numeric value a descriptive information content entity records." ;
+    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:decimal .
+sdg:hasUnit a owl:DatatypeProperty ;
+    rdfs:label "has unit" ;
+    skos:definition "The unit of measure for a recorded value." ;
+    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:string .
+sdg:hasRecordedAt a owl:DatatypeProperty ;
+    rdfs:label "has recorded at" ;
+    skos:definition "The timestamp at which a descriptive ICE was recorded." ;
+    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:dateTime .
+sdg:hasConfidence a owl:DatatypeProperty ;
+    rdfs:label "has confidence" ;
+    skos:definition "A confidence score in [0,1] for a recorded value." ;
+    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:decimal .
+
+sdg:hasEffectiveDate a owl:DatatypeProperty ;
+    rdfs:label "has effective date" ;
+    skos:definition "The date a directive takes effect." ;
+    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:date .
+sdg:hasPriority a owl:DatatypeProperty ;
+    rdfs:label "has priority" ;
+    skos:definition "An integer priority rank for a directive." ;
+    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:integer .
+sdg:isMandatory a owl:DatatypeProperty ;
+    rdfs:label "is mandatory" ;
+    skos:definition "Whether a directive is mandatory." ;
+    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:boolean .
+
+sdg:hasCode a owl:DatatypeProperty ;
+    rdfs:label "has code" ;
+    skos:definition "The code string a designative information content entity carries." ;
+    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:string .
+sdg:hasFormat a owl:DatatypeProperty ;
+    rdfs:label "has format" ;
+    skos:definition "The format of a designative code (e.g. ISO, RFC)." ;
+    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:string .
+sdg:hasIssuedDate a owl:DatatypeProperty ;
+    rdfs:label "has issued date" ;
+    skos:definition "The date a designative ICE was issued." ;
+    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:date .

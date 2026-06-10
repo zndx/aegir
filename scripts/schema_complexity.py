@@ -152,9 +152,9 @@ def main() -> int:
         cols = spine.table.columns
         tbl_name[spine.table.name] = tid
         width.append(len(cols))
-        data_cols.append(sum(1 for c in cols if getattr(c, "slot_type", "") == "DataProperty"))
-        ref_cols.append(sum(1 for c in cols if getattr(c, "slot_type", "") not in ("DataProperty", "")
-                            and getattr(c, "slot_ref", "") != "__pk__"))
+        data_cols.append(sum(1 for c in cols if getattr(c, "slot_type", "").startswith("xsd:")
+                             or getattr(c, "slot_type", "") == "DataProperty"))
+        ref_cols.append(sum(1 for c in cols if getattr(c, "slot_type", "") in ("Class", "Individual")))
         objprops.append(sum(1 for r in parse_restrictions(t) if r.is_slot))
 
     # FK graph (cross-family, family-complex gated) -------------------------------
