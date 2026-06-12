@@ -22,6 +22,8 @@ def main() -> int:
     ap.add_argument("--runs", nargs="+", required=True,
                     help="run dirs each containing chapters.parquet + verification.parquet")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--model-filter", default=None,
+                    help="restrict to chapters from this model (the stratified secondary split)")
     args = ap.parse_args()
     out = Path(args.out)
 
@@ -31,6 +33,8 @@ def main() -> int:
         for v in pq.read_table(Path(run) / "verification.parquet").to_pylist():
             scores[v["chapter_id"]] = float(v["r_composite"])
 
+    if args.model_filter:
+        chapters = [c for c in chapters if c.get("model") == args.model_filter]
     rows = [(scores[c["chapter_id"]], c) for c in chapters if c["chapter_id"] in scores]
     rows.sort(key=lambda x: x[0])
     total_bytes = sum(len(c["response_text"] or "") for _, c in rows)

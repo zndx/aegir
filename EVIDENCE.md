@@ -14,7 +14,7 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 
 | id | claim | gates (what may not proceed until green) | status |
 |----|-------|------------------------------------------|--------|
-| E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **UNTESTED** |
+| E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PRIMARY SUPPORTED** (stratified pending) |
 | E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **UNBUILT** |
 | E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **UNTESTED** |
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
@@ -53,6 +53,14 @@ thresholds, GRPO reward, corpus filtering).
 length. If Q4/Q1 differ grossly in model mix, run a model-stratified secondary split before concluding.
 
 **Cost.** Verification pass + 4 tiny pretrains; GPU-only.
+
+**RESULT (primary, 2026-06-12 — artifacts `/raid/.../evidence/e1/`).** Q1 0.639 [0.606,0.670] →
+Q2 0.671 → Q3 0.671 → Q4 **0.717 [0.685,0.746]** (N=1999 probe acc). Q4−Q1 = **+7.7 pts,
+CIs non-overlapping**; Spearman ρ=0.95; same separation at N=512; selectivity rises 0.506→0.586.
+**Both pre-registered criteria met.** Confound: quartile model-mix shifts (Q1 43% Grok → Q4 96% GLM)
+→ the mandated GLM-only stratified replication is running (`evidence/e1_glm/`, matched ~5.35MB slices,
+within-GLM R spread 0.144→0.699). Status flips to SUPPORTED iff the stratified split reproduces the
+ordering; else the proxy is confounded with model identity and gets re-derived.
 
 ## E2 — instrument: the edge-probe (relational/structural skill)
 
