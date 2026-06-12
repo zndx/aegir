@@ -73,6 +73,36 @@ no fine-grained proxy-gated filtering/reward until the proxy is re-derived again
 ground (T_I_canonical/coverage_v1) — the re-grounded R_topic/R_axiom are the natural candidates,
 re-testable with this exact harness (e1_split --model-filter + matched pretrains + probes).**
 
+## E6 — instrument: pipeline topic-coherence trace + lexical preservation
+
+**Claim.** The ontology is on the *causal* path from input FinePDFs to output chapters — the topic
+thread runs THROUGH constructs/DDL/views, not around them via style anchors (the ablation's known
+bypass: no-ontology hit 80% topic-anchor recovery at R_axiom 0.009).
+
+**Channel A — topical transfer.** One frozen space (the canonical ground: mpnet, k=200). Each stage's
+NL shadow is *assigned* (never refit): S0 input doc → S1 instantiated verbal_template → S2
+view-verbalization (NEW object: constituent verbal_templates composed along the join path) → S3
+chapter prose. Linkage = stored keys (generated_from_topic, template_ids, t_<id>, view→bases).
+Per-stage transfer = topic-signature similarity; "non-trivial" = beats a shuffled-pairing null.
+**Decision rule:** S1→S3 transfer beats the null CI-clean ⇒ ontology on-path; S0→S3 passing while
+S1→S3 fails ⇒ the bypass, quantified + localized. The per-stage scores are the candidate
+**re-derived within-model proxy** E1 demands.
+
+**Channel B — lexical preservation (RH).** Fraction of DeepOnto-verbalization terms reflected in
+entity NAMES — measured bidirectionally (recall = expressiveness; precision = name tokens grounded
+in the verbalization, i.e. no un-grounded lexicon) against a cross-pairing null, with **table-columns
+and view-columns scored separately** to verify preservation through DDL into the text-embedded view
+artifacts. Current expected score ≈ 0 (slot columns are x/y; views absent) — **the zero is the
+baseline that drives the implementation and then proves it.** Names must track SchemaPile
+length/entropy (no term-stuffing). Consequence: semantic names re-open the header channel ⇒ the
+benchmark forks into declared *with-names* and *cells-only* (hardened, headline) tracks.
+
+**BASELINE (2026-06-12, `scripts/e6_lexical_preservation.py`).** SEED: table-name recall **0.315**
+(null 0.013 — template ids are verbalization-derived), slot-columns **0.000** (x/y), views **absent
+(0)**. GENERATED: **0.000 across the board — because generated constructs have EMPTY verbal_template
+(DeepOnto never ran on them)**: the DeepOnto gate is not just verification, it *produces* the bridge
+object E6 requires. First-run finding; drives the gate implementation.
+
 ## E2 — instrument: the edge-probe (relational/structural skill)
 
 **Built from** the verifiable JSON (populated tables + slot-typed schema + spine FK edges):
