@@ -284,6 +284,82 @@ def template_to_table(template: CatalogTemplate, family: str) -> SpineTable:
     )
 
 
+# ── views: the prose-facing artifact + its verbalization (the E6 bridge object) ──
+@dataclass
+class ViewSpec:
+    """A CREATE VIEW over base spine tables + its natural-language verbalization.
+
+    The view is the relational shadow of an axiom chain: a join along an FK derived from
+    an ObjectProperty IS that axiom materialized. ``verbalization`` is the bridge object —
+    what the chapter's prose should narrate, and what carries the view's topic position
+    in the E6 trace (channel A) and its lexicon in channel B.
+    """
+    name: str
+    sql: str
+    verbalization: str
+    columns: list[tuple[str, str, str]]  # (view_col, base_table, base_col)
+    base_tables: list[str]
+    fk: "FKEdge | None" = None
+
+
+def _verbal_clean(t: CatalogTemplate) -> str:
+    """Slot-stripped verbalization (lowercased, placeholder-free) for composition."""
+    v = re.sub(r"\{[^}]+\}", "", t.verbal_template or "").strip()
+    return re.sub(r"\s+", " ", v).strip(" .").lower() or t.template_id.replace("_", " ")
+
+
+def verbalize_view(src: SpineTable, dst: "SpineTable | None" = None,
+                   fk: "FKEdge | None" = None, projected: list[str] | None = None) -> str:
+    """Compose the constituent templates' verbalizations along the join path."""
+    cols = ", ".join(projected or [])
+    if dst is None or fk is None:
+        return (f"Each row presents an instance where {_verbal_clean(src.template)}; "
+                f"shown attributes: {cols}.")
+    rel = re.sub(r"(?<!^)(?=[A-Z])", " ", fk.via_slot).replace("_", " ").lower()
+    return (f"Each row pairs an instance where {_verbal_clean(src.template)} with the related "
+            f"instance where {_verbal_clean(dst.template)}, joined via its '{rel}' relation; "
+            f"shown attributes: {cols}.")
+
+
+def render_view_ddl(name: str, src: SpineTable, dst: "SpineTable | None" = None,
+                    fk: "FKEdge | None" = None,
+                    projected: "list[str] | None" = None) -> ViewSpec:
+    """CREATE VIEW: a projection of one base table, or a 2-table join along an FK edge.
+
+    View columns inherit base-column identity (the (view_col, base_table, base_col) triples)
+    so CTA labels and column lineage carry through — polyglot's openlineage_run_event over
+    ``sql``'s SELECT yields the Column DERIVES_FROM edges for the governance graph.
+    """
+    def pick(st: SpineTable, alias: str) -> list[tuple[str, str, str]]:
+        out = []
+        for c in st.table.columns:
+            if c.slot_ref == "__pk__":
+                continue
+            if projected and c.name not in projected:
+                continue
+            out.append((f"{alias}_{c.name}" if dst is not None else c.name,
+                        st.table.name, c.name))
+        return out
+
+    if dst is None or fk is None:
+        cols = pick(src, "a")
+        sel = ", ".join(f"{bc} AS {vc}" if vc != bc else bc for vc, _, bc in cols)
+        sql = f"CREATE VIEW {name} AS SELECT {sel} FROM {src.table.name}"
+    else:
+        cols = pick(src, "a") + pick(dst, "b")
+        parts = []
+        for vc, bt, bc in cols:
+            alias = "a" if bt == src.table.name else "b"
+            parts.append(f"{alias}.{bc} AS {vc}")
+        sql = (f"CREATE VIEW {name} AS SELECT {', '.join(parts)} "
+               f"FROM {src.table.name} a JOIN {dst.table.name} b "
+               f"ON a.{fk.src_col} = b.{fk.dst_col}")
+    verbal = verbalize_view(src, dst, fk, [vc for vc, _, _ in cols])
+    return ViewSpec(name=name, sql=sql, verbalization=verbal, columns=cols,
+                    base_tables=[src.table.name] + ([dst.table.name] if dst else []),
+                    fk=fk)
+
+
 def build_table_comment(template: CatalogTemplate, family: str) -> str:
     """Single-line JSON semantic anchor stored as the table COMMENT (the CTA label)."""
     payload = {
