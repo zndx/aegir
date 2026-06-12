@@ -735,6 +735,18 @@ RATES_USD_PER_M: dict[str, tuple[float, float]] = {
 _RATES_DEFAULT = (2.0, 10.0)
 
 
+def resolve_local_model(model: str) -> str:
+    """`local/<name>` → <name>; `local/auto` → the (single) model the endpoint serves."""
+    name = model.split("/", 1)[1] if "/" in model else "auto"
+    if name != "auto":
+        return name
+    import urllib.request
+    base = os.environ.get("OPENAI_API_BASE", "http://localhost:8088/v1/").rstrip("/")
+    with urllib.request.urlopen(f"{base}/models", timeout=10) as r:
+        data = json.loads(r.read())
+    return data["data"][0]["id"]
+
+
 def usage_and_cost(lm, model: str) -> tuple[int, int, int, float]:
     """(prompt_tokens, completion_tokens, reasoning_tokens, cost_usd) for the last call,
     read from the dspy/litellm history. Cost = litellm's if known, else RATES_USD_PER_M."""
@@ -751,7 +763,8 @@ def usage_and_cost(lm, model: str) -> tuple[int, int, int, float]:
         rt = int(rt or 0)
         cost = h.get("cost")  # litellm's own cost when it knows the model (preferred)
         if not cost:
-            rin, rout = RATES_USD_PER_M.get(model, _RATES_DEFAULT)
+            rin, rout = (0.0, 0.0) if model.startswith("local/") else \
+                RATES_USD_PER_M.get(model, _RATES_DEFAULT)
             cost = pt / 1e6 * rin + ct / 1e6 * rout
         return pt, ct, rt, float(cost or 0.0)
     except Exception:
@@ -842,6 +855,17 @@ def main() -> int:
         if model in lm_cache:
             return lm_cache[model]
         provider = model.split("/", 1)[0]
+        if provider == "local":
+            # Self-hosted OpenAI-compatible endpoint (vLLM). `local/auto` resolves the
+            # served model from the endpoint; cost = $0 against the budget cap.
+            lm = dspy.LM(
+                model=f"openai/{resolve_local_model(model)}", api_key="local",
+                api_base=os.environ.get("OPENAI_API_BASE", "http://localhost:8088/v1/").rstrip("/"),
+                max_tokens=args.max_tokens, temperature=args.temperature,
+                cache=False, timeout=300, num_retries=2,
+            )
+            lm_cache[model] = lm
+            return lm
         api_key = provider_keys.get(provider)
         if not api_key:
             raise SystemExit(

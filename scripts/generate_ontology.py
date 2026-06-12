@@ -44,6 +44,16 @@ SLOT_DSL = (
 def get_lm(model: str, max_tokens: int, temperature: float):
     import dspy
     provider = model.split("/", 1)[0]
+    if provider == "local":  # self-hosted OpenAI-compatible endpoint (vLLM); $0 cost
+        name = model.split("/", 1)[1]
+        if name == "auto":
+            import urllib.request
+            base = os.environ.get("OPENAI_API_BASE", "http://localhost:8088/v1/").rstrip("/")
+            with urllib.request.urlopen(f"{base}/models", timeout=10) as r:
+                name = json.loads(r.read())["data"][0]["id"]
+        return dspy.LM(model=f"openai/{name}", api_key="local",
+                       api_base=os.environ.get("OPENAI_API_BASE", "http://localhost:8088/v1/").rstrip("/"),
+                       max_tokens=max_tokens, temperature=temperature, cache=False, timeout=300)
     key = {"cerebras": "CEREBRAS_API_KEY", "xai": "XAI_API_KEY"}.get(provider, "")
     return dspy.LM(model=model, api_key=os.environ.get(key), max_tokens=max_tokens,
                    temperature=temperature, cache=False)
