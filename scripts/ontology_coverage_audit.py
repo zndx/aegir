@@ -64,6 +64,9 @@ logger = logging.getLogger("ontology-coverage-audit")
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--local-corpus", nargs="+", default=None,
+                   help="Local \\x03-delimited corpus file(s) to sample INSTEAD of streaming "
+                        "HF (the canonical ground = the corpus the model actually pretrains on).")
     p.add_argument("--finepdfs-dataset", default="HuggingFaceFW/finepdfs",
                    help="HuggingFace dataset id")
     p.add_argument("--finepdfs-config", default="eng_Latn",
@@ -98,9 +101,13 @@ def parse_args() -> argparse.Namespace:
 def compute_run_id(args: argparse.Namespace, catalog_files: list[Path]) -> str:
     """Hash inputs so identical re-runs produce identical run_id."""
     h = hashlib.sha256()
-    h.update(f"finepdfs:{args.finepdfs_dataset}:{args.finepdfs_config}:"
-             f"{args.finepdfs_split}:{args.sample_size}:{args.seed}:"
-             f"{args.max_chars_per_doc}\n".encode())
+    if getattr(args, "local_corpus", None):
+        h.update(f"local:{':'.join(sorted(args.local_corpus))}:{args.sample_size}:"
+                 f"{args.seed}:{args.max_chars_per_doc}\n".encode())
+    else:
+        h.update(f"finepdfs:{args.finepdfs_dataset}:{args.finepdfs_config}:"
+                 f"{args.finepdfs_split}:{args.sample_size}:{args.seed}:"
+                 f"{args.max_chars_per_doc}\n".encode())
     h.update(f"embedding_model:{args.embedding_model}\n".encode())
     h.update(f"clustering:kmeans:k={args.n_topics}:seed={args.seed}\n".encode())
     h.update(f"thresholds:tau_high={args.tau_high}:tau_low={args.tau_low}\n".encode())
@@ -115,12 +122,55 @@ def compute_run_id(args: argparse.Namespace, catalog_files: list[Path]) -> str:
 # FinePDFs sampling
 # ─────────────────────────────────────────────────────────────────────────
 
+def sample_local_corpus(args: argparse.Namespace) -> tuple[list[str], list[str]]:
+    """Reservoir-sample docs from local corpus file(s) (\\x03-delimited; the ACTUAL
+    filtered FinePDFs the model pretrains on) — the canonical ground."""
+    rng = np.random.default_rng(args.seed)
+    ids: list[str] = []
+    texts: list[str] = []
+    n_seen = 0
+    for path in args.local_corpus:
+        name = Path(path).name
+        buf = ""
+        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+            while True:
+                chunk = f.read(1 << 20)
+                if not chunk:
+                    break
+                buf += chunk
+                parts = buf.split("\x03")
+                buf = parts.pop()
+                for doc in parts:
+                    doc = doc.strip()
+                    if len(doc) < 200:
+                        continue
+                    doc = doc[: args.max_chars_per_doc]
+                    if len(texts) < args.sample_size:
+                        ids.append(f"{name}:{n_seen}")
+                        texts.append(doc)
+                    else:
+                        j = int(rng.integers(0, n_seen + 1))
+                        if j < args.sample_size:
+                            ids[j] = f"{name}:{n_seen}"
+                            texts[j] = doc
+                    n_seen += 1
+                # Time-bound like the streaming path: reservoir converges fast.
+                if n_seen >= max(args.sample_size * 5, 50_000):
+                    break
+        if n_seen >= max(args.sample_size * 5, 50_000):
+            break
+    logger.info(f"sampled {len(texts):,} docs from {n_seen:,} scanned (local corpus)")
+    return ids, texts
+
+
 def sample_finepdfs(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     """Stream the dataset and pick a deterministic sample.
 
     Returns:
         (ids, texts) — parallel lists of length ≤ sample_size.
     """
+    if getattr(args, "local_corpus", None):
+        return sample_local_corpus(args)
     from datasets import load_dataset
 
     logger.info(f"streaming {args.finepdfs_dataset} "

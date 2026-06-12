@@ -147,24 +147,27 @@ def fit_T_I(
     per_corpus_lines: int,
     k: int,
     cache_path: Path,
+    encoder_name: str | None = None,
 ):
     """Fit the input-corpus topic model and cache to disk."""
     from aegir.ontology.topic_alignment import (
+        DEFAULT_ENCODER_MODEL,
         fit_topic_model,
         save_topic_model,
         get_encoder,
     )
+    encoder_name = encoder_name or DEFAULT_ENCODER_MODEL
 
     logger.info("loading input corpus")
     sentences = load_input_corpus(paths, per_corpus_lines)
     logger.info("input corpus: %d sentences", len(sentences))
 
-    logger.info("loading encoder")
-    encoder = get_encoder()
+    logger.info("loading encoder %s", encoder_name)
+    encoder = get_encoder(encoder_name)
 
     logger.info("fitting T_I (k=%d)", k)
     t0 = time.time()
-    t_i = fit_topic_model(sentences, k=k, encoder=encoder)
+    t_i = fit_topic_model(sentences, k=k, encoder=encoder, encoder_model=encoder_name)
     logger.info("T_I fit done in %.1fs", time.time() - t0)
 
     save_topic_model(t_i, cache_path)
@@ -286,6 +289,12 @@ def main() -> int:
         action="store_true",
         help="Reuse cached T_I if it exists; only recompute the null.",
     )
+    parser.add_argument(
+        "--encoder",
+        default=None,
+        help="Sentence-transformer for T_I (default: topic_alignment.DEFAULT_ENCODER_MODEL). "
+             "Use sentence-transformers/all-mpnet-base-v2 for the canonical mpnet ground.",
+    )
     args = parser.parse_args()
 
     catalogs = [load_catalog(p) for p in args.catalog]
@@ -301,13 +310,14 @@ def main() -> int:
         from aegir.ontology.topic_alignment import load_topic_model, get_encoder
         logger.info("loading cached T_I from %s", ti_cache)
         t_i = load_topic_model(ti_cache)
-        encoder = get_encoder()
+        encoder = get_encoder(t_i.encoder_model)
     else:
         t_i, encoder = fit_T_I(
             args.input_corpus,
             args.per_corpus_lines,
             args.ti_k,
             ti_cache,
+            encoder_name=args.encoder,
         )
 
     logger.info("computing null distribution (%d samples)", args.null_samples)
