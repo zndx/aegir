@@ -54,8 +54,8 @@ def parse_args() -> argparse.Namespace:
                         "if --init-checkpoint is given. Mutually exclusive.")
     p.add_argument("--held-out", default="tests/p5_held_out_50/labels.json")
     p.add_argument("--catalog", default="src/aegir/ontology/catalog/combined.json")
-    p.add_argument("--t-i-cache", default="src/aegir/ontology/T_I.pkl")
-    p.add_argument("--null-stats", default="src/aegir/ontology/null_stats.json")
+    p.add_argument("--t-i-cache", default="src/aegir/ontology/catalog/T_I_canonical.pkl")
+    p.add_argument("--null-stats", default="src/aegir/ontology/catalog/null_stats_canonical.json")
     p.add_argument("--n-compositions", type=int, default=4,
                    help="Compositions to sample per scenario for the "
                         "per-scenario mean R.")

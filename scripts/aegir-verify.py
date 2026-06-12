@@ -39,8 +39,8 @@ from aegir.ontology.schema import Catalog, CatalogTemplate, load_catalog  # noqa
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CATALOG = REPO_ROOT / "src" / "aegir" / "ontology" / "catalog" / "examples.json"
-DEFAULT_T_I_CACHE = REPO_ROOT / "src" / "aegir" / "ontology" / "T_I.pkl"
-DEFAULT_NULL_STATS = REPO_ROOT / "src" / "aegir" / "ontology" / "null_stats.json"
+DEFAULT_T_I_CACHE = REPO_ROOT / "src" / "aegir" / "ontology" / "catalog" / "T_I_canonical.pkl"
+DEFAULT_NULL_STATS = REPO_ROOT / "src" / "aegir" / "ontology" / "catalog" / "null_stats_canonical.json"
 
 # Currently-tuned τ_B saturation point for R_B (≥ this many
 # is_complex templates in a composition saturates R_B at 1).

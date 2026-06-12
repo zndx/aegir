@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EvalConfig:
     catalog_path: str = "src/aegir/ontology/catalog/combined.json"
-    t_i_cache_path: str = "src/aegir/ontology/T_I.pkl"
-    null_stats_path: str = "src/aegir/ontology/null_stats.json"
+    t_i_cache_path: str = "src/aegir/ontology/catalog/T_I_canonical.pkl"
+    null_stats_path: str = "src/aegir/ontology/catalog/null_stats_canonical.json"
     c1_test_set_dir: str = "tests/ontology_test_set"
     held_out_50_path: str = "tests/p5_held_out_50/labels.json"
     n_compositions_per_prompt: int = 4

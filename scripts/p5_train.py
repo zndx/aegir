@@ -65,8 +65,8 @@ def parse_args() -> argparse.Namespace:
                         "for verifying the full multi-process wiring "
                         "without committing GPU-hours.")
     p.add_argument("--catalog", default="src/aegir/ontology/catalog/combined.json")
-    p.add_argument("--t-i-cache", default="src/aegir/ontology/T_I.pkl")
-    p.add_argument("--null-stats", default="src/aegir/ontology/null_stats.json")
+    p.add_argument("--t-i-cache", default="src/aegir/ontology/catalog/T_I_canonical.pkl")
+    p.add_argument("--null-stats", default="src/aegir/ontology/catalog/null_stats_canonical.json")
     p.add_argument("--output-dir", default="/raid/checkpoints/p5",
                    help="Default routes to /raid because the system drive is "
                         "space-constrained. Override only when /raid is unavailable.")

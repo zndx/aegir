@@ -29,8 +29,8 @@ class GRPOConfig:
     """Hyper-parameters for the GRPO loop."""
 
     catalog_path: str = "src/aegir/ontology/catalog/combined.json"
-    t_i_cache_path: str = "src/aegir/ontology/T_I.pkl"
-    null_stats_path: str = "src/aegir/ontology/null_stats.json"
+    t_i_cache_path: str = "src/aegir/ontology/catalog/T_I_canonical.pkl"
+    null_stats_path: str = "src/aegir/ontology/catalog/null_stats_canonical.json"
     group_size: int = 8
     learning_rate: float = 1e-5
     kl_coefficient: float = 0.04

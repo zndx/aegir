@@ -1,0 +1,20 @@
+{
+  "null_mean": 0.21051409348845482,
+  "null_std": 0.00950791955444622,
+  "null_p5": 0.19560910984873772,
+  "null_p95": 0.2257207132875919,
+  "n_samples": 200,
+  "tv_k": 12,
+  "ti_k": 200,
+  "n_templates_per_composition": 24,
+  "catalog_files": [
+    "src/aegir/ontology/catalog/01_foundation.json",
+    "src/aegir/ontology/catalog/02_observation_measurement.json",
+    "src/aegir/ontology/catalog/03_directive_governance.json",
+    "src/aegir/ontology/catalog/04_ebpf_kernel.json",
+    "src/aegir/ontology/catalog/05_provo_lineage.json",
+    "src/aegir/ontology/catalog/06_belief_structure.json",
+    "src/aegir/ontology/catalog/07_long_tail.json"
+  ],
+  "ti_cache": "src/aegir/ontology/catalog/T_I_canonical.pkl"
+}
