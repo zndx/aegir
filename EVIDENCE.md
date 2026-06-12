@@ -14,7 +14,7 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 
 | id | claim | gates (what may not proceed until green) | status |
 |----|-------|------------------------------------------|--------|
-| E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PRIMARY SUPPORTED** (stratified pending) |
+| E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PARTIAL** — coarse/cross-model signal real; within-model NOT CI-clean → re-derive before fine-grained gating |
 | E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **UNBUILT** |
 | E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **UNTESTED** |
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
@@ -61,6 +61,17 @@ CIs non-overlapping**; Spearman ρ=0.95; same separation at N=512; selectivity r
 → the mandated GLM-only stratified replication is running (`evidence/e1_glm/`, matched ~5.35MB slices,
 within-GLM R spread 0.144→0.699). Status flips to SUPPORTED iff the stratified split reproduces the
 ordering; else the proxy is confounded with model identity and gets re-derived.
+
+**RESULT (stratified, 2026-06-12 — `evidence/e1_glm/`).** GLM-only: Q1 0.686 [0.654,0.717] → Q2 0.707
+→ Q3 0.701 → Q4 0.708 [0.677,0.739]. Q4−Q1 = **+2.3 pts, CIs OVERLAP**; ρ=0.80 (Q2>Q3 inversion);
+selectivity 0.548→0.590. **Within-model criterion NOT met** — ~⅔ of the primary effect was the
+model-mix confound (Grok chapters are both lower-scored and worse training data; GLM-only Q1 0.639→
+0.686). **Verdict: PARTIAL.** The composite is validated as a coarse data-quality signal (and the
+mixed-corpus result stands for whole-corpus filtering), but it cannot CI-cleanly discriminate quality
+*within* a model at this n and compressed within-model R-range. **Consequence (per pre-registration):
+no fine-grained proxy-gated filtering/reward until the proxy is re-derived against the canonical
+ground (T_I_canonical/coverage_v1) — the re-grounded R_topic/R_axiom are the natural candidates,
+re-testable with this exact harness (e1_split --model-filter + matched pretrains + probes).**
 
 ## E2 — instrument: the edge-probe (relational/structural skill)
 
