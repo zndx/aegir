@@ -103,6 +103,16 @@ benchmark forks into declared *with-names* and *cells-only* (hardened, headline)
 (DeepOnto never ran on them)**: the DeepOnto gate is not just verification, it *produces* the bridge
 object E6 requires. First-run finding; drives the gate implementation.
 
+**SECOND FINDING (same day, gate wired).** With the DeepOnto gate live (9/10 generated constructs
+verbalize; 1 honest reject), E6-B exposes that the produced verbalizations are **semantically
+vacuous** — "{X} is something that {hasParticipant} {Y}" (content terms ≈ {"something"}; 35-61
+chars). Root cause: the verbalizer's axiom-shape selection renders the restriction conjunct and
+drops the named BFO/CCO anchor conjunct (auto-declared labels exist but the anchor entity is
+skipped). Affects R_C, R_D, the chapter prompt, and both E6 channels from one root. **Fix target:**
+`deeponto_harness._verbalize_for_template` shape ranking / anchor-conjunct retention; success =
+generated verbalizations carry the anchor noun ("is a process that…") and E6-B generated
+table-name recall moves off 0.
+
 ## E2 — instrument: the edge-probe (relational/structural skill)
 
 **Built from** the verifiable JSON (populated tables + slot-typed schema + spine FK edges):

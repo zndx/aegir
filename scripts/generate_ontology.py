@@ -127,6 +127,30 @@ def gate_bfo(t: CatalogTemplate) -> tuple[bool, str]:
     return True, ""
 
 
+_JVM_READY = False
+
+
+def gate_deeponto(t: CatalogTemplate) -> tuple[bool, str]:
+    """Semantic gate AND bridge-object producer: DeepOnto must load + verbalize the construct.
+    On pass, populates verbal_template / is_complex / mean_verbal_length (the bridge object the
+    E6 trace, the chapter prompt, and the lexical-preservation channel all hinge on)."""
+    global _JVM_READY
+    try:
+        from aegir.ontology.deeponto_harness import ensure_jvm, probe_template
+        if not _JVM_READY:
+            ensure_jvm()
+            _JVM_READY = True
+        r = probe_template(t)
+        if not r.verbal_template:
+            return False, "no verbalization produced"
+        t.verbal_template = r.verbal_template
+        t.is_complex = r.is_complex
+        t.mean_verbal_length = r.mean_verbal_length
+        return True, f"verbalized ({len(r.verbal_template)} chars)"
+    except Exception as e:
+        return False, f"deeponto: {type(e).__name__}: {str(e)[:80]}"
+
+
 def gate_schema_realism(t: CatalogTemplate, family: str) -> tuple[bool, str]:
     try:
         st = template_to_table(t, family)
@@ -147,6 +171,9 @@ def main() -> int:
     ap.add_argument("--max-tokens", type=int, default=12000)
     ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--budget-usd", type=float, default=5.0)
+    ap.add_argument("--skip-deeponto", action="store_true",
+                    help="skip the JVM semantic gate (fast iteration only — admitted constructs "
+                         "then lack verbal_template, the E6 bridge object)")
     ap.add_argument("--out", default=str(REPO / "src/aegir/ontology/catalog/08_generated.candidate.json"))
     args = ap.parse_args()
 
@@ -182,6 +209,8 @@ def main() -> int:
         for t in cands:
             gates = [("structural", gate_structural(t)), ("bfo", gate_bfo(t)),
                      ("schema_realism", gate_schema_realism(t, family))]
+            if not args.skip_deeponto and all(ok for _, (ok, _) in gates):
+                gates.append(("deeponto", gate_deeponto(t)))  # cheap gates first; JVM probe last
             failed = [g for g, (ok, _) in gates if not ok]
             if failed:
                 for g in failed:
