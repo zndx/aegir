@@ -88,6 +88,21 @@ Per-stage transfer = topic-signature similarity; "non-trivial" = beats a shuffle
 S1→S3 fails ⇒ the bypass, quantified + localized. The per-stage scores are the candidate
 **re-derived within-model proxy** E1 demands.
 
+**RESULT — Channel A (2026-06-14, `scripts/e6a_trace.py`; n=2205 of 2235 v0.3 chapters; S2 not
+built — views materially absent in v0.3).** Signature = cosine to the 200 canonical centroids;
+transfer = cosine of signatures; null = shuffled-pairing (genre-matched), 25 perms; bootstrap CIs.
+**S1→S3 beats the null CI-clean in EVERY arm** — ALL Δ=+0.023 [+0.022,+0.024]; GLM Δ=+0.023; Grok
+Δ=+0.024 [+0.022,+0.026]. **No bypass:** S1→S3 (obs 0.954) far exceeds S0→S3 (obs 0.873) — the
+ontology shadow predicts the prose *more* than the input doc does (the inverse of the pre-registered
+risk). S0→S1 Δ=+0.023 and S0→S3 Δ=+0.016 also CI-clean. **Verdict: on-path correspondence SUPPORTED,
+pure-bypass REFUTED.** Effect sizes are small in absolute terms (homogeneous corpus → nulls 0.82–0.93)
+but the genre-matched null isolates Δ as the topic-specific component, and CIs are tight at n=2205.
+**Model diagnostic:** GLM tracks the ontology (S1→S3 0.962 ≫ S0→S3 0.863); Grok leans on the input
+(S0→S3 0.904, highest arm) — coheres with E1 (Grok lower-scored, worse training data). *Scope:* this
+is correlational evidence the ontology content is on-path beyond chance/genre; the strict load-bearing
+/ causal test remains E3 (ablation). The S1→S3 per-chapter transfer is now a concrete within-model
+proxy candidate for the E1 re-derivation. Artifact: `evidence/e6a/trace.json`.
+
 **Channel B — lexical preservation (RH).** Fraction of DeepOnto-verbalization terms reflected in
 entity NAMES — measured bidirectionally (recall = expressiveness; precision = name tokens grounded
 in the verbalization, i.e. no un-grounded lexicon) against a cross-pairing null, with **table-columns
