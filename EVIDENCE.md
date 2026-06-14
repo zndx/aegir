@@ -18,7 +18,7 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 | E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **UNBUILT** |
 | E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **UNTESTED** |
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
-| E5 | The generator produces semantically genuine, novel, coverage-closing ontology | scaled generation, catalog promotion | **PARTIAL** (shallow gates only) |
+| E5 | The generator produces semantically genuine, novel, coverage-closing ontology | scaled generation, catalog promotion | **RED** — deep gates wired; 20-gap pilot closed 0% (≪25%); novelty binds. Coverage-close metric is register-confounded → reformulate before scale |
 
 ## Already-supported claims (for completeness; artifacts on /raid)
 
@@ -207,3 +207,26 @@ healthy). De-canning: per-anchor column-set entropy vs SchemaPile's (uniform sta
 **Decision rule (pre-registered).** A scaled generation run is justified iff a 20-gap-topic pilot with all
 deep gates active closes ≥25% of its target topics to borderline-or-better AND the novelty gate rejects > 0
 candidates (i.e., it is actually binding). Catalog promotion remains review-before-promote per the charter.
+
+**RESULT (2026-06-14, `scripts/generate_ontology.py` deep gates + `coverage_v1/043d7dcc185245c8`).**
+All three deep gates wired: DeepOnto verbalize (semantic) → target-topic (cosine of the construct's
+`template_embedding_text` vs the audit's PERSISTED true centroid ≥ τ_low 0.35 — the audit's own
+borderline floor; centroids now saved by `ontology_coverage_audit.py`) → novelty (max cosine vs seed ∪
+admitted < 0.93). Pilot on the 20 worst-covered gaps (GLM): **0/91 admitted; coverage-close = 0/20 =
+0% (≪ 25% — FAILS).** Novelty gate binds (17 rejects > 0 — the half that PASSES). DeepOnto rejected 20,
+target-topic 62, structural 9. **Verdict: scaled generation NOT justified; E5 stays RED.**
+
+**Two findings (the pilot's value).** (1) *Generator:* on hard gaps GLM emits GENERIC constructs
+(`article_has_title`, `author_of_article`, generic processes) that DUPLICATE seed structure (hence the
+17 novelty rejects) and don't capture the gap's domain. (2) *Metric/register limit (deeper):* the
+single best construct anywhere reached **0.239** vs the 0.35 floor; even domain-attempts
+(`malaria_research_activity` 0.239) fall short. Cause: `template_embedding_text` (formal Manchester +
+"family:"/"slots:" metadata) and a natural-prose document centroid are different REGISTERS, so
+template↔topic cosine is capped low for prose-domain topics. The 37 borderline-reachable topics are the
+register-matched formal/governance ones; the gaps are mostly prose domains (herbal medicine, nursing,
+education handbooks). **Implication: many coverage-audit "gaps" are register artifacts, not genuine
+ontology-coverage holes — so coverage-close via more templates is the WRONG generator objective for
+those gaps** (coheres with the plan-of-record: the ontology trades FinePDFs distribution alignment).
+Before any generator scale-up, the coverage-close metric needs a register-fair reformulation (e.g.,
+align the construct's INSTANTIATED prose, not its formal text; or target structural/CPA coverage, not
+topic-distribution coverage). Artifacts: `evidence/e5/pilot.candidate.json`, `evidence/e5/pilot output`.

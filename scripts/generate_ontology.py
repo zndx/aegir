@@ -24,8 +24,12 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
+import numpy as np  # noqa: E402
 from aegir.ontology.schema import CatalogTemplate, load_catalog  # noqa: E402
 from aegir.ontology.ddl import render_ddl, template_to_table  # noqa: E402
+# Referential integrity: the deep-gate embedding text MUST match the audit's so
+# the gate predicts the re-audit (sibling import; generate_ontology runs from scripts/).
+from ontology_coverage_audit import template_embedding_text  # noqa: E402
 
 ANCHORS = {"bfo:Process", "bfo:IndependentContinuant", "cco:Artifact",
            "cco:InformationContentEntity", "cco:DescriptiveICE", "cco:DirectiveICE",
@@ -163,6 +167,49 @@ def gate_schema_realism(t: CatalogTemplate, family: str) -> tuple[bool, str]:
         return False, f"lowering failed: {type(e).__name__}"
 
 
+# ── Deep gates (E5): target-topic alignment + novelty ──────────────────────
+# Same encoder + normalization the coverage audit uses, so the gate predicts the
+# re-audit. mpnet/all-mpnet-base-v2, L2-normalized.
+_ST_MODEL = None
+
+
+def _embed(texts: list[str]) -> np.ndarray:
+    global _ST_MODEL
+    if _ST_MODEL is None:
+        from sentence_transformers import SentenceTransformer
+        _ST_MODEL = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+    return _ST_MODEL.encode(list(texts), normalize_embeddings=True,
+                            convert_to_numpy=True).astype("float32")
+
+
+def candidate_embedding(t: CatalogTemplate, family: str) -> np.ndarray:
+    """Embed a candidate exactly as the audit embeds a template (verbal +
+    cleaned manchester + family + slots). Requires verbal_template populated
+    (run gate_deeponto first)."""
+    d = asdict(t)
+    d["_family"] = family
+    return _embed([template_embedding_text(d)])[0]
+
+
+def gate_target_topic(cand_emb: np.ndarray, topic_vec: np.ndarray, tau: float) -> tuple[bool, str]:
+    """Construct's embedding must align to the TARGET topic ≥ tau (the audit's
+    borderline floor) — i.e., it would itself lift the topic out of 'gap'."""
+    sim = float(cand_emb @ topic_vec)
+    if sim < tau:
+        return False, f"target-topic {sim:.3f} < {tau}"
+    return True, f"target-topic {sim:.3f}"
+
+
+def gate_novelty(cand_emb: np.ndarray, pool: np.ndarray, tau_nov: float) -> tuple[bool, str]:
+    """Reject near-duplicates of seed ∪ already-admitted (max cosine ≥ tau_nov)."""
+    if pool is None or len(pool) == 0:
+        return True, "novel (empty pool)"
+    mx = float((pool @ cand_emb).max())
+    if mx >= tau_nov:
+        return False, f"dup {mx:.3f} ≥ {tau_nov}"
+    return True, f"novel (max {mx:.3f})"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--coverage-run", required=True, help="coverage_v0/<run>/ dir")
@@ -174,6 +221,12 @@ def main() -> int:
     ap.add_argument("--skip-deeponto", action="store_true",
                     help="skip the JVM semantic gate (fast iteration only — admitted constructs "
                          "then lack verbal_template, the E6 bridge object)")
+    ap.add_argument("--skip-deep-gates", action="store_true",
+                    help="skip the E5 target-topic + novelty gates (form-only run)")
+    ap.add_argument("--tau-topic", type=float, default=0.35,
+                    help="min cosine of construct vs TARGET topic (audit borderline floor)")
+    ap.add_argument("--tau-nov", type=float, default=0.93,
+                    help="reject if max cosine vs seed ∪ admitted ≥ this (near-duplicate)")
     ap.add_argument("--out", default=str(REPO / "src/aegir/ontology/catalog/08_generated.candidate.json"))
     args = ap.parse_args()
 
@@ -186,11 +239,38 @@ def main() -> int:
     topics = load_gap_topics(args.coverage_run, args.n_topics)
     lm = get_lm(args.model, args.max_tokens, args.temperature)
     admitted: list[CatalogTemplate] = []
+    admitted_embs: list[np.ndarray] = []
     stats = {"topics": 0, "proposed": 0, "admitted": 0, "rejects": {}}
     cum_cost = 0.0
 
+    # Novelty pool: embed every seed template the way the audit does (the deep
+    # gates require verbal_template, which the regenerated seed catalog carries).
+    # Target-topic uses the audit's persisted TRUE centroids (not the single
+    # repr-doc, which systematically undershoots the template↔topic cosine).
+    seed_embs = None
+    centroids = None
+    if not args.skip_deep_gates:
+        seed_texts = [template_embedding_text({**asdict(t), "_family": fam})
+                      for fam, ts in cat_by_family.items() for t in ts]
+        print(f"embedding {len(seed_texts)} seed templates for novelty pool...")
+        seed_embs = _embed(seed_texts)
+        cpath = Path(args.coverage_run) / "topic_centroids.npy"
+        if cpath.exists():
+            centroids = np.load(cpath)
+            print(f"loaded topic centroids {centroids.shape} from {cpath.name}")
+        else:
+            print(f"WARNING: {cpath} missing — target-topic gate falls back to "
+                  "repr-doc proxy (re-run the audit to persist centroids).")
+
     for topic in topics:
         family = topic.get("top_family") or "07_long_tail"
+        topic_vec = None
+        if not args.skip_deep_gates:
+            tid = topic.get("topic_id")
+            if centroids is not None and tid is not None and tid < len(centroids):
+                topic_vec = centroids[tid]
+            else:
+                topic_vec = _embed([topic.get("topic_repr_text") or ""])[0]
         prompt = build_prompt(topic, cat_by_family.get(family, [])[:3])
         try:
             r = lm(messages=[{"role": "user", "content": prompt}])
@@ -210,15 +290,29 @@ def main() -> int:
             gates = [("structural", gate_structural(t)), ("bfo", gate_bfo(t)),
                      ("schema_realism", gate_schema_realism(t, family))]
             if not args.skip_deeponto and all(ok for _, (ok, _) in gates):
-                gates.append(("deeponto", gate_deeponto(t)))  # cheap gates first; JVM probe last
+                gates.append(("deeponto", gate_deeponto(t)))  # populates verbal_template
+            # Deep gates need verbal_template (deeponto) → run last, embed once.
+            cand_emb = None
+            if not args.skip_deep_gates and all(ok for _, (ok, _) in gates):
+                assert topic_vec is not None and seed_embs is not None  # set when deep gates active
+                cand_emb = candidate_embedding(t, family)
+                gates.append(("target_topic", gate_target_topic(cand_emb, topic_vec, args.tau_topic)))
+                pool = seed_embs if not admitted_embs else np.vstack([seed_embs, np.array(admitted_embs)])
+                gates.append(("novelty", gate_novelty(cand_emb, pool, args.tau_nov)))
             failed = [g for g, (ok, _) in gates if not ok]
             if failed:
                 for g in failed:
                     stats["rejects"][g] = stats["rejects"].get(g, 0) + 1
+                if os.environ.get("AEGIR_GATE_DEBUG") and not ({"structural", "bfo",
+                        "schema_realism", "deeponto"} & set(failed)):
+                    msgs = "; ".join(f"{g}={m}" for g, (ok, m) in gates if not ok)
+                    print(f"    [deep-reject {t.template_id}] {msgs}")
                 continue
             t.provenance = {"generated_from_topic": str(topic.get("topic_id")),
                             "family": family, "model": args.model}
             admitted.append(t)
+            if cand_emb is not None:
+                admitted_embs.append(cand_emb)
             n_adm += 1
         stats["admitted"] += n_adm
         try:
@@ -232,6 +326,7 @@ def main() -> int:
 
     out = {"version": "0.1.0-generated-candidate",
            "templates": [asdict(t) for t in admitted], "null_stats": {}}
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(out, indent=2) + "\n")
     print(f"\n=== {stats['admitted']}/{stats['proposed']} admitted from {stats['topics']} topics "
           f"(${cum_cost:.2f}) → {args.out} ===")

@@ -478,6 +478,12 @@ def main() -> int:
     )
     logger.info(f"  wrote {output_dir / 'topic_coverage.parquet'}")
 
+    # Persist the (unit-norm) topic centroids, row tid == topic_id. Downstream
+    # gates (E5 target-topic) and a lite re-audit need the true centroid, not
+    # the single repr-doc, to reproduce the audit's template↔topic similarity.
+    np.save(output_dir / "topic_centroids.npy", topic_centroids)
+    logger.info(f"  wrote {output_dir / 'topic_centroids.npy'}  {topic_centroids.shape}")
+
     # ── Write template_density.parquet ──────────────────────────────────
     topk_set_per_topic = topk_idx  # (n_topics, top_k)
     n_topics_top1 = np.bincount(topk_set_per_topic[:, 0], minlength=len(templates))
