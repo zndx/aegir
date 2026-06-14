@@ -9,8 +9,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that specifies {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a directive information content entity that specifies {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -48,8 +48,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that verified by {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a directive information content entity that verified by {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -68,8 +68,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has priority {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that has priority {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -88,8 +88,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that traces to {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a directive information content entity that traces to {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -108,8 +108,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that refines {Y}",
-      "mean_verbal_length": 33.0,
+      "verbal_template": "{X} is a directive information content entity that refines {Y}",
+      "mean_verbal_length": 62.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -128,8 +128,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that satisfies {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a directive information content entity that satisfies {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -148,8 +148,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that under standard {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a directive information content entity that under standard {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -168,8 +168,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that satisfied by {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that satisfied by {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -250,8 +250,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that mitigates {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a directive information content entity that mitigates {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -270,8 +270,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that implements {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a directive information content entity that implements {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -290,8 +290,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that addresses risk {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a directive information content entity that addresses risk {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -329,8 +329,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that requires evidence {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a directive information content entity that requires evidence {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -349,8 +349,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at severity {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a directive information content entity that at severity {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -369,8 +369,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observed via {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that observed via {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -389,8 +389,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that under framework {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that under framework {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -409,8 +409,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that addresses risk {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a directive information content entity that addresses risk {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -489,8 +489,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governs scope {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a directive information content entity that governs scope {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -509,8 +509,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has jurisdiction {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a directive information content entity that has jurisdiction {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -529,8 +529,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supersedes {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a directive information content entity that supersedes {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -549,8 +549,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has review cycle {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a directive information content entity that has review cycle {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -569,8 +569,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that enforced by {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a directive information content entity that enforced by {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -589,8 +589,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at classification tier {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a directive information content entity that at classification tier {Y}",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -690,8 +690,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that checks {Y}",
-      "mean_verbal_length": 32.0,
+      "verbal_template": "{X} is a directive information content entity that checks {Y}",
+      "mean_verbal_length": 61.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -710,8 +710,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has predicate {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a directive information content entity that has predicate {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -730,8 +730,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that evaluated during {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a directive information content entity that evaluated during {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -750,8 +750,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has severity {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that has severity {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -808,7 +808,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that verifies directive information content entity",
+      "verbal_template": "{X} is a process that verifies directive information content entity",
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -828,7 +828,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that produces evidence {Y}",
+      "verbal_template": "{X} is a process that produces evidence {Y}",
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -848,7 +848,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that via verification method {Y}",
+      "verbal_template": "{X} is a process that via verification method {Y}",
       "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -868,7 +868,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that targets artifact {Y}",
+      "verbal_template": "{X} is a process that targets artifact {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -888,7 +888,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that concludes with {Y}",
+      "verbal_template": "{X} is a process that concludes with {Y}",
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -946,7 +946,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attests to control directive information content entity",
+      "verbal_template": "{X} is a process that attests to control directive information content entity",
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -965,7 +965,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that signed by person",
+      "verbal_template": "{X} is a process that signed by person",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -985,7 +985,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at attestation period {Y}",
+      "verbal_template": "{X} is a process that at attestation period {Y}",
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1005,7 +1005,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that with supporting evidence {Y}",
+      "verbal_template": "{X} is a process that with supporting evidence {Y}",
       "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1062,7 +1062,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that classifies artifact artifact",
+      "verbal_template": "{X} is a process that classifies artifact artifact",
       "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1082,7 +1082,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that assigns tier {Y}",
+      "verbal_template": "{X} is a process that assigns tier {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1102,7 +1102,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that under taxonomy {Y}",
+      "verbal_template": "{X} is a process that under taxonomy {Y}",
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1140,7 +1140,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that audits control directive information content entity",
+      "verbal_template": "{X} is a process that audits control directive information content entity",
       "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1160,7 +1160,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has findings {Y}",
+      "verbal_template": "{X} is a process that has findings {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1179,7 +1179,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that conducted by person",
+      "verbal_template": "{X} is a process that conducted by person",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1199,7 +1199,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for audit period {Y}",
+      "verbal_template": "{X} is a process that for audit period {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1237,8 +1237,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supersedes directive information content entity",
-      "mean_verbal_length": 69.0,
+      "verbal_template": "{X} is a directive information content entity that supersedes directive information content entity",
+      "mean_verbal_length": 98.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1256,8 +1256,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that traces to directive information content entity",
-      "mean_verbal_length": 68.0,
+      "verbal_template": "{X} is a directive information content entity that traces to directive information content entity",
+      "mean_verbal_length": 97.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1275,7 +1275,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that audits control artifact",
+      "verbal_template": "{X} is a process that audits control artifact",
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1294,7 +1294,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that verifies directive information content entity",
+      "verbal_template": "{X} is a process that verifies directive information content entity",
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1313,8 +1313,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at classification tier designative information content entity",
-      "mean_verbal_length": 83.0,
+      "verbal_template": "{X} is a directive information content entity that at classification tier designative information content entity",
+      "mean_verbal_length": 112.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],

@@ -26,8 +26,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -45,8 +45,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a independent continuant",
-      "mean_verbal_length": 31.0,
+      "verbal_template": "{X} is an independent continuant",
+      "mean_verbal_length": 32.0,
       "bfo_anchor_path": [
         "bfo:IndependentContinuant"
       ],
@@ -64,8 +64,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a information content entity",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is an information content entity",
+      "mean_verbal_length": 36.0,
       "bfo_anchor_path": [
         "cco:InformationContentEntity"
       ],
@@ -183,8 +183,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that {p} {Y}",
-      "mean_verbal_length": 29.0,
+      "verbal_template": "{X} is an artifact that {p} {Y}",
+      "mean_verbal_length": 31.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -204,8 +204,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that {p} {Y}",
-      "mean_verbal_length": 29.0,
+      "verbal_template": "{X} is an information content entity that {p} {Y}",
+      "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "cco:InformationContentEntity"
       ],
@@ -225,7 +225,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that {p} {Y}",
+      "verbal_template": "{X} is a process that {p} {Y}",
       "mean_verbal_length": 29.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -343,8 +343,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that {p} {Y}",
-      "mean_verbal_length": 29.0,
+      "verbal_template": "{X} is an artifact that {p} {Y}",
+      "mean_verbal_length": 31.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -364,8 +364,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that {p} {Y}",
-      "mean_verbal_length": 29.0,
+      "verbal_template": "{X} is a directive information content entity that {p} {Y}",
+      "mean_verbal_length": 58.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -509,8 +509,8 @@
         "p": "ObjectProperty"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -530,8 +530,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a information content entity",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is an information content entity",
+      "mean_verbal_length": 36.0,
       "bfo_anchor_path": [
         "cco:InformationContentEntity"
       ],
@@ -785,8 +785,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that produces measurement {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is an artifact that produces measurement {Y}",
+      "mean_verbal_length": 48.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -806,8 +806,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has column {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is an artifact that has column {Y}",
+      "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -827,8 +827,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has input {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is an artifact that has input {Y}",
+      "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -848,8 +848,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that collected from {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is an artifact that collected from {Y}",
+      "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -869,8 +869,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has part {Y}",
-      "mean_verbal_length": 34.0,
+      "verbal_template": "{X} is an artifact that has part {Y}",
+      "mean_verbal_length": 36.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -890,8 +890,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that realizes function {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is an artifact that realizes function {Y}",
+      "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -910,8 +910,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has role {Y}",
-      "mean_verbal_length": 34.0,
+      "verbal_template": "{X} is an artifact that has role {Y}",
+      "mean_verbal_length": 36.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -930,8 +930,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that emits signal {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is an artifact that emits signal {Y}",
+      "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -950,8 +950,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -970,8 +970,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -990,8 +990,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that emits signal {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is an artifact that emits signal {Y}",
+      "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -1010,8 +1010,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that identifies {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a designative information content entity that identifies {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -1070,8 +1070,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that describes property {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is a designative information content entity that describes property {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -1090,8 +1090,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has value type {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a designative information content entity that has value type {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -1110,8 +1110,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that points to {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a designative information content entity that points to {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -1131,8 +1131,8 @@
         "Z": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that points to {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a designative information content entity that points to {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -1151,8 +1151,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that assigned by {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a designative information content entity that assigned by {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -1191,8 +1191,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that constrains {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a directive information content entity that constrains {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1211,8 +1211,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that constrains {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a directive information content entity that constrains {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1232,8 +1232,8 @@
         "Z": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that on violation {Z}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that on violation {Z}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1252,8 +1252,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governs {Y}",
-      "mean_verbal_length": 33.0,
+      "verbal_template": "{X} is a directive information content entity that governs {Y}",
+      "mean_verbal_length": 62.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1272,8 +1272,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that applies to {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a directive information content entity that applies to {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1292,8 +1292,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that applies to {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a directive information content entity that applies to {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1312,8 +1312,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that authored by {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a directive information content entity that authored by {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -1351,8 +1351,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has identifier designative information content entity",
-      "mean_verbal_length": 75.0,
+      "verbal_template": "{X} is an artifact that has identifier designative information content entity",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -1371,8 +1371,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is an artifact that governed by directive information content entity",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -1391,8 +1391,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that described by designative information content entity",
-      "mean_verbal_length": 73.0,
+      "verbal_template": "{X} is an artifact that described by designative information content entity",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -1410,8 +1410,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that is about artifact",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an information content entity that is about artifact",
+      "mean_verbal_length": 59.0,
       "bfo_anchor_path": [
         "cco:InformationContentEntity"
       ],
@@ -1430,7 +1430,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that uses artifact",
+      "verbal_template": "{X} is a process that uses artifact",
       "mean_verbal_length": 35.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1450,7 +1450,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that produces information content entity",
+      "verbal_template": "{X} is a process that produces information content entity",
       "mean_verbal_length": 57.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1529,8 +1529,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has part information content entity",
-      "mean_verbal_length": 57.0,
+      "verbal_template": "{X} is an information content entity that has part information content entity",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:InformationContentEntity"
       ],
@@ -1594,8 +1594,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -1634,7 +1634,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has input sample {Y}",
+      "verbal_template": "{X} is a process that has input sample {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1654,7 +1654,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that uses {Y}",
+      "verbal_template": "{X} is a process that uses {Y}",
       "mean_verbal_length": 30.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1673,7 +1673,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that produces descriptive information content entity",
+      "verbal_template": "{X} is a process that produces descriptive information content entity",
       "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1693,7 +1693,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that follows protocol {Y}",
+      "verbal_template": "{X} is a process that follows protocol {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1713,7 +1713,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has operator {Y}",
+      "verbal_template": "{X} is a process that has operator {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1733,7 +1733,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that 0000066 {Y}",
+      "verbal_template": "{X} is a process that 0000066 {Y}",
       "mean_verbal_length": 33.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1793,7 +1793,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has spans {Y}",
+      "verbal_template": "{X} is a process that has spans {Y}",
       "mean_verbal_length": 35.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1813,7 +1813,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that originates from {Y}",
+      "verbal_template": "{X} is a process that originates from {Y}",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1833,7 +1833,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that in service {Y}",
+      "verbal_template": "{X} is a process that in service {Y}",
       "mean_verbal_length": 36.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1852,7 +1852,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has attribute designative information content entity",
+      "verbal_template": "{X} is a process that has attribute designative information content entity",
       "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1872,7 +1872,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has resource {Y}",
+      "verbal_template": "{X} is a process that has resource {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1912,7 +1912,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that part of {Y}",
+      "verbal_template": "{X} is a process that part of {Y}",
       "mean_verbal_length": 33.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1933,7 +1933,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has observed at {Y}",
+      "verbal_template": "{X} is a process that has observed at {Y}",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1952,7 +1952,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that targets artifact",
+      "verbal_template": "{X} is a process that targets artifact",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1972,7 +1972,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that produces {Y}",
+      "verbal_template": "{X} is a process that produces {Y}",
       "mean_verbal_length": 34.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1992,7 +1992,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that applies method {Y}",
+      "verbal_template": "{X} is a process that applies method {Y}",
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2011,7 +2011,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that targets artifact",
+      "verbal_template": "{X} is a process that targets artifact",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2049,7 +2049,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that targets artifact",
+      "verbal_template": "{X} is a process that targets artifact",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2069,7 +2069,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that produces {Y}",
+      "verbal_template": "{X} is a process that produces {Y}",
       "mean_verbal_length": 34.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2089,7 +2089,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that uses {Y}",
+      "verbal_template": "{X} is a process that uses {Y}",
       "mean_verbal_length": 30.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2109,7 +2109,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that against {Y}",
+      "verbal_template": "{X} is a process that against {Y}",
       "mean_verbal_length": 33.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2148,7 +2148,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that captured by {Y}",
+      "verbal_template": "{X} is a process that captured by {Y}",
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2168,7 +2168,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at hook {Y}",
+      "verbal_template": "{X} is a process that at hook {Y}",
       "mean_verbal_length": 33.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2188,7 +2188,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for syscall {Y}",
+      "verbal_template": "{X} is a process that for syscall {Y}",
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2208,7 +2208,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that writes to map {Y}",
+      "verbal_template": "{X} is a process that writes to map {Y}",
       "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2228,7 +2228,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes pid {Y}",
+      "verbal_template": "{X} is a process that observes pid {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2286,7 +2286,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that precedes {Y}",
+      "verbal_template": "{X} is a process that precedes {Y}",
       "mean_verbal_length": 34.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2306,7 +2306,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has participant artifact",
+      "verbal_template": "{X} is a process that has participant artifact",
       "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2326,7 +2326,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
+      "verbal_template": "{X} is a process that governed by directive information content entity",
       "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2346,7 +2346,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that records {Y}",
+      "verbal_template": "{X} is a process that records {Y}",
       "mean_verbal_length": 33.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -2366,8 +2366,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has dimension {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a descriptive information content entity that has dimension {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2386,8 +2386,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has unit {Y}",
-      "mean_verbal_length": 34.0,
+      "verbal_template": "{X} is a descriptive information content entity that has unit {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2406,8 +2406,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observed at {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a descriptive information content entity that observed at {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2464,8 +2464,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has precision {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a descriptive information content entity that has precision {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2484,8 +2484,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that via method {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a descriptive information content entity that via method {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2504,8 +2504,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has unit {Y}",
-      "mean_verbal_length": 34.0,
+      "verbal_template": "{X} is a descriptive information content entity that has unit {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2544,8 +2544,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that aggregated into {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a descriptive information content entity that aggregated into {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2625,8 +2625,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that is about {Y}",
-      "mean_verbal_length": 34.0,
+      "verbal_template": "{X} is a descriptive information content entity that is about {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2645,8 +2645,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has cardinality {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a descriptive information content entity that has cardinality {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2665,8 +2665,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has null rate {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a descriptive information content entity that has null rate {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2685,8 +2685,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has distribution {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a descriptive information content entity that has distribution {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2705,8 +2705,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that over time window {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a descriptive information content entity that over time window {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2744,8 +2744,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that explains anomaly in {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a descriptive information content entity that explains anomaly in {Y}",
+      "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2764,8 +2764,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has attribute set {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that has attribute set {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2784,8 +2784,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has confidence {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that has confidence {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2804,8 +2804,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supported by {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a descriptive information content entity that supported by {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2824,8 +2824,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that against {Y}",
-      "mean_verbal_length": 33.0,
+      "verbal_template": "{X} is a descriptive information content entity that against {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2883,8 +2883,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observed at {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a descriptive information content entity that observed at {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2922,8 +2922,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that transitions from {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a descriptive information content entity that transitions from {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -2942,8 +2942,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that transitions to {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that transitions to {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3000,8 +3000,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that classifies {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a descriptive information content entity that classifies {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3020,8 +3020,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that assigned by {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a descriptive information content entity that assigned by {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3040,8 +3040,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has confidence {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that has confidence {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3060,8 +3060,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at tier {Y}",
-      "mean_verbal_length": 33.0,
+      "verbal_template": "{X} is a descriptive information content entity that at tier {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3117,8 +3117,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has attribute designative information content entity",
-      "mean_verbal_length": 74.0,
+      "verbal_template": "{X} is a descriptive information content entity that has attribute designative information content entity",
+      "mean_verbal_length": 105.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3137,8 +3137,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supports {Y}",
-      "mean_verbal_length": 34.0,
+      "verbal_template": "{X} is a descriptive information content entity that supports {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3214,8 +3214,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that of attribute set {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a descriptive information content entity that of attribute set {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3234,8 +3234,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has baseline rate {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that has baseline rate {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3254,8 +3254,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has support count {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that has support count {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3293,8 +3293,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that aggregates {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a descriptive information content entity that aggregates {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3313,8 +3313,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that uses aggregation function {Y}",
-      "mean_verbal_length": 51.0,
+      "verbal_template": "{X} is a descriptive information content entity that uses aggregation function {Y}",
+      "mean_verbal_length": 82.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3332,8 +3332,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that grouped by designative information content entity",
-      "mean_verbal_length": 71.0,
+      "verbal_template": "{X} is a descriptive information content entity that grouped by designative information content entity",
+      "mean_verbal_length": 102.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3352,8 +3352,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that over time window {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a descriptive information content entity that over time window {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3391,8 +3391,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that is about {Y}",
-      "mean_verbal_length": 34.0,
+      "verbal_template": "{X} is a descriptive information content entity that is about {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3410,8 +3410,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is a descriptive information content entity that governed by directive information content entity",
+      "mean_verbal_length": 101.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3431,8 +3431,8 @@
         "Z": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has attribute set {Z}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that has attribute set {Z}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -3451,8 +3451,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that specifies {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a directive information content entity that specifies {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3490,8 +3490,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that verified by {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a directive information content entity that verified by {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3510,8 +3510,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has priority {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that has priority {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3530,8 +3530,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that traces to {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a directive information content entity that traces to {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3550,8 +3550,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that refines {Y}",
-      "mean_verbal_length": 33.0,
+      "verbal_template": "{X} is a directive information content entity that refines {Y}",
+      "mean_verbal_length": 62.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3570,8 +3570,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that satisfies {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a directive information content entity that satisfies {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3590,8 +3590,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that under standard {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a directive information content entity that under standard {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3610,8 +3610,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that satisfied by {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that satisfied by {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3692,8 +3692,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that mitigates {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a directive information content entity that mitigates {Y}",
+      "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3712,8 +3712,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that implements {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a directive information content entity that implements {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3732,8 +3732,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that addresses risk {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a directive information content entity that addresses risk {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3771,8 +3771,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that requires evidence {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a directive information content entity that requires evidence {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3791,8 +3791,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at severity {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a directive information content entity that at severity {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3811,8 +3811,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observed via {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that observed via {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3831,8 +3831,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that under framework {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that under framework {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3851,8 +3851,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that addresses risk {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a directive information content entity that addresses risk {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3931,8 +3931,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governs scope {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a directive information content entity that governs scope {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3951,8 +3951,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has jurisdiction {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a directive information content entity that has jurisdiction {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3971,8 +3971,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supersedes {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a directive information content entity that supersedes {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -3991,8 +3991,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has review cycle {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a directive information content entity that has review cycle {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4011,8 +4011,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that enforced by {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a directive information content entity that enforced by {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4031,8 +4031,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at classification tier {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a directive information content entity that at classification tier {Y}",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4132,8 +4132,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that checks {Y}",
-      "mean_verbal_length": 32.0,
+      "verbal_template": "{X} is a directive information content entity that checks {Y}",
+      "mean_verbal_length": 61.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4152,8 +4152,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has predicate {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a directive information content entity that has predicate {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4172,8 +4172,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that evaluated during {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a directive information content entity that evaluated during {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4192,8 +4192,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has severity {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that has severity {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4250,7 +4250,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that verifies directive information content entity",
+      "verbal_template": "{X} is a process that verifies directive information content entity",
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4270,7 +4270,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that produces evidence {Y}",
+      "verbal_template": "{X} is a process that produces evidence {Y}",
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4290,7 +4290,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that via verification method {Y}",
+      "verbal_template": "{X} is a process that via verification method {Y}",
       "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4310,7 +4310,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that targets artifact {Y}",
+      "verbal_template": "{X} is a process that targets artifact {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4330,7 +4330,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that concludes with {Y}",
+      "verbal_template": "{X} is a process that concludes with {Y}",
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4388,7 +4388,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attests to control directive information content entity",
+      "verbal_template": "{X} is a process that attests to control directive information content entity",
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4407,7 +4407,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that signed by person",
+      "verbal_template": "{X} is a process that signed by person",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4427,7 +4427,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at attestation period {Y}",
+      "verbal_template": "{X} is a process that at attestation period {Y}",
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4447,7 +4447,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that with supporting evidence {Y}",
+      "verbal_template": "{X} is a process that with supporting evidence {Y}",
       "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4504,7 +4504,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that classifies artifact artifact",
+      "verbal_template": "{X} is a process that classifies artifact artifact",
       "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4524,7 +4524,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that assigns tier {Y}",
+      "verbal_template": "{X} is a process that assigns tier {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4544,7 +4544,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that under taxonomy {Y}",
+      "verbal_template": "{X} is a process that under taxonomy {Y}",
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4582,7 +4582,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that audits control directive information content entity",
+      "verbal_template": "{X} is a process that audits control directive information content entity",
       "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4602,7 +4602,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has findings {Y}",
+      "verbal_template": "{X} is a process that has findings {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4621,7 +4621,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that conducted by person",
+      "verbal_template": "{X} is a process that conducted by person",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4641,7 +4641,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for audit period {Y}",
+      "verbal_template": "{X} is a process that for audit period {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4679,8 +4679,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supersedes directive information content entity",
-      "mean_verbal_length": 69.0,
+      "verbal_template": "{X} is a directive information content entity that supersedes directive information content entity",
+      "mean_verbal_length": 98.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4698,8 +4698,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that traces to directive information content entity",
-      "mean_verbal_length": 68.0,
+      "verbal_template": "{X} is a directive information content entity that traces to directive information content entity",
+      "mean_verbal_length": 97.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4717,7 +4717,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that audits control artifact",
+      "verbal_template": "{X} is a process that audits control artifact",
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4736,7 +4736,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that verifies directive information content entity",
+      "verbal_template": "{X} is a process that verifies directive information content entity",
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -4755,8 +4755,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at classification tier designative information content entity",
-      "mean_verbal_length": 83.0,
+      "verbal_template": "{X} is a directive information content entity that at classification tier designative information content entity",
+      "mean_verbal_length": 112.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -4816,8 +4816,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attaches to hook {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that attaches to hook {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4836,8 +4836,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that writes to map {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that writes to map {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4856,8 +4856,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes syscall {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that observes syscall {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4876,8 +4876,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has program type {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that has program type {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4896,8 +4896,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has license {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is an artifact that has license {Y}",
+      "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4916,8 +4916,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that loaded in {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is an artifact that loaded in {Y}",
+      "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4936,8 +4936,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that verified safe by {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that verified safe by {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4956,8 +4956,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attaches to hook {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that attaches to hook {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4976,8 +4976,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -4996,8 +4996,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5015,8 +5015,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5058,8 +5058,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at kernel function {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that at kernel function {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5078,8 +5078,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that in kernel module {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that in kernel module {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5098,8 +5098,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has attached program {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is an artifact that has attached program {Y}",
+      "mean_verbal_length": 48.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5118,8 +5118,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for kernel subsystem {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is an artifact that for kernel subsystem {Y}",
+      "mean_verbal_length": 48.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5138,8 +5138,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has hook kind {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has hook kind {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5158,8 +5158,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes event {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is an artifact that observes event {Y}",
+      "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5178,8 +5178,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has hook kind {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has hook kind {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5198,8 +5198,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5217,8 +5217,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5237,8 +5237,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that in syscall subsystem {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is a designative information content entity that in syscall subsystem {Y}",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -5257,8 +5257,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that invoked by event {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a designative information content entity that invoked by event {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -5277,8 +5277,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has return type {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a designative information content entity that has return type {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -5297,8 +5297,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has argument count {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is a designative information content entity that has argument count {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -5317,8 +5317,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that traceable by {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a designative information content entity that traceable by {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -5337,8 +5337,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at security tier {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a designative information content entity that at security tier {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -5357,8 +5357,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that in syscall subsystem {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is a designative information content entity that in syscall subsystem {Y}",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -5438,8 +5438,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has map type {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is an artifact that has map type {Y}",
+      "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5458,8 +5458,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has key type {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is an artifact that has key type {Y}",
+      "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5478,8 +5478,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has value type map {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has value type map {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5498,8 +5498,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has max entries {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has max entries {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5518,8 +5518,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that used by program {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that used by program {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5538,8 +5538,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that pinned at path {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is an artifact that pinned at path {Y}",
+      "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5558,8 +5558,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has value type map {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has value type map {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5578,8 +5578,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5597,8 +5597,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5639,7 +5639,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes syscall designative information content entity",
+      "verbal_template": "{X} is a process that observes syscall designative information content entity",
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5658,7 +5658,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that via program artifact",
+      "verbal_template": "{X} is a process that via program artifact",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5677,7 +5677,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at kernel hook artifact",
+      "verbal_template": "{X} is a process that at kernel hook artifact",
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5696,8 +5696,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attaches to hook artifact",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is an artifact that attaches to hook artifact",
+      "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5715,8 +5715,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that writes to map artifact",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that writes to map artifact",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5734,8 +5734,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes syscall designative information content entity",
-      "mean_verbal_length": 77.0,
+      "verbal_template": "{X} is an artifact that observes syscall designative information content entity",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5753,8 +5753,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is an artifact that governed by directive information content entity",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -5833,7 +5833,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that uses entity {Y}",
+      "verbal_template": "{X} is a process that uses entity {Y}",
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5853,7 +5853,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that generates entity {Y}",
+      "verbal_template": "{X} is a process that generates entity {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5873,7 +5873,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that was associated with {Y}",
+      "verbal_template": "{X} is a process that was associated with {Y}",
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5893,7 +5893,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that started at time {Y}",
+      "verbal_template": "{X} is a process that started at time {Y}",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5913,7 +5913,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that ended at time {Y}",
+      "verbal_template": "{X} is a process that ended at time {Y}",
       "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5933,7 +5933,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that informed by {Y}",
+      "verbal_template": "{X} is a process that informed by {Y}",
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5953,7 +5953,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has input dataset {Y}",
+      "verbal_template": "{X} is a process that has input dataset {Y}",
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5973,7 +5973,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has output dataset {Y}",
+      "verbal_template": "{X} is a process that has output dataset {Y}",
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -5993,7 +5993,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that uses entity {Y}",
+      "verbal_template": "{X} is a process that uses entity {Y}",
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -6072,8 +6072,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that from source {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a descriptive information content entity that from source {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6092,8 +6092,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that to target {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a descriptive information content entity that to target {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6112,8 +6112,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that via transformation {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is a descriptive information content entity that via transformation {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6132,8 +6132,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at run time {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a descriptive information content entity that at run time {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6152,8 +6152,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that describes column flow {Y}",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is a descriptive information content entity that describes column flow {Y}",
+      "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6172,8 +6172,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that with provenance {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a descriptive information content entity that with provenance {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6192,8 +6192,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that within dataset {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that within dataset {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6233,8 +6233,8 @@
         "Z": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that from column {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a descriptive information content entity that from column {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6253,8 +6253,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has confidence {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that has confidence {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6292,7 +6292,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that executes transformation {Y}",
+      "verbal_template": "{X} is a process that executes transformation {Y}",
       "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -6312,7 +6312,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at run identifier {Y}",
+      "verbal_template": "{X} is a process that at run identifier {Y}",
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -6332,7 +6332,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has input facet {Y}",
+      "verbal_template": "{X} is a process that has input facet {Y}",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -6352,7 +6352,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has output facet {Y}",
+      "verbal_template": "{X} is a process that has output facet {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -6372,7 +6372,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that completed at {Y}",
+      "verbal_template": "{X} is a process that completed at {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -6392,7 +6392,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has run status {Y}",
+      "verbal_template": "{X} is a process that has run status {Y}",
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -6412,7 +6412,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that was associated with {Y}",
+      "verbal_template": "{X} is a process that was associated with {Y}",
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -6492,8 +6492,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has responsibility {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has responsibility {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6512,8 +6512,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that acted on behalf of {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that acted on behalf of {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6532,8 +6532,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has agent role {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is an artifact that has agent role {Y}",
+      "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6552,8 +6552,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that responsible for {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that responsible for {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6572,8 +6572,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that identified by uri {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is an artifact that identified by uri {Y}",
+      "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6592,8 +6592,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at organization {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that at organization {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6611,8 +6611,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6652,8 +6652,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that was derived from {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that was derived from {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6672,8 +6672,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that was revision of {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that was revision of {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6692,8 +6692,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that was generated by {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that was generated by {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6712,8 +6712,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that was attributed to {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is an artifact that was attributed to {Y}",
+      "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -6731,8 +6731,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is a descriptive information content entity that governed by directive information content entity",
+      "mean_verbal_length": 101.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6770,8 +6770,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has column {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is a descriptive information content entity that has column {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6833,8 +6833,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that over frame of discernment {Y}",
-      "mean_verbal_length": 51.0,
+      "verbal_template": "{X} is a descriptive information content entity that over frame of discernment {Y}",
+      "mean_verbal_length": 82.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6853,8 +6853,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that assigns mass to {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a descriptive information content entity that assigns mass to {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6873,8 +6873,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has normalization constant {Y}",
-      "mean_verbal_length": 52.0,
+      "verbal_template": "{X} is a descriptive information content entity that has normalization constant {Y}",
+      "mean_verbal_length": 83.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6893,8 +6893,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has focal element {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that has focal element {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6913,8 +6913,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that assigns mass to {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a descriptive information content entity that assigns mass to {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -6995,8 +6995,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has belief lower bound {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that has belief lower bound {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7015,8 +7015,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has plausibility upper bound {Y}",
-      "mean_verbal_length": 54.0,
+      "verbal_template": "{X} is a descriptive information content entity that has plausibility upper bound {Y}",
+      "mean_verbal_length": 85.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7035,8 +7035,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for claim {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is a descriptive information content entity that for claim {Y}",
+      "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7055,8 +7055,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at confidence level {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a descriptive information content entity that at confidence level {Y}",
+      "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7075,8 +7075,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has belief lower bound {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that has belief lower bound {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7157,8 +7157,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supports claim {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that supports claim {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7177,8 +7177,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that refutes claim {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a descriptive information content entity that refutes claim {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7197,8 +7197,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has evidence source {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a descriptive information content entity that has evidence source {Y}",
+      "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7217,8 +7217,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at quality tier {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a descriptive information content entity that at quality tier {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7237,8 +7237,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has mass function {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that has mass function {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7297,8 +7297,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that claim about {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is a descriptive information content entity that claim about {Y}",
+      "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7317,8 +7317,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supported by evidence {Y}",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is a descriptive information content entity that supported by evidence {Y}",
+      "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7337,8 +7337,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that refuted by evidence {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a descriptive information content entity that refuted by evidence {Y}",
+      "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7357,8 +7357,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has belief interval {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a descriptive information content entity that has belief interval {Y}",
+      "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7454,8 +7454,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is a descriptive information content entity that governed by directive information content entity",
+      "mean_verbal_length": 101.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7474,8 +7474,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has full name {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has full name {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7494,8 +7494,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has email {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is an artifact that has email {Y}",
+      "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7514,8 +7514,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has birthplace {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is an artifact that has birthplace {Y}",
+      "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7534,8 +7534,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has affiliation {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has affiliation {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7554,8 +7554,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has role at {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is an artifact that has role at {Y}",
+      "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7574,8 +7574,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has country {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is an artifact that has country {Y}",
+      "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7594,8 +7594,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has tax id {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is an artifact that has tax id {Y}",
+      "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7614,8 +7614,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has legal name {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is an artifact that has legal name {Y}",
+      "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7634,8 +7634,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has postal address {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has postal address {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7654,8 +7654,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has geo coordinates {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is an artifact that has geo coordinates {Y}",
+      "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7674,8 +7674,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has latitude {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is an artifact that has latitude {Y}",
+      "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7694,8 +7694,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has longitude {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has longitude {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7714,8 +7714,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has event start time {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is an artifact that has event start time {Y}",
+      "mean_verbal_length": 48.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7734,8 +7734,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has event end time {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has event end time {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7754,8 +7754,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has event location {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has event location {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7774,8 +7774,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has organizer {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has organizer {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7794,8 +7794,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has author {Y}",
-      "mean_verbal_length": 36.0,
+      "verbal_template": "{X} is an artifact that has author {Y}",
+      "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7814,8 +7814,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has date published {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has date published {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7834,8 +7834,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has publisher {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has publisher {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7854,8 +7854,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has brand {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is an artifact that has brand {Y}",
+      "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7874,8 +7874,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has sku {Y}",
-      "mean_verbal_length": 33.0,
+      "verbal_template": "{X} is an artifact that has sku {Y}",
+      "mean_verbal_length": 35.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7894,8 +7894,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has price {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is an artifact that has price {Y}",
+      "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7914,8 +7914,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has review rating {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is an artifact that has review rating {Y}",
+      "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7934,8 +7934,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has review author {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is an artifact that has review author {Y}",
+      "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7954,8 +7954,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that reviews item {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is an artifact that reviews item {Y}",
+      "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -7974,8 +7974,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that annotates column {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a descriptive information content entity that annotates column {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -7994,8 +7994,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has tag confidence {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is a descriptive information content entity that has tag confidence {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8014,8 +8014,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that by annotator {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a descriptive information content entity that by annotator {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8034,8 +8034,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that annotates property of {Y}",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is a descriptive information content entity that annotates property of {Y}",
+      "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8054,8 +8054,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has subject column {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is a descriptive information content entity that has subject column {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8074,8 +8074,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has object column {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that has object column {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8094,8 +8094,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has table topic {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a descriptive information content entity that has table topic {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8114,8 +8114,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that matches entity {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that matches entity {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8134,8 +8134,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that foreign key to {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that foreign key to {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8154,8 +8154,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that is primary key of {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that is primary key of {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8174,8 +8174,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has fdleft hand side {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is a descriptive information content entity that has fdleft hand side {Y}",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8194,8 +8194,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has fdright hand side {Y}",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is a descriptive information content entity that has fdright hand side {Y}",
+      "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8214,8 +8214,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has distinctness ratio {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that has distinctness ratio {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8234,8 +8234,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has nullability state {Y}",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is a descriptive information content entity that has nullability state {Y}",
+      "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8254,8 +8254,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has value distribution {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that has value distribution {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8274,8 +8274,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that sourced from table {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is a descriptive information content entity that sourced from table {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8294,8 +8294,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that entity type belongs to {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that entity type belongs to {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8314,8 +8314,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that matches ontology class {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that matches ontology class {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8334,8 +8334,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that aligned to schema org label {Y}",
-      "mean_verbal_length": 53.0,
+      "verbal_template": "{X} is a descriptive information content entity that aligned to schema org label {Y}",
+      "mean_verbal_length": 84.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8354,8 +8354,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that aligned to dbpedia label {Y}",
-      "mean_verbal_length": 50.0,
+      "verbal_template": "{X} is a descriptive information content entity that aligned to dbpedia label {Y}",
+      "mean_verbal_length": 81.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8374,8 +8374,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that nist80053 control {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a directive information content entity that nist80053 control {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8394,8 +8394,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at nistimpact level {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a directive information content entity that at nistimpact level {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8414,8 +8414,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at nistimpact level {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a directive information content entity that at nistimpact level {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8434,8 +8434,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at nistimpact level {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a directive information content entity that at nistimpact level {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8454,8 +8454,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that iso27001 clause {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that iso27001 clause {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8474,8 +8474,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that iso27001 annex a {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a directive information content entity that iso27001 annex a {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8494,8 +8494,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that soc2 trust criterion {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is a directive information content entity that soc2 trust criterion {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8514,8 +8514,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for soc2 domain {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that for soc2 domain {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8534,8 +8534,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for soc2 domain {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that for soc2 domain {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8554,8 +8554,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for soc2 domain {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that for soc2 domain {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8574,8 +8574,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for soc2 domain {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that for soc2 domain {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8594,8 +8594,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for soc2 domain {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that for soc2 domain {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8614,8 +8614,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that gdpr article {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a directive information content entity that gdpr article {Y}",
+      "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8634,8 +8634,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has lawful basis {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a directive information content entity that has lawful basis {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8654,8 +8654,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that grants data subject right {Y}",
-      "mean_verbal_length": 51.0,
+      "verbal_template": "{X} is a directive information content entity that grants data subject right {Y}",
+      "mean_verbal_length": 80.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8674,8 +8674,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that hipaa safeguard {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that hipaa safeguard {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8694,8 +8694,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that hipaa safeguard {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that hipaa safeguard {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8714,8 +8714,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that hipaa safeguard {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a directive information content entity that hipaa safeguard {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8734,8 +8734,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that pci dss requirement {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a directive information content entity that pci dss requirement {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8754,8 +8754,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at nistimpact level {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a directive information content entity that at nistimpact level {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -8774,8 +8774,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that combines via dempster {Y}",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is a descriptive information content entity that combines via dempster {Y}",
+      "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8794,8 +8794,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has first combinant {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a descriptive information content entity that has first combinant {Y}",
+      "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8814,8 +8814,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has second combinant {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is a descriptive information content entity that has second combinant {Y}",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8834,8 +8834,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has conflict mass {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that has conflict mass {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8854,8 +8854,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that conjunctively combines {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that conjunctively combines {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8874,8 +8874,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that disjunctively combines {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that disjunctively combines {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8894,8 +8894,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that yager combines {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that yager combines {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8914,8 +8914,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that refines frame {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a descriptive information content entity that refines frame {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8934,8 +8934,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that coarsens frame {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is a descriptive information content entity that coarsens frame {Y}",
+      "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8954,8 +8954,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has pignistic transform {Y}",
-      "mean_verbal_length": 49.0,
+      "verbal_template": "{X} is a descriptive information content entity that has pignistic transform {Y}",
+      "mean_verbal_length": 80.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8974,8 +8974,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that plausibility for claim {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is a descriptive information content entity that plausibility for claim {Y}",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -8994,8 +8994,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that belief for claim {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a descriptive information content entity that belief for claim {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9014,8 +9014,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that evidence independent of {Y}",
-      "mean_verbal_length": 49.0,
+      "verbal_template": "{X} is a descriptive information content entity that evidence independent of {Y}",
+      "mean_verbal_length": 80.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9034,8 +9034,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that evidence correlated with {Y}",
-      "mean_verbal_length": 50.0,
+      "verbal_template": "{X} is a descriptive information content entity that evidence correlated with {Y}",
+      "mean_verbal_length": 81.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9054,8 +9054,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has normalized form {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a descriptive information content entity that has normalized form {Y}",
+      "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9074,8 +9074,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has schema version {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has schema version {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9094,8 +9094,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that schema revision of {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that schema revision of {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9114,8 +9114,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has column version {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is a descriptive information content entity that has column version {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9134,8 +9134,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that renamed from {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a descriptive information content entity that renamed from {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9154,8 +9154,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that type changed from {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that type changed from {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9174,8 +9174,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that added at schema version {Y}",
-      "mean_verbal_length": 49.0,
+      "verbal_template": "{X} is a descriptive information content entity that added at schema version {Y}",
+      "mean_verbal_length": 80.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9194,8 +9194,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that dropped at schema version {Y}",
-      "mean_verbal_length": 51.0,
+      "verbal_template": "{X} is a descriptive information content entity that dropped at schema version {Y}",
+      "mean_verbal_length": 82.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9214,8 +9214,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that snapshot of {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is an artifact that snapshot of {Y}",
+      "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9234,8 +9234,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at dataset version {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that at dataset version {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9254,8 +9254,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that breaking change for {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is a descriptive information content entity that breaking change for {Y}",
+      "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9274,8 +9274,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that non breaking change for {Y}",
-      "mean_verbal_length": 49.0,
+      "verbal_template": "{X} is a descriptive information content entity that non breaking change for {Y}",
+      "mean_verbal_length": 80.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9294,7 +9294,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that migrates schema to {Y}",
+      "verbal_template": "{X} is a process that migrates schema to {Y}",
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -9314,8 +9314,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that rolls back to {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is a descriptive information content entity that rolls back to {Y}",
+      "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9334,8 +9334,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that forward compatible with {Y}",
-      "mean_verbal_length": 49.0,
+      "verbal_template": "{X} is a descriptive information content entity that forward compatible with {Y}",
+      "mean_verbal_length": 80.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9354,8 +9354,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that backward compatible with {Y}",
-      "mean_verbal_length": 50.0,
+      "verbal_template": "{X} is a descriptive information content entity that backward compatible with {Y}",
+      "mean_verbal_length": 81.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9374,7 +9374,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has span context {Y}",
+      "verbal_template": "{X} is a process that has span context {Y}",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -9394,7 +9394,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has parent span {Y}",
+      "verbal_template": "{X} is a process that has parent span {Y}",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -9414,7 +9414,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has trace id {Y}",
+      "verbal_template": "{X} is a process that has trace id {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -9434,7 +9434,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has span attribute {Y}",
+      "verbal_template": "{X} is a process that has span attribute {Y}",
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -9454,7 +9454,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has span status {Y}",
+      "verbal_template": "{X} is a process that has span status {Y}",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -9474,7 +9474,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that emits metric {Y}",
+      "verbal_template": "{X} is a process that emits metric {Y}",
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -9494,8 +9494,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has metric unit {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has metric unit {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9514,8 +9514,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has aggregation temporality {Y}",
-      "mean_verbal_length": 53.0,
+      "verbal_template": "{X} is an artifact that has aggregation temporality {Y}",
+      "mean_verbal_length": 55.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9534,8 +9534,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has metric kind {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has metric kind {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9554,8 +9554,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has metric kind {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has metric kind {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9574,8 +9574,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has metric kind {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has metric kind {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9594,8 +9594,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has metric kind {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has metric kind {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9614,8 +9614,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has log severity {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that has log severity {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9634,8 +9634,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has resource attribute {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is an artifact that has resource attribute {Y}",
+      "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9654,8 +9654,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that within span context {Y}",
-      "mean_verbal_length": 45.0,
+      "verbal_template": "{X} is an artifact that within span context {Y}",
+      "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9674,8 +9674,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has root span {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has root span {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9694,8 +9694,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has service name {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that has service name {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9714,8 +9714,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that anomaly in metric {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is a descriptive information content entity that anomaly in metric {Y}",
+      "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9734,8 +9734,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that baseline for {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a descriptive information content entity that baseline for {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -9754,7 +9754,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that triggered by metric {Y}",
+      "verbal_template": "{X} is a process that triggered by metric {Y}",
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -9774,8 +9774,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attaches to return hook {Y}",
-      "mean_verbal_length": 49.0,
+      "verbal_template": "{X} is an artifact that attaches to return hook {Y}",
+      "mean_verbal_length": 51.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9794,8 +9794,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has perf event config {Y}",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is an artifact that has perf event config {Y}",
+      "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9814,8 +9814,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has bpfhelper function {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is an artifact that has bpfhelper function {Y}",
+      "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9834,8 +9834,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that called by program {Y}",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is an artifact that called by program {Y}",
+      "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9854,8 +9854,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has ring buffer config {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is an artifact that has ring buffer config {Y}",
+      "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9874,8 +9874,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has perf buffer config {Y}",
-      "mean_verbal_length": 48.0,
+      "verbal_template": "{X} is an artifact that has perf buffer config {Y}",
+      "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9894,8 +9894,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has lruhash config {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has lruhash config {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9914,8 +9914,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has xdpaction {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has xdpaction {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9934,8 +9934,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has xdpaction {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has xdpaction {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9954,8 +9954,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has xdpaction {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has xdpaction {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9974,8 +9974,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has tcdirection {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has tcdirection {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -9994,8 +9994,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attaches to cgroup {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that attaches to cgroup {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -10014,7 +10014,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that with process id {Y}",
+      "verbal_template": "{X} is a process that with process id {Y}",
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -10034,7 +10034,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that with thread id {Y}",
+      "verbal_template": "{X} is a process that with thread id {Y}",
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -10054,7 +10054,7 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that with process comm {Y}",
+      "verbal_template": "{X} is a process that with process comm {Y}",
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -10073,7 +10073,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supports claim descriptive information content entity",
+      "verbal_template": "{X} is a process that supports claim descriptive information content entity",
       "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -10092,7 +10092,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that produces evidence descriptive information content entity",
+      "verbal_template": "{X} is a process that produces evidence descriptive information content entity",
       "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -10111,7 +10111,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
+      "verbal_template": "{X} is a process that governed by directive information content entity",
       "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -10130,8 +10130,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is an artifact that governed by directive information content entity",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -10149,8 +10149,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that describes transformation process",
-      "mean_verbal_length": 54.0,
+      "verbal_template": "{X} is a descriptive information content entity that describes transformation process",
+      "mean_verbal_length": 85.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -10168,8 +10168,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is a designative information content entity that governed by directive information content entity",
+      "mean_verbal_length": 101.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -10225,8 +10225,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attests to artifact artifact",
-      "mean_verbal_length": 50.0,
+      "verbal_template": "{X} is a directive information content entity that attests to artifact artifact",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -10244,8 +10244,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that evidence for process process",
-      "mean_verbal_length": 50.0,
+      "verbal_template": "{X} is a descriptive information content entity that evidence for process process",
+      "mean_verbal_length": 81.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -10263,8 +10263,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that signs process process",
-      "mean_verbal_length": 43.0,
+      "verbal_template": "{X} is an artifact that signs process process",
+      "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
       ],
@@ -10282,8 +10282,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that under audit process",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that under audit process",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
       ],
@@ -10301,8 +10301,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is a descriptive information content entity that governed by directive information content entity",
+      "mean_verbal_length": 101.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -10320,8 +10320,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supports claim descriptive information content entity",
-      "mean_verbal_length": 75.0,
+      "verbal_template": "{X} is an artifact that supports claim descriptive information content entity",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -10339,7 +10339,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes syscall designative information content entity",
+      "verbal_template": "{X} is a process that observes syscall designative information content entity",
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -10358,7 +10358,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attests to claim descriptive information content entity",
+      "verbal_template": "{X} is a process that attests to claim descriptive information content entity",
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -10377,8 +10377,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that combines via dempster descriptive information content entity",
-      "mean_verbal_length": 82.0,
+      "verbal_template": "{X} is an artifact that combines via dempster descriptive information content entity",
+      "mean_verbal_length": 84.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -10396,8 +10396,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that supports claim descriptive information content entity",
-      "mean_verbal_length": 75.0,
+      "verbal_template": "{X} is an artifact that supports claim descriptive information content entity",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -10415,7 +10415,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
+      "verbal_template": "{X} is a process that governed by directive information content entity",
       "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -10434,8 +10434,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is an artifact that governed by directive information content entity",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -10454,8 +10454,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -10474,8 +10474,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -10494,8 +10494,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that is about {Y}",
-      "mean_verbal_length": 34.0,
+      "verbal_template": "{X} is a descriptive information content entity that is about {Y}",
+      "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
@@ -10514,8 +10514,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governs {Y}",
-      "mean_verbal_length": 33.0,
+      "verbal_template": "{X} is a directive information content entity that governs {Y}",
+      "mean_verbal_length": 62.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
@@ -10750,5 +10750,6 @@
         "branch": "AxiomFamily.boosters"
       }
     }
-  ]
+  ],
+  "null_stats": {}
 }

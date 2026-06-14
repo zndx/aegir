@@ -9,8 +9,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attaches to hook {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that attaches to hook {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -29,8 +29,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that writes to map {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that writes to map {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -49,8 +49,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes syscall {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that observes syscall {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -69,8 +69,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has program type {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that has program type {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -89,8 +89,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has license {Y}",
-      "mean_verbal_length": 37.0,
+      "verbal_template": "{X} is an artifact that has license {Y}",
+      "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -109,8 +109,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that loaded in {Y}",
-      "mean_verbal_length": 35.0,
+      "verbal_template": "{X} is an artifact that loaded in {Y}",
+      "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -129,8 +129,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that verified safe by {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that verified safe by {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -149,8 +149,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attaches to hook {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that attaches to hook {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -169,8 +169,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -189,8 +189,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -208,8 +208,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -251,8 +251,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at kernel function {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that at kernel function {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -271,8 +271,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that in kernel module {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is an artifact that in kernel module {Y}",
+      "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -291,8 +291,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has attached program {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is an artifact that has attached program {Y}",
+      "mean_verbal_length": 48.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -311,8 +311,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that for kernel subsystem {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is an artifact that for kernel subsystem {Y}",
+      "mean_verbal_length": 48.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -331,8 +331,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has hook kind {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has hook kind {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -351,8 +351,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes event {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is an artifact that observes event {Y}",
+      "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -371,8 +371,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has hook kind {Y}",
-      "mean_verbal_length": 39.0,
+      "verbal_template": "{X} is an artifact that has hook kind {Y}",
+      "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -391,8 +391,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -410,8 +410,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -430,8 +430,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that in syscall subsystem {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is a designative information content entity that in syscall subsystem {Y}",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -450,8 +450,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that invoked by event {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a designative information content entity that invoked by event {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -470,8 +470,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has return type {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is a designative information content entity that has return type {Y}",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -490,8 +490,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has argument count {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is a designative information content entity that has argument count {Y}",
+      "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -510,8 +510,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that traceable by {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is a designative information content entity that traceable by {Y}",
+      "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -530,8 +530,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at security tier {Y}",
-      "mean_verbal_length": 42.0,
+      "verbal_template": "{X} is a designative information content entity that at security tier {Y}",
+      "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -550,8 +550,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that in syscall subsystem {Y}",
-      "mean_verbal_length": 46.0,
+      "verbal_template": "{X} is a designative information content entity that in syscall subsystem {Y}",
+      "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
@@ -631,8 +631,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has map type {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is an artifact that has map type {Y}",
+      "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -651,8 +651,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has key type {Y}",
-      "mean_verbal_length": 38.0,
+      "verbal_template": "{X} is an artifact that has key type {Y}",
+      "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -671,8 +671,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has value type map {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has value type map {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -691,8 +691,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has max entries {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that has max entries {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -711,8 +711,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that used by program {Y}",
-      "mean_verbal_length": 41.0,
+      "verbal_template": "{X} is an artifact that used by program {Y}",
+      "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -731,8 +731,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that pinned at path {Y}",
-      "mean_verbal_length": 40.0,
+      "verbal_template": "{X} is an artifact that pinned at path {Y}",
+      "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -751,8 +751,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that has value type map {Y}",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that has value type map {Y}",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -771,8 +771,8 @@
         "Y": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -790,8 +790,8 @@
         "X": "Class"
       },
       "is_complex": false,
-      "verbal_template": "{X} is a artifact",
-      "mean_verbal_length": 17.0,
+      "verbal_template": "{X} is an artifact",
+      "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -832,7 +832,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes syscall designative information content entity",
+      "verbal_template": "{X} is a process that observes syscall designative information content entity",
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -851,7 +851,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that via program artifact",
+      "verbal_template": "{X} is a process that via program artifact",
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -870,7 +870,7 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that at kernel hook artifact",
+      "verbal_template": "{X} is a process that at kernel hook artifact",
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -889,8 +889,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that attaches to hook artifact",
-      "mean_verbal_length": 47.0,
+      "verbal_template": "{X} is an artifact that attaches to hook artifact",
+      "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -908,8 +908,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that writes to map artifact",
-      "mean_verbal_length": 44.0,
+      "verbal_template": "{X} is an artifact that writes to map artifact",
+      "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -927,8 +927,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that observes syscall designative information content entity",
-      "mean_verbal_length": 77.0,
+      "verbal_template": "{X} is an artifact that observes syscall designative information content entity",
+      "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
@@ -946,8 +946,8 @@
         "X": "Class"
       },
       "is_complex": true,
-      "verbal_template": "{X} is something that governed by directive information content entity",
-      "mean_verbal_length": 70.0,
+      "verbal_template": "{X} is an artifact that governed by directive information content entity",
+      "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
