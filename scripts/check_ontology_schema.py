@@ -99,7 +99,10 @@ def check_catalog_file(path: Path) -> tuple[int, int]:
 
 
 def main() -> int:
-    catalog_files = sorted(CATALOG_DIR.glob("*.json"))
+    # null_stats*.json are R_D normalization artifacts, not catalogs (no
+    # `templates` key) — skip them so the glob only validates catalog files.
+    catalog_files = [f for f in sorted(CATALOG_DIR.glob("*.json"))
+                     if not f.name.startswith("null_stats")]
     if not catalog_files:
         print(f"no catalog files found under {CATALOG_DIR.relative_to(REPO_ROOT)}")
         return 0
