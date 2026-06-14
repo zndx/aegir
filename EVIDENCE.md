@@ -14,7 +14,7 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 
 | id | claim | gates (what may not proceed until green) | status |
 |----|-------|------------------------------------------|--------|
-| E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PARTIAL** — coarse/cross-model signal real; within-model NOT CI-clean → re-derive before fine-grained gating |
+| E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PARTIAL** — valid cross-model / whole-corpus; within-model gating set aside (S1→S3 proxy refuted: no spread; composite spread doesn't translate). Lever = model-selection + whole-corpus filter |
 | E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **UNBUILT** |
 | E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **UNTESTED** |
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
@@ -72,6 +72,21 @@ mixed-corpus result stands for whole-corpus filtering), but it cannot CI-cleanly
 no fine-grained proxy-gated filtering/reward until the proxy is re-derived against the canonical
 ground (T_I_canonical/coverage_v1) — the re-grounded R_topic/R_axiom are the natural candidates,
 re-testable with this exact harness (e1_split --model-filter + matched pretrains + probes).**
+
+**RE-DERIVATION — $0 proxy screen (2026-06-14, `scripts/e1_proxy_screen.py`).** E6-A produced a fresh
+within-model proxy candidate (the S1→S3 transfer). Before re-pretraining, screened its within-model
+DISCRIMINATIVE SPREAD against the composite (a ranker needs spread to define meaningful quartiles).
+**S1→S3 is nearly constant within a model** — GLM cv=**0.033** (p90-p10=0.055), Grok cv=0.034 — vs the
+composite's cv=0.50. This is intrinsic, not a bug: S1→S3 measures ontology↔prose correspondence and
+*every* full-arm chapter was generated from the ontology, so all score high+similar. **S1→S3 is an
+on-path detector (E6-A), NOT a within-model quality ranker — REFUTED for that role.** Re-splitting
+quartiles by it would yield near-identical chapters; the screen avoids a foregone-null GPU run.
+Meanwhile the composite HAS within-model spread (cv 0.50) yet E1 already showed that spread does not
+translate to downstream value within a model. **Net: no available per-chapter proxy CI-cleanly ranks
+within-model pretraining value; the validated, actionable levers are MODEL SELECTION (prefer GLM —
+S1→S3 0.962 vs Grok 0.927, and Grok leans on input not ontology, cohering with E1) and WHOLE-CORPUS
+composite filtering. E1 stays PARTIAL; within-model fine-grained gating is set aside (not merely
+deferred) unless a future proxy clears this spread+translation bar.** Artifact: `evidence/e6a/per_chapter.json`.
 
 ## E6 — instrument: pipeline topic-coherence trace + lexical preservation
 

@@ -133,7 +133,8 @@ def main() -> int:
         s1 = " ".join(strip_slots(verbal.get(tid, "")) for tid in (c["template_ids"] or []))
         s3 = c["response_text"] or ""
         if s0.strip() and s1.strip() and s3.strip():
-            rows.append({"model": c["model"], "topic": c["target_topic_id"], "s0": s0, "s1": s1, "s3": s3})
+            rows.append({"chapter_id": c["chapter_id"], "model": c["model"],
+                         "topic": c["target_topic_id"], "s0": s0, "s1": s1, "s3": s3})
     print(f"usable (all stages present): {len(rows)}")
 
     # encode each stage -> doc embeddings -> canonical signatures
@@ -190,6 +191,16 @@ def main() -> int:
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(out, indent=2) + "\n")
     print(f"\nwrote {args.out}")
+
+    # per-chapter transfers (for the E1 re-derivation proxy candidate)
+    s0s1 = row_cos(S0, S1); s1s3 = row_cos(S1, S3); s0s3 = row_cos(S0, S3)
+    per = [{"chapter_id": rows[k]["chapter_id"], "model": rows[k]["model"],
+            "topic": rows[k]["topic"], "s0s1": float(s0s1[i]),
+            "s1s3": float(s1s3[i]), "s0s3": float(s0s3[i])}
+           for i, k in enumerate(keep)]
+    per_path = Path(args.out).with_name("per_chapter.json")
+    per_path.write_text(json.dumps(per) + "\n")
+    print(f"wrote {per_path} ({len(per)} chapters)")
     # verdict
     s1s3 = out["transfers"]["S1->S3"]
     s0s3 = out["transfers"]["S0->S3"]
