@@ -65,6 +65,18 @@ SLOT_RE = re.compile(r"\{(?P<name>\w+):(?P<type>[\w:]+?)(?::(?P<bound>[\w:]+))?\
 MARKER_PREFIX = "ZZ"
 MARKER_SUFFIX = "ZZ"
 MARKER_RE = re.compile(MARKER_PREFIX + r"(\w+?)" + MARKER_SUFFIX)
+# Tolerant variant: DeepOnto's verbaliser de-camelCases property labels, so a
+# marker ``ZZisEditionOfZZ`` comes back as ``ZZis edition ofZZ`` (interior
+# spaces) — which `MARKER_RE`'s ``\w+?`` cannot match. The loose form captures
+# the mangled content so it can be normalized back to the originating slot.
+MARKER_LOOSE_RE = re.compile(MARKER_PREFIX + r"(.+?)" + MARKER_SUFFIX)
+
+
+def _norm_marker(s: str) -> str:
+    """Collapse a (possibly de-camelCased) marker body to a comparison key:
+    strip non-alphanumerics, lowercase. ``"is edition of"`` and
+    ``"isEditionOf"`` both map to ``"iseditionof"``."""
+    return re.sub(r"[^a-z0-9]", "", s.lower())
 
 # Test-namespace URI used for placeholder filler IRIs during the
 # offline pass. Confined to the harness; never appears in
@@ -97,6 +109,31 @@ def ensure_jvm(memory: str | None = None) -> None:
         init_jvm(mem)
     _JVM_STARTED = True
     logger.info("JVM started with %s memory", mem)
+    _warmup_verbaliser()
+
+
+def _warmup_verbaliser() -> None:
+    """Force the verbaliser's lazy NLP stack (spaCy/transformers) to load
+    on a throwaway probe.
+
+    The FIRST real verbalization after JVM start intermittently returns
+    empty because the NLP model loads mid-call. Left unwarmed, that would
+    spuriously fail the generator's DeepOnto gate (and any catalog rebuild)
+    for whichever construct happens to be probed first. Discards the result;
+    never raises.
+    """
+    try:
+        probe_template(CatalogTemplate(
+            template_id="__warmup__",
+            manchester_template=(
+                "Class: {X:Class} SubClassOf: cco:Artifact, "
+                "{p:ObjectProperty} some {Y:Class}"
+            ),
+            slot_types={"X": "Class", "p": "ObjectProperty", "Y": "Class"},
+            bfo_anchor_path=["cco:Artifact"],
+        ))
+    except Exception as e:  # warmup is best-effort; JVM is up regardless
+        logger.debug("verbaliser warmup probe failed (non-fatal): %s", e)
 
 
 # ---- Probe result ----
@@ -286,6 +323,23 @@ PUBLIC_LABELS: dict[str, str] = {
 }
 
 
+def _local_label(curie: str) -> str:
+    """Derive a human-readable label from a CURIE.
+
+    Looks up canonical labels in :data:`PUBLIC_LABELS` first
+    (handles BFO numeric IRIs and CCO upper structure where
+    local-name extraction would produce useless fragments).
+    Falls back to a CamelCase / underscore / hyphen split of
+    the local name for IRIs not in the dictionary.
+    """
+    if curie in PUBLIC_LABELS:
+        return PUBLIC_LABELS[curie]
+    local = curie.split(":", 1)[1] if ":" in curie else curie
+    spaced = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", local)
+    spaced = spaced.replace("_", " ").replace("-", " ")
+    return spaced.lower()
+
+
 def _auto_declare_referenced_iris(template: CatalogTemplate, slot_filler_iris: set[str]) -> str:
     """Emit Class/ObjectProperty stubs for any IRI in the template
     body that isn't a slot.
@@ -332,22 +386,6 @@ def _auto_declare_referenced_iris(template: CatalogTemplate, slot_filler_iris: s
         else:
             class_tokens.add(clean)
 
-    def _local_label(curie: str) -> str:
-        """Derive a human-readable label from a CURIE.
-
-        Looks up canonical labels in :data:`PUBLIC_LABELS` first
-        (handles BFO numeric IRIs and CCO upper structure where
-        local-name extraction would produce useless fragments).
-        Falls back to a CamelCase / underscore / hyphen split of
-        the local name for IRIs not in the dictionary.
-        """
-        if curie in PUBLIC_LABELS:
-            return PUBLIC_LABELS[curie]
-        local = curie.split(":", 1)[1] if ":" in curie else curie
-        spaced = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", local)
-        spaced = spaced.replace("_", " ").replace("-", " ")
-        return spaced.lower()
-
     decls: list[str] = []
     for tok in sorted(object_property_tokens):
         label = _local_label(tok)
@@ -369,20 +407,34 @@ def _auto_declare_referenced_iris(template: CatalogTemplate, slot_filler_iris: s
 # ---- Verbalize ----
 
 
-def _markers_to_slots(verbal: str) -> str:
-    """Replace ``ZZ<name>ZZ`` markers in a verbalization with
-    ``{<name>}`` slot placeholders."""
-    return MARKER_RE.sub(lambda m: "{" + m.group(1) + "}", verbal)
+def _markers_to_slots(verbal: str, slot_names: set[str] | None = None) -> str:
+    """Replace ``ZZ<name>ZZ`` markers in a verbalization with ``{<name>}``
+    slot placeholders.
+
+    When ``slot_names`` is supplied, a marker whose body was de-camelCased by
+    the verbaliser (``ZZis edition ofZZ``) is normalized and matched back to
+    its originating slot (``{isEditionOf}``) so the canonical slot name — the
+    key downstream consumers (DDL, chapter prompt) join on — is recovered. A
+    marker with no slot match falls back to its space-collapsed body.
+    """
+    lookup = {_norm_marker(n): n for n in (slot_names or set())}
+
+    def _sub(m: re.Match) -> str:
+        body = m.group(1)
+        name = lookup.get(_norm_marker(body)) or re.sub(r"\s+", "", body)
+        return "{" + name + "}"
+
+    return MARKER_LOOSE_RE.sub(_sub, verbal)
 
 
 def _marker_count(verbal: str) -> int:
-    """Count the distinct ``ZZ<name>ZZ`` slot markers in a
-    pre-substitution verbalization. Used by the candidate
-    selector in :func:`_verbalize_for_template` to prefer
-    slot-bearing restriction verbalizations over parent-class
-    verbalizations whose body has no slots.
+    """Count the distinct slot markers in a pre-substitution verbalization
+    (normalized, so de-camelCased markers still count). Used by the candidate
+    selector in :func:`_verbalize_for_template` to prefer slot-bearing
+    restriction verbalizations over parent-class verbalizations whose body
+    has no slots.
     """
-    return len(set(MARKER_RE.findall(verbal)))
+    return len({_norm_marker(b) for b in MARKER_LOOSE_RE.findall(verbal)})
 
 
 def _head_slot_name(template: CatalogTemplate) -> str | None:
@@ -398,11 +450,111 @@ def _head_slot_name(template: CatalogTemplate) -> str | None:
     return None
 
 
+_FRAME_KEYWORDS = ("Class:", "ObjectProperty:", "DataProperty:",
+                   "Individual:", "DisjointWith:", "Annotations:")
+
+
+def _superclass_rhs(template: CatalogTemplate) -> str:
+    """Return the right-hand side of the head class's ``SubClassOf:``
+    (or ``EquivalentTo:``) frame — the asserted superclass expression,
+    up to the next frame keyword. Empty when neither frame is present.
+    """
+    body = template.manchester_template
+    for kw in ("SubClassOf:", "EquivalentTo:"):
+        idx = body.find(kw)
+        if idx == -1:
+            continue
+        rest = body[idx + len(kw):]
+        cut = len(rest)
+        for fk in _FRAME_KEYWORDS:
+            j = rest.find(fk)
+            if j != -1:
+                cut = min(cut, j)
+        return rest[:cut]
+    return ""
+
+
+def _split_conjuncts(rhs: str) -> list[str]:
+    """Split a superclass expression on its *top-level* commas
+    (Manchester intersection), respecting parenthesis nesting."""
+    parts: list[str] = []
+    depth = 0
+    cur: list[str] = []
+    for ch in rhs:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        if ch == "," and depth == 0:
+            parts.append("".join(cur))
+            cur = []
+        else:
+            cur.append(ch)
+    if cur:
+        parts.append("".join(cur))
+    return [p.strip() for p in parts if p.strip()]
+
+
+def _named_superclass_label(template: CatalogTemplate) -> str | None:
+    """Label of the named-class conjunct asserted as a superclass of
+    the head (the BFO/CCO anchor in ``X SubClassOf: cco:Artifact, ...``).
+
+    This is the conjunct DeepOnto drops when it verbalizes the restriction
+    conjuncts with an implicit subject ("... is something that ..."). It is
+    explicitly asserted in the axiom and has a resolvable label, so restoring
+    it (see :func:`_restore_anchor_noun`) recovers a faithful reading rather
+    than manufacturing one. Prefers the conjunct equal to the template's
+    declared anchor; falls back to the first named conjunct.
+    """
+    rhs = _superclass_rhs(template)
+    if not rhs:
+        return None
+    named: list[str] = []
+    for conj in _split_conjuncts(rhs):
+        if "{" in conj or "}" in conj:  # carries a slot — a restriction, not a named parent
+            continue
+        if conj in MANCHESTER_KEYWORDS:
+            continue
+        if CURIE_RE.fullmatch(conj):
+            named.append(conj)
+    if not named:
+        return None
+    anchor = template.bfo_anchor_path[-1] if template.bfo_anchor_path else None
+    chosen = anchor if anchor in named else named[0]
+    return _local_label(chosen)
+
+
+def _indef(phrase: str) -> str:
+    """Indefinite article for ``phrase`` by a simple vowel heuristic."""
+    s = phrase.lstrip()
+    return "an" if s[:1].lower() in "aeiou" else "a"
+
+
+def _restore_anchor_noun(verbal: str, label: str | None) -> str:
+    """Replace DeepOnto's vacuous implicit subject ("is something …")
+    with the asserted anchor noun ("is a process …").
+
+    No-op when ``label`` is None or the verbalization carries no
+    "something" head (e.g. it already names a parent, or is an
+    equivalence axiom). Substitutes the first occurrence only.
+    """
+    if not label:
+        return verbal
+    art = _indef(label)
+    new, n = re.subn(r"\bis something that\b", f"is {art} {label} that",
+                     verbal, count=1)
+    if n:
+        return new
+    new, _ = re.subn(r"\bis something\b", f"is {art} {label}", verbal, count=1)
+    return new
+
+
 def _verbalize_for_template(
     onto,
     verbaliser,
     head_iri: str,
     head_slot_name: str,
+    slot_names: set[str] | None = None,
 ) -> tuple[str, str]:
     """Run the appropriate verbalizer call(s) on the rendered
     ontology and return ``(verbal_template, error)``.
@@ -483,7 +635,7 @@ def _verbalize_for_template(
                 if isinstance(out, tuple) and len(out) == 2:
                     sub_v = out[0].verbal if hasattr(out[0], "verbal") else str(out[0])
                     sup_v = out[1].verbal if hasattr(out[1], "verbal") else str(out[1])
-                    candidates.append(f"{sub_v} is a {sup_v}")
+                    candidates.append(f"{sub_v} is {_indef(sup_v)} {sup_v}")
                 elif hasattr(out, "verbal"):
                     candidates.append(out.verbal)
                 else:
@@ -508,7 +660,7 @@ def _verbalize_for_template(
     # complex candidate.
     candidates.sort(key=lambda v: (-_marker_count(v), -len(v)))
     chosen = candidates[0]
-    return _markers_to_slots(chosen), ""
+    return _markers_to_slots(chosen, slot_names), ""
 
 
 # ---- Probe ----
@@ -568,10 +720,17 @@ def probe_template(template: CatalogTemplate) -> ProbeResult:
         verbaliser = OntologyVerbaliser(onto)
         head_iri = _filler_iri(head_slot_name)
         verbal_template, verb_err = _verbalize_for_template(
-            onto, verbaliser, head_iri, head_slot_name
+            onto, verbaliser, head_iri, head_slot_name, set(template.slot_types)
         )
 
         if verbal_template:
+            # Restore the named anchor conjunct DeepOnto drops when it
+            # renders the restriction with an implicit subject. The
+            # anchor is explicitly asserted in the axiom (faithful, not
+            # manufactured); see _named_superclass_label.
+            verbal_template = _restore_anchor_noun(
+                verbal_template, _named_superclass_label(template)
+            )
             mean_verbal_length = float(len(verbal_template))
             return ProbeResult(
                 is_complex=is_complex,

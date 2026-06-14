@@ -113,6 +113,23 @@ skipped). Affects R_C, R_D, the chapter prompt, and both E6 channels from one ro
 generated verbalizations carry the anchor noun ("is a process that…") and E6-B generated
 table-name recall moves off 0.
 
+**RESOLVED (2026-06-14, `deeponto_harness.py`).** Anchor restoration: the named superclass conjunct
+is explicitly asserted in the axiom and has a resolvable label, so `_named_superclass_label` +
+`_restore_anchor_noun` replace DeepOnto's vacuous implicit subject ("is something that …") with the
+asserted anchor noun ("is an artifact that …") — faithful, not manufactured. Validated through the
+real `gate_deeponto` path on an 11-construct generation ($0.05, coverage_v1 gaps): every generated
+verbalization now carries the anchor noun, and **E6-B generated table-name recall 0.000 → 0.470**
+(null 0.045; SEED 0.315). Two further defects the re-measure surfaced and fixed in the same pass:
+(i) **article agreement** ("is a artifact" → "is an artifact", subsumption-fallback path);
+(ii) **de-camelCased marker leak** — DeepOnto renders a property marker `ZZisEditionOfZZ` as
+`ZZis edition ofZZ`, which the old `ZZ(\w+?)ZZ` regex could not map back; `MARKER_LOOSE_RE` +
+`_norm_marker` + slot-aware `_markers_to_slots` recover the canonical slot name (raw-ZZ leaks 3→0).
+Also: **cold-start warmup** in `ensure_jvm` (the first probe after JVM start intermittently returned
+empty because the verbaliser's NLP stack loads mid-call — would spuriously fail the gate's first
+construct). **Remaining E6-B floor:** slot/table-*column* recall is 0.000 for seed AND generated
+(column names are bare slot identifiers, not verbalization content) — the next lexical-preservation
+target (semantic column naming + views), tracked separately from this fix.
+
 ## E2 — instrument: the edge-probe (relational/structural skill)
 
 **Built from** the verifiable JSON (populated tables + slot-typed schema + spine FK edges):
