@@ -16,27 +16,29 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 |----|-------|------------------------------------------|--------|
 | E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PARTIAL** — valid cross-model / whole-corpus; within-model gating set aside (S1→S3 proxy refuted: no spread; composite spread doesn't translate). Lever = model-selection + whole-corpus filter |
 | E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **BUILT; VALID-BUT-NOT-DISCRIMINATING** — selectivity>0 CI-clean on known-good backbone, random floor=0; but E2(b) is byte-value-overlap (arm-invariant) → does not isolate schema skill |
-| E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **WALL at tiny scale** — frozen probe = byte-overlap (arm-invariant); fine-tuning on SOTAB-CPA FLOORS (val macro-F1 ≈0.002, train micro caps 0.13 = capacity). full arm floors → delta uninformative. G-rel not tiny-scale-demonstrable; decision pending |
+| E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | ~~Phase 3 / v0.4~~ — DESCOPED | **DESCOPED from the gate (2026-06-15)** — not demonstrable at 13.5M (frozen=byte-overlap; fine-tune=capacity floor). Corpus-as-deliverable instead. Harness retained; revisit at larger capacity |
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
 | E5 | The generator produces semantically genuine, novel, coverage-closing ontology | scaled generation, catalog promotion | **RED** — deep gates wired; 20-gap pilot closed 0% (≪25%); novelty binds. Coverage-close metric is register-confounded → reformulate before scale |
 
-## Next-phase gate (pre-registered 2026-06-15, RH-chosen: DUAL)
+## Next-phase gate (pre-registered 2026-06-15; RE-SCOPED 2026-06-15 → corpus-as-deliverable)
 
-Before Phase 3 (FK/views scale-up), the no-schema arm generation, or v0.4, BOTH must go green
-(coverage is a co-equal goal, not a guardrail):
+**History:** originally DUAL (G-rel + G-cov). After two convergent diagnostics showed the load-bearing
+relational claim is NOT demonstrable at 13.5M (frozen E2 = byte-overlap arm-invariant; fine-tuning E3 =
+capacity floor — see E2/E3 §§), RH RE-SCOPED: **the ontology/DDL value is the CORPUS, demonstrated where it
+is measurable; the tiny-model relational claim is shelved (revisit at larger capacity — the E3 harness is
+built and ready).** Before v0.4, BOTH:
 
-- **G-rel (load-bearing) — REDEFINED 2026-06-15 as a FINE-TUNING DELTA** (RH-chosen, after E3-on-frozen-
-  probes came back flat: a cells-only frozen probe can't isolate schema skill — it strips the structure
-  DDL injection imparts, and E2(b) reduces to byte-value-overlap that every arm learns). New rule:
-  fine-tune each arm's backbone end-to-end on a relational task (CPA / FK-relation), measure
-  **full − no_schema > 0, 95% CI excluding 0, at ≥1 train size (esp. low-data / sample-efficiency)**.
-  Same hyperparams/seeds across arms; report no_ontology for sanity. If flat at all sizes → load-bearing
-  refuted even under fine-tuning → re-scope (corpus-as-deliverable). E2 stays as a frozen-rep diagnostic,
-  not the gate. (Frozen-probe E3: full≈no_schema≈no_ontology, REFUTED as a discriminator — see E3 §.)
-- **G-cov (register-fair coverage-close):** the reformulated metric R1 (domain-term alignment; §1 of the
-  sketch) clears a PASS BAR — NOT mere non-regression. R1 must FIRST be validated as an instrument
+- **G-cov (register-fair coverage-close) [PRIMARY]:** the reformulated metric R1 (domain-term alignment;
+  §1 of the sketch) clears a PASS BAR — NOT mere non-regression. R1 must FIRST be validated as an instrument
   (on-topic construct scores high, off-topic low, CI-clean) before it can gate; the bar is set from the
   seed catalog's own R1 distribution to its best-covered topics. Anti-gaming via structural gates + de-canning.
+- **Corpus-quality:** no-collapse (SUPPORTED — collapse-trend flat), SchemaPile realism (SUPPORTED — width
+  2.75→8.45), attribution-clean held-out reference (leak-free), reasoning traces captured. Re-confirm on the
+  v0.4 corpus.
+
+- **G-rel — DESCOPED from the gate (2026-06-15).** Not claimed at tiny scale. The fine-tuning-delta harness
+  (train.py + e3_finetune_delta.py) is retained; re-run it once a larger backbone exists. E2 remains a
+  frozen-rep diagnostic.
 
 Preconditions ($0, run first): **R0 debloat** (embed verbalization-only, not formal Manchester+metadata —
 tests the register hypothesis) and **referential-integrity check** (do FK cell values overlap referenced
