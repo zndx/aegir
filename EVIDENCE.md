@@ -16,7 +16,7 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 |----|-------|------------------------------------------|--------|
 | E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PARTIAL** — valid cross-model / whole-corpus; within-model gating set aside (S1→S3 proxy refuted: no spread; composite spread doesn't translate). Lever = model-selection + whole-corpus filter |
 | E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **BUILT; VALID-BUT-NOT-DISCRIMINATING** — selectivity>0 CI-clean on known-good backbone, random floor=0; but E2(b) is byte-value-overlap (arm-invariant) → does not isolate schema skill |
-| E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **FLAT (existing arms)** — full≈no_schema≈no_ontology on both heads; load-bearing NOT shown. Diagnosis: byte-overlap instrument + pre-typed-spine arms |
+| E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **WALL at tiny scale** — frozen probe = byte-overlap (arm-invariant); fine-tuning on SOTAB-CPA FLOORS (val macro-F1 ≈0.002, train micro caps 0.13 = capacity). full arm floors → delta uninformative. G-rel not tiny-scale-demonstrable; decision pending |
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
 | E5 | The generator produces semantically genuine, novel, coverage-closing ontology | scaled generation, catalog promotion | **RED** — deep gates wired; 20-gap pilot closed 0% (≪25%); novelty binds. Coverage-close metric is register-confounded → reformulate before scale |
 
@@ -25,9 +25,14 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 Before Phase 3 (FK/views scale-up), the no-schema arm generation, or v0.4, BOTH must go green
 (coverage is a co-equal goal, not a guardrail):
 
-- **G-rel (load-bearing):** E2 instrument VALID (selectivity>0 CI-clean on the v0.3 full-arm backbone,
-  both heads) AND E3 ablation full(axioms+DDL) − no-schema > 0, 95% CI excluding 0, on E2(b) FK-validity
-  [primary] / E2(a) SKOS-code [secondary].
+- **G-rel (load-bearing) — REDEFINED 2026-06-15 as a FINE-TUNING DELTA** (RH-chosen, after E3-on-frozen-
+  probes came back flat: a cells-only frozen probe can't isolate schema skill — it strips the structure
+  DDL injection imparts, and E2(b) reduces to byte-value-overlap that every arm learns). New rule:
+  fine-tune each arm's backbone end-to-end on a relational task (CPA / FK-relation), measure
+  **full − no_schema > 0, 95% CI excluding 0, at ≥1 train size (esp. low-data / sample-efficiency)**.
+  Same hyperparams/seeds across arms; report no_ontology for sanity. If flat at all sizes → load-bearing
+  refuted even under fine-tuning → re-scope (corpus-as-deliverable). E2 stays as a frozen-rep diagnostic,
+  not the gate. (Frozen-probe E3: full≈no_schema≈no_ontology, REFUTED as a discriminator — see E3 §.)
 - **G-cov (register-fair coverage-close):** the reformulated metric R1 (domain-term alignment; §1 of the
   sketch) clears a PASS BAR — NOT mere non-regression. R1 must FIRST be validated as an instrument
   (on-topic construct scores high, off-topic low, CI-clean) before it can gate; the bar is set from the
@@ -222,6 +227,19 @@ permutation on the same eval rows.
 **Decision rule (pre-registered).** SUPPORTED iff full − no-schema > 0 with 95% CI excluding 0 on E2(b)
 (FK validity) or E2(a) (SKOS code). If flat: the load-bearing premise fails at tiny scale — diagnose
 (capacity / instrument / recipe) before any Phase 3/4 spend. **Cost.** ~$15 API + GPU.
+
+**RESULT — fine-tuning delta (2026-06-15, `scripts/e3_finetune_delta.py` + train.py harness).** Per RH's
+redefinition, fine-tuned the `full` arm end-to-end on SOTAB-DBpedia CPA (single-label CE). **It FLOORS at
+tiny scale:** val macro-F1 **≈ 0.002** at both (1024 train / cap 1500) and (2048 train / cap 4000 / 12.7k
+available); val loss RISES from epoch 1; **train micro-F1 caps ~0.13** — the 13.5M byte model can't fit
+even the train relations well (capacity/representation wall, not mere overfit). Since the BEST-case arm
+(full) floors, no_schema floors too → **the delta is uninformative; the sweep was not run** (a floored
+task can't discriminate arms). **Convergent verdict with the frozen probe: G-rel (load-bearing relational
+skill) is NOT demonstrable at 13.5M** — neither frozen (byte-overlap, arm-invariant) nor fine-tuned
+(capacity floor on a real relational benchmark). The schema contribution, if real, needs larger capacity,
+an easier/in-distribution learnable relational task, or it lives in the corpus itself (not tiny-model
+skill). **Decision pending (RH): re-scope G-rel / scale up / easier task.** Harness committed (9139b58);
+artifacts `/tmp/e3_{smoke,diag}_full.json`.
 
 **RESULT — first pass on EXISTING arms (2026-06-15, $0, no new generation).** The 2026-06-05 ablation_v1
 checkpoints (full / no_schema / no_ontology, matched-token tiny pretrains) already exist, so E2 was run on
