@@ -307,3 +307,16 @@ artifact") but carries no relational structure; now rejected, so generated const
 non-trivial AND DeepOnto-verbalized (Manchester required to verbalize). Verified: atomic
 (`subclass_to_artifact`, `subclass_basic`) → REJECT; restriction (`artifact_with_existential`) → PASS.
 Does not change the E5 verdict (coverage-close/target-topic was the binding constraint, downstream of this).
+
+**G-cov R1 — register-fair coverage BUILT + VALIDATED (2026-06-15, `scripts/coverage_r1.py`).** R1 compares
+DOMAIN TERMS like-with-like: V_c (construct: template_id tokens + slot names + verbal content, minus
+BFO/CCO/relational boilerplate) vs V_t (topic: top-25 TF-IDF terms over the 200 topic reprs); **weighted-
+Jaccard** is the metric. (A `max(jaccard, mpnet-cosine)` variant was tried but the cosine floor on the
+homogeneous academic domain is ≈0.78 — washes out discrimination, same ceiling as E6-A; embed is opt-in
+`--embed`, NOT the gate.) **Instrument VALID:** mechanics sanity (a topic's own terms) on **1.000** vs
+shuffled **0.003** — CI-clean discrimination, register-fair. **Current generator FAILS R1:** the E5
+constructs' minted terms ("article/journal/person") are generic — on-topic overlap ≈ **0.007**,
+Δ(on−shuffled) **+0.003 [−0.000,+0.010]** (CI touches 0) → NOT topic-specific. Confirms E5 (generic
+constructs) with a register-fair metric. **⇒ G-cov instrument is ready; the binding constraint for v0.4 is
+the GENERATOR — it must mint topic-SPECIFIC domain terms to pass R1 (on-topic R1 beats shuffled CI-clean).**
+Artifacts: `evidence/gcov/r1{,_jaccard}.json`.
