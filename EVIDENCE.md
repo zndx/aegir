@@ -15,8 +15,8 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 | id | claim | gates (what may not proceed until green) | status |
 |----|-------|------------------------------------------|--------|
 | E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PARTIAL** — valid cross-model / whole-corpus; within-model gating set aside (S1→S3 proxy refuted: no spread; composite spread doesn't translate). Lever = model-selection + whole-corpus filter |
-| E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **UNBUILT** |
-| E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **UNTESTED** |
+| E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **BUILT; VALID-BUT-NOT-DISCRIMINATING** — selectivity>0 CI-clean on known-good backbone, random floor=0; but E2(b) is byte-value-overlap (arm-invariant) → does not isolate schema skill |
+| E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | Phase 3 (FK/views), Phase 4 scale-up, v0.4 release | **FLAT (existing arms)** — full≈no_schema≈no_ontology on both heads; load-bearing NOT shown. Diagnosis: byte-overlap instrument + pre-typed-spine arms |
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
 | E5 | The generator produces semantically genuine, novel, coverage-closing ontology | scaled generation, catalog promotion | **RED** — deep gates wired; 20-gap pilot closed 0% (≪25%); novelty binds. Coverage-close metric is register-confounded → reformulate before scale |
 
@@ -197,6 +197,19 @@ Frozen-backbone linear probes, Hewitt-Liang control tasks, bootstrap CIs.
 full-arm pretrain), probe accuracy beats its control task (selectivity > 0) with a CI-clean margin on both
 (a) and (b). An invalid instrument blocks E3 — fix the instrument, don't reinterpret the task.
 
+**RESULT (2026-06-15, `scripts/eval_edge_probe.py`; eval on held-out v0.3 JSON tables, cells-only,
+chapter-split, 3 seeds, Hewitt-Liang control + bootstrap CIs).** Known-good backbone = `ablation_v1/full`
+(the cells-CTA 0.66–0.70 one). **Passes the letter of the rule:** E2(a) role/SKOS acc 0.744 vs ctrl 0.361,
+sel **0.383** (min 0.254); E2(b) FK-validity acc 0.985 vs ctrl 0.507, sel **0.478** (min 0.437), PR-AUC
+0.988. **Learning-sensitive:** RANDOM-INIT floor = **selectivity 0.000 both heads** (E2(b) PR-AUC 0.266 ≈
+base rate) — the signal is learned by pretraining, not present at init. **BUT NOT DISCRIMINATING (the
+caveat that matters):** all three pretrained arms score identically (see E3), so E2(b) measures generic
+**byte-value-overlap** (`req_*`↔`req_*` vocabulary similarity that any byte-LM learns), not schema-specific
+relational skill. Cell-level FK validity *is* value-overlap, so a pooled-rep probe can't isolate the DDL
+contribution. **Instrument needs hardening** to target schema-specific skill (e.g. E2(a) on the TYPED
+spine, where value→type inference is non-trivial and schema injection could plausibly help) before it can
+gate G-rel. Artifacts: `evidence/e2/edge_probe{,_random,_no_schema,_no_ontology}.json`.
+
 ## E3 — the load-bearing claim: full (axioms+DDL) vs no-schema
 
 **Claim.** Pretraining on the DDL-injected corpus yields more relational skill than the no-schema
@@ -209,6 +222,17 @@ permutation on the same eval rows.
 **Decision rule (pre-registered).** SUPPORTED iff full − no-schema > 0 with 95% CI excluding 0 on E2(b)
 (FK validity) or E2(a) (SKOS code). If flat: the load-bearing premise fails at tiny scale — diagnose
 (capacity / instrument / recipe) before any Phase 3/4 spend. **Cost.** ~$15 API + GPU.
+
+**RESULT — first pass on EXISTING arms (2026-06-15, $0, no new generation).** The 2026-06-05 ablation_v1
+checkpoints (full / no_schema / no_ontology, matched-token tiny pretrains) already exist, so E2 was run on
+all three over held-out v0.3 tables. **FLAT — no separation:** E2(b) FK PR-AUC 0.988 / 0.980 / 0.987;
+selectivity 0.478 / 0.463 / 0.486; E2(a) sel 0.383 / 0.375 / 0.396 — **no_ontology (the weakest arm) ties
+or leads**, i.e. pure noise. **Load-bearing claim NOT supported on this axis.** Per the pre-registered
+decision rule, diagnose before spend: **(1) instrument** — E2's probes measure byte-value-overlap / value
+morphology, learned equally by all arms (the dominant cause); **(2) corpus** — these arms predate the typed
+spine (thin id/label/fk schema), so they don't test the current thesis; **(3) capacity** — 13.5M may floor
+the schema signal. ⇒ G-rel is NOT green. The real test needs a HARDER instrument (typed-spine E2(a) where
+value→type is non-trivial) AND typed-spine ablation arms; do NOT spend on Phase 3/4 / v0.4 on this evidence.
 
 ## E4 — independent baseline + benchmark non-triviality (Atelier)
 
