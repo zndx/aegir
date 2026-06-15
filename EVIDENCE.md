@@ -20,6 +20,31 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
 | E5 | The generator produces semantically genuine, novel, coverage-closing ontology | scaled generation, catalog promotion | **RED** — deep gates wired; 20-gap pilot closed 0% (≪25%); novelty binds. Coverage-close metric is register-confounded → reformulate before scale |
 
+## Next-phase gate (pre-registered 2026-06-15, RH-chosen: DUAL)
+
+Before Phase 3 (FK/views scale-up), the no-schema arm generation, or v0.4, BOTH must go green
+(coverage is a co-equal goal, not a guardrail):
+
+- **G-rel (load-bearing):** E2 instrument VALID (selectivity>0 CI-clean on the v0.3 full-arm backbone,
+  both heads) AND E3 ablation full(axioms+DDL) − no-schema > 0, 95% CI excluding 0, on E2(b) FK-validity
+  [primary] / E2(a) SKOS-code [secondary].
+- **G-cov (register-fair coverage-close):** the reformulated metric R1 (domain-term alignment; §1 of the
+  sketch) clears a PASS BAR — NOT mere non-regression. R1 must FIRST be validated as an instrument
+  (on-topic construct scores high, off-topic low, CI-clean) before it can gate; the bar is set from the
+  seed catalog's own R1 distribution to its best-covered topics. Anti-gaming via structural gates + de-canning.
+
+Preconditions ($0, run first): **R0 debloat** (embed verbalization-only, not formal Manchester+metadata —
+tests the register hypothesis) and **referential-integrity check** (do FK cell values overlap referenced
+PKs? — E2(b)-cells-only hinges on it). Full design: `docs/scratch/2026-06-15/185155_phase_gate_*.md`.
+
+**PRECONDITION RESULTS (2026-06-15, `scripts/check_register_and_ri.py`).** Both PASS:
+- **R0 register hypothesis CONFIRMED** — verbalization-only embedding lifts per-topic max template↔centroid
+  sim +0.023 and recovers **borderline 37 → 55 (+18 topics)** vs the full Manchester+metadata text (0
+  covered either way). Register was a real confound in E5's coverage-close → the register-fair direction is
+  validated. (Not the whole story: gaps remain, so R1 term-level + generator domain-grounding still matter.)
+- **Referential integrity STRONG** — 386 multi-table chapters, 796 FK-shaped columns, value-overlap
+  mean **0.996**, median 1.000, 784/796 exactly 1.0. **E2(b)-cells-only is viable** (no generator fix needed).
+
 ## Already-supported claims (for completeness; artifacts on /raid)
 
 - **Synthetic-corpus byte pretraining imparts transferable column skill on real tables**: cells-only
@@ -230,3 +255,11 @@ those gaps** (coheres with the plan-of-record: the ontology trades FinePDFs dist
 Before any generator scale-up, the coverage-close metric needs a register-fair reformulation (e.g.,
 align the construct's INSTANTIATED prose, not its formal text; or target structural/CPA coverage, not
 topic-distribution coverage). Artifacts: `evidence/e5/pilot.candidate.json`, `evidence/e5/pilot output`.
+
+**Gate hardening (2026-06-15).** `gate_deeponto` now also requires a **non-trivial** construct — an
+asserted COMPLEX class (`onto.get_asserted_complex_classes()` non-empty: restriction / intersection /
+cardinality), not a bare atomic subsumption. A trivial `X SubClassOf: cco:Artifact` verbalizes ("X is an
+artifact") but carries no relational structure; now rejected, so generated constructs are genuinely
+non-trivial AND DeepOnto-verbalized (Manchester required to verbalize). Verified: atomic
+(`subclass_to_artifact`, `subclass_basic`) → REJECT; restriction (`artifact_with_existential`) → PASS.
+Does not change the E5 verdict (coverage-close/target-topic was the binding constraint, downstream of this).

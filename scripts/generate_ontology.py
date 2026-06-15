@@ -147,10 +147,17 @@ def gate_deeponto(t: CatalogTemplate) -> tuple[bool, str]:
         r = probe_template(t)
         if not r.verbal_template:
             return False, "no verbalization produced"
+        # Non-triviality: require an asserted COMPLEX class (restriction /
+        # intersection / cardinality), not a bare atomic subsumption. A trivial
+        # "X SubClassOf: cco:Artifact" verbalizes ("X is an artifact") but carries
+        # no relational structure — reject it so generated constructs are
+        # genuinely non-trivial AND DeepOnto-verbalized.
+        if not r.is_complex:
+            return False, "trivial: no asserted complex class (atomic subsumption only)"
         t.verbal_template = r.verbal_template
         t.is_complex = r.is_complex
         t.mean_verbal_length = r.mean_verbal_length
-        return True, f"verbalized ({len(r.verbal_template)} chars)"
+        return True, f"complex+verbalized ({len(r.verbal_template)} chars)"
     except Exception as e:
         return False, f"deeponto: {type(e).__name__}: {str(e)[:80]}"
 
