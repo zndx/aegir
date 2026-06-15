@@ -274,6 +274,18 @@ def _finalize_boundary(accum: dict[str, float], num_batches: int) -> dict[str, f
     return {k: v / num_batches for k, v in accum.items()}
 
 
+def _lab(labels, is_cpa, num_classes):
+    """CPA path is multi-label (BCE + multilabel-F1). SOTAB-CPA is single-relation-
+    per-pair (1-D label) → one-hot to multi-hot float so loss + metric shapes match.
+    CTA (single-label, CrossEntropy) passes through unchanged."""
+    if not is_cpa:
+        return labels
+    if labels.dim() == 1:
+        mh = torch.zeros(labels.size(0), num_classes, device=labels.device)
+        return mh.scatter_(1, labels.long().unsqueeze(1), 1.0)
+    return labels.float()
+
+
 def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
                 epoch_idx: int = 0, is_main: bool = True):
     """Run one training epoch."""
@@ -283,7 +295,8 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
     total_lb_loss = 0.0
     all_preds = []
     all_labels = []
-    is_cpa = args.task in CPA_TASKS
+    is_cpa = (args.task in CPA_TASKS) and not getattr(args, "single_label_ce", False)
+    num_labels = getattr(model, "module", model).config.num_labels
     num_batches = 0
     boundary_accum: dict[str, float] = {}
 
@@ -307,7 +320,7 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
                 input_ids, role_ids=role_ids, cls_indexes=cls_indexes, mask=mask,
             )
 
-            task_loss = loss_fn(output.logits, labels)
+            task_loss = loss_fn(output.logits, _lab(labels, is_cpa, num_labels))
 
             lb_loss = torch.tensor(0.0, device=device)
             if output.bpred_output:
@@ -341,7 +354,7 @@ def train_epoch(model, loader, optimizer, scheduler, loss_fn, device, args,
         else:
             preds = output.logits.detach().argmax(dim=-1).cpu().numpy()
         all_preds.extend(preds.tolist())
-        all_labels.extend(labels.cpu().numpy().tolist())
+        all_labels.extend(_lab(labels, is_cpa, num_labels).cpu().numpy().tolist())
 
         # Step-level logging: every log_interval steps, print a windowed
         # mean loss + step time. Without this, multi-epoch runs surface
@@ -391,7 +404,8 @@ def evaluate(model, loader, loss_fn, device, args):
     total_loss = 0.0
     all_preds = []
     all_labels = []
-    is_cpa = args.task in CPA_TASKS
+    is_cpa = (args.task in CPA_TASKS) and not getattr(args, "single_label_ce", False)
+    num_labels = getattr(model, "module", model).config.num_labels
     num_batches = 0
     boundary_accum: dict[str, float] = {}
 
@@ -406,7 +420,7 @@ def evaluate(model, loader, loss_fn, device, args):
             output = model(
                 input_ids, role_ids=role_ids, cls_indexes=cls_indexes, mask=mask,
             )
-            loss = loss_fn(output.logits, labels)
+            loss = loss_fn(output.logits, _lab(labels, is_cpa, num_labels))
 
         total_loss += loss.item()
         num_batches += 1
@@ -421,7 +435,7 @@ def evaluate(model, loader, loss_fn, device, args):
         else:
             preds = output.logits.argmax(dim=-1).cpu().numpy()
         all_preds.extend(preds.tolist())
-        all_labels.extend(labels.cpu().numpy().tolist())
+        all_labels.extend(_lab(labels, is_cpa, num_labels).cpu().numpy().tolist())
 
     avg_loss = total_loss / max(num_batches, 1)
     num_classes = getattr(model, "module", model).config.num_labels
@@ -470,6 +484,16 @@ def main():
     parser.add_argument("--seed", type=int, default=4649)
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--output-dir", type=str, default="outputs")
+    parser.add_argument("--pretrained", type=str, default=None,
+                        help="Init backbone+embedding from a byte-pretrained checkpoint "
+                             "(matching-shape tensors only; head/role_embeddings stay fresh). "
+                             "For E3 fine-tuning-delta: load an ablation arm, then fine-tune.")
+    parser.add_argument("--metrics-out", type=str, default=None,
+                        help="Write final best-val metrics JSON here (for E3 aggregation).")
+    parser.add_argument("--single-label-ce", action="store_true",
+                        help="Treat a CPA task as SINGLE-label (CrossEntropy + argmax + "
+                             "single-label macro-F1) instead of multi-label BCE. SOTAB-CPA is "
+                             "one-relation-per-pair; multi-label BCE collapses to all-negative.")
     parser.add_argument("--smoke-test", action="store_true", help="Use synthetic data for smoke testing")
     parser.add_argument("--log-interval", type=int, default=10)
     # Fast-path flags for benchmark smoke runs. Non-zero caps truncate
@@ -550,6 +574,17 @@ def main():
 
     # Model
     model = make_model(args)
+    if args.pretrained:
+        state = torch.load(args.pretrained, map_location="cpu", weights_only=True)
+        own = model.state_dict()
+        loaded = 0
+        for k, v in state.items():
+            if k in own and own[k].shape == v.shape:
+                own[k].copy_(v)
+                loaded += 1
+        model.load_state_dict(own)
+        if is_main:
+            print(f"Loaded pretrained backbone [{loaded}/{len(state)} tensors]: {args.pretrained}")
     num_params = sum(p.numel() for p in model.parameters())
     if is_main:
         print(f"Parameters: {num_params:,}")
@@ -591,7 +626,7 @@ def main():
     scheduler = get_cosine_schedule_with_warmup(optimizer, num_warmup_steps, num_training_steps)
 
     # Loss function
-    is_cpa = args.task in CPA_TASKS
+    is_cpa = (args.task in CPA_TASKS) and not getattr(args, "single_label_ce", False)
     if is_cpa:
         loss_fn = nn.BCEWithLogitsLoss()
     else:
@@ -659,6 +694,15 @@ def main():
 
     if is_main:
         print(f"\nTraining complete. Best val macro F1: {best_val_f1:.4f}")
+        if args.metrics_out:
+            import json as _json
+            from pathlib import Path as _Path
+            _Path(args.metrics_out).parent.mkdir(parents=True, exist_ok=True)
+            _Path(args.metrics_out).write_text(_json.dumps({
+                "best_val_macro_f1": float(best_val_f1), "task": args.task,
+                "pretrained": args.pretrained, "max_train_samples": args.max_train_samples,
+                "seed": args.seed, "epochs": args.epochs}) + "\n")
+            print(f"Metrics → {args.metrics_out}")
         if best_model_state is not None:
             torch.save(best_model_state, output_dir / "best_model.pt")
             print(f"Best model saved to {output_dir / 'best_model.pt'}")

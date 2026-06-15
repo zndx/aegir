@@ -262,7 +262,16 @@ class _SotabDatasetBase(TableAnnotationDataset):
         loaded_cells: dict[str, list[list[str]]] = {}
 
         grouped = gt.groupby("table_name")
+        # Optional cap on #tables loaded (env-gated; default 0 = unlimited). SOTAB
+        # has 76k gzipped table files and the loader reads every referenced one
+        # BEFORE main() subsamples — prohibitive for a multi-run fine-tune sweep.
+        # Capping by groupby order is deterministic, so every arm/seed sees the
+        # same subset (fair E3 comparison).
+        import os as _os
+        _max_tables = int(_os.environ.get("AEGIR_SOTAB_MAX_TABLES", "0") or "0")
         for table_name, group in grouped:
+            if _max_tables and len(loaded_cells) >= _max_tables:
+                break
             json_path = tables_dir / str(table_name)
             if not json_path.exists():
                 continue
