@@ -32,6 +32,7 @@ from aegir.ontology.deeponto_harness import ensure_jvm, probe_template  # noqa: 
 from aegir.ontology.ddl import template_to_table, render_ddl, validate_ddl  # noqa: E402
 import coverage_r1 as cr  # noqa: E402
 import generate_ontology as go  # noqa: E402
+from mediate_consistency import coherence  # noqa: E402  (HermiT ground-truth coherence)
 
 log = logging.getLogger("contract_gate")
 CATALOG_GLOB = "src/aegir/ontology/catalog/0[1-7]_*.json"
@@ -112,6 +113,7 @@ class ContractGate:
         t.mean_verbal_length = r.mean_verbal_length
         sig["deeponto_ok"] = bool(r.verbalized)
         sig["deeponto_complex"] = bool(r.is_complex)
+        sig["consistent"] = bool(coherence(t)["consistent"])   # HermiT ground-truth coherence (inc-2a)
 
         try:
             st = template_to_table(t, fam)

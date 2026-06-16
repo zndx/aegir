@@ -227,9 +227,10 @@ def seed_rules() -> list[Rule]:
     return [
         Rule("contract_satisfied", 120,
              lambda s, c: (g(s, "has_construct") and g(s, "deeponto_ok") and g(s, "deeponto_complex")
-                           and g(s, "polyglot_ok") and g(s, "novelty_ok") and g(s, "schema_ok")
-                           and s.get("r1_ci_low", -1) > 0),
-             Effect("terminate", "promote", "full contract satisfied + R1 CI-clean"), specificity=7),
+                           and g(s, "consistent") and g(s, "polyglot_ok") and g(s, "novelty_ok")
+                           and g(s, "schema_ok") and s.get("r1_ci_low", -1) > 0),
+             Effect("terminate", "promote", "full contract satisfied (incl. HermiT coherence) + R1 CI-clean"),
+             specificity=8),
         Rule("budget_exhausted", 110,
              lambda s, c: c["iterations"] >= c["max_iters"],
              Effect("terminate", "give_up", "max iterations")),
@@ -239,6 +240,9 @@ def seed_rules() -> list[Rule]:
         Rule("deeponto_fail", 90,
              lambda s, c: g(s, "has_construct") and not g(s, "deeponto_ok"),
              Effect("objective", "fix_verbalizability")),
+        Rule("inconsistent", 89,
+             lambda s, c: g(s, "has_construct") and g(s, "deeponto_ok") and not g(s, "consistent"),
+             Effect("objective", "fix_consistency"), specificity=2),
         Rule("not_complex", 88,
              lambda s, c: g(s, "deeponto_ok") and not g(s, "deeponto_complex"),
              Effect("objective", "fix_nontriviality")),
@@ -289,13 +293,14 @@ if __name__ == "__main__":
     # draft → verbalize-fail → trivial → R1-not-specific → satisfied. This asserts
     # the LOGIC routes correctly given known signals — it makes NO claim that an
     # ontology was reasoned. The real test is a live agent moving R1 (inc-1).
-    OK = {"deeponto_ok": True, "deeponto_complex": True, "polyglot_ok": True,
+    OK = {"deeponto_ok": True, "deeponto_complex": True, "consistent": True, "polyglot_ok": True,
           "novelty_ok": True, "schema_ok": True, "r1_on": 0.34, "n_cols": 5}
     fixture = [
         {**OK, "deeponto_ok": False, "deeponto_complex": False},   # 0: first draft won't verbalize
         {**OK, "deeponto_complex": False},                          # 1: verbalizes but trivial
-        {**OK, "r1_ci_low": -0.01},                                 # 2: valid+complex, R1 not specific
-        {**OK, "r1_ci_low": 0.02},                                  # 3: full contract satisfied
+        {**OK, "consistent": False},                                # 2: complex but HermiT-incoherent
+        {**OK, "r1_ci_low": -0.01},                                 # 3: coherent but R1 not specific
+        {**OK, "r1_ci_low": 0.02},                                  # 4: full contract satisfied
     ]
     h = MetaHarness(seed_rules(), FixtureEffector(fixture), max_iters=8,
                     trace_path="/tmp/meta_harness_logictest.jsonl")
@@ -303,7 +308,8 @@ if __name__ == "__main__":
     fired = [e["fired"] for e in h.trace if e["event"] == "agenda"]
     print(f"fired: {fired}")
     print(f"outcome={ctx.terminate} ({ctx.terminate_reason!r})  iters={ctx.iterations}")
-    expected = ["no_construct", "deeponto_fail", "not_complex", "r1_not_specific", "contract_satisfied"]
+    expected = ["no_construct", "deeponto_fail", "not_complex", "inconsistent",
+                "r1_not_specific", "contract_satisfied"]
     assert fired == expected, f"control-plane logic path mismatch: {fired}"
     assert ctx.terminate == "promote"
     print(f"\nCONTROL-PLANE LOGIC verified against designed fixture (data, not reasoning). "

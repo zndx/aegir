@@ -65,6 +65,8 @@ def build_mint_prompt(topic: dict, objective: str, feedback: dict, prev: dict | 
         "CONTRACT (your construct must pass ALL — this is a conjunctive membrane):\n"
         "  • DeepOnto verbalizes it AND it asserts a COMPLEX class (a restriction/intersection — "
         "not a bare `X SubClassOf: anchor`).\n"
+        "  • LOGICALLY COHERENT (HermiT, sound+complete): no class unsatisfiable — do NOT anchor across "
+        "DISJOINT BFO categories (e.g. a Process is an Occurrent and CANNOT also be a Continuant/Artifact/ICE).\n"
         "  • It lowers to a valid relational table (≥3 typed columns; Trino+Spark-parseable DDL).\n"
         "  • NOVEL (not a near-duplicate of the seed catalog).\n"
         "  • R1 (the binding one): its DOMAIN TERMS must match THIS topic's salient terms. "
@@ -81,13 +83,15 @@ def build_mint_prompt(topic: dict, objective: str, feedback: dict, prev: dict | 
         pv = json.dumps({k: v for k, v in (prev.get("template_dict") or {}).items()
                          if k in ("template_id", "manchester_template", "slot_types", "bfo_anchor_path")})
         fails = ", ".join(f"{k}={feedback.get(k)}" for k in
-                          ("deeponto_ok", "deeponto_complex", "polyglot_ok", "novelty_ok",
+                          ("deeponto_ok", "deeponto_complex", "consistent", "polyglot_ok", "novelty_ok",
                            "schema_ok", "r1_on", "r1_ci_low") if k in feedback)
         obj_hint = {
             "enrich_domain_terms": "Your terms are too generic — R1 is low. REWRITE with topic-specific "
                                    "minted class/property names drawn from the salient terms.",
             "fix_verbalizability": "DeepOnto could not verbalize it — fix the Manchester syntax/IRIs.",
             "fix_nontriviality": "It is a bare subsumption — add a restriction (e.g. `{p:ObjectProperty} some {Y:Class}`).",
+            "fix_consistency": "HermiT found it INCOHERENT (a named class is unsatisfiable — usually anchored "
+                               "across DISJOINT BFO categories, e.g. Process ⊓ Continuant). Re-anchor to ONE category.",
             "fix_ddl": "Its DDL does not parse — simplify to a clean typed table shape.",
             "diversify": "It duplicates a seed — make it materially different.",
             "de_can": "Too few/uniform columns — add typed DataProperty slots (values/dates/counts).",

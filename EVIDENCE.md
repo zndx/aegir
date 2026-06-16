@@ -335,3 +335,21 @@ is the contract-aware prompt (the agent is TOLD the contract + the topic vocabul
 **Real reasoning on the critical path — no simulation (the deterministic fixture is logic-only).** The
 single-topic Δ is the per-construct proof; the multi-topic BATCH on-vs-shuffled CI (the G-cov gate
 verdict) is `evidence/meta_harness/`. inc-1.5 = agent-side gate tools; inc-2 = the UI (ACP agent surface).
+
+**inc-2a — HermiT coherence gate (reasoner beachhead, 2026-06-16).** First GROUND-TRUTH gate in the
+stack: DeepOnto's default `Ontology(path, reasoner_type="hermit")` wraps HermiT (sound & complete OWL 2
+DL, hypertableau) — already instantiated on every `probe_template` load but never *queried*. Activation =
+calling it. `scripts/mediate_consistency.py::coherence(template)` composes the rendered construct with a
+minimal BFO/CCO top-level disjointness grounding (`Occurrent ⊥ Continuant`, the 7 anchors slotted under
+the two disjoint categories) and checks `getUnsatisfiableClasses()` — the meaningful TBox check, since a
+TBox with an unsatisfiable class stays globally *consistent* (so `isConsistent()` alone misses it).
+**Instrument validity proven**: the gate ground-truth-rejects a hand-crafted cross-category construct
+(`X SubClassOf bfo:Process, cco:Artifact` → `X` unsatisfiable) and passes a coherent one
+(`X SubClassOf cco:DescriptiveICE, p some Y`). Wired into `ContractGate` as the `consistent` signal
+(both real constructs — the `artifact_with_existential` seed and the generated journal construct — report
+`consistent: true`); the spine (`fsm_rete.py`) gains an `inconsistent` rule → `fix_consistency` objective,
+`contract_satisfied` now *requires* `consistent`, and `mediate_acp.py`'s mint prompt carries the coherence
+contract bullet + feedback. Fixture logic test green on the new path
+(`…not_complex, inconsistent, r1_not_specific, contract_satisfied` → promote). Sound+complete ⇒ this
+verdict is ground truth, not a proxy — what keeps the in-situ-evolving ontology a *coherent* computation.
+Next: inc-2b (H₀-clean single-file harness), inc-2c (outer-loop proposer), inc-2d (realization-as-CPA).
