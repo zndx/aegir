@@ -104,6 +104,14 @@ _restore-patched-wheels:
 check-ontology-schema:
     uv run --no-sync python scripts/check_ontology_schema.py
 
+# Meta-harness inc-2b: run the H₀ single-file harness over gap topics (frozen Grok
+# + ContractGate/HermiT) via the candidate filesystem. Needs the JVM libs
+# (DeepOnto/HermiT) + cuda driver libs. coverage-run defaults to the canonical v1 ground.
+mediate-h0 topics="124" coverage_run="/raid/checkpoints/aegir-artifacts/coverage_v1/043d7dcc185245c8" max_iters="6":
+    LD_LIBRARY_PATH=$(pwd)/build/jvm-libs:$(pwd)/build/cuda-driver-libs \
+        uv run --no-sync python scripts/mediate_h0.py \
+        --coverage-run {{coverage_run}} --topics {{topics}} --max-iters {{max_iters}}
+
 # ── mdbook documentation ──────────────────────────────────────
 #
 # The book lives at ``docs/current/`` (standard ``mdbook init``

@@ -353,3 +353,20 @@ contract bullet + feedback. Fixture logic test green on the new path
 (`…not_complex, inconsistent, r1_not_specific, contract_satisfied` → promote). Sound+complete ⇒ this
 verdict is ground truth, not a proxy — what keeps the in-situ-evolving ontology a *coherent* computation.
 Next: inc-2b (H₀-clean single-file harness), inc-2c (outer-loop proposer), inc-2d (realization-as-CPA).
+
+**inc-2b — H₀-clean: the harness as a single-file program + candidate filesystem (2026-06-16).** Adopts
+the Meta-Harness FORM (Lee et al. 2026): the control program the outer-loop proposer (inc-2c) will rewrite
+must be ONE readable file with no logic hidden behind imports. `src/aegir/meta_harness/harness_h0.py` = the
+seed harness H₀: `run(topic, gate, complete, exemplars)` wrapping two FROZEN executors (Grok `complete` +
+the `gate`), with the three mutable surfaces inline — `build_prompt` (mint-prompt strategy), `next_objective`
+(a flat, salience-ordered transcription of `fsm_rete.seed_rules`; the RETE/FSM spine stays the tested
+reference), and the iterate loop. `scripts/harness_search.py` stands up the candidate filesystem
+`candidates/{NNN}/{harness.py, meta.json, traces/topic_<id>.jsonl, scores.json}` (the UNCOMPRESSED feedback
+channel) with `init_search` / `load_harness` (dynamic import) / `validate_harness` (cheap FIXTURE smoke — no
+Grok/JVM, asserts the interface promotes in 2 iters) / `evaluate_harness` (live run → traces + scores;
+reward = batch on-vs-shuffled R1, cost = mint calls). `mediate_acp.py` gains the non-breaking frozen-executor
+seam `complete(prompt)->str` (mint() now routes through it). **Acid test GREEN** (`scripts/mediate_h0.py`,
+t124): interface-validate PASS, then H₀ **promoted in 1 iter, r1_on 0.351, ci_low 0.347 (CI-clean)**,
+construct `anti_inflammatory_herbal_medicinal_plant_pharmaceutics_review_article`, trace carries
+`consistent:true` — reproducing inc-1's FSM-spine result (r1≈0.387) from a single harness file. The
+substrate the inc-2c proposer searches is now real.

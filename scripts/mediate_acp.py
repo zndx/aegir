@@ -147,18 +147,28 @@ class ACPMintEffector:
         self.session = s.session_id
         log.info("ACP connected: %s %s  session=%s", cmd, self.args, self.session)
 
-    def mint(self, topic: dict, objective: str, feedback: dict, prev: dict | None) -> dict:
-        fam = topic.get("top_family") or "07_long_tail"
-        prompt = build_mint_prompt(topic, objective, feedback, prev, self.exemplars.get(fam, []))
+    def complete(self, prompt: str) -> str:
+        """The FROZEN executor seam: raw prompt → Grok's response text, one ACP
+        round-trip on the persistent session. The H₀ harness (harness_h0.py) owns
+        the prompt strategy and calls THIS; `mint()` below is inc-1's convenience
+        wrapper (build_mint_prompt + complete + parse). Returns "" on transport
+        error so the caller drives a bounded retry."""
         self.client.take()  # clear buffer
         try:
             self.loop.run_until_complete(asyncio.wait_for(
                 self.conn.prompt(prompt=[text_block(prompt)], session_id=self.session),
                 timeout=self.prompt_timeout))
         except Exception as e:
-            log.warning("mint prompt failed (%s): %s", objective, type(e).__name__)
-            return prev or {"template": None, "template_id": None, "error": str(e)[:120]}
-        resp = self.client.take()
+            log.warning("complete() prompt failed: %s", type(e).__name__)
+            return ""
+        return self.client.take()
+
+    def mint(self, topic: dict, objective: str, feedback: dict, prev: dict | None) -> dict:
+        fam = topic.get("top_family") or "07_long_tail"
+        prompt = build_mint_prompt(topic, objective, feedback, prev, self.exemplars.get(fam, []))
+        resp = self.complete(prompt)
+        if not resp:
+            return prev or {"template": None, "template_id": None, "error": "complete() returned empty"}
         templates = go.parse_templates(resp)
         if not templates:
             log.warning("mint produced no parseable construct (objective=%s, resp=%dchars)", objective, len(resp))
