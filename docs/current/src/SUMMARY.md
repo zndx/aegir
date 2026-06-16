@@ -21,6 +21,8 @@
   - [LatentMAS Alignment](./agent_swarm/alignment.md)
   - [K2.5 PARL Orchestrator](./agent_swarm/orchestrator.md)
 - [Roadmap](./roadmap.md)
+  - [Signals Programme — Relational Domain Adaptation](./signals_programme.md)
+  - [End-to-end + Meta-Harness + reasoner](./end_to_end_and_meta_harness.md)
   - [Supervised Bootstrapping (M2 fine-tune)](./roadmap/supervised.md)
   - [Phase Gate — Governance & DDL Spine](./roadmap/phase_gate_governance_ddl.md)
 - [Development Guide](./development.md)
