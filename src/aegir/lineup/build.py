@@ -45,6 +45,45 @@ def _chapter_id(r: dict, i: int) -> str:
     return str(r.get("chapter_id") or r.get("hx_exchange_id") or f"idx{i}")
 
 
+_BOILER = frozenset(
+    "the a an of for to and or is are be class subclassof some only exactly min max value "
+    "equivalentto disjointwith disjointclasses subclass entity thing relation property type kind "
+    "via with has that this these those such each its their which when where also into not".split())
+_WORD = re.compile(r"[a-z][a-z0-9]+")
+
+
+def _tokens(s: str) -> list[str]:
+    spaced = re.sub(r"(?<!^)(?=[A-Z])", " ", s).replace("_", " ").lower()
+    return [w for w in _WORD.findall(spaced) if w not in _BOILER and len(w) > 2]
+
+
+def _term_vocab(t: CatalogTemplate) -> list[str]:
+    """The term's distinguishing vocabulary — id tokens + slot names + verbalization content,
+    minus boilerplate. Seeds skos:altLabel (the BERTSubs multi-label set / MaxSim surfaces);
+    curation refines it toward real synonym phrases. (Converge with coverage_r1.construct_terms.)"""
+    toks = set(_tokens(t.template_id))
+    for slot in (t.slot_types or {}):
+        toks.update(_tokens(slot))
+    toks.update(_tokens(re.sub(r"\{[^}]+\}", " ", t.verbal_template or "")))
+    return sorted(toks)
+
+
+def _axiom_kind(m: str) -> str:
+    if "EquivalentTo" in m:
+        return "equivalence"
+    if " some " in m:
+        return "existential restriction"
+    if " only " in m:
+        return "universal restriction"
+    if any(k in m for k in (" min ", " max ", " exactly ")):
+        return "cardinality restriction"
+    if "Disjoint" in m:
+        return "disjointness axiom"
+    if "SubClassOf" in m:
+        return "subsumption"
+    return "axiom"
+
+
 def category_qn(name: str, parent_qn: str | None = None) -> str:
     return f"{name}.{parent_qn}" if parent_qn else f"{name}@{LEXICON}"
 
@@ -95,6 +134,29 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
         if not chs and not tps:
             body += "\n_Not yet exercised by any chapter or topic (a curation candidate)._\n"
 
+        # Retrieval annotations (SKOS) — common constructs with domain values, recorded as
+        # ontology annotation properties (the principled home; the panel, ColBERT/MaxSim, and
+        # BERTSubs all read them from here). skos:altLabel is the BERTSubs multi-label set.
+        pref = t.template_id.replace("_", " ")
+        skos = {
+            "skos:prefLabel": pref,
+            "skos:altLabel": [a for a in _term_vocab(t) if a != pref][:24],
+            "skos:definition": _verbal(t),
+            "skos:scopeNote": (f"{_axiom_kind(t.manchester_template).capitalize()} anchored to "
+                               f"{anchor or 'the upper ontology'}, in the '{cat}' category."),
+            "skos:example": [f"chapter {c}" for c in chs[:3]],
+        }
+        rtext = " ".join([skos["skos:prefLabel"], *skos["skos:altLabel"], skos["skos:definition"],
+                          skos["skos:scopeNote"], *skos["skos:example"]])
+        body += (
+            "\n**Retrieval annotations** (SKOS — the ColBERT/MaxSim + BERTSubs label-set):\n\n"
+            f"- **skos:prefLabel** — {skos['skos:prefLabel']}\n"
+            f"- **skos:altLabel** — {', '.join(skos['skos:altLabel']) or '—'}\n"
+            f"- **skos:definition** — {skos['skos:definition']}\n"
+            f"- **skos:scopeNote** — {skos['skos:scopeNote']}\n"
+            + (f"- **skos:example** — {', '.join(skos['skos:example'])}\n" if skos["skos:example"] else "")
+        )
+
         out.append(N.Note(
             id=term_id, title=t.template_id, kind="ontology-term", data_product="ontology",
             body=body, frontmatter={
@@ -103,6 +165,7 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
                 "bfo_anchor_path": path, "slot_types": dict(t.slot_types or {}),
                 "is_complex": bool(t.is_complex), "manchester_template": t.manchester_template,
                 "n_chapters": len(chs), "n_topics": len(tps),
+                "skos": skos, "retrieval_text": rtext,
                 "provenance": dict(t.provenance or {})}))
 
     for cat, term_ids in sorted(cats.items()):

@@ -71,12 +71,18 @@ terms accumulate, the spent template *instantiations* retire to `archive/` — w
 archive ≠ delete). End state: templates are history and **the lineup ≡ Atlas glossary ≡ Qdrant index —
 three views of one real ontology.**
 
-**The two faces that make a term "real"** (the next build): (1) **Qdrant augmentation** — the term's
-augmented, holdout-marked ColBERT/MaxSim retrieval text (the Gaius `theta/augmentation.py` shape), shown in
-its lineup panel and indexed for late-interaction search; (2) **Atlas glossary-sync** — the
+**The two faces that make a term "real":** (1) **Qdrant augmentation, recorded as SKOS annotation
+properties** *(built)* — per the BERTSubs §4.3.2 multi-label technique, each term's distinguishing
+text-features live *in the ontology* as `skos:prefLabel` / `skos:altLabel` (the BERTSubs multi-label set /
+MaxSim match surfaces) / `skos:definition` / `skos:scopeNote` / `skos:example` — common SKOS constructs with
+domain values, not novel ones. The lineup panel renders them, they assemble into the ColBERT/MaxSim
+retrieval text, and `L(c1)×L(c2)` over the altLabel sets multiplies the BERTSubs subsumption pairs (→ the
+hierarchy edges for per-term-panel navigation). `build.py` records them now (seeded from the term vocabulary);
+curation refines the altLabel set, **verified by retrieval-lift** (multi- vs single-label, the §4.3.2 ablation
+— the annotation-layer oracle, distinct from HermiT on the axiom layer). (2) **Atlas glossary-sync** — the
 `AtlasGlossaryTerm`/`Category` projector (extending the existing `rdbms_*` relational projector), a
-*suggestion-returning* projection keyed on `qualifiedName`. Per-term-panel hierarchy navigation falls out of
-(1) — the augmentation's wikilinks are the hierarchy edges.
+*suggestion-returning* projection keyed on `qualifiedName`, carrying the same SKOS annotations as term
+attributes.
 
 ## Methodology — factored gates over a scaling ladder
 
