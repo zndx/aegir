@@ -192,15 +192,6 @@ in {
       };
     };
 
-    # Lineup KB projection (one-shot, pure/local — no postgres dep). Projects the
-    # ontology/relational/content Data Products → build/dev/{current,scratch,archive}
-    # so the gateway's /api/kb serves a populated lineup on every ``devenv up``.
-    # Regenerable + gitignored; re-run anytime with ``just kb-build``.
-    kb-build = {
-      exec = "uv run --no-sync python -m aegir.lineup build";
-      process-compose.availability.restart = "no";
-    };
-
     # Apache Atlas (forked, AGE backend) on the SHARED aegir_hx graph — :21000.
     # Atlas v2 entities live in aegir_hx alongside our provenance (one graph, no
     # duplication). Gated on db-bootstrap so aegir_hx + its labels exist first.
@@ -261,13 +252,17 @@ in {
       };
     };
 
-    # Gateway (FastAPI). Applies migrations inline before launching
-    # uvicorn so the gateway never sees an un-bootstrapped schema.
-    # Folding bootstrap into the startup command (instead of a
-    # one-shot dependency) dodges process-compose sequencing races.
+    # Gateway (FastAPI) — the one application's backend (serves /api/* + the static
+    # React bundle; vite-dev proxies to it). Applies migrations inline before launching
+    # uvicorn so it never sees an un-bootstrapped schema, and projects the lineup KB
+    # (build/dev/) so /api/kb serves a populated lineup — both folded into startup
+    # (NOT separate processes) per the established pattern. The lineup projection is
+    # non-blocking: if it fails the gateway still serves (the rest of the app), and
+    # /api/kb 404s until `just kb-build` succeeds.
     gateway = {
       exec = ''
         uv run --no-sync python -m aegir.db.bootstrap && \
+        { uv run --no-sync python -m aegir.lineup build || echo "[gateway] lineup projection failed — /api/kb will 404 until 'just kb-build' succeeds"; } && \
         exec uv run --no-sync python -m aegir.gateway
       '';
       process-compose = {
