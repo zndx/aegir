@@ -192,6 +192,15 @@ in {
       };
     };
 
+    # Lineup KB projection (one-shot, pure/local — no postgres dep). Projects the
+    # ontology/relational/content Data Products → build/dev/{current,scratch,archive}
+    # so the gateway's /api/kb serves a populated lineup on every ``devenv up``.
+    # Regenerable + gitignored; re-run anytime with ``just kb-build``.
+    kb-build = {
+      exec = "uv run --no-sync python -m aegir.lineup build";
+      process-compose.availability.restart = "no";
+    };
+
     # Apache Atlas (forked, AGE backend) on the SHARED aegir_hx graph — :21000.
     # Atlas v2 entities live in aegir_hx alongside our provenance (one graph, no
     # duplication). Gated on db-bootstrap so aegir_hx + its labels exist first.
