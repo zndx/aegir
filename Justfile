@@ -112,6 +112,13 @@ mediate-h0 topics="124" coverage_run="/raid/checkpoints/aegir-artifacts/coverage
         uv run --no-sync python scripts/mediate_h0.py \
         --coverage-run {{coverage_run}} --topics {{topics}} --max-iters {{max_iters}}
 
+# Build the lineup-navigable KB projection at build/dev/{current,scratch,archive} from the
+# three Data Products (ontology, relational, content). Regenerable + gitignored (current/ is
+# what we KNOW; the corpora submodule is what we SHARE). content/topics project from on-disk
+# corpus/coverage runs when present (set AEGIR_CORPUS_RUN / AEGIR_COVERAGE_RUN to point them).
+kb-build:
+    uv run --no-sync python -m aegir.lineup build
+
 # ── mdbook documentation ──────────────────────────────────────
 #
 # The book lives at ``docs/current/`` (standard ``mdbook init``

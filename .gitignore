@@ -30,6 +30,9 @@ outputs/
 
 # Build outputs — regenerable from source; ignored by convention
 # (covers patched-src/, wheels/, jvm-libs/, draft-*.md, config/, experiments/ …)
+# build/dev/{archive,current,scratch} = the KB PROJECTION (built from the canonical
+# ontology submodule + domain-adapted overlay); regenerable, hence ignored. The
+# source of record is the submodule (what we SHARE); the projection is what we KNOW.
 build/
 
 # Devenv runtime state (postgres data dir, qdrant init sentinel)
