@@ -3,30 +3,22 @@
 Materializes the ontology / relational / content Data Products (data-mesh term of
 art) into ``build/dev/current/`` as uniform KB notes (frontmatter + ``[[wikilinks]]``)
 the read-only Lineup navigates. Pure/deterministic from the local catalog + DDL
-lowering (ontology, relational); content/topics project from on-disk corpus / coverage
-runs when present. ``current/`` is regenerable (cleared each build); ``scratch/`` and
-``archive/`` (the maturity lifecycle) are preserved.
+lowering (ontology, relational); content/topics are projected from on-disk corpus /
+coverage runs when present. ``current/`` is regenerable (cleared each build); ``scratch/``
+and ``archive/`` (the maturity lifecycle) are preserved.
 
-Organization is **Atlas-glossary aligned** (minimal subset — extend when purpose
-demands): a **Lexicon** (Atlas Glossary; we say Lexicon) *includes Terms* — a Term is a
-useful word for the enterprise — organized by **Categories** ("a way of organizing
-terms so the term's context can be enriched"). A Category may have a child-category
-hierarchy; its ``qualifiedName`` is derived from its hierarchical location —
-``name@lexicon`` at the root, ``name.parentQualifiedName`` when nested — and updates on
-any hierarchy change. (Our catalog "families" are projected as flat top-level Categories.)
-
-Navigation graph (the lineup edges):
-    lens/terms (Lexicon) ──▶ ontology/category ──▶ ontology/term ──▶ ontology/anchor
-    lens/schema          ──▶ relational/category ──▶ relational/table
-    ontology/term        ◀─▶ relational/table          (the ontology↔DDL pivot)
-    lens/content ──▶ content/index ──▶ content/chapter ──▶ ontology/term, topic
-                 └─▶ topic/index    ──▶ topic         ──▶ ontology/term, ontology/category
+Organization is Atlas-glossary aligned (Lexicon / Category / Term). Edges are dense
+enough to CURATE: beyond the spine (Lexicon→Category→Term→anchor / ontology↔DDL pivot),
+the build computes CROSS-REFERENCES so a Term shows what exercises it —
+    Term ──realized by──▶ content/chapter        (which chapters instantiate it)
+    Term ──mapped from──▶ topic                   (which FinePDFs topics it's nearest to)
+    topic ──covered by──▶ content/chapter         (coverage; "(gap)" if none)
+— turning the thin star-graph into a web you can navigate for curation.
 """
 from __future__ import annotations
 
 import re
 import shutil
-from pathlib import Path
 
 from aegir.lineup import notes as N
 from aegir.lineup import sources as S
@@ -46,22 +38,28 @@ def _anchor_id(anchor: str) -> str:
 
 
 def _table_id(template_id: str) -> str:
-    return f"rel_{template_id}"      # stable, slug-safe table id keyed to the template
+    return f"rel_{template_id}"
+
+
+def _chapter_id(r: dict, i: int) -> str:
+    return str(r.get("chapter_id") or r.get("hx_exchange_id") or f"idx{i}")
 
 
 def category_qn(name: str, parent_qn: str | None = None) -> str:
-    """Atlas-style category qualifiedName: ``name@lexicon`` at root, else
-    ``name.parentQualifiedName`` (re-derived on any hierarchy change)."""
     return f"{name}.{parent_qn}" if parent_qn else f"{name}@{LEXICON}"
 
 
 # ── ontology Data Product — the Lexicon (Terms organized by Categories) ──────
-def project_ontology(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
-    cats: dict[str, list[str]] = {}       # category name -> [term ids]
-    anchors: dict[str, dict] = {}         # anchor_id -> {"label", "parent", "terms"}
+def project_ontology(rows: list[tuple[str, CatalogTemplate]],
+                     term_chapters: dict[str, list[str]] | None = None,
+                     term_topics: dict[str, list[int]] | None = None) -> list[N.Note]:
+    term_chapters = term_chapters or {}
+    term_topics = term_topics or {}
+    cats: dict[str, list[str]] = {}
+    anchors: dict[str, dict] = {}
     out: list[N.Note] = []
 
-    for cat, t in rows:                    # catalog "family" stem == flat top-level Category
+    for cat, t in rows:
         term_id = f"ontology/term/{t.template_id}"
         cat_id = f"ontology/category/{cat}"
         cats.setdefault(cat, []).append(term_id)
@@ -83,6 +81,20 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
             + (f"  ·  **BFO/CCO anchor.** {N.wl(aid, anchor)}" if aid else "")
             + f"  ·  **Relational projection.** {N.wl(f'relational/table/{_table_id(t.template_id)}', 'table')}\n"
         )
+        # Cross-references — what exercises this term (the curation surface).
+        chs = term_chapters.get(t.template_id, [])
+        tps = sorted(term_topics.get(t.template_id, []))
+        if chs:
+            body += ("\n**Realized by** " + str(len(chs)) + " chapter(s): "
+                     + ", ".join(N.wl(f"content/chapter/{c}", c) for c in chs[:8])
+                     + (" …" if len(chs) > 8 else "") + "\n")
+        if tps:
+            body += ("\n**Mapped from** " + str(len(tps)) + " topic(s): "
+                     + ", ".join(N.wl(f"topic/{tp}", f"topic {tp}") for tp in tps[:12])
+                     + (" …" if len(tps) > 12 else "") + "\n")
+        if not chs and not tps:
+            body += "\n_Not yet exercised by any chapter or topic (a curation candidate)._\n"
+
         out.append(N.Note(
             id=term_id, title=t.template_id, kind="ontology-term", data_product="ontology",
             body=body, frontmatter={
@@ -90,6 +102,7 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
                 "category_qualified_name": category_qn(cat),
                 "bfo_anchor_path": path, "slot_types": dict(t.slot_types or {}),
                 "is_complex": bool(t.is_complex), "manchester_template": t.manchester_template,
+                "n_chapters": len(chs), "n_topics": len(tps),
                 "provenance": dict(t.provenance or {})}))
 
     for cat, term_ids in sorted(cats.items()):
@@ -104,7 +117,7 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
                               "qualified_name": qn, "parent": None, "children": [], "n_terms": len(term_ids)}))
 
     for aid, a in sorted(anchors.items()):
-        body = f"BFO/CCO anchor **{a['label']}** — {len(a['terms'])} terms anchored here.\n\n"
+        body = f"BFO/CCO anchor **{a['label']}** — {len(a['terms'])} terms anchored here (siblings).\n\n"
         if a["parent"]:
             body += f"**Broader.** {N.wl(a['parent'])}\n\n"
         body += "\n".join(f"- {N.wl(tid, tid.split('/')[-1])}" for tid in sorted(a["terms"]))
@@ -122,7 +135,7 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
     for cat, t in rows:
         try:
             st = template_to_table(t, cat)
-        except Exception as e:                       # noqa: BLE001 — skip un-lowerable, keep going
+        except Exception as e:                       # noqa: BLE001
             print(f"  [relational] skip {t.template_id}: {type(e).__name__}: {e}")
             continue
         cols = st.table.columns
@@ -154,18 +167,12 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
     return out
 
 
-# ── content Data Product (on-disk corpus run, if present) ────────────────────
-def project_content(run: Path) -> list[N.Note]:
-    import pyarrow.parquet as pq
+# ── content Data Product (on-disk corpus rows, if present) ───────────────────
+def project_content(recs: list[dict]) -> list[N.Note]:
     out: list[N.Note] = []
-    try:
-        recs = pq.read_table(run).to_pylist()
-    except Exception as e:                            # noqa: BLE001
-        print(f"  [content] could not read {run}: {type(e).__name__}: {e}")
-        return out
     chapter_ids: list[str] = []
-    for r in recs:
-        cid = str(r.get("chapter_id") or r.get("hx_exchange_id") or len(out))
+    for i, r in enumerate(recs):
+        cid = _chapter_id(r, i)
         chapter_ids.append(cid)
         tids = list(r.get("template_ids") or [])
         topic = r.get("target_topic_id")
@@ -187,15 +194,10 @@ def project_content(run: Path) -> list[N.Note]:
     return out
 
 
-# ── topics (coverage audit, if present) — bridge content↔ontology ────────────
-def project_topics(run: Path) -> list[N.Note]:
-    import pyarrow.parquet as pq
+# ── topics (coverage rows, if present) — bridge content↔ontology ─────────────
+def project_topics(recs: list[dict], topic_chapters: dict[int, list[str]] | None = None) -> list[N.Note]:
+    topic_chapters = topic_chapters or {}
     out: list[N.Note] = []
-    try:
-        recs = pq.read_table(run).to_pylist()
-    except Exception as e:                            # noqa: BLE001
-        print(f"  [topics] could not read {run}: {type(e).__name__}: {e}")
-        return out
     by_status: dict[str, list[int]] = {}
     for r in recs:
         tid = int(r["topic_id"])
@@ -206,13 +208,16 @@ def project_topics(run: Path) -> list[N.Note]:
             edges.append(f"**Nearest term.** {N.wl(f'ontology/term/{top}', top)}")
         if cat:
             edges.append(f"**Top category.** {N.wl(f'ontology/category/{cat}', cat)}")
+        covered = topic_chapters.get(tid, [])
+        cov = (f"**Covered by** {len(covered)} chapter(s): "
+               + ", ".join(N.wl(f"content/chapter/{c}", c) for c in covered[:6])) if covered else "**Covered by** 0 chapters (gap)"
         head = (f"**Status.** {r.get('status')} (coverage {r.get('coverage_score')})  ·  "
-                + "  ·  ".join(edges))
+                + "  ·  ".join([*edges, cov]))
         out.append(N.Note(
             id=f"topic/{tid}", title=f"topic {tid}", kind="topic", data_product="content",
             body=f"{head}\n\n{(r.get('topic_repr_text') or '')[:1500]}\n", frontmatter={
                 "status": r.get("status"), "coverage_score": r.get("coverage_score"),
-                "top_category": cat, "top_term": top}))
+                "top_category": cat, "top_term": top, "n_chapters": len(covered)}))
     parts = [f"**Topics** — {sum(len(v) for v in by_status.values())} FinePDFs topics."]
     for status, ids in sorted(by_status.items()):
         parts.append(f"\n**{status}** ({len(ids)}).\n" +
@@ -261,44 +266,57 @@ def run(args=None) -> int:
 
     rows = S.load_ontology()
     categories = sorted({cat for cat, _ in rows})
-    notes = project_ontology(rows) + project_relational(rows)
+
+    # Read content/coverage once + derive cross-references (so Terms show what exercises them).
+    corpus, crun = S.corpus_recs()
+    coverage, cov = S.coverage_recs()
+    term_chapters: dict[str, list[str]] = {}
+    topic_chapters: dict[int, list[str]] = {}
+    for i, r in enumerate(corpus):
+        cid = _chapter_id(r, i)
+        for tid in (r.get("template_ids") or []):
+            term_chapters.setdefault(tid, []).append(cid)
+        tp = r.get("target_topic_id")
+        if tp is not None:
+            topic_chapters.setdefault(int(tp), []).append(cid)
+    term_topics: dict[str, list[int]] = {}
+    for r in coverage:
+        top = r.get("top_template_id")
+        if top:
+            term_topics.setdefault(top, []).append(int(r["topic_id"]))
+
+    notes = (project_ontology(rows, term_chapters, term_topics) + project_relational(rows))
     print(f"  ontology+relational: {len(notes)} notes from {len(rows)} terms "
           f"in {len(categories)} categories (Lexicon {LEXICON!r})")
 
-    has_content = has_topics = False
-    crun = S.corpus_run()
-    if crun:
-        c = project_content(crun)
+    if corpus:
+        c = project_content(corpus)
         notes += c
-        has_content = bool(c)
         print(f"  content: {len(c)} notes  ({crun})")
     else:
         print("  content: (no on-disk corpus run — skipped; set AEGIR_CORPUS_RUN to project)")
-
-    cov = S.coverage_run()
-    if cov:
-        tp = project_topics(cov)
+    if coverage:
+        tp = project_topics(coverage, topic_chapters)
         notes += tp
-        has_topics = bool(tp)
         print(f"  topics:  {len(tp)} notes   ({cov})")
     else:
         print("  topics:  (no on-disk coverage run — skipped; set AEGIR_COVERAGE_RUN to project)")
 
-    notes += project_lenses(categories, has_content, has_topics)
+    notes += project_lenses(categories, bool(corpus), bool(coverage))
 
     for n in notes:
         N.write_note(kb, n)
-    # Index ALL three roots uniformly: current (the projection) ALONGSIDE scratch +
-    # archive (authored zettelkasten notes), so the SECTION tabs span the whole KB.
     entries = (N.scan_notes(kb, "current") + N.scan_notes(kb, "scratch") + N.scan_notes(kb, "archive"))
     idx = N.write_index(kb, entries)
     by_dp: dict[str, int] = {}
     by_root: dict[str, int] = {}
+    edges = 0
     for e in entries:
         by_dp[e["data_product"]] = by_dp.get(e["data_product"], 0) + 1
         by_root[e["root"]] = by_root.get(e["root"], 0) + 1
+        edges += len(e["links"])
     print(f"\n  KB projection → {kb}")
-    print(f"  {len(entries)} notes  by_dp={by_dp}  by_root={by_root}  ·  index {idx}")
+    print(f"  {len(entries)} notes  {edges} edges  by_dp={by_dp}  by_root={by_root}  ·  index {idx}")
     print("  lenses: lens/terms (Lexicon) · lens/schema · lens/content")
-    print("  roots: current (projection, alongside) | scratch (authored, in-flux) | archive (aged + snapshots)")
+    print("  roots: current (projection, alongside) | scratch (authored) | archive (aged + snapshots)")
     return 0

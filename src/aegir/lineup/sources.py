@@ -66,3 +66,21 @@ def corpus_run() -> Path | None:
 def coverage_run() -> Path | None:
     """Latest on-disk ``topic_coverage.parquet`` (topics), or None."""
     return _first([f"{_ART}/coverage_v*/*/topic_coverage.parquet"], "AEGIR_COVERAGE_RUN")
+
+
+def _recs(path: Path) -> list[dict]:
+    import pyarrow.parquet as pq
+    return pq.read_table(path).to_pylist()
+
+
+def corpus_recs() -> tuple[list[dict], Path | None]:
+    """(chapter rows, run path) for the content Data Product — read once so the build
+    can derive cross-references (term→chapters, topic→chapters) before projecting."""
+    r = corpus_run()
+    return (_recs(r), r) if r else ([], None)
+
+
+def coverage_recs() -> tuple[list[dict], Path | None]:
+    """(topic rows, run path) for topics — read once for term→topics cross-refs."""
+    r = coverage_run()
+    return (_recs(r), r) if r else ([], None)
