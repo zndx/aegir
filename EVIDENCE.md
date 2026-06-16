@@ -16,11 +16,21 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 |----|-------|------------------------------------------|--------|
 | E1 | The chapter-verifier composite ranks chapters by downstream pretraining value | proxy-gated corpus filtering, generator admit thresholds, GRPO reward, E5 scale-up | **PARTIAL** — valid cross-model / whole-corpus; within-model gating set aside (S1→S3 proxy refuted: no spread; composite spread doesn't translate). Lever = model-selection + whole-corpus filter |
 | E2 | *(instrument)* the edge-probe validly measures relational/structural skill | E3, the v0.4 headline eval | **BUILT; VALID-BUT-NOT-DISCRIMINATING** — selectivity>0 CI-clean on known-good backbone, random floor=0; but E2(b) is byte-value-overlap (arm-invariant) → does not isolate schema skill |
-| E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | ~~Phase 3 / v0.4~~ — DESCOPED | **DESCOPED from the gate (2026-06-15)** — not demonstrable at 13.5M (frozen=byte-overlap; fine-tune=capacity floor). Corpus-as-deliverable instead. Harness retained; revisit at larger capacity |
+| E3 | The DDL-injected (load-bearing) corpus beats no-schema on relational skill | M2 lift / M3 final gate (at scale); reasoner (inc-2d) | **RE-HOMED 2026-06-16** — descoped at 13.5M (frozen=byte-overlap; fine-tune=capacity floor); now (a) *computed* by the reasoner (inc-2d realization-CPA) and (b) revisited at scale as M2 lift / M3 final gate. Harness retained |
 | E4 | The blind column benchmark is non-trivial; an independent (Atelier) baseline exists | any "Aegir lift" claim | **UNTESTED** |
-| E5 | The generator produces semantically genuine, novel, coverage-closing ontology | scaled generation, catalog promotion | **RED** — deep gates wired; 20-gap pilot closed 0% (≪25%); novelty binds. Coverage-close metric is register-confounded → reformulate before scale |
+| E5 | The generator produces semantically genuine, novel, coverage-closing ontology | scaled generation, catalog promotion | **G-cov MET via mediation 2026-06-16** — register-fair R1 reformulated+validated; agent-mediation (meta-harness inc-1) cleared R1 where one-shot failed (t124 0.007→0.39; batch5 5/5, Δ+0.260 [+0.159,+0.375] CI-clean). Generator no longer binding → becomes M2's calibration target |
+| M0 | *(foundation)* substrate-evolution machinery: reasoner gates+computes, harness evolves | enables M1+ | **SUPPORTED 2026-06-16** — inc-2a coherence gate, 2b H₀ harness, 2c outer loop+H₁ (search +47%, held +0.005 adopted), 2d realization-CPA beachhead (§Meta-harness) |
+| M1 | H-Net+RWKV (byte + dynamic chunking) ≥ RWKV-7 at matched scale on standard data (tokenizer change isolated) | M2 | **UNTESTED** — pre-registered 2026-06-16 (Signals Programme) |
+| M2 | the ontology-grounded mix is non-degenerate (floor) AND lifts relational + DE-elucidation over no-ontology ablation (lift), matched budget | M3, SAE-Qwen generator loop, GRPO reward, v0.4 | **UNTESTED** — pre-registered 2026-06-16; subsumes the corpus-as-deliverable gate as a calibration target |
+| M3 | **FINAL PHASE GATE** — the lift persists at RWKV-7-matched scale | RASE generalization (M4), v0.4 release, scaled generation | **UNTESTED** — pre-registered 2026-06-16 |
 
-## Next-phase gate (pre-registered 2026-06-15; RE-SCOPED 2026-06-15 → corpus-as-deliverable)
+## Next-phase gate (pre-registered 2026-06-15; RE-SCOPED 2026-06-15 → corpus-as-deliverable; SUBSUMED 2026-06-16 → Signals Programme M2/M3, below)
+
+> **SUBSUMED (2026-06-16).** The Signals Programme (`docs/current/src/signals_programme.md`) reframes this
+> into a milestone gate series over a scaling ladder. **G-cov is now GREEN** (met via meta-harness
+> mediation — see E5 / §Meta-harness) but is understood as a PROXY: M2 calibrates it against the actual
+> pretrain signal, and the FINAL PHASE GATE (M3) is the model-level relational lift at RWKV-7-matched scale.
+> The corpus-quality criteria below remain valid as M2's corpus-quality sub-checks. See §Signals Programme gates.
 
 **History:** originally DUAL (G-rel + G-cov). After two convergent diagnostics showed the load-bearing
 relational claim is NOT demonstrable at 13.5M (frozen E2 = byte-overlap arm-invariant; fine-tuning E3 =
@@ -51,6 +61,55 @@ PKs? — E2(b)-cells-only hinges on it). Full design: `docs/scratch/2026-06-15/1
   validated. (Not the whole story: gaps remain, so R1 term-level + generator domain-grounding still matter.)
 - **Referential integrity STRONG** — 386 multi-table chapters, 796 FK-shaped columns, value-overlap
   mean **0.996**, median 1.000, 784/796 exactly 1.0. **E2(b)-cells-only is viable** (no generator fix needed).
+
+## Signals Programme gates (pre-registered 2026-06-16)
+
+The [Signals Programme charter](docs/current/src/signals_programme.md) reframes the next-phase gate into a
+milestone series over a scaling ladder. The corpus-as-deliverable gate above is SUBSUMED into M2 (a proxy
+M2 calibrates against the pretrain signal — necessary, not terminal). Standing rules apply: pre-register;
+no scaled spend without green; **factored gates** (1-DOF where separable, a 2-factor cell where the
+interaction is the hypothesis); **report Pareto slices, don't scalarize**. Three external anchors stay live
+throughout — reasoner (formal), corpus (empirical-fit), held-out H-Net+RWKV (behavioral).
+
+**M0 — substrate machinery. SUPPORTED (2026-06-16).** inc-2a–d (see §Meta-harness): reasoner gates
+(coherence) + computes (realization-CPA); harness evolves (outer loop + discovered H₁). Enables M1+.
+
+**M1 — architecture baseline (the H-Net isolation gate). UNTESTED.**
+- *Hypothesis:* swapping RWKV-7's tokenizer for byte-level dynamic chunking (H-Net) does not regress
+  general LM quality at matched scale — the architecture change is sound on its own before any corpus change.
+- *Instrument:* train H-Net+RWKV on RWKV-7's OPEN training corpus (held constant), up the scaling ladder to
+  RWKV-7-matched params with intermediate rungs tracked; standard LM eval suite. **DOF = 1** (the chunking change).
+- *Decision rule:* H-Net+RWKV ≥ RWKV-7 (matched scale, standard evals) at each tracked rung → architecture
+  certified & isolated; gates M2.
+- *CI:* per-eval bootstrap; multiple seeds at the smallest rung to bound pretraining variance.
+
+**M2 — instrument validity (decisive corpus gate + proxy calibration). UNTESTED.**
+- *Hypothesis:* the ontology-grounded data mix is (a) **non-degenerate** and (b) **lifts** relational +
+  de-novo Data-Element-elucidation skill over a no-ontology control, at matched token budget.
+- *Instrument:* same-architecture, matched-budget matrix at ≥2 ladder rungs — arms {grounded mix /
+  no-ontology ablation (existing `--ablation no-ontology`) / standard-only}; a 2-factor **α×β** cell
+  (α = ontology-corpus fraction, β = SQL/DDL fraction) replicated across the two rungs (one design → the
+  interaction sign AND the mix-optimum scale-drift). Eval: **FLOOR** = general LM evals (grounded ≈ standard
+  → non-degeneracy, the failure mode every upstream proxy is blind to); **LIFT** = relational + DE-elucidation,
+  cells-only / control-task / PR-metric (per [ontology-CPA eval methodology] memory). Side-product: calibrate
+  R1 / coverage-close / corpus-quality proxies against the pretrain signal (extends E1 to the model level).
+- *Decision rule:* FLOOR held AND LIFT CI-clean (grounded > ablation) AND α×β interaction + scale-drift
+  characterized. Report the Pareto slice (general vs relational), do not scalarize to a single α*.
+- *CI:* bootstrap on the lift delta; multiple seeds; the no-ontology arm is the matched causal control.
+- *Precondition ($0, run first):* quantify the corpus's max **non-repetitive** token yield (caps α at scale).
+
+**M3 — scale + the FINAL PHASE GATE. UNTESTED.**
+- *Gate (decisive):* at RWKV-7-matched scale, the ontology-grounded mix yields an H-Net+RWKV that
+  **(a) MATCHES RWKV-7 on general evals** (non-degeneracy floor) **AND (b) EXCEEDS the no-ontology ablation
+  on relational + de-novo Data-Element elucidation, CI-clean**, with the α×β interaction and the mix-optimum
+  scale-drift characterized (α*(N) extrapolated to target scale, not assumed transferable from small rungs).
+- *On PASS:* certifies the ontology machinery as a valid relational-domain-adaptation instrument →
+  authorizes M4 (SAE-Qwen generator loop with process-reward; RASE in a novel domain), v0.4 release, scaled
+  generation.
+- *On FAIL:* localizes to a named arrow — ontology→corpus degeneracy (M2 floor) / corpus→model transfer
+  (M2 lift) / scale-drift (M3) — each with its own remediation.
+- *Supersedes* the proxy-only corpus-as-deliverable gate: proxies are calibrated by M2/M3, never trusted
+  ahead of them.
 
 ## Already-supported claims (for completeness; artifacts on /raid)
 
