@@ -1,4 +1,4 @@
-import { Segmented, Typography } from "antd";
+import { Typography } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -17,7 +17,7 @@ const LENSES = [
   { key: "schema", label: "Schema", seed: "lens/schema", hint: "relational projection" },
   { key: "content", label: "Content", seed: "lens/content", hint: "corpus + topics" },
 ];
-const ROOTS = ["current", "scratch", "archive"];
+const ROOTS = ["archive", "current", "scratch"];
 
 function tab(active: boolean): React.CSSProperties {
   return {
@@ -69,9 +69,15 @@ function Lineup() {
             </a>
           ))}
         </div>
-        <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>MATURITY</Text>
-        <Segmented size="small" block options={ROOTS} value={root} onChange={(v) => setRoot(v as string)} style={{ marginTop: 8 }} />
-        <Text type="secondary" style={{ fontSize: 11, display: "block", marginTop: 8 }}>
+        <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>SECTION</Text>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
+          {ROOTS.map((r) => (
+            <a key={r} onClick={() => setRoot(r)} style={tab(root === r)} title={r}>
+              {r.charAt(0).toUpperCase() + r.slice(1)}
+            </a>
+          ))}
+        </div>
+        <Text type="secondary" style={{ fontSize: 11, display: "block", marginTop: 4 }}>
           {root === "current" ? "the live projection (what we know)" : `${root} populates via the lifecycle`}
         </Text>
         {index && (
