@@ -320,3 +320,18 @@ constructs' minted terms ("article/journal/person") are generic — on-topic ove
 constructs) with a register-fair metric. **⇒ G-cov instrument is ready; the binding constraint for v0.4 is
 the GENERATOR — it must mint topic-SPECIFIC domain terms to pass R1 (on-topic R1 beats shuffled CI-clean).**
 Artifacts: `evidence/gcov/r1{,_jaccard}.json`.
+
+**G-cov MET via agent-mediation — meta-harness inc-1 inaugural proof (2026-06-16, commit f6efcae).**
+The binding constraint was the generator (the blind one-shot fails R1). The reactive meta-harness spine
+(RETE/FSM, `src/aegir/meta_harness/fsm_rete.py`) wired to REAL effectors — `mint` = ACP/Grok
+(`scripts/mediate_acp.py`, `grok agent stdio`, contract-aware prompt with the topic's salient terms
+injected), `gate` = ContractGate (`scripts/mediate_gate.py`, the committed verifiers) — **clears R1 where
+the one-shot failed.** On t124 (herbal medicine; one-shot R1 ≈0.007, Δ+0.003 CI-touching-0): the spine
+**promoted in 1 iteration**, r1_on **0.387**, ci_low 0.385 (CI-clean), full conjunctive contract passed
+(DeepOnto verbalize+complex, polyglot DDL, novelty, schema, R1). Construct:
+`anti_inflammatory_herbal_plant_pharmaceutics_review_article` — complex, cco:DescriptiveICE-anchored,
+topic-specific (`MedicinalHerbalPlant`, `reviewsMedicinalHerbalPlant`). The difference from the one-shot
+is the contract-aware prompt (the agent is TOLD the contract + the topic vocabulary), not the model.
+**Real reasoning on the critical path — no simulation (the deterministic fixture is logic-only).** The
+single-topic Δ is the per-construct proof; the multi-topic BATCH on-vs-shuffled CI (the G-cov gate
+verdict) is `evidence/meta_harness/`. inc-1.5 = agent-side gate tools; inc-2 = the UI (ACP agent surface).
