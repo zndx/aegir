@@ -142,12 +142,15 @@ def _batch_r1(admitted: list[dict], Vt, rng, n_shuffled: int = 40) -> dict:
 
 
 def evaluate_harness(cdir: str | Path, topics: list[dict], gate, complete,
-                     exemplars: dict, Vt, rng, max_iters: int = 6) -> dict:
-    """Run the candidate harness over the search set; write per-topic traces +
-    scores.json. reward = batch on-vs-shuffled R1 across promoted constructs (the
-    G-cov gate verdict); cost = total mint calls. Returns the scores dict."""
+                     exemplars: dict, Vt, rng, max_iters: int = 6, tag: str = "") -> dict:
+    """Run the candidate harness over a topic set; write per-topic traces +
+    scores[_tag].json. reward = batch on-vs-shuffled R1 across promoted constructs (the
+    G-cov gate verdict); cost = total mint calls. `tag` namespaces the artifacts so the
+    same candidate can be scored on a SEARCH set and a HELD-OUT set without clobbering
+    (the outer loop, inc-2c). Returns the scores dict."""
     cdir = Path(cdir)
-    (cdir / "traces").mkdir(parents=True, exist_ok=True)
+    tdir = cdir / "traces" / tag if tag else cdir / "traces"
+    tdir.mkdir(parents=True, exist_ok=True)
     h = load_harness(cdir)
 
     per_topic, admitted, mint_calls = [], [], 0
@@ -155,7 +158,7 @@ def evaluate_harness(cdir: str | Path, topics: list[dict], gate, complete,
         tid = int(topic["topic_id"])
         trace: list[dict] = []
         rec = h.run(topic, gate, complete, exemplars, max_iters=max_iters, log=trace.append)
-        (cdir / "traces" / f"topic_{tid}.jsonl").write_text(
+        (tdir / f"topic_{tid}.jsonl").write_text(
             "\n".join(json.dumps(e) for e in trace) + ("\n" if trace else ""))
         mint_calls += rec["iters"]
         c = rec.get("construct") or {}
@@ -170,7 +173,7 @@ def evaluate_harness(cdir: str | Path, topics: list[dict], gate, complete,
     scores = {"reward": reward,
               "cost": {"mint_calls": mint_calls, "promoted": len(admitted), "attempted": len(topics)},
               "per_topic": per_topic}
-    (cdir / "scores.json").write_text(json.dumps(scores, indent=2) + "\n")
+    (cdir / (f"scores_{tag}.json" if tag else "scores.json")).write_text(json.dumps(scores, indent=2) + "\n")
     return scores
 
 
