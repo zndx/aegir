@@ -288,12 +288,17 @@ def run(args=None) -> int:
 
     for n in notes:
         N.write_note(kb, n)
-    idx = N.write_index(kb, notes)
+    # Index ALL three roots uniformly: current (the projection) ALONGSIDE scratch +
+    # archive (authored zettelkasten notes), so the SECTION tabs span the whole KB.
+    entries = (N.scan_notes(kb, "current") + N.scan_notes(kb, "scratch") + N.scan_notes(kb, "archive"))
+    idx = N.write_index(kb, entries)
     by_dp: dict[str, int] = {}
-    for n in notes:
-        by_dp[n.data_product] = by_dp.get(n.data_product, 0) + 1
+    by_root: dict[str, int] = {}
+    for e in entries:
+        by_dp[e["data_product"]] = by_dp.get(e["data_product"], 0) + 1
+        by_root[e["root"]] = by_root.get(e["root"], 0) + 1
     print(f"\n  KB projection → {kb}")
-    print(f"  {len(notes)} notes  {by_dp}  ·  index {idx}")
+    print(f"  {len(entries)} notes  by_dp={by_dp}  by_root={by_root}  ·  index {idx}")
     print("  lenses: lens/terms (Lexicon) · lens/schema · lens/content")
-    print("  roots: current (projection) | scratch (in-flux) | archive (superseded)")
+    print("  roots: current (projection, alongside) | scratch (authored, in-flux) | archive (aged + snapshots)")
     return 0

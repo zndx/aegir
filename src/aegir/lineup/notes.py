@@ -94,19 +94,48 @@ def read_note(kb_dir: Path, relpath: str) -> dict:
     return {**meta, "body": body, "links": meta.get("links") or extract_links(body)}
 
 
-def write_index(kb_dir: Path, notes: list[Note]) -> Path:
-    """Emit ``index.json`` — the gateway's listing + id→relpath resolution + edge graph."""
+def scan_notes(kb_dir: Path, root: str) -> list[dict]:
+    """Index entries for every ``.md`` under ``build/dev/<root>/`` (recursive), so the
+    projection (``current/``) AND authored notes (``scratch/``, ``archive/``) are all
+    navigable — ``current`` lives alongside the others. Projected notes carry their
+    root-less id in frontmatter ``name`` (matching the wikilinks); authored notes use
+    their path as the id and infer ``data_product``/lens from frontmatter or the
+    ``<utc>_<lens>.md`` zettelkasten filename convention."""
+    base = Path(kb_dir) / root
+    out: list[dict] = []
+    if not base.exists():
+        return out
+    for p in sorted(base.rglob("*.md")):
+        rel = p.relative_to(kb_dir).as_posix()
+        try:
+            fm, body = parse_markdown(p.read_text())
+        except OSError:
+            continue
+        lens = fm.get("lens")
+        if not lens and "_" in p.stem:
+            lens = p.stem.rsplit("_", 1)[-1]          # gaius <iso-date>/<utc>_<lens>.md convention
+        out.append({
+            "id": fm.get("name") or rel[:-3],
+            "title": fm.get("title") or p.stem,
+            "kind": fm.get("kind") or f"{root}-note",
+            "data_product": fm.get("data_product") or lens or root,
+            "root": root,
+            "relpath": rel,
+            "links": fm.get("links") or extract_links(body),
+        })
+    return out
+
+
+def write_index(kb_dir: Path, entries: list[dict]) -> Path:
+    """Emit ``index.json`` from scanned entries — the gateway's listing + id→relpath
+    resolution + edge graph, across all three roots (current / scratch / archive)."""
     by_dp: dict[str, int] = {}
-    for n in notes:
-        by_dp[n.data_product] = by_dp.get(n.data_product, 0) + 1
-    payload = {
-        "counts": {"total": len(notes), "by_data_product": by_dp},
-        "notes": [
-            {"id": n.id, "title": n.title, "kind": n.kind, "data_product": n.data_product,
-             "root": n.root, "relpath": relpath(n), "links": n.links or extract_links(n.body)}
-            for n in notes
-        ],
-    }
+    by_root: dict[str, int] = {}
+    for e in entries:
+        by_dp[e["data_product"]] = by_dp.get(e["data_product"], 0) + 1
+        by_root[e["root"]] = by_root.get(e["root"], 0) + 1
+    payload = {"counts": {"total": len(entries), "by_data_product": by_dp, "by_root": by_root},
+               "notes": entries}
     p = Path(kb_dir) / "index.json"
     p.write_text(json.dumps(payload, indent=2) + "\n")
     return p
