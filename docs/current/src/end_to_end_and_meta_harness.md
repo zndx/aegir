@@ -65,8 +65,13 @@ We optimize TWO artifacts against TWO frozen executors: the harness (around Grok
 
 ## 3. HermiT reasoner activation (make the ontology executable — the FORM, not the word)
 
-Today HermiT is **dormant**: we verbalize + read `get_asserted_complex_classes` (syntactic), never
-reason. Activation = three concrete, measured computations:
+**HermiT is the sound-and-complete deductive KERNEL** (hypertableau, full OWL 2 DL): sound = no false
+entailments, complete = no missed ones. It is the *only* formally-guaranteed layer — so consistency,
+classification, and realization are **ground truth**, not proxies (R1, verbalize, Grok, the model are the
+heuristic/stochastic shell; HermiT is the arbiter). DeepOnto integrates it natively: `Ontology(path,
+reasoner_type="hermit")` (the DEFAULT — already instantiated on every `probe_template` load, just never
+queried) exposes `check_consistency()`, `get_inferred_super_entities/sub_entities()`, `get_instances()`.
+So activation is *calling* the loaded reasoner, not wiring one. Three concrete, measured computations:
 
 - **(a) Consistency gate [beachhead].** After a construct passes the syntactic gates, HermiT
   consistency-checks the **cumulative** ontology (seed ∪ admitted ∪ candidate). New `ContractGate`
@@ -81,9 +86,10 @@ reason. Activation = three concrete, measured computations:
   held-out `reference.parquet`. The relational computation relocates to the reasoner; the model becomes
   a fast amortization of it, not the thing that must learn it.
 - **Caveats (real):** OWL profile — generated complex-class constructs push expressivity; keep near OWL 2
-  EL for PTIME ELK where possible, or accept HermiT's DL cost; the ABox bridge (DDL/JSON → assertions) is
-  a genuine new pipeline piece. Reasoner invocation via DeepOnto's `OntologyReasoner`/OWL-API (HermiT
-  bundled, currently uncalled).
+  EL only as a SPEED fallback if HermiT slows at batch scale (hypertableau is NEXPTIME-worst but
+  practically tractable on modular BFO/CCO ontologies); the ABox bridge (DDL/JSON → assertions) for
+  realization is a genuine new pipeline piece. Reasoner already instantiated by DeepOnto (default
+  `reasoner_type="hermit"`) — activation = calling `check_consistency()`/`get_instances()`, not new wiring.
 
 ## 4. How they compose
 
