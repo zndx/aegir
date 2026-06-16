@@ -99,6 +99,36 @@ def _register_api_routes(app: FastAPI) -> None:
             "gateway_port": cfg.gateway.port,
         }
 
+    # ── /api/kb — the lineup projection (build/dev/{current,scratch,archive}) ──
+    # Thin: delegate to aegir.lineup readers. Read-only; reflects the latest
+    # `just kb-build`. Returns 404 with a hint if the projection isn't built.
+
+    @app.get("/api/kb/index")
+    def kb_index() -> dict:
+        import json as _json
+
+        from aegir.lineup import sources as _S
+        p = _S.kb_dir() / "index.json"
+        if not p.exists():
+            raise HTTPException(404, "KB projection not built — run `just kb-build`")
+        return _json.loads(p.read_text())
+
+    @app.get("/api/kb/note/{note_id:path}")
+    def kb_note(note_id: str) -> dict:
+        import json as _json
+
+        from aegir.lineup import notes as _N
+        from aegir.lineup import sources as _S
+        kb = _S.kb_dir()
+        idx_p = kb / "index.json"
+        if not idx_p.exists():
+            raise HTTPException(404, "KB projection not built — run `just kb-build`")
+        idx = _json.loads(idx_p.read_text())
+        match = next((n for n in idx["notes"] if n["id"] == note_id), None)
+        if not match:
+            raise HTTPException(404, f"no KB note {note_id!r}")
+        return _N.read_note(kb, match["relpath"])
+
     # ── /api/leaderboard ───────────────────────────────────────
 
     @app.get("/api/leaderboard")

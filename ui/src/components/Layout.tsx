@@ -6,6 +6,7 @@ const { Header, Content, Footer } = AntLayout;
 const { Text } = Typography;
 
 const NAV_ITEMS = [
+  { path: "/lineup",         label: "Lineup" },
   { path: "/leaderboards",   label: "Leaderboards" },
   { path: "/classifications", label: "Classifications" },
   { path: "/ontologies",     label: "Ontologies" },

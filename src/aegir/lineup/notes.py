@@ -71,6 +71,29 @@ def write_note(kb_dir: Path, note: Note) -> Path:
     return p
 
 
+def parse_markdown(text: str) -> tuple[dict, str]:
+    """Parse a note file → (frontmatter dict, body). Frontmatter values are JSON-encoded."""
+    if text.startswith("---"):
+        parts = text.split("---", 2)
+        if len(parts) == 3:
+            meta: dict = {}
+            for line in parts[1].strip().splitlines():
+                if ": " in line:
+                    k, v = line.split(": ", 1)
+                    try:
+                        meta[k.strip()] = json.loads(v)
+                    except json.JSONDecodeError:
+                        meta[k.strip()] = v.strip()
+            return meta, parts[2].strip()
+    return {}, text
+
+
+def read_note(kb_dir: Path, relpath: str) -> dict:
+    """Read one projected note → a JSON-serializable dict (frontmatter + body + links)."""
+    meta, body = parse_markdown((Path(kb_dir) / relpath).read_text())
+    return {**meta, "body": body, "links": meta.get("links") or extract_links(body)}
+
+
 def write_index(kb_dir: Path, notes: list[Note]) -> Path:
     """Emit ``index.json`` — the gateway's listing + id→relpath resolution + edge graph."""
     by_dp: dict[str, int] = {}

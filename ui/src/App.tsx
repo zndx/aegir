@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 const Leaderboards = lazy(() => import("./pages/Leaderboards"));
 const Classifications = lazy(() => import("./pages/Classifications"));
 const Ontologies = lazy(() => import("./pages/Ontologies"));
+const Lineup = lazy(() => import("./pages/Lineup"));
 
 function App() {
   return (
@@ -45,6 +46,16 @@ function App() {
               <Layout>
                 <Suspense fallback={null}>
                   <Ontologies />
+                </Suspense>
+              </Layout>
+            }
+          />
+          <Route
+            path="/lineup"
+            element={
+              <Layout fullHeight>
+                <Suspense fallback={null}>
+                  <Lineup />
                 </Suspense>
               </Layout>
             }

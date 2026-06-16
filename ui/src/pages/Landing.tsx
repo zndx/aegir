@@ -118,7 +118,7 @@ function Landing() {
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <Link to="/ontologies">
+          <Link to="/lineup?lens=terms">
             <Card hoverable>
               <Statistic
                 title="Terms"
@@ -126,8 +126,47 @@ function Landing() {
                 prefix={<BookOutlined />}
               />
               <Text type="secondary" style={{ fontSize: 11 }}>
-                union of task vocabularies
+                explore the ontology vocabulary →
               </Text>
+            </Card>
+          </Link>
+        </Col>
+      </Row>
+
+      {/* Lenses — entry points into the projected KB (the lineup). The cards are
+          logical front doors; panels + links are the flexible substrate beneath.
+          Lineup navigation primitive: Ward Cunningham's federated wiki. */}
+      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+        <Col xs={24} md={8}>
+          <Link to="/lineup?lens=terms" style={{ textDecoration: "none" }}>
+            <Card hoverable title="Terms" extra={<BookOutlined />}>
+              <Paragraph>
+                Browse the ontology vocabulary by family — each term opens to its
+                verbalization, axiom, BFO/CCO anchor, and relational projection.
+              </Paragraph>
+              <Text type="secondary">lens · ontology</Text>
+            </Card>
+          </Link>
+        </Col>
+        <Col xs={24} md={8}>
+          <Link to="/lineup?lens=schema" style={{ textDecoration: "none" }}>
+            <Card hoverable title="Schema" extra={<DatabaseOutlined />}>
+              <Paragraph>
+                Walk the relational projection — each table realizes an ontology term
+                (the ontology↔DDL pivot); columns carry typed slots.
+              </Paragraph>
+              <Text type="secondary">lens · relational</Text>
+            </Card>
+          </Link>
+        </Col>
+        <Col xs={24} md={8}>
+          <Link to="/lineup?lens=content" style={{ textDecoration: "none" }}>
+            <Card hoverable title="Content" extra={<TagsOutlined />}>
+              <Paragraph>
+                Read the textbook-quality corpus and the FinePDFs topics it covers,
+                linked back to the terms each chapter realizes.
+              </Paragraph>
+              <Text type="secondary">lens · content</Text>
             </Card>
           </Link>
         </Col>
