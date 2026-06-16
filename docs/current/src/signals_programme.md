@@ -25,6 +25,59 @@ domain-adaptation engine**, and it rests on three commitments established over t
 The generator (SAE-instrumented **Qwen**, fine-tuned to mint the ontology) and the downstream model
 (**H-Net+RWKV**, from scratch) are distinct by design: experiment upstream, keep the instrument boring.
 
+## Source of truth & data flow — the ontology is primary; everything else serves it
+
+The single source of truth is the **generated ontology artifact itself**. Atlas, Qdrant, the
+`build/dev/current` projection, the lineup, and even the published `sdg-corpora` are projections, indices,
+views, and exports *of* it — never competing stores. The ontology spans two disclosure tiers: **KNOW** (the
+full, curated working ontology) ⊇ **SHARE** (`sdg-corpora`, the published subset). Same artifact, two tiers
+— not two artifacts.
+
+```
+      ┌─────────────────────────────────────────────────────────────┐
+      │  ONTOLOGY  — the source of truth (the artifact itself)        │
+      │     KNOW (full, curated)   ⊇   SHARE (sdg-corpora, published) │
+      └─────────────────────────────────────────────────────────────┘
+            │ build              │ glossary-sync     │ index        │ export
+            ▼                    ▼                   ▼              ▼
+      build/dev/current   ◀──in sync──▶   Atlas     Qdrant      sdg-corpora
+      (projection)                        (synced VIEW;          (the SHARE tier)
+                                           edits ──suggest──▶ ontology curation)
+
+            the lineup  ── navigates / explores / curates all of the above
+```
+
+- **Dependency arrows point inward.** Regenerating the ontology re-projects `build/dev/current`, re-syncs
+  Atlas, re-indexes Qdrant, re-exports `sdg-corpora`. That inward-pointing dependency is what keeps a
+  multi-store assembly coherent instead of a web of drifting masters.
+- **`build/dev/current` ⟷ Atlas stay in sync *because both project from the ontology*** — not via a direct
+  link. There is no `current`↔Atlas channel; both are downstream of the one SoT.
+- **Atlas edits *suggest*, they do not commit.** Atlas is a rich glossary-editing surface, but a curator's
+  edit there is a **proposal** that round-trips into the ontology's curation queue (reviewed, reasoner-gated,
+  applied), then re-projects outward. So the Atlas glossary-sync is a *suggestion-returning projection*, not
+  an authoritative store — its write path is a PR against the ontology, never a commit to it. (Same shape as
+  `scratch → current` promotion; Atlas is just another suggestion inbox alongside the generator's minted
+  candidates and the authored scratch notes.)
+- **The lineup is the navigate / explore / curate layer** — the one place ontology-projection, Atlas-sync,
+  and the Qdrant retrieval text are seen together, and from which curation decisions are made.
+
+**The maturation arc this enables.** The current ontology form is the template+slot catalog (the seed
+crystal). The lineup curation is the **forge** that converts it into a real lexicon of concrete,
+Atlas-synced, Qdrant-indexed **Terms** (Lexicon / Category / Term ≡ Atlas Glossary / Category / Term —
+vocabulary already aligned). A term is "real" when it clears the contract (HermiT-coherent, R1-grounded,
+novel), passes curation, gains its `AtlasGlossaryTerm` + `qualifiedName`, and is Qdrant-indexed. As real
+terms accumulate, the spent template *instantiations* retire to `archive/` — while the reusable axiom
+**shapes** stay live as the generator's cross-domain exemplar pool (RASE-in-novel-domains needs them;
+archive ≠ delete). End state: templates are history and **the lineup ≡ Atlas glossary ≡ Qdrant index —
+three views of one real ontology.**
+
+**The two faces that make a term "real"** (the next build): (1) **Qdrant augmentation** — the term's
+augmented, holdout-marked ColBERT/MaxSim retrieval text (the Gaius `theta/augmentation.py` shape), shown in
+its lineup panel and indexed for late-interaction search; (2) **Atlas glossary-sync** — the
+`AtlasGlossaryTerm`/`Category` projector (extending the existing `rdbms_*` relational projector), a
+*suggestion-returning* projection keyed on `qualifiedName`. Per-term-panel hierarchy navigation falls out of
+(1) — the augmentation's wikilinks are the hierarchy edges.
+
 ## Methodology — factored gates over a scaling ladder
 
 The programme is a **high-dimensional, multi-objective** optimization decomposed into a **sequence of
