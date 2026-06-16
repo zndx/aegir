@@ -401,3 +401,21 @@ Pure-mechanics self-test (cov_reward + pareto_frontier) green.
   it on the balanced run). The FORM is demonstrated: a coding agent reading the candidate filesystem
   discovered a strictly-better harness. Next outer-loop iteration would seed from H₁. Artifacts:
   `evidence/meta_harness/outer_inc2c{,_h1,_balanced}/`.
+
+**inc-2d-a — realization-as-CPA beachhead: the reasoner COMPUTES column types (2026-06-16).** Re-homes
+the descoped **G-rel** (a tiny model can't learn relational/type skill — it floored) to HermiT.
+`src/aegir/ontology/abox.py` is the ABox primitive layer (raw OWLAPI via jpype, since DeepOnto doesn't
+wrap ABox assertion): `assert_type/assert_relation/assert_data`, `refresh` (reload the reasoner — HermiT
+classifies a snapshot, so ABox mutations are invisible until reload), `realize_types` (= `owl_reasoner.
+getTypes(ind, direct).getFlattened()` — the CPA computation) and `realize_relations`. **Standalone proof**:
+a TBox with one object property carrying Domain `MedicinalHerbalPlant` / Range `BioactiveCompound`; the ABox
+asserts ONLY the FK relation `plant1 hasActiveCompound c1` (NEITHER endpoint typed); HermiT realizes
+`types(plant1)=[MedicinalHerbalPlant]` (from Domain) and `types(c1)=[BioactiveCompound]` (from Range) —
+**both column types computed by the reasoner from the relation alone, types nobody asserted.** Sound &
+complete ⇒ these ARE the annotations, not a learned proxy; the byte model becomes a fast amortization of
+the reasoner, not the thing that must learn the floored skill. This is the mechanism beachhead (parallel to
+inc-2a's coherence gate). inc-2d-FULL (the remaining work): the corpus bridge (real chapter tables → ABox,
+DERIVING Domain/Range axioms from the templates' `{p} some {Y}` restrictions so realization is non-trivial)
+→ inferred IRIs → `label_idx` over the 540 templates → `eval_ontology_cpa.py` selectivity (micro-AUC/mAP)
+vs the matched-token non-grounded control, CI-clean vs the held-out reference. Scoping note:
+`docs/scratch/2026-06-16/051833_inc2d_realization_cpa_scoping.md`.
