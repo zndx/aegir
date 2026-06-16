@@ -119,6 +119,12 @@ mediate-h0 topics="124" coverage_run="/raid/checkpoints/aegir-artifacts/coverage
 kb-build:
     uv run --no-sync python -m aegir.lineup build
 
+# Run a lineup KB upkeep op by hand (normally driven by pg_cron → scheduled_tasks →
+# the in-gateway processor). op = upkeep (age past-quarter scratch → archive) | snapshot
+# (current/ → archive snapshot) | reproject. `install-cron` registers the pg_cron jobs.
+kb-maintain op="upkeep":
+    uv run --no-sync python -m aegir.lineup maintain {{op}}
+
 # ── mdbook documentation ──────────────────────────────────────
 #
 # The book lives at ``docs/current/`` (standard ``mdbook init``

@@ -67,7 +67,43 @@ def create_app(cfg: Config | None = None) -> FastAPI:
     from aegir.governance.ol import make_router as _ol_router
     app.include_router(_ol_router())
     _mount_static_bundle(app, cfg)
+    _wire_lineup_upkeep(app, cfg)
     return app
+
+
+def _wire_lineup_upkeep(app: FastAPI, cfg: Config) -> None:
+    """Fold the lineup KB upkeep into the gateway (one app, no extra process): on startup
+    register the pg_cron jobs (idempotent) and run the ScheduledTaskProcessor that consumes
+    ``scheduled_tasks`` → ``aegir.lineup.maintain``. Gated by ``AEGIR_LINEUP_UPKEEP=1`` (set
+    in the devenv gateway exec) so tests / TestClient don't touch the DB or scheduler. Every
+    step is guarded — a DB outage never stops the gateway serving."""
+    import os
+    if os.environ.get("AEGIR_LINEUP_UPKEEP") != "1":
+        return
+    state: dict = {}
+
+    @app.on_event("startup")
+    async def _start_upkeep() -> None:
+        import asyncio
+        try:
+            from aegir.lineup import cron
+            await asyncio.to_thread(cron.install, cfg.db.url)
+        except Exception as e:                              # noqa: BLE001
+            _log.warning("lineup cron install skipped: %s", e)
+        try:
+            from aegir.lineup.processor import ScheduledTaskProcessor
+            p = ScheduledTaskProcessor(cfg.db.url)
+            state["proc"], state["task"] = p, asyncio.create_task(p.run())
+            _log.info("lineup upkeep processor started")
+        except Exception as e:                              # noqa: BLE001
+            _log.warning("lineup processor not started: %s", e)
+
+    @app.on_event("shutdown")
+    async def _stop_upkeep() -> None:
+        if state.get("proc"):
+            state["proc"].stop()
+        if state.get("task"):
+            state["task"].cancel()
 
 
 def _pkg_version() -> str:
