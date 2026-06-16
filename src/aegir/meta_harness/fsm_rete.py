@@ -258,34 +258,53 @@ def seed_rules() -> list[Rule]:
     ]
 
 
-# ── Deterministic stub effector (inc-0 self-test; no LLM, no GPU) ──────────
-class _StubEffector:
-    """Simulates an agent that, given domain-enrichment feedback, raises R1 by a
-    fixed step each iteration until the contract is satisfied. Deterministic →
-    the spine's navigation is reproducible end-to-end without the real effector."""
+# ── Fixture effector (control-plane LOGIC test only — NOT a capability test) ─
+class FixtureEffector:
+    """Replays a RECORDED-or-DESIGNED fixture (one gate-signal dict per mint) to
+    exercise the deterministic control plane.
 
-    def __init__(self, start_ci=-0.03, step=0.015):
-        self.start_ci, self.step = start_ci, step
+    It does NOT reason, and it does NOT simulate reasoning — it is *data*, the way
+    a parser test feeds recorded inputs. Reasoning an ontology out of FinePDFs is
+    irreducibly intelligent, so the **production effector is ALWAYS a real agent**
+    (ACP: Qwen / our fine-tunes / Grok); there is no stub that produces ontology.
+    Capability is validated only by a real agent moving R1 (inc-1), NEVER by this
+    fixture. A fixture may be recorded from a real run (preferred) or hand-authored
+    to drive a specific rule path; it is test data, not a verdict.
+    """
+
+    def __init__(self, steps: list[dict]):
+        self.steps = steps           # gate-signal dict per mint (recorded/designed)
+        self._i = -1
 
     def mint(self, topic, objective, feedback, prev):
-        n = (prev or {}).get("_n", 0) + 1
-        return {"template_id": f"{topic}_construct_v{n}", "_n": n, "_obj": objective}
+        self._i += 1
+        return {"template_id": f"fixture_step_{self._i}", "_obj": objective}
 
     def gate(self, construct, topic):
-        n = construct.get("_n", 0)
-        r1 = round(self.start_ci + self.step * n, 4)   # improves with each enrich/refine
-        return {"deeponto_ok": True, "deeponto_complex": True, "polyglot_ok": True,
-                "novelty_ok": True, "schema_ok": True, "r1_on": round(0.3 + 0.02 * n, 4),
-                "r1_ci_low": r1, "n_cols": 5}
+        return dict(self.steps[min(self._i, len(self.steps) - 1)])
 
 
 if __name__ == "__main__":
-    h = MetaHarness(seed_rules(), _StubEffector(), max_iters=8,
-                    trace_path="/tmp/meta_harness_selftest.jsonl")
-    ctx = h.run("t124_herbal")
-    print(f"outcome={ctx.terminate}  reason={ctx.terminate_reason!r}  iters={ctx.iterations}")
-    print(f"r1_ci_low history (proxy): {ctx.history}")
+    # Designed control-plane fixture: a scenario that drives the rule paths
+    # draft → verbalize-fail → trivial → R1-not-specific → satisfied. This asserts
+    # the LOGIC routes correctly given known signals — it makes NO claim that an
+    # ontology was reasoned. The real test is a live agent moving R1 (inc-1).
+    OK = {"deeponto_ok": True, "deeponto_complex": True, "polyglot_ok": True,
+          "novelty_ok": True, "schema_ok": True, "r1_on": 0.34, "n_cols": 5}
+    fixture = [
+        {**OK, "deeponto_ok": False, "deeponto_complex": False},   # 0: first draft won't verbalize
+        {**OK, "deeponto_complex": False},                          # 1: verbalizes but trivial
+        {**OK, "r1_ci_low": -0.01},                                 # 2: valid+complex, R1 not specific
+        {**OK, "r1_ci_low": 0.02},                                  # 3: full contract satisfied
+    ]
+    h = MetaHarness(seed_rules(), FixtureEffector(fixture), max_iters=8,
+                    trace_path="/tmp/meta_harness_logictest.jsonl")
+    ctx = h.run("fixture_scenario")
     fired = [e["fired"] for e in h.trace if e["event"] == "agenda"]
-    print(f"rules fired in order: {fired}")
-    assert ctx.terminate == "promote", "spine must reach promote on the improving stub"
-    print(f"\nspine OK — {len(h.trace)} trace events → /tmp/meta_harness_selftest.jsonl")
+    print(f"fired: {fired}")
+    print(f"outcome={ctx.terminate} ({ctx.terminate_reason!r})  iters={ctx.iterations}")
+    expected = ["no_construct", "deeponto_fail", "not_complex", "r1_not_specific", "contract_satisfied"]
+    assert fired == expected, f"control-plane logic path mismatch: {fired}"
+    assert ctx.terminate == "promote"
+    print(f"\nCONTROL-PLANE LOGIC verified against designed fixture (data, not reasoning). "
+          f"Capability is NOT tested here — that is inc-1 (a real agent moving R1).")

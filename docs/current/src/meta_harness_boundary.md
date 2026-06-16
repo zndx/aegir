@@ -93,6 +93,13 @@ point for new behaviour — add an objective + a rule, never a procedural branch
 - **Generation is stochastic but gated:** the LLM effector samples; we do *not* pretend otherwise.
   Reproducibility = log every exchange (we already capture `reasoning_content` to `raw.exchange`) +
   seeds. The membrane (contract) is deterministic, so a stochastic mint is always judged identically.
+- **Intelligent by default — reasoning is never simulated.** Reasoning an ontology out of FinePDFs is
+  irreducibly intelligent; the **production effector is ALWAYS a real agent** (Qwen / our fine-tunes /
+  Grok). There is no "stub mode" that produces ontology — a deterministic effector that *marched a metric
+  upward by formula* would be pachinko: it would make the spine read "validated" while the only hard
+  thing is absent from the test. The control plane is tested with **fixtures** (recorded real exchanges,
+  preferred; or designed signal scenarios = data) that exercise the rule/FSM logic and make **no claim**
+  about capability. **Capability is validated only by a real agent moving R1 (inc-1).**
 
 ## 8. Logging substrate (aegir's, not assumed Atelier infra)
 
