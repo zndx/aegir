@@ -141,7 +141,7 @@ function Landing() {
           <Link to="/lineup?lens=terms" style={{ textDecoration: "none" }}>
             <Card hoverable title="Terms" extra={<BookOutlined />}>
               <Paragraph>
-                Browse the ontology vocabulary by family — each term opens to its
+                Browse the Lexicon's terms by category — each term opens to its
                 verbalization, axiom, BFO/CCO anchor, and relational projection.
               </Paragraph>
               <Text type="secondary">lens · ontology</Text>
