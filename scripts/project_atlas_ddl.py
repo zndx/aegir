@@ -37,6 +37,7 @@ from aegir.governance import ol  # noqa: E402
 from aegir.ontology import ddl as D  # noqa: E402
 from aegir.ontology.complex import FamilyComplex  # noqa: E402
 from aegir.ontology.schema import load_catalog  # noqa: E402
+from aegir.lineup.build import _axiom_kind, _term_vocab, _verbal  # noqa: E402  (SKOS helpers)
 
 ATLAS = "http://127.0.0.1:21000"
 CLUSTER = "aegir"
@@ -298,15 +299,33 @@ def build_and_create(per_family):
 
 
 # ── glossary ─────────────────────────────────────────────────────────────────
-def ensure_glossary(base):
-    gr = api("GET", "glossary")
+GLOSSARY_TIMEOUT = 25  # Atlas-on-AGE glossary term-traversal can hang; fail fast, don't block.
+
+
+def glossary_responsive(probe_timeout: int = GLOSSARY_TIMEOUT) -> bool:
+    """Probe the glossary term-traversal path before a full sync. On the AGE backend these
+    queries (``/detailed``, ``/terms``) can hang 30-45s+; degrade gracefully (skip — the lineup
+    carries the hierarchy) rather than hang the projector."""
+    try:
+        gr = api("GET", "glossary", timeout=15)
+        glos = gr.json() if gr.ok and gr.text.strip() else []
+        g = next((x for x in glos if x.get("name") == "Aegir Ontology"), None)
+        if not g:
+            return True  # no glossary yet — the create path is fine
+        return api("GET", f"glossary/{g['guid']}/terms?limit=1", timeout=probe_timeout).ok
+    except Exception:
+        return False
+
+
+def ensure_glossary(all_terms):
+    gr = api("GET", "glossary", timeout=15)
     glos = gr.json() if gr.ok and gr.text.strip() else []
     g = next((x for x in glos if x.get("name") == "Aegir Ontology"), None)
     if g is None:
         g = api("POST", "glossary", json={"name": "Aegir Ontology",
                 "shortDescription": "BFO/CCO-grounded ontology terms backing the relational footprint"}).json()
     gguid = g["guid"]
-    dr = api("GET", f"glossary/{gguid}/detailed")
+    dr = api("GET", f"glossary/{gguid}/detailed", timeout=GLOSSARY_TIMEOUT)
     detail = dr.json() if dr.ok and dr.text.strip() else {}
     cat_guid = {c["displayText"]: c["categoryGuid"] for c in detail.get("categories", [])}
     term_guid = {t["displayText"]: t["termGuid"] for t in detail.get("terms", [])}
@@ -318,19 +337,64 @@ def ensure_glossary(base):
             if r.ok:
                 cat_guid[cname] = r.json().get("guid")
     made = 0
-    for tid, b in base.items():
+    for fam, t in all_terms:
+        tid = t.template_id
         if tid in term_guid:
             continue
-        cname = fam_label(b["st"].family)
+        cname = fam_label(fam)
         r = api("POST", "glossary/term", json={
             "name": tid, "anchor": {"glossaryGuid": gguid},
-            "shortDescription": b["st"].template.manchester_template[:240],
+            "shortDescription": t.manchester_template[:240],
             "categories": [{"categoryGuid": cat_guid[cname]}] if cname in cat_guid else []})
         if r.ok:
             term_guid[tid] = r.json()["guid"]
             made += 1
     print(f"  glossary: {len(cat_guid)} categories, +{made} terms ({len(term_guid)} total)")
     return term_guid
+
+
+def enrich_and_link(term_guid, all_terms):
+    """Sync the ontology SoT INTO the glossary terms: SKOS annotations as term attributes
+    (definition → short/longDescription, the scope note → usage, the BERTSubs surface-form
+    set → longDescription) + the verified ``broader`` subsumption hierarchy as Atlas ``isA``
+    relationships (child ``isA`` its parents; Atlas auto-maintains the inverse ``classifies``
+    on each parent, so the hierarchy is navigable BOTH ways in the glossary). GET-merge-PUT so
+    categories / assignedEntities survive. Idempotent — re-syncs to the current ontology."""
+    n_skos = n_isa = misses = 0
+    for fam, t in all_terms:
+        tguid = term_guid.get(t.template_id)
+        if not tguid:
+            continue
+        try:
+            cur = api("GET", f"glossary/term/{tguid}", timeout=15)
+            if not cur.ok:
+                continue
+            term = cur.json()
+            pref = t.template_id.replace("_", " ")
+            definition = _verbal(t) or t.manchester_template
+            alts = [a for a in _term_vocab(t) if a != pref][:16]
+            anchor = t.bfo_anchor_path[-1] if t.bfo_anchor_path else "the upper ontology"
+            term["shortDescription"] = definition[:250]
+            term["longDescription"] = (
+                f"{definition}\n\nAxiom (Manchester): {t.manchester_template}"
+                + (f"\n\nSurface forms (SKOS altLabel / retrieval): {', '.join(alts)}" if alts else ""))
+            term["usage"] = (f"{_axiom_kind(t.manchester_template).capitalize()} anchored to "
+                             f"{anchor}, in the '{fam_label(fam)}' category.")
+            n_skos += 1
+            parents = [term_guid[p] for p in (t.broader or []) if p in term_guid]
+            if parents:
+                term["isA"] = [{"termGuid": pg} for pg in parents]
+                n_isa += 1
+            api("PUT", f"glossary/term/{tguid}", json=term, timeout=15)
+            misses = 0
+        except Exception as e:  # noqa: BLE001 — one bad term shouldn't abort the sync
+            misses += 1
+            if misses >= 5:
+                print(f"   enrich: aborting after {n_skos} terms — Atlas glossary term API "
+                      "repeatedly timing out (AGE perf). The lineup carries the hierarchy.")
+                break
+            print(f"   enrich {t.template_id}: {type(e).__name__}: {str(e)[:80]}")
+    print(f"  glossary: enriched {n_skos} terms (SKOS), linked {n_isa} via isA (broader hierarchy)")
 
 
 def assign_terms(term_guid, base_tbl_guid):
@@ -426,11 +490,20 @@ def main():
     print("1) types"); ensure_types()
     print("2) entities (rdbms) + foreign keys + column lineage")
     base, base_tbl_guid, base_col_guid = build_and_create(args.per_family)
-    print("3) glossary")
-    try:
-        assign_terms(ensure_glossary(base), base_tbl_guid)
-    except Exception as e:
-        print(f"   glossary step failed (non-fatal): {e}")
+    print("3) glossary (all terms + SKOS + broader→isA hierarchy)")
+    if not glossary_responsive():
+        print("   glossary SKIPPED — Atlas-on-AGE glossary term-traversal is unresponsive "
+              "(/detailed, /terms time out). The lineup (build/dev) carries the broader/narrower "
+              "hierarchy + SKOS; re-run once Atlas glossary perf is addressed.")
+    else:
+        try:
+            all_terms = [(f, t) for f in FAMILIES
+                         for t in load_catalog(CATALOG_DIR / f"{f}.json").templates]
+            tg = ensure_glossary(all_terms)  # all 540 terms (decoupled from the rdbms per-family cap)
+            enrich_and_link(tg, all_terms)   # SKOS annotations + broader→isA term relationships
+            assign_terms(tg, base_tbl_guid)  # link the projected subset to their rdbms tables
+        except Exception as e:
+            print(f"   glossary step failed (non-fatal): {e}")
     print("4) classifications + business metadata"); classify(base, base_tbl_guid, base_col_guid)
     print("done.")
 
