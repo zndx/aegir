@@ -418,10 +418,11 @@ def classify(base, base_tbl_guid, base_col_guid):
             by_type.setdefault(f"domain_{fam_label(st.family)}", []).append(tg)
             if bfo == "bfo:Process":
                 by_type.setdefault("cpa_bfo_process", []).append(tg)
+        slot2col = {c.slot_ref: c.name for c in st.table.columns}  # slot_ref is canonical (cols renamed)
         for slot, owl in st.template.slot_types.items():
             if owl == "ObjectProperty":
                 continue
-            cg = base_col_guid.get(tid, {}).get(D.col_name(slot))
+            cg = base_col_guid.get(tid, {}).get(slot2col.get(slot, ""))
             if not cg:
                 continue
             by_type.setdefault(f"cta_{owl.lower()}", []).append(cg)

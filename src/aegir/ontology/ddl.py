@@ -233,6 +233,65 @@ def _dataprop_ranges(manchester: str) -> dict[str, str]:
     return {m.group("slot"): m.group("rng") for m in _DP_RANGE_RE.finditer(manchester)}
 
 
+# BFO/RO relations carry opaque numeric local names (BFO_0000050); map the ones we use to
+# readable column names — a numeric-leading local name is also invalid as an unquoted SQL column.
+_OPAQUE_PROP_LABELS = {
+    "bfo:0000050": "part_of", "bfo:0000051": "has_part", "bfo:0000066": "occurs_in",
+    "bfo:0000063": "precedes", "bfo:0000062": "preceded_by", "bfo:0000055": "realizes",
+    "bfo:0000056": "participates_in", "bfo:0000057": "has_participant",
+}
+
+
+def _prop_col(prop: str) -> str:
+    """Column name for an object property: a known opaque BFO/RO ID → its readable label;
+    a numeric-leading local name → ``rel_<id>`` (valid SQL); else the camel→snake local name."""
+    if prop in _OPAQUE_PROP_LABELS:
+        return _OPAQUE_PROP_LABELS[prop]
+    local = prop.split(":")[-1]
+    return f"rel_{local}" if local[:1].isdigit() else _dataprop_col(prop)
+
+
+def semantic_col_names(template: CatalogTemplate) -> dict[str, str]:
+    """Map each non-ObjectProperty slot to a SEMANTIC column name (vs the bare slot letter).
+
+    The catalog templates are ``Class: {X} SubClassOf: cco:…, <property> some {Y}`` — so a slot
+    is either the *subject* head or an *object* reached by a named property. We name accordingly:
+
+    - an object slot reached by a named-property restriction takes the PROPERTY's local name —
+      the relationship it carries: ``sdg:assignsMassTo`` → ``assigns_mass_to``,
+      ``sdg:hasFocalElement`` → ``focal_element`` (``_dataprop_col`` strips ``has``/``is``);
+    - the subject (head) Class/Individual slot — not a restriction target — becomes ``subject``;
+    - a target reached only via a generic ``{p:ObjectProperty}`` slot becomes ``related``;
+    - DataProperty slots keep their attribute name (``col_name``).
+
+    Disambiguated with a numeric suffix; never collides with ``id``. The column ``name`` is
+    decorative — ``slot_ref`` stays the canonical column↔slot identity — so this is a safe,
+    content-only improvement over the old ``x``/``y`` lowercased-slot names.
+    """
+    targets = {r.target_slot: r for r in parse_restrictions(template)}
+    names: dict[str, str] = {}
+    used = {"id"}
+    n_subject = 0
+    for slot, owl in template.slot_types.items():
+        if owl == "ObjectProperty":
+            continue
+        r = targets.get(slot)
+        if r is not None:
+            base = "related" if r.is_slot else _prop_col(r.prop)
+        elif owl in ("Class", "Individual"):
+            n_subject += 1
+            base = "subject" if n_subject == 1 else f"subject_{n_subject}"
+        else:
+            base = col_name(slot)
+        base = base or col_name(slot)
+        name, i = base, 2
+        while name in used:
+            name, i = f"{base}_{i}", i + 1
+        used.add(name)
+        names[slot] = name
+    return names
+
+
 def template_to_table(template: CatalogTemplate, family: str) -> SpineTable:
     """Lower one catalog template to a :class:`TableSpec` + constraint notes.
 
@@ -246,12 +305,13 @@ def template_to_table(template: CatalogTemplate, family: str) -> SpineTable:
     notes: list[CheckNote] = []
     not_null: set[str] = set()
 
+    colnames = semantic_col_names(template)
     dp_ranges = _dataprop_ranges(template.manchester_template)
     for slot, owl in template.slot_types.items():
         if owl == "ObjectProperty":
             continue  # relation, represented as a FK / note, not a column
         st = dp_ranges.get(slot, owl) if owl == "DataProperty" else owl
-        cols.append(ColumnSpec(name=col_name(slot), slot_type=st, slot_ref=slot))
+        cols.append(ColumnSpec(name=colnames[slot], slot_type=st, slot_ref=slot))
 
     # Typed attribute columns derived from the ontology's DataProperties whose domain
     # subsumes this template's bfo_anchor (the seed crystal; the generator extends it).
@@ -264,7 +324,7 @@ def template_to_table(template: CatalogTemplate, family: str) -> SpineTable:
                 cols.append(ColumnSpec(name=col, slot_type=xsd_range, slot_ref=f"data:{prop_iri}"))
 
     for r in parse_restrictions(template):
-        tgt = col_name(r.target_slot)
+        tgt = colnames[r.target_slot]
         notes.append(CheckNote(tgt, "relation",
                                f"{r.prop} {r.cardinality} {r.target_slot}"))
         if r.cardinality == "some" or r.cardinality.startswith("min "):
@@ -400,7 +460,8 @@ def cross_family_fks(spine: list[SpineTable], fc) -> tuple[list[FKEdge], list[di
         if not refs:
             continue
         r0 = refs[0]
-        src_col = col_name(r0.target_slot)
+        src_col = next((c.name for c in st.table.columns if c.slot_ref == r0.target_slot),
+                       col_name(r0.target_slot))
         root = _anchor_root(st.template)
         # Prefer a same-anchor-root target in a different, simplex-allowed family
         # (semantic quality); else fall back to any allowed-simplex different family.
