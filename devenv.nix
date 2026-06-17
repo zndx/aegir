@@ -263,7 +263,7 @@ in {
       exec = ''
         uv run --no-sync python -m aegir.db.bootstrap && \
         { uv run --no-sync python -m aegir.lineup build || echo "[gateway] lineup projection failed — /api/kb will 404 until 'just kb-build' succeeds"; } && \
-        AEGIR_LINEUP_UPKEEP=1 exec uv run --no-sync python -m aegir.gateway
+        AEGIR_LINEUP_UPKEEP=1 AEGIR_GATEWAY_RELOAD=1 exec uv run --no-sync python -m aegir.gateway
       '';
       process-compose = {
         depends_on.postgres.condition = "process_healthy";
