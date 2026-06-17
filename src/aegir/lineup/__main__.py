@@ -16,7 +16,10 @@ def main(argv: list[str] | None = None) -> int:
     m = sub.add_parser("maintain", help="run a KB upkeep op (the scheduled-task handlers)")
     m.add_argument("op", choices=["upkeep", "snapshot", "reproject"])
     sub.add_parser("install-cron", help="register the upkeep pg_cron jobs (in postgres, targeting aegir)")
-    sub.add_parser("sync", help="(stub) federate Data Products across disclosure tiers")
+    sy = sub.add_parser("sync", help="SHARE: publish the ontology Data Product → corpora (sdg-corpora)")
+    sy.add_argument("--commit", action="store_true", help="commit the corpora submodule locally")
+    sy.add_argument("--push", action="store_true",
+                    help="push to zndx/sdg-corpora (the external publish; implies --commit)")
     args = ap.parse_args(argv)
 
     import os

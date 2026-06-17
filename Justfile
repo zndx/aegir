@@ -125,6 +125,13 @@ kb-build:
 kb-maintain op="upkeep":
     uv run --no-sync python -m aegir.lineup maintain {{op}}
 
+# SHARE: re-publish the ontology Data Product (catalog incl. broader hierarchy + SKOS + DDL)
+# from the live SoT → the corpora (sdg-corpora) submodule. Schema-CI gated. No args = dry
+# materialize + diff (review first); `just kb-sync --commit` commits corpora locally;
+# `just kb-sync --push` publishes to zndx/sdg-corpora (the external share).
+kb-sync *args:
+    uv run --no-sync python -m aegir.lineup sync {{args}}
+
 # ── mdbook documentation ──────────────────────────────────────
 #
 # The book lives at ``docs/current/`` (standard ``mdbook init``
