@@ -58,8 +58,12 @@ _ART = "/raid/checkpoints/aegir-artifacts"
 
 
 def corpus_run() -> Path | None:
-    """Latest on-disk ``chapters.parquet`` (the content Data Product), or None."""
-    return _first([f"{_ART}/chapters_v*/*/chapters.parquet",
+    """Latest on-disk ``chapters.parquet`` (the content Data Product), or None. Prefers the
+    full ``sdg_corpus_v*`` runs (the real corpus) over the ``chapters_v*`` / ``chapters*`` dev
+    fixtures, so the content navigator populates from the real corpus by default — not the
+    5-chapter smoke fixture. ``AEGIR_CORPUS_RUN`` still overrides."""
+    return _first([f"{_ART}/sdg_corpus_v*/*/chapters.parquet",
+                   f"{_ART}/chapters_v*/*/chapters.parquet",
                    f"{_ART}/chapters*/chapters.parquet"], "AEGIR_CORPUS_RUN")
 
 
