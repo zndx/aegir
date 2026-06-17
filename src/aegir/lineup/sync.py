@@ -132,24 +132,30 @@ def run(args=None) -> int:
     st = _sh(["git", "status", "--short"], cwd=CORPORA)
     changed = bool((st.stdout or "").strip())
     print("5) corpora working-tree diff:")
-    print((st.stdout or "").rstrip() if changed else "   (no changes — already in sync)")
-    if not changed:
-        print("done — corpora already in sync.")
-        return 0
+    print((st.stdout or "").rstrip() if changed else "   (no working-tree changes — ontology already in sync)")
 
-    if not (commit or push):
-        print("done — regenerated in the working tree (not committed).\n"
-              "  review the diff, then re-run with --commit (and --push to publish to zndx/sdg-corpora).")
-        return 0
+    # (a) commit any regen changes from THIS run
+    if changed:
+        if not (commit or push):
+            print("done — regenerated in the working tree (not committed).\n"
+                  "  review the diff, then re-run with --commit (and --push to publish to zndx/sdg-corpora).")
+            return 0
+        _sh(["git", "add", "-A"], cwd=CORPORA)
+        msg = "Re-sync ontology Data Product from aegir SoT (catalog incl. broader hierarchy + SKOS + DDL)"
+        c = _sh(["git", "commit", "-m", msg], cwd=CORPORA)
+        print("   corpora commit: " + _last(c.stdout + c.stderr, "(commit produced no output)"))
 
-    _sh(["git", "add", "-A"], cwd=CORPORA)
-    msg = "Re-sync ontology Data Product from aegir SoT (catalog incl. broader hierarchy + SKOS + DDL)"
-    c = _sh(["git", "commit", "-m", msg], cwd=CORPORA)
-    print("   corpora commit: " + _last(c.stdout + c.stderr, "(commit produced no output)"))
+    # (b) push is BRANCH-WIDE — publishes every pending commit (this run's regen AND any other
+    #     unpushed corpora work, e.g. the corpus collections committed out-of-band), not just what
+    #     this run regenerated. `git push` is a no-op ("Everything up-to-date") when nothing pends.
     if push:
+        ahead = _last((_sh(["git", "rev-list", "--count", "@{u}..HEAD"], cwd=CORPORA).stdout or "").strip())
         p = _sh(["git", "push"], cwd=CORPORA)
-        print("   push: " + _last(p.stderr + p.stdout, "ok"))
-        print("   NOTE: bump the aegir submodule pointer next (git add corpora && commit).")
-    else:
+        print(f"   push ({ahead or '?'} pending): " + _last(p.stderr + p.stdout, "ok"))
+        print("   NOTE: if corpora HEAD moved, bump the aegir submodule pointer (git add corpora && commit).")
+    elif changed and commit:
         print("   committed locally; NOT pushed — re-run with --push to publish to zndx/sdg-corpora.")
+    elif not changed:
+        print("done — corpora already in sync; nothing to push (re-run with --push if there are "
+              "unpushed commits to publish).")
     return 0
