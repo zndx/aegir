@@ -84,3 +84,34 @@ def coverage_recs() -> tuple[list[dict], Path | None]:
     """(topic rows, run path) for topics — read once for term→topics cross-refs."""
     r = coverage_run()
     return (_recs(r), r) if r else ([], None)
+
+
+def hierarchy_dir() -> Path:
+    """Where ``mediate_hierarchy`` writes verified per-category subsumption edges.
+    Override with AEGIR_HIERARCHY_RUN."""
+    return Path(os.environ.get("AEGIR_HIERARCHY_RUN") or f"{_ART}/evidence/hierarchy")
+
+
+def term_hierarchy() -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+    """``(broader, narrower)`` term-id maps from the autonomously-mediated, HermiT-verified
+    subsumption hierarchy (``scripts/mediate_hierarchy.py``). ``broader[child] = [parents]``,
+    ``narrower[parent] = [children]`` from each edge ``child ⊑ parent``. Empty if unbuilt —
+    the projection is valid without it (graceful skip, like the corpus/coverage cross-refs)."""
+    import json
+
+    d = hierarchy_dir()
+    broader: dict[str, list[str]] = {}
+    narrower: dict[str, list[str]] = {}
+    if not d.is_dir():
+        return broader, narrower
+    for f in sorted(d.glob("*.json")):
+        try:
+            rec = json.loads(f.read_text())
+        except Exception:
+            continue
+        for e in rec.get("edges", []):
+            c, p = e.get("child"), e.get("parent")
+            if c and p:
+                broader.setdefault(c, []).append(p)
+                narrower.setdefault(p, []).append(c)
+    return broader, narrower

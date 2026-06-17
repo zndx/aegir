@@ -79,7 +79,12 @@ domain values, not novel ones. The lineup panel renders them, they assemble into
 retrieval text, and `L(c1)×L(c2)` over the altLabel sets multiplies the BERTSubs subsumption pairs (→ the
 hierarchy edges for per-term-panel navigation). `build.py` records them now (seeded from the term vocabulary);
 curation refines the altLabel set, **verified by retrieval-lift** (multi- vs single-label, the §4.3.2 ablation
-— the annotation-layer oracle, distinct from HermiT on the axiom layer). (2) **Atlas glossary-sync** — the
+— the annotation-layer oracle, distinct from HermiT on the axiom layer). The **subsumption hierarchy** over
+those terms is now realized *autonomously* by `mediate_hierarchy` (`scripts/`, built 2026-06-17): mpnet
+candidates → Grok proposes (ACP) → a two-layer gate — HermiT consistency/coherence/acyclicity **and** domain
+vocabulary overlap — admits only verified edges, **no human review** (the tools are the arbiter). This is a
+RASE-pattern increment: the agent realizes the hierarchy capability through the meta-harness, intrinsically
+verified. The lineup renders the result as per-term **Broader/Narrower** navigation. (2) **Atlas glossary-sync** — the
 `AtlasGlossaryTerm`/`Category` projector (extending the existing `rdbms_*` relational projector), a
 *suggestion-returning* projection keyed on `qualifiedName`, carrying the same SKOS annotations as term
 attributes.

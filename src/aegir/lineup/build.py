@@ -91,9 +91,13 @@ def category_qn(name: str, parent_qn: str | None = None) -> str:
 # ── ontology Data Product — the Lexicon (Terms organized by Categories) ──────
 def project_ontology(rows: list[tuple[str, CatalogTemplate]],
                      term_chapters: dict[str, list[str]] | None = None,
-                     term_topics: dict[str, list[int]] | None = None) -> list[N.Note]:
+                     term_topics: dict[str, list[int]] | None = None,
+                     term_broader: dict[str, list[str]] | None = None,
+                     term_narrower: dict[str, list[str]] | None = None) -> list[N.Note]:
     term_chapters = term_chapters or {}
     term_topics = term_topics or {}
+    term_broader = term_broader or {}
+    term_narrower = term_narrower or {}
     cats: dict[str, list[str]] = {}
     anchors: dict[str, dict] = {}
     out: list[N.Note] = []
@@ -134,6 +138,20 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
         if not chs and not tps:
             body += "\n_Not yet exercised by any chapter or topic (a curation candidate)._\n"
 
+        # Subsumption hierarchy — the autonomously-mediated, HermiT-verified is-a edges (U1).
+        # Per-term navigation: walk Broader (this ⊑ parent) ↑ and Narrower (child ⊑ this) ↓.
+        bro = term_broader.get(t.template_id, [])
+        nar = sorted(term_narrower.get(t.template_id, []))
+        if bro or nar:
+            body += "\n**Hierarchy** (HermiT-verified subsumption):\n"
+            if bro:
+                body += ("\n- **Broader** — this ⊑ "
+                         + ", ".join(N.wl(f"ontology/term/{x}", x) for x in bro) + "\n")
+            if nar:
+                body += ("\n- **Narrower** — ⊑ this: "
+                         + ", ".join(N.wl(f"ontology/term/{x}", x) for x in nar[:12])
+                         + (f" … (+{len(nar) - 12})" if len(nar) > 12 else "") + "\n")
+
         # Retrieval annotations (SKOS) — common constructs with domain values, recorded as
         # ontology annotation properties (the principled home; the panel, ColBERT/MaxSim, and
         # BERTSubs all read them from here). skos:altLabel is the BERTSubs multi-label set.
@@ -165,6 +183,7 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
                 "bfo_anchor_path": path, "slot_types": dict(t.slot_types or {}),
                 "is_complex": bool(t.is_complex), "manchester_template": t.manchester_template,
                 "n_chapters": len(chs), "n_topics": len(tps),
+                "broader": bro, "narrower": nar,
                 "skos": skos, "retrieval_text": rtext,
                 "provenance": dict(t.provenance or {})}))
 
@@ -348,9 +367,17 @@ def run(args=None) -> int:
         if top:
             term_topics.setdefault(top, []).append(int(r["topic_id"]))
 
-    notes = (project_ontology(rows, term_chapters, term_topics) + project_relational(rows))
+    broader, narrower = S.term_hierarchy()
+    notes = (project_ontology(rows, term_chapters, term_topics, broader, narrower)
+             + project_relational(rows))
     print(f"  ontology+relational: {len(notes)} notes from {len(rows)} terms "
           f"in {len(categories)} categories (Lexicon {LEXICON!r})")
+    n_edges = sum(len(v) for v in broader.values())
+    if n_edges:
+        print(f"  hierarchy: {n_edges} HermiT-verified subsumption edges over "
+              f"{len(broader)} child terms ({S.hierarchy_dir()})")
+    else:
+        print("  hierarchy: (no mediated subsumption edges — run scripts/mediate_hierarchy.py)")
 
     if corpus:
         c = project_content(corpus)
