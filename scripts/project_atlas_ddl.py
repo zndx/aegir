@@ -325,7 +325,11 @@ def ensure_glossary(all_terms):
         g = api("POST", "glossary", json={"name": "Aegir Ontology",
                 "shortDescription": "BFO/CCO-grounded ontology terms backing the relational footprint"}).json()
     gguid = g["guid"]
-    dr = api("GET", f"glossary/{gguid}/detailed", timeout=GLOSSARY_TIMEOUT)
+    # Use the base glossary object (term/category HEADERS: guid + displayText) rather than
+    # /detailed (full term bodies). The headers are all we need to build the guid map, and on the
+    # AGE backend /detailed materializes every term body (~28s, exceeds GLOSSARY_TIMEOUT) while the
+    # header GET is roughly half that. Same `categories`/`terms` header arrays, same extraction.
+    dr = api("GET", f"glossary/{gguid}", timeout=90)
     detail = dr.json() if dr.ok and dr.text.strip() else {}
     cat_guid = {c["displayText"]: c["categoryGuid"] for c in detail.get("categories", [])}
     term_guid = {t["displayText"]: t["termGuid"] for t in detail.get("terms", [])}
@@ -360,7 +364,7 @@ def enrich_and_link(term_guid, all_terms):
     relationships (child ``isA`` its parents; Atlas auto-maintains the inverse ``classifies``
     on each parent, so the hierarchy is navigable BOTH ways in the glossary). GET-merge-PUT so
     categories / assignedEntities survive. Idempotent — re-syncs to the current ontology."""
-    n_skos = n_isa = misses = 0
+    n_skos = n_isa = n_fail = misses = 0
     for fam, t in all_terms:
         tguid = term_guid.get(t.template_id)
         if not tguid:
@@ -368,6 +372,7 @@ def enrich_and_link(term_guid, all_terms):
         try:
             cur = api("GET", f"glossary/term/{tguid}", timeout=15)
             if not cur.ok:
+                n_fail += 1
                 continue
             term = cur.json()
             pref = t.template_id.replace("_", " ")
@@ -380,21 +385,40 @@ def enrich_and_link(term_guid, all_terms):
                 + (f"\n\nSurface forms (SKOS altLabel / retrieval): {', '.join(alts)}" if alts else ""))
             term["usage"] = (f"{_axiom_kind(t.manchester_template).capitalize()} anchored to "
                              f"{anchor}, in the '{fam_label(fam)}' category.")
-            n_skos += 1
+            has_isa = False
             parents = [term_guid[p] for p in (t.broader or []) if p in term_guid]
             if parents:
                 term["isA"] = [{"termGuid": pg} for pg in parents]
-                n_isa += 1
-            api("PUT", f"glossary/term/{tguid}", json=term, timeout=15)
-            misses = 0
+                has_isa = True
+            # CHECK the PUT — a non-2xx (slow AGE write path / validation) must NOT count as a
+            # success. The prior bug incremented n_skos before an unchecked PUT, so it counted
+            # attempts (540) while the writes silently failed (0 persisted) during the pre-index
+            # slow window. Count only what actually persists.
+            put = api("PUT", f"glossary/term/{tguid}", json=term, timeout=30)
+            if put.ok:
+                n_skos += 1
+                if has_isa:
+                    n_isa += 1
+                misses = 0
+            else:
+                n_fail += 1
+                misses += 1
+                if n_fail <= 5:
+                    print(f"   enrich {t.template_id}: PUT {put.status_code} {put.text[:120]}")
+                if misses >= 5:
+                    print(f"   enrich: aborting after {n_skos} persisted — Atlas glossary term "
+                          "PUT repeatedly failing. The lineup carries the hierarchy.")
+                    break
         except Exception as e:  # noqa: BLE001 — one bad term shouldn't abort the sync
             misses += 1
+            n_fail += 1
             if misses >= 5:
-                print(f"   enrich: aborting after {n_skos} terms — Atlas glossary term API "
+                print(f"   enrich: aborting after {n_skos} persisted — Atlas glossary term API "
                       "repeatedly timing out (AGE perf). The lineup carries the hierarchy.")
                 break
             print(f"   enrich {t.template_id}: {type(e).__name__}: {str(e)[:80]}")
-    print(f"  glossary: enriched {n_skos} terms (SKOS), linked {n_isa} via isA (broader hierarchy)")
+    tail = f", {n_fail} failed" if n_fail else ""
+    print(f"  glossary: enriched {n_skos} terms (SKOS), linked {n_isa} via isA (broader hierarchy){tail}")
 
 
 def assign_terms(term_guid, base_tbl_guid):
@@ -480,11 +504,25 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--per-family", type=int, default=8)
     ap.add_argument("--reset", action="store_true")
+    ap.add_argument("--glossary-only", action="store_true",
+                    help="re-sync only the glossary (all terms + SKOS + broader→isA); "
+                         "skip rdbms/classifications. Idempotent.")
     args = ap.parse_args()
 
     if args.reset:
         print("RESET projection:")
         reset()
+        return
+
+    if args.glossary_only:
+        print("GLOSSARY-ONLY re-sync (terms + SKOS + broader→isA):")
+        if not glossary_responsive():
+            print("   glossary unresponsive — aborting."); return
+        all_terms = [(f, t) for f in FAMILIES
+                     for t in load_catalog(CATALOG_DIR / f"{f}.json").templates]
+        tg = ensure_glossary(all_terms)
+        enrich_and_link(tg, all_terms)
+        print("done.")
         return
 
     print(f"Atlas DDL-native projector — families={len(FAMILIES)} per_family={args.per_family}")
