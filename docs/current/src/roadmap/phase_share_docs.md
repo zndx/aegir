@@ -1,14 +1,42 @@
 # Phase — SHARE Docs (browsable corpus in sdg-corpora)
 
-**Status: PLANNED (not started).** · **Decision:** scoped 2026-06-17 · **Depends on:** the
-lineup (UI-U0/U1/U2, delivered), the `aegir.lineup sync` SHARE verb (delivered), and a corpus
-regen against the current ontology (see [Dependencies](#dependencies)).
+**Status: content layer MATERIALIZED 2026-06-17 (155 collections in-tree); mdbook renderer PLANNED.**
+· **Decision:** scoped 2026-06-17 · **Depends on:** the lineup (UI-U0/U1/U2, delivered), the
+`aegir.lineup sync` SHARE verb (delivered), and a corpus regen against the current ontology
+(see [Dependencies](#dependencies)).
 
 This phase turns the public `sdg-corpora` repo from machine-readable artifacts (parquet / TTL /
 JSON) into a **human-browsable, cross-linked mdbook document** — the *static SHARE-tier rendering
 of the lineup*. Where the aegir gateway lineup is the dynamic, authenticated navigation for us,
 this is the portable, public rendering anyone gets by opening the repo on GitHub: no gateway, no
 model, no auth.
+
+## Update — collection-structured, chapters-in-tree (2026-06-17, RH)
+
+Two corrections to the original framing, both now in force:
+
+1. **The corpus is the deliverable; it lives in the distribution tree.** The earlier "chapters are
+   release/HF assets, not in the repo" was *not* a real decision — `.gitignore` never excluded them;
+   they were simply never committed, and a scale-era LFS note got mis-narrated as "deliberately
+   leaving deliverables out." The **only** principled withholding is the Atelier **answer-key**
+   (`reference.parquet`, the column→SKOS-code scoring key — held out so the blind eval stays valid).
+   Everything else — chapters (as text), underlying tables, terms — ships in the tree. (Bulk *binary*
+   parquet via LFS/release is a real concern only at ~100K-table scale; not a v0.3 reason to omit
+   11 MB of the actual product.)
+
+2. **The unit is a `collection`, not a flat chapter list.** A **collection** = a FinePDFs-grounded
+   **topic** (carried forward from the coverage audit) + its **chapters** (prose + embedded views) +
+   the **underlying relational tables** the views project from (semantic-column DDL) + the grounding
+   **ontology terms** + a **manifest** of the cross-links. One concept serves as the unit of
+   *distribution = navigation = mdbook section*.
+
+**Materialized** (`scripts/build_collections.py`, deterministic): the v0.3 corpus →
+`corpus/collections/topic-NNN-<family>/{README.md, chapters/<id>.md, tables/<name>.sql,
+manifest.json}` + `INDEX.md`. First run: **155 populated collections** (1,935 chapters, 655 table
+DDLs) + 45 gap topics, ~31 MB in-tree. The mdbook renderer (below) now organizes **by collection**
+(a collection = a book section); Phase A/B otherwise unchanged. Known caveat this release surfaces:
+the chapters' *embedded* views are the generation-time (thin) schema, while the *underlying* tables
+carry this session's semantic columns — the divergence motivates the corpus regen.
 
 ## The thesis it certifies
 
