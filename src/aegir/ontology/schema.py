@@ -44,6 +44,9 @@ class CatalogTemplate:
             proxy. ``0.0`` for placeholder rows.
         bfo_anchor_path: Ordered list of IRIs from this template's
             target class up to a BFO 2020 upper class.
+        broader: Parent term ids (``rdfs:subClassOf`` / ``skos:broader`` semantics) —
+            the subsumption hierarchy over terms, promoted from ``mediate_hierarchy``'s
+            autonomous, HermiT-verified mediation (the SoT record of the hierarchy).
         provenance: Author / date / gate-version metadata for review.
     """
 
@@ -54,6 +57,7 @@ class CatalogTemplate:
     verbal_template: str = ""
     mean_verbal_length: float = 0.0
     bfo_anchor_path: list[str] = field(default_factory=list)
+    broader: list[str] = field(default_factory=list)
     provenance: dict[str, str] = field(default_factory=dict)
 
 

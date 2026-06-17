@@ -366,6 +366,46 @@ def mediate_category(category: str, terms: list[CatalogTemplate], eff: ACPMintEf
     return all_edges, trace, meta
 
 
+def promote_to_catalog(hierarchy_dir: Path, catalog_glob: str) -> dict:
+    """Promote verified subsumption edges from the evidence artifacts INTO the catalog
+    (the SOURCE OF TRUTH): set ``broader`` on each child term. The evidence JSON is the
+    mediation *staging*; the catalog is canonical — dependency arrows point inward, so the
+    lineup then projects the hierarchy from the catalog, not the evidence side-artifact.
+    Idempotent: re-running syncs each term's ``broader`` to the current evidence."""
+    import glob
+    import json
+    from aegir.ontology.schema import load_catalog, save_catalog
+
+    broader: dict[str, list[str]] = {}
+    for f in sorted(glob.glob(str(Path(hierarchy_dir) / "*.json"))):
+        rec = json.loads(Path(f).read_text())
+        for e in rec.get("edges", []):
+            c, p = e.get("child"), e.get("parent")
+            if c and p and p not in broader.setdefault(c, []):
+                broader[c].append(p)
+
+    n_terms = n_files = 0
+    for cf in sorted(glob.glob(catalog_glob)):
+        if "candidate" in cf or "combined" in cf:
+            continue
+        cat = load_catalog(cf)
+        changed = 0
+        for t in cat.templates:
+            new = sorted(broader.get(t.template_id, []))
+            if new != sorted(t.broader):
+                t.broader = new
+                changed += 1
+        if changed:
+            save_catalog(cat, cf)
+            n_files += 1
+            n_terms += changed
+            log.info("  promoted %s: broader set on %d child terms", Path(cf).stem, changed)
+    res = {"edges": sum(len(v) for v in broader.values()), "child_terms": n_terms, "files": n_files}
+    log.info("promoted %d edges over %d child terms into %d catalog files (the ontology SoT)",
+             res["edges"], res["child_terms"], res["files"])
+    return res
+
+
 def main() -> None:
     import argparse
     import json
@@ -374,10 +414,18 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--category", default=None, help="family stem (default: smallest)")
     ap.add_argument("--all", action="store_true", help="run every category, smallest first")
+    ap.add_argument("--promote", action="store_true",
+                    help="promote verified evidence edges into the catalog `broader` (the SoT); no Grok")
     ap.add_argument("--k", type=int, default=6, help="candidate neighbours per term")
     ap.add_argument("--max-iters", type=int, default=4)
     ap.add_argument("--out", default=f"{_ART}/evidence/hierarchy")
     args = ap.parse_args()
+
+    if args.promote:
+        res = promote_to_catalog(Path(args.out), str(REPO / "src/aegir/ontology/catalog/0[1-7]_*.json"))
+        print(f"promoted {res['edges']} edges over {res['child_terms']} child terms "
+              f"into {res['files']} catalog files — the hierarchy is now ontology SoT")
+        return
 
     by_cat: dict[str, list[CatalogTemplate]] = {}
     for fam, t in load_ontology():

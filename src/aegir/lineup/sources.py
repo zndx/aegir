@@ -87,31 +87,22 @@ def coverage_recs() -> tuple[list[dict], Path | None]:
 
 
 def hierarchy_dir() -> Path:
-    """Where ``mediate_hierarchy`` writes verified per-category subsumption edges.
-    Override with AEGIR_HIERARCHY_RUN."""
+    """Where ``mediate_hierarchy`` *stages* verified per-category subsumption edges (the
+    mediation artifact, promoted INTO the catalog by ``--promote``). Override with
+    AEGIR_HIERARCHY_RUN."""
     return Path(os.environ.get("AEGIR_HIERARCHY_RUN") or f"{_ART}/evidence/hierarchy")
 
 
 def term_hierarchy() -> tuple[dict[str, list[str]], dict[str, list[str]]]:
-    """``(broader, narrower)`` term-id maps from the autonomously-mediated, HermiT-verified
-    subsumption hierarchy (``scripts/mediate_hierarchy.py``). ``broader[child] = [parents]``,
-    ``narrower[parent] = [children]`` from each edge ``child ⊑ parent``. Empty if unbuilt —
-    the projection is valid without it (graceful skip, like the corpus/coverage cross-refs)."""
-    import json
-
-    d = hierarchy_dir()
+    """``(broader, narrower)`` term-id maps read from the CATALOG ``broader`` fields — the
+    SOURCE OF TRUTH (promoted from ``mediate_hierarchy``'s HermiT-verified mediation). The
+    lineup projects the hierarchy from the ontology, not the evidence side-artifact.
+    ``broader[child] = [parents]``, ``narrower[parent] = [children]``. Empty until promoted
+    (graceful skip, like the corpus/coverage cross-refs)."""
     broader: dict[str, list[str]] = {}
     narrower: dict[str, list[str]] = {}
-    if not d.is_dir():
-        return broader, narrower
-    for f in sorted(d.glob("*.json")):
-        try:
-            rec = json.loads(f.read_text())
-        except Exception:
-            continue
-        for e in rec.get("edges", []):
-            c, p = e.get("child"), e.get("parent")
-            if c and p:
-                broader.setdefault(c, []).append(p)
-                narrower.setdefault(p, []).append(c)
+    for _fam, t in load_ontology():
+        for p in (getattr(t, "broader", None) or []):
+            broader.setdefault(t.template_id, []).append(p)
+            narrower.setdefault(p, []).append(t.template_id)
     return broader, narrower

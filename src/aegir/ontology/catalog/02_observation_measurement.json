@@ -14,6 +14,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [
+        "labrun_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -34,6 +37,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [
+        "labrun_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -53,6 +59,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -72,6 +79,9 @@
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
+      ],
+      "broader": [
+        "labrun_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -93,6 +103,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [
+        "labrun_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -113,6 +126,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -134,6 +148,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -153,6 +168,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -172,6 +188,9 @@
       "mean_verbal_length": 35.0,
       "bfo_anchor_path": [
         "bfo:Process"
+      ],
+      "broader": [
+        "trace_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -193,6 +212,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [
+        "trace_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -213,6 +235,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [
+        "trace_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -232,6 +257,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -251,6 +277,9 @@
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
+      ],
+      "broader": [
+        "trace_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -272,6 +301,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -291,6 +321,9 @@
       "mean_verbal_length": 33.0,
       "bfo_anchor_path": [
         "bfo:Process"
+      ],
+      "broader": [
+        "trace_subclass"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -313,6 +346,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -332,6 +366,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -352,6 +387,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -372,6 +408,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -390,6 +427,9 @@
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
+      ],
+      "broader": [
+        "profiling_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -410,6 +450,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -429,6 +470,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -449,6 +491,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -469,6 +512,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -489,6 +533,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -508,6 +553,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -528,6 +574,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -547,6 +594,9 @@
       "mean_verbal_length": 33.0,
       "bfo_anchor_path": [
         "bfo:Process"
+      ],
+      "broader": [
+        "ebpf_event_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -568,6 +618,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [
+        "ebpf_event_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -588,6 +641,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -608,6 +662,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -627,6 +682,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -646,6 +702,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -666,6 +723,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -686,6 +744,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -706,6 +765,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -726,6 +786,7 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -746,6 +807,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -765,6 +827,9 @@
       "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "measurement_subclass"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -786,6 +851,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "measurement_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -805,6 +873,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -823,6 +892,9 @@
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "measurement_subclass"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -844,6 +916,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "measurement_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -863,6 +938,9 @@
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "measurement_subclass"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -884,6 +962,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "measurement_with_unit"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -903,6 +984,9 @@
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "measurement_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -924,6 +1008,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "measurement_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -943,6 +1030,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -964,6 +1052,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -985,6 +1074,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "profile_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1004,6 +1096,9 @@
       "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "profile_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1025,6 +1120,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1044,6 +1140,9 @@
       "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "profile_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1065,6 +1164,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "profile_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1085,6 +1187,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1104,6 +1207,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1123,6 +1227,9 @@
       "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "outlier_claim_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1144,6 +1251,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "outlier_claim_min_one_attribute"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1163,6 +1273,9 @@
       "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "outlier_claim_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1184,6 +1297,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1203,6 +1317,9 @@
       "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "outlier_claim_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1224,6 +1341,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1243,6 +1361,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1263,6 +1382,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1282,6 +1402,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1301,6 +1422,9 @@
       "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "state_of_system_block"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1322,6 +1446,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "state_of_system_block"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1341,6 +1468,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1360,6 +1488,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1380,6 +1509,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1400,6 +1530,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1420,6 +1551,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1440,6 +1572,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1459,6 +1592,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1478,6 +1612,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1497,6 +1632,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1517,6 +1653,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1536,6 +1673,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1555,6 +1693,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1574,6 +1713,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1593,6 +1733,9 @@
       "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "lift_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1614,6 +1757,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "lift_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1634,6 +1780,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1653,6 +1800,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1672,6 +1820,9 @@
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "aggregation_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1693,6 +1844,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "aggregation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1711,6 +1865,9 @@
       "mean_verbal_length": 102.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "aggregation_basic"
       ],
       "provenance": {
         "author": "scaffolding",
@@ -1732,6 +1889,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "aggregation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1751,6 +1911,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1771,6 +1932,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [
+        "measurement_of_artifact"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1790,6 +1954,7 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
+      "broader": [],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1810,6 +1975,9 @@
       "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
+      ],
+      "broader": [
+        "outlier_claim_with_attribute_set"
       ],
       "provenance": {
         "author": "scaffolding",

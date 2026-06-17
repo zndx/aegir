@@ -375,9 +375,9 @@ def run(args=None) -> int:
     n_edges = sum(len(v) for v in broader.values())
     if n_edges:
         print(f"  hierarchy: {n_edges} HermiT-verified subsumption edges over "
-              f"{len(broader)} child terms ({S.hierarchy_dir()})")
+              f"{len(broader)} child terms (from catalog `broader` — the SoT)")
     else:
-        print("  hierarchy: (no mediated subsumption edges — run scripts/mediate_hierarchy.py)")
+        print("  hierarchy: (no subsumption edges — run scripts/mediate_hierarchy.py [--all] then --promote)")
 
     if corpus:
         c = project_content(corpus)
