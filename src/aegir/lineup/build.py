@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import re
 import shutil
+from pathlib import Path
 
 from aegir.lineup import notes as N
 from aegir.lineup import sources as S
@@ -211,34 +212,75 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
 
 # ── relational Data Product ─────────────────────────────────────────────────
 def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
-    from aegir.ontology.ddl import template_to_table
-    out: list[N.Note] = []
-    cat_tables: dict[str, list[str]] = {}
+    """Project the DDL spine as relational/table notes (U2: FK-following navigation).
+
+    Each table carries its typed columns, its outgoing **Foreign keys** (a column →
+    the referenced table, navigable), and the inverse **Referenced by**, so the lineup
+    panel-trail walks the relational graph along foreign keys — the invention."""
+    from aegir.ontology.ddl import cross_family_fks, template_to_table
+
+    # Build the full spine first so cross-family FKs (the family-complex-gated joins) resolve.
+    spine = []
     for cat, t in rows:
         try:
-            st = template_to_table(t, cat)
+            spine.append(template_to_table(t, cat))
         except Exception as e:                       # noqa: BLE001
             print(f"  [relational] skip {t.template_id}: {type(e).__name__}: {e}")
-            continue
-        cols = st.table.columns
+    try:
+        import aegir.ontology as _onto
+        from aegir.ontology.complex import FamilyComplex
+        fc = FamilyComplex.from_json(Path(_onto.__file__).resolve().parent / "family_complex.json")
+        fks, _audit = cross_family_fks(spine, fc)
+    except Exception as e:                            # noqa: BLE001 — notes are valid without FKs
+        print(f"  [relational] FK graph skipped: {type(e).__name__}: {e}")
+        fks = []
+    name2tid = {st.table.name: st.template.template_id for st in spine}
+    out_fks: dict[str, list] = {}
+    in_fks: dict[str, list] = {}
+    for e in fks:
+        out_fks.setdefault(e.src_table, []).append(e)
+        in_fks.setdefault(e.dst_table, []).append(e)
+
+    def _rel_wl(table_name: str) -> str | None:
+        tid = name2tid.get(table_name)
+        return N.wl(f"relational/table/{_table_id(tid)}", tid) if tid else None
+
+    out: list[N.Note] = []
+    cat_tables: dict[str, list[str]] = {}
+    for st in spine:
+        t, cat, cols = st.template, st.family, st.table.columns
         rid = f"relational/table/{_table_id(t.template_id)}"
         cat_tables.setdefault(cat, []).append(rid)
-        term_id = f"ontology/term/{t.template_id}"
         rowsmd = "\n".join(f"| `{c.name}` | {c.slot_type} | {c.slot_ref} |" for c in cols)
+        ofk = [e for e in out_fks.get(st.table.name, []) if e.dst_table in name2tid]
+        ifk = [e for e in in_fks.get(st.table.name, []) if e.src_table in name2tid]
+        fk_md = ""
+        if ofk:
+            fk_md += "\n**Foreign keys** — follow → to the referenced table:\n\n" + "\n".join(
+                f"- `{e.src_col}` → {_rel_wl(e.dst_table)} · `{e.dst_col}`  _(via {e.via_slot})_"
+                for e in ofk) + "\n"
+        if ifk:
+            fk_md += "\n**Referenced by** — ← these tables foreign-key into this one:\n\n" + "\n".join(
+                f"- {_rel_wl(e.src_table)} · `{e.src_col}`  _(via {e.via_slot})_" for e in ifk) + "\n"
+        if not ofk and not ifk:
+            fk_md = "\n_No cross-family foreign keys (standalone table)._\n"
         body = (
-            f"**Realizes term.** {N.wl(term_id, t.template_id)}  "
+            f"**Realizes term.** {N.wl(f'ontology/term/{t.template_id}', t.template_id)}  "
             f"(the ontology↔DDL pivot — DeepOnto semantics ↔ polyglot SQL syntax)\n\n"
             f"**Columns** ({len(cols)}).\n\n"
-            f"| column | owl/sql type | slot |\n|---|---|---|\n{rowsmd}\n\n"
-            f"_FK-following navigation (table → table along foreign keys) lands in U2 "
-            f"(the relational DDL navigator)._\n"
+            f"| column | owl/sql type | slot |\n|---|---|---|\n{rowsmd}\n"
+            f"{fk_md}"
         )
         out.append(N.Note(
             id=rid, title=st.table.name, kind="relational-table", data_product="relational",
             body=body, frontmatter={
                 "category": cat, "realizes": t.template_id, "table_name": st.table.name,
                 "columns": [{"name": c.name, "type": c.slot_type, "slot": c.slot_ref} for c in cols],
-                "not_null": sorted(getattr(st, "not_null", set()) or set())}))
+                "not_null": sorted(getattr(st, "not_null", set()) or set()),
+                "foreign_keys": [{"column": e.src_col, "references_table": name2tid.get(e.dst_table),
+                                  "references_column": e.dst_col, "via": e.via_slot} for e in ofk],
+                "referenced_by": [{"table": name2tid.get(e.src_table), "column": e.src_col,
+                                   "via": e.via_slot} for e in ifk]}))
 
     for cat, rids in sorted(cat_tables.items()):
         body = f"Relational tables in category **{cat}** — {len(rids)}.\n\n" + \
@@ -246,6 +288,7 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
         out.append(N.Note(id=f"relational/category/{cat}", title=f"{cat} (tables)",
                           kind="relational-category", data_product="relational", body=body,
                           frontmatter={"category": cat, "n_tables": len(rids)}))
+    print(f"  relational: {len(spine)} tables, {len(fks)} cross-family FKs (U2 FK-following edges)")
     return out
 
 
