@@ -266,9 +266,19 @@ def build_and_create(per_family):
                 "table": {"guid": src_tg}, "key_columns": [{"guid": src_cg}],
                 "references_table": {"guid": dst_tg}, "references_columns": [{"guid": dst_cg}]}})
     if fk_ents:
-        r = api("POST", "entity/bulk", json={"entities": fk_ents}, timeout=600)
-        print(f"  foreign keys: {len(fk_ents)} rdbms_foreign_key -> {r.status_code}"
-              + ("" if r.ok else f"  {r.text[:200]}"))
+        # Chunk + non-fatal: at full-footprint scale a single bulk FK POST exceeds the 600s read
+        # timeout and (when it raised) aborted the whole projection before glossary/assign/classify.
+        ok = 0
+        for i in range(0, len(fk_ents), 100):
+            batch = fk_ents[i:i + 100]
+            try:
+                r = api("POST", "entity/bulk", json={"entities": batch}, timeout=300)
+                ok += len(batch) if r.ok else 0
+                if not r.ok:
+                    print(f"   FK chunk [{i}:{i + len(batch)}] -> {r.status_code} {r.text[:120]}")
+            except Exception as ex:  # noqa: BLE001 — FK creation must never abort the projection
+                print(f"   FK chunk [{i}:{i + len(batch)}] failed (non-fatal): {type(ex).__name__}")
+        print(f"  foreign keys: {ok}/{len(fk_ents)} rdbms_foreign_key created (chunked)")
 
     # ── column-level lineage via polyglot OpenLineage → ol.ingest_run_event ──
     n_lin = 0
@@ -317,6 +327,82 @@ def glossary_responsive(probe_timeout: int = GLOSSARY_TIMEOUT) -> bool:
         return False
 
 
+# BFO/CCO upper-type leaf anchors → readable glossary sub-category names. The bfo_anchor_path
+# leaf is one of these 7; it gives each family a second organizing axis (domain × upper-type).
+_ANCHOR_LABELS = {
+    "cco:Artifact": "Artifacts",
+    "bfo:Process": "Processes",
+    "cco:DescriptiveICE": "Descriptive Information",
+    "cco:DirectiveICE": "Directive Information",
+    "cco:DesignativeICE": "Designative Information",
+    "cco:InformationContentEntity": "Information Content Entities",
+    "bfo:IndependentContinuant": "Independent Continuants",
+}
+
+
+def _anchor_label(anchor):
+    if not anchor:
+        return None
+    return _ANCHOR_LABELS.get(anchor, anchor.split(":")[-1])
+
+
+def _term_anchor_label(t):
+    path = t.bfo_anchor_path or []
+    return _anchor_label(path[-1]) if path else None
+
+
+def _load_categories(gguid):
+    """Build idempotent category maps from /glossary/{g}/categories (full objects with name +
+    parentCategory — the one glossary endpoint that renders these reliably on AGE). Returns
+    (top: name→guid for un-parented family categories, sub: (parent_name, name)→guid for nested)."""
+    r = api("GET", f"glossary/{gguid}/categories", timeout=90)
+    cats = r.json() if r.ok and r.text.strip() else []
+    if not isinstance(cats, list):
+        cats = []
+    by_guid = {c.get("guid"): c for c in cats}
+    top, sub = {}, {}
+    for c in cats:
+        pg = (c.get("parentCategory") or {}).get("categoryGuid")
+        if pg and pg in by_guid:
+            sub[(by_guid[pg].get("name"), c.get("name"))] = c.get("guid")
+        elif not pg:
+            top[c.get("name")] = c.get("guid")
+    return top, sub
+
+
+def sync_category_hierarchy(gguid, all_terms):
+    """Two-level category tree: 7 family categories (top) → BFO-anchor sub-categories (leaf),
+    nested via parentCategory. Idempotent. Returns (top, sub, term_leaf: tid→leaf-category guid
+    the term should be filed under — its family's anchor sub-cat, or the family itself if the
+    template carries no BFO anchor)."""
+    top, sub = _load_categories(gguid)
+    for f in FAMILIES:                                   # 1) family top categories
+        cname = fam_label(f)
+        if cname not in top:
+            r = api("POST", "glossary/category", json={"name": cname, "anchor": {"glossaryGuid": gguid}})
+            if r.ok:
+                top[cname] = r.json().get("guid")
+    needed, fam_anchor = set(), {}                       # 2) which (family, anchor) sub-cats exist in the data
+    for fam, t in all_terms:
+        cname, alabel = fam_label(fam), _term_anchor_label(t)
+        fam_anchor[t.template_id] = (cname, alabel)
+        if alabel:
+            needed.add((cname, alabel))
+    for cname, alabel in sorted(needed):                 # 3) create missing sub-cats under their family
+        if (cname, alabel) not in sub and cname in top:
+            r = api("POST", "glossary/category", json={
+                "name": alabel, "anchor": {"glossaryGuid": gguid},
+                "parentCategory": {"categoryGuid": top[cname]}})
+            if r.ok:
+                sub[(cname, alabel)] = r.json().get("guid")
+    term_leaf = {}                                       # 4) resolve each term's leaf category
+    for tid, (cname, alabel) in fam_anchor.items():
+        term_leaf[tid] = (sub.get((cname, alabel)) if alabel else None) or top.get(cname)
+    n_sub = len({k for k in sub})
+    print(f"  glossary: {len(top)} family categories, {n_sub} BFO sub-categories (2-level hierarchy)")
+    return top, sub, term_leaf
+
+
 def ensure_glossary(all_terms):
     gr = api("GET", "glossary", timeout=15)
     glos = gr.json() if gr.ok and gr.text.strip() else []
@@ -325,45 +411,42 @@ def ensure_glossary(all_terms):
         g = api("POST", "glossary", json={"name": "Aegir Ontology",
                 "shortDescription": "BFO/CCO-grounded ontology terms backing the relational footprint"}).json()
     gguid = g["guid"]
-    # Use the base glossary object (term/category HEADERS: guid + displayText) rather than
-    # /detailed (full term bodies). The headers are all we need to build the guid map, and on the
-    # AGE backend /detailed materializes every term body (~28s, exceeds GLOSSARY_TIMEOUT) while the
-    # header GET is roughly half that. Same `categories`/`terms` header arrays, same extraction.
+    # Use the base glossary object (term HEADERS: guid + displayText) rather than /detailed (full
+    # term bodies). The headers are all we need to build the guid map, and on the AGE backend
+    # /detailed materializes every term body (~28s, exceeds GLOSSARY_TIMEOUT) while this is ~half.
     dr = api("GET", f"glossary/{gguid}", timeout=90)
     detail = dr.json() if dr.ok and dr.text.strip() else {}
-    cat_guid = {c["displayText"]: c["categoryGuid"] for c in detail.get("categories", [])}
     term_guid = {t["displayText"]: t["termGuid"] for t in detail.get("terms", [])}
 
-    for f in FAMILIES:
-        cname = fam_label(f)
-        if cname not in cat_guid:
-            r = api("POST", "glossary/category", json={"name": cname, "anchor": {"glossaryGuid": gguid}})
-            if r.ok:
-                cat_guid[cname] = r.json().get("guid")
+    top, sub, term_leaf = sync_category_hierarchy(gguid, all_terms)
     made = 0
-    for fam, t in all_terms:
+    for _fam, t in all_terms:
         tid = t.template_id
         if tid in term_guid:
             continue
-        cname = fam_label(fam)
+        leaf = term_leaf.get(tid)
         r = api("POST", "glossary/term", json={
             "name": tid, "anchor": {"glossaryGuid": gguid},
             "shortDescription": t.manchester_template[:240],
-            "categories": [{"categoryGuid": cat_guid[cname]}] if cname in cat_guid else []})
+            "categories": [{"categoryGuid": leaf}] if leaf else []})
         if r.ok:
             term_guid[tid] = r.json()["guid"]
             made += 1
-    print(f"  glossary: {len(cat_guid)} categories, +{made} terms ({len(term_guid)} total)")
-    return term_guid
+    print(f"  glossary: {len(top)} families + {len(sub)} sub-categories, +{made} terms "
+          f"({len(term_guid)} total)")
+    return term_guid, term_leaf
 
 
-def enrich_and_link(term_guid, all_terms):
+def enrich_and_link(term_guid, all_terms, term_leaf=None):
     """Sync the ontology SoT INTO the glossary terms: SKOS annotations as term attributes
     (definition → short/longDescription, the scope note → usage, the BERTSubs surface-form
     set → longDescription) + the verified ``broader`` subsumption hierarchy as Atlas ``isA``
     relationships (child ``isA`` its parents; Atlas auto-maintains the inverse ``classifies``
-    on each parent, so the hierarchy is navigable BOTH ways in the glossary). GET-merge-PUT so
-    categories / assignedEntities survive. Idempotent — re-syncs to the current ontology."""
+    on each parent, so the hierarchy is navigable BOTH ways in the glossary). When ``term_leaf``
+    is given (tid→leaf-category guid), also re-files each term into its BFO sub-category so the
+    2-level hierarchy applies to terms that already existed. GET-merge-PUT so assignedEntities
+    survive. Idempotent — re-syncs to the current ontology."""
+    term_leaf = term_leaf or {}
     n_skos = n_isa = n_fail = misses = 0
     for fam, t in all_terms:
         tguid = term_guid.get(t.template_id)
@@ -385,6 +468,9 @@ def enrich_and_link(term_guid, all_terms):
                 + (f"\n\nSurface forms (SKOS altLabel / retrieval): {', '.join(alts)}" if alts else ""))
             term["usage"] = (f"{_axiom_kind(t.manchester_template).capitalize()} anchored to "
                              f"{anchor}, in the '{fam_label(fam)}' category.")
+            leaf = term_leaf.get(t.template_id)
+            if leaf:
+                term["categories"] = [{"categoryGuid": leaf}]   # re-file into the BFO sub-category
             has_isa = False
             parents = [term_guid[p] for p in (t.broader or []) if p in term_guid]
             if parents:
@@ -507,11 +593,46 @@ def main():
     ap.add_argument("--glossary-only", action="store_true",
                     help="re-sync only the glossary (all terms + SKOS + broader→isA); "
                          "skip rdbms/classifications. Idempotent.")
+    ap.add_argument("--assign-only", action="store_true",
+                    help="link every term to its already-projected table (assignedEntities), "
+                         "discovering table guids by qualifiedName. Recovery for an interrupted "
+                         "full projection; no entity creation. Idempotent.")
     args = ap.parse_args()
 
     if args.reset:
         print("RESET projection:")
         reset()
+        return
+
+    if args.assign_only:
+        print("ASSIGN-ONLY: link all terms to their projected footprint tables:")
+        if not glossary_responsive():
+            print("   glossary unresponsive — aborting."); return
+        all_terms = [(f, t) for f in FAMILIES
+                     for t in load_catalog(CATALOG_DIR / f"{f}.json").templates]
+        tables, off = {}, 0          # discover footprint tables by qualifiedName (one search, not 540 GETs)
+        while True:
+            r = api("POST", "search/basic", json={
+                "typeName": "rdbms_table", "excludeDeletedEntities": True,
+                "attributes": ["qualifiedName"], "limit": 1000, "offset": off}, timeout=120)
+            ents = r.json().get("entities", []) if r.ok else []
+            for e in ents:
+                qn = (e.get("attributes") or {}).get("qualifiedName")
+                if qn:
+                    tables[qn] = e["guid"]
+            if len(ents) < 1000:
+                break
+            off += 1000
+        base_tbl_guid = {}
+        for f, t in all_terms:
+            qn = f"footprint.{D.template_to_table(t, f).table.name}@{CLUSTER}"
+            if qn in tables:
+                base_tbl_guid[t.template_id] = tables[qn]
+        print(f"   discovered {len(tables)} footprint tables; matched "
+              f"{len(base_tbl_guid)}/{len(all_terms)} terms→tables")
+        tg, _ = ensure_glossary(all_terms)
+        assign_terms(tg, base_tbl_guid)
+        print("done.")
         return
 
     if args.glossary_only:
@@ -520,8 +641,8 @@ def main():
             print("   glossary unresponsive — aborting."); return
         all_terms = [(f, t) for f in FAMILIES
                      for t in load_catalog(CATALOG_DIR / f"{f}.json").templates]
-        tg = ensure_glossary(all_terms)
-        enrich_and_link(tg, all_terms)
+        tg, term_leaf = ensure_glossary(all_terms)
+        enrich_and_link(tg, all_terms, term_leaf)
         print("done.")
         return
 
@@ -538,9 +659,9 @@ def main():
         try:
             all_terms = [(f, t) for f in FAMILIES
                          for t in load_catalog(CATALOG_DIR / f"{f}.json").templates]
-            tg = ensure_glossary(all_terms)  # all 540 terms (decoupled from the rdbms per-family cap)
-            enrich_and_link(tg, all_terms)   # SKOS annotations + broader→isA term relationships
-            assign_terms(tg, base_tbl_guid)  # link the projected subset to their rdbms tables
+            tg, term_leaf = ensure_glossary(all_terms)  # 540 terms + BFO category hierarchy (per-family-independent)
+            enrich_and_link(tg, all_terms, term_leaf)    # SKOS + broader→isA + re-file into sub-categories
+            assign_terms(tg, base_tbl_guid)              # link projected tables to their terms (assignedEntities)
         except Exception as e:
             print(f"   glossary step failed (non-fatal): {e}")
     print("4) classifications + business metadata"); classify(base, base_tbl_guid, base_col_guid)
