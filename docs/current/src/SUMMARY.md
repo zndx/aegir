@@ -25,6 +25,7 @@
   - [End-to-end + Meta-Harness + reasoner](./end_to_end_and_meta_harness.md)
   - [Supervised Bootstrapping (M2 fine-tune)](./roadmap/supervised.md)
   - [Phase Gate — Governance & DDL Spine](./roadmap/phase_gate_governance_ddl.md)
+  - [Phase — SHARE Docs (browsable corpus)](./roadmap/phase_share_docs.md)
 - [Development Guide](./development.md)
 - [Worktree Aware Development](./worktree_aware.md)
   - [Cross-worktree SAE streaming](./worktree_aware/sae_streaming.md)
