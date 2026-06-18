@@ -90,10 +90,10 @@ function Landing() {
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <Link to="/leaderboards">
+          <Link to="/lineup?open=training/sweeps">
             <Card hoverable>
               <Statistic
-                title="Runs"
+                title="Sweeps"
                 value={stats?.runs?.count ?? "—"}
                 prefix={<BarChartOutlined />}
               />

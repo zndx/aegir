@@ -9,8 +9,16 @@ reason to aim higher.
 ## Where it is today
 One row per training run; clicking a run opens a drawer with live HoloViews curves (loss / F1 /
 per-stage chunking boundary), rendered by `aegir.viz.runs_app` over the bokeh server, embedded via
-`<PanelView>`. Air-gapped, no npm `@bokeh/bokehjs`. That's it — training curves, nothing about the
-*data* a run consumed.
+`<PanelView>`. Air-gapped, no npm `@bokeh/bokehjs`.
+
+**Built — the Training section + Sweeps (v1).** The lineup left-nav now has a **TRAINING** group below
+the lenses; its first entry, **Sweeps**, opens a live HoloViews **parallel-coordinates** panel
+(`aegir.viz.sweeps_app`) over the runs — each run a line across `model_size · num_params · lr · epochs
+· macro/micro F1 · val_loss`, colored by best macro-F1, reading live from `outputs/runs`. The Landing
+"Runs" card is now "Sweeps" → `/lineup?open=training/sweeps`. HoloViews-native by directive (no
+canonical-PCP widget) — the door is open to the *superior* version (`datashade` for many runs,
+`hv.link_selections` axis brushing). The TRAINING group is extensible: the ideas below become further
+entries (each a `kind:"training"` note with a `viz_app` frontmatter + a bokeh-server app).
 
 ## The reframe
 The pipeline now emits **coupled Data Products** (ontology · relational/DDL footprint · corpus with

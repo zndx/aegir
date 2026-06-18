@@ -17,6 +17,11 @@ const LENSES = [
   { key: "schema", label: "Schema", seed: "lens/schema", hint: "relational projection" },
   { key: "content", label: "Content", seed: "lens/content", hint: "corpus + topics" },
 ];
+// Training/experiment entries (live HoloViews panels). Extensible as requirements materialize —
+// see docs/current/src/roadmap/leaderboard_observatory.md.
+const TRAINING = [
+  { key: "sweeps", label: "Sweeps", seed: "training/sweeps", hint: "parallel coords" },
+];
 const ROOTS = ["archive", "current", "scratch"];
 
 function tab(active: boolean): React.CSSProperties {
@@ -30,7 +35,8 @@ function tab(active: boolean): React.CSSProperties {
 function Lineup() {
   const [params] = useSearchParams();
   const lensKey = params.get("lens") || "terms";
-  const seed = LENSES.find((l) => l.key === lensKey)?.seed || "lens/terms";
+  // ?open=<note id> deep-links a specific note (e.g. training/sweeps from the Landing card); else the lens.
+  const seed = params.get("open") || LENSES.find((l) => l.key === lensKey)?.seed || "lens/terms";
 
   const [root, setRoot] = useState("current");
   const [index, setIndex] = useState<KBIndex | null>(null);
@@ -82,6 +88,15 @@ function Lineup() {
             <Text type="secondary" style={{ fontSize: 11, display: "block", marginTop: 4 }}>
               collections × lens — the live projection (what we know)
             </Text>
+            <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5, display: "block", marginTop: 16 }}>TRAINING</Text>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
+              {TRAINING.map((t) => (
+                <a key={t.key} onClick={() => setTrail([t.seed])} style={tab(trail[0] === t.seed)} title={t.hint}>
+                  {t.label}
+                  <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{t.hint}</span>
+                </a>
+              ))}
+            </div>
           </>
         ) : (
           <>

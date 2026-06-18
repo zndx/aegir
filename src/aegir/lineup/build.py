@@ -509,6 +509,22 @@ def project_lenses(categories: list[str], has_content: bool, has_topics: bool,
     return [terms, schema, content]
 
 
+def project_training() -> list[N.Note]:
+    """Training/experiment lineup notes — launchers for live HoloViews viz (a note's ``viz_app``
+    frontmatter names the bokeh-server app the panel mounts; data reads live from ``outputs/runs``).
+    Extensible: more Training entries (gate panels, ablation overlays, …) land here as requirements
+    materialize — see docs/current/src/roadmap/leaderboard_observatory.md."""
+    sweeps = N.Note(
+        id="training/sweeps", title="Sweeps", kind="training", data_product="training",
+        frontmatter={"viz_app": "sweeps_app"},
+        body=("**Sweeps.** Parallel-coordinates over training runs (live HoloViews) — each run is a "
+              "line across hyperparam → outcome axes (model size · params · lr · epochs · macro/micro "
+              "F1 · val loss), colored by best macro-F1. Read the Pareto front, clusters, and the "
+              "effect of each knob at a glance. Reads runs live from `outputs/runs`; per-run detail "
+              "lives on the Leaderboards page."))
+    return [sweeps]
+
+
 def run(args=None) -> int:
     kb = S.kb_dir()
     current = kb / "current"
@@ -576,6 +592,7 @@ def run(args=None) -> int:
               f"{len(maps.get('topic_colls', {}))} topics × {len(maps.get('term_colls', {}))} terms)")
 
     notes += project_lenses(categories, bool(corpus), bool(coverage), maps)
+    notes += project_training()
 
     for n in notes:
         N.write_note(kb, n)

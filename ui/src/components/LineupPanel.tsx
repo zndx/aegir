@@ -136,10 +136,12 @@ interface Props {
 
 function LineupPanel({ note, loading, onLink, onClose }: Props) {
   const accent = ACCENT[note?.data_product ?? "lens"] ?? "#999";
+  // Training panels carry wide viz (the sweeps PCP) — give them room so all axes show without scroll.
+  const basis = note?.kind === "training" ? "52rem" : "33rem";
   return (
     <div
       style={{
-        flex: "0 0 33rem", maxWidth: "33rem", height: "100%", overflowY: "auto",
+        flex: `0 0 ${basis}`, maxWidth: basis, height: "100%", overflowY: "auto",
         background: "#fff", border: "1px solid #d0d0d8", borderTop: `3px solid ${accent}`,
         borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", marginRight: 12,
       }}
@@ -155,6 +157,14 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
             <PanelView app="lineup_app" params={{ lens: note.name ?? note.id }} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
               top collection associations (TF-IDF) — live HoloViews via Panel · drag a node, hover a ribbon
+            </Text>
+          </div>
+        )}
+        {note?.kind === "training" && (
+          <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
+            <PanelView app="sweeps_app" height={460} />
+            <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
+              parallel coordinates over runs — live HoloViews · each line a run, colored by best macro-F1
             </Text>
           </div>
         )}
