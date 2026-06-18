@@ -60,6 +60,19 @@ def _cited(row: dict) -> list[str]:
     return []
 
 
+def _styles(row: dict) -> list[int]:
+    """The chapter's style topic ids — target + these = its full topic membership (the de-flatten)."""
+    v = row.get("style_topic_ids")
+    if isinstance(v, (list, tuple)):
+        return [int(x) for x in v]
+    if isinstance(v, str):
+        try:
+            return [int(x) for x in ast.literal_eval(v)]
+        except Exception:  # noqa: BLE001
+            return []
+    return []
+
+
 def _title(md: str) -> str | None:
     for ln in (md or "").splitlines():
         if ln.startswith("# "):
@@ -67,12 +80,17 @@ def _title(md: str) -> str | None:
     return None
 
 
-def _card(tid, tinfo, chs, terms, tables, tmpl, fam) -> str:
+def _card(tid, tinfo, chs, terms, tables, tmpl, fam, topics=None, shared=None) -> str:
     gist = re.sub(r"\s+", " ", (tinfo.get("topic_repr_text") or "")).strip()[:400]
+    topics = topics or [tid]
+    shared = shared or {}
     L = [f"# Collection — topic {tid} · {fam or ''}", "",
          f"FinePDFs-grounded topic (carried forward from the coverage audit). "
-         f"**{len(chs)} chapters** · **{len(terms)} ontology terms** · "
-         f"**{len(tables)} underlying tables**.", ""]
+         f"**{len(chs)} chapters** · **{len(topics)} topics** (target + style) · "
+         f"**{len(terms)} ontology terms** · **{len(tables)} underlying tables**.", ""]
+    if len(topics) > 1:
+        L += ["**Topics (many-to-many).** The documents draw on, beyond the anchor topic "
+              f"{tid}: " + ", ".join(f"topic {t}" for t in topics if t != tid) + ".", ""]
     if gist:
         L += ["> **Topic gist** (representative FinePDFs text): " + gist + " …", ""]
     L += ["## Chapters", ""]
@@ -88,8 +106,10 @@ def _card(tid, tinfo, chs, terms, tables, tmpl, fam) -> str:
           "_The tables the chapters' embedded views project from — the current semantic-column "
           "DDL spine. (Embedded views in the chapter prose reflect the generation-time schema.)_", ""]
     for st in tables:
+        sh = shared.get(st.template.template_id, [])
         L.append(f"- [`{st.table.name}`](tables/{st.table.name}.sql) — realizes "
-                 f"`{st.template.template_id}`")
+                 f"`{st.template.template_id}`"
+                 + (f" · _shared with {len(sh)} other collection(s)_" if sh else ""))
     return "\n".join(L) + "\n"
 
 
@@ -125,6 +145,16 @@ def main() -> int:
     for r in chapters:
         by_topic[int(r["target_topic_id"])].append(r)
 
+    # Pre-pass for the de-flatten: per-collection terms + the term→collections inverse, so each
+    # collection can show which of its base tables are SHARED with other collections (the
+    # many-to-many footprint — a base table hydrates views across collections).
+    coll_terms = {tid: sorted({tt for r in rs for tt in _cited(r) if tt in tmpl})
+                  for tid, rs in by_topic.items()}
+    term_colls: dict[str, list[int]] = defaultdict(list)
+    for ctid, tms in coll_terms.items():
+        for tt in tms:
+            term_colls[tt].append(ctid)
+
     out = Path(args.out)
     if out.exists():
         shutil.rmtree(out)
@@ -136,7 +166,9 @@ def main() -> int:
         chs = sorted(by_topic[tid], key=lambda r: r["chapter_id"])
         tinfo = topics.get(tid, {})
         fam = tinfo.get("top_family") or chs[0].get("family")
-        terms = sorted({tt for r in chs for tt in _cited(r) if tt in tmpl})
+        terms = coll_terms[tid]
+        topics_full = sorted({tid} | {s for r in chs for s in _styles(r)})
+        shared = {tt: sorted(set(term_colls[tt]) - {tid}) for tt in terms if len(term_colls[tt]) > 1}
         tables = [st_by_tid[tt] for tt in terms if tt in st_by_tid]
         cdir = out / f"topic-{tid:03d}-{_slug(fam.split('_', 1)[-1] if fam else 'x')}"
         (cdir / "chapters").mkdir(parents=True)
@@ -155,10 +187,12 @@ def main() -> int:
             "coverage_score": tinfo.get("coverage_score"),
             "topic_repr": (tinfo.get("topic_repr_text") or "")[:600],
             "terms": terms, "tables": [st.table.name for st in tables],
+            "topics": topics_full, "shared_tables": shared,
             "chapters": [{"id": r["chapter_id"], "family": r.get("family"),
+                          "topics": sorted({int(r["target_topic_id"])} | set(_styles(r))),
                           "cited_terms": _cited(r)} for r in chs],
         }, indent=2, default=str))
-        (cdir / "README.md").write_text(_card(tid, tinfo, chs, terms, tables, tmpl, fam))
+        (cdir / "README.md").write_text(_card(tid, tinfo, chs, terms, tables, tmpl, fam, topics_full, shared))
         index.append((tid, cdir.name, len(chs), len(terms), len(tables), fam))
 
     gaps = sorted(set(topics) - set(by_topic))
