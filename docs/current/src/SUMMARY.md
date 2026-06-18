@@ -26,6 +26,7 @@
   - [Supervised Bootstrapping (M2 fine-tune)](./roadmap/supervised.md)
   - [Phase Gate — Governance & DDL Spine](./roadmap/phase_gate_governance_ddl.md)
   - [Phase — SHARE Docs (browsable corpus)](./roadmap/phase_share_docs.md)
+  - [Lineup Landing — collections × lens pivot](./roadmap/lineup_landing.md)
 - [Development Guide](./development.md)
 - [Worktree Aware Development](./worktree_aware.md)
   - [Cross-worktree SAE streaming](./worktree_aware/sae_streaming.md)
