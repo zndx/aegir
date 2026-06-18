@@ -24,12 +24,14 @@ dependencies = [
     "uvicorn[standard]>=0.32",
     "sqlalchemy>=2.0.49",
     "psycopg[binary]>=3.3.3",
-    # ── Visualization ──────────────────────────────────────────────
-    # Current path: static Bokeh JSON (bokeh.embed.json_item) pre-rendered by train.py, served
-    # read-only by the gateway, embedded client-side via npm @bokeh/bokehjs. Convergence target:
-    # live HoloViews via Panel (installed transitively; Bokeh-server, *equally* air-gapped — proven
-    # in scripts/experiment_panel_lineup.py). NB: the vite-bundled @bokeh/bokehjs mishandles
-    # GraphRenderer (Chord/Graph/Sankey); Panel renders those via python-bokeh's own JS.
+    # ── Visualization: live HoloViews served by dedicated bokeh-server processes behind the gateway's
+    # reverse proxy (single-origin, air-gapped, clean no-iframe DOM embed via bokeh.embed.server_document
+    # — React <PanelView> preloads the server's own BokehJS then injects the bootstrap; no npm
+    # @bokeh/bokehjs, whose bundled GraphRenderer is broken). HoloViews/Bokeh/Datashader render
+    # server-side. Panel is the forthcoming widget-dashboard layer (its server_document embed bakes a few
+    # cdn.holoviz.org resources at import → mirror the holoviz dist at deploy, the standard air-gap step).
+    # Panel/Datashader/Dask are pulled in (panel transitively via holoviews) when those views land.
+    # Decision+audit: docs/scratch/2026-06-18/175525_panel_convergence.md ; build: …/2026-06-18/195536_live_viz_spine.md
     "holoviews>=1.18",
     "bokeh>=3.4",
     # ── BDD ──────────────────────────────────────────────────────

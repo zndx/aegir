@@ -589,6 +589,14 @@ ui-dev:
 ui-build:
     cd ui && pnpm install --silent --prefer-offline && pnpm build
 
+# Live HoloViews viz server (topology B): a dedicated bokeh server behind the gateway's reverse proxy
+# at /viz/*, embedded into React via <PanelView> (server_document). BOKEH_RESOURCES=server keeps every
+# resource same-origin → air-gapped. The gateway proxies /viz (prod: nginx; dev: vite proxy on :5173).
+viz-serve:
+    BOKEH_RESOURCES=server LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs \
+      uv run --no-sync bokeh serve src/aegir/viz/lineup_app.py \
+      --prefix /viz --port 5006 --allow-websocket-origin='*'
+
 run-train *args:
     uv run --no-sync python train.py {{args}}
 

@@ -23,6 +23,15 @@ export default defineConfig({
         changeOrigin: true,
         configure: (proxy) => { proxy.on("error", silenceProxyError); },
       },
+      // Live HoloViews panel servers (topology B). In prod this is the gateway's reverse proxy
+      // (nginx/traefik); in dev Vite stands in. ws:true carries the Bokeh-server session socket so
+      // the chord stays same-origin (air-gapped) and embeds cleanly via server_document.
+      "/viz": {
+        target: "http://localhost:5006",
+        changeOrigin: true,
+        ws: true,
+        configure: (proxy) => { proxy.on("error", silenceProxyError); },
+      },
     },
   },
   build: {

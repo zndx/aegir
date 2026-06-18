@@ -2,12 +2,14 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Tag, Typography } from "antd";
 import type { ReactNode } from "react";
 
-import BokehInline from "./BokehInline";
+import PanelView from "./PanelView";
 
 const { Text } = Typography;
 
 export interface KBNote {
   id: string;
+  // The gateway's /api/kb/note response carries the root-less id as `name` (not `id`); prefer it.
+  name?: string;
   title: string;
   kind: string;
   data_product: string;
@@ -150,11 +152,11 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
         <CloseOutlined onClick={onClose} style={{ cursor: "pointer", color: "#bbb", fontSize: 12 }} />
       </div>
       <div style={{ padding: "8px 16px 16px", fontSize: 13.5, color: "#222" }}>
-        {note?.chord != null && (
+        {note?.kind === "lens" && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
-            <BokehInline doc={note.chord} title={note.title} />
+            <PanelView app="lineup_app" params={{ lens: note.name ?? note.id }} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
-              top collection associations (TF-IDF) — drag a node, hover a ribbon
+              top collection associations (TF-IDF) — live HoloViews via Panel · drag a node, hover a ribbon
             </Text>
           </div>
         )}

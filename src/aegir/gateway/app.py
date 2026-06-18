@@ -201,6 +201,21 @@ def _register_api_routes(app: FastAPI) -> None:
             raise HTTPException(status_code=404, detail=f"plot {name!r} not found for run {run_id}")
         return JSONResponse(plot)
 
+    # ── /api/viz/{app}/embed — live Panel viz bootstrap ────────
+    @app.get("/api/viz/{app_name}/embed")
+    def viz_embed(app_name: str, lens: str | None = None) -> PlainTextResponse:
+        """Return the ``bokeh.embed.server_document`` bootstrap for a live Panel app served by
+        ``panel serve`` behind this gateway's reverse proxy at ``/viz/*``. The React ``<PanelView>``
+        injects it; BokehJS loads from the panel server (python-bokeh's build — renders GraphRenderer
+        correctly, unlike npm ``@bokeh/bokehjs``). ``resources=None`` makes the autoload script pull
+        every resource from the (same-origin, proxied) panel server → no CDN, air-gapped."""
+        if not _is_safe_plot_name(app_name):
+            raise HTTPException(status_code=400, detail="invalid app name")
+        from bokeh.embed import server_document
+        args = {"lens": lens} if lens else None
+        script = server_document(f"/viz/{app_name}", arguments=args, resources=None)
+        return PlainTextResponse(script, media_type="text/html")
+
     # ── /api/ontology/dbpedia-types ────────────────────────────
 
     @app.get("/api/ontology/dbpedia-types")
