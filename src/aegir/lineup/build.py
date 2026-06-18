@@ -459,8 +459,7 @@ def _relational_spine(rows):
 
 
 def project_lenses(categories: list[str], has_content: bool, has_topics: bool,
-                   maps: dict | None = None, tid_table: dict | None = None,
-                   fks: list | None = None) -> list[N.Note]:
+                   maps: dict | None = None) -> list[N.Note]:
     maps = maps or {}
     colls = maps.get("collections")
     # terms (default): collections × realized terms — the grounding pivot
@@ -505,22 +504,9 @@ def project_lenses(categories: list[str], has_content: bool, has_topics: bool,
     content = N.Note(id="lens/content", title="Content × Topics" if colls else "Content", kind="lens",
                      data_product="content", frontmatter={"lens": "content"}, body=content_body)
 
-    lenses = [terms, schema, content]
-    # Attach a TF-IDF collection-association chord to each lens (an orientation centerpiece atop the
-    # pivot). Guarded + lazy: holoviews/sklearn stay runtime-optional, a failure never breaks kb-build.
-    if colls:
-        try:
-            from aegir.lineup.chords import build_lens_chords
-            ch, status = build_lens_chords(maps, tid_table=tid_table, fks=fks)
-            by_id = {n.id: n for n in lenses}
-            for lid, item in ch.items():
-                if lid in by_id:
-                    by_id[lid].frontmatter["chord"] = item
-                    by_id[lid].frontmatter["has_chord"] = True
-            print(f"  chords: {len(ch)} lens chord(s) attached [{status}]")
-        except Exception as e:  # noqa: BLE001 — optional enrichment, never fatal
-            print(f"  chords: skipped ({type(e).__name__}: {str(e)[:90]})")
-    return lenses
+    # The lens chords render live via the bokeh server (aegir.viz.lineup_app), embedded by the React
+    # <PanelView> — no chord is baked into the note frontmatter anymore.
+    return [terms, schema, content]
 
 
 def run(args=None) -> int:
@@ -589,12 +575,7 @@ def run(args=None) -> int:
         print(f"  collections: {len(coll_notes) - 1} topic-grounded bundles (many-to-many: "
               f"{len(maps.get('topic_colls', {}))} topics × {len(maps.get('term_colls', {}))} terms)")
 
-    # FK-spanning substrate for the Schema-lens chord (only worth building when collections exist).
-    chord_tid_table, chord_fks = (None, None)
-    if maps.get("collections"):
-        chord_tid_table, chord_fks = _relational_spine(rows)
-    notes += project_lenses(categories, bool(corpus), bool(coverage), maps,
-                            tid_table=chord_tid_table, fks=chord_fks)
+    notes += project_lenses(categories, bool(corpus), bool(coverage), maps)
 
     for n in notes:
         N.write_note(kb, n)

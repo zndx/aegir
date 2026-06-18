@@ -16,8 +16,6 @@ export interface KBNote {
   root?: string;
   body: string;
   links?: string[];
-  // Inline Bokeh json_item (a TF-IDF collection-association chord) carried on lens-note frontmatter.
-  chord?: unknown;
 }
 
 // Flag accent per Data Product — the FedWiki "flag" reinterpreted as a lens color.
