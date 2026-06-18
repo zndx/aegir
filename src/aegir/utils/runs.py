@@ -1,6 +1,6 @@
-"""Training-run artifact writer: metadata + metrics + static Bokeh plots.
+"""Training-run artifact writer: metadata + metrics (two JSON sidecars).
 
-Each training run lands in ``{runs_root}/{run_id}/`` with three kinds of artifacts:
+Each training run lands in ``{runs_root}/{run_id}/`` with:
 
   metadata.json  — immutable: task, model_size, arch_layout, d_model,
                    seed, num_params, git SHA (short+long), utc_start,
@@ -9,14 +9,16 @@ Each training run lands in ``{runs_root}/{run_id}/`` with three kinds of artifac
                    {epochs: [{epoch, train_loss, val_loss, micro_f1,
                    macro_f1, boundary: {stage0_mean_F, ...}}, ...],
                    final: {...}}
-  plots/*.bokeh.json — pre-rendered static Bokeh documents produced via
-                   ``bokeh.embed.json_item(hv.render(element))``. M1 emits
-                   ``loss``, ``f1`` and one per-stage ``boundary_stage{i}``.
 
-Why sidecars, not a database: M1 leaderboard is read-only, one row per run.
-JSON-on-disk is git-diffable, trivially air-gappable, and removable without
-migration. Postgres is provisioned at every deployment target (see plan) but
-unused by the leaderboard until M2 when JOINs / user state become necessary.
+Plots are **not** pre-rendered. The HoloViews builders below (``_loss_curve`` /
+``_f1_curve`` / ``_boundary_curve``) are rendered LIVE off metrics.json by
+``aegir.viz.runs_app`` over the bokeh server and embedded into the React leaderboard
+(``<PanelView>``); ``available_plots`` derives which exist. See
+docs/scratch/2026-06-18/195536_live_viz_spine.md.
+
+Why JSON sidecars, not a database: the leaderboard is read-only, one row per run;
+git-diffable, removable without migration. Postgres is provisioned but unused by the
+leaderboard until M2 (JOINs / user state).
 """
 
 from __future__ import annotations
@@ -102,38 +104,7 @@ def make_run_id(task: str, model_size: str, short_sha: str | None = None) -> str
     return f"{_utc_iso()}_{short_sha}_{safe_size}_{safe_task}"
 
 
-# ── Bokeh plot helpers ─────────────────────────────────────────
-
-
-_hv_ready = False
-
-
-def _ensure_hv_bokeh() -> None:
-    """Lazy-init Holoviews with the Bokeh backend. Safe to call repeatedly.
-
-    ``hv.Store.renderers`` can be populated by import alone (without the
-    extension's option machinery being registered), so we use our own flag
-    rather than inspect Store state.
-    """
-    global _hv_ready
-    if _hv_ready:
-        return
-    import holoviews as hv
-    hv.extension("bokeh", logo=False)
-    _hv_ready = True
-
-
-def _hv_to_json_item(element) -> dict:
-    """Render a Holoviews element to a self-contained Bokeh JSON dict.
-
-    The resulting dict is consumable by ``Bokeh.embed.embed_item(json, divId)``
-    in the browser. No live callback, no DynamicMap — purely static.
-    """
-    _ensure_hv_bokeh()
-    import holoviews as hv
-    from bokeh.embed import json_item
-    bokeh_fig = hv.render(element, backend="bokeh")
-    return json_item(bokeh_fig)
+# ── HoloViews plot builders (rendered live by aegir.viz.runs_app over the bokeh server) ──────────
 
 
 def _loss_curve(epochs: list[dict]) -> Any:
@@ -312,8 +283,6 @@ class RunArtifacts:
             "final": final_summary or self._auto_final_summary(),
         }
         self._atomic_write_json(self.run_dir / "metrics.json", final_payload)
-
-        self._render_plots()
         self._finalized = True
 
     def _auto_final_summary(self) -> dict:
@@ -336,35 +305,6 @@ class RunArtifacts:
             "num_epochs_completed": len(self.epoch_metrics),
         }
 
-    def _render_plots(self) -> None:
-        if not self.epoch_metrics:
-            return
-        _ensure_hv_bokeh()  # must be called before any .opts() invocation
-        plots_dir = self.run_dir / "plots"
-        plots_dir.mkdir(exist_ok=True)
-
-        def _emit(name: str, element) -> None:
-            if element is None:
-                return
-            try:
-                doc = _hv_to_json_item(element)
-                (plots_dir / f"{name}.bokeh.json").write_text(json.dumps(doc))
-            except Exception as exc:  # never lose a run over a plot failure
-                (plots_dir / f"{name}.error.txt").write_text(f"{type(exc).__name__}: {exc}")
-
-        _emit("loss", _loss_curve(self.epoch_metrics))
-        _emit("f1", _f1_curve(self.epoch_metrics))
-        # Infer available stages from the first boundary row that has any.
-        stages_seen: set[int] = set()
-        for e in self.epoch_metrics:
-            for k in (e.get("boundary") or {}):
-                if k.startswith("stage") and k.endswith("_mean_F"):
-                    try:
-                        stages_seen.add(int(k[len("stage"):k.index("_mean_F")]))
-                    except ValueError:
-                        continue
-        for s in sorted(stages_seen):
-            _emit(f"boundary_stage{s}", _boundary_curve(self.epoch_metrics, s))
 
 
 def _as_float(v) -> float | None:
@@ -413,19 +353,25 @@ def load_run_summary(run_dir: Path) -> dict:
     }
 
 
+def available_plots(epochs: list[dict]) -> list[str]:
+    """Plot names renderable live by ``aegir.viz.runs_app`` from a run's metrics — the leaderboard
+    gates its ``<PanelView>``s on this. Derived from metrics (loss/f1 + each routing stage with
+    boundary data), not from pre-rendered files (those are gone — plots render live now)."""
+    if not epochs:
+        return []
+    stages: set[int] = set()
+    for e in epochs:
+        for k in (e.get("boundary") or {}):
+            if k.startswith("stage") and k.endswith("_mean_F"):
+                try:
+                    stages.add(int(k[len("stage"):k.index("_mean_F")]))
+                except ValueError:
+                    continue
+    return ["loss", "f1"] + [f"boundary_stage{s}" for s in sorted(stages)]
+
+
 def load_run_detail(run_dir: Path) -> dict:
     meta = json.loads((run_dir / "metadata.json").read_text())
     metrics_path = run_dir / "metrics.json"
     metrics = json.loads(metrics_path.read_text()) if metrics_path.exists() else {"epochs": [], "final": None}
-    plots: list[str] = []
-    plots_dir = run_dir / "plots"
-    if plots_dir.exists():
-        plots = sorted(p.stem.removesuffix(".bokeh") for p in plots_dir.glob("*.bokeh.json"))
-    return {"metadata": meta, "metrics": metrics, "plots": plots}
-
-
-def load_plot_json(run_dir: Path, name: str) -> dict | None:
-    path = run_dir / "plots" / f"{name}.bokeh.json"
-    if not path.exists():
-        return None
-    return json.loads(path.read_text())
+    return {"metadata": meta, "metrics": metrics, "plots": available_plots(metrics.get("epochs", []))}

@@ -29,14 +29,13 @@ import logging
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from aegir.config import Config, load_config
 from aegir.utils.runs import (
     iter_runs,
-    load_plot_json,
     load_run_detail,
     load_run_summary,
 )
@@ -188,31 +187,19 @@ def _register_api_routes(app: FastAPI) -> None:
             raise HTTPException(status_code=404, detail=f"run {run_id} not found")
         return load_run_detail(run_dir)
 
-    @app.get("/api/runs/{run_id}/plot/{name}")
-    def run_plot(run_id: str, name: str) -> JSONResponse:
-        cfg: Config = app.state.cfg
-        run_dir = Path(cfg.runs.dir) / run_id
-        if not run_dir.exists():
-            raise HTTPException(status_code=404, detail=f"run {run_id} not found")
-        if not _is_safe_plot_name(name):
-            raise HTTPException(status_code=400, detail="invalid plot name")
-        plot = load_plot_json(run_dir, name)
-        if plot is None:
-            raise HTTPException(status_code=404, detail=f"plot {name!r} not found for run {run_id}")
-        return JSONResponse(plot)
-
-    # ── /api/viz/{app}/embed — live Panel viz bootstrap ────────
+    # ── /api/viz/{app}/embed — live HoloViews viz bootstrap (lineup_app, runs_app, …) ────────
     @app.get("/api/viz/{app_name}/embed")
-    def viz_embed(app_name: str, lens: str | None = None) -> PlainTextResponse:
-        """Return the ``bokeh.embed.server_document`` bootstrap for a live Panel app served by
-        ``panel serve`` behind this gateway's reverse proxy at ``/viz/*``. The React ``<PanelView>``
-        injects it; BokehJS loads from the panel server (python-bokeh's build — renders GraphRenderer
-        correctly, unlike npm ``@bokeh/bokehjs``). ``resources=None`` makes the autoload script pull
-        every resource from the (same-origin, proxied) panel server → no CDN, air-gapped."""
+    def viz_embed(app_name: str, request: Request) -> PlainTextResponse:
+        """Return the ``bokeh.embed.server_document`` bootstrap for a live HoloViews app served by the
+        bokeh server behind this gateway's reverse proxy at ``/viz/*`` (lineup_app, runs_app, …). The
+        React ``<PanelView>`` injects it; BokehJS loads from the bokeh server (renders GraphRenderer
+        correctly, unlike npm ``@bokeh/bokehjs``). All query args (lens / run_id / plot / …) are
+        forwarded to the app session; ``resources=None`` makes the autoload pull every resource from
+        the (same-origin, proxied) bokeh server → no CDN, air-gapped."""
         if not _is_safe_plot_name(app_name):
             raise HTTPException(status_code=400, detail="invalid app name")
         from bokeh.embed import server_document
-        args = {"lens": lens} if lens else None
+        args = dict(request.query_params) or None   # forward all query args to the bokeh session
         script = server_document(f"/viz/{app_name}", arguments=args, resources=None)
         return PlainTextResponse(script, media_type="text/html")
 

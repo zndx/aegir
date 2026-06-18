@@ -594,8 +594,15 @@ ui-build:
 # resource same-origin → air-gapped. The gateway proxies /viz (prod: nginx; dev: vite proxy on :5173).
 viz-serve:
     BOKEH_RESOURCES=server LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs \
-      uv run --no-sync bokeh serve src/aegir/viz/lineup_app.py \
+      uv run --no-sync bokeh serve src/aegir/viz/lineup_app.py src/aegir/viz/runs_app.py \
       --prefix /viz --port 5006 --allow-websocket-origin='*'
+
+# Lightweight, repeatable exercise+verify of the leaderboard viz: a smoke training run produces a real
+# run, then scripts/verify_viz.py builds+renders every plot through runs.py's HoloViews builders (the
+# runs_app path). Browser gate (air-gap, no JS errors): `just viz-serve` + open /leaderboards.
+verify-viz:
+    LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs uv run --no-sync python train.py --smoke-test --model-size tiny --epochs 3
+    LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs uv run --no-sync python scripts/verify_viz.py
 
 run-train *args:
     uv run --no-sync python train.py {{args}}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Badge, Button, Drawer, Space, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import BokehPlot from "../components/BokehPlot";
+import PanelView from "../components/PanelView";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -164,13 +164,13 @@ export default function Leaderboards() {
         {active && detail ? (
           <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             {detail.plots.includes("loss") && (
-              <BokehPlot title="Loss" src={`/api/runs/${encodeURIComponent(active.run_id)}/plot/loss`} />
+              <PanelView app="runs_app" params={{ run_id: active.run_id, plot: "loss" }} height={340} />
             )}
             {detail.plots.includes("f1") && (
-              <BokehPlot title="F1" src={`/api/runs/${encodeURIComponent(active.run_id)}/plot/f1`} />
+              <PanelView app="runs_app" params={{ run_id: active.run_id, plot: "f1" }} height={340} />
             )}
             {detail.plots.filter(p => p.startsWith("boundary_stage")).map(name => (
-              <BokehPlot key={name} title={name} src={`/api/runs/${encodeURIComponent(active.run_id)}/plot/${encodeURIComponent(name)}`} />
+              <PanelView key={name} app="runs_app" params={{ run_id: active.run_id, plot: name }} height={340} />
             ))}
             {detail.plots.length === 0 && (
               <Alert
