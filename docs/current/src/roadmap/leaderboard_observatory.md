@@ -1,0 +1,68 @@
+# Leaderboard → Convergence Observatory (enhancement ideas)
+
+**Status: IDEAS — not built.** Captured 2026-06-18 (RH) once the FinePDFs→ontology→DDL→
+corpus-with-embedded-views pipeline materialized and the viz layer became **live HoloViews/Panel/
+Datashader served by a bokeh server behind the gateway proxy** (UI-U5; commits 8c42bbd / 6ac9491).
+The leaderboard's only prior design intent was *"kinda like W&B but with HoloViews."* Now there's a
+reason to aim higher.
+
+## Where it is today
+One row per training run; clicking a run opens a drawer with live HoloViews curves (loss / F1 /
+per-stage chunking boundary), rendered by `aegir.viz.runs_app` over the bokeh server, embedded via
+`<PanelView>`. Air-gapped, no npm `@bokeh/bokehjs`. That's it — training curves, nothing about the
+*data* a run consumed.
+
+## The reframe
+The pipeline now emits **coupled Data Products** (ontology · relational/DDL footprint · corpus with
+embedded views) *and* model runs, and the convergence loop couples them (proxy signals → model eval;
+see [[aegir-convergence-loop]]). With a live viz layer, Atlas provenance, and the lineup all in place,
+the leaderboard should grow from "training curves" into the **convergence observatory**: the join of
+**model-runs × data-products × Signals gates**. It's the natural surface to answer "is the ontology
+load-bearing, and is the model elucidating the relational structure we built?"
+
+## Enhancement ideas (roughly prioritized)
+
+1. **Run ↔ data-product lineage (highest leverage).** Each run records the corpus snapshot
+   (`sdg_corpus_v0_3/<hash>`), ontology catalog (`ae7dbee`), and coverage run it trained on. Surface
+   them as a "provenance" tab that cross-links into the **lineup** (the collections/chord it consumed)
+   and **Atlas** (the `RE_GROUNDS_TO` loop-closure subgraph). Closes the run↔data-product loop visibly
+   — the same live-viz embed the chord uses. See [[atlas_age_provenance_graph]], [[lineup_kb_projection]].
+
+2. **Signals gate panels.** Per run, show the M1/M2/M3 criteria status (M1 H-Net isolation; M2 3-arm ×
+   α×β instrument validity; final gate: matches RWKV-7 on general non-degeneracy AND beats the
+   no-ontology ablation on relational + DE-elucidation, CI-clean). A pass/fail strip turns the
+   leaderboard into the **gate dashboard**, not just curves. See [[signals_programme]].
+
+3. **Ablation-arm comparison.** The corpus carries `full / no-ontology / no-schema` arms — overlay
+   their curves (HoloViews overlay / HoloMap by arm) for the same data to read the ontology's
+   load-bearing-ness directly, instead of eyeballing separate runs.
+
+4. **Eval-instrument-aware panels** (per [[ontology-cpa-eval-methodology]]). The instrument is the
+   binding constraint, so plot **sample-efficiency curves** (perf vs #examples) not full-data points,
+   **PR metrics** not ROC-AUC, with **bootstrap/permutation CIs**, plus control-task / held-out-type /
+   MDL-probing panels. This is where "W&B-like" stops being enough.
+
+5. **DE-elucidation / CPA progress (the north-star).** Track the model's data-element-elucidation
+   (CPA) over runs and tie it to the lineup **Schema-chord densification** (already framed as the
+   term↔table many-to-many *progress metric*). The leaderboard becomes where "is the model learning
+   the relational structure we built?" is answered.
+
+6. **Datashader at scale.** Per-step loss/grad traces over millions of steps, and a **coverage
+   heatmap** of the relational footprint (which tables/views a run's training data exercised) →
+   server-side Datashader rasterization. Aligns with the tier-one compute posture
+   ([[compute_posture_tier_one]]); the live stack already supports it.
+
+7. **Interactive Panel widgets** (now unblocked by the live server — the static path couldn't).
+   Run grouping/tags, metric pickers, cross-run config diff, run notes — Panel widgets / Tabulator.
+
+8. **Corpus-quality panels beside model metrics.** Surface the convergence proxies (coverage-close
+   R1, topic-recovery, family-complex) next to model metrics, since the loop is one coupled system —
+   one observatory for both products.
+
+## Dependencies / sequencing
+- Most of these need **runs to carry data-product provenance** in `metadata.json` (corpus/ontology/
+  coverage hashes + arm) — a small `RunArtifacts.start` addition; do that first (cheap, unblocks #1–#5).
+- #2/#5 depend on the Signals gates + the discriminating relational eval instrument (M2/M3 tasks #42/#43).
+- #6 needs `datashader`/`dask` added (deliberate `uv pip install`; the live viz layer already fits).
+- Keep the **live HoloViews/PanelView** path — these are all panes on the same bokeh server, embedded
+  the same way; no new viz transport needed.
