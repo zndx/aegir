@@ -87,12 +87,16 @@ function Lineup() {
           <>
             <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>{root.toUpperCase()}</Text>
             <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
-              {(index?.notes || []).filter((n) => n.root === root).map((n) => (
-                <a key={n.id} onClick={() => setTrail([n.id])} style={tab(trail[0] === n.id)} title={n.id}>{n.title}</a>
-              ))}
-              {(index?.notes || []).filter((n) => n.root === root).length === 0 && (
-                <Text type="secondary" style={{ fontSize: 12 }}>empty — populates via the lifecycle</Text>
-              )}
+              {(() => {
+                // Archive: show entry points (snapshot registry + authored notes), NOT the
+                // thousands of namespaced notes inside a frozen snapshot (reachable by drilling in).
+                const entries = (index?.notes || []).filter(
+                  (n) => n.root === root &&
+                    (root !== "archive" || n.kind === "archive-snapshot" || n.kind.endsWith("-note")));
+                return entries.length ? entries.map((n) => (
+                  <a key={n.id} onClick={() => setTrail([n.id])} style={tab(trail[0] === n.id)} title={n.id}>{n.title}</a>
+                )) : <Text type="secondary" style={{ fontSize: 12 }}>empty — populates via the lifecycle</Text>;
+              })()}
             </div>
           </>
         )}

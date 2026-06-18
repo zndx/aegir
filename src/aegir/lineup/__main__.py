@@ -15,6 +15,8 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("--kb-dir", default=None, help="override the KB root (else AEGIR_KB_DIR or build/dev)")
     m = sub.add_parser("maintain", help="run a KB upkeep op (the scheduled-task handlers)")
     m.add_argument("op", choices=["upkeep", "snapshot", "reproject"])
+    m.add_argument("--key", default=None,
+                   help="snapshot only: archive key (e.g. 2026Q3); default = calendar quarter")
     sub.add_parser("install-cron", help="register the upkeep pg_cron jobs (in postgres, targeting aegir)")
     sy = sub.add_parser("sync", help="SHARE: publish the ontology Data Product → corpora (sdg-corpora)")
     sy.add_argument("--commit", action="store_true", help="commit the corpora submodule locally")
@@ -31,7 +33,8 @@ def main(argv: list[str] | None = None) -> int:
         return build.run(args)
     if args.cmd == "maintain":
         from aegir.lineup import maintain
-        print(maintain.run(args.op))
+        kw = {"key": args.key} if args.op == "snapshot" and getattr(args, "key", None) else {}
+        print(maintain.run(args.op, **kw))
         return 0
     if args.cmd == "install-cron":
         from aegir.config import load_config

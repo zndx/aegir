@@ -125,6 +125,13 @@ kb-build:
 kb-maintain op="upkeep":
     uv run --no-sync python -m aegir.lineup maintain {{op}}
 
+# Freeze current/ into a namespaced, self-contained archive snapshot before a regen, so the
+# present lineup isn't lost. `just kb-snapshot --key 2026Q3` → build/dev/archive/2026Q3/ (ids +
+# wikilinks prefixed, coexists with a regen-latest current, survives kb-build). Default key =
+# calendar quarter. Provenance in _manifest.json makes it reproducible.
+kb-snapshot *args:
+    uv run --no-sync python -m aegir.lineup maintain snapshot {{args}}
+
 # SHARE: re-publish the ontology Data Product (catalog incl. broader hierarchy + SKOS + DDL)
 # from the live SoT → the corpora (sdg-corpora) submodule. Schema-CI gated. No args = dry
 # materialize + diff (review first); `just kb-sync --commit` commits corpora locally;
