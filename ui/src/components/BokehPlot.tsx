@@ -1,9 +1,11 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Alert, Spin } from "antd";
 
-// BokehJS is bundled via @bokeh/bokehjs — no CDN, air-gap friendly.
-// Types are bundled with the package; the import has side effects that
-// register Bokeh on the global scope, which is what Bokeh.embed.embed_item
+// BokehJS is bundled via @bokeh/bokehjs (no CDN). KNOWN LIMITATION: the vite-bundled build
+// mishandles GraphRenderer (Chord/Graph/Sankey) — curves/scatter embed fine, graph elements throw.
+// scripts/experiment_panel_lineup.py renders those live via Panel/Bokeh-server (python-bokeh's JS,
+// also fully air-gapped) — the convergence path. Types are bundled with the package; the import has
+// side effects that register Bokeh on the global scope, which is what Bokeh.embed.embed_item
 // expects from the JSON produced by bokeh.embed.json_item() on the server.
 import * as Bokeh from "@bokeh/bokehjs";
 
@@ -23,9 +25,10 @@ interface BokehPlotProps {
  * ``Bokeh.embed.embed_item``. Uses a unique DOM id per instance so multiple
  * plots can coexist on one page.
  *
- * Design choice: plots are **static** (no DynamicMap, no Python callback).
- * If the server's backing JSON changes, we refetch on mount by providing a
- * new ``src`` URL with a cache-buster query string (the caller controls this).
+ * Current implementation: plots are **static** (no DynamicMap, no Python callback) — this suits
+ * simple curves/scatter. The convergence target for interactive/graph viz is live HoloViews via
+ * Panel (Bokeh-server), not this static-embed path. If the server's backing JSON changes, we refetch
+ * on mount by providing a new ``src`` URL with a cache-buster query string (the caller controls this).
  */
 export default function BokehPlot({ src, title, height = 360 }: BokehPlotProps) {
   const divId = useId().replace(/:/g, "_");
