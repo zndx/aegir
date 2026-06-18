@@ -2,6 +2,8 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Tag, Typography } from "antd";
 import type { ReactNode } from "react";
 
+import BokehInline from "./BokehInline";
+
 const { Text } = Typography;
 
 export interface KBNote {
@@ -12,6 +14,8 @@ export interface KBNote {
   root?: string;
   body: string;
   links?: string[];
+  // Inline Bokeh json_item (a TF-IDF collection-association chord) carried on lens-note frontmatter.
+  chord?: unknown;
 }
 
 // Flag accent per Data Product — the FedWiki "flag" reinterpreted as a lens color.
@@ -146,6 +150,14 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
         <CloseOutlined onClick={onClose} style={{ cursor: "pointer", color: "#bbb", fontSize: 12 }} />
       </div>
       <div style={{ padding: "8px 16px 16px", fontSize: 13.5, color: "#222" }}>
+        {note?.chord != null && (
+          <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
+            <BokehInline doc={note.chord} title={note.title} />
+            <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
+              top collection associations (TF-IDF) — drag a node, hover a ribbon
+            </Text>
+          </div>
+        )}
         {note ? renderBody(note.body, onLink)
           : <Text type="secondary">{loading ? "loading…" : "This note is not in the current projection."}</Text>}
       </div>

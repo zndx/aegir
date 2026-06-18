@@ -436,8 +436,31 @@ def project_collections(recs: list[dict], coverage: list[dict]) -> tuple[list[N.
 
 
 # ── lenses (the landing pivot: collections × the lens-selected axis) ──────────
+def _relational_spine(rows):
+    """(tid→table_name, FKEdge list) for the Schema chord's FK-spanning substrate — mirrors the
+    spine project_relational builds. Guarded + lazy: the chord is optional enrichment, so any
+    failure yields ({}, []) rather than breaking the build."""
+    from aegir.ontology.ddl import cross_family_fks, template_to_table
+    import aegir.ontology as _onto
+    from aegir.ontology.complex import FamilyComplex
+    spine = []
+    for cat, t in rows:
+        try:
+            spine.append(template_to_table(t, cat))
+        except Exception:  # noqa: BLE001
+            pass
+    tid_table = {st.template.template_id: st.table.name for st in spine}
+    try:
+        fc = FamilyComplex.from_json(Path(_onto.__file__).resolve().parent / "family_complex.json")
+        fks, _ = cross_family_fks(spine, fc)
+    except Exception:  # noqa: BLE001
+        fks = []
+    return tid_table, fks
+
+
 def project_lenses(categories: list[str], has_content: bool, has_topics: bool,
-                   maps: dict | None = None) -> list[N.Note]:
+                   maps: dict | None = None, tid_table: dict | None = None,
+                   fks: list | None = None) -> list[N.Note]:
     maps = maps or {}
     colls = maps.get("collections")
     # terms (default): collections × realized terms — the grounding pivot
@@ -481,7 +504,23 @@ def project_lenses(categories: list[str], has_content: bool, has_topics: bool,
                            if has_content or has_topics else "No corpus/topics projected yet."))
     content = N.Note(id="lens/content", title="Content × Topics" if colls else "Content", kind="lens",
                      data_product="content", frontmatter={"lens": "content"}, body=content_body)
-    return [terms, schema, content]
+
+    lenses = [terms, schema, content]
+    # Attach a TF-IDF collection-association chord to each lens (an orientation centerpiece atop the
+    # pivot). Guarded + lazy: holoviews/sklearn stay runtime-optional, a failure never breaks kb-build.
+    if colls:
+        try:
+            from aegir.lineup.chords import build_lens_chords
+            ch, status = build_lens_chords(maps, tid_table=tid_table, fks=fks)
+            by_id = {n.id: n for n in lenses}
+            for lid, item in ch.items():
+                if lid in by_id:
+                    by_id[lid].frontmatter["chord"] = item
+                    by_id[lid].frontmatter["has_chord"] = True
+            print(f"  chords: {len(ch)} lens chord(s) attached [{status}]")
+        except Exception as e:  # noqa: BLE001 — optional enrichment, never fatal
+            print(f"  chords: skipped ({type(e).__name__}: {str(e)[:90]})")
+    return lenses
 
 
 def run(args=None) -> int:
@@ -550,7 +589,12 @@ def run(args=None) -> int:
         print(f"  collections: {len(coll_notes) - 1} topic-grounded bundles (many-to-many: "
               f"{len(maps.get('topic_colls', {}))} topics × {len(maps.get('term_colls', {}))} terms)")
 
-    notes += project_lenses(categories, bool(corpus), bool(coverage), maps)
+    # FK-spanning substrate for the Schema-lens chord (only worth building when collections exist).
+    chord_tid_table, chord_fks = (None, None)
+    if maps.get("collections"):
+        chord_tid_table, chord_fks = _relational_spine(rows)
+    notes += project_lenses(categories, bool(corpus), bool(coverage), maps,
+                            tid_table=chord_tid_table, fks=chord_fks)
 
     for n in notes:
         N.write_note(kb, n)
