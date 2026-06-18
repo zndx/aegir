@@ -132,6 +132,12 @@ kb-maintain op="upkeep":
 kb-sync *args:
     uv run --no-sync python -m aegir.lineup sync {{args}}
 
+# SHARE-Docs Phase A: render the lineup KB projection → a browsable mdbook (collections × lens
+# pivot + the cross-linked ontology/relational/content graph, wikilinks lowered to page links).
+# `just kb-render` renders + builds → build/dev/lineup-book/book/index.html. Run `just kb-build` first.
+kb-render *args:
+    uv run --no-sync python scripts/render_lineup_mdbook.py --build {{args}}
+
 # ── mdbook documentation ──────────────────────────────────────
 #
 # The book lives at ``docs/current/`` (standard ``mdbook init``
