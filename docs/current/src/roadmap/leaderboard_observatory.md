@@ -74,3 +74,38 @@ load-bearing, and is the model elucidating the relational structure we built?"
 - #6 needs `datashader`/`dask` added (deliberate `uv pip install`; the live viz layer already fits).
 - Keep the **live HoloViews/PanelView** path — these are all panes on the same bokeh server, embedded
   the same way; no new viz transport needed.
+
+## RL training (GRPO/RLVR) — the observatory is the reward instrument
+P5 already runs **GRPO/RLVR** (`src/aegir/rl/`): the policy generates ontology compositions, the
+**deterministic verifier composite R** is the reward (`parallel_verify` → `verifier`), z-score group
+advantages, no critic. **GRPO is the right fit and PPO is not the question:** a value network is pure
+overhead (memory + a second model to tune) when the reward is a cheap, parallelized, deterministic
+grader — PPO earns its keep only with *learned/noisy* reward models or dense per-token credit, neither
+of which applies here. The live questions are not PPO; they are **(a) reward-variance collapse** (if R
+saturates or the structural gate `R_A` zeroes a whole group, advantages vanish → "0 reward variance
+forever") and **(b) GRPO refinements** (length-bias debias, `advantage_normalization` choice — already
+parameterized). Both are *observability + reward-design* problems → this observatory.
+
+The earlier ideas are not left behind — RL makes them central, and most are nearly free because
+`GRPOMetrics` already logs them to a `metrics_jsonl`:
+- **Reward dynamics** — `rewards_mean ± rewards_std` band + min/max: the headline RL panel, and the
+  **reward-variance band IS the GRPO health monitor** (the collapse canary). `advantage_mean/std` =
+  signal strength. Already logged → a panel reading the GRPO `metrics_jsonl` (like `runs_app`).
+- **Reward-component decomposition** — `R_A·(0.50·R_B + 0.05·R_C + 0.45·R_D)` over training (a stacked
+  / small-multiples / PCP view). Small add: have `parallel_verify` log the sub-scores, not just `R`.
+  This is idea #4 (eval-instrument-aware) for RL.
+- **Verifier-pass-rate gates** — `R_A` structural-gate %, HermiT-consistency %, coverage-close % =
+  idea #2 (Signals gate panels), as the RL pass-rate dashboard.
+- **SAE feature stream** — already live (`/api/p5/sae/stream`); an RL-interpretability panel,
+  `datashade`-d over GRPO steps (idea #6 at scale).
+- **Sweeps PCP** (built) → the **GRPO hyperparameter tuner**: `group_size · kl_coefficient ·
+  advantage_normalization · lr` × outcomes (final reward, pass-rate). This is the canonical RL-sweep use.
+- **Unify the two run surfaces**: `/api/runs` (supervised CTA/CPA) + `/api/p5/runs` (GRPO/RLVR) both
+  flow into the lineup observatory (a Training ▸ Reward entry beside Sweeps). They are separate today.
+- **GRPO-vs-PPO, if ever litigated**, is an *ablation-arm* comparison (idea #3) — but the reward shape
+  says GRPO; spend the cycles on reward granularity + curriculum, watched via the variance band.
+
+**Real-world use:** a verifiable-reward RL observatory (reward dynamics + verifier-pass-rate gates +
+data-product lineage + reproducible provenance, with the catalog hot-reload closing the loop — edit the
+ontology, the reward changes on the next rollout) is genuinely product-grade RLVR experiment
+management, differentiated from W&B by the verifiable-reward + ontology-grounded-lineage semantics.
