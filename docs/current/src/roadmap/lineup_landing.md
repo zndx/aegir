@@ -142,6 +142,24 @@ the skeleton is the trailheads, not spinners.
 3. **Shares the graph with [SHARE-Docs](./phase_share_docs.md)** — the mdbook renders the same
    collection ↔ document ↔ {terms, topics, views→tables} structure; build both against this model.
 
+## Versioning — namespaced archive snapshots
+
+Before a regen (or any version cut), `just kb-snapshot --key <key>` freezes `current/` into a
+**namespaced, self-contained** zettelkasten under `archive/<key>/`: every note id and `[[wikilink]]`
+is prefixed `<key>/`, so the snapshot coexists with the regenerated `current` (no id collision) and is
+internally navigable (clicking inside stays inside). A registry note (kind `archive-snapshot`) is the
+Archive-dropdown entry point; a `_manifest.json` pins the corpus/coverage/catalog it was projected
+from (reproducible). The snapshot survives `kb-build` (which rebuilds `current` only).
+
+**2026Q3 — pre-regen snapshot** (taken 2026-06-18; labelled `2026Q3` per RH — note the *calendar*
+quarter for June is Q2): 3,397 notes · corpus `sdg_corpus_v0_3/d7646714…` · catalog `ae7dbee`.
+Regenerate with `AEGIR_CORPUS_RUN=…/d7646714…/chapters.parquet just kb-build` at catalog `ae7dbee`,
+then `just kb-snapshot --key 2026Q3`. This preserves the pre-regen lineup so the corpus regen is safe.
+
+*Scale note:* merging a full snapshot into the live index ~doubles it per snapshot. Fine for one;
+when snapshots accumulate, move to per-snapshot frozen indices mounted on demand (keep the live index
+`current`-only) — the deferred refinement.
+
 ## Non-goals
 
 - A wiki (no edit/fork — it's Cunningham's lineup).
