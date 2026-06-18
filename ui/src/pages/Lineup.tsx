@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Select, Typography } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -60,26 +60,42 @@ function Lineup() {
   return (
     <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
       <div style={{ flex: "0 0 210px", borderRight: "1px solid #e5e5e5", padding: "14px 12px", overflowY: "auto", background: "#fafafb" }}>
-        <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>LENS</Text>
-        <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 18px" }}>
-          {LENSES.map((l) => (
-            <a key={l.key} onClick={() => setTrail([l.seed])} style={tab(trail[0] === l.seed)} title={l.hint}>
-              {l.label}
-              <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{l.hint}</span>
-            </a>
-          ))}
-        </div>
         <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>SECTION</Text>
-        <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
-          {ROOTS.map((r) => (
-            <a key={r} onClick={() => setRoot(r)} style={tab(root === r)} title={r}>
-              {r.charAt(0).toUpperCase() + r.slice(1)}
-            </a>
-          ))}
-        </div>
-        <Text type="secondary" style={{ fontSize: 11, display: "block", marginTop: 4 }}>
-          {root === "current" ? "the live projection (what we know)" : `${root} populates via the lifecycle`}
-        </Text>
+        <Select
+          value={root}
+          size="small"
+          style={{ width: "100%", margin: "6px 0 18px" }}
+          onChange={(v) => { setRoot(v); setTrail(v === "current" ? [seed] : []); }}
+          options={ROOTS.map((r) => ({ value: r, label: r.charAt(0).toUpperCase() + r.slice(1) }))}
+        />
+        {root === "current" ? (
+          <>
+            <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>LENS</Text>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
+              {LENSES.map((l) => (
+                <a key={l.key} onClick={() => setTrail([l.seed])} style={tab(trail[0] === l.seed)} title={l.hint}>
+                  {l.label}
+                  <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{l.hint}</span>
+                </a>
+              ))}
+            </div>
+            <Text type="secondary" style={{ fontSize: 11, display: "block", marginTop: 4 }}>
+              collections × lens — the live projection (what we know)
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>{root.toUpperCase()}</Text>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
+              {(index?.notes || []).filter((n) => n.root === root).map((n) => (
+                <a key={n.id} onClick={() => setTrail([n.id])} style={tab(trail[0] === n.id)} title={n.id}>{n.title}</a>
+              ))}
+              {(index?.notes || []).filter((n) => n.root === root).length === 0 && (
+                <Text type="secondary" style={{ fontSize: 12 }}>empty — populates via the lifecycle</Text>
+              )}
+            </div>
+          </>
+        )}
         {index && (
           <div style={{ marginTop: 18, fontSize: 11, color: "#aaa" }}>
             {index.counts.total} notes ·{" "}

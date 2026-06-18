@@ -94,11 +94,13 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
                      term_chapters: dict[str, list[str]] | None = None,
                      term_topics: dict[str, list[int]] | None = None,
                      term_broader: dict[str, list[str]] | None = None,
-                     term_narrower: dict[str, list[str]] | None = None) -> list[N.Note]:
+                     term_narrower: dict[str, list[str]] | None = None,
+                     term_colls: dict[str, list[str]] | None = None) -> list[N.Note]:
     term_chapters = term_chapters or {}
     term_topics = term_topics or {}
     term_broader = term_broader or {}
     term_narrower = term_narrower or {}
+    term_colls = term_colls or {}
     cats: dict[str, list[str]] = {}
     anchors: dict[str, dict] = {}
     out: list[N.Note] = []
@@ -136,6 +138,11 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
             body += ("\n**Mapped from** " + str(len(tps)) + " topic(s): "
                      + ", ".join(N.wl(f"topic/{tp}", f"topic {tp}") for tp in tps[:12])
                      + (" …" if len(tps) > 12 else "") + "\n")
+        cls = term_colls.get(t.template_id, [])
+        if cls:
+            body += ("\n**Realized across** " + str(len(cls)) + " collection(s): "
+                     + ", ".join(N.wl(c, c.split("-")[-1]) for c in cls[:12])
+                     + (" …" if len(cls) > 12 else "") + "\n")
         if not chs and not tps:
             body += "\n_Not yet exercised by any chapter or topic (a curation candidate)._\n"
 
@@ -320,8 +327,10 @@ def project_content(recs: list[dict]) -> list[N.Note]:
 
 
 # ── topics (coverage rows, if present) — bridge content↔ontology ─────────────
-def project_topics(recs: list[dict], topic_chapters: dict[int, list[str]] | None = None) -> list[N.Note]:
+def project_topics(recs: list[dict], topic_chapters: dict[int, list[str]] | None = None,
+                   topic_colls: dict[int, list[str]] | None = None) -> list[N.Note]:
     topic_chapters = topic_chapters or {}
+    topic_colls = topic_colls or {}
     out: list[N.Note] = []
     by_status: dict[str, list[int]] = {}
     for r in recs:
@@ -336,6 +345,10 @@ def project_topics(recs: list[dict], topic_chapters: dict[int, list[str]] | None
         covered = topic_chapters.get(tid, [])
         cov = (f"**Covered by** {len(covered)} chapter(s): "
                + ", ".join(N.wl(f"content/chapter/{c}", c) for c in covered[:6])) if covered else "**Covered by** 0 chapters (gap)"
+        cls = topic_colls.get(tid, [])
+        if cls:
+            edges.append(f"**Threads** {len(cls)} collection(s): "
+                         + ", ".join(N.wl(c, c.split('-')[-1]) for c in cls[:8]) + (" …" if len(cls) > 8 else ""))
         head = (f"**Status.** {r.get('status')} (coverage {r.get('coverage_score')})  ·  "
                 + "  ·  ".join([*edges, cov]))
         out.append(N.Note(
@@ -353,32 +366,121 @@ def project_topics(recs: list[dict], topic_chapters: dict[int, list[str]] | None
     return out
 
 
-# ── lenses (the landing-page entry points) ───────────────────────────────────
-def project_lenses(categories: list[str], has_content: bool, has_topics: bool) -> list[N.Note]:
-    terms = N.Note(
-        id="lens/terms", title="Lexicon", kind="lens", data_product="ontology",
-        frontmatter={"lens": "terms", "lexicon": LEXICON},
-        body=("**Lexicon** `" + LEXICON + "`. A lexicon includes terms — a term is a useful word "
-              "for the enterprise. A category organizes terms so the term's context can be enriched. "
-              "Browse by category:\n\n"
-              + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in categories)))
-    schema = N.Note(
-        id="lens/schema", title="Schema", kind="lens", data_product="relational",
-        frontmatter={"lens": "schema", "lexicon": LEXICON},
-        body=("**Schema.** The relational projection of the lexicon — each table realizes one term "
-              "(the ontology↔DDL pivot); columns carry typed slots. By category:\n\n"
-              + "\n".join(f"- {N.wl(f'relational/category/{c}', c)}" for c in categories)))
-    clinks = []
-    if has_content:
-        clinks.append(N.wl("content/index", "the corpus chapters"))
-    if has_topics:
-        clinks.append(N.wl("topic/index", "the FinePDFs topics"))
-    content = N.Note(
-        id="lens/content", title="Content", kind="lens", data_product="content",
-        frontmatter={"lens": "content"},
-        body=("**Content.** The textbook-quality corpus and the FinePDFs topics it covers.\n\n"
-              + ("\n".join(f"- {x}" for x in clinks) if clinks
-                 else "No corpus/topics projected yet (run a corpus/coverage build first).")))
+# ── collections (topic-grounded bundles; the rows the landing pivots) ────────
+def _idlist(v) -> list:
+    """A parquet list field that may arrive as a real list or a stringified one."""
+    if isinstance(v, (list, tuple)):
+        return list(v)
+    if isinstance(v, str) and v.strip():
+        try:
+            import ast
+            return list(ast.literal_eval(v))
+        except Exception:  # noqa: BLE001
+            return []
+    return []
+
+
+def project_collections(recs: list[dict], coverage: list[dict]) -> tuple[list[N.Note], dict]:
+    """De-flattened, many-to-many collections — the unit the landing pivots. A collection's
+    DOCUMENTS (chapters) are the hub: it relates to MANY topics (target ∪ style across its
+    chapters) and many terms/tables, and each terminal recurs across collections. Returns
+    (notes, maps); maps drive the lens pivots and the transpose backlinks."""
+    by_coll: dict[int, list[tuple[int, dict]]] = {}
+    for i, r in enumerate(recs):
+        t = r.get("target_topic_id")
+        if t is not None:
+            by_coll.setdefault(int(t), []).append((i, r))
+    cov = {int(c["topic_id"]): c for c in coverage}
+    coll_terms: dict[str, list[str]] = {}
+    coll_topics: dict[str, list[int]] = {}
+    coll_chapters: dict[str, list[str]] = {}
+    notes: list[N.Note] = []
+    for tid in sorted(by_coll):
+        chs = by_coll[tid]
+        cid = f"collection/topic-{tid:03d}"
+        cids = [_chapter_id(r, i) for i, r in chs]
+        topics = sorted({tid} | {int(s) for _, r in chs for s in _idlist(r.get("style_topic_ids"))})
+        terms = sorted({str(x) for _, r in chs for x in _idlist(r.get("template_ids"))})
+        coll_terms[cid], coll_topics[cid], coll_chapters[cid] = terms, topics, cids
+        gist = re.sub(r"\s+", " ", (cov.get(tid, {}).get("topic_repr_text") or "")).strip()[:280]
+        body = (
+            f"**Topic-grounded collection** — anchored at {N.wl(f'topic/{tid}', f'topic {tid}')}, "
+            f"drawing on **{len(topics)} topics** (target + style · many-to-many), "
+            f"**{len(terms)} terms**, **{len(cids)} chapters**.\n\n"
+            + (f"> {gist} …\n\n" if gist else "")
+            + "**Documents.** " + (" · ".join(N.wl(f"content/chapter/{c}", f"ch {c[:8]}") for c in cids[:12]) or "—") + "\n\n"
+            + "**Topics.** " + (" · ".join(N.wl(f"topic/{t}", f"topic {t}") for t in topics[:18]) or "—") + "\n\n"
+            + "**Realizes terms.** " + (" · ".join(N.wl(f"ontology/term/{x}", x) for x in terms[:24]) or "—") + "\n\n"
+            + "**Underlying tables.** " + (" · ".join(N.wl(f"relational/table/{_table_id(x)}", x) for x in terms[:24]) or "—") + "\n")
+        notes.append(N.Note(id=cid, title=f"collection · topic {tid}", kind="collection",
+                            data_product="content", body=body, frontmatter={
+                                "topic_id": tid, "n_topics": len(topics), "n_terms": len(terms),
+                                "n_chapters": len(cids), "topics": topics}))
+    topic_colls: dict[int, list[str]] = {}
+    term_colls: dict[str, list[str]] = {}
+    for cid, tps in coll_topics.items():
+        for t in tps:
+            topic_colls.setdefault(t, []).append(cid)
+    for cid, tms in coll_terms.items():
+        for t in tms:
+            term_colls.setdefault(t, []).append(cid)
+    idx = (f"**Collections** — {len(by_coll)} topic-grounded bundles (every topic and base table "
+           "recurs across collections — the graph is many-to-many).\n\n"
+           + "\n".join(f"- {N.wl(f'collection/topic-{t:03d}', f'topic {t}')} "
+                       f"({len(coll_chapters[f'collection/topic-{t:03d}'])} ch · "
+                       f"{len(coll_terms[f'collection/topic-{t:03d}'])} terms)" for t in sorted(by_coll)))
+    notes.append(N.Note(id="collection/index", title="Collections", kind="collection-index",
+                        data_product="content", body=idx, frontmatter={"n_collections": len(by_coll)}))
+    return notes, {"collections": sorted(by_coll), "coll_terms": coll_terms,
+                   "coll_topics": coll_topics, "topic_colls": topic_colls, "term_colls": term_colls}
+
+
+# ── lenses (the landing pivot: collections × the lens-selected axis) ──────────
+def project_lenses(categories: list[str], has_content: bool, has_topics: bool,
+                   maps: dict | None = None) -> list[N.Note]:
+    maps = maps or {}
+    colls = maps.get("collections")
+    # terms (default): collections × realized terms — the grounding pivot
+    if colls:
+        rows = ["| collection | realizes terms |", "|---|---|"]
+        for tid in colls:
+            cid = f"collection/topic-{tid:03d}"
+            tms = maps["coll_terms"][cid]
+            cell = " · ".join(N.wl(f"ontology/term/{x}", x) for x in tms[:6]) + (f" …(+{len(tms) - 6})" if len(tms) > 6 else "")
+            rows.append(f"| {N.wl(cid, f'topic {tid}')} | {cell or '—'} |")
+        terms_body = ("**Lexicon × Collections.** Each collection (a topic-grounded bundle) and the "
+                      "ontology terms it realizes — the grounding made visible. Click a term to pivot "
+                      "to *its* collections; a collection for its full bundle.\n\n" + "\n".join(rows))
+    else:
+        terms_body = ("**Lexicon** `" + LEXICON + "`. Browse by category:\n\n"
+                      + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in categories))
+    terms = N.Note(id="lens/terms", title="Lexicon × Collections" if colls else "Lexicon", kind="lens",
+                   data_product="ontology", frontmatter={"lens": "terms", "lexicon": LEXICON}, body=terms_body)
+    # schema: collections' footprint organized around category (tables shared across collections)
+    schema = N.Note(id="lens/schema", title="Schema × Collections" if colls else "Schema", kind="lens",
+                    data_product="relational", frontmatter={"lens": "schema", "lexicon": LEXICON},
+                    body=("**Schema × Collections.** The relational footprint by category — a base "
+                          "table is shared across the collections whose chapters embed views over it "
+                          "(many-to-many). By category:\n\n"
+                          + "\n".join(f"- {N.wl(f'relational/category/{c}', c)}" for c in categories)))
+    # content: oriented around topics → topic → its collections (the densest cross-axis)
+    tc = (maps or {}).get("topic_colls")
+    if colls and tc:
+        rows = ["| topic | collections it threads |", "|---|---|"]
+        for t in sorted(tc, key=lambda k: -len(tc[k]))[:80]:
+            cs = tc[t]
+            cell = " · ".join(N.wl(c, c.split("-")[-1]) for c in cs[:8]) + (f" …(+{len(cs) - 8})" if len(cs) > 8 else "")
+            rows.append(f"| {N.wl(f'topic/{t}', f'topic {t}')} | {cell} |")
+        content_body = ("**Content × Topics.** FinePDFs topics and the collections they thread through "
+                        "(target + style — many-to-many; a topic spans many collections). Click a topic "
+                        "for its gist, a collection for its bundle.\n\n" + "\n".join(rows)
+                        + f"\n\nAll: {N.wl('collection/index', 'collections')} · {N.wl('topic/index', 'topics')}")
+    else:
+        content_body = ("**Content.** The corpus + FinePDFs topics.\n\n"
+                        + (f"- {N.wl('content/index', 'the corpus chapters')}\n- {N.wl('topic/index', 'the FinePDFs topics')}"
+                           if has_content or has_topics else "No corpus/topics projected yet."))
+    content = N.Note(id="lens/content", title="Content × Topics" if colls else "Content", kind="lens",
+                     data_product="content", frontmatter={"lens": "content"}, body=content_body)
     return [terms, schema, content]
 
 
@@ -411,7 +513,15 @@ def run(args=None) -> int:
             term_topics.setdefault(top, []).append(int(r["topic_id"]))
 
     broader, narrower = S.term_hierarchy()
-    notes = (project_ontology(rows, term_chapters, term_topics, broader, narrower)
+
+    # Collections (the de-flattened many-to-many graph the landing pivots) + transpose maps.
+    coll_notes: list[N.Note] = []
+    maps: dict = {}
+    if corpus and coverage:
+        coll_notes, maps = project_collections(corpus, coverage)
+
+    notes = (project_ontology(rows, term_chapters, term_topics, broader, narrower,
+                              term_colls=maps.get("term_colls"))
              + project_relational(rows))
     print(f"  ontology+relational: {len(notes)} notes from {len(rows)} terms "
           f"in {len(categories)} categories (Lexicon {LEXICON!r})")
@@ -429,13 +539,18 @@ def run(args=None) -> int:
     else:
         print("  content: (no on-disk corpus run — skipped; set AEGIR_CORPUS_RUN to project)")
     if coverage:
-        tp = project_topics(coverage, topic_chapters)
+        tp = project_topics(coverage, topic_chapters, topic_colls=maps.get("topic_colls"))
         notes += tp
         print(f"  topics:  {len(tp)} notes   ({cov})")
     else:
         print("  topics:  (no on-disk coverage run — skipped; set AEGIR_COVERAGE_RUN to project)")
 
-    notes += project_lenses(categories, bool(corpus), bool(coverage))
+    if coll_notes:
+        notes += coll_notes
+        print(f"  collections: {len(coll_notes) - 1} topic-grounded bundles (many-to-many: "
+              f"{len(maps.get('topic_colls', {}))} topics × {len(maps.get('term_colls', {}))} terms)")
+
+    notes += project_lenses(categories, bool(corpus), bool(coverage), maps)
 
     for n in notes:
         N.write_note(kb, n)

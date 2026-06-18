@@ -60,8 +60,21 @@ function renderInline(text: string, onLink: (id: string) => void, kp: string): R
   return out;
 }
 
+// Split a markdown table row on `|`, but NOT inside a [[id|label]] wikilink (whose label
+// separator is also `|`). Without this, pivot cells with labeled edges get shredded.
 function cells(line: string): string[] {
-  return line.replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
+  const inner = line.replace(/^\||\|$/g, "");
+  const out: string[] = [];
+  let buf = "";
+  let depth = 0;
+  for (let i = 0; i < inner.length; i++) {
+    if (inner[i] === "[" && inner[i + 1] === "[") { depth++; buf += "[["; i++; continue; }
+    if (inner[i] === "]" && inner[i + 1] === "]") { depth = Math.max(0, depth - 1); buf += "]]"; i++; continue; }
+    if (inner[i] === "|" && depth === 0) { out.push(buf.trim()); buf = ""; continue; }
+    buf += inner[i];
+  }
+  out.push(buf.trim());
+  return out;
 }
 
 function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
