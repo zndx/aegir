@@ -707,13 +707,100 @@ def build_axiom_section_with_ddl(templates: list[dict], family_complex=None) -> 
     return "\n".join(lines)
 
 
+def _md_table(colnames: list[str], rows: list[list[str]], max_rows: int = 12) -> str:
+    """Render rows as a GitHub markdown table (pipes in values escaped)."""
+    def esc(v) -> str:
+        return str(v).replace("|", "\\|")
+    head = "| " + " | ".join(colnames) + " |"
+    sep = "| " + " | ".join("---" for _ in colnames) + " |"
+    body = "\n".join("| " + " | ".join(esc(v) for v in r) + " |" for r in rows[:max_rows])
+    return "\n".join([head, sep, body])
+
+
+def serialize_payload_footer(payload) -> str:
+    """The exact verifiable JSON footer the chapter must echo — the authoritative (RI-true) base
+    tables in the existing ``{"tables":[{"name","rows":[[…]]}]}`` shape (column order incl. id)."""
+    tables = [{"name": st.table.name, "rows": [list(r) for r in st.table.rows]}
+              for st in payload.base_tables]
+    return json.dumps({"tables": tables}, separators=(",", ":"))
+
+
+def build_axiom_section_with_tables(templates: list[dict], payload) -> str:
+    """Axiom section with the **fixed, populated** tables injected (Track A correct-by-construction).
+
+    Each axiom carries its CREATE TABLE *and* the authoritative, referentially-consistent, typed,
+    ontology-grounded rows — so the model writes prose AROUND a given relational structure rather than
+    inventing values (which left RI at ~0.3–0.7). The cross-table views give the joins to narrate; the
+    verbatim JSON footer makes RI = 1.0 an audited property of the chapter. The no-schema arm
+    (plain ``build_axiom_section``) still lacks all of this — the load-bearing contrast is preserved.
+    """
+    from aegir.ontology.ddl import render_ddl
+
+    base_by_ref = {st.table.ref: st for st in payload.base_tables}
+    fks_by_src: dict[str, list] = {}
+    for e in payload.fks:
+        fks_by_src.setdefault(e.src_table, []).append(e)
+
+    lines = [
+        "Each axiom below is paired with its RELATIONAL SCHEMA and the EXACT, AUTHORITATIVE ROWS of that "
+        "table — already materialized: referentially consistent (foreign keys point at real primary keys), "
+        "correctly typed, and grounded in the ontology. DO NOT invent, alter, renumber, drop, or add rows "
+        "or columns. Write the chapter's prose, definitions, and worked examples AROUND these fixed tables: "
+        "introduce each table, explain what its primary-key / foreign-key structure means, narrate at least "
+        "one cross-table join using the ACTUAL key values shown, and interpret the values. Reproduce each "
+        "table verbatim (as a markdown table) where you discuss it.",
+        "",
+    ]
+    for idx, t in enumerate(templates, 1):
+        st = base_by_ref.get(t["template_id"])
+        slots_fmt = ", ".join(f"{k}: {v}" for k, v in t.get("slot_types", {}).items())
+        lines.append(f"  AXIOM {idx} (template_id: {t['template_id']}):")
+        lines.append(f"    Manchester:   {t.get('manchester_template','')}")
+        if t.get("verbal_template"):
+            lines.append(f"    Verbalization: {t['verbal_template']}")
+        lines.append(f"    Slot types:    {slots_fmt}")
+        if st is not None:
+            lines.append("    RELATIONAL SCHEMA:")
+            lines.append("      " + render_ddl(st, fks_by_src.get(st.table.name, [])).replace("\n", "\n      "))
+            colnames = [c.name for c in st.table.columns]
+            lines.append("    AUTHORITATIVE ROWS (reproduce verbatim):")
+            lines.append("      " + _md_table(colnames, st.table.rows).replace("\n", "\n      "))
+        lines.append("")
+    joins = [(v, r) for v, r in payload.views if v.fk is not None]
+    if joins:
+        lines.append("CROSS-TABLE VIEWS (narrate at least one of these joins using the real keys shown):")
+        for v, vrows in joins[:4]:
+            lines.append(f"  VIEW {v.name}: {v.verbalization}")
+            lines.append("    " + _md_table([vc for vc, _, _ in v.columns], vrows).replace("\n", "\n    "))
+        lines.append("")
+    lines.append("AFTER the chapter body, append EXACTLY this fenced JSON block verbatim — it records the "
+                 "authoritative rows you wrote prose around (do not modify it):")
+    lines.append("```json")
+    lines.append(serialize_payload_footer(payload))
+    lines.append("```")
+    return "\n".join(lines)
+
+
 def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
-                 family_complex=None) -> str:
+                 family_complex=None, *, seed: int = 0) -> tuple:
+    """Build the generation prompt; returns ``(prompt, payload | None)``.
+
+    glm/grok get the **fixed populated tables** injected (Track A: load-bearing ontology + RI=1.0);
+    the no-schema arm keeps plain-text axioms WITHOUT the DDL — the load-bearing contrast. The payload
+    (or None) is returned so the caller can record the authoritative tables on the chapter row.
+    """
     tpl = PROMPT_BY_KIND[kind]
-    # full (glm/grok) gets the DDL-footprint schemas injected (load-bearing ontology);
-    # no-schema keeps the axioms as plain text WITHOUT the DDL — the load-bearing contrast.
+    payload = None
     if kind in ("glm", "grok"):
-        axiom_section = build_axiom_section_with_ddl(templates, family_complex)
+        try:
+            from aegir.ontology.chapter_tables import chapter_relational_payload
+            payload = chapter_relational_payload(templates, family_complex, seed=seed)
+            axiom_section = build_axiom_section_with_tables(templates, payload)
+        except Exception as exc:  # noqa: BLE001 — RI/lowering failure must not abort a long run
+            logger.warning(f"  relational payload failed ({type(exc).__name__}: {str(exc)[:100]}); "
+                           f"falling back to schema-only axioms")
+            payload = None
+            axiom_section = build_axiom_section_with_ddl(templates, family_complex)
     else:
         axiom_section = build_axiom_section(templates)
     # The Grok template doesn't substitute n_templates (it picks domain freely); GLM does.
@@ -723,7 +810,7 @@ def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
     }
     if "{n_templates}" in tpl:
         fmt_kwargs["n_templates"] = len(templates)
-    return tpl.format(**fmt_kwargs)
+    return tpl.format(**fmt_kwargs), payload
 
 
 # Approximate provider pricing ($/M tokens: input, output). ADJUST to current rates —
@@ -911,6 +998,11 @@ def main() -> int:
         ("cost_usd", pa.float32()),
         ("created_at", pa.timestamp("us", tz="UTC")),
         ("audit_run_id", pa.string()),
+        # Track A: the authoritative (RI-true) fixed tables this chapter was written around.
+        ("rel_tables_json", pa.string()),
+        ("rel_views_json", pa.string()),
+        ("rel_fks_json", pa.string()),
+        ("ri_ok", pa.bool_()),
     ])
     chapter_rows = []
     cum_cost = 0.0
@@ -999,7 +1091,8 @@ def main() -> int:
         # broken by sort order. Used as the chapter's `family` tag.
         primary_family = Counter(t["_family"] for t in chosen).most_common(1)[0][0]
 
-        prompt = build_prompt(anchors, chosen, kind=kind, family_complex=family_complex)
+        prompt, rel_payload = build_prompt(anchors, chosen, kind=kind, family_complex=family_complex,
+                                           seed=args.seed + seed_offset)
         chapter_id = compute_chapter_id(prompt, model, seed_offset)
 
         logger.info(f"chapter {i+1}/{args.n_chapters} (id={chapter_id}):")
@@ -1071,6 +1164,18 @@ def main() -> int:
             logger.warning(f"  HX capture failed ({type(exc).__name__}); continuing")
         hx_exchange_id = record.id
 
+        # Track A: serialize the authoritative fixed tables / views / FKs (None for ablation arms).
+        rel_tables_json = rel_views_json = rel_fks_json = None
+        if rel_payload is not None:
+            rel_tables_json = serialize_payload_footer(rel_payload)
+            rel_views_json = json.dumps([
+                {"view_name": v.name, "sql": v.sql, "n_rows": len(r),
+                 "columns": [vc for vc, _, _ in v.columns], "rows": r}
+                for v, r in rel_payload.views])
+            rel_fks_json = json.dumps([
+                {"src_table": e.src_table, "src_col": e.src_col, "dst_table": e.dst_table,
+                 "dst_col": e.dst_col, "via_slot": e.via_slot} for e in rel_payload.fks])
+
         # Stage chapter row
         chapter_rows.append({
             "chapter_id": chapter_id,
@@ -1096,6 +1201,10 @@ def main() -> int:
             "cost_usd": float(cost),
             "created_at": datetime.now(timezone.utc),
             "audit_run_id": audit_run.name,
+            "rel_tables_json": rel_tables_json,
+            "rel_views_json": rel_views_json,
+            "rel_fks_json": rel_fks_json,
+            "ri_ok": rel_payload is not None,
         })
 
         if len(chapter_rows) % args.flush_every == 0:

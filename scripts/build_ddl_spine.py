@@ -53,6 +53,12 @@ def parse_args() -> argparse.Namespace:
                    help="Optional cap on templates per family (default: all 540)")
     p.add_argument("--no-validate", action="store_true",
                    help="Skip polyglot validation + AST coverage (generation only)")
+    p.add_argument("--no-materialize-rows", action="store_true",
+                   help="Skip correct-by-construction RI-true row + view materialization (Track A)")
+    p.add_argument("--no-emit-views", action="store_true",
+                   help="Materialize base rows but skip the corpus views")
+    p.add_argument("--row-seed", type=lambda x: int(x, 0), default=0xAE61,
+                   help="deterministic row-synthesis seed (hex ok, e.g. 0xAE61)")
     p.add_argument("--output-dir",
                    default="/raid/checkpoints/aegir-artifacts/ddl_spine_v0/")
     return p.parse_args()
@@ -67,6 +73,8 @@ def compute_run_id(args: argparse.Namespace, files: list[Path]) -> str:
     h = hashlib.sha256()
     h.update(f"dialects:{','.join(sorted(args.dialects))}\n".encode())
     h.update(f"per_family:{args.per_family}\n".encode())
+    h.update(f"row_seed:{args.row_seed}\n".encode())
+    h.update(f"materialize:{not args.no_materialize_rows}\n".encode())
     for p in sorted(files):
         h.update(f"{p.name}:{hashlib.sha256(p.read_bytes()).hexdigest()[:16]}\n".encode())
     return h.hexdigest()[:16]
@@ -110,6 +118,58 @@ def main() -> int:
         fks_by_src.setdefault(e.src_table, []).append(e)
     n_emitted = sum(1 for a in fk_audit if a.get("status") == "emitted")
     logger.info("cross-family FKs: %d emitted / %d candidates", n_emitted, len(fk_audit))
+
+    # ── Track A: correct-by-construction RI-true rows + corpus views ──────────────
+    ri_ok = None
+    base_row_rows: list[dict] = []
+    base_index_rows: list[dict] = []
+    view_out_rows: list[dict] = []
+    n_views_valid = 0
+    if not args.no_materialize_rows:
+        from aegir.ontology.chapter_tables import build_views, definitions_for_spine
+        from aegir.ontology.rows import assert_referential_integrity, materialize_rows
+        materialize_rows(spine, fk_edges, seed=args.row_seed, definitions=definitions_for_spine(spine))
+        try:
+            assert_referential_integrity(spine, fk_edges)
+            ri_ok = True
+        except AssertionError as e:
+            ri_ok = False
+            logger.error("REFERENTIAL INTEGRITY VIOLATION: %s", e)
+        fk_src: dict[str, dict[str, str]] = {}
+        for e in fk_edges:
+            fk_src.setdefault(e.src_table, {})[e.src_col] = e.dst_table
+        for st in spine:
+            tfk = fk_src.get(st.table.name, {})
+            for ri, row in enumerate(st.table.rows):
+                for ci, c in enumerate(st.table.columns):
+                    base_row_rows.append({
+                        "table_name": st.table.name, "row_ix": ri, "col_name": c.name,
+                        "value": row[ci] if ci < len(row) else "",
+                        "is_pk": c.slot_ref == "__pk__", "is_fk": c.name in tfk,
+                        "fk_target_table": tfk.get(c.name), "run_id": run_id, "created_at": created_at})
+            base_index_rows.append({
+                "template_id": st.template.template_id, "table_name": st.table.name,
+                "family": st.family, "n_rows": len(st.table.rows), "n_cols": len(st.table.columns),
+                "columns_json": json.dumps([c.name for c in st.table.columns]),
+                "run_id": run_id, "created_at": created_at})
+        if not args.no_emit_views:
+            for v, vrows in build_views(spine, fk_edges):
+                valid = None
+                if not args.no_validate:
+                    valid = all(dv.valid for dv in D.validate_ddl(v.sql, tuple(args.dialects)))
+                    n_views_valid += int(bool(valid))
+                view_out_rows.append({
+                    "view_name": v.name, "sql": v.sql, "verbalization": v.verbalization,
+                    "base_tables_json": json.dumps(v.base_tables),
+                    "columns_json": json.dumps([{"view_col": vc, "base_table": bt, "base_col": bc}
+                                                for vc, bt, bc in v.columns]),
+                    "fk_json": json.dumps(None if v.fk is None
+                                          else {"src_col": v.fk.src_col, "dst_table": v.fk.dst_table}),
+                    "n_rows": len(vrows), "rows_json": json.dumps(vrows), "valid": valid,
+                    "run_id": run_id, "created_at": created_at})
+        logger.info("materialized %d cells / %d tables; RI=%s; views=%d%s",
+                    len(base_row_rows), len(spine), ri_ok, len(view_out_rows),
+                    "" if args.no_validate else f" (valid={n_views_valid}/{len(view_out_rows)})")
 
     stmt_rows, val_rows = [], []
     feat_counts: Counter = Counter()      # (feature, variant) -> n tables with it
@@ -187,6 +247,25 @@ def main() -> int:
         "allowed": pa.bool_(), "status": pa.string(), "run_id": pa.string(),
         "created_at": pa.timestamp("us", tz="UTC"),
     })
+    if base_row_rows:
+        _write(out / "base_rows.parquet", base_row_rows, {
+            "table_name": pa.string(), "row_ix": pa.int32(), "col_name": pa.string(),
+            "value": pa.string(), "is_pk": pa.bool_(), "is_fk": pa.bool_(),
+            "fk_target_table": pa.string(), "run_id": pa.string(),
+            "created_at": pa.timestamp("us", tz="UTC"),
+        })
+        _write(out / "base_table_index.parquet", base_index_rows, {
+            "template_id": pa.string(), "table_name": pa.string(), "family": pa.string(),
+            "n_rows": pa.int32(), "n_cols": pa.int32(), "columns_json": pa.string(),
+            "run_id": pa.string(), "created_at": pa.timestamp("us", tz="UTC"),
+        })
+    if view_out_rows:
+        _write(out / "views.parquet", view_out_rows, {
+            "view_name": pa.string(), "sql": pa.string(), "verbalization": pa.string(),
+            "base_tables_json": pa.string(), "columns_json": pa.string(), "fk_json": pa.string(),
+            "n_rows": pa.int32(), "rows_json": pa.string(), "valid": pa.bool_(),
+            "run_id": pa.string(), "created_at": pa.timestamp("us", tz="UTC"),
+        })
 
     manifest = {
         "run_id": run_id, "created_at": created_at.isoformat(),
@@ -195,6 +274,12 @@ def main() -> int:
         "validated": not args.no_validate,
         "cross_family_fks_emitted": n_emitted,
         "valid_all_dialects": None if args.no_validate else n_valid_all,
+        "materialized_rows": not args.no_materialize_rows,
+        "row_seed": args.row_seed,
+        "referential_integrity_ok": ri_ok,
+        "n_base_cells": len(base_row_rows),
+        "n_views": len(view_out_rows),
+        "views_valid": None if (args.no_validate or args.no_emit_views) else n_views_valid,
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 

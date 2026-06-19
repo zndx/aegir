@@ -152,6 +152,39 @@ def _data_properties() -> "dict[str, list[tuple[str, str, str]]]":
     return out
 
 
+_DATAPROP_META_CACHE: "dict[str, tuple[str, str, str]] | None" = None
+
+
+def dataprop_meta() -> "dict[str, tuple[str, str, str]]":
+    """``{property_iri(prefixed) → (label, xsd_range, definition)}`` from sdg-vocab.ttl (cached).
+
+    Feeds the deterministic row generator (:mod:`aegir.ontology.rows`): a property whose
+    ``skos:definition`` enumerates a closed value set (e.g. ``hasStatus`` →
+    "pending / running / complete / failed") grounds that column's *values* in the ontology
+    itself; otherwise the ``xsd`` range drives a typed generator. Distinct from
+    :func:`_data_properties` (domain-keyed, for column discovery) — this is iri-keyed metadata.
+    """
+    global _DATAPROP_META_CACHE
+    if _DATAPROP_META_CACHE is not None:
+        return _DATAPROP_META_CACHE
+    out: "dict[str, tuple[str, str, str]]" = {}
+    try:
+        import rdflib
+        from rdflib.namespace import SKOS
+        g = rdflib.Graph(); g.parse(str(_VOCAB_PATH), format="turtle")
+        for prop in g.subjects(rdflib.RDF.type, rdflib.OWL.DatatypeProperty):
+            rng = g.value(prop, rdflib.RDFS.range)
+            label = g.value(prop, rdflib.RDFS.label)
+            defn = g.value(prop, SKOS.definition)
+            out[_prefixed(prop)] = (str(label) if label else "",
+                                    _prefixed(rng) if rng is not None else "",
+                                    str(defn) if defn else "")
+    except Exception:
+        out = {}
+    _DATAPROP_META_CACHE = out
+    return out
+
+
 def anchor_attributes(anchor: str) -> "list[tuple[str, str, str]]":
     """Typed attribute columns (column, xsd_range, property_iri) for a table whose
     bfo_anchor is ``anchor`` — the anchor's DataProperties plus its ancestors'."""
@@ -251,6 +284,49 @@ def _prop_col(prop: str) -> str:
     return f"rel_{local}" if local[:1].isdigit() else _dataprop_col(prop)
 
 
+# ── SKOS-native subject naming (decorative; slot_ref stays canonical) ──────────
+# BFO/CCO anchor IRI → readable column-name stem for a subject-head column.
+_CLASS_LABEL = {
+    "cco:Artifact": "artifact", "cco:InformationContentEntity": "information_entity",
+    "cco:DescriptiveICE": "descriptive_record", "cco:DirectiveICE": "directive",
+    "cco:DesignativeICE": "designator", "bfo:Process": "process",
+    "bfo:IndependentContinuant": "continuant",
+}
+_NAME_STOP = {"subclass", "class", "basic", "template", "generic", "with", "via",
+              "and", "the", "for", "to", "of", "an", "from"}
+# (template_id, slot) → curated column name; the explicit long-tail override hook (empty default).
+CURATED_SLOT_NAMES: dict[tuple[str, str], str] = {}
+
+
+def _class_label(iri: str | None) -> str | None:
+    if not iri:
+        return None
+    if iri in _CLASS_LABEL:
+        return _CLASS_LABEL[iri]
+    local = iri.split(":")[-1]
+    if not local or local[:1].isdigit():          # opaque BFO numeric local name → no good stem
+        return None
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", local).lower()
+
+
+def skos_name_for_slot(template: CatalogTemplate, slot: str) -> str | None:
+    """An ontology-native, real-world-ish name for a *subject-head* slot (vs bare ``subject``).
+
+    Priority: curated override → the template's own concept token (its identity in the ontology)
+    → the BFO/CCO anchor's readable stem. ``slot_ref`` stays the canonical column↔slot identity,
+    so this is a decorative, content-only upgrade (and lifts the e6 name↔verbalization overlap).
+    """
+    key = (template.template_id, slot)
+    if key in CURATED_SLOT_NAMES:
+        return CURATED_SLOT_NAMES[key]
+    toks = [t for t in re.split(r"[^A-Za-z]+", template.template_id)
+            if len(t) >= 3 and t.lower() not in _NAME_STOP]
+    if toks:
+        return toks[0].lower()
+    anchor = template.bfo_anchor_path[-1] if template.bfo_anchor_path else None
+    return _class_label(anchor)
+
+
 def semantic_col_names(template: CatalogTemplate) -> dict[str, str]:
     """Map each non-ObjectProperty slot to a SEMANTIC column name (vs the bare slot letter).
 
@@ -280,7 +356,8 @@ def semantic_col_names(template: CatalogTemplate) -> dict[str, str]:
             base = "related" if r.is_slot else _prop_col(r.prop)
         elif owl in ("Class", "Individual"):
             n_subject += 1
-            base = "subject" if n_subject == 1 else f"subject_{n_subject}"
+            base = skos_name_for_slot(template, slot) or (
+                "subject" if n_subject == 1 else f"subject_{n_subject}")
         else:
             base = col_name(slot)
         base = base or col_name(slot)

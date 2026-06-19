@@ -326,6 +326,26 @@ def score_axiom(tables: list[dict], cited_templates: list[dict]) -> float:
     return float(np.mean(per_table)) if per_table else 0.0
 
 
+def score_table_fidelity(chapter_text: str, rel_tables_json: str | None) -> float | None:
+    """Track A faithfulness: fraction of AUTHORITATIVE cell values reproduced verbatim in the chapter.
+
+    Track A injects fixed, RI-true tables and asks the model to write prose *around* them; this checks
+    it actually reproduced them (a low value ⇒ the model mangled the given tables). Returns ``None``
+    for chapters with no authoritative tables (ablation / no-schema / pre-Track-A corpora). **Not**
+    folded into the R composite — a faithfulness diagnostic, so copying tables isn't rewarded as quality.
+    """
+    if not rel_tables_json:
+        return None
+    try:
+        tables = json.loads(rel_tables_json).get("tables", [])
+    except Exception:  # noqa: BLE001
+        return None
+    cells = [str(v) for t in tables for row in t.get("rows", []) for v in row if str(v).strip()]
+    if not cells:
+        return None
+    return sum(1 for c in cells if c in chapter_text) / len(cells)
+
+
 def geometric_mean(scores: list[float]) -> float:
     """Composite R as geometric mean; treats any zero score as a hard fail."""
     if not scores or any(s <= 0 for s in scores):
@@ -408,6 +428,8 @@ def main() -> int:
         r_density, tables = score_density(chapter_text, prompt_kind)
         r_axiom = score_axiom(tables, cited_templates)
         r_composite = geometric_mean([r_topic, r_iri, r_density, r_axiom])
+        rel_tables_json = (ch["rel_tables_json"] if "rel_tables_json" in ch.index else None)
+        r_table_fidelity = score_table_fidelity(chapter_text, rel_tables_json)
 
         if r_composite >= args.tau_accept:
             status = "accepted"
@@ -422,6 +444,8 @@ def main() -> int:
         if r_density < 0.40: notes_parts.append("low_density")
         if r_axiom < 0.30: notes_parts.append("low_axiom")
         if not tables: notes_parts.append("no_tables")
+        if r_table_fidelity is not None and r_table_fidelity < 0.50:
+            notes_parts.append("mangled_tables")  # Track A: model didn't reproduce the fixed tables
 
         rows.append({
             "chapter_id": str(ch["chapter_id"]),
@@ -437,6 +461,7 @@ def main() -> int:
             "r_density": float(r_density),
             "r_axiom": float(r_axiom),
             "r_composite": float(r_composite),
+            "r_table_fidelity": (float(r_table_fidelity) if r_table_fidelity is not None else None),
             "status": status,
             "notes": ",".join(notes_parts),
             "verified_at": datetime.now(timezone.utc),
@@ -457,6 +482,7 @@ def main() -> int:
         ("r_density", pa.float32()),
         ("r_axiom", pa.float32()),
         ("r_composite", pa.float32()),
+        ("r_table_fidelity", pa.float32()),
         ("status", pa.string()),
         ("notes", pa.string()),
         ("verified_at", pa.timestamp("us", tz="UTC")),

@@ -59,7 +59,7 @@ def r0_register(centroids_path: str, tau: float = 0.35) -> None:
           f"Δ borderline = {int((max_v>=tau).sum())-int((max_full>=tau).sum()):+d}")
 
 
-def ri_check(corpus_runs: list[str], sample: int = 300) -> None:
+def ri_check(corpus_runs: list[str], sample: int = 300) -> list:
     chapters = []
     import pyarrow.parquet as pq
     for run in corpus_runs:
@@ -108,6 +108,7 @@ def ri_check(corpus_runs: list[str], sample: int = 300) -> None:
         print(f"  => E2(b)-cells-only signal {'PRESENT' if ov.mean()>0.7 else 'WEAK — may need a generator fix'}")
     else:
         print("  => NO FK value-overlap found — E2(b)-cells-only NOT viable as-is (generator fix needed).")
+    return overlaps
 
 
 def main() -> int:
@@ -117,9 +118,21 @@ def main() -> int:
         "/raid/checkpoints/aegir-artifacts/sdg_corpus_v0_3/811408b392859708",
         "/raid/checkpoints/aegir-artifacts/sdg_corpus_v0_3/d7646714bdd5e16f"])
     ap.add_argument("--sample", type=int, default=400)
+    ap.add_argument("--expect-ri-one", action="store_true",
+                    help="Track A regression gate: assert FK value-overlap ≈ 1.0 (RI is true by "
+                         "construction for chapters written around the fixed materialized tables).")
     args = ap.parse_args()
     r0_register(args.centroids)
-    ri_check(args.corpus_runs, args.sample)
+    overlaps = ri_check(args.corpus_runs, args.sample)
+    if args.expect_ri_one:
+        if not overlaps:
+            print("  [expect-ri-one] no FK-shaped columns — cannot confirm RI (not a Track A corpus?)")
+            return 2
+        mean = float(np.mean(overlaps))
+        ok = mean >= 0.99
+        print(f"  [expect-ri-one] mean FK overlap {mean:.3f} — "
+              f"{'PASS (RI≈1.0 by construction)' if ok else 'FAIL (tables corrupted post-generation?)'}")
+        return 0 if ok else 2
     return 0
 
 
