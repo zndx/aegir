@@ -69,13 +69,15 @@ generating-correct-by-construction and has no place inside the boundary. Extrins
 **only at the membrane** where un-generated reality enters — grounding the corpus against FinePDFs (R1) and
 the held-out downstream eval — where the system honestly tests itself against a world it did not author. So
 anchors #2 (formal / intrinsic) and #3 (domain / membrane) are both required and *not* redundant: they verify
-opposite sides of the boundary. **Consequence — the enterprise metadata/governance plane is a commons, not a
-dependency.** With in-situ RASE engineering its switching costs are ~zero (OpenMetadata, OpenLineage, Atlas,
-Ranger, DataHub, …), so we *sample the patterns, adapt the protocol, and evidence what we require in real
-time*; we integrate with none and emit (OL/PROV-O for cross-repo Signals federation) only on our terms at the
-membrane. Atlas is the standing example — a sampled utility held to *rebuildable-from-the-ontology-or-it's-a-
-bug*, never a master. "Should we integrate with X" is a malformed question: the plane is a reference, never a
-runtime.
+opposite sides of the boundary. **Consequence — integrate freely, depend on nothing.** Under in-situ RASE
+engineering, switching costs across the metadata/governance plane (OpenMetadata, OpenLineage, Atlas, Ranger,
+…) are ~zero, so integration carries no lock-in — which *licenses* deep, enthusiastic integration rather than
+abstention. We implement the standing directives in full: **OL/Marquez compatibility** (external tooling sees
+our lineage events) and **Atlas deep integration** (a richly extended glossary/lineage surface). This is
+*non-dependence, not non-integration*. The discipline that keeps it non-dependent: the ontology is the single
+source of truth, so Atlas and every projection stay *rebuildable-from-the-ontology-or-it's-a-bug, never a
+master* (Atlas edits suggest, never commit). We sample patterns and adapt protocols on our terms; we owe the
+plane no gravity — and that freedom is exactly what makes integrating with it generously *safe*.
 
 **The maturation arc this enables.** The current ontology form is the template+slot catalog (the seed
 crystal). The lineup curation is the **forge** that converts it into a real lexicon of concrete,
