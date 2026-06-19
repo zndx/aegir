@@ -522,7 +522,15 @@ def project_training() -> list[N.Note]:
               "F1 · val loss), colored by best macro-F1. Read the Pareto front, clusters, and the "
               "effect of each knob at a glance. Reads runs live from `outputs/runs`; per-run detail "
               "lives on the Leaderboards page."))
-    return [sweeps]
+    reward = N.Note(
+        id="training/reward", title="Reward", kind="training", data_product="training",
+        frontmatter={"viz_app": "reward_app"},
+        body=("**Reward.** Live GRPO/RLVR reward dynamics — the verifier composite **R** (mean±std band, "
+              "where the band *is* the variance collapse-canary), the **R_A pass-rate**, and the z-scored "
+              "advantage, vs GRPO iteration. The health monitor for the RLVR loop: reward climbing, "
+              "variance not collapsing, pass-rate rising. Reads the run's GRPO `metrics_jsonl` live from "
+              "`cfg.p5.output_dir`."))
+    return [sweeps, reward]
 
 
 def run(args=None) -> int:

@@ -16,6 +16,8 @@ export interface KBNote {
   root?: string;
   body: string;
   links?: string[];
+  // Training notes name the bokeh-server app their panel mounts (sweeps_app / reward_app / …).
+  viz_app?: string;
 }
 
 // Flag accent per Data Product — the FedWiki "flag" reinterpreted as a lens color.
@@ -160,11 +162,11 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
             </Text>
           </div>
         )}
-        {note?.kind === "training" && (
+        {note?.kind === "training" && note.viz_app && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
-            <PanelView app="sweeps_app" height={460} />
+            <PanelView app={note.viz_app} height={460} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
-              parallel coordinates over runs — live HoloViews · each line a run, colored by best macro-F1
+              live HoloViews via the bokeh server · drag to pan, hover for values
             </Text>
           </div>
         )}

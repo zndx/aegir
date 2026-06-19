@@ -21,6 +21,7 @@ const LENSES = [
 // see docs/current/src/roadmap/leaderboard_observatory.md.
 const TRAINING = [
   { key: "sweeps", label: "Sweeps", seed: "training/sweeps", hint: "parallel coords" },
+  { key: "reward", label: "Reward", seed: "training/reward", hint: "GRPO dynamics" },
 ];
 const ROOTS = ["archive", "current", "scratch"];
 

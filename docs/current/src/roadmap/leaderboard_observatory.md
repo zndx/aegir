@@ -11,8 +11,10 @@ One row per training run; clicking a run opens a drawer with live HoloViews curv
 per-stage chunking boundary), rendered by `aegir.viz.runs_app` over the bokeh server, embedded via
 `<PanelView>`. Air-gapped, no npm `@bokeh/bokehjs`.
 
-**Built — the Training section + Sweeps (v1).** The lineup left-nav now has a **TRAINING** group below
-the lenses; its first entry, **Sweeps**, opens a live HoloViews **parallel-coordinates** panel
+**Built — the Training section + Sweeps + Reward (v1).** The lineup left-nav now has a **TRAINING**
+group below the lenses. **Reward** (`reward_app`) is the GRPO health monitor — reward R mean±std band
+(the variance collapse-canary) + R_A pass-rate + z-scored advantage, off a run's GRPO `metrics_jsonl`.
+Its first entry, **Sweeps**, opens a live HoloViews **parallel-coordinates** panel
 (`aegir.viz.sweeps_app`) over the runs — each run a line across `model_size · num_params · lr · epochs
 · macro/micro F1 · val_loss`, colored by best macro-F1, reading live from `outputs/runs`. The Landing
 "Runs" card is now "Sweeps" → `/lineup?open=training/sweeps`. HoloViews-native by directive (no
@@ -104,6 +106,17 @@ The earlier ideas are not left behind — RL makes them central, and most are ne
   flow into the lineup observatory (a Training ▸ Reward entry beside Sweeps). They are separate today.
 - **GRPO-vs-PPO, if ever litigated**, is an *ablation-arm* comparison (idea #3) — but the reward shape
   says GRPO; spend the cycles on reward granularity + curriculum, watched via the variance band.
+- **Empirical guardrails — a low-cost GRPO sweep** (drive it with the Sweeps PCP): `group_size` (4–16
+  is the stable-baseline range), `advantage_normalization` (z_score vs centered), `kl_coefficient`
+  scaling, plus a simple **length-normalization** baseline arm. Settles the refinement questions for
+  the cost of a handful of short runs — exactly what the PCP is for.
+- **Downstream coupling metrics** — surface one or two *proxy-downstream* signals beside reward /
+  pass-rate: post-verbalization **RWKV byte-per-byte loss on DDL / SchemaPile slices**, or **CTA/CPA F1
+  lift on held-out tables**. A single panel tying reward ↑ to downstream-loss ↓ is the strongest "the
+  proxy is real" evidence the observatory can show — it validates the convergence loop's load-bearing
+  assumption (higher-R ontologies → better synthetic corpus → better model) rather than trusting R on
+  faith. This is the open calibration gap in [[aegir-convergence-loop]] (cf. E1); the observatory is
+  where it gets watched continuously.
 
 **Real-world use:** a verifiable-reward RL observatory (reward dynamics + verifier-pass-rate gates +
 data-product lineage + reproducible provenance, with the catalog hot-reload closing the loop — edit the
