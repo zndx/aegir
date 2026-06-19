@@ -595,7 +595,7 @@ ui-build:
 viz-serve:
     BOKEH_RESOURCES=server LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs \
       uv run --no-sync bokeh serve src/aegir/viz/lineup_app.py src/aegir/viz/runs_app.py \
-      src/aegir/viz/sweeps_app.py src/aegir/viz/reward_app.py \
+      src/aegir/viz/sweeps_app.py src/aegir/viz/reward_app.py src/aegir/viz/provenance_app.py \
       --prefix /viz --port 5006 --allow-websocket-origin='*'
 
 # Lightweight, repeatable exercise+verify of the leaderboard viz: a smoke training run produces a real

@@ -22,6 +22,7 @@ const LENSES = [
 const TRAINING = [
   { key: "sweeps", label: "Sweeps", seed: "training/sweeps", hint: "parallel coords" },
   { key: "reward", label: "Reward", seed: "training/reward", hint: "GRPO dynamics" },
+  { key: "provenance", label: "Provenance", seed: "training/provenance", hint: "lineage DAG" },
 ];
 const ROOTS = ["archive", "current", "scratch"];
 

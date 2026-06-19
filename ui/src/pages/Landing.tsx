@@ -106,16 +106,18 @@ function Landing() {
           </Link>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <Card>
-            <Statistic
-              title="Tasks"
-              value={stats?.tasks?.count ?? "—"}
-              prefix={<ExperimentOutlined />}
-            />
-            <Text type="secondary" style={{ fontSize: 11 }}>
-              registered benchmarks
-            </Text>
-          </Card>
+          <Link to="/lineup?open=training/provenance">
+            <Card hoverable>
+              <Statistic
+                title="Provenance"
+                value={stats?.tasks?.count ?? "—"}
+                prefix={<ExperimentOutlined />}
+              />
+              <Text type="secondary" style={{ fontSize: 11 }}>
+                verifiable tasks &amp; lineage
+              </Text>
+            </Card>
+          </Link>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Link to="/lineup?lens=terms">

@@ -1,8 +1,13 @@
 # Provenance — Verifiable Tasks & Lineage (the through-line)
 
-**Status: DESIGN / reframe — not built.** Captured 2026-06-19 (RH). Reframes the top-line **"Tasks"**
-card (today an unlinked `Statistic`, originally conceived as an Atropos-style RL-task surface) into
-**Provenance: Verifiable Tasks & Lineage** — the spine the whole pipeline already has.
+**Status: v1 BUILT** (the cheapest first slice — live Atlas lineage DAG, no verification overlay yet).
+Captured 2026-06-19 (RH); v1 landed same day. Reframes the top-line **"Tasks"** card (an unlinked
+`Statistic`, originally conceived as an Atropos-style RL-task surface) into **Provenance: Verifiable
+Tasks & Lineage** — the spine the whole pipeline already has. The card now links to
+`/lineup?open=training/provenance`; the panel is a **Training ▸ Provenance** sibling of Sweeps and
+Reward (`src/aegir/viz/provenance_app.py`), rendering the type-level convergence chain read live from
+the `aegir_hx` Atlas graph. Next: the **verification overlay** (per-edge gate verdicts) and
+instance-level drill-in (§Dependencies).
 
 ## Why the pivot (what Atropos told us)
 [NousResearch/Atropos](https://github.com/NousResearch/Atropos) is a clean RL-environments gym: an
@@ -48,16 +53,21 @@ richer reward than exact-match), but Atropos's **microservice + Trajectory-API d
 pattern to borrow if we grow to *many* verifiable tasks (DE-elucidation, CPA, downstream RWKV evals as
 separate environments feeding one trajectory queue). Borrow the shape, not necessarily the code.
 
-## The card / panel (v1 sketch)
-"Tasks" (unlinked stub) → **Provenance** → a lineup panel rendering the artifact-lineage-with-gates DAG
+## The card / panel (as built)
+"Tasks" (unlinked stub) → **Provenance** → a lineup panel rendering the artifact-lineage DAG
 (HoloViews graph via the bokeh-server `PanelView` — GraphRenderer renders correctly there, unlike the
 npm `@bokeh/bokehjs` build), sourced from Atlas. Unifies the lenses (artifacts) + Sweeps/Reward (runs)
-+ the gates into one verifiable-lineage view. Likely a new lineup nav group (PROVENANCE) or a top-level
-view; `kind:"provenance"` note + a `provenance_app` bokeh server, same pattern as the Training panels.
+into one lineage view. **Landed as a Training ▸ Provenance sibling** (not its own nav group): a
+`kind:"training"` note carrying `frontmatter.viz_app="provenance_app"`, served by the `provenance_app`
+bokeh app — the exact pattern as the Sweeps/Reward panels. The verification overlay (per-edge gate
+verdicts) is the next increment on top of this surface.
 
 ## Dependencies / sequencing
-- Cheapest first slice: render the **existing Atlas lineage subgraph** (ground → ontology → corpus →
-  run) as a HoloViews graph panel — proves the surface before adding the verification overlay.
+- ✅ **DONE (v1)** — Cheapest first slice: render the **existing Atlas lineage subgraph** (ground →
+  ontology → corpus → run) as a HoloViews graph panel — proves the surface before the verification
+  overlay. Live in `provenance_app.py`: type-level meta-graph (Family/Topic → Template → Chapter →
+  Column/Dataset → Job/Run), `networkx.multipartite_layout` → `hv.Graph` directed, degrades gracefully
+  when Atlas is down. The 9 type-edges render (Run→Template 794, Run→Topic 397, Dataset→Column 386, …).
 - The verification overlay needs gate verdicts as data: the RLVR reward (have it), HermiT/coverage
   (have them), downstream RWKV evals (TBD — the observatory's downstream-coupling metrics feed here).
 - Artifact versions: catalog versions + corpus hashes + lineup archive snapshots already exist; wire

@@ -530,7 +530,16 @@ def project_training() -> list[N.Note]:
               "advantage, vs GRPO iteration. The health monitor for the RLVR loop: reward climbing, "
               "variance not collapsing, pass-rate rising. Reads the run's GRPO `metrics_jsonl` live from "
               "`cfg.p5.output_dir`."))
-    return [sweeps, reward]
+    provenance = N.Note(
+        id="training/provenance", title="Provenance", kind="training", data_product="training",
+        frontmatter={"viz_app": "provenance_app"},
+        body=("**Provenance — Verifiable Tasks & Lineage.** The pipeline's lineage as a directed graph, "
+              "read live from the Atlas (`aegir_hx`) provenance graph: versioned artifacts "
+              "(Family · Topic · Template · Chapter · Column · Dataset · Run · Job) and their derivation "
+              "edges. The convergence chain made legible. Augmented as we go with more intermediate "
+              "artifacts and per-edge gate verdicts (R-pass · HermiT · coverage · downstream-eval-lift). "
+              "See docs/current/src/roadmap/provenance.md."))
+    return [sweeps, reward, provenance]
 
 
 def run(args=None) -> int:
