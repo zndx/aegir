@@ -1,13 +1,42 @@
 # Provenance — Verifiable Tasks & Lineage (the through-line)
 
-**Status: v1 BUILT** (the cheapest first slice — live Atlas lineage DAG, no verification overlay yet).
-Captured 2026-06-19 (RH); v1 landed same day. Reframes the top-line **"Tasks"** card (an unlinked
-`Statistic`, originally conceived as an Atropos-style RL-task surface) into **Provenance: Verifiable
-Tasks & Lineage** — the spine the whole pipeline already has. The card now links to
-`/lineup?open=training/provenance`; the panel is a **Training ▸ Provenance** sibling of Sweeps and
-Reward (`src/aegir/viz/provenance_app.py`), rendering the type-level convergence chain read live from
-the `aegir_hx` Atlas graph. Next: the **verification overlay** (per-edge gate verdicts) and
-instance-level drill-in (§Dependencies).
+**Status: v1 BUILT — ILLUSTRATIVE, not definitive.** The cheapest first slice (live Atlas lineage DAG,
+no verification overlay yet). Captured 2026-06-19 (RH); v1 landed same day. Reframes the top-line
+**"Tasks"** card (an unlinked `Statistic`, originally conceived as an Atropos-style RL-task surface) into
+**Provenance: Verifiable Tasks & Lineage** — the spine the whole pipeline already has. The card now links
+to `/lineup?open=training/provenance`; the panel is a **Training ▸ Provenance** sibling of Sweeps and
+Reward (`src/aegir/viz/provenance_app.py`), rendering the type-level convergence chain read live from the
+`aegir_hx` Atlas graph, with **tap-a-node → open its data-product lens** navigation. Next: the
+**verification overlay** (per-edge gate verdicts) and instance-level drill-in (§Maturity, §Dependencies).
+
+## Maturity: illustrative, NOT definitive
+The v1 panel — both the DAG and the panels its node-clicks open — is a **legibility sketch**. It proves
+the surface (live Atlas graph → HoloViews DAG → tap-to-navigate at the narrow lens width), but every
+modelling choice in it is provisional scaffolding. **Do not build heavily on the current shapes.** The
+axes we expect to iterate (RH, 2026-06-19):
+
+- **Granularity — type-level → instance-level.** Today each node is an artifact *type* (8 of them) and
+  edges are aggregated counts: a "shape of the pipeline" cartoon, not the real lineage. The definitive
+  view is the **versioned artifacts themselves** (catalog *vN*, corpus-snapshot hash, checkpoint, a
+  specific GRPO/eval run) with their actual derivation edges — likely expand/collapse between the two.
+- **Artifact set & layout — curated whitelist → topology-derived.** The `STAGE` map (which types, which
+  left→right column) is a hand-assigned constant that forces a clean multipartite layout. Real lineage
+  is not strictly layered (a Run touches Template/Topic/Chapter/Dataset across "stages"; the
+  `RE_GROUNDS_TO` loop-closure edge is a genuine cycle). Derive the node set + layout from the graph and
+  the v0.3/Signals artifact taxonomy; render the loop honestly instead of flattening it.
+- **Node→panel routing — coarse type→whole-lens → contextual drill-in.** Tapping a node opens its
+  data-product *lens in full* (the `TARGET` map), ignoring which instance was tapped — and Run/Job →
+  `lens/content` is frankly a stretch (Run/Job are training/orchestration; their real home is a
+  run-detail panel, or Sweeps/Reward scoped to that run, or a provenance instance note). Definitive: the
+  tapped artifact's identity seeds a panel *about that artifact* (this template, this run, this dataset).
+- **The verification overlay is absent — the "Verifiable" half is unbuilt.** Edges are plain
+  derivations; the point of *Verifiable* Tasks & Lineage is per-edge gate verdicts (R-pass ·
+  HermiT-consistent · coverage-R1 · downstream-eval-lift) encoded on the graph. That is the increment
+  that turns the cartoon into the thesis artifact (§Dependencies).
+
+So: **current implementation = illustrative.** Definitive = instance-level, topology-derived,
+context-routed, verification-overlaid. Treat the v1 maps (`STAGE` / `TARGET`) and the type-level framing
+as scaffolding to be replaced, not as settled design.
 
 ## Why the pivot (what Atropos told us)
 [NousResearch/Atropos](https://github.com/NousResearch/Atropos) is a clean RL-environments gym: an

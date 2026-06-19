@@ -9,9 +9,14 @@ artifacts and their derivation edges, read live from the ``aegir_hx`` graph (Atl
 Served by the bokeh server (topology B), embedded via ``<PanelView app="provenance_app">`` — same
 ``hv.render`` → bokeh-server → ``PanelView`` path as the other panels (air-gapped; ``hv.Graph`` is a
 GraphRenderer element, which renders correctly server-side, unlike the npm ``@bokeh/bokehjs`` build).
-Augment as we go: instance-level drill-in, more artifact types, and **gate-verdict overlays** on the
-edges (R-pass / HermiT-consistent / coverage-R1 / downstream-eval-lift). See
-docs/current/src/roadmap/provenance.md.
+
+**Status: ILLUSTRATIVE, not definitive (RH 2026-06-19).** This is a legibility *sketch* — it proves the
+surface (live Atlas graph → HoloViews DAG → tap-to-navigate), but every modelling choice is provisional:
+the artifact-type set, the ``STAGE`` layout, the node→lens ``TARGET`` routing, and the edge styling are
+all placeholders for the instance-level, topology-derived, verification-overlaid graph described under
+"Maturity" in docs/current/src/roadmap/provenance.md. Iterate; don't build heavily on the current maps.
+Known next axes: instance-level drill-in, topology-derived artifact set, contextual node→panel routing,
+and **gate-verdict overlays** on the edges (R-pass / HermiT-consistent / coverage-R1 / downstream-eval-lift).
 """
 from __future__ import annotations
 
@@ -24,12 +29,15 @@ hv.extension("bokeh", logo=False)
 
 # Curated pipeline artifacts → stage (left→right column). The convergence chain; everything else
 # (Atlas `vertex` core, `__rdbms_*` table internals) is excluded for the high-level view.
+# ILLUSTRATIVE: hand-assigned set + columns that force a clean multipartite layout — real lineage is not
+# strictly layered (a Run spans stages; the RE_GROUNDS_TO loop is a genuine cycle). Derive from topology.
 STAGE = {"Family": 0, "Topic": 0, "Template": 1, "Chapter": 2,
          "Column": 3, "Dataset": 3, "Job": 4, "Run": 4}
 
 # Each artifact-type node drills into the lineup lens that represents its data product — tap a node →
-# open that lens as a narrow panel in the trail (same navigation as a lens link). Run/Job (generation
-# orchestration) land on the corpus they produce; instance-level run drill-in is a later increment.
+# open that lens as a narrow panel in the trail (same navigation as a lens link).
+# ILLUSTRATIVE: coarse type→whole-lens routing that ignores the tapped instance; Run/Job→content is a
+# known stretch (their real home is a run-detail/Sweeps panel or a provenance instance note). See roadmap.
 TARGET = {"Family": "lens/terms", "Template": "lens/terms",
           "Topic": "lens/content", "Chapter": "lens/content", "Run": "lens/content", "Job": "lens/content",
           "Column": "lens/schema", "Dataset": "lens/schema"}
