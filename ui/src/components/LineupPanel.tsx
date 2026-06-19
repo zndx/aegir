@@ -1,5 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Tag, Typography } from "antd";
+import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import PanelView from "./PanelView";
@@ -140,6 +141,21 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
   const accent = ACCENT[note?.data_product ?? "lens"] ?? "#999";
   // Training panels carry wide viz (the sweeps PCP) — give them room so all axes show without scroll.
   const basis = note?.kind === "training" ? "52rem" : "33rem";
+
+  // A viz panel's nodes can be tapped to open a note (e.g. the Provenance DAG → its data-product lens).
+  // The bokeh app dispatches `aegir:open-note` on the shared window (no iframe); we route the matching
+  // app's event through this panel's own `onLink` — the same trail navigation as a lens link (opens the
+  // target as a narrow panel just to the right of this one).
+  const vizApp = note?.viz_app;
+  useEffect(() => {
+    if (!vizApp) return;
+    const handler = (e: Event) => {
+      const d = (e as CustomEvent).detail;
+      if (d?.app === vizApp && d?.id) onLink(d.id);
+    };
+    window.addEventListener("aegir:open-note", handler);
+    return () => window.removeEventListener("aegir:open-note", handler);
+  }, [vizApp, onLink]);
   return (
     <div
       style={{
@@ -167,6 +183,7 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
             <PanelView app={note.viz_app} height={460} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
               live HoloViews via the bokeh server · drag to pan, hover for values
+              {note.viz_app === "provenance_app" && " · tap a node to open its lens"}
             </Text>
           </div>
         )}

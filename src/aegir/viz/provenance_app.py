@@ -27,6 +27,34 @@ hv.extension("bokeh", logo=False)
 STAGE = {"Family": 0, "Topic": 0, "Template": 1, "Chapter": 2,
          "Column": 3, "Dataset": 3, "Job": 4, "Run": 4}
 
+# Each artifact-type node drills into the lineup lens that represents its data product — tap a node →
+# open that lens as a narrow panel in the trail (same navigation as a lens link). Run/Job (generation
+# orchestration) land on the corpus they produce; instance-level run drill-in is a later increment.
+TARGET = {"Family": "lens/terms", "Template": "lens/terms",
+          "Topic": "lens/content", "Chapter": "lens/content", "Run": "lens/content", "Job": "lens/content",
+          "Column": "lens/schema", "Dataset": "lens/schema"}
+
+# Tap a node → dispatch a same-window CustomEvent the React LineupPanel listens for (no iframe → shared
+# window); it opens `target` as a narrow panel in the trail. Clear the selection so re-tapping refires.
+_TAP_JS = """
+const idx = src.selected.indices;
+if (!idx.length) return;
+const target = src.data['note_id'][idx[0]];
+if (target) window.dispatchEvent(new CustomEvent('aegir:open-note',
+    {detail: {id: target, label: src.data['label'][idx[0]], app: 'provenance_app'}}));
+src.selected.indices = [];
+"""
+
+
+def _tap_hook(plot, _element):
+    """Wire node-tap → CustomEvent via the bokeh GraphRenderer's node selection (HoloViews escape hatch)."""
+    from bokeh.models import CustomJS, GraphRenderer  # pyright: ignore[reportPrivateImportUsage]  # canonical runtime facade
+    gr = next((r for r in plot.state.renderers if isinstance(r, GraphRenderer)), None)
+    if gr is None:
+        return
+    src = gr.node_renderer.data_source
+    src.selected.js_on_change("indices", CustomJS(args=dict(src=src), code=_TAP_JS))
+
 
 def _placeholder(msg: str):
     return hv.Div(f"<div style='padding:1em;color:#888;font-family:sans-serif'>{msg}</div>")
@@ -65,17 +93,18 @@ def _dag():
     pos = nx.multipartite_layout(g, subset_key="layer", align="vertical")
 
     nodes_df = pd.DataFrame([{"index": idx[n], "x": float(pos[idx[n]][0]), "y": float(pos[idx[n]][1]),
-                              "label": n, "stage": STAGE[n]} for n in names])
+                              "label": n, "stage": STAGE[n], "note_id": TARGET.get(n, "")} for n in names])
     edges_df = pd.DataFrame([{"source": idx[s], "target": idx[d], "count": v["c"],
                               "kinds": ", ".join(sorted(v["types"]))} for (s, d), v in agg.items()])
 
     graph = hv.Graph(
-        (edges_df, hv.Nodes((nodes_df["x"], nodes_df["y"], nodes_df["index"],
-                             nodes_df["label"], nodes_df["stage"]), vdims=["label", "stage"]))
+        (edges_df, hv.Nodes((nodes_df["x"], nodes_df["y"], nodes_df["index"], nodes_df["label"],
+                             nodes_df["stage"], nodes_df["note_id"]), vdims=["label", "stage", "note_id"]))
     ).opts(hv.opts.Graph(
         directed=True, arrowhead_length=0.025, node_color="stage", cmap="Category10", node_size=18,
         edge_line_width=hv.dim("count").norm() * 6 + 1, edge_alpha=0.5, edge_color="#9aa",
-        width=760, height=430, xaxis=None, yaxis=None, tools=["hover"], padding=(0.08, (0.08, 0.2)),
+        width=760, height=430, xaxis=None, yaxis=None, tools=["hover", "tap"], hooks=[_tap_hook],
+        padding=(0.08, (0.08, 0.2)),
         title="Provenance — Atlas lineage (type-level convergence chain)"))
     labels = hv.Labels((nodes_df["x"], nodes_df["y"], nodes_df["label"]), ["x", "y"], "label").opts(
         text_font_size="9pt", yoffset=0.07, text_color="#333")
