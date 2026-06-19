@@ -97,6 +97,17 @@ throughout — reasoner (formal), corpus (empirical-fit), held-out H-Net+RWKV (b
   characterized. Report the Pareto slice (general vs relational), do not scalarize to a single α*.
 - *CI:* bootstrap on the lift delta; multiple seeds; the no-ontology arm is the matched causal control.
 - *Precondition ($0, run first):* quantify the corpus's max **non-repetitive** token yield (caps α at scale).
+  - **MEASURED 2026-06-19** (`scripts/corpus_quality.py --alpha-budgets …`, byte-level = the model's token
+    space; `evidence/token_yield/v0_3_ceiling.json`). v0.3 corpus (2235 chapters, 24.3 MB):
+    **Y_eff ≈ 7.93M non-repetitive byte-tokens** (entropy rate h ≈ 2.614 bits/byte), cross-checked by
+    **Y_gzip ≈ 6.28M** (agree within 1.26× ⇒ trustworthy; no long-range-repetition gap). Trend healthy
+    (distinct-3/len/cells flat-or-↑, intra-bin NN-cosine flat, 0 near-dups) — small, not collapsing.
+  - *Interpretation rule (pre-registered):* this is a **measurement**, no pass/fail — the number is the
+    deliverable. **α_max(N) = Y_eff / N** caps M2's ontology fraction; M2's α grid MUST NOT exceed it
+    (α_max ≈ 0.0079 @ N=1e9, 0.0008 @ N=1e10, 0.00016 @ N=5e10) OR M2 must inject corpus-duplication and
+    treat repetition as a studied variable. **Implication:** at a large token budget the *current* corpus
+    supports only a tiny grounded fraction — so M2 runs at modest N, or generation must scale Y_eff first
+    (Track A + more topics raise it). A finding, not a bug.
 
 **M3 — scale + the FINAL PHASE GATE. UNTESTED.**
 - *Gate (decisive):* at RWKV-7-matched scale, the ontology-grounded mix yields an H-Net+RWKV that

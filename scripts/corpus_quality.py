@@ -51,6 +51,47 @@ def gzip_ratio(text: str) -> float:
     return len(b) / max(len(gzip.compress(b, 6)), 1)
 
 
+# ── #42: corpus non-repetitive token-yield ceiling (byte-level, the model's token space) ──
+# M2 mixes the corpus at fraction α. If the corpus carries only Y_eff genuinely-novel byte-tokens,
+# then beyond a budget N you are re-feeding duplicate n-grams, so α_max(N) = Y_eff / N caps α at
+# scale. We report two bracketing estimates: an entropy-rate estimate (Y_eff) and the gzip
+# information content (Y_gzip); they should agree within ~2× — a big gap flags long-range repetition
+# the k-gram window misses. Pre-registered as a MEASUREMENT (the number is the deliverable, no pass/fail).
+
+def _distinct_kgrams(arr_u64, k: int) -> int:
+    """Count distinct k-grams over a uint8→uint64 byte array by packing each k-window into one
+    uint64 (exact for k ≤ 8: a full 8-byte window is exactly a uint64) and de-duplicating."""
+    import numpy as np
+    L = arr_u64.size - k + 1
+    if L <= 0:
+        return 0
+    packed = np.zeros(L, dtype=np.uint64)
+    base = np.uint64(256)
+    for j in range(k):                       # Horner; no overflow for k ≤ 8
+        packed = packed * base + arr_u64[j:j + L]
+    return int(np.unique(packed).size)
+
+
+def entropy_rate(data: bytes, max_k: int = 8) -> dict[int, float]:
+    """H_k = log2(distinct k-grams)/k for k=1..max_k. As k grows H_k → the per-byte entropy rate
+    h (bits/byte ∈ [0,8]); H_{max_k} is our estimate of h."""
+    import numpy as np
+    arr = np.frombuffer(data, dtype=np.uint8).astype(np.uint64)
+    return {k: (float(np.log2(d)) / k if (d := _distinct_kgrams(arr, k)) > 0 else 0.0)
+            for k in range(1, max_k + 1)}
+
+
+def token_yield_ceiling(data: bytes, max_k: int = 8) -> dict:
+    """Non-repetitive byte-token ceiling. Y_eff = total · (H_max_k / 8) (entropy-rate estimate of the
+    novel fraction); Y_gzip = compressed length in bytes (information content). Report both."""
+    total = len(data)
+    H = entropy_rate(data, max_k)
+    h8 = H.get(max_k, 0.0)
+    return {"total_bytes": total, "H_per_k": H, "h_bits_per_byte": h8,
+            "Y_eff": total * (h8 / 8.0), "Y_gzip": len(gzip.compress(data, 6)),
+            "distinct_byte_values": int(round(2 ** H.get(1, 0.0)))}
+
+
 def chapter_cells(text: str) -> tuple[bool, int, int, int]:
     m = JSON_RE.search(text or "")
     if not m:
@@ -85,6 +126,12 @@ def main() -> int:
                     help="one or more dirs containing chapters.parquet")
     ap.add_argument("--bins", type=int, default=6)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--no-byte-yield", action="store_true",
+                    help="skip the #42 byte-level non-repetitive token-yield ceiling")
+    ap.add_argument("--alpha-budgets", nargs="+", type=float, default=[5e9, 1e10, 5e10],
+                    help="candidate M2 mix budgets N (tokens); prints α_max(N)=Y_eff/N for each")
+    ap.add_argument("--max-bytes", type=int, default=128_000_000,
+                    help="cap on bytes fed to the k-gram entropy estimate (memory guard)")
     args = ap.parse_args()
 
     import numpy as np
@@ -146,6 +193,23 @@ def main() -> int:
     print("STABILITY")
     print(f"  response chars (mean): {np.mean(char_len):.0f} | reasoning chars (mean): {np.mean(reas_len):.0f}")
 
+    # ── #42: byte-level non-repetitive token-yield ceiling (caps α at scale for M2) ──────
+    ty = None
+    if not args.no_byte_yield:
+        data = "\n".join(texts).encode("utf-8", "ignore")
+        truncated = len(data) > args.max_bytes
+        ty = token_yield_ceiling(data[: args.max_bytes])
+        ty["truncated_to_max_bytes"] = truncated
+        ty["alpha_max"] = {f"{N:.0e}": ty["Y_eff"] / N for N in args.alpha_budgets}
+        print("TOKEN-YIELD CEILING (#42 — byte-level, the model's token space)")
+        print(f"  total bytes: {ty['total_bytes']:,}{' (TRUNCATED for entropy)' if truncated else ''}"
+              f"  | h ≈ {ty['h_bits_per_byte']:.3f} bits/byte")
+        print(f"  Y_eff (entropy-rate): {ty['Y_eff']:,.0f} tokens   |   Y_gzip (info content): {ty['Y_gzip']:,.0f} bytes"
+              f"   (agree within ~2× ⇒ trustworthy)")
+        print("  α_max(N) = Y_eff / N  (M2's ontology fraction must not exceed this, or study repetition):")
+        for N in args.alpha_budgets:
+            print(f"      N={N:.0e} tokens → α_max = {ty['Y_eff']/N:.5f}")
+
     # ── TREND over generation order ───────────────────────────────────────────
     idx = np.array_split(np.arange(n), args.bins)
     def binned(v):
@@ -173,7 +237,8 @@ def main() -> int:
                "gzip_mean": float(np.mean(gz)), "mean_pair_cos": mean_pair, "mean_nn_cos": mean_nn,
                "exact_dups": exact_dups, "near_dups": near_dups, "json_rate": float(np.mean(jsonok)),
                "template_coverage": len(templ), "family_coverage": len(fams),
-               "trend_nn_bin": nn_bin, "trend_distinct3": binned(d3c), "trend_cells": binned(cells)}
+               "trend_nn_bin": nn_bin, "trend_distinct3": binned(d3c), "trend_cells": binned(cells),
+               "token_yield": ty}
         Path(args.out).write_text(json.dumps(rep, indent=2))
         print(f"\nwrote {args.out}")
     return 0

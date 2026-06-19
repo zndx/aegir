@@ -304,3 +304,81 @@ def bcubed_f1(
         else 0.0
     )
     return precision, recall, f1
+
+
+# ---------------------------------------------------------------------------
+# Small-sample statistical rigor (shared by the #43 realization-CPA scorer and
+# the M1 scaling-ladder eval). Per the ontology-CPA-eval-methodology: only claim
+# a win when the BCa bootstrap CI on the delta excludes 0 AND the paired
+# permutation p < 0.05. Pure numpy + scipy.special (a transitive sklearn dep).
+# ---------------------------------------------------------------------------
+
+def bca_ci(values, stat_fn=None, *, n_boot: int = 10000, alpha: float = 0.05, seed: int = 0):
+    """Bias-corrected & accelerated (BCa) bootstrap CI for a 1-D sample.
+
+    BCa (Efron 1987) corrects the percentile bootstrap for both median-bias
+    (``z0``) and skew (acceleration ``a`` from the jackknife), so it is the
+    right interval for the small, skewed per-chapter / per-eval-chunk samples we
+    score. Returns ``(lo, hi)`` at the ``1 - alpha`` level.
+
+    ``stat_fn`` defaults to the mean; pass e.g. ``np.median`` or a custom
+    statistic. Degenerate samples (n < 2) return the point estimate twice.
+    """
+    from scipy.special import ndtr, ndtri  # inverse/forward normal CDF
+
+    stat_fn = stat_fn or np.mean
+    values = np.asarray(values, dtype=float)
+    n = values.size
+    if n < 2:
+        v = float(stat_fn(values)) if n else float("nan")
+        return (v, v)
+
+    theta_hat = float(stat_fn(values))
+    rng = np.random.default_rng(seed)
+    boot = np.array([float(stat_fn(values[rng.integers(0, n, n)])) for _ in range(n_boot)])
+
+    # Bias-correction z0 from the fraction of bootstrap stats below the estimate.
+    prop = np.clip(np.mean(boot < theta_hat), 1.0 / n_boot, 1.0 - 1.0 / n_boot)
+    z0 = ndtri(prop)
+
+    # Acceleration from the jackknife skew of the statistic.
+    jack = np.array([float(stat_fn(np.delete(values, i))) for i in range(n)])
+    jbar = jack.mean()
+    diff = jbar - jack
+    denom = 6.0 * (np.sum(diff ** 2) ** 1.5)
+    a = float(np.sum(diff ** 3) / denom) if denom != 0 else 0.0
+
+    def _adj(z):
+        return float(ndtr(z0 + (z0 + z) / (1.0 - a * (z0 + z))))
+
+    lo_p = _adj(ndtri(alpha / 2.0))
+    hi_p = _adj(ndtri(1.0 - alpha / 2.0))
+    return (float(np.quantile(boot, lo_p)), float(np.quantile(boot, hi_p)))
+
+
+def paired_permutation(a, b, *, n_perm: int = 10000, seed: int = 0,
+                       alternative: str = "greater") -> float:
+    """Paired sign-flip permutation test on ``a - b`` (same rows/chapters).
+
+    Tests whether the paired difference's mean differs from 0 by randomly
+    flipping the sign of each pair's difference (the exact-test analogue for
+    matched samples). ``alternative`` ∈ {greater, less, two-sided}. Uses the
+    add-one estimator (Phipson & Smyth 2010) so p is never exactly 0.
+    """
+    a = np.asarray(a, dtype=float)
+    b = np.asarray(b, dtype=float)
+    d = a - b
+    n = d.size
+    if n == 0:
+        return 1.0
+    obs = float(d.mean())
+    rng = np.random.default_rng(seed)
+    signs = rng.choice(np.array([-1.0, 1.0]), size=(n_perm, n))
+    perm = (signs * d).mean(axis=1)
+    if alternative == "greater":
+        hits = np.sum(perm >= obs)
+    elif alternative == "less":
+        hits = np.sum(perm <= obs)
+    else:  # two-sided
+        hits = np.sum(np.abs(perm) >= abs(obs))
+    return float((hits + 1) / (n_perm + 1))
