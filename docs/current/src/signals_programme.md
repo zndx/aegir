@@ -61,6 +61,22 @@ full, curated working ontology) ⊇ **SHARE** (`sdg-corpora`, the published subs
 - **The lineup is the navigate / explore / curate layer** — the one place ontology-projection, Atlas-sync,
   and the Qdrant retrieval text are seen together, and from which curation decisions are made.
 
+**The verification membrane (corollary of commitment #2).** The anchors partition verification by *where
+reality is authored*. **Inside** the loop — the ontology and everything projected from it (DDL spine, corpus
+structure) — verification is **intrinsic**: HermiT is the oracle, correctness is *proved*, not checked.
+Validation-after-the-fact (shape checkers, assertion contracts, external catalogs) *compensates* for not
+generating-correct-by-construction and has no place inside the boundary. Extrinsic verification is legitimate
+**only at the membrane** where un-generated reality enters — grounding the corpus against FinePDFs (R1) and
+the held-out downstream eval — where the system honestly tests itself against a world it did not author. So
+anchors #2 (formal / intrinsic) and #3 (domain / membrane) are both required and *not* redundant: they verify
+opposite sides of the boundary. **Consequence — the enterprise metadata/governance plane is a commons, not a
+dependency.** With in-situ RASE engineering its switching costs are ~zero (OpenMetadata, OpenLineage, Atlas,
+Ranger, DataHub, …), so we *sample the patterns, adapt the protocol, and evidence what we require in real
+time*; we integrate with none and emit (OL/PROV-O for cross-repo Signals federation) only on our terms at the
+membrane. Atlas is the standing example — a sampled utility held to *rebuildable-from-the-ontology-or-it's-a-
+bug*, never a master. "Should we integrate with X" is a malformed question: the plane is a reference, never a
+runtime.
+
 **The maturation arc this enables.** The current ontology form is the template+slot catalog (the seed
 crystal). The lineup curation is the **forge** that converts it into a real lexicon of concrete,
 Atlas-synced, Qdrant-indexed **Terms** (Lexicon / Category / Term ≡ Atlas Glossary / Category / Term —
