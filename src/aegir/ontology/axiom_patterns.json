@@ -1,0 +1,947 @@
+{
+ "patterns": [
+  {
+   "name": "atomic_subsumption",
+   "origin": "OWL2 SubClassOf to a named/BFO-CCO upper class (repo subclass_basic / subclass_to_* ; 509/540 templates are SubClassOf-headed; BFO 2020 is-a backbone)",
+   "owl2_construct": "SubClassOf(C, NamedClass-or-anchorIRI)",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {A:Class}",
+   "bfo_cco_anchor": "bfo:Continuant / bfo:IndependentContinuant(bfo:0000004) / bfo:Process(bfo:0000015) / cco:Artifact / cco:InformationContentEntity \u2014 when {A} is a literal anchor IRI it IS the bfo_anchor_path[-1]; pure rdfs:subClassOf+",
+   "grounds_ddl": "dimension",
+   "slot_meta_types": [
+    "Class",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "OWL2 core + BFO/CCO public IRIs; FHIR Resource-typing minimum. clean.",
+   "extends_existing": false,
+   "verbalization_hint": "Every {X} is a kind of {A}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "backbone_element_nesting",
+   "origin": "FHIR BackboneElement nested child (e.g. Observation.component 0..*) \u2014 an anonymous typed sub-structure specific-dependent on its parent; audit-missing 'nested-backbone'",
+   "owl2_construct": "SubClassOf(C, ObjectSomeValuesFrom(p, ChildClass)) + child SubClassOf(ObjectSomeValuesFrom(partOf, C)) specific-dependence",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {p:ObjectProperty} some {Y:Class}",
+   "bfo_cco_anchor": "bfo:0000051 (has continuant part) / bfo:0000050 (part of): {Y} is a generically-dependent sub-ICE that bfo:0000050 some {X}; the backbone child specifically depends on its parent record.",
+   "grounds_ddl": "nested-child",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; BackboneElement nesting is a public-domain compositional idiom. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "Each {X} contains nested {Y} components via {p}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "cardinality_optional_repeating",
+   "origin": "FHIR element cardinality 0..* (optional, repeating); repo universal_restriction (range-typed open collection)",
+   "owl2_construct": "SubClassOf(C, ObjectAllValuesFrom(p, Y)) \u2014 open multi-valued, range-guarded, no lower bound",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {p:ObjectProperty} only {Y:Class}",
+   "bfo_cco_anchor": "a non-functional BFO/CCO relation with a range guard; {X} may bear zero-or-more {Y}, all typed {Y}.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; cardinality notation is generic. clean. ('only' does NOT force NOT NULL per realize.py \u2014 non-mandatory association.)",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} may have any number of {Y} (all via {p}).",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "cardinality_optional_single",
+   "origin": "FHIR element cardinality 0..1 (optional, non-repeating); repo qualified_cardinality_restriction (max)",
+   "owl2_construct": "SubClassOf(C, ObjectMaxCardinality(1, p, Y))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {p:ObjectProperty} max 1 {Y:Class}",
+   "bfo_cco_anchor": "a functional-ish BFO/CCO relation; {X} bears at most one {Y}, no existence commitment.",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; cardinality notation is generic. clean. (max captured-not-enforced in DDL \u2014 Trino has no CHECK.)",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} has at most one {Y}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "cardinality_required_repeating",
+   "origin": "FHIR element cardinality 1..* (required, repeating \u2014 at least one); repo cardinality_min_one",
+   "owl2_construct": "SubClassOf(C, ObjectMinCardinality(1, p, Y))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {p:ObjectProperty} min 1 {Y:Class}",
+   "bfo_cco_anchor": "a non-functional BFO/CCO relation with an existence floor; {X} bears at least one {Y} (mandatory multi-valued).",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; cardinality notation is generic. clean. (min 1 \u2192 target NOT NULL per realize.py.)",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} has at least one {Y} via {p}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "cardinality_required_single",
+   "origin": "FHIR element cardinality 1..1 (required, non-repeating); repo qualified_cardinality_restriction (exactly)",
+   "owl2_construct": "SubClassOf(C, ObjectExactCardinality(1, p, Y))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {p:ObjectProperty} exactly 1 {Y:Class}",
+   "bfo_cco_anchor": "a functional BFO/CCO relation; {X} stands in the relation to exactly one {Y} (mandatory single bearer).",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; cardinality notation is generic. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} has exactly one {Y}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "coded_concept_extensible_binding",
+   "origin": "FHIR CodeableConcept bound with EXTENSIBLE strength (use a value-set code if one applies, else out-of-set permitted)",
+   "owl2_construct": "SubClassOf(C, ObjectSomeValuesFrom(p, Y)) WITHOUT a closing universal (open-world: supplemental fillers allowed)",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, {p:ObjectProperty} some {Y:Class}",
+   "bfo_cco_anchor": "cco:DescriptiveICE bearing a cco:designates relation onto concept class {Y}; absence of a covering axiom keeps the open-world supplement admissible. Leading literal clause anchors.",
+   "grounds_ddl": "enum",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; extensible-vs-required is a reusable modelling distinction. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "Every {X} is coded with at least one concept, preferably from {Y}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "coded_concept_required_binding",
+   "origin": "FHIR CodeableConcept/Coding bound to a ValueSet with REQUIRED strength (code SHALL be drawn from the expansion); audit-missing 'value-partition'",
+   "owl2_construct": "SubClassOf(C, ObjectSomeValuesFrom(p, OneOf{i1..in})) \u2227 SubClassOf(C, ObjectAllValuesFrom(p, OneOf{i1..in})) \u2014 enumerated, closed",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: ({p:ObjectProperty} some {Y:Class}), ({p:ObjectProperty} only {Y:Class})",
+   "bfo_cco_anchor": "cco:DesignativeICE \u2014 {X} bears a code that cco:designates a concept; {Y} is the BFO-anchored concept/value-partition class enumerating the closed CodeSystem members. NO proprietary codes \u2014 {Y} is an ontology-derived enum class.",
+   "grounds_ddl": "enum",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; binding-strength is a reusable concept; NO SNOMED/LOINC content \u2014 enum members are sdg:-derived. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "Every {X} is coded with exactly one concept drawn from the closed set {Y}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "composite_interval_period",
+   "origin": "FHIR Period (start/end:dateTime) / Range (low/high) \u2014 a bounded interval; audit-missing 'composite-datatype'",
+   "owl2_construct": "EquivalentClasses(C, ObjectIntersectionOf(anchor, DataSomeValuesFrom(d, xsd:dateTime), DataSomeValuesFrom(e, xsd:dateTime)))",
+   "manchester_skeleton": "Class: {X:Class} EquivalentTo: cco:DescriptiveICE and ({d:DataProperty} some xsd:dateTime) and ({e:DataProperty} some xsd:dateTime)",
+   "bfo_cco_anchor": "bfo:0000008 (temporal region) flavor for Period; two paired bound data properties on one node (start/end or low/high). cco:DescriptiveICE anchor keeps it catalog-realizable.",
+   "grounds_ddl": "composite-datatype",
+   "slot_meta_types": [
+    "Class",
+    "DataProperty",
+    "DataProperty"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; interval-with-two-bounds is a public-domain idiom. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} spans from a start (via {d}) to an end (via {e}).",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "composite_quantity_datatype",
+   "origin": "FHIR Quantity datatype (value:decimal + unit:code + system:uri) \u2014 a measure-bearing structured node; audit-missing 'composite-datatype'",
+   "owl2_construct": "EquivalentClasses(C, ObjectIntersectionOf(anchor, DataSomeValuesFrom(d, xsd:decimal), ObjectSomeValuesFrom(p, UnitClass)))",
+   "manchester_skeleton": "Class: {X:Class} EquivalentTo: cco:DescriptiveICE and ({d:DataProperty} some xsd:decimal) and ({p:ObjectProperty} some {Y:Class})",
+   "bfo_cco_anchor": "cco:DescriptiveICE / bfo:0000019 (quality) \u2014 {X} is a measurement ICE carrying a magnitude (data property) and cco:uses_measurement_unit onto a unit class {Y} (cco:MeasurementUnit). Parenthesized conjuncts so _RESTRICTION_RE/_DP_RANGE_RE find them.",
+   "grounds_ddl": "composite-datatype",
+   "slot_meta_types": [
+    "Class",
+    "DataProperty",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; Quantity field layout is public-domain structure. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} has a numeric value (via {d}) and a unit (via {p} onto {Y}).",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "contained_local_dependent",
+   "origin": "FHIR contained resources (Resource.contained, fragment '#id') \u2014 inline resource with no independent identity, resolvable only within its container",
+   "owl2_construct": "SubClassOf(C, ObjectSomeValuesFrom(bfo:0000051, Y)) + specific-dependence on the container",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000051 some {Y:Class}",
+   "bfo_cco_anchor": "bfo:0000051 (has continuant part) where {Y} is a generically-dependent continuant whose identity is scoped to its container {X}; cannot exist outside it. Body uses opaque numeric IRI (\u2192 _OPAQUE_PROP_LABELS has_part).",
+   "grounds_ddl": "nested-child",
+   "slot_meta_types": [
+    "Class",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; contained-resource scoping is a reusable structural concept. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} contains an inline {Y} that exists only within it.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "modifier_extension_negation",
+   "origin": "FHIR modifierExtension \u2014 an extension that CHANGES interpretation (must be understood); RDF prefixes the modified property with underscore",
+   "owl2_construct": "EquivalentClasses(C, ObjectIntersectionOf(Y, ObjectComplementOf(ObjectSomeValuesFrom(p, Z)))) \u2014 meaning-altering qualification",
+   "manchester_skeleton": "Class: {X:Class} EquivalentTo: {Y:Class} and not ({p:ObjectProperty} some {Z:Class})",
+   "bfo_cco_anchor": "cco:DirectiveICE \u2014 the modifier asserts {X} is NOT the default reading; a meaning-bearing ICE that defeats an otherwise-entailed class membership.",
+   "grounds_ddl": "dimension",
+   "slot_meta_types": [
+    "Class",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; modifierExtension must-understand semantics are reusable. clean.",
+   "extends_existing": false,
+   "verbalization_hint": "A {X} is a {Y} that does NOT {p} a {Z} (the modifier negates the default).",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "open_world_extension",
+   "origin": "FHIR Extension (url:uri + value[x], nested sub-extensions) \u2014 open-world addition of data not in the base resource, keyed by a StructureDefinition URL",
+   "owl2_construct": "Open SubClassOf(C, ObjectSomeValuesFrom(p, ExtensionClass)) deliberately WITHOUT closure (OWA preserved)",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, {p:ObjectProperty} some {Y:Class}",
+   "bfo_cco_anchor": "cco:InformationContentEntity \u2014 {Y} is a supplemental ICE bfo:0000050 (part of) the record {X}, identified by a cco designator (the extension url); no closure axiom preserves the open-world assumption.",
+   "grounds_ddl": "nested-child",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; extension/open-world mechanism is a reusable design concept. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} may carry additional {Y} extensions via {p}, identified by a URL.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "polymorphic_value_choice",
+   "origin": "FHIR value[x] choice element \u2014 one predicate whose object self-types (Quantity | string | CodeableConcept \u2026); audit-missing 'choice-type union'",
+   "owl2_construct": "SubClassOf(C, ObjectSomeValuesFrom(p, ObjectUnionOf(Y, Z))) \u2227 SubClassOf(C, ObjectAllValuesFrom(p, ObjectUnionOf(Y, Z)))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, ({p:ObjectProperty} some {Y:Class}), ({p:ObjectProperty} only {Y:Class})",
+   "bfo_cco_anchor": "cco:DescriptiveICE bearer; cco carrier relation onto a value entity whose kind is one of a closed BFO-typed union \u2014 the disjunctive filler closed by the universal restriction",
+   "grounds_ddl": "eav",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0 value[x] choice; the polymorphic value is one value-class {Y} closed by `only`, its typed variants modeled by a disjoint_union on {Y}. Parseable by realize._RESTRICTION_RE.",
+   "extends_existing": true,
+   "verbalization_hint": "The value of {X} is either a {Y} or a {Z}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "typed_cross_resource_reference",
+   "origin": "FHIR Reference datatype / fhir:link (typed, target-constrained cross-resource link, e.g. Reference(Patient)); repo existential_restriction_iri_prop / labrun_uses",
+   "owl2_construct": "SubClassOf(C, ObjectSomeValuesFrom(p, Y)) \u2014 qualified existential whose range names the target type",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000015, {p:ObjectProperty} some {Y:Class}",
+   "bfo_cco_anchor": "cco:InformationContentEntity/bfo:Process record that cco:is_about / bfo:0000050 (part of) its referent; the link property points {X} (an ICE record) at {Y} (the referent entity). Leading literal clause is bfo_anchor_path[-1].",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0; structural reference idiom only, no resource content copied. clean. [convention: numeric bfo:0000015 in the axiom BODY is correct per the real catalog (e.g. labrun_with_protocol); prefixed labels go in bfo_anchor_path].",
+   "extends_existing": true,
+   "verbalization_hint": "Every {X} refers to some {Y} via {p}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "typed_primitive_dataproperty",
+   "origin": "FHIR typed primitive via fhir:v with an XSD type; repo dataproperty_typed_restriction (audit-missing 'dataproperty-slot'; realize.py supports it but the catalog exercises ZERO)",
+   "owl2_construct": "SubClassOf(C, DataSomeValuesFrom(d, xsd:type)) \u2014 datatype-restricted literal node",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {d:DataProperty} some xsd:dateTime",
+   "bfo_cco_anchor": "cco:InformationContentEntity bearing a cco data value via a data property; the literal node is the cco:has_*_value carrier with an xsd-typed range (BFO-anchored quality magnitude). _DP_RANGE_RE maps slot\u2192range.",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "DataProperty"
+   ],
+   "tier": "fhir_minimum",
+   "cleanroom_note": "FHIR CC0 + xsd (W3C). clean. This is the ONLY axiom-body path to typed/measure columns \u2014 the catalog currently has none.",
+   "extends_existing": false,
+   "verbalization_hint": "A {X} carries a typed primitive value via {d} of type xsd:dateTime.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "anchored_subclass",
+   "origin": "OWL2 SubClassOf with a LITERAL BFO/CCO anchor as superclass (repo anchored_subclass / subclass_to_artifact) \u2014 drives anchor_attributes() typed-column pool",
+   "owl2_construct": "SubClassOf(C, anchorIRI)",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:Artifact",
+   "bfo_cco_anchor": "The literal super IS the anchor; bfo_anchor_path MUST list it. ddl._anchor_root reads bfo_anchor_path[-1]; anchor_attributes inherits its + ancestors' DataProperties via _ANCHOR_PARENTS. Allowed: cco:Artifact, bfo:Process, cco:{Descriptive,Directive,Designative}ICE, cco:InformationContentEntity, bfo:IndependentContinuant.",
+   "grounds_ddl": "dimension",
+   "slot_meta_types": [
+    "Class"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 core; BFO/CCO public. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "Every {X} is a kind of artifact.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "complement_negation",
+   "origin": "OWL2 ObjectComplementOf (negation); repo equiv_intersect_with_negation; audit-missing 'not (negation)'",
+   "owl2_construct": "EquivalentClasses(C, ObjectIntersectionOf(G, ObjectComplementOf(D)))",
+   "manchester_skeleton": "Class: {X:Class} EquivalentTo: {G:Class} and not {D:Class}",
+   "bfo_cco_anchor": "Carves a residual within a BFO genus {G} by excluding {D} (e.g. a non-artifact information content entity: cco:InformationContentEntity and not cco:Artifact).",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "Class",
+    "Class"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard, already in catalog. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "An {X} is a {G} that is not a {D}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "datatype_facet_restriction",
+   "origin": "OWL2 DatatypeRestriction with xsd constraining facets (minInclusive/maxInclusive/length/pattern); audit-missing 'datatype-facet' + 'dataproperty-slot'",
+   "owl2_construct": "SubClassOf(C, DataSomeValuesFrom(d, DatatypeRestriction(xsd:type, facet)))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {d:DataProperty} some xsd:decimal[>= 0, <= 1]",
+   "bfo_cco_anchor": "Constrains the measurement value of a quality/ICE (e.g. an sdg measurement whose sdg:hasConfidence/hasLatitude is bounded in [0,1]). _DP_RANGE_RE matches the slot\u2192xsd range; the facet rides as a CheckNote.",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "DataProperty"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 + W3C XSD facets, standard. clean.",
+   "extends_existing": false,
+   "verbalization_hint": "An {X}'s {d} is an xsd:decimal between 0 and 1.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "disjoint_classes",
+   "origin": "OWL2 DisjointClasses; audit-missing 'disjoint'",
+   "owl2_construct": "DisjointClasses(C, D) (C SubClassOf ObjectComplementOf(D))",
+   "manchester_skeleton": "Class: {X:Class} DisjointWith: {Y:Class}",
+   "bfo_cco_anchor": "Sibling continuants under a common BFO genus that must not overlap (e.g. cco:Artifact vs a non-artifact ICE sibling); mirrors BFO's continuant/occurrent disjointness.",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "Class"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard. clean.",
+   "extends_existing": false,
+   "verbalization_hint": "Nothing is both an {X} and a {Y}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "disjoint_union_partition",
+   "origin": "OWL2 DisjointUnion (covering + pairwise-disjoint partition); OWL2 'Value Partition' best-practice closed quality space",
+   "owl2_construct": "DisjointUnion(C, D1 \u2026 Dn)",
+   "manchester_skeleton": "Class: {X:Class} DisjointUnionOf: {Y:Class}, {Z:Class}, {W:Class}",
+   "bfo_cco_anchor": "Exhaustive subdivision of a BFO/CCO genus (e.g. cco:InformationContentEntity DisjointUnionOf Designative/Descriptive/DirectiveICE \u2014 the project's own ICE triad); or a determinable bfo:0000019 quality whose determinates are a fixed value-set (sdg severity/classification tiers).",
+   "grounds_ddl": "enum",
+   "slot_meta_types": [
+    "Class",
+    "Class",
+    "Class",
+    "Class"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard + W3C value-partition note; ICE triad is CCO-public, reused by IRI. clean.",
+   "extends_existing": false,
+   "verbalization_hint": "Every {X} is exactly one of: a {Y}, a {Z}, or a {W}, and these never overlap.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "enumerated_class_oneof",
+   "origin": "OWL2 ObjectOneOf (nominals / enumerated class)",
+   "owl2_construct": "EquivalentClasses(C, ObjectOneOf(i1 \u2026 in))",
+   "manchester_skeleton": "Class: {X:Class} EquivalentTo: ({i1:Individual} or {i2:Individual} or {i3:Individual})",
+   "bfo_cco_anchor": "A class whose extension is a fixed roster of named individuals (e.g. recognized compliance frameworks sdg:underFramework targets), anchored under cco:InformationContentEntity.",
+   "grounds_ddl": "enum",
+   "slot_meta_types": [
+    "Class",
+    "Individual",
+    "Individual",
+    "Individual"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard. clean. (Individuals are sdg:-derived nominals, not proprietary codes.)",
+   "extends_existing": false,
+   "verbalization_hint": "An {X} is exactly one of {i1}, {i2}, or {i3}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "equivalent_class_definition",
+   "origin": "OWL2 EquivalentClasses + ObjectIntersectionOf (genus-differentia / Defined Class); repo equivalent_intersection (31 EquivalentTo templates)",
+   "owl2_construct": "EquivalentClasses(C, ObjectIntersectionOf(G, ObjectSomeValuesFrom(p, D)))",
+   "manchester_skeleton": "Class: {X:Class} EquivalentTo: {G:Class} and ({p:ObjectProperty} some {D:Class})",
+   "bfo_cco_anchor": "Genus {G} is a BFO Continuant subtree (or cco:Artifact); differentia {p} some {D} narrows it. The parenthesized restriction conjunct IS matched by _RESTRICTION_RE so it grounds a junction; the bare named-class genus becomes an entity column.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard; genus-differentia is Aristotelian, no third-party text. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "An {X} is exactly a {G} that {p} some {D}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "has_value_pinned_filler",
+   "origin": "OWL2 ObjectHasValue / DataHasValue (restriction to a specific filler/individual)",
+   "owl2_construct": "SubClassOf(C, ObjectHasValue(p, i))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, {p:ObjectProperty} value {i:Individual}",
+   "bfo_cco_anchor": "Pins a relation of a class to one fixed individual (e.g. every {X} sdg:underStandard a specific standard-individual, or bound to a fixed cco organization individual).",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Individual"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard. clean.",
+   "extends_existing": false,
+   "verbalization_hint": "Every {X} {p} the specific individual {i}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "multi_restriction_conjunction",
+   "origin": "OWL2 conjunction of restrictions (comma-separated SubClassOf clauses); repo multi_restriction_conjunction (existential_two_clauses; 18 templates with \u22652 restrictions) \u2014 the ONLY shape reaching multi-FK / dense-M:N",
+   "owl2_construct": "SubClassOf(C, R1) \u2227 SubClassOf(C, R2), each an existential/cardinality restriction",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {p:ObjectProperty} some {Y:Class}, {q:ObjectProperty} some {Z:Class}",
+   "bfo_cco_anchor": "Optional leading literal anchor clause, then \u22652 restriction clauses; properties may be slots or literal IRIs interchangeably. parse_restrictions returns a LIST \u2192 _realize_junction emits one junction table per restriction (multi-FK), _realize_star one dimension per restriction.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 core. clean. THIS is the shape new junction/star patterns must emit to ground >1 FK.",
+   "extends_existing": true,
+   "verbalization_hint": "{X} relates to {Y} via {p} and to {Z} via {q}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "object_property_characteristics",
+   "origin": "OWL2 property axioms (Transitive/Functional/InverseFunctional/Symmetric/InverseOf)",
+   "owl2_construct": "TransitiveObjectProperty(p); FunctionalObjectProperty(p); InverseObjectProperties(p, q)",
+   "manchester_skeleton": "ObjectProperty: {p:ObjectProperty} Characteristics: Transitive",
+   "bfo_cco_anchor": "Stamps the global behaviour of a BFO/sdg relation: bfo:0000050 partOf is Transitive, bfo:0000051 hasPart its InverseOf; an identifier relation (sdg:hasIdentifier) is Functional/InverseFunctional (a key). (SubPropertyOf carries the axiom keyword; characteristics ride as annotations the step-3 generator attaches.)",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "ObjectProperty",
+    "ObjectProperty"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard. clean. (Functional\u2192single-valued UNIQUE FK; InverseFunctional\u2192candidate-key; Symmetric\u2192undirected edge table; Transitive\u2192closure table.)",
+   "extends_existing": false,
+   "verbalization_hint": "{p} is a sub-property of (and inverse/transitive over) {q}.",
+   "pattern_kind": "property_axiom"
+  },
+  {
+   "name": "property_chain_inclusion",
+   "origin": "OWL2 SubObjectPropertyOf with ObjectPropertyChain (role composition); audit-missing 'property-chain (o)'",
+   "owl2_construct": "SubObjectPropertyOf(ObjectPropertyChain(p, q), r)",
+   "manchester_skeleton": "ObjectProperty: {r:ObjectProperty} SubPropertyChain: {p:ObjectProperty} o {q:ObjectProperty}",
+   "bfo_cco_anchor": "Composes BFO/sdg relations (e.g. (sdg:hasColumn o sdg:hasValueType) \u2291 a derived sdg:hasColumnValueType; or (bfo:0000050 o bfo:0000050) \u2192 partOf transitivity as a chain).",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "ObjectProperty",
+    "ObjectProperty",
+    "ObjectProperty"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard. clean. (Grounds a derived bridge relation: a JOIN view, or a closure table for self-chains.)",
+   "extends_existing": false,
+   "verbalization_hint": "If something {p} a Y and that Y {q} a Z, then it {r} the Z.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "universal_value_restriction",
+   "origin": "OWL2 ObjectAllValuesFrom (universal / local range-typing); repo universal_restriction (26 'only' templates); audit-missing 'only (universal)'",
+   "owl2_construct": "SubClassOf(C, ObjectAllValuesFrom(p, D))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: {p:ObjectProperty} only {D:Class}",
+   "bfo_cco_anchor": "Local range narrowing of a BFO/CCO relation for one subject class (e.g. cco:DirectiveICE that {p} only {governed-class}).",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "owl2_core",
+   "cleanroom_note": "OWL2 standard. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "All of an {X}'s {p} fillers are {D}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "agent_role",
+   "origin": "ODP 'AgentRole' \u2014 a role performedBy exactly 1 Agent, isAgentRoleIn some context; repo sdg:hasAgentRole/hasRole/responsibleFor",
+   "owl2_construct": "SubClassOf(AgentRole, ObjectExactCardinality(1, isPerformedBy, Agent) \u2227 ObjectSomeValuesFrom(isAgentRoleIn, Context))",
+   "manchester_skeleton": "Class: {R:Class} SubClassOf: bfo:0000023, {pf:ObjectProperty} exactly 1 {A:Class}, {ri:ObjectProperty} some {C:Class}",
+   "bfo_cco_anchor": "{R} a bfo:0000023 (role); {A} the bearer (cco:Person / agent, inheres via the role-bearer link); {ri} ties the role to its realizing context {C}.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "ODP shape; role grounded on bfo:0000023, not DUL Role; performedBy/isAgentRoleIn semantics reimplemented. clean-room. (Role-as-association-class with temporal holding.)",
+   "extends_existing": true,
+   "verbalization_hint": "An {R} is a role performed by exactly one {A} within some {C}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "collection_membership",
+   "origin": "ODP 'Collection' (hasMember/isMemberOf between a Collection and members \u2014 distinct from mereological partOf)",
+   "owl2_construct": "SubClassOf(Collection, ObjectSomeValuesFrom(hasMember, Entity)); InverseObjectProperties(hasMember, isMemberOf)",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, {m:ObjectProperty} some {Y:Class}",
+   "bfo_cco_anchor": "{X} a collection/aggregate (cco ICE that gathers members without mereological parthood); {m} ~ sdg:aggregates; {Y} member continuants. No transitivity, no constitution \u2014 kept distinct from bfo:partOf.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "ODP shape; membership kept distinct from bfo:partOf, our IRIs. clean-room.",
+   "extends_existing": true,
+   "verbalization_hint": "An {X} is a collection that has some {Y} as a member.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "componency_direct_part",
+   "origin": "ODP 'Componency' (hasComponent/isComponentOf \u2014 NON-transitive direct proper-parthood, subPropertyOf hasPart)",
+   "owl2_construct": "SubObjectPropertyOf(hasComponent, hasPart); SubClassOf(C, ObjectSomeValuesFrom(c, D)) [c non-transitive]",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000004, {c:ObjectProperty} some {D:Class}",
+   "bfo_cco_anchor": "{c} is a direct-component relation, SubPropertyOf bfo:0000051 hasPart but deliberately non-transitive (immediate assembly level); {X},{D} bfo:0000004 independent continuants / cco:Artifact.",
+   "grounds_ddl": "nested-child",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "ODP shape (non-transitivity is load-bearing); reimplemented over bfo:hasPart. clean-room.",
+   "extends_existing": true,
+   "verbalization_hint": "An {X} has {D} as a direct component.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "description_and_situation",
+   "origin": "ODP 'Description and Situation' (DnS) \u2014 a Situation satisfies a Description and isSettingFor entities; repo sdg:satisfies/specifies/describedBy",
+   "owl2_construct": "SubClassOf(Situation, ObjectSomeValuesFrom(satisfies, Description) \u2227 ObjectSomeValuesFrom(isSettingFor, Entity))",
+   "manchester_skeleton": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, {sat:ObjectProperty} some {D:Class}, {sf:ObjectProperty} some {E:Class}",
+   "bfo_cco_anchor": "{D} a descriptive/directive ICE (cco:DescriptiveICE/DirectiveICE) prescribing a frame; {S} a situation ICE that {sat}=sdg:satisfies the description and {sf} is-setting-for involved entities {E}. The policy-vs-observed-state compliance shape.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "DnS is the abstract DUL core; reimplemented as situation-satisfies-description over cco ICE subtypes + sdg:satisfies, no DUL axioms copied. clean-room.",
+   "extends_existing": true,
+   "verbalization_hint": "A situation {S} satisfies a description {D} and is the setting for some {E}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "information_realization",
+   "origin": "ODP 'InformationRealization' \u2014 a concrete carrier realizes an abstract InformationObject which isAbout an Entity; repo sdg:isAbout",
+   "owl2_construct": "SubClassOf(Carrier, ObjectSomeValuesFrom(realizes, InformationObject)); InformationObject SubClassOf ObjectSomeValuesFrom(isAbout, Entity)",
+   "manchester_skeleton": "Class: {C:Class} SubClassOf: bfo:0000004, {rz:ObjectProperty} some {I:Class}, {ab:ObjectProperty} some {E:Class}",
+   "bfo_cco_anchor": "{I} a cco:InformationContentEntity (abstract information object); {C} its concrete carrier (bfo:0000004 independent continuant) that {rz}=concretizes/realizes it (cf. bfo:0000059 concretizes); {ab}=sdg:isAbout the subject {E}.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "ODP shape; grounded on BFO concretization (bfo:0000058/59) + cco ICE + sdg:isAbout. clean-room.",
+   "extends_existing": true,
+   "verbalization_hint": "A concrete {C} realizes the information object {I}, which is about {E}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "participation_occurrent_continuant",
+   "origin": "ODP 'Participation' (occurrent has_participant continuant) + RO has_participant; FHIR Encounter.participant; repo observation_with_participant",
+   "owl2_construct": "SubClassOf(Process, ObjectSomeValuesFrom(bfo:0000057, Continuant))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+   "bfo_cco_anchor": "{X} a bfo:0000015 (process); bfo:0000057 has_participant (inverse bfo:0000056 participates_in); {Y} a bfo:Continuant. Direct BFO realization of the ODP Participation pattern. Body opaque IRI \u2192 has_participant column.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "ODP shape (CC-BY); reuses STRUCTURE with bfo:0000015/0000057 instead of DUL Event/hasParticipant. clean-room.",
+   "extends_existing": true,
+   "verbalization_hint": "An {X} is a process in which some {Y} participates.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "partonomy_bfo_relation",
+   "origin": "ODP 'PartOf' (transitive mereology) + BFO/RO bfo:0000050 partOf / 0000051 hasPart; repo partonomy_bfo_relation / existential_with_part_of",
+   "owl2_construct": "SubClassOf(C, ObjectSomeValuesFrom(bfo:0000050, D)); TransitiveObjectProperty(isPartOf)",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000004, bfo:0000050 some {Y:Class}",
+   "bfo_cco_anchor": "BFO-native bfo:0000050 partOf (transitive) / bfo:0000051 hasPart; {X},{Y} bfo:Continuants. Body uses the opaque numeric IRI \u2192 ddl._OPAQUE_PROP_LABELS renames the column part_of.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "ODP shape but the relation is BFO-canonical (bfo:0000050), no DUL import. clean.",
+   "extends_existing": true,
+   "verbalization_hint": "Every {X} is part of some {Y} (transitively).",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "reified_nary_relation",
+   "origin": "W3C 'Defining N-ary Relations' note + ODP n-ary reification \u2014 a relation-individual class linking all N arguments + own attributes; audit-missing 'reified-n-ary-relation'",
+   "owl2_construct": "SubClassOf(N, ObjectSomeValuesFrom(a1, A1)) \u2227 (a2, A2) \u2227 (a3, A3) \u2227 DataSomeValuesFrom(d, xsd:type)",
+   "manchester_skeleton": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, {a1:ObjectProperty} some {A1:Class}, {a2:ObjectProperty} some {A2:Class}, {d:DataProperty} some xsd:decimal",
+   "bfo_cco_anchor": "{N} is a reified relation-as-ICE under cco:InformationContentEntity (or bfo:0000019 quality when carrying a magnitude); each {a_i} binds one role-argument {A_i}; {d} carries the relation's own attribute (sdg:hasConfidence/hasNumericValue). The abstract parent of Participation/AgentRole/DnS.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "DataProperty"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "W3C public-note standard reification; our IRIs throughout. clean. (Junction = association-class with payload columns; degenerates to EAV when attrs open-ended.)",
+   "extends_existing": true,
+   "verbalization_hint": "An {N} ties together an {A1} and an {A2}, and carries its own {d} value.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "sequence_ordering",
+   "origin": "ODP 'Sequence' (directlyPrecedes intransitive + precedes transitive); repo observation_precedes_other",
+   "owl2_construct": "TransitiveObjectProperty(precedes); SubClassOf(C, ObjectSomeValuesFrom(bfo:0000063, D))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000063 some {Y:Class}",
+   "bfo_cco_anchor": "bfo:0000063 precedes over bfo:0000015 occurrents (process steps); maps to sdg:transitionsTo / sdg:concludesWith ordering. Body opaque IRI \u2192 precedes column.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "ODP shape; relation realized as bfo:0000063 precedes (already in catalog). clean-room.",
+   "extends_existing": true,
+   "verbalization_hint": "Each {X} directly precedes a {Y} in the sequence.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "time_indexed_participation",
+   "origin": "ODP 'TimeIndexedParticipation' \u2014 a reified participation indexed by a time interval (effective-dated M:N)",
+   "owl2_construct": "SubClassOf(R, ObjectExactCardinality(1, ev, E) \u2227 ObjectExactCardinality(1, pt, P) \u2227 ObjectSomeValuesFrom(at, T))",
+   "manchester_skeleton": "Class: {R:Class} SubClassOf: cco:InformationContentEntity, {ev:ObjectProperty} exactly 1 {E:Class}, {pt:ObjectProperty} exactly 1 {P:Class}, {at:ObjectProperty} some {T:Class}",
+   "bfo_cco_anchor": "{R} reifies the participation as a relational ICE under cco:InformationContentEntity; {E} a bfo:0000015 process, {P} a bfo:Continuant, {T} a bfo:0000008 temporal region; {at} ~ sdg:effectiveDuring / sdg:atRunTime.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "odp",
+   "cleanroom_note": "ODP shape; reimplemented with reified-ICE + bfo temporal region, no CP OWL copied. clean-room. (3-way reified junction with valid_from/valid_to.)",
+   "extends_existing": true,
+   "verbalization_hint": "An {R} records that exactly one {P} participates in exactly one {E} during some time {T}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "action_definition_behavior",
+   "origin": "SysML v2 ActionDefinition/ActionUsage (`action def Brake{in pedal; out decel;}`); OSLC ActionDefinition\u2291Behavior,OccurrenceDefinition",
+   "owl2_construct": "SubClassOf(Process, ObjectSomeValuesFrom(has_input, Y) \u2227 ObjectSomeValuesFrom(has_output, Z))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000015, {p:ObjectProperty} some {Y:Class}, {q:ObjectProperty} some {Z:Class}",
+   "bfo_cco_anchor": "bfo:0000015 (Process); in-parameter via cco:has_input, out-parameter via cco:has_output \u2014 a behavior occurrent with typed input/output participants. The verb-table of the schema.",
+   "grounds_ddl": "dimension",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC ActionDefinition\u2291Behavior,OccurrenceDefinition (Apache/CC-BY); bfo:0000015 matches catalog. clean-room. (LIMS: assay/protocol steps with reagent in, result out.)",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} is a behavior that consumes {Y} as input and produces {Z} as output.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "allocation_mapping",
+   "origin": "SysML v2 AllocationDefinition/AllocationUsage (`allocate logicalFn to physicalPart`); OSLC AllocationDefinition\u2291ConnectionDefinition \u2014 directed source\u2192target responsibility mapping",
+   "owl2_construct": "SubClassOf(DescriptiveICE, ObjectExactCardinality(1, from, Y) \u2227 ObjectExactCardinality(1, to, Z)) \u2014 reified directed map",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, {p:ObjectProperty} exactly 1 {Y:Class}, {q:ObjectProperty} exactly 1 {Z:Class}",
+   "bfo_cco_anchor": "cco:DescriptiveICE \u2014 an allocation is an information artifact mapping a source element {Y} (function/Process) to a target {Z} (part/Continuant) it is allocated to; a designative responsibility assignment.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC AllocationDefinition\u2291ConnectionDefinition (Apache/CC-BY); allocation-matrix DDL is the standard MBSE shape. clean-room. (LIMS: method\u2192instrument / test\u2192workcell allocation.)",
+   "extends_existing": true,
+   "verbalization_hint": "An {X} allocates source {Y} to target {Z}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "attribute_usage_datavalue",
+   "origin": "SysML v2 AttributeUsage (`attribute mass:MassValue`); OSLC AttributeUsage \u2014 a Usage typed by a DataType (quality/characteristic value)",
+   "owl2_construct": "SubClassOf(C, DataSomeValuesFrom(d, xsd:type)) [+ DataExactCardinality(1, d)]",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, {d:DataProperty} exactly 1 xsd:decimal",
+   "bfo_cco_anchor": "bfo:0000019 (Quality) / cco:DescriptiveICE carrying the value; a SysML attribute is a specifically-dependent continuant (its value) measured of the bearer. _DP_RANGE_RE maps the slot range.",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "DataProperty"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC AttributeUsage/AttributeDefinition (Apache/CC-BY); BFO quality anchoring is Aegir's own. clean-room.",
+   "extends_existing": false,
+   "verbalization_hint": "Every {X} carries a {d} value of type xsd:decimal.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "case_definition_subject_return",
+   "origin": "SysML v2 VerificationCase/AnalysisCase/UseCase Definition (`verification case def VC{subject; verify R; return verdict}`); OSLC CaseDefinition family",
+   "owl2_construct": "SubClassOf(Process, ObjectSomeValuesFrom(hasSubject, Y) \u2227 DataSomeValuesFrom(d, xsd:type)) [+ verifies-link for a VerificationCase]",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000015, {p:ObjectProperty} some {Y:Class}, {d:DataProperty} some xsd:string",
+   "bfo_cco_anchor": "bfo:0000015 (Process) specialized as a CaseDefinition behavior; {p}=hasSubject {Y} (bfo:0000057 participant), {d}=the return/verdict/result value (a cco:DescriptiveICE realization). Unifies verification/analysis/use-case as a parameterized behavior with a subject and a return.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "DataProperty"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC VerificationCaseDefinition/AnalysisCaseDefinition/UseCaseDefinition\u2291CaseDefinition (Apache/CC-BY); result-as-DescriptiveICE grounding is Aegir's. clean-room. (LIMS: test-run/trade-study fact table.)",
+   "extends_existing": false,
+   "verbalization_hint": "A {X} case takes a {Y} subject and returns a {d} verdict/result.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "connection_usage_reified_link",
+   "origin": "SysML v2 ConnectionDefinition/ConnectionUsage (`connect a to b`); OSLC ConnectionDefinition\u2291AssociationStructure,PartDefinition \u2014 reified association class with typed ends",
+   "owl2_construct": "SubClassOf(Connection, ObjectExactCardinality(1, source, Y) \u2227 ObjectExactCardinality(1, target, Z))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:Artifact, {p:ObjectProperty} exactly 1 {Y:Class}, {q:ObjectProperty} exactly 1 {Z:Class}",
+   "bfo_cco_anchor": "cco:Artifact / bfo:0000004 for a physical connector; an independent continuant relating two end continuants \u2014 reified because BFO has no native binary 'connects' with attributes.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC ConnectionDefinition\u2291AssociationStructure,PartDefinition (Apache/CC-BY); reification is the standard OWL n-ary pattern. clean-room.",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} connects exactly one {Y} (source) to exactly one {Z} (target).",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "constraint_definition_parametric",
+   "origin": "SysML v2 ConstraintDefinition/ConstraintUsage (`constraint def MassLimit{m<=mMax}` + `assert constraint`); OSLC ConstraintDefinition\u2291Predicate",
+   "owl2_construct": "Reified Predicate ICE with typed DataProperty parameters; the inequality lives in the DDL CHECK, not OWL",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, {d:DataProperty} some xsd:decimal, {e:DataProperty} some xsd:decimal",
+   "bfo_cco_anchor": "cco:DescriptiveICE \u2014 a Predicate/Boolean expression is an ICE true/false of its parameter bearers; parameters dependent on the bearer entity. _DP_RANGE_RE maps the parameter ranges.",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "Class",
+    "DataProperty",
+    "DataProperty"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC ConstraintDefinition\u2291Predicate (Apache/CC-BY); the Boolean body is DDL-grounded (OWL2 can't express arithmetic). clean-room. (LIMS: spec/acceptance limits as CHECKs.)",
+   "extends_existing": false,
+   "verbalization_hint": "A {X} is a constraint relating parameters {d} and {e} that must hold.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "item_flow_transfer",
+   "origin": "SysML v2 ItemFlow / FlowConnectionUsage (`flow from a.out to b.in`); OSLC ItemFlow\u2291Connector,Step \u2014 a transfer that is BOTH a connector and an occurrent",
+   "owl2_construct": "SubClassOf(Process, ObjectSomeValuesFrom(source, Y) \u2227 ObjectSomeValuesFrom(target, Z) \u2227 ObjectSomeValuesFrom(bfo:0000057, I))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000015, {p:ObjectProperty} some {Y:Class}, {q:ObjectProperty} some {Z:Class}, bfo:0000057 some {I:Class}",
+   "bfo_cco_anchor": "bfo:0000015 (Process) \u2014 an ItemFlow is a Step transferring an item; source/target are continuant participants and {I} the transferred participant (bfo:0000057 has_participant).",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC ItemFlow\u2291Connector,Step + FlowConnectionUsage (Apache/CC-BY); process-reification standard. clean-room. (LIMS: sample/aliquot transfer between stations.)",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} is a transfer that moves {I} from a {Y} source to a {Z} target.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "part_definition_usage",
+   "origin": "SysML v2 PartDefinition + PartUsage (`part engine[1]:Engine`); OSLC PartUsage\u2291ItemUsage; KerML FeatureTyping+Multiplicity on a composite feature",
+   "owl2_construct": "SubClassOf(C, ObjectExactCardinality(1, hasPart, EngineClass)) \u2014 FeatureTyping\u2192onClass, Multiplicity\u2192cardinality, composite\u2192bfo:hasPart",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000004, {p:ObjectProperty} exactly 1 {Y:Class}",
+   "bfo_cco_anchor": "bfo:0000004 (IndependentContinuant) / cco:Artifact for the engineered system kind; composite PartUsage = bfo:0000051 hasPart proper-part relation between continuants ({p}).",
+   "grounds_ddl": "nested-child",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "Structure from OSLC Apache-2.0/CC-BY-4.0 vocab (PartUsage\u2291ItemUsage) + KerML feature model; re-expressed, no OMG spec prose. clean-room.",
+   "extends_existing": true,
+   "verbalization_hint": "Every {X} has exactly one {Y} as a part via {p}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "port_interaction_point",
+   "origin": "SysML v2 PortDefinition/PortUsage (`port def FuelPort{in fuelIn; out fuelOut;}`); OSLC PortDefinition\u2291OccurrenceDefinition,Structure \u2014 referential (non-composite) interaction site",
+   "owl2_construct": "SubClassOf(C, ObjectSomeValuesFrom(in, Y)) \u2227 SubClassOf(C, ObjectSomeValuesFrom(out, Z)) \u2014 two directional non-part-of properties",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000004, {p:ObjectProperty} some {Y:Class}, {q:ObjectProperty} some {Z:Class}",
+   "bfo_cco_anchor": "bfo:0000004 (IndependentContinuant) as a fiat boundary/interaction site (bfo:0000146 fiat-surface flavor) bearing in/out item roles; conveyed in/out items anchor to bfo:0000015 process participants.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC PortDefinition/PortUsage (Apache/CC-BY); fiat-boundary BFO anchor is Aegir's own. clean-room.",
+   "extends_existing": false,
+   "verbalization_hint": "{X} is an interaction point that accepts {Y} (in via {p}) and offers {Z} (out via {q}).",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "requirement_satisfy_verify",
+   "origin": "SysML v2 RequirementDefinition + SatisfyRequirementUsage + RequirementVerificationMembership (`requirement def R{subject; require}`; `satisfy R by v`; `verify R`); OSLC RequirementDefinition\u2291ConstraintDefinition; repo heavy cco:DirectiveICE",
+   "owl2_construct": "SubClassOf(DirectiveICE, ObjectSomeValuesFrom(hasSubject, Y) \u2227 ObjectSomeValuesFrom(requires, C)) \u2014 the satisfy/verify links are sibling object properties onto {R}",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: cco:DirectiveICE, {p:ObjectProperty} some {Y:Class}, {q:ObjectProperty} some {C:Class}",
+   "bfo_cco_anchor": "cco:DirectiveICE \u2014 a Requirement is a directive ICE prescribing a constraint a valid solution must satisfy (matches the catalog's heavy DirectiveICE usage); {p}=hasSubject, {q}=requires/prescribes the constraint {C}. satisfy/verify ground as traceability junctions to design/verification rows.",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC RequirementDefinition\u2291ConstraintDefinition + SatisfyRequirementUsage + VerificationMembership (Apache/CC-BY); cco:DirectiveICE matches catalog. clean-room. (LIMS: spec\u2192method\u2192result traceability matrix.)",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} is a requirement on a {Y} subject that prescribes constraint {C} must hold.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "state_transition_fsm",
+   "origin": "SysML v2 StateDefinition + TransitionUsage (`state def Modes{...}`; `transition first off then running accept sig if guard`); OSLC StateDefinition\u2291ActionDefinition, TransitionUsage\u2291ActionUsage",
+   "owl2_construct": "Reified transition: SubClassOf(Process, ObjectExactCardinality(1, sourceState, Y) \u2227 ObjectExactCardinality(1, targetState, Z) \u2227 ObjectSomeValuesFrom(bfo:0000063, Z))",
+   "manchester_skeleton": "Class: {X:Class} SubClassOf: bfo:0000015, {p:ObjectProperty} exactly 1 {Y:Class}, {q:ObjectProperty} exactly 1 {Z:Class}, bfo:0000063 some {Z:Class}",
+   "bfo_cco_anchor": "bfo:0000015 (Process) + bfo:0000063 (precedes) \u2014 a Transition is an occurrent connecting a source state {Y} that precedes a target state {Z}; the trigger is a hasInput participant. (The {Z} slot repeats per SLOT_DSL same-name-binding.)",
+   "grounds_ddl": "junction",
+   "slot_meta_types": [
+    "Class",
+    "ObjectProperty",
+    "Class",
+    "ObjectProperty",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC StateDefinition\u2291ActionDefinition + TransitionUsage\u2291ActionUsage (Apache/CC-BY); reified-edge + precedes grounding standard. clean-room. (LIMS: sample lifecycle FSM edge table.)",
+   "extends_existing": true,
+   "verbalization_hint": "A {X} transitions from a {Y} state to a {Z} state, where {Y} precedes {Z}.",
+   "pattern_kind": "class_template"
+  },
+  {
+   "name": "subsetting_feature_subproperty",
+   "origin": "SysML v2 / KerML Subsetting (`part frontWheels[2] subsets wheels`); OSLC Subsetting\u2291Specialization \u2014 feature-value-subset between Features",
+   "owl2_construct": "SubObjectPropertyOf(p, q) \u2014 the subsetting feature's value-set \u2286 the subsetted feature's value-set",
+   "manchester_skeleton": "ObjectProperty: {p:ObjectProperty} SubPropertyOf: {q:ObjectProperty}",
+   "bfo_cco_anchor": "the property pair inherits the relational anchor (e.g. {q}=bfo:0000051 hasPart, {p}=a specialized has-front-wheel sub-relation); Subsetting refines WHICH instances a feature ranges over.",
+   "grounds_ddl": "constraint",
+   "slot_meta_types": [
+    "ObjectProperty",
+    "ObjectProperty"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC Subsetting\u2291Specialization between Features (Apache/CC-BY); feature-value-subset \u2192 rdfs:subPropertyOf is the exact OWL analogue. clean-room. (Filtered FK / WHERE-scoped view.)",
+   "extends_existing": false,
+   "verbalization_hint": "The {p} of a thing are among its {q}.",
+   "pattern_kind": "property_axiom"
+  },
+  {
+   "name": "variation_variant_point",
+   "origin": "SysML v2 VariantMembership / variation (`variation part def Engine{variant v6; variant v8;}`); OSLC VariantMembership\u2291OwningMembership \u2014 product-line choice",
+   "owl2_construct": "EquivalentClasses(VP, ObjectUnionOf(V1, V2)) + DisjointClasses(V1, V2) \u2014 exactly-one-variant selection",
+   "manchester_skeleton": "Class: {X:Class} EquivalentTo: ({V1:Class} or {V2:Class})",
+   "bfo_cco_anchor": "bfo:0000004 (IndependentContinuant) / cco:Artifact for a structural variation point; {X} the disjunctive kind, each variant {V1},{V2} a disjoint subkind. (The companion DisjointClasses axiom is emitted by the step-3 generator alongside.)",
+   "grounds_ddl": "enum",
+   "slot_meta_types": [
+    "Class",
+    "Class",
+    "Class"
+   ],
+   "tier": "sysmlv2",
+   "cleanroom_note": "From OSLC VariantMembership\u2291OwningMembership (Apache/CC-BY); union+disjoint is the standard OWL variant-selection pattern. clean-room. (LIMS: instrument-model / reagent-kit variants as a discriminator.)",
+   "extends_existing": false,
+   "verbalization_hint": "An {X} is exactly one of: a {V1} or a {V2} (mutually exclusive variants).",
+   "pattern_kind": "class_template"
+  }
+ ],
+ "coverage_notes": "SCOPE: 56 source patterns across 5 inventories merged to 50 de-duplicated patterns spanning all four tiers (fhir_minimum 17, owl2_core 13, odp 10, sysmlv2 10). Every skeleton conforms to the repo's EXACT contract verified against src/aegir/ontology/{SLOT_DSL.md, ddl.py, realize.py}: numeric BFO IRIs in the axiom BODY (bfo:0000015/0000050/0000051/0000057/0000063/0000023/0000004) but PREFIXED labels in bfo_anchor_path (matching ddl._OPAQUE_PROP_LABELS + _ANCHOR_PARENTS); a leading literal-anchor comma-clause where the pattern needs anchor_attributes() (so bfo_anchor_path[-1] is set); EquivalentTo restrictions PARENTHESIZED so ddl._RESTRICTION_RE/_DP_RANGE_RE find the nested restriction (per the repo inventory's equivalent_intersection note); property either a literal IRI in the body or a {p:ObjectProperty} slot; multi-restriction conjunctions comma-separated so parse_restrictions returns a LIST and realize emits one junction/dimension per restriction (the only >1-FK path).\n\nAUDIT-MISSING PATTERNS NOW COVERED (against scripts/audit_ontology_structure._TARGET_PATTERNS / envelope_missing): reified-n-ary-relation \u2192 reified_nary_relation (+ all 3 ODP reifications time_indexed_participation/agent_role/description_and_situation + SysML connection_usage_reified_link/state_transition_fsm/allocation_mapping/requirement_satisfy_verify) grounding junction; choice-type/value[x] \u2192 polymorphic_value_choice grounding eav; composite-datatype \u2192 composite_quantity_datatype + composite_interval_period (+ port_interaction_point) grounding composite-datatype; nested-backbone \u2192 backbone_element_nesting + contained_local_dependent (+ componency_direct_part/information_realization/part_definition_usage/sequence_ordering) grounding nested-child; value-partition \u2192 disjoint_union_partition + coded_concept_required_binding + variation_variant_point + enumerated_class_oneof grounding enum; disjoint \u2192 disjoint_classes + disjoint_union_partition (DisjointWith/DisjointUnionOf keywords); property-chain \u2192 property_chain_inclusion (SubPropertyChain o); datatype-facet \u2192 datatype_facet_restriction (xsd[>=,<=] bracket form ddl matches); dataproperty-slot \u2192 typed_primitive_dataproperty + attribute_usage_datavalue + datatype_facet_restriction + constraint_definition_parametric (the catalog currently exercises ZERO {d:DataProperty} restrictions though realize.py fully supports them \u2014 this is the highest-leverage gap: it is the ONLY axiom-body path to typed/measure columns, EAV per-datatype value tables, and star measures, rather than the anchor_attributes pool). Also covered: only(universal)\u2192universal_value_restriction; not(negation)\u2192complement_negation/modifier_extension_negation; qualified-cardinality\u2192the four FHIR cardinality patterns + connection/transition/allocation exactly-N; and(conjunction)\u2192equivalent_class_definition/composite_*; or(disjunction)\u2192polymorphic_value_choice/variation_variant_point.\n\nEXTENDS_EXISTING (generalizes the current subClassOf+some shape, 24 patterns): the FHIR cardinality quartet, reference, choice, codeable-concept, composite, backbone/contained, extension; the OWL2 anchored_subclass, equivalent_class_definition, universal/complement, multi_restriction_conjunction; all ODP partonomy/componency/participation/sequence/collection/reification patterns; and SysML part/connection/itemflow/action/state/requirement/allocation usages \u2014 all are the existing `SubClassOf \u2026 (some|min|max|exactly|only) {Y}` shape, parameterized and generalized rather than novel constructs.\n\nSYSMLv2 CONSTRUCTS WITH THE MOST LIMS VALUE (the tier that levels UP hardest from FHIR's minimum): (1) state_transition_fsm \u2014 sample/specimen lifecycle as an explicit FSM edge table (received\u2192accessioned\u2192aliquoted\u2192tested\u2192reported\u2192archived) is the backbone of a LIMS and grounds the richest junction (from_state/to_state/trigger/guard); (2) requirement_satisfy_verify \u2014 spec-limit \u2192 method \u2192 result traceability is the regulatory core of GxP/ISO-17025 labs, grounding a satisfy/verify traceability matrix that no FHIR pattern supplies; (3) item_flow_transfer \u2014 chain-of-custody / aliquot routing between stations as a reified transfer with conveyed-item participant; (4) action_definition_behavior + case_definition_subject_return \u2014 assay/protocol steps (reagent in \u2192 measurement out) and the test-run/QC fact table (subject + verdict); (5) constraint_definition_parametric \u2014 acceptance criteria / spec limits as parametric CHECKs over result columns; (6) allocation_mapping \u2014 method\u2192instrument / test\u2192workcell allocation matrices; (7) connection_usage_reified_link + port_interaction_point \u2014 instrument-interface modelling. These add the process/behavior/requirement axis (occurrents, traceability, parametric constraints) that FHIR's resource-centric minimum and even the ODP content patterns under-serve, and they ground precisely the junction/dimension/constraint DDL shapes a real LIMS warehouse needs.\n\nNOTES ON DE-DUPLICATION: cross-inventory duplicates were merged to a single canonical pattern \u2014 FHIR Reference + OWL2/BFO existential + repo existential_restriction_iri_prop \u2192 typed_cross_resource_reference; the four QCR appearances (FHIR cardinality, OWL2 QCR, repo qualified_cardinality_restriction, SysML multiplicity) \u2192 the FHIR cardinality quartet (the finest-grained, FHIR-minimum-bar split) with SysML/OWL2 exactly-N folded into the reified link/transition/allocation patterns; OWL2 participation/part-of/sequence + the BFO-inventory duplicates + repo partonomy \u2192 the ODP set; SysML VerificationCase/AnalysisCase/UseCase (three near-identical CaseDefinition shapes) \u2192 one case_definition_subject_return; SysML Subclassification/FeatureTyping (both reduce to SubClassOf / existential already covered by atomic_subsumption + typed_cross_resource_reference) were NOT given separate entries to avoid redundancy, with Redefinition folded conceptually into subsetting_feature_subproperty. The repo's atomic_subclass + subsumption_to_upper_anchor (BFO inventory) + FHIR Resource-typing collapse to atomic_subsumption (placed at fhir_minimum since it is the literal minimum bar). The library machinery (src/aegir/ontology/patterns.py, AxiomPattern dataclass, library()/validate()/instantiate()/coverage_vs_envelope()) already exists and reads these from axiom_patterns.json \u2014 this taxonomy is the data payload for that loader; note patterns.py's validate() expects slot_meta_types as a dict and GROUNDS includes subsumption/relation in addition to the seven required here, so the loader will accept all 50."
+}
