@@ -51,8 +51,8 @@ def compute_map(k: int) -> dict[str, list[str]]:
 
 
 def catalog_files() -> list[Path]:
-    fams = [Path(f) for f in sorted(glob.glob(str(CATALOG_DIR / "0[1-7]_*.json")))
-            if "candidate" not in f]
+    fams = [Path(f) for f in sorted(glob.glob(str(CATALOG_DIR / "0*.json")))
+            if "candidate" not in f and "combined" not in f]
     return fams + [COMBINED]
 
 

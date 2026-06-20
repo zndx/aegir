@@ -1,0 +1,59 @@
+{
+  "version": "0.3.0-derived",
+  "templates": [
+    {
+      "template_id": "action_definition_behavior",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:inducesCellDeath some {Y:Class}, sdg:targetsTissue some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An irreversible electroporation ablation process induces cell death and targets liver tissue.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "study_director_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:designatesAgent exactly 1 {A:Class}, sdg:realizesInRole some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A study director role is a role that designates exactly one person via sdg:designatesAgent and realizes in some study via sdg:realizesInRole.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "eye_irritation_study_process",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An eye irritation study process is a process that has some test subject via bfo:0000057.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    }
+  ],
+  "null_stats": {}
+}

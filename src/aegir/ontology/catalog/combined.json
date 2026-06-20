@@ -1,5 +1,5 @@
 {
-  "version": "0.7.0-combined",
+  "version": "0.1.0-foundation-candidate",
   "templates": [
     {
       "template_id": "subclass_basic",
@@ -156,7 +156,9 @@
         "cco:DescriptiveICE",
         "cco:InformationContentEntity"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_information_content_entity"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -296,7 +298,9 @@
       "bfo_anchor_path": [
         "cco:InformationContentEntity"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_information_content_entity"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -325,7 +329,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_process"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -351,7 +357,9 @@
       ],
       "mean_verbal_length": 33.0,
       "bfo_anchor_path": [],
-      "broader": [],
+      "broader": [
+        "existential_generic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -378,7 +386,9 @@
       ],
       "mean_verbal_length": 34.0,
       "bfo_anchor_path": [],
-      "broader": [],
+      "broader": [
+        "existential_generic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -547,7 +557,9 @@
       ],
       "mean_verbal_length": 29.0,
       "bfo_anchor_path": [],
-      "broader": [],
+      "broader": [
+        "universal_generic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -592,7 +604,9 @@
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
-      "broader": [],
+      "broader": [
+        "cardinality_max_three_generic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -615,7 +629,10 @@
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
-      "broader": [],
+      "broader": [
+        "cardinality_max_one_generic",
+        "cardinality_min_one_generic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -638,7 +655,9 @@
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
-      "broader": [],
+      "broader": [
+        "cardinality_min_one_generic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -691,7 +710,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "artifact_has_id"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -720,7 +741,9 @@
       "bfo_anchor_path": [
         "cco:InformationContentEntity"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_information_content_entity"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1069,7 +1092,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "artifact_with_universal"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1127,7 +1152,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "artifact_with_universal"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1156,7 +1183,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "artifact_with_universal"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1185,7 +1214,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_artifact"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1214,7 +1245,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "artifact_with_universal"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1298,7 +1331,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_artifact"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1326,7 +1361,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_artifact"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1410,7 +1447,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "identifier_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1438,7 +1477,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "identifier_unique"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1494,7 +1535,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "attrkey_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1522,7 +1565,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "designative_subclass_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1551,7 +1596,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_information_content_entity"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1579,7 +1626,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_information_content_entity"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1606,7 +1655,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_designative_ice"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1635,7 +1686,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_directive_ice"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1663,7 +1716,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "constraint_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1692,7 +1747,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "constraint_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1720,7 +1777,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "directive_only_governs"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1748,7 +1807,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_directive_ice"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1776,7 +1837,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_applies_to"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1804,7 +1867,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -1832,7 +1897,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2026,7 +2093,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "process_uses_artifact"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2053,7 +2122,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2109,7 +2180,9 @@
       "bfo_anchor_path": [
         "cco:InformationContentEntity"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_information_content_entity"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2133,7 +2206,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "subclass_to_directive_ice"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2157,7 +2232,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "designative_subclass_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2186,7 +2263,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "sysblock_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2242,7 +2321,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "labrun_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2270,7 +2351,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "labrun_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2325,7 +2408,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "labrun_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2353,7 +2438,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "labrun_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2465,7 +2552,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "trace_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2493,7 +2582,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "trace_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2521,7 +2612,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "trace_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2576,7 +2669,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "trace_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2632,7 +2727,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "trace_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2771,7 +2868,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "profiling_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -2992,7 +3091,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "ebpf_event_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3020,7 +3121,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "ebpf_event_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3298,7 +3401,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3326,7 +3431,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3380,7 +3487,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3408,7 +3517,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3436,7 +3547,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3464,7 +3577,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_with_unit"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3492,7 +3607,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3520,7 +3637,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3599,7 +3718,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "profile_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3627,7 +3748,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "profile_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3683,7 +3806,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "profile_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3711,7 +3836,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "profile_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3794,7 +3921,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "outlier_claim_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3822,7 +3951,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "outlier_claim_min_one_attribute"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3850,7 +3981,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "outlier_claim_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -3906,7 +4039,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "outlier_claim_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4044,7 +4179,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "state_of_system_block"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4072,7 +4209,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "state_of_system_block"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4456,7 +4595,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lift_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4484,7 +4625,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lift_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4567,7 +4710,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "aggregation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4595,7 +4740,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "aggregation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4622,7 +4769,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "aggregation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4650,7 +4799,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "aggregation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4705,7 +4856,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "measurement_of_artifact"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4761,7 +4914,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "outlier_claim_with_attribute_set"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4844,7 +4999,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "requirement_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4872,7 +5029,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "requirement_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4956,7 +5115,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "requirement_applies_to_system"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -4984,7 +5145,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "requirement_applies_to_system"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5012,7 +5175,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "requirement_applies_to_system"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5148,7 +5313,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "control_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5231,7 +5398,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "control_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5259,7 +5428,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "control_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5287,7 +5458,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "control_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5315,7 +5488,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "control_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5343,7 +5518,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "control_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5419,7 +5596,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "control_with_owner"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5477,7 +5656,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_only_governs_artifacts"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5505,7 +5686,10 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "directive_supersedes_directive",
+        "policy_only_governs_artifacts"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5533,7 +5717,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_only_governs_artifacts"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5561,7 +5747,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_min_one_enforcer"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5644,7 +5832,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_only_governs_artifacts"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5694,7 +5884,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "policy_with_jurisdiction"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5752,7 +5944,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "constraint_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5780,7 +5974,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "constraint_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5836,7 +6032,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "constraint_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5918,7 +6116,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "verification_min_one_evidence"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -5946,7 +6146,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "verification_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6030,7 +6232,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "verification_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6084,7 +6288,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "attestation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6111,7 +6317,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "attestation_min_one_signer"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6139,7 +6347,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "attestation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6167,7 +6377,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "attestation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6194,7 +6406,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "attestation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6276,7 +6490,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "classification_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6304,7 +6520,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "classification_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6386,7 +6604,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "audit_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6413,7 +6633,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "audit_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6441,7 +6663,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "audit_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6744,7 +6968,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfprogram_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6828,7 +7054,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfprogram_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6884,7 +7112,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfprogram_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6912,7 +7142,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfprogram_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6940,7 +7172,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfprogram_has_program_type"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -6990,7 +7224,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfprogram_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7104,7 +7340,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "kernelhook_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7188,7 +7426,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "kernelhook_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7271,7 +7511,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "syscall_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7355,7 +7597,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "syscall_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7383,7 +7627,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "syscall_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7411,7 +7657,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "syscall_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7439,7 +7687,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "syscall_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7467,7 +7717,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "syscall_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7516,7 +7768,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "syscall_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7574,7 +7828,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfmap_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7602,7 +7858,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfmap_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7630,7 +7888,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfmap_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7658,7 +7918,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfmap_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7686,7 +7948,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfmap_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7714,7 +7978,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfmap_with_value_type"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7742,7 +8008,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfmap_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7792,7 +8060,10 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfmap_with_key_type",
+        "ebpfmap_with_value_type"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7902,7 +8173,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfprogram_min_one_hook"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -7929,7 +8202,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "ebpfprogram_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8010,7 +8285,9 @@
       "bfo_anchor_path": [
         "cco:DesignativeICE"
       ],
-      "broader": [],
+      "broader": [
+        "syscall_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8095,7 +8372,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "transformation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8123,7 +8402,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "transformation_min_one_output"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8151,7 +8432,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "transformation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8179,7 +8462,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "transformation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8235,7 +8520,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "transformation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8319,7 +8606,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "transformation_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8347,7 +8636,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "transformation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8375,7 +8666,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "transformation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8430,7 +8723,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8458,7 +8753,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8514,7 +8811,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8570,7 +8869,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8598,7 +8899,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8626,7 +8929,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_to_target"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8655,7 +8960,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8738,7 +9045,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "allocation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8766,7 +9075,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "allocation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8794,7 +9105,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "allocation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8850,7 +9163,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "allocation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8906,7 +9221,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "allocation_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -8934,7 +9251,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "allocation_at_run_id"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9018,7 +9337,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "agent_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9046,7 +9367,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "agent_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9074,7 +9397,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "agent_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9102,7 +9427,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "agent_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9130,7 +9457,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "agent_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9158,7 +9487,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "agent_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9270,7 +9601,9 @@
       "bfo_anchor_path": [
         "cco:Artifact"
       ],
-      "broader": [],
+      "broader": [
+        "dataset_was_derived_from"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9380,7 +9713,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9408,7 +9743,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "lineage_edge_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9489,7 +9826,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "mass_function_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9517,7 +9856,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "mass_function_only_assigns_subsets"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9545,7 +9886,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "mass_function_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9573,7 +9916,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "mass_function_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9601,7 +9946,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "mass_function_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9629,7 +9976,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "mass_function_with_focal_element"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9679,7 +10028,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "mass_function_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9709,7 +10060,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "belief_interval_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9737,7 +10090,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "belief_interval_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9765,7 +10120,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "belief_interval_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9793,7 +10150,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "belief_interval_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9821,7 +10180,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "belief_interval_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9849,7 +10210,10 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "belief_interval_only_unit_range",
+        "belief_interval_with_upper_bound"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9899,7 +10263,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "belief_interval_only_unit_range"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9929,7 +10295,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "evidence_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9957,7 +10325,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "evidence_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -9985,7 +10355,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "evidence_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -10013,7 +10385,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "evidence_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -10041,7 +10415,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "evidence_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -10125,7 +10501,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "claim_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -10153,7 +10531,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "claim_min_one_evidence"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -10181,7 +10561,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "claim_min_one_evidence"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -10209,7 +10591,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "claim_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -10319,7 +10703,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "evidence_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -10346,7 +10732,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "claim_basic"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -11830,7 +12218,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "soc2_trust_criterion"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -11858,7 +12248,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "soc2_trust_criterion"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -11886,7 +12278,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "soc2_trust_criterion"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -11942,7 +12336,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "soc2_trust_criterion"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -11998,7 +12394,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "gdpr_article_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -12166,7 +12564,9 @@
       "bfo_anchor_path": [
         "cco:DirectiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "nist80053_high_impact"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -12698,7 +13098,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "nonbreaking_change_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -12754,7 +13156,9 @@
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
       ],
-      "broader": [],
+      "broader": [
+        "column_version_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -13118,7 +13522,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "opentelemetry_span_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -13146,7 +13552,9 @@
       "bfo_anchor_path": [
         "bfo:Process"
       ],
-      "broader": [],
+      "broader": [
+        "opentelemetry_span_subclass"
+      ],
       "provenance": {
         "author": "scaffolding",
         "date": "2026-05-10",
@@ -14957,6 +15365,59 @@
         "family": "F6-union",
         "branch": "AxiomFamily.boosters"
       }
+    },
+    {
+      "template_id": "action_definition_behavior",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:inducesCellDeath some {Y:Class}, sdg:targetsTissue some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An irreversible electroporation ablation process induces cell death and targets liver tissue.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "study_director_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:designatesAgent exactly 1 {A:Class}, sdg:realizesInRole some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A study director role is a role that designates exactly one person via sdg:designatesAgent and realizes in some study via sdg:realizesInRole.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "eye_irritation_study_process",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An eye irritation study process is a process that has some test subject via bfo:0000057.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
     }
   ],
   "null_stats": {}

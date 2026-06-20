@@ -138,19 +138,42 @@ def validate_all() -> dict:
 
 def instantiate(pattern_name: str, fillers: "dict[str, str]", *, template_id: str, family: str,
                 bfo_anchor_path: "list[str]", verbal_template: str = "") -> dict:
-    """Fill a pattern's ``$DESIGN`` params (proposed by the step-3 LLM, e.g. ``$PROP`` → ``sdg:hasComponent``)
-    → a ``CatalogTemplate``-shaped dict (instance slots ``{X:Class}`` are kept for chapter-gen). The result
-    is HermiT/DeepOnto-verified before catalog admission."""
+    """Fill a pattern's property/data slots + ``$DESIGN`` params (proposed by the step-3 LLM, e.g.
+    ``$PROP`` → ``sdg:hasComponent``) → a ``CatalogTemplate``-shaped dict. **Class/Individual slots
+    (``{X:Class}``) are NEVER filled — they stay slots for chapter-gen.** Substitution is anchored on the
+    EXACT slot token / ``$param`` boundary (a blind ``str.replace('at', …)`` once corrupted IRIs like
+    ``cco:InformATionContentEntity`` and dropped property slots — see derivation audit 2026-06-20).
+    The ``_unfilled_*`` fields let the membrane's instance gate reject anything left structurally incomplete.
+    The result is DeepOnto-parse / HermiT-verified before catalog admission."""
     p = library()[pattern_name]
     manchester = p.manchester_skeleton
+    # normalize LLM filler keys: '{p:ObjectProperty}' / 'p:ObjectProperty' / 'p' → 'p'
+    norm: dict[str, str] = {}
     for k, v in (fillers or {}).items():
-        manchester = manchester.replace(k, v)
+        if not isinstance(v, str) or not v.strip():
+            continue
+        name = k.strip().lstrip("{").rstrip("}").split(":")[0].strip()
+        if name:
+            norm[name] = v.strip()
+    declared = {m.group(1): m.group(2).split(":")[0] for m in _SLOT_RE.finditer(manchester)}
+    # fill ONLY ObjectProperty/DataProperty slots, by exact slot token (never Class/Individual)
+    for name, mtype in declared.items():
+        if mtype in ("ObjectProperty", "DataProperty") and name in norm:
+            manchester = re.sub(r"\{" + re.escape(name) + r":[^}]+\}", lambda _m, _v=norm[name]: _v, manchester)
+    # fill $DESIGN params on a word boundary
+    for param in p.design_params():
+        val = norm.get(param) or norm.get(param.lstrip("$"))
+        if val:
+            manchester = re.sub(r"(?<![A-Za-z0-9_])" + re.escape(param) + r"(?![A-Za-z0-9_])",
+                                lambda _m, _v=val: _v, manchester)
     slots = {m.group(1): m.group(2).split(":")[0] for m in _SLOT_RE.finditer(manchester)}
     return {
         "template_id": template_id, "manchester_template": manchester, "slot_types": slots,
         "is_complex": p.tier in ("sysmlv2", "odp") or len(slots) > 2,
         "verbal_template": verbal_template, "bfo_anchor_path": list(bfo_anchor_path),
         "_pattern": pattern_name, "_tier": p.tier, "_grounds_ddl": p.grounds_ddl,
+        # structural-completeness signals for the instance gate (G1):
+        "_unfilled_props": [n for n, t in slots.items() if t in ("ObjectProperty", "DataProperty")],
         "_design_params_unfilled": [d for d in p.design_params() if d in manchester],
     }
 
