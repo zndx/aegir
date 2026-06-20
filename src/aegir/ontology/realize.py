@@ -57,6 +57,20 @@ FAMILY_PROFILES: dict[str, dict[str, float]] = {
 }
 _DEFAULT_MIX = {"normalized": 0.3, "eav": 0.3, "junction": 0.25, "star": 0.15}
 
+# Closes the ontology↔DDL loop: an axiom pattern's grounds_ddl (patterns.py) → the realize profile that
+# faithfully materializes it. So a reified-relation primitive deterministically becomes a junction (not a
+# family-sampled guess) — the structure the ontology asserts IS the structure the DDL realizes.
+GROUNDS_TO_PROFILE = {
+    "junction": "junction", "eav": "eav", "dimension": "star", "nested-child": "junction",
+    "composite-datatype": "normalized", "enum": "normalized", "constraint": "normalized",
+    "subsumption": "normalized", "relation": "junction",
+}
+
+
+def profile_for_grounds(grounds_ddl: str) -> str:
+    """The realize profile that grounds an ontology pattern's declared DDL structure."""
+    return GROUNDS_TO_PROFILE.get(grounds_ddl, "normalized")
+
 
 @dataclass
 class RealizedSchema:
