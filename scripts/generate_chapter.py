@@ -866,7 +866,9 @@ def usage_and_cost(lm, model: str) -> tuple[int, int, int, float]:
         rt = int(rt or 0)
         cost = h.get("cost")  # litellm's own cost when it knows the model (preferred)
         if not cost:
-            rin, rout = (0.0, 0.0) if model.startswith("local/") else \
+            # local/ and engine/ are LOCAL (gRPC engine) → $0; the remote-equivalent cost for scaling
+            # extrapolation is computed separately (scripts/analyze_generation_stats.py), not charged here.
+            rin, rout = (0.0, 0.0) if model.startswith(("local/", "engine/")) else \
                 RATES_USD_PER_M.get(model, _RATES_DEFAULT)
             cost = pt / 1e6 * rin + ct / 1e6 * rout
         return pt, ct, rt, float(cost or 0.0)
@@ -952,12 +954,22 @@ def main() -> int:
         "cerebras": os.environ.get("CEREBRAS_API_KEY"),
         "xai":      os.environ.get("XAI_API_KEY"),
     }
-    lm_cache: dict[str, dspy.LM] = {}
+    lm_cache: dict = {}
 
-    def get_lm(model: str) -> dspy.LM:
+    def get_lm(model: str):
         if model in lm_cache:
             return lm_cache[model]
         provider = model.split("/", 1)[0]
+        if provider == "engine":
+            # Strict layering: reach the model through the Aegir capability/gRPC engine (the SOLE vLLM
+            # client), NOT vLLM directly. `engine/<capability>` (e.g. engine/instruct). The complete
+            # thinking trace is retained (reasoning_content → response_reasoning + raw.exchange); local
+            # ⇒ cost $0 against the budget cap. (Adapter is duck-typed to dspy.LM — see engine/dspy_lm.)
+            from aegir.engine.dspy_lm import EngineLM
+            cap = model.split("/", 1)[1] if "/" in model else "instruct"
+            lm = EngineLM(capability=cap, max_tokens=args.max_tokens, temperature=args.temperature)
+            lm_cache[model] = lm
+            return lm
         if provider == "local":
             # Self-hosted OpenAI-compatible endpoint (vLLM). `local/auto` resolves the
             # served model from the endpoint; cost = $0 against the budget cap.
@@ -1012,6 +1024,7 @@ def main() -> int:
         ("completion_tokens", pa.int32()),
         ("reasoning_tokens", pa.int32()),
         ("cost_usd", pa.float32()),
+        ("finish_reason", pa.string()),   # "stop" (trace complete) vs "length" (truncated)
         ("created_at", pa.timestamp("us", tz="UTC")),
         ("audit_run_id", pa.string()),
         # Track A: the authoritative (RI-true) fixed tables this chapter was written around.
@@ -1144,7 +1157,11 @@ def main() -> int:
                     f"reasoning: {len(response_reasoning or '')} chars")
         pt, ct, rt, cost = usage_and_cost(lm, model)
         cum_cost += cost
-        logger.info(f"  tokens: {pt} in / {ct} out ({rt} reasoning) | "
+        # finish_reason persisted so trace COMPLETENESS is provable across the run ("length" ⇒ the
+        # thinking trace was truncated — incomplete, and may bleed into the answer; raise --max-tokens).
+        _hist = lm.history[-1] if getattr(lm, "history", None) else {}
+        finish_reason = _hist.get("finish_reason", "") if isinstance(_hist, dict) else ""
+        logger.info(f"  tokens: {pt} in / {ct} out ({rt} reasoning) | finish={finish_reason or '?'} | "
                     f"cost ${cost:.3f} | cumulative ${cum_cost:.2f}"
                     + (f" / ${args.budget_usd:.0f}" if args.budget_usd else ""))
 
@@ -1215,6 +1232,7 @@ def main() -> int:
             "completion_tokens": ct,
             "reasoning_tokens": rt,
             "cost_usd": float(cost),
+            "finish_reason": finish_reason,
             "created_at": datetime.now(timezone.utc),
             "audit_run_id": audit_run.name,
             "rel_tables_json": rel_tables_json,
