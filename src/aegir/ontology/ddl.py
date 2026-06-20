@@ -279,6 +279,11 @@ class SpineTable:
     table: TableSpec
     notes: list[CheckNote] = field(default_factory=list)
     not_null: set[str] = field(default_factory=set)   # column names that are NOT NULL
+    # ── schema-realization (realize.py) — kind + materialization hints. Default "entity" keeps the
+    # one-table-per-template baseline; the realizer emits eav_registry/eav_value/junction/fact/dimension
+    # sub-tables of a richer subgraph, and rows.materialize_rows reads realize_meta to fill them RI-safe.
+    kind: str = "entity"
+    realize_meta: dict = field(default_factory=dict)
 
 
 _DP_RANGE_RE = re.compile(

@@ -59,6 +59,11 @@ def parse_args() -> argparse.Namespace:
                    help="Materialize base rows but skip the corpus views")
     p.add_argument("--row-seed", type=lambda x: int(x, 0), default=0xAE61,
                    help="deterministic row-synthesis seed (hex ok, e.g. 0xAE61)")
+    p.add_argument("--realize", action="store_true",
+                   help="realize each template into a stochastic schema SUBGRAPH (EAV / junction / "
+                        "star / snowflake) instead of one flat table — the super-linear DDL+views deliverable")
+    p.add_argument("--realize-seed", type=lambda x: int(x, 0), default=0x5EED,
+                   help="seed for per-template structural-profile sampling")
     p.add_argument("--output-dir",
                    default="/raid/checkpoints/aegir-artifacts/ddl_spine_v0/")
     return p.parse_args()
@@ -75,20 +80,46 @@ def compute_run_id(args: argparse.Namespace, files: list[Path]) -> str:
     h.update(f"per_family:{args.per_family}\n".encode())
     h.update(f"row_seed:{args.row_seed}\n".encode())
     h.update(f"materialize:{not args.no_materialize_rows}\n".encode())
+    h.update(f"realize:{args.realize}:{args.realize_seed}\n".encode())
     for p in sorted(files):
         h.update(f"{p.name}:{hashlib.sha256(p.read_bytes()).hexdigest()[:16]}\n".encode())
     return h.hexdigest()[:16]
 
 
-def load_spine(files: list[Path], per_family: int | None) -> list[D.SpineTable]:
+def load_spine(files: list[Path], per_family: int | None, *, realize: bool = False,
+               realize_seed: int = 0x5EED):
+    """Lower templates to the spine. With ``realize``, each template becomes a stochastic schema
+    SUBGRAPH (realize.realize_schema) — returns (tables, intra-subgraph FKs, reconstruction views,
+    per-template complexity rows). Flat mode returns one table/template (empty fk/view/cx lists)."""
+    import hashlib
+    import random
+
     spine: list[D.SpineTable] = []
+    rfks: list = []
+    rviews: list = []
+    cx: list[dict] = []
+    n_templates = 0
+    rz = None
+    if realize:
+        from aegir.ontology import realize as rz  # noqa: F811
     for path in files:
         family = path.stem
         cat = load_catalog(path)
         templates = cat.templates[:per_family] if per_family else cat.templates
         for t in templates:
-            spine.append(D.template_to_table(t, family))
-    return spine
+            n_templates += 1
+            if realize:
+                seed = int.from_bytes(
+                    hashlib.blake2b(f"{realize_seed}:{t.template_id}".encode(), digest_size=8).digest(), "big")
+                rs = rz.realize_schema(t, family, rng=random.Random(seed))
+                spine.extend(rs.tables)
+                rfks.extend(rs.fks)
+                rviews.extend(rs.views)
+                cx.append({"template_id": t.template_id, "family": family, "profile": rs.profile,
+                           **rs.complexity})
+            else:
+                spine.append(D.template_to_table(t, family))
+    return spine, rfks, rviews, cx, n_templates
 
 
 def main() -> int:
@@ -107,12 +138,30 @@ def main() -> int:
     logger.info("run_id=%s  output=%s  dialects=%s  validate=%s",
                 run_id, out, args.dialects, not args.no_validate)
 
-    spine = load_spine(files, args.per_family)
-    logger.info("lowered %d templates across %d families", len(spine), len(files))
+    spine, realized_fks, realized_views, complexity_rows, n_templates = load_spine(
+        files, args.per_family, realize=args.realize, realize_seed=args.realize_seed)
+    logger.info("lowered %d templates → %d tables (%s) across %d families", n_templates, len(spine),
+                "realized subgraphs" if args.realize else "flat", len(files))
 
     fc = FamilyComplex.from_json(REPO / args.family_complex if not Path(args.family_complex).is_absolute()
                                  else Path(args.family_complex))
-    fk_edges, fk_audit = D.cross_family_fks(spine, fc)
+    primary: list = []
+    cross_fks: list = []
+    if args.realize:
+        # cross-family FKs link the PRIMARY entity table of each template's subgraph (one per template);
+        # intra-subgraph FKs (EAV/junction/star) are already in realized_fks.
+        primary = [st for st in spine if st.kind == "entity"
+                   and st.table.name == D.table_name(st.template.template_id)]
+        cross_fks, fk_audit = D.cross_family_fks(primary, fc)
+        # a profile may move a restriction-target column out of the primary table (into a junction/dim),
+        # so keep only cross-FKs whose endpoints still exist (RI + view-join safe).
+        _cols = {st.table.name: {c.name for c in st.table.columns} for st in spine}
+        cross_fks = [e for e in cross_fks
+                     if e.src_col in _cols.get(e.src_table, set()) and e.dst_col in _cols.get(e.dst_table, set())]
+        fk_edges = realized_fks + cross_fks
+        logger.info("realized: %d intra-subgraph FKs + %d cross-family FKs", len(realized_fks), len(cross_fks))
+    else:
+        fk_edges, fk_audit = D.cross_family_fks(spine, fc)
     fks_by_src: dict[str, list] = {}
     for e in fk_edges:
         fks_by_src.setdefault(e.src_table, []).append(e)
@@ -155,7 +204,13 @@ def main() -> int:
                 "columns_json": json.dumps([c.name for c in st.table.columns]),
                 "run_id": run_id, "created_at": created_at})
         if not args.no_emit_views:
-            for v, vrows in build_views(spine, fk_edges):
+            # realize mode: the reconstruction views (EAV-long / junction-resolved / star-denorm) are emitted
+            # by the realizer; cross-family views come from the primary entity tables. Flat mode: as before.
+            if args.realize:
+                view_pairs = [(v, []) for v in realized_views] + list(build_views(primary, cross_fks))
+            else:
+                view_pairs = build_views(spine, fk_edges)
+            for v, vrows in view_pairs:
                 valid = None
                 if not args.no_validate:
                     valid = all(dv.valid for dv in D.validate_ddl(v.sql, tuple(args.dialects)))
@@ -269,15 +324,41 @@ def main() -> int:
             "run_id": pa.string(), "created_at": pa.timestamp("us", tz="UTC"),
         })
 
+    realize_summary: dict = {}
+    if complexity_rows:
+        from collections import Counter as _C
+        for r in complexity_rows:
+            r["run_id"] = run_id
+            r["created_at"] = created_at
+        _write(out / "structural_complexity.parquet", complexity_rows, {
+            "template_id": pa.string(), "family": pa.string(), "profile": pa.string(),
+            "n_tables": pa.int32(), "n_views": pa.int32(), "n_fks": pa.int32(),
+            "eav_tables": pa.int32(), "junction_tables": pa.int32(), "attr_count": pa.int32(),
+            "eav_ratio": pa.float64(), "m2n_density": pa.float64(), "fk_depth": pa.int32(),
+            "dim_tables": pa.int32(), "run_id": pa.string(), "created_at": pa.timestamp("us", tz="UTC"),
+        })
+        tt = sum(r["n_tables"] for r in complexity_rows)
+        realize_summary = {
+            "profile_distribution": dict(_C(r["profile"] for r in complexity_rows)),
+            "total_tables": tt, "total_views": sum(r["n_views"] for r in complexity_rows),
+            "tables_per_template": round(tt / len(complexity_rows), 2),
+            "mean_eav_ratio": round(sum(r["eav_ratio"] for r in complexity_rows) / len(complexity_rows), 3),
+            "max_fk_depth": max(r["fk_depth"] for r in complexity_rows),
+        }
+        logger.info("realize complexity: %s", realize_summary)
+
     manifest = {
         "run_id": run_id, "created_at": created_at.isoformat(),
-        "catalog_files": [p.name for p in files], "n_templates": len(spine),
+        "catalog_files": [p.name for p in files], "n_templates": n_templates,
+        "n_tables": len(spine),
         "dialects": list(dialects), "per_family": args.per_family,
         "validated": not args.no_validate,
         "cross_family_fks_emitted": n_emitted,
         "valid_all_dialects": None if args.no_validate else n_valid_all,
         "materialized_rows": not args.no_materialize_rows,
         "row_seed": args.row_seed,
+        "realize": args.realize,
+        "realize_summary": realize_summary,
         "referential_integrity_ok": ri_ok,
         "n_base_cells": len(base_row_rows),
         "n_views": len(view_out_rows),

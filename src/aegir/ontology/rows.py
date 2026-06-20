@@ -32,6 +32,7 @@ if TYPE_CHECKING:                       # typing only — no runtime import (avo
 
 MIN_ROWS, MAX_ROWS = 4, 8
 _FK_TARGET_MIN_ROWS = 6                 # FK targets need enough distinct parents for organic fan-out
+_JUNCTION_MIN_ROWS = 12                 # association-class (M:N) tables get denser fan-out than base tables
 _GLOBAL_SEED = 0xAE61
 
 _ENTITY = {"Class", "Individual", "NamedIndividual"}
@@ -309,6 +310,66 @@ def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
     return _entity_value(col, st, row_ix)          # xsd:string / untyped DataProperty / unknown
 
 
+def _col_idx(st: "SpineTable", name: str) -> int | None:
+    for i, c in enumerate(st.table.columns):
+        if c.name == name:
+            return i
+    return None
+
+
+def _fill_eav_registry(st: "SpineTable", *, seed: int) -> None:
+    """An EAV attribute-registry table: one row per attribute (id, attr_name, attr_type)."""
+    attrs = st.realize_meta.get("attributes", [])
+    pki, ni, ti = _pk_index(st), _col_idx(st, "attr_name"), _col_idx(st, "attr_type")
+    rows = []
+    for i, (name, xtype) in enumerate(attrs):
+        row = ["" for _ in st.table.columns]
+        row[pki] = pk_value(st, i)
+        if ni is not None:
+            row[ni] = name
+        if ti is not None:
+            row[ti] = xtype
+        rows.append(row)
+    st.table.rows = rows
+
+
+def _fill_eav_values(st: "SpineTable", by_name: dict, *, seed: int) -> None:
+    """An EAV value table: the entity × attribute cross-product (the row explosion that IS EAV growth),
+    each cell typed by the attribute and RI-safe (entity_id from the entity PK pool, attr_id from the
+    registry PK pool). Values reuse value_for so enums/curated pools still ground them."""
+    from types import SimpleNamespace
+    meta = st.realize_meta
+    ent, reg = by_name.get(meta.get("entity_table")), by_name.get(meta.get("registry_table"))
+    if not ent or not reg or not ent.table.rows or not reg.table.rows:
+        st.table.rows = []
+        return
+    members = list(meta.get("members") or [])
+    rpk, rni = _pk_index(reg), _col_idx(reg, "attr_name")
+    name2pk = {r[rni]: r[rpk] for r in reg.table.rows if rni is not None and r[rni] in members}
+    ent_pks = [r[_pk_index(ent)] for r in ent.table.rows]
+    pki, ei, ai, vi = (_pk_index(st), _col_idx(st, "entity_id"), _col_idx(st, "attr_id"), _col_idx(st, "value"))
+    vtype = st.table.columns[vi].slot_type if vi is not None else "xsd:string"
+    rows, k = [], 0
+    for epk in ent_pks:
+        for name in sorted(name2pk):
+            rng = random.Random(_seed(st.table.name, epk, name, "eav", base=seed))
+            row = ["" for _ in st.table.columns]
+            row[pki] = pk_value(st, k)
+            if ei is not None:
+                row[ei] = epk
+            if ai is not None:
+                row[ai] = name2pk[name]
+            if vi is not None:
+                col_like = SimpleNamespace(name=name, slot_type=vtype, slot_ref="data:value")
+                row[vi] = value_for(col_like, ent, row_ix=k, seed=seed)
+            rows.append(row)
+            k += 1
+    st.table.rows = rows
+
+
+_EAV_KINDS = {"eav_registry", "eav_value"}
+
+
 def materialize_rows(spine: Sequence["SpineTable"], fks: Sequence, *, seed: int = _GLOBAL_SEED,
                      definitions: dict[str, dict[str, str]] | None = None,
                      entity_pools: dict[str, dict[str, list[str]]] | None = None) -> None:
@@ -331,21 +392,36 @@ def materialize_rows(spine: Sequence["SpineTable"], fks: Sequence, *, seed: int 
     for e in fks:
         src_fk.setdefault(e.src_table, {})[e.src_col] = e.dst_table
 
-    # counts (FK targets get enough distinct parents)
+    # counts (FK targets get enough distinct parents; junctions get denser M:N fan-out)
     counts = {st.table.name: row_count_for(st, seed) for st in spine}
     for tname in fk_targets:
         if tname in counts:
             counts[tname] = max(counts[tname], _FK_TARGET_MIN_ROWS)
-
-    # Pass A — PK pools
     for st in spine:
+        if getattr(st, "kind", "entity") == "junction":                       # dense many-to-many association rows
+            counts[st.table.name] = max(counts[st.table.name], _JUNCTION_MIN_ROWS)
+
+    # Pass A — PK pools (EAV registry/value tables are filled by their dedicated passes below)
+    for st in spine:
+        if getattr(st, "kind", "entity") in _EAV_KINDS:
+            continue
         n, ncol, pk = counts[st.table.name], len(st.table.columns), _pk_index(st)
         st.table.rows = [["" for _ in range(ncol)] for _ in range(n)]
         for i in range(n):
             st.table.rows[i][pk] = pk_value(st, i)
 
-    # Pass B + C — non-PK cells, then FK overwrite from target PK pool
+    # EAV passes — registry first (defines attr PKs), then value tables (entity × attr cross-product).
     for st in spine:
+        if getattr(st, "kind", "entity") == "eav_registry":
+            _fill_eav_registry(st, seed=seed)
+    for st in spine:
+        if getattr(st, "kind", "entity") == "eav_value":
+            _fill_eav_values(st, by_name, seed=seed)
+
+    # Pass B + C — non-PK cells, then FK overwrite from target PK pool (EAV tables already complete)
+    for st in spine:
+        if getattr(st, "kind", "entity") in _EAV_KINDS:
+            continue
         tname = st.table.name
         pk, fkmap = _pk_index(st), src_fk.get(tname, {})
         col_defs = definitions.get(tname, {})
