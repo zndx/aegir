@@ -73,6 +73,9 @@ def parse_args() -> argparse.Namespace:
                    help="Dataset config (language code or named subset)")
     p.add_argument("--finepdfs-split", default="train")
     p.add_argument("--sample-size", type=int, default=10_000)
+    p.add_argument("--skip-docs", type=int, default=0,
+                   help="forward-index cursor: skip the first N docs of the stream/corpus before sampling "
+                        "the next window — advances the aperture through the full FinePDFs corpus over runs")
     p.add_argument("--max-chars-per-doc", type=int, default=8000)
     p.add_argument("--seed", type=int, default=4649)
     p.add_argument("--catalog-dir", default="src/aegir/ontology/catalog")
@@ -109,6 +112,7 @@ def compute_run_id(args: argparse.Namespace, catalog_files: list[Path]) -> str:
                  f"{args.finepdfs_split}:{args.sample_size}:{args.seed}:"
                  f"{args.max_chars_per_doc}\n".encode())
     h.update(f"embedding_model:{args.embedding_model}\n".encode())
+    h.update(f"skip_docs:{args.skip_docs}\n".encode())   # forward-index window → distinct run per cursor
     h.update(f"clustering:kmeans:k={args.n_topics}:seed={args.seed}\n".encode())
     h.update(f"thresholds:tau_high={args.tau_high}:tau_low={args.tau_low}\n".encode())
     for p in sorted(catalog_files):
@@ -122,13 +126,18 @@ def compute_run_id(args: argparse.Namespace, catalog_files: list[Path]) -> str:
 # FinePDFs sampling
 # ─────────────────────────────────────────────────────────────────────────
 
-def sample_local_corpus(args: argparse.Namespace) -> tuple[list[str], list[str]]:
+def sample_local_corpus(args: argparse.Namespace) -> tuple[list[str], list[str], int]:
     """Reservoir-sample docs from local corpus file(s) (\\x03-delimited; the ACTUAL
-    filtered FinePDFs the model pretrains on) — the canonical ground."""
+    filtered FinePDFs the model pretrains on) — the canonical ground. ``--skip-docs`` advances the
+    forward-index cursor: the first N eligible docs are skipped, then a window is sampled. Returns
+    (ids, texts, docs_consumed) where docs_consumed = skip + window-scanned (the next cursor)."""
     rng = np.random.default_rng(args.seed)
+    skip = max(0, args.skip_docs)
+    cap = max(args.sample_size * 5, 50_000)
     ids: list[str] = []
     texts: list[str] = []
-    n_seen = 0
+    n_seen = 0          # eligible docs seen in the WINDOW (post-skip)
+    skipped = 0         # eligible docs skipped to reach the cursor
     for path in args.local_corpus:
         name = Path(path).name
         buf = ""
@@ -144,44 +153,49 @@ def sample_local_corpus(args: argparse.Namespace) -> tuple[list[str], list[str]]
                     doc = doc.strip()
                     if len(doc) < 200:
                         continue
+                    if skipped < skip:           # advance the cursor to the window start
+                        skipped += 1
+                        continue
                     doc = doc[: args.max_chars_per_doc]
+                    gidx = skip + n_seen
                     if len(texts) < args.sample_size:
-                        ids.append(f"{name}:{n_seen}")
+                        ids.append(f"{name}:{gidx}")
                         texts.append(doc)
                     else:
                         j = int(rng.integers(0, n_seen + 1))
                         if j < args.sample_size:
-                            ids[j] = f"{name}:{n_seen}"
+                            ids[j] = f"{name}:{gidx}"
                             texts[j] = doc
                     n_seen += 1
-                # Time-bound like the streaming path: reservoir converges fast.
-                if n_seen >= max(args.sample_size * 5, 50_000):
+                if n_seen >= cap:
                     break
-        if n_seen >= max(args.sample_size * 5, 50_000):
+        if n_seen >= cap:
             break
-    logger.info(f"sampled {len(texts):,} docs from {n_seen:,} scanned (local corpus)")
-    return ids, texts
+    logger.info(f"sampled {len(texts):,} docs from {n_seen:,} scanned (local corpus; skipped {skipped:,} to cursor {skip:,})")
+    return ids, texts, skip + n_seen
 
 
-def sample_finepdfs(args: argparse.Namespace) -> tuple[list[str], list[str]]:
-    """Stream the dataset and pick a deterministic sample.
+def sample_finepdfs(args: argparse.Namespace) -> tuple[list[str], list[str], int]:
+    """Stream the dataset and pick a deterministic sample (forward-index aware).
 
-    Returns:
-        (ids, texts) — parallel lists of length ≤ sample_size.
+    ``--skip-docs`` advances the cursor through the (remote/full) FinePDFs stream before sampling the
+    next window. Returns (ids, texts, docs_consumed) — docs_consumed = skip + window-scanned (next cursor).
     """
     if getattr(args, "local_corpus", None):
         return sample_local_corpus(args)
     from datasets import load_dataset
 
     logger.info(f"streaming {args.finepdfs_dataset} "
-                f"config={args.finepdfs_config} split={args.finepdfs_split}")
+                f"config={args.finepdfs_config} split={args.finepdfs_split} skip={args.skip_docs:,}")
     ds = load_dataset(
         args.finepdfs_dataset, args.finepdfs_config,
         split=args.finepdfs_split, streaming=True,
     )
 
     rng = np.random.default_rng(args.seed)
-    # Reservoir sampling so the sample is truly uniform over the stream.
+    skip = max(0, args.skip_docs)
+    skipped = 0
+    # Reservoir sampling so the sample is truly uniform over the WINDOW (post-skip).
     reservoir_ids: list[str] = []
     reservoir_texts: list[str] = []
     n_seen = 0
@@ -212,10 +226,12 @@ def sample_finepdfs(args: argparse.Namespace) -> tuple[list[str], list[str]]:
 
         text = row[text_field] or ""
         if not text.strip():
-            n_seen += 1
+            continue
+        if skipped < skip:                  # advance the forward-index cursor to the window start
+            skipped += 1
             continue
         text = text[: args.max_chars_per_doc]
-        doc_id = str(row[id_field]) if id_field in row else f"row{n_seen}"
+        doc_id = str(row[id_field]) if id_field in row else f"row{skip + n_seen}"
 
         if len(reservoir_texts) < args.sample_size:
             reservoir_ids.append(doc_id)
@@ -231,12 +247,13 @@ def sample_finepdfs(args: argparse.Namespace) -> tuple[list[str], list[str]]:
             elapsed = time.time() - t0
             logger.info(f"  scanned {n_seen:,} docs in {elapsed:.1f}s "
                         f"(reservoir={len(reservoir_texts):,})")
-        # Cap scan at ~5x sample_size for time bound; reservoir converges fast.
+        # Cap WINDOW scan at ~5x sample_size for time bound; reservoir converges fast.
         if n_seen >= max(args.sample_size * 5, 50_000):
             break
 
-    logger.info(f"sampled {len(reservoir_texts):,} docs from {n_seen:,} scanned")
-    return reservoir_ids, reservoir_texts
+    logger.info(f"sampled {len(reservoir_texts):,} docs from {n_seen:,} scanned "
+                f"(skipped {skipped:,} to cursor {skip:,})")
+    return reservoir_ids, reservoir_texts, skip + n_seen
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -344,8 +361,15 @@ def main() -> int:
     logger.info("Stage 1/5: FinePDFs sample")
     logger.info("=" * 70)
     t0 = time.time()
-    doc_ids, doc_texts = sample_finepdfs(args)
-    logger.info(f"  {len(doc_texts):,} docs sampled in {time.time()-t0:.1f}s")
+    doc_ids, doc_texts, docs_consumed = sample_finepdfs(args)
+    logger.info(f"  {len(doc_texts):,} docs sampled in {time.time()-t0:.1f}s "
+                f"(cursor: {args.skip_docs:,} → {docs_consumed:,})")
+    # Forward-index cursor: persist where the next window should start. A driver advances the aperture
+    # by passing `--skip-docs <next_skip>` on the next audit run, walking the full FinePDFs corpus.
+    with open(output_dir / "cursor.json", "w") as _cf:
+        json.dump({"start_doc": args.skip_docs, "window_sampled": len(doc_texts),
+                   "docs_consumed": docs_consumed, "next_skip": docs_consumed,
+                   "sample_size": args.sample_size}, _cf, indent=2)
 
     # ── Stage 2: embed docs ─────────────────────────────────────────────
     logger.info("=" * 70)

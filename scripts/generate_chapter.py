@@ -157,6 +157,10 @@ def parse_args() -> argparse.Namespace:
                         "textbook prompt (no LIMS-schema instruction) — tests "
                         "whether the schema-rich Grok prompt adds value vs "
                         "ontology+style alone.")
+    p.add_argument("--realize-schemas", action="store_true",
+                   help="write chapters around REALIZED schema subgraphs (EAV / junction / star / "
+                        "snowflake via realize.py) instead of flat one-table-per-template — the "
+                        "super-linear DDL+views deliverable with real-world structural diversity")
     return p.parse_args()
 
 
@@ -794,7 +798,7 @@ def build_axiom_section_with_tables(templates: list[dict], payload, rng=None) ->
 
 
 def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
-                 family_complex=None, *, seed: int = 0) -> tuple:
+                 family_complex=None, *, seed: int = 0, realize_schemas: bool = False) -> tuple:
     """Build the generation prompt; returns ``(prompt, payload | None)``.
 
     glm/grok get the **fixed populated tables** injected (Track A: load-bearing ontology + RI=1.0);
@@ -810,7 +814,8 @@ def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
     if kind in ("glm", "grok"):
         try:
             from aegir.ontology.chapter_tables import chapter_relational_payload
-            payload = chapter_relational_payload(templates, family_complex, seed=seed)
+            payload = chapter_relational_payload(templates, family_complex, seed=seed,
+                                                 realize=realize_schemas)
             axiom_section = build_axiom_section_with_tables(templates, payload, rng=vrng)
         except Exception as exc:  # noqa: BLE001 — RI/lowering failure must not abort a long run
             logger.warning(f"  relational payload failed ({type(exc).__name__}: {str(exc)[:100]}); "
@@ -1121,7 +1126,8 @@ def main() -> int:
         primary_family = Counter(t["_family"] for t in chosen).most_common(1)[0][0]
 
         prompt, rel_payload = build_prompt(anchors, chosen, kind=kind, family_complex=family_complex,
-                                           seed=args.seed + seed_offset)
+                                           seed=args.seed + seed_offset,
+                                           realize_schemas=args.realize_schemas)
         chapter_id = compute_chapter_id(prompt, model, seed_offset)
 
         logger.info(f"chapter {i+1}/{args.n_chapters} (id={chapter_id}):")

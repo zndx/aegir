@@ -165,9 +165,54 @@ def payload_from_spine(spine: list[SpineTable], family_complex, *,
     return RelationalPayload(base_tables=spine, fks=fks, views=build_views(spine, fks))
 
 
+def realized_payload_from_dicts(templates: Sequence[dict], family_complex, *,
+                                seed: int = _CHAPTER_SEED, realize_seed: int = 0x5EED) -> RelationalPayload:
+    """Realize each chosen template into a stochastic schema SUBGRAPH (EAV/junction/star/snowflake) and
+    assemble the chapter payload from the union — so a chapter is written around RICH relational structure
+    (the super-linear DDL+views deliverable), not flat tables. RI = 1.0 by construction; clean-room."""
+    import hashlib
+    import random
+
+    from aegir.ontology import realize as rz
+    from aegir.ontology.ddl import table_name
+
+    tables: list[SpineTable] = []
+    rfks: list[FKEdge] = []
+    rviews = []
+    for t in templates:
+        ct = CatalogTemplate(
+            template_id=t["template_id"], manchester_template=t.get("manchester_template", ""),
+            slot_types=t.get("slot_types", {}), is_complex=t.get("is_complex", False),
+            verbal_template=t.get("verbal_template", ""), bfo_anchor_path=t.get("bfo_anchor_path", []))
+        rseed = int.from_bytes(
+            hashlib.blake2b(f"{realize_seed}:{ct.template_id}".encode(), digest_size=8).digest(), "big")
+        rs = rz.realize_schema(ct, t.get("_family", ""), rng=random.Random(rseed))
+        tables.extend(rs.tables)
+        rfks.extend(rs.fks)
+        rviews.extend(rs.views)
+    primary = [st for st in tables if st.kind == "entity"
+               and st.table.name == table_name(st.template.template_id)]
+    cross_fks: list[FKEdge] = []
+    if family_complex is not None:
+        cross_fks, _ = cross_family_fks(primary, family_complex)
+        cols = {st.table.name: {c.name for c in st.table.columns} for st in tables}
+        cross_fks = [e for e in cross_fks
+                     if e.src_col in cols.get(e.src_table, set()) and e.dst_col in cols.get(e.dst_table, set())]
+    fks = rfks + cross_fks
+    materialize_rows(tables, fks, seed=seed, definitions=definitions_for_spine(tables),
+                     entity_pools=entity_pools_for_spine(tables))
+    assert_referential_integrity(tables, fks)
+    views = [(v, []) for v in rviews] + build_views(primary, cross_fks)
+    return RelationalPayload(base_tables=tables, fks=fks, views=views)
+
+
 def chapter_relational_payload(templates: Sequence[dict], family_complex, *,
-                               seed: int = _CHAPTER_SEED) -> RelationalPayload:
-    """The fixed tables a chapter (its chosen templates) is written around. RI = 1.0 by construction."""
+                               seed: int = _CHAPTER_SEED, realize: bool = False,
+                               realize_seed: int = 0x5EED) -> RelationalPayload:
+    """The fixed tables a chapter (its chosen templates) is written around. RI = 1.0 by construction.
+    ``realize`` expands each template into a schema subgraph (rich structure) instead of one flat table."""
+    if realize:
+        return realized_payload_from_dicts(templates, family_complex, seed=seed, realize_seed=realize_seed)
     return payload_from_spine(spine_from_dicts(templates), family_complex, seed=seed)
 
 
