@@ -145,6 +145,20 @@ kb-sync *args:
 kb-render *args:
     uv run --no-sync python scripts/render_lineup_mdbook.py --build {{args}}
 
+# ── capability/gRPC engine ────────────────────────────────────
+#
+# The Aegir capability engine (minimal mirror of the Gaius pattern): workloads request an
+# inference CAPABILITY (e.g. "instruct") over gRPC; the engine alone owns capability→model
+# selection and is the ONLY thing that talks to vLLM (strict layering — no vLLM URL ever
+# leaves the engine). vLLM runs in a dedicated cu129 venv (see engine/config.py VLLM_PYTHON);
+# the cuda-driver-libs prefix unmasks libcuda (Nix). Override the model via AEGIR_INSTRUCT_MODEL.
+engine-serve:
+    LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs uv run --no-sync python -m aegir.engine.server
+
+# Smoke-test the engine: a capability request returns text via gRPC (engine→vLLM internally).
+engine-ping prompt="In one sentence, what is a foreign key?":
+    uv run --no-sync python -c "from aegir.engine.client import complete; print(complete('''{{prompt}}''', capability='instruct', max_tokens=64, temperature=0.3))"
+
 # ── mdbook documentation ──────────────────────────────────────
 #
 # The book lives at ``docs/current/`` (standard ``mdbook init``

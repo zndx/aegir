@@ -1,0 +1,50 @@
+// Aegir capability/gRPC engine — minimal mirror of the Gaius engine.
+// Strict layering: workloads call ONLY this service; the engine alone talks to vLLM.
+syntax = "proto3";
+package aegir.engine;
+
+service AegirEngine {
+  // Workload-facing: request an inference CAPABILITY. The engine selects + ensures the model and calls
+  // vLLM internally; the workload never sees a vLLM endpoint.
+  rpc Complete(CompleteRequest) returns (CompleteResponse);
+  // Admin/observability for the engine-internal vLLM lifecycle (NOT how workloads do inference).
+  rpc EnsureEndpoint(EnsureEndpointRequest) returns (EndpointStatus);
+  rpc EngineStatus(EngineStatusRequest) returns (EngineStatusResponse);
+}
+
+message CompleteRequest {
+  string capability = 1;     // e.g. "instruct" — names a capability, not a model
+  string prompt = 2;
+  string system_prompt = 3;
+  int32 max_tokens = 4;
+  float temperature = 5;
+}
+
+message CompleteResponse {
+  string text = 1;           // the answer (content). For a thinking model with no parseable delimiter,
+                             // the reasoning is retained inline here; see reasoning_content otherwise.
+  string model = 2;          // the model the engine actually served the capability with
+  int32 prompt_tokens = 3;
+  int32 completion_tokens = 4;
+  float latency_ms = 5;
+  string reasoning_content = 6;  // the separated chain-of-thought when the model/parser splits it
+                                 // (Cerebras-style retention — a corpus value-add); empty otherwise.
+  string finish_reason = 7;      // "stop" (complete) vs "length" (truncated — raise max_tokens)
+}
+
+message EnsureEndpointRequest { string capability = 1; }
+
+message EndpointStatus {
+  string capability = 1;
+  string model = 2;
+  bool healthy = 3;
+  int32 port = 4;            // engine-internal vLLM port (ops/debug only)
+  repeated int32 gpu_ids = 5;
+  string detail = 6;
+}
+
+message EngineStatusRequest {}
+message EngineStatusResponse {
+  repeated EndpointStatus endpoints = 1;
+  int32 total_gpus = 2;
+}
