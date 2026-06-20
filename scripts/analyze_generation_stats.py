@@ -127,9 +127,9 @@ def render_md(rep: dict) -> str:
     m, L = rep["measured"], []
     tc = m["trace_completeness"]
     L.append(f"# Generation scaling extrapolation — {Path(rep['run']).name}\n")
-    L.append(f"**{m['n_chapters']} chapters** · trace-complete: "
-             f"{'✅ ALL' if tc['complete'] else f'⚠️ {tc[chr(34)+chr(34)] if False else tc}'} "
-             f"(truncated share {tc['truncated_share']}; finish_reason {tc['finish_reason']})\n")
+    tc_status = "✅ ALL complete" if tc["complete"] else f"⚠️ {tc['truncated_share']:.1%} truncated"
+    L.append(f"**{m['n_chapters']} chapters** · thinking-trace completeness: {tc_status} "
+             f"(finish_reason {tc['finish_reason']})\n")
     th = m["throughput"]
     L.append(f"## Measured (local Qwen3.6, {m['gpu']['n_gpus']} GPU)\n")
     L.append(f"- generation: **{th['gen_tokens_per_s']} tok/s** ({m['gpu']['tokens_per_s_per_gpu']} tok/s/GPU) · "
@@ -138,20 +138,30 @@ def render_md(rep: dict) -> str:
              f"latency mean {m['latency_s']['mean']}s (p90 {m['latency_s']['p90']}s)\n")
     L.append(f"- reasoning: {m['reasoning']['mean_reasoning_chars']:.0f} chars/chapter "
              f"({m['reasoning']['reasoning_char_share']:.0%} of generated text is the thinking trace)\n")
-    L.append("\n## Projection — local GPU-hours vs remote $\n")
-    L.append("| target chapters | local wall-clock | local GPU-hrs | local $ | GLM $ | Grok $ |")
+    solar = rep["params"]["gpu_hourly_usd"] == 0.0
+    chph = rep["measured"]["throughput"]["effective_chapters_per_hour"]
+    L.append("\n## Projection — local (free solar compute, time-bound) vs remote (paid, parallel-fast)\n")
+    L.append("| target chapters | local wall-clock | local GPU-hrs | local $ | remote $ (GLM) | remote $ (Grok) |")
     L.append("|---|---|---|---|---|---|")
     for p in rep["projections"]:
-        loc = p["local"]
-        rem = p["remote_usd"]
-        L.append(f"| {p['target_chapters']:,} | {loc['wall_clock_hours']}h | {loc['gpu_hours']} | "
-                 f"${loc['usd_at_gpu_rate']:,} | ${list(rem.values())[0]:,} | ${list(rem.values())[1]:,} |")
-    L.append(f"\n_local $ at ${rep['params']['gpu_hourly_usd']}/GPU-hr × {rep['params']['n_gpus']} GPU._\n")
-    L.append("## Per-chapter unit economics (break-even)\n")
+        loc, rem = p["local"], list(p["remote_usd"].values())
+        loc_usd = "**$0 (solar)**" if solar else f"${loc['usd_at_gpu_rate']:,}"
+        L.append(f"| {p['target_chapters']:,} | {loc['wall_clock_hours']:,}h | {loc['gpu_hours']:,} | "
+                 f"{loc_usd} | ${rem[0]:,} | ${rem[1]:,} |")
+    basis = "free renewable (solar)" if solar else f"${rep['params']['gpu_hourly_usd']}/GPU-hr × {rep['params']['n_gpus']} GPU"
+    L.append(f"\n_Local compute = **{basis}**, wall-clock at the measured {chph} ch/hr on {rep['params']['n_gpus']} GPU "
+             f"(scales ~linearly with added local GPUs). Remote APIs parallelize — their wall-clock is rate-limit-bound, "
+             f"not throughput-bound. So the real trade is **time (free, local) vs money (fast, remote)**, not $ vs $._\n")
+    L.append("## The decision — local is ~free; remote $ is the premium you'd pay for speed\n")
+    mean_lat = rep["measured"]["latency_s"]["mean"]
     for name, b in rep["break_even"].items():
-        verdict = "local cheaper ✅" if b["local_cheaper"] else "remote cheaper"
-        L.append(f"- **{name}**: local ${b['local_usd_per_chapter']}/ch vs remote "
-                 f"${b['remote_usd_per_chapter']}/ch → {verdict}")
+        L.append(f"- **{name}**: remote ≈ **${b['remote_usd_per_chapter']:.4f}/chapter** "
+                 f"(${b['remote_usd_per_chapter']*1000:,.0f}/1k chapters) — the premium to skip ~{mean_lat:.0f}s of "
+                 f"free local wall-clock per chapter. Local marginal cost: "
+                 f"{'**$0** (solar/owned)' if solar else f'${b['local_usd_per_chapter']}/ch'}.")
+    L.append(f"\n**Takeaway:** at {chph} ch/hr, local produces ~{chph*24:.0f} chapters/day on {rep['params']['n_gpus']} GPU "
+             f"for $0 — scale GPUs (or daylight hours) for more. Reach for paid remote only when a deadline needs "
+             f"parallel throughput the local fleet can't meet in time.")
     return "\n".join(L) + "\n"
 
 
@@ -159,7 +169,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--run", required=True, help="chapters run dir (contains chapters.parquet)")
     ap.add_argument("--n-gpus", type=int, default=4)
-    ap.add_argument("--gpu-hourly-usd", type=float, default=0.50, help="$/GPU-hr basis for local cost")
+    ap.add_argument("--gpu-hourly-usd", type=float, default=0.0,
+                    help="$/GPU-hr for local compute. DEFAULT 0 — the local GPUs are SOLAR-powered "
+                         "(free renewable marginal cost, owned hardware). Set e.g. 0.40 only to compare "
+                         "against a cloud-rental counterfactual; local's real constraint is wall-clock, not $.")
     ap.add_argument("--targets", type=int, nargs="+", default=[1000, 10000, 100000])
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
