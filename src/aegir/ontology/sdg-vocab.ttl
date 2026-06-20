@@ -1542,3 +1542,119 @@ sdg:hasIssuedDate a owl:DatatypeProperty ;
     rdfs:label "has issued date" ;
     skos:definition "The date a designative ICE was issued." ;
     rdfs:domain cco:DesignativeICE ; rdfs:range xsd:date .
+
+## ======================================================================
+## DataProperty enrichment (Semantic-Layer-Upkeep Comp 4) — widen the typed-attribute
+## pool per BFO anchor so per-template stratified subsets (ddl.anchor_attributes) yield
+## VARIED column-sets across same-anchor tables (de-canning), and ground more string
+## columns in closed value sets (skos:definition enums → parse_enum_from_definition →
+## domain-meaningful cells instead of "<Concept> NN" placeholders). Enum definitions use
+## the "(a / b / c)" parenthetical form the parser recognises; values are bare lowercase
+## tokens (hyphen/slash-bearing value sets ride curated pools in rows.py instead).
+## ======================================================================
+
+# --- Process (lifecycle / execution) ---
+sdg:hasPhase a owl:DatatypeProperty ;
+    rdfs:label "has phase" ;
+    skos:definition "The lifecycle phase of a process (initiation / execution / review / closeout)." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+sdg:hasTriggeredBy a owl:DatatypeProperty ;
+    rdfs:label "has triggered by" ;
+    skos:definition "What initiated a process run (schedule / manual / event / api / retry)." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+sdg:hasLogLevel a owl:DatatypeProperty ;
+    rdfs:label "has log level" ;
+    skos:definition "The severity threshold a process emits at (debug / info / warning / error / critical)." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+sdg:hasExitCode a owl:DatatypeProperty ;
+    rdfs:label "has exit code" ;
+    skos:definition "The integer exit status a process terminated with." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:integer .
+sdg:hasRetryCount a owl:DatatypeProperty ;
+    rdfs:label "has retry count" ;
+    skos:definition "The number of times a process was retried." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:integer .
+sdg:hasScheduledAt a owl:DatatypeProperty ;
+    rdfs:label "has scheduled at" ;
+    skos:definition "The timestamp at which a process was scheduled to begin." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:dateTime .
+sdg:hasHostName a owl:DatatypeProperty ;
+    rdfs:label "has host name" ;
+    skos:definition "The host or node on which a process executed." ;
+    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+
+# --- IndependentContinuant (shared by Artifact and below) ---
+sdg:hasOwner a owl:DatatypeProperty ;
+    rdfs:label "has owner" ;
+    skos:definition "The team or service accountable for a continuant." ;
+    rdfs:domain bfo:IndependentContinuant ; rdfs:range xsd:string .
+sdg:hasTags a owl:DatatypeProperty ;
+    rdfs:label "has tags" ;
+    skos:definition "A governance tag on a continuant (pii / internal / public / archived / verified)." ;
+    rdfs:domain bfo:IndependentContinuant ; rdfs:range xsd:string .
+
+# --- Artifact ---
+sdg:hasChecksum a owl:DatatypeProperty ;
+    rdfs:label "has checksum" ;
+    skos:definition "The content checksum of an artifact." ;
+    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+sdg:hasSizeBytes a owl:DatatypeProperty ;
+    rdfs:label "has size bytes" ;
+    skos:definition "The on-disk size of an artifact in bytes." ;
+    rdfs:domain cco:Artifact ; rdfs:range xsd:long .
+sdg:hasMimeType a owl:DatatypeProperty ;
+    rdfs:label "has mime type" ;
+    skos:definition "The media type of an artifact's content." ;
+    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+sdg:hasLicense a owl:DatatypeProperty ;
+    rdfs:label "has license" ;
+    skos:definition "The SPDX license an artifact is distributed under." ;
+    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+sdg:hasUri a owl:DatatypeProperty ;
+    rdfs:label "has uri" ;
+    skos:definition "The canonical locator of an artifact." ;
+    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+
+# --- InformationContentEntity (shared by the ICE families) ---
+sdg:hasEncoding a owl:DatatypeProperty ;
+    rdfs:label "has encoding" ;
+    skos:definition "The character encoding of an information content entity (utf8 / ascii / latin1 / unicode)." ;
+    rdfs:domain cco:InformationContentEntity ; rdfs:range xsd:string .
+
+# --- DescriptiveICE (measurements / records) ---
+sdg:hasMethod a owl:DatatypeProperty ;
+    rdfs:label "has method" ;
+    skos:definition "How a value was obtained (manual / automated / hybrid / inferred)." ;
+    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:string .
+sdg:hasDimensionKind a owl:DatatypeProperty ;
+    rdfs:label "has dimension kind" ;
+    skos:definition "The dimensional kind of a measured value (length / time / temperature / count / mass / pressure)." ;
+    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:string .
+sdg:hasUncertainty a owl:DatatypeProperty ;
+    rdfs:label "has uncertainty" ;
+    skos:definition "The standard uncertainty associated with a recorded value." ;
+    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:decimal .
+
+# --- DirectiveICE (policies / constraints) ---
+sdg:hasEnforcement a owl:DatatypeProperty ;
+    rdfs:label "has enforcement" ;
+    skos:definition "The enforcement disposition of a directive (advisory / mandatory / deprecated / blocking)." ;
+    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:string .
+sdg:hasScope a owl:DatatypeProperty ;
+    rdfs:label "has scope" ;
+    skos:definition "The applicability scope of a directive (global / regional / local / team)." ;
+    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:string .
+sdg:hasReviewCycleDays a owl:DatatypeProperty ;
+    rdfs:label "has review cycle days" ;
+    skos:definition "The review cadence of a directive in days." ;
+    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:integer .
+
+# --- DesignativeICE (identifiers / codes) ---
+sdg:hasNamespace a owl:DatatypeProperty ;
+    rdfs:label "has namespace" ;
+    skos:definition "The issuing namespace of a designator (telemetry / governance / lineage / catalog / provenance)." ;
+    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:string .
+sdg:hasChecksumAlgo a owl:DatatypeProperty ;
+    rdfs:label "has checksum algo" ;
+    skos:definition "The algorithm a designative checksum uses (sha256 / md5 / crc32 / blake2b / sha1)." ;
+    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:string .

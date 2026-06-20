@@ -21,8 +21,8 @@ gate** and an upkeep loop we run **entirely on local resources** before any paid
 | Dimension | Metric | Floor (provisional, ratchet up) | Lever (local) |
 |---|---|---|---|
 | **Verbalization diversity** | skeleton-frame entropy + top-5 share + relational share (`audit_verbalization_entropy.py`) | top-5 share ↓, frame entropy ↑ vs baseline | DeepOnto parse-tree re-render (config + relational verbalisers) → diverse set; **local-LLM** elaboration |
-| **Value semantics** | placeholder-ratio + domain-term fraction | placeholder-ratio ↓ | richer enums (sdg-vocab), date-bug fix; **local-LLM**-seeded domain values |
-| **Column-name diversity** | de-canning `distinct_ratio` vs SchemaPile (`check_decanning_entropy.py`) | ≥ provisional floor (ratchet toward p25→p50) | per-template stratified anchor-attributes |
+| **Value semantics** | placeholder-ratio + domain-term fraction + time-order integrity | placeholder ≤ 0.30 · domain ≥ 0.40 · 0 time-order violations | richer enums + curated pools (sdg-vocab), intra-row temporal coherence (start<end=start+dur); **local-LLM**-seeded RI-safe domain entity values |
+| **Column-name diversity** | de-canning column-name **entropy `h_colset`** vs SchemaPile p10 (`check_decanning_entropy.py`; `distinct_ratio` reported as context) | every anchor ≥ SchemaPile h_colset p10 (we land at/above its **median**) | enrich anchor DataProperty pool + per-template **stratified** anchor-attributes |
 
 The **embedded-view semantic-quality gate** (`scripts/semantic_layer_gate.py`) composes the three into one
 per-dimension pass/fail, pre-registered in `EVIDENCE.md`. **A gate is a floor to clear on the way — not the
@@ -37,8 +37,11 @@ the Provenance DAG). See memory `provisional_scaffolding_not_goals`.
   schemas. The real product has entity columns that **are** foreign keys in dense webs.
 - **one-FK-per-table** (`cross_family_fks` takes `refs[0]`), **slot-derived** structure, **RI=1.0 by
   construction** over simple tables — current floors, not the shape of the target.
-- **`distinct_ratio` floor, placeholder/deterministic values, realization-CPA firing only on object-property
-  templates** — proxies/guards/current-scope, not the destination.
+- **de-canning floored on `h_colset` (entropy), curated/deterministic value pools, realization-CPA firing
+  only on object-property templates** — proxies/guards/current-scope, not the destination. The entropy floor
+  is the *right* metric for ontology-grounded tables (raw `distinct_ratio` over-penalises legitimate, correct-
+  by-construction shared typed attributes), but matching SchemaPile is still a floor: the north star is
+  concept-specific columns, not a generic anchor pool stratified into variety.
 
 **North star:** the true final data product carries **significant real-world relational complexity** —
 dense many-to-many relations, FK-bearing entity columns, complex multi-table schemas, and domain-real values

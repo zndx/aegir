@@ -17,8 +17,10 @@ engine). Optional polyglot validation of the view SQL is left to the spine build
 """
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from aegir.ontology.ddl import (SpineTable, ViewSpec, cross_family_fks, dataprop_meta,
                                 render_view_ddl, template_to_table)
@@ -66,6 +68,38 @@ def definitions_for_spine(spine: Sequence[SpineTable]) -> dict[str, dict[str, st
                     d[c.name] = defn
         if d:
             out[st.table.name] = d
+    return out
+
+
+_ENTITY_POOLS_PATH = Path(__file__).resolve().parent / "entity_value_pools.json"
+_ENTITY_POOLS_CACHE: "dict[str, dict[str, list[str]]] | None" = None
+
+
+def _entity_value_pools() -> "dict[str, dict[str, list[str]]]":
+    """The committed ``template_id → {col → [domain values]}`` resource (LLM-seeded, RI-safe), cached.
+    Absent file → empty (the generator falls back to curated pools + type generators)."""
+    global _ENTITY_POOLS_CACHE
+    if _ENTITY_POOLS_CACHE is None:
+        try:
+            _ENTITY_POOLS_CACHE = json.loads(_ENTITY_POOLS_PATH.read_text())
+        except (OSError, ValueError):
+            _ENTITY_POOLS_CACHE = {}
+    return _ENTITY_POOLS_CACHE or {}
+
+
+def entity_pools_for_spine(spine: Sequence[SpineTable]) -> dict[str, dict[str, list[str]]]:
+    """``{table → {col → [domain values]}}`` from the committed entity_value_pools.json — concept-specific
+    instance values for the entity/name columns that would otherwise be ``"<Concept> NN"`` placeholders
+    (Comp 4). Keyed to table_name (via template_id) for :func:`rows.materialize_rows`; non-FK only."""
+    pools = _entity_value_pools()
+    out: dict[str, dict[str, list[str]]] = {}
+    for st in spine:
+        rec = pools.get(st.template.template_id)
+        if rec:
+            cols = {c.name for c in st.table.columns}
+            keep = {col: vals for col, vals in rec.items() if col in cols and vals}
+            if keep:
+                out[st.table.name] = keep
     return out
 
 
@@ -125,7 +159,8 @@ def payload_from_spine(spine: list[SpineTable], family_complex, *,
     fks: list[FKEdge] = []
     if family_complex is not None:
         fks, _ = cross_family_fks(spine, family_complex)
-    materialize_rows(spine, fks, seed=seed, definitions=definitions_for_spine(spine))
+    materialize_rows(spine, fks, seed=seed, definitions=definitions_for_spine(spine),
+                     entity_pools=entity_pools_for_spine(spine))
     assert_referential_integrity(spine, fks)
     return RelationalPayload(base_tables=spine, fks=fks, views=build_views(spine, fks))
 

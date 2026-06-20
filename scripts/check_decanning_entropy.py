@@ -113,7 +113,11 @@ def main() -> int:
     ap.add_argument("--build-reference", action="store_true",
                     help="(re)build the SchemaPile reference json from --schemapile, then exit")
     ap.add_argument("--schemapile", default="/raid/datasets/schemapile/schemapile_full.parquet")
-    ap.add_argument("--floor-key", default="distinct_ratio", choices=["distinct_ratio", "h_colset"])
+    # Default floor on h_colset (column-name ENTROPY), not raw distinct_ratio: ontology-grounded tables
+    # legitimately share typed attributes (correct-by-construction), which depresses distinct_ratio without
+    # being "canned"; h_colset is the vocabulary-collapse metric and our tables match SchemaPile's median
+    # (Comp 4). Pass --floor-key distinct_ratio for the stricter raw-uniqueness view (reported either way).
+    ap.add_argument("--floor-key", default="h_colset", choices=["distinct_ratio", "h_colset"])
     ap.add_argument("--out", default=None, help="write decanning_report.parquet here (default: spine-run)")
     args = ap.parse_args()
 

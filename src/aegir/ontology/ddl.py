@@ -36,7 +36,9 @@ candidate FK linking two families is emitted only if their simplex
 
 from __future__ import annotations
 
+import hashlib
 import json
+import random
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -185,20 +187,43 @@ def dataprop_meta() -> "dict[str, tuple[str, str, str]]":
     return out
 
 
-def anchor_attributes(anchor: str) -> "list[tuple[str, str, str]]":
+# PROVISIONAL (Comp 4 de-canning; provisional_scaffolding_not_goals): per-template typed-attribute
+# budget. Real tables in a BFO cohort share FEW columns, not an identical canned set — so each
+# template draws a SEEDED subset of its (enriched) anchor pool, varying the column-set across
+# same-anchor tables. Empirically (per-family=8): budget 2 puts every anchor's column-name entropy
+# (h_colset) at/above SchemaPile's median — real-DB-level vocabulary diversity — while keeping tables
+# realistically wide. A floor-to-clear, not the destination; ratchet with the gate.
+_ANCHOR_ATTR_BUDGET = 2
+
+
+def anchor_attributes(anchor: str, template_id: str | None = None, *,
+                      budget: "int | None" = None) -> "list[tuple[str, str, str]]":
     """Typed attribute columns (column, xsd_range, property_iri) for a table whose
-    bfo_anchor is ``anchor`` — the anchor's DataProperties plus its ancestors'."""
+    bfo_anchor is ``anchor`` — the anchor's DataProperties plus its ancestors'.
+
+    With a ``template_id`` (and a ``budget``), returns a SEEDED per-template *stratified
+    subset* of that pool (de-canning, Comp 4): same-anchor tables then carry genuinely
+    different typed columns rather than one identical canned set. ``budget=None`` reads the
+    module default ``_ANCHOR_ATTR_BUDGET`` at call time (so it stays tunable); an explicit
+    ``budget`` of ``0``/negative returns the full inherited pool (back-compat)."""
+    if budget is None:
+        budget = _ANCHOR_ATTR_BUDGET
     by_dom = _data_properties()
-    out: "list[tuple[str, str, str]]" = []
+    full: "list[tuple[str, str, str]]" = []
     seen: set[str] = set()
     cur = anchor
     while cur:
         for col, rng, iri in by_dom.get(cur, []):
             if col not in seen:
                 seen.add(col)
-                out.append((col, rng, iri))
+                full.append((col, rng, iri))
         cur = _ANCHOR_PARENTS.get(cur)
-    return out
+    if template_id is None or not budget or budget <= 0 or len(full) <= budget:
+        return full
+    rnd = random.Random(int.from_bytes(hashlib.blake2b(template_id.encode(), digest_size=8).digest(), "big"))
+    idx = list(range(len(full)))
+    rnd.shuffle(idx)
+    return [full[i] for i in sorted(idx[:budget])]
 
 
 # ── ObjectProperty / quantified-restriction resolution from Manchester ─────────
@@ -395,7 +420,7 @@ def template_to_table(template: CatalogTemplate, family: str) -> SpineTable:
     anchor = template.bfo_anchor_path[-1] if template.bfo_anchor_path else None
     if anchor:
         existing = {c.name for c in cols}
-        for col, xsd_range, prop_iri in anchor_attributes(anchor):
+        for col, xsd_range, prop_iri in anchor_attributes(anchor, template.template_id):
             if col not in existing:
                 existing.add(col)
                 cols.append(ColumnSpec(name=col, slot_type=xsd_range, slot_ref=f"data:{prop_iri}"))

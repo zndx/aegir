@@ -1,0 +1,1416 @@
+{
+ "ebpfprogram_has_program_type": {
+  "ebpfprogram": [
+   "tc_filter_ingress",
+   "socket_connect",
+   "kprobe_sys_execve",
+   "cgroup_skb_egress",
+   "xdp_drop_packet",
+   "lsm_bprm_committed",
+   "tracepoint_sched_switch",
+   "netfilter_hook_in",
+   "sock_ops_connect",
+   "lwt_in_encap"
+  ],
+  "name": [
+   "drop_invalid",
+   "conntrack_helper",
+   "dns_logger",
+   "http_inspector",
+   "cpu_usage_monitor",
+   "netflow_exporter",
+   "security_enforcer",
+   "latency_tracker",
+   "packet_dumper",
+   "tls_decrypt"
+  ],
+  "program_type": [
+   "socket_filter",
+   "kprobe",
+   "tracepoint",
+   "xdp",
+   "cgroup_skb",
+   "lsm",
+   "sock_ops",
+   "sk_skb",
+   "flow_dissector",
+   "cgroup_sock_addr"
+  ]
+ },
+ "ebpfprogram_loaded_in_kernel": {
+  "ebpfprogram": [
+   "tc_ingress_filter",
+   "kprobe_sched_switch",
+   "cgroup_sock_addr",
+   "xdp_router",
+   "tracepoint_syscalls",
+   "lsm_bpf_security",
+   "netkit_xdp",
+   "sockops_lb",
+   "flow_dissector",
+   "kretprobe_tcp_connect"
+  ],
+  "loaded_in": [
+   "linux_5_15_0",
+   "linux_6_1_0",
+   "linux_6_6_12",
+   "ubuntu_22_04_hwe",
+   "rhel_9_3_kernel",
+   "fedora_40_kernel",
+   "debian_12_kernel",
+   "arch_kernel_6_7",
+   "raspi_6_1_21",
+   "alpine_3_19_kernel"
+  ]
+ },
+ "ebpfprogram_observes_syscall": {
+  "ebpfprogram": [
+   "netsec_probe",
+   "trace_execve",
+   "audit_syscall",
+   "monitor_network",
+   "filter_packet",
+   "track_memory",
+   "log_dns_query",
+   "watch_file_io",
+   "inspect_socket",
+   "profile_latency"
+  ],
+  "name": [
+   "audit_execve_trace",
+   "net_connect_monitor",
+   "file_open_inspect",
+   "process_clone_log",
+   "socket_accept_watch",
+   "memory_map_audit",
+   "io_read_track",
+   "device_ioctl_filter",
+   "dns_query_capture",
+   "thread_spawn_monitor"
+  ],
+  "observes_syscall": [
+   "execve",
+   "openat",
+   "connect",
+   "sendmsg",
+   "mmap",
+   "clone",
+   "accept",
+   "socket",
+   "ioctl",
+   "statx"
+  ]
+ },
+ "ebpfprogram_only_attached_to_kprobe": {
+  "attaches_to_hook": [
+   "kprobe",
+   "kretprobe",
+   "tracepoint",
+   "cgroup_skb",
+   "cgroup_sock_addr",
+   "lsm",
+   "xdp",
+   "sk_msg",
+   "sk_skb",
+   "flow_dissector",
+   "tc_ingress",
+   "perf_event"
+  ],
+  "ebpfprogram": [
+   "tc_ingress_filter",
+   "xdp_drop_all",
+   "kprobe_execve",
+   "cgroup_sock_addr",
+   "lsm_bpf_audit",
+   "sock_ops_conntrack",
+   "tracepoint_sched_switch",
+   "net_cls_cgroup",
+   "flow_dissector_match",
+   "sk_msg_verdict",
+   "tc_egress_rate",
+   "perf_software_counter"
+  ]
+ },
+ "ebpfprogram_subclass": {
+  "attaches_to_hook": [
+   "kprobe/sys_execve",
+   "tracepoint/sched/sched_switch",
+   "xdp/eth0",
+   "cgroup/sock_create",
+   "netfilter/ingress",
+   "sockops",
+   "lwtunnel",
+   "sk_skb/stream_parser",
+   "cgroup/tcp_sendmsg",
+   "fentry/do_sys_open"
+  ],
+  "ebpfprogram": [
+   "xdp_drop_all",
+   "kprobe_sys_execve",
+   "tracepoint_sched_switch",
+   "cgroup_sock_bind",
+   "net_cls_controller",
+   "sockops_monitor",
+   "kprobe_tcp_connect",
+   "tracepoint_block_rq_issue",
+   "xdp_sample_packets",
+   "syscall_enter_read"
+  ]
+ },
+ "ebpfprogram_verified_safe": {
+  "ebpfprogram": [
+   "kprobe_do_sys_open",
+   "cgroup_skb_ingress",
+   "xdp_router",
+   "tc_police_ingress",
+   "sock_ops_connect",
+   "lsm_file_open",
+   "netfilter_hook",
+   "perf_event_trace",
+   "flow_dissector",
+   "cgroup_device_attach"
+  ],
+  "verified_safe_by": [
+   "kernel_verifier",
+   "veristat",
+   "libbpf",
+   "eBPF_coq",
+   "rVirt_verify",
+   "Kani_bpf",
+   "CBMC_ebpf",
+   "Z3_solver",
+   "Isabelle_ebpf",
+   "FramaC_bpf"
+  ]
+ },
+ "ebpfprogram_with_license": {
+  "ebpfprogram": [
+   "sock_ops",
+   "tcx_ingress",
+   "kprobe_sys_enter",
+   "tcp_congestion_control",
+   "xdp_router",
+   "lsm_bpf",
+   "iter_task",
+   "uprobe_syscall",
+   "cgroup_sock_release",
+   "socket_filter"
+  ],
+  "license": [
+   "GPL-2.0-only",
+   "BSD-3-Clause",
+   "Apache-2.0",
+   "MIT",
+   "LGPL-2.1",
+   "MPL-2.0",
+   "Unlicense",
+   "ISC",
+   "EUPL-1.2",
+   "Zlib"
+  ],
+  "name": [
+   "GNU GPL v2",
+   "BSD Three Clause",
+   "Apache 2.0",
+   "MIT License",
+   "LGPL v2.1",
+   "Mozilla MPL 2.0",
+   "The Unlicense",
+   "ISC License",
+   "EU Public License",
+   "Zlib License"
+  ]
+ },
+ "ebpfprogram_writes_to_map": {
+  "ebpfprogram": [
+   "sockops_redirect",
+   "xdp_drop_all",
+   "kprobe_sys_execve",
+   "tc_ingress_filter",
+   "lsm_bpf_attach",
+   "cgroup_sock_release",
+   "tracepoint_sched_switch",
+   "uprobe_user_callback",
+   "netfilter_conntrack",
+   "flow_dissector"
+  ],
+  "writes_to_map": [
+   "sock_hash_map",
+   "prog_array",
+   "ringbuf_output",
+   "lru_hash_cache",
+   "perf_event_buf",
+   "stack_traces",
+   "dev_redirect_map",
+   "cgroup_local_storage",
+   "xdp_sock_table",
+   "lpm_prefix_map"
+  ]
+ },
+ "labrun_basic": {
+  "labrun": [
+   "CRISPR_Cas9_Cycle",
+   "ThermalCycler_Batch",
+   "FlowCytometry_Sweep",
+   "Microplate_Scan_9A",
+   "Reagent_Mix_Q3",
+   "CellCulture_Pass7",
+   "MassSpec_Triplicate",
+   "PCR_Amplification",
+   "WesternBlot_22",
+   "ELISA_Screen_4B"
+  ]
+ },
+ "labrun_has_operator": {
+  "labrun": [
+   "PCR-2023-A",
+   "FlowCyt-Exp9",
+   "MassSpec-R14",
+   "GenomeSeq-Q3",
+   "Immunoblot-07",
+   "Metabolomics-T5",
+   "RNASeq-Rep2",
+   "ChIP-Run12",
+   "WesternBlot-Alpha",
+   "CryoEM-Scan3",
+   "LCMS-Batch9",
+   "ELISA-Plate4"
+  ],
+  "operator": [
+   "Dr. Aris Thorne",
+   "Tech Lin Mei",
+   "AutoSequencer-3",
+   "Dr. Elena Rostova",
+   "LabTech J. Vance",
+   "Microfluidics-Alpha",
+   "Dr. Samir Patel",
+   "Tech K. Okafor",
+   "Centrifuge-Unit-7",
+   "Dr. N. Gupta",
+   "Tech R. Chen",
+   "RoboPipette-B2"
+  ]
+ },
+ "labrun_min_one_sample": {
+  "input_sample": [
+   "PLASMA-0042",
+   "SERUM-BATCH-9",
+   "TISSUE-CORE-11",
+   "DNA-EXTRACT-77",
+   "WATER-SAMPLE-03",
+   "CELL-LINE-Hela",
+   "BLOOD-DRAW-A1",
+   "SOIL-SUB-09",
+   "REACTANT-SOL-4",
+   "RNA-POOL-22"
+  ],
+  "labrun": [
+   "BATCH-2023-A4",
+   "RUN-7741",
+   "SEQ-EXP-99",
+   "WELL-PLATE-12",
+   "PROTOCOL-V3",
+   "GEL-ELECT-08",
+   "PCR-CYCLE-44",
+   "METAB-ASSAY-Q2",
+   "CEL-SEQR-112",
+   "FLUO-SCAN-07"
+  ]
+ },
+ "labrun_observed_at_site": {
+  "labrun": [
+   "RUN-2023-A4",
+   "BATCH-8812",
+   "SEQ-SET-09",
+   "PCR-ALPHA",
+   "FLOW-CY-114",
+   "WET-LAB-44",
+   "NEXTRA-GEN-03",
+   "CRYO-GRID-19",
+   "PLATE-A12",
+   "EXP-SET-99"
+  ],
+  "occurs_in": [
+   "BUILDING-C",
+   "ROOM-304",
+   "BENCH-12",
+   "SERVER-RACK-7",
+   "CLEAN-ROOM-A",
+   "FIELD-STATION-9",
+   "CORE-FACILITY",
+   "BAY-44",
+   "LAB-WING-D",
+   "SECURE-VAULT-3"
+  ]
+ },
+ "labrun_produces_measurement": {
+  "labrun": [
+   "BR-2023-AX7",
+   "Q4-Cytokine-Panel",
+   "Run-7742-Genomics",
+   "Batch-Alpha-Nine",
+   "Assay-Seq-2024-03",
+   "FlowCyt-Run-881",
+   "MassSpec-Bravo-12",
+   "PCR-Panel-Theta",
+   "ELISA-Plate-44",
+   "Run-Genome-X9"
+  ]
+ },
+ "labrun_subclass": {
+  "input_sample": [
+   "HumanSerum-A7",
+   "MouseLiver-Tissue",
+   "PlantRoot-Extract",
+   "WaterBlind-Rep3",
+   "SoilCore-Depth12",
+   "PlasmaCitrate-Lot4",
+   "CellLysate-HEK293",
+   "RNAExtract-Brain",
+   "ProteinStd-BSA",
+   "DNAFragment-450bp"
+  ],
+  "labrun": [
+   "PCR-Run-Alpha7",
+   "WGS-Seq-2024B",
+   "MassSpec-MS19",
+   "CellCulture-Exp12",
+   "NMR-Stand-04A",
+   "FlowCyt-Panel9",
+   "ELISA-Plate88",
+   "Chromatography-Run03",
+   "RNASeq-Lib15",
+   "Immunoblot-Blot07"
+  ]
+ },
+ "labrun_uses_instrument": {
+  "labrun": [
+   "RUN-2024-A7",
+   "EXP-SEQ-09B",
+   "BATCH-7742",
+   "ACQ-20241105",
+   "PROT-XRAY-03",
+   "FIELD-MAP-09",
+   "ASSAY-Q3-24",
+   "METAB-SCAN-11",
+   "CYTO-20241022",
+   "GENOME-READ-04"
+  ],
+  "uses": [
+   "ThermoFisher Q-Exactive",
+   "Agilent 7890B",
+   "Leica TCS SP8",
+   "Bruker Avance III",
+   "Waters Xevo TQ-S",
+   "Shimadzu GCMS-TQ8050",
+   "PerkinElmer IV",
+   "Hitachi S-4800",
+   "Olympus BX63"
+  ]
+ },
+ "labrun_with_protocol": {
+  "follows_protocol": [
+   "GenomeSeq_SOP_v3",
+   "CryoEM_CollectionStd",
+   "FlowCytometry_Panel7",
+   "PCR_ColdStart",
+   "MassSpec_QTOF_Cal",
+   "Nanopore_Basecall_v2",
+   "SingleCell_Gelbead10x",
+   "Metagenomic_MetaPhlAn",
+   "Proteomics_TMT_Label",
+   "Microbiome_QIIME2_Pipe"
+  ],
+  "labrun": [
+   "GenomeSeq_RunAlpha",
+   "CryoEM_VolSeven",
+   "FlowCytometry_Q4",
+   "PCR_ThermalCycle",
+   "MassSpec_LC_MS",
+   "Nanopore_FC_Nine",
+   "SingleCell_10x",
+   "Metagenomic_Assembly",
+   "Proteomics_ICP_MS",
+   "Microbiome_16S_Seq"
+  ]
+ },
+ "mass_function_assigns_to_subset": {
+  "assigns_mass_to": [
+   "TelemetryStream",
+   "CalibrationEvent",
+   "ObservationRecord",
+   "SensorNode",
+   "DataQualityMetric",
+   "FlightProfile",
+   "LabSample",
+   "GovernanceRule",
+   "EvidenceSubset",
+   "MeasurementUnit"
+  ],
+  "mass": [
+   "CalWeight_5kg",
+   "PayloadMass_TerraSat",
+   "SampleMass_BatchA",
+   "ReferenceMass_ISO",
+   "DroneMass_Complete",
+   "SensorMass_Assembled",
+   "FlightMass_Empty",
+   "CargoMass_Max",
+   "TestMass_Aluminum",
+   "ModuleMass_Final"
+  ]
+ },
+ "mass_function_basic": {
+  "mass": [
+   "Catalyst mass",
+   "Precipitate mass",
+   "Dry residue",
+   "Total solids",
+   "Filter cake",
+   "Feedstock mass",
+   "Effluent mass",
+   "Residual mass",
+   "Target mass",
+   "Sample mass"
+  ]
+ },
+ "mass_function_equiv_frame_and_assignment": {
+  "assigns_mass_to": [
+   "nominal_state_only",
+   "degraded_state_only",
+   "fault_or_failure",
+   "land_or_sea_only",
+   "rain_or_snow_only",
+   "left_or_right_only",
+   "primary_or_secondary",
+   "analog_or_digital_only",
+   "north_or_south_only",
+   "high_or_extreme_only"
+  ],
+  "mass": [
+   "sensor_calibration_run",
+   "vibration_profile_test",
+   "thermal_load_experiment",
+   "pressure_deviation_check",
+   "acoustic_emission_scan",
+   "corrosion_rate_measurement",
+   "signal_noise_floor_test",
+   "magnetic_offset_calibration",
+   "optical_transmittance_run",
+   "radio_frequency_survey"
+  ],
+  "over_frame_of_discernment": [
+   "temperature_range",
+   "fault_mode_space",
+   "sensor_condition_set",
+   "weather_scenario_list",
+   "terrain_type_catalog",
+   "signal_band_registry",
+   "material_phase_index",
+   "geographic_zone_map",
+   "pressure_level_table",
+   "operational_state_view"
+  ]
+ },
+ "mass_function_min_one_focal": {
+  "focal_element": [
+   "temperature_reading",
+   "location_geo",
+   "timestamp_utc",
+   "sensor_id",
+   "calibration_status",
+   "data_quality_flag",
+   "network_latency",
+   "checksum_hash",
+   "user_agent",
+   "region_code"
+  ],
+  "mass": [
+   "telemetry_batch_alpha",
+   "sensor_array_gamma",
+   "lab_sample_gamma",
+   "governance_log_delta",
+   "provenance_record_epsilon",
+   "edge_node_cache",
+   "ingestion_pipeline_beta",
+   "measurement_set_zeta",
+   "audit_trail_eta",
+   "data_lake_partition_theta"
+  ]
+ },
+ "mass_function_only_assigns_subsets": {
+  "assigns_mass_to": [
+   "sensor_offline",
+   "network_congestion",
+   "calibration_drift",
+   "packet_loss",
+   "thermal_overload",
+   "signal_interference",
+   "power_failure",
+   "data_corruption",
+   "node_reboot",
+   "firmware_update"
+  ],
+  "mass": [
+   "thermal_fusion",
+   "network_latency",
+   "sensor_calibration",
+   "fault_detection",
+   "signal_integrity",
+   "data_quality",
+   "edge_node",
+   "telemetry_confidence",
+   "packet_reorder",
+   "hardware_drift"
+  ]
+ },
+ "mass_function_subclass": {
+  "mass": [
+   "sensor_confidence_weights",
+   "fault_detection_assignment",
+   "signal_quality_mass",
+   "telemetry_reliability_map",
+   "equipment_status_assignment",
+   "data_integrity_weights",
+   "network_topology_confidence",
+   "calibration_error_distribution",
+   "event_classification_probs",
+   "hazard_risk_assignment"
+  ],
+  "over_frame_of_discernment": [
+   "device_operational_states",
+   "fault_type_taxonomy",
+   "signal_strength_levels",
+   "data_quality_categories",
+   "sensor_failure_modes",
+   "network_latency_classes",
+   "calibration_tolerance_ranges",
+   "incident_severity_levels",
+   "protocol_compliance_status",
+   "resource_utilization_buckets"
+  ]
+ },
+ "mass_function_with_focal_element": {
+  "focal_element": [
+   "primary telemetry stream",
+   "calibration reference point",
+   "baseline observation window",
+   "metadata registry entry",
+   "ingestion pipeline stage",
+   "validation rule set",
+   "provenance chain node",
+   "sensor fusion layer",
+   "data quality threshold",
+   "audit log partition"
+  ],
+  "mass": [
+   "12.4mg precipitate",
+   "2.1kg catalyst batch",
+   "500MB telemetry dump",
+   "3.7g soil core",
+   "850g alloy ingot",
+   "1.2kg reagent stock",
+   "4.5g filter cake",
+   "920g polymer pellet",
+   "3.8kg sensor housing",
+   "1.5L coolant sample"
+  ]
+ },
+ "mass_function_with_normalization": {
+  "mass": [
+   "Sample-Alpha-04",
+   "Batch-7721",
+   "Rotor-Assembly-M",
+   "Isotope-Cu-63",
+   "Fuel-Cell-Stack-9",
+   "Powder-Grade-B",
+   "Cal-Weight-500g",
+   "Target-Mass-X",
+   "Core-Segment-12",
+   "Dust-Collection-1"
+  ],
+  "normalization_constant": [
+   "1.000-kg",
+   "0.982-scaling",
+   "Ref-Std-99",
+   "Gamma-1.04",
+   "Baseline-0.75",
+   "K-Factor-3.2",
+   "Offset-0.02",
+   "Tare-0.500",
+   "Gain-1.15",
+   "Factor-0.88"
+  ]
+ },
+ "requirement_applies_to_system": {
+  "requirement": [
+   "data retention policy",
+   "encryption at rest",
+   "audit logging enabled",
+   "latency under 50ms",
+   "pii masking required",
+   "backup frequency daily",
+   "access control rbac",
+   "compliance soc2",
+   "network segmentation mandatory",
+   "schema validation strict"
+  ]
+ },
+ "requirement_has_priority": {
+  "priority": [
+   "Critical",
+   "High",
+   "Medium",
+   "Low",
+   "Deferred",
+   "Blocker",
+   "Major",
+   "Minor",
+   "Trivial",
+   "Essential"
+  ],
+  "requirement": [
+   "Data retention period",
+   "Encryption standard",
+   "Latency threshold",
+   "Audit log frequency",
+   "Backup interval",
+   "Access control policy",
+   "Fault tolerance level",
+   "Throughput minimum",
+   "Privacy compliance standard",
+   "Incident response time"
+  ]
+ },
+ "requirement_refines": {
+  "refines": [
+   "GDPR Compliance",
+   "ISO 27001 Control",
+   "System Availability Target",
+   "Data Quality Baseline",
+   "Network Latency Limit",
+   "Storage Capacity Plan",
+   "Regulatory Reporting Standard",
+   "Incident Severity Classification",
+   "Pipeline Throughput Goal",
+   "Authentication Protocol"
+  ],
+  "requirement": [
+   "Data Retention Policy",
+   "PII Encryption Standard",
+   "Telemetry Sampling Rate",
+   "Audit Log Completeness",
+   "Schema Validation Rule",
+   "Incident Response SLA",
+   "Data Lineage Tracking",
+   "Model Drift Threshold",
+   "Backup Frequency Mandate",
+   "Access Control Matrix"
+  ]
+ },
+ "requirement_satisfies": {
+  "requirement": [
+   "ISO 27001 Annex A",
+   "NIST SP 800-53",
+   "HIPAA Security Rule",
+   "SLA Latency Threshold",
+   "Data Retention Policy",
+   "Audit Trail Mandate",
+   "Encryption Standard AES-256",
+   "Protocol TLS 1.3",
+   "Compliance Baseline v4.2"
+  ],
+  "satisfies": [
+   "Vault Key Rotation",
+   "WAF Rule Set",
+   "SIEM Alert Pipeline",
+   "Container Image Scan",
+   "FIPS 140-2 Module",
+   "Data Masking Engine",
+   "Telemetry Collector Config",
+   "Access Review Workflow",
+   "Backup Encryption Routine",
+   "Compliance Test Suite"
+  ]
+ },
+ "requirement_subclass": {
+  "requirement": [
+   "Data Retention Policy",
+   "PII Encryption Standard",
+   "Telemetry Sampling Limit",
+   "Audit Log Integrity Check",
+   "Schema Validation Rule",
+   "Access Control Matrix",
+   "Metadata Tagging Mandate",
+   "Event Deduplication Protocol",
+   "Backup Frequency SLA",
+   "Cross Region Replication Rule"
+  ],
+  "specifies": [
+   "Customer Database Schema",
+   "Kafka Event Stream",
+   "SOC2 Compliance Framework",
+   "Real Time Alerting Engine",
+   "Data Lake Partitioning Strategy",
+   "Identity Provider Service",
+   "Network Latency Threshold",
+   "Backup Storage Volume",
+   "API Rate Limiter",
+   "Metadata Catalog Index"
+  ]
+ },
+ "requirement_traces_to": {
+  "requirement": [
+   "Data Retention Policy",
+   "Encryption Standard",
+   "Access Control Mandate",
+   "Audit Logging Rule",
+   "Backup Frequency Directive",
+   "Privacy Compliance Requirement",
+   "System Availability Target",
+   "Incident Response Protocol",
+   "Data Quality Threshold",
+   "Network Segmentation Rule"
+  ],
+  "traces_to": [
+   "ISO 27001 Control",
+   "NIST SP 800-53",
+   "HIPAA Security Rule",
+   "Zero Trust Architecture",
+   "Penetration Test Suite",
+   "Vulnerability Scan Config",
+   "Risk Assessment Matrix",
+   "Compliance Audit Checklist",
+   "Design Specification Draft"
+  ]
+ },
+ "requirement_under_standard": {
+  "requirement": [
+   "Data retention period",
+   "Encryption at rest",
+   "Audit logging enabled",
+   "Minimum sampling rate",
+   "Calibration interval",
+   "Access control policy",
+   "Backup frequency",
+   "Quality threshold",
+   "Provenance tracking",
+   "Metadata completeness"
+  ],
+  "under_standard": [
+   "NIST SP 800-53",
+   "GDPR",
+   "HIPAA",
+   "IEEE 802.11",
+   "ASTM E2999",
+   "OGC SensorML",
+   "DCMI Metadata",
+   "FAIR Principles",
+   "NIST AI RMF"
+  ]
+ },
+ "requirement_verified_by": {
+  "requirement": [
+   "Data retention policy",
+   "Encryption standard",
+   "Audit logging mandate",
+   "Access control rule",
+   "Backup frequency spec",
+   "Compliance baseline",
+   "Telemetry sampling rate",
+   "Lab calibration protocol",
+   "Provenance tracking spec",
+   "Data quality threshold"
+  ],
+  "verified_by": [
+   "Internal audit team",
+   "Third-party certifier",
+   "Automated scanner",
+   "Compliance officer",
+   "Lab director",
+   "System validator",
+   "Quality assurance unit",
+   "Regulatory body",
+   "Engineering lead",
+   "Data steward"
+  ]
+ },
+ "schemaorg_org_country": {
+  "country": [
+   "United States",
+   "Germany",
+   "Japan",
+   "United Kingdom",
+   "Canada",
+   "France",
+   "Australia",
+   "South Korea",
+   "Brazil",
+   "India"
+  ],
+  "name": [
+   "Google LLC",
+   "Microsoft Corporation",
+   "Amazon Web Services",
+   "Tesla Inc",
+   "Apple Inc",
+   "Netflix Inc",
+   "Spotify AB",
+   "Salesforce Inc",
+   "Adobe Systems",
+   "Oracle Corp"
+  ],
+  "schemaorg": [
+   "google-llc",
+   "microsoft-corp",
+   "aws-services",
+   "tesla-inc",
+   "apple-inc",
+   "netflix-inc",
+   "spotify-ab",
+   "salesforce-inc",
+   "adobe-systems",
+   "oracle-corp"
+  ]
+ },
+ "schemaorg_org_legalname": {
+  "legal_name": [
+   "Acme Corporation",
+   "Global Data Systems LLC",
+   "Nexus Laboratories Inc.",
+   "TerraForma Holdings Ltd.",
+   "Quantum Edge Technologies Corp.",
+   "BioSynth Research LLC",
+   "AeroSpace Dynamics Inc.",
+   "CloudNative Solutions LLC",
+   "DataBridge Analytics Corp.",
+   "OmniTech Group Ltd."
+  ],
+  "name": [
+   "Acme Corp",
+   "Global Data",
+   "Nexus Labs",
+   "Terra Forma",
+   "Quantum Edge",
+   "BioSynth",
+   "AeroSpace X",
+   "Cloud Native",
+   "Data Bridge",
+   "Omni Tech"
+  ],
+  "schemaorg": [
+   "AcmeCorp",
+   "GlobalDataInc",
+   "NexusLabs",
+   "TerraForma",
+   "QuantumEdge",
+   "BioSynth",
+   "AeroSpaceX",
+   "CloudNative",
+   "DataBridge",
+   "OmniTech"
+  ]
+ },
+ "schemaorg_org_taxid": {
+  "schemaorg": [
+   "Google LLC",
+   "NASA Goddard",
+   "MIT CSAIL",
+   "WHO Geneva",
+   "CERN Geneva",
+   "NHS England",
+   "FDA Silver Spring",
+   "NOAA Silver Spring",
+   "EPA Region 5",
+   "NSF Arlington"
+  ],
+  "tax_i_d": [
+   "94-3354631",
+   "20-0000116",
+   "04-2105704",
+   "81-0109400",
+   "38-3900033",
+   "95-6033790",
+   "27-0699690",
+   "06-0600089",
+   "52-1693400",
+   "13-1744472"
+  ]
+ },
+ "schemaorg_person_affiliation": {
+  "affiliation": [
+   "MIT Media Lab",
+   "NASA Jet Propulsion",
+   "OpenTelemetry Foundation",
+   "Genomics Data Consortium",
+   "Cloud Infrastructure Corp",
+   "National Grid Observatory",
+   "Semantic Web Alliance",
+   "Data Science Institute",
+   "EuroLab Research Network",
+   "Quantum Computing Lab"
+  ],
+  "schemaorg": [
+   "Dr. Elena Rostova",
+   "Lead Engineer Chen",
+   "Data Steward Patel",
+   "Researcher M. Torres",
+   "Principal Investigator Lee",
+   "Data Curator Sato",
+   "Analyst J. Morales",
+   "Research Fellow Okafor",
+   "Engineer R. Singh",
+   "Data Governance Lead Park"
+  ]
+ },
+ "schemaorg_person_birthplace": {
+  "birthplace": [
+   "Reykjavik",
+   "Portland",
+   "Zurich",
+   "Nairobi",
+   "Kyoto",
+   "Lagos",
+   "Dublin",
+   "Santiago",
+   "Helsinki",
+   "Cape Town"
+  ],
+  "schemaorg": [
+   "Elena Rostova",
+   "Marcus Chen",
+   "Kael Vance",
+   "Lin Mei",
+   "Silas Reed",
+   "T. Cruz",
+   "M. Okoro",
+   "David Hayes",
+   "Anya Petrova",
+   "James OConnell"
+  ]
+ },
+ "schemaorg_person_email": {
+  "email": [
+   "elena.rostova@genlab.org",
+   "marcus.chen@dataops.net",
+   "atlas.lead@projectx.io",
+   "aris.thorne@univ.edu",
+   "s.jenkins@cloudgov.gov",
+   "k.nakamura@telemetry.dev",
+   "priya.mehta@research.org",
+   "t.vance@auditcorp.com",
+   "l.kowalski@provenance.net",
+   "o.farid@healthdata.org"
+  ],
+  "schemaorg": [
+   "Dr. Elena Rostova",
+   "Marcus Chen",
+   "Atlas Project Lead",
+   "Dr. Aris Thorne",
+   "Sarah Jenkins",
+   "Kai Nakamura",
+   "Dr. Priya Mehta",
+   "Thomas Vance",
+   "Lena Kowalski",
+   "Dr. Omar Farid"
+  ]
+ },
+ "schemaorg_person_named": {
+  "full_name": [
+   "Ada Lovelace",
+   "Grace Hopper",
+   "Alan Turing",
+   "Elon Musk",
+   "Alan Kay",
+   "Donald Knuth",
+   "Tim Berners-Lee",
+   "Marvin Minsky",
+   "John von Neumann",
+   "Rosalind Franklin"
+  ],
+  "schemaorg": [
+   "person/ada_lovelace",
+   "person/grace_hopper",
+   "person/alan_turing",
+   "person/elon_musk",
+   "person/alan_kay",
+   "person/donald_knuth",
+   "person/tim_berners_lee",
+   "person/marvin_minsky",
+   "person/john_von_neumann",
+   "person/rosalind_franklin"
+  ]
+ },
+ "schemaorg_person_roleat": {
+  "name": [
+   "Lead Telemetry Engineer",
+   "Senior Data Curator",
+   "Network Observability Lead",
+   "Field Sensor Coordinator",
+   "Cloud Governance Officer",
+   "Provenance Audit Manager",
+   "Clinical Data Steward",
+   "Remote Monitoring Specialist",
+   "Atmospheric Analyst",
+   "Satellite Ops Controller"
+  ],
+  "role_at": [
+   "Central Monitoring Hub",
+   "Field Sensor Array",
+   "Cloud Governance Tier",
+   "Emergency Ops Center",
+   "Remote Telemetry Node",
+   "Data Provenance Vault",
+   "Clinical Observation Wing",
+   "Network Security Zone",
+   "Atmospheric Sampling Lab",
+   "Satellite Control Facility"
+  ],
+  "schemaorg": [
+   "Global Telemetry Network",
+   "MIT Lincoln Lab",
+   "CERN Data Division",
+   "NASA Ames Research",
+   "WHO Cyber Health",
+   "Red Hat OpenShift",
+   "SANS Institute",
+   "IEEE Standards",
+   "NOAA Climate Center",
+   "DARPA InfoTech"
+  ]
+ },
+ "subclass_basic": {
+  "subject": [
+   "Kestrel telemetry probe",
+   "Argo float array",
+   "Kafka consumer group",
+   "Parquet row group",
+   "Spectral radiometer",
+   "Edge gateway node",
+   "Delta lake table",
+   "ISO 8601 timestamp",
+   "Prometheus scrape target",
+   "Lab centrifuge rotor"
+  ],
+  "subject_2": [
+   "Remote sensing platform",
+   "Stream processing unit",
+   "Columnar storage format",
+   "Atmospheric instrument",
+   "Network endpoint device",
+   "Data serialization method",
+   "Measurement apparatus",
+   "Query execution engine",
+   "Quality control module",
+   "Environmental monitoring device"
+  ]
+ },
+ "subclass_to_artifact": {
+  "artifact": [
+   "sensor-calibration-v2",
+   "batch-processor-logs",
+   "genomic-sequence-17",
+   "pipeline-output-stage3",
+   "telemetry-ingest-config",
+   "lab-reagent-batch-A7",
+   "model-weights-resnet50",
+   "data-dump-q3-2023",
+   "firmware-update-iot",
+   "checksum-manifest-v4"
+  ]
+ },
+ "subclass_to_descriptive_ice": {
+  "descriptive": [
+   "thermal_anomaly_log",
+   "data_lineage_trace",
+   "quality_flag_alpha",
+   "metadata_registry",
+   "observation_tag_night",
+   "provenance_checksum",
+   "schema_version_patch",
+   "telemetry_header",
+   "audit_log_snapshot",
+   "annotation_layer_b"
+  ]
+ },
+ "subclass_to_designative_ice": {
+  "designative": [
+   "CryoCore-Alpha",
+   "IceMatrix-Ref",
+   "FrostNet-Tag",
+   "AeroFrost-ID",
+   "CryoVault-Label",
+   "PermafrostCode",
+   "IceSheet-Ref",
+   "ThermalDrift-Tag",
+   "CryoStream-Link",
+   "FrostByte-Index"
+  ]
+ },
+ "subclass_to_directive_ice": {
+  "directive": [
+   "DataRetentionPolicy",
+   "AccessControlMandate",
+   "StreamProcessingRule",
+   "CalibrationInstruction",
+   "AuditLogRetention",
+   "EncryptionStandard",
+   "SchemaValidationRule",
+   "TelemetryFilterConfig",
+   "BatchIngestionRule",
+   "AnomalyThresholdPolicy",
+   "ProvenanceTraceRequirement",
+   "SchemaEvolutionPolicy"
+  ]
+ },
+ "subclass_to_independent_continuant": {
+  "independent": [
+   "Sensor Node 7B",
+   "Gateway Router X2",
+   "Spectrometer Unit 3",
+   "Server Rack 14A",
+   "Data Partition 9C",
+   "Audit Log Stream 5",
+   "Backup Array C",
+   "Pipeline Stage Prod",
+   "Firewall Appliance 7"
+  ]
+ },
+ "subclass_to_information_content_entity": {
+  "information": [
+   "deployment_manifest",
+   "telemetry_stream",
+   "data_catalog_entry",
+   "compliance_audit",
+   "sensor_readings",
+   "model_weights",
+   "schema_registry",
+   "incident_report",
+   "provenance_graph",
+   "policy_definition",
+   "dataset_index",
+   "metric_dashboard"
+  ]
+ },
+ "subclass_to_process": {
+  "process": [
+   "ETL pipeline",
+   "batch ingestion",
+   "stream processing",
+   "model training",
+   "data validation",
+   "artifact packaging",
+   "certificate rotation",
+   "incident response",
+   "telemetry aggregation",
+   "schema migration"
+  ]
+ },
+ "transformation_associated_with_agent": {
+  "transformation": [
+   "Daily ETL Pipeline",
+   "Schema Migration Run",
+   "Feature Engineering Job",
+   "Log Aggregation Task",
+   "Model Retraining Cycle",
+   "Sensor Calibration Pass",
+   "Archive Export Run",
+   "Index Rebuild Job",
+   "Partition Pruning Step",
+   "Data Cleansing Run"
+  ],
+  "was_associated_with": [
+   "Senior Data Engineer",
+   "Spark Worker Node",
+   "PostgreSQL 14 Instance",
+   "Airflow Scheduler",
+   "AWS S3 Data Lake",
+   "Docker Container",
+   "MLflow Model Registry",
+   "GitHub CI Pipeline",
+   "Data Quality Gate"
+  ]
+ },
+ "transformation_ends_at": {
+  "ended_at_time": [
+   "2024-03-15T14:22:01Z",
+   "2023-11-08T09:45:33Z",
+   "2024-01-22T18:10:55Z",
+   "2023-09-30T23:59:59Z",
+   "2024-05-17T07:30:00Z",
+   "2023-12-01T12:00:00Z",
+   "2024-02-28T16:45:12Z",
+   "2023-10-14T20:05:47Z",
+   "2024-04-09T11:15:30Z",
+   "2023-08-25T08:00:00Z"
+  ],
+  "transformation": [
+   "ETL pipeline run",
+   "Sensor calibration sequence",
+   "Batch ingestion job",
+   "Schema migration script",
+   "Log aggregation process",
+   "Data reconciliation workflow",
+   "Feature engineering routine",
+   "Audit record sync",
+   "Telemetry normalization pass",
+   "Compliance report generation"
+  ]
+ },
+ "transformation_generates_entity": {
+  "generates_entity": [
+   "cleaned telemetry dataset",
+   "normalized event log",
+   "feature matrix",
+   "reconciliation report",
+   "calibrated sensor readings",
+   "compressed data archive",
+   "correlation index",
+   "metadata catalog",
+   "quality scorecard",
+   "model checkpoint"
+  ],
+  "transformation": [
+   "batch ingestion pipeline",
+   "stream processing job",
+   "schema migration routine",
+   "telemetry aggregation task",
+   "feature engineering step",
+   "log normalization process",
+   "sensor calibration routine",
+   "data quality validation",
+   "archival compression job",
+   "metadata extraction pipeline"
+  ]
+ },
+ "transformation_informed_by": {
+  "informed_by": [
+   "data_quality_policy",
+   "reference_calibrator",
+   "audit_regulation",
+   "historical_baseline",
+   "business_dictionary",
+   "error_tolerance_limit",
+   "upstream_schema",
+   "legacy_documentation",
+   "compliance_framework",
+   "sensor_manual"
+  ],
+  "transformation": [
+   "row_level_hashing",
+   "null_value_imputation",
+   "timezone_conversion",
+   "dimensionality_reduction",
+   "xml_to_csv",
+   "tax_rate_adjustment",
+   "outlier_clipping",
+   "window_aggregation",
+   "column_type_casting",
+   "duplicate_removal"
+  ]
+ },
+ "transformation_starts_at": {
+  "started_at_time": [
+   "2024-03-15T08:30:00Z",
+   "2024-03-15T09:15:22Z",
+   "2024-03-15T10:00:00Z",
+   "2024-03-15T11:45:10Z",
+   "2024-03-15T12:20:05Z",
+   "2024-03-15T13:05:33Z",
+   "2024-03-15T14:10:18Z",
+   "2024-03-15T15:55:42Z",
+   "2024-03-15T16:30:00Z",
+   "2024-03-15T17:00:15Z"
+  ],
+  "transformation": [
+   "ETL pipeline run",
+   "batch ingestion job",
+   "model retraining cycle",
+   "schema migration step",
+   "data normalization pass",
+   "feature engineering run",
+   "calibration procedure",
+   "telemetry sync process",
+   "audit log reconciliation",
+   "data archival batch"
+  ]
+ },
+ "transformation_subclass": {
+  "transformation": [
+   "Data Ingestion Pipeline",
+   "Signal Bandpass Filtering",
+   "Schema Evolution Migration",
+   "Provenance Hash Computation",
+   "Telemetry Aggregation Rollup",
+   "Log Pattern Extraction",
+   "Feature Vector Normalization",
+   "Checksum Integrity Validation",
+   "Metadata Enrichment Workflow",
+   "Calibration Curve Fitting"
+  ],
+  "uses_entity": [
+   "Raw Telemetry Buffers",
+   "Reagent Batch Alpha",
+   "Raw JSON Payloads",
+   "PCAP Archive Files",
+   "FASTQ Sequence Files",
+   "Syslog Archive Tapes",
+   "NIST Traceable Standards",
+   "Helm Chart Manifests",
+   "PostgreSQL Schema Definitions",
+   "REST API Response Bodies"
+  ]
+ },
+ "transformation_with_input_dataset": {
+  "input_dataset": [
+   "raw sensor logs",
+   "patient vitals",
+   "transaction ledger",
+   "network traffic capture",
+   "genomic sequencing reads",
+   "IoT telemetry stream",
+   "financial trade records",
+   "field survey records",
+   "customer clickstream",
+   "satellite imagery tiles"
+  ],
+  "transformation": [
+   "ETL pipeline",
+   "feature extraction",
+   "anomaly detection",
+   "schema migration",
+   "log aggregation",
+   "sensor calibration",
+   "record deduplication",
+   "time-series resampling",
+   "metadata enrichment",
+   "data masking"
+  ]
+ },
+ "transformation_with_output_dataset": {
+  "output_dataset": [
+   "cleaned telemetry logs",
+   "normalized sensor readings",
+   "enriched user profiles",
+   "deduplicated transaction records",
+   "validated quality reports",
+   "aggregated clickstream events",
+   "migrated legacy schemas",
+   "extracted metadata catalogs",
+   "transformed JSON payloads",
+   "filtered event streams"
+  ],
+  "transformation": [
+   "log aggregation",
+   "schema migration",
+   "feature engineering",
+   "data cleansing",
+   "sensor fusion",
+   "deduplication routine",
+   "format conversion",
+   "quality validation",
+   "metadata extraction",
+   "anomaly detection"
+  ]
+ }
+}

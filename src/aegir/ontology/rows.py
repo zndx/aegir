@@ -58,6 +58,25 @@ SEMANTIC_VALUE_POOLS: dict[str, list[str]] = {
     "type": ["nominal", "ordinal", "interval", "ratio"],
     "code": ["A-01", "B-12", "C-07", "D-33", "E-21"],
     "role": ["owner", "reviewer", "contributor", "observer"],
+    # value sets whose tokens carry slashes/hyphens/dots the skos:definition enum parser
+    # (parse_enum_from_definition, lowercase-alnum only) cannot represent — curated here so
+    # they still land as domain-meaningful cells rather than "<Concept> NN" placeholders.
+    "mime_type": ["application/json", "text/csv", "application/parquet", "text/plain",
+                  "application/xml", "application/avro", "application/octet-stream"],
+    "license": ["MIT", "Apache-2.0", "BSD-3-Clause", "GPL-3.0", "MPL-2.0", "CC-BY-4.0", "proprietary"],
+    "owner": ["platform-team", "data-engineering", "sre", "analytics", "ml-infra", "governance"],
+    "host_name": ["node-a01", "node-b14", "worker-07", "edge-03", "gw-12", "ingest-21"],
+    "uri": ["s3://lake/raw", "s3://lake/curated", "abfss://prod/silver", "gs://warehouse/gold",
+            "hdfs://cluster/staging"],
+    "checksum": ["a3f9c21e", "7b14de08", "c0ffee42", "9d2b7a16", "5e8f3c91", "1a4b6c2d"],
+    # Generic string attributes whose values are domain-real regardless of the table's concept
+    # (a location is a location, an identifier an identifier) — honest deterministic domain cells for
+    # every family. The CONCEPT-specific columns (subject heads, named relations, `name`) are instead
+    # seeded per-template by the local engine (scripts/seed_entity_values.py); see entity_value_pools.json.
+    "identifier": ["urn:uuid:9f2a", "doi:10.1109/x", "ARN:res/41", "gid://svc/77", "oid:1.3.6.1", "ref-8842"],
+    "location": ["us-east-1", "eu-west-3", "rack-7", "zone-b", "ap-south-2", "on-prem-dc1"],
+    "label_text": ["nightly summary", "pre-release note", "calibration record", "audit excerpt",
+                   "change rationale", "intake form"],
 }
 
 
@@ -190,14 +209,87 @@ def _entity_value_str(name: str, rng: random.Random) -> str:
     return f"{name.replace('_', ' ').title()} {rng.randint(1, 99):02d}"
 
 
+# ── intra-row temporal coherence (start < end, end = start + duration) ─────────
+# value_for is per-cell, so a start/end pair drawn independently is start>end ~half
+# the time (the rows.py bug Comp 4 fixes). This is a same-row, cross-COLUMN constraint
+# (cheap to enforce) — distinct from the cross-ROW / `only` semantics we deliberately
+# leave to HermiT at the membrane. We re-derive each `end_*` from its `start_*` plus a
+# positive span (the row's `duration_*` column when present, so the triple is mutually
+# consistent), making the temporal columns realistic instead of merely type-true.
+_TEMPORAL_TYPES = {"xsd:dateTime", "xsd:date"}
+_DUR_TYPES = {"xsd:decimal", "xsd:double", "xsd:float", "xsd:integer", "xsd:long"}
+
+
+def _temporal_role(name: str) -> str | None:
+    n = name.lower()
+    if any(k in n for k in ("start", "begin", "created", "issued", "effective", "opened")):
+        return "start"
+    if any(k in n for k in ("end", "finish", "stop", "closed", "completed", "expir")):
+        return "end"
+    return None
+
+
+def _parse_temporal(s: str) -> "tuple[datetime, bool] | tuple[None, bool]":
+    """(datetime, is_datetime) from an ISO date / dateTime cell, else (None, False)."""
+    try:
+        if "T" in s:
+            return datetime.strptime(s, "%Y-%m-%dT%H:%M:%S"), True
+        return datetime.strptime(s, "%Y-%m-%d"), False
+    except (TypeError, ValueError):
+        return None, False
+
+
+def _fmt_temporal(dt: datetime, xsd_type: str) -> str:
+    return dt.strftime("%Y-%m-%dT%H:%M:%S") if xsd_type == "xsd:dateTime" else dt.date().isoformat()
+
+
+def _enforce_temporal_coherence(st: "SpineTable", row: list[str], *, seed: int, row_ix: int) -> None:
+    """Rewrite ``end_*`` cells so every start/end pair is chronologically ordered and (when a
+    duration column is present) ``end == start + duration``. Mutates ``row`` in place; no-op when
+    the table has no start+end temporal pair."""
+    cols = st.table.columns
+    starts = [(i, c) for i, c in enumerate(cols)
+              if c.slot_type in _TEMPORAL_TYPES and _temporal_role(c.name) == "start"]
+    ends = [(i, c) for i, c in enumerate(cols)
+            if c.slot_type in _TEMPORAL_TYPES and _temporal_role(c.name) == "end"]
+    if not starts or not ends:
+        return
+    si, _ = starts[0]
+    start_dt, _ = _parse_temporal(row[si] if si < len(row) else "")
+    if start_dt is None:
+        return
+    rng = random.Random(_seed(st.table.name, "tcoh", row_ix, base=seed))
+    dur_i = next((i for i, c in enumerate(cols) if c.slot_type in _DUR_TYPES
+                  and any(k in c.name.lower() for k in ("duration", "seconds", "elapsed", "latency"))), None)
+    dur_s = None
+    if dur_i is not None and dur_i < len(row):
+        try:
+            dur_s = float(row[dur_i])
+        except (TypeError, ValueError):
+            dur_s = None
+    if dur_s is None or dur_s <= 0:
+        dur_s = rng.uniform(60.0, 7200.0)
+    for ei, ecol in ends:
+        if ei >= len(row):
+            continue
+        if ecol.slot_type == "xsd:date":            # day granularity: ≥1 day after start
+            end_dt = start_dt + timedelta(days=max(1, int(dur_s // 86400) + rng.randint(1, 14)))
+        else:
+            end_dt = start_dt + timedelta(seconds=max(1.0, dur_s))
+        row[ei] = _fmt_temporal(end_dt, ecol.slot_type)
+
+
 def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
-              definition: str | None = None, pools: dict[str, list[str]] | None = None) -> str:
+              definition: str | None = None, pools: dict[str, list[str]] | None = None,
+              entity_values: list[str] | None = None) -> str:
     """A single deterministic, type-true, realistic cell value for ``col`` at ``row_ix``.
 
     FK columns are NOT produced here — :func:`materialize_rows` overwrites them from
     the referenced table's PK pool. Order of preference: authoritative xsd numeric/
-    temporal/boolean type → ontology-grounded definition enum → curated semantic pool
-    → realistic entity/label instance.
+    temporal/boolean type → ontology-grounded definition enum → concept-specific
+    LLM-seeded ``entity_values`` pool → curated semantic pool → realistic entity/label
+    instance. ``entity_values`` is the Comp 4 domain layer: concept-real values for the
+    entity/string columns that would otherwise be ``"<Concept> NN"`` placeholders.
     """
     pools = SEMANTIC_VALUE_POOLS if pools is None else pools
     t = col.slot_type
@@ -208,6 +300,8 @@ def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
     enum = parse_enum_from_definition(definition)
     if enum:                                       # ontology-grounded value set
         return rng.choice(enum)
+    if entity_values:                              # concept-specific LLM-seeded domain values
+        return rng.choice(entity_values)
     if name in pools:                              # curated semantic pool
         return rng.choice(pools[name])
     if t in _ENTITY:                               # named instance of the concept
@@ -216,16 +310,21 @@ def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
 
 
 def materialize_rows(spine: Sequence["SpineTable"], fks: Sequence, *, seed: int = _GLOBAL_SEED,
-                     definitions: dict[str, dict[str, str]] | None = None) -> None:
+                     definitions: dict[str, dict[str, str]] | None = None,
+                     entity_pools: dict[str, dict[str, list[str]]] | None = None) -> None:
     """Populate ``st.table.rows`` for every table so that RI = 1.0 by construction.
 
     Three passes: (A) synthesize each table's PK pool; (B) typed/realistic non-FK
     cells; (C) FK cells drawn (seeded, non-uniform fan-out) from the referenced
     table's PK pool. ``definitions`` optionally maps ``table_name → {col_name →
     skos:definition}`` so ontology-enumerated value sets win (supplied by the
-    caller / #58); absent → curated pools + type generators. Mutates in place.
+    caller / #58); absent → curated pools + type generators. ``entity_pools`` maps
+    ``table_name → {col_name → [domain values]}`` — concept-specific, RI-safe (non-FK
+    only) instance values (LLM-seeded + committed, see ``scripts/seed_entity_values.py``)
+    that replace ``"Process 01"`` placeholders for entity/string columns. Mutates in place.
     """
     definitions = definitions or {}
+    entity_pools = entity_pools or {}
     by_name = {st.table.name: st for st in spine}
     fk_targets = {e.dst_table for e in fks}
     src_fk: dict[str, dict[str, str]] = {}
@@ -250,6 +349,7 @@ def materialize_rows(spine: Sequence["SpineTable"], fks: Sequence, *, seed: int 
         tname = st.table.name
         pk, fkmap = _pk_index(st), src_fk.get(tname, {})
         col_defs = definitions.get(tname, {})
+        col_pools = entity_pools.get(tname, {})
         for i, row in enumerate(st.table.rows):
             for ci, col in enumerate(st.table.columns):
                 if ci == pk:
@@ -261,7 +361,9 @@ def materialize_rows(spine: Sequence["SpineTable"], fks: Sequence, *, seed: int 
                         pool = [r[dpk] for r in dst.table.rows]
                         row[ci] = pool[_seed(tname, col.name, i, "fk", base=seed) % len(pool)]
                         continue
-                row[ci] = value_for(col, st, row_ix=i, seed=seed, definition=col_defs.get(col.name))
+                row[ci] = value_for(col, st, row_ix=i, seed=seed, definition=col_defs.get(col.name),
+                                    entity_values=col_pools.get(col.name))
+            _enforce_temporal_coherence(st, row, seed=seed, row_ix=i)
 
 
 def assert_referential_integrity(spine: Sequence["SpineTable"], fks: Sequence) -> None:

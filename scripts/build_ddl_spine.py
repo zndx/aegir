@@ -126,9 +126,11 @@ def main() -> int:
     view_out_rows: list[dict] = []
     n_views_valid = 0
     if not args.no_materialize_rows:
-        from aegir.ontology.chapter_tables import build_views, definitions_for_spine
+        from aegir.ontology.chapter_tables import (build_views, definitions_for_spine,
+                                                    entity_pools_for_spine)
         from aegir.ontology.rows import assert_referential_integrity, materialize_rows
-        materialize_rows(spine, fk_edges, seed=args.row_seed, definitions=definitions_for_spine(spine))
+        materialize_rows(spine, fk_edges, seed=args.row_seed, definitions=definitions_for_spine(spine),
+                         entity_pools=entity_pools_for_spine(spine))
         try:
             assert_referential_integrity(spine, fk_edges)
             ri_ok = True
