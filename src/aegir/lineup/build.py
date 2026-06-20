@@ -224,6 +224,9 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
     Each table carries its typed columns, its outgoing **Foreign keys** (a column →
     the referenced table, navigable), and the inverse **Referenced by**, so the lineup
     panel-trail walks the relational graph along foreign keys — the invention."""
+    import math
+    from collections import Counter
+
     from aegir.ontology.ddl import cross_family_fks, template_to_table
 
     # Build the full spine first so cross-family FKs (the family-complex-gated joins) resolve.
@@ -248,6 +251,49 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
         out_fks.setdefault(e.src_table, []).append(e)
         in_fks.setdefault(e.dst_table, []).append(e)
 
+    # ── Comp 5: confirmation surface — materialize RI-true rows (deterministic, same Comp-4 machinery
+    # as the DDL spine: enums + curated pools + LLM-seeded entity values) so the lineup SHOWS sample data
+    # and the value/de-canning quality is legible at /lineup, not just asserted by the gate. ───────────
+    try:
+        from aegir.ontology.chapter_tables import definitions_for_spine, entity_pools_for_spine
+        from aegir.ontology.rows import materialize_rows, table_rows_as_records
+        materialize_rows(spine, fks, definitions=definitions_for_spine(spine),
+                         entity_pools=entity_pools_for_spine(spine))
+    except Exception as e:                            # noqa: BLE001 — notes are valid without rows
+        print(f"  [relational] row materialization skipped: {type(e).__name__}: {e}")
+        table_rows_as_records = None  # type: ignore[assignment]
+
+    # Per-anchor column-name entropy (de-canning, the principled metric — see semantic_layer_gate / Comp 4).
+    _anchor_cnt: dict[str, Counter] = {}
+    for st in spine:
+        anc = (list(st.template.bfo_anchor_path) or ["(none)"])[-1]
+        c = _anchor_cnt.setdefault(anc, Counter())
+        for col in st.table.columns:
+            if col.name != "id":
+                c[col.name] += 1
+
+    def _entropy(cnt: Counter) -> float:
+        tot = sum(cnt.values())
+        return -sum((v / tot) * math.log2(v / tot) for v in cnt.values() if v > 0) if tot else 0.0
+
+    anchor_h = {a: _entropy(c) for a, c in _anchor_cnt.items()}
+    _SCHEMAPILE_H_P10 = 2.585  # de-canning floor (SchemaPile p10); ≥ ⇒ real-DB-level vocabulary diversity
+
+    # Cell-value classifier (mirrors scripts/check_value_semantics): placeholder / typed / domain.
+    _PH = re.compile(r"^[A-Za-z][A-Za-z]*( [A-Za-z]+)* +\d{2,}$")
+    _NUM = re.compile(r"^-?\d+(?:\.\d+)?$")
+    _ISO = re.compile(r"^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}|$)")
+
+    def _classify(v: str) -> str:
+        s = (v or "").strip()
+        if not s:
+            return "empty"
+        if _PH.match(s):
+            return "placeholder"
+        if _NUM.match(s) or _ISO.match(s) or s.lower() in ("true", "false"):
+            return "typed"
+        return "domain"
+
     def _rel_wl(table_name: str) -> str | None:
         tid = name2tid.get(table_name)
         return N.wl(f"relational/table/{_table_id(tid)}", tid) if tid else None
@@ -271,11 +317,47 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
                 f"- {_rel_wl(e.src_table)} · `{e.src_col}`  _(via {e.via_slot})_" for e in ifk) + "\n"
         if not ofk and not ifk:
             fk_md = "\n_No cross-family foreign keys (standalone table)._\n"
+
+        # ── Comp 5: verbalization + sample rows + quality badge (the confirmation surface) ──
+        anchor = (list(t.bfo_anchor_path) or ["(none)"])[-1]
+        frames = t.frames()
+        vb_md = ""
+        if frames:
+            extra = f"  _(+{len(frames) - 1} more frames, sampled per chapter)_" if len(frames) > 1 else ""
+            vb_md = f"\n**Verbalization.** _{frames[0]}_{extra}\n"
+
+        pk_names = {c.name for c in cols if c.slot_ref == "__pk__"}
+        fk_names = {e.src_col for e in ofk}
+        sample_md, quality = "", {}
+        if table_rows_as_records is not None and st.table.rows:
+            records = table_rows_as_records(st)
+            content = [v for rec in records for k, v in rec.items()
+                       if k not in pk_names and k not in fk_names]
+            n = len(content) or 1
+            cls = Counter(_classify(v) for v in content)
+            domain_frac, ph_frac = cls["domain"] / n, cls["placeholder"] / n
+            h = anchor_h.get(anchor, 0.0)
+            dot = "🟢" if (domain_frac >= 0.40 and ph_frac <= 0.30) else ("🟡" if domain_frac >= 0.20 else "🔴")
+            hmark = "✓" if h >= _SCHEMAPILE_H_P10 else "·"
+            quality = {"domain_fraction": round(domain_frac, 3), "placeholder_ratio": round(ph_frac, 3),
+                       "n_verbalization_frames": len(frames), "anchor": anchor,
+                       "decanning_h_colset": round(h, 2), "decanning_pass": bool(h >= _SCHEMAPILE_H_P10)}
+            shown = list(records[0].keys())
+            hdr = "| " + " | ".join(f"`{k}`" for k in shown) + " |"
+            sep = "|" + "|".join("---" for _ in shown) + "|"
+            body_rows = "\n".join("| " + " | ".join(str(rec[k]) for k in shown) + " |" for rec in records[:3])
+            sample_md = (f"\n**Sample rows** (RI-true, deterministic):\n\n{hdr}\n{sep}\n{body_rows}\n"
+                         f"\n**Quality** — {dot} domain {domain_frac:.2f} · placeholder {ph_frac:.2f} · "
+                         f"{len(frames)} verbalization frame{'s' if len(frames) != 1 else ''} · "
+                         f"de-canning H={h:.2f} {hmark} (anchor `{anchor}`)\n")
+
         body = (
             f"**Realizes term.** {N.wl(f'ontology/term/{t.template_id}', t.template_id)}  "
-            f"(the ontology↔DDL pivot — DeepOnto semantics ↔ polyglot SQL syntax)\n\n"
+            f"(the ontology↔DDL pivot — DeepOnto semantics ↔ polyglot SQL syntax)\n"
+            f"{vb_md}\n"
             f"**Columns** ({len(cols)}).\n\n"
             f"| column | owl/sql type | slot |\n|---|---|---|\n{rowsmd}\n"
+            f"{sample_md}"
             f"{fk_md}"
         )
         out.append(N.Note(
@@ -284,6 +366,7 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
                 "category": cat, "realizes": t.template_id, "table_name": st.table.name,
                 "columns": [{"name": c.name, "type": c.slot_type, "slot": c.slot_ref} for c in cols],
                 "not_null": sorted(getattr(st, "not_null", set()) or set()),
+                "quality": quality,
                 "foreign_keys": [{"column": e.src_col, "references_table": name2tid.get(e.dst_table),
                                   "references_column": e.dst_col, "via": e.via_slot} for e in ofk],
                 "referenced_by": [{"table": name2tid.get(e.src_table), "column": e.src_col,
