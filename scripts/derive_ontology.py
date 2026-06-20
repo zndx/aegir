@@ -146,9 +146,12 @@ def _apply_domain_filter(docs: list[str], args) -> "tuple[list[str], list[dict |
     for d in docs:
         h = DI.classify_hierarchical(d, top_k=5, url=args.domain_url, collection=args.domain_collection)
         top = h.get("top") or {}
-        if DI.in_subtree(top, codes) and h["belief"] >= args.domain_tau:
+        # gate on the relative margin (confidence), not just top-1-in-subtree — the rich domain concepts
+        # are strong attractors so off-domain docs still land in-subtree but at a much lower rel_margin.
+        if DI.in_subtree(top, codes) and h["rel_margin"] >= args.domain_tau:
             kept.append(d)
-            tags.append({"code": top.get("code"), "label": top.get("pref_label"), "belief": h["belief"]})
+            tags.append({"code": top.get("code"), "label": top.get("pref_label"),
+                         "rel_margin": h["rel_margin"], "belief": h["belief"]})
     return kept, tags, {"scanned": len(docs), "kept": len(kept), "subtree": len(codes)}
 
 
@@ -205,7 +208,7 @@ def main() -> int:
     ap.add_argument("--k-verbal", type=int, default=3, help="G3 floor: min distinct procedural verbalization skeletons")
     # ── semantic-domain aperture (ColBERT/Qdrant over the SKOS hierarchy) ──
     ap.add_argument("--domain", default=None, help="SKOS subtree (notation code or prefLabel) to AIM the aperture at, e.g. 'Process' (LIMS once added)")
-    ap.add_argument("--domain-tau", type=float, default=0.0, help="min top-1 belief for a doc to pass the domain gate")
+    ap.add_argument("--domain-tau", type=float, default=0.10, help="min rank1−rank2 relative margin for a doc to pass the domain gate (≈0.10 separates on-domain from off-domain)")
     ap.add_argument("--domain-oversample", type=int, default=5, help="sample this many × n-docs, then filter to in-domain (so the gate doesn't starve n)")
     ap.add_argument("--domain-url", default="http://localhost:6355")
     ap.add_argument("--domain-collection", default="sdg_domains")

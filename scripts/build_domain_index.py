@@ -59,7 +59,7 @@ def main() -> int:
     if args.cmd == "classify":
         h = DI.classify_hierarchical(args.text, top_k=args.top_k, url=args.url, collection=args.collection)
         top = h["top"] or {}
-        print(f"top: {top.get('pref_label')} [{top.get('code')}]  belief={h['belief']} margin={h['margin']}")
+        print(f"top: {top.get('pref_label')} [{top.get('code')}]  rel_margin={h['rel_margin']} belief={h['belief']} margin={h['margin']}")
         print(f"path: {' › '.join(h.get('path', []))}")
         for hit in h["hits"]:
             print(f"  {hit['score']:.3f}  {hit.get('pref_label')} [{hit.get('code')}]")
@@ -88,19 +88,18 @@ def main() -> int:
                 buf = parts.pop()
                 docs.extend(p.strip()[:4000] for p in parts if len(p.strip()) > 600)
         docs = docs[args.skip:args.skip + n]
-        beliefs, margins, roots = [], [], Counter()
+        rels, roots = [], Counter()
         for d in docs:
             h = DI.classify_hierarchical(d, top_k=5, url=args.url, collection=args.collection)
-            beliefs.append(h["belief"])
-            margins.append(h["margin"])
+            rels.append(h["rel_margin"])
             roots[(h.get("path") or ["?"])[0]] += 1
-        beliefs.sort()
-        pct = lambda p: beliefs[min(len(beliefs) - 1, int(p * len(beliefs)))] if beliefs else 0  # noqa: E731
-        conf = sum(1 for b in beliefs if b >= 0.35)
+        rels.sort()
+        pct = lambda p: rels[min(len(rels) - 1, int(p * len(rels)))] if rels else 0  # noqa: E731
+        conf = sum(1 for r in rels if r >= 0.10)
         print(f"CORPUS→DOMAIN ROUTING — {len(docs)} real FinePDFs docs")
-        print(f"  belief: p10={pct(.1):.2f} median={pct(.5):.2f} p90={pct(.9):.2f}  ·  confident(≥0.35): {conf}/{len(docs)}")
+        print(f"  rel_margin: p10={pct(.1):.3f} median={pct(.5):.3f} p90={pct(.9):.3f}  ·  on-domain(≥0.10): {conf}/{len(docs)}")
         print(f"  top-root distribution: {dict(roots)}")
-        print(f"  VERDICT: {'real docs route confidently' if conf/max(1,len(docs))>=0.5 else 'WEAK — most real docs route at low belief → SKOS lacks domain concepts (expand the hierarchy with real domains)'}")
+        print(f"  NOTE: a random corpus SHOULD route mostly off-domain (low rel_margin); the gate keeps only the on-domain tail.")
         return 0
 
     if args.cmd == "diagnose":

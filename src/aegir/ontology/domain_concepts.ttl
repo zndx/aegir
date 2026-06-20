@@ -1,0 +1,73 @@
+## ----------------------------------------------------------------------
+## SDG domain-concept overlay — domain_concepts.ttl
+## ----------------------------------------------------------------------
+##
+## Rich, well-specified DOMAIN concepts that aim the content-first input
+## filter (ColBERT/Qdrant over the SKOS hierarchy). The point is the
+## CONTENT, not the vocabulary litany: MaxSim scores documents against a
+## concept's definitional text, so each node carries a thorough
+## skos:definition + skos:scopeNote (the laboratory-domain content drawn
+## from FHIR RDF — CC0 — resource definitions: Specimen, ServiceRequest,
+## Observation, DiagnosticReport, Device, Substance) plus the SysML v2
+## systems-view of a LIMS (sample-lifecycle FSM, spec→method→result
+## traceability, chain-of-custody, QC). Original synthesis, BFO/CCO
+## anchored; NO proprietary terminology content (no SNOMED CT / LOINC).
+##
+## "Expand the hierarchy first": adding a domain here (with real content)
+## is how we aim a new aperture; the corpus-belief diagnostic then
+## confirms the concept actually separates real input.
+##
+## License: Apache-2.0
+## ----------------------------------------------------------------------
+
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix sdg:     <https://signals360.example.org/sdg#> .
+
+<https://signals360.example.org/sdg#SDG_LIMS> a skos:Concept ;
+    skos:prefLabel "Laboratory Information Management" ;
+    skos:notation "9" ;
+    skos:altLabel "LIMS" ;
+    skos:definition "The domain of systems and processes that manage the full lifecycle of samples, tests, and results in an analytical, clinical, environmental, or quality-control laboratory. A laboratory information management system governs the receipt, accessioning, aliquoting, storage under controlled conditions, and disposal of specimens; the ordering, scheduling, and execution of assays and analytical methods on instruments; the capture, validation, and interpretation of measured results — values with units and measurement uncertainty — against specification limits and reference ranges; the flagging of exceedances and out-of-specification outcomes; chain-of-custody and provenance tracking across every transfer; and quality control, instrument calibration, and regulatory compliance. It coordinates specimens and aliquots, service requests (test orders), observations and diagnostic reports (results), devices and instruments, reagents and substances, analytical methods and protocols, and the technicians, study directors, and organizations responsible for each step." ;
+    skos:scopeNote "Covers analytical, clinical, environmental-monitoring, biobank, and quality-control laboratories operating under GxP, ISO/IEC 17025, CLIA, or OECD test-guideline regimes. The governed entities map onto FHIR diagnostics resources (Specimen, ServiceRequest, Observation, DiagnosticReport, Device, Substance) and onto a SysML systems view in which the laboratory is a system whose sample lifecycle, instrument allocations, and acceptance constraints are first-class." ;
+    rdfs:comment "Sample receipt, accessioning, testing, result review, reporting, and archival; analyte measurement; turnaround and throughput; accreditation and audit." ;
+    bfo:0000023 cco:Artifact ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+<https://signals360.example.org/sdg#SDG_LIMS_SPECIMEN_LIFECYCLE> a skos:Concept ;
+    skos:prefLabel "Specimen Lifecycle Management" ;
+    skos:notation "9.1" ;
+    skos:altLabel "Sample Lifecycle" ;
+    skos:definition "The governed progression of a physical specimen through its laboratory states: collection from a subject or source, receipt and accessioning under a unique identifier, partitioning into aliquots, storage at a controlled location and temperature, assignment to testing, and finally reporting, retention, and disposal. Each state transition is an event with a timestamp, an actor, and a chain-of-custody record establishing unbroken provenance; specimens carry collection method, body site or sampling point, container and preservative, volume, and condition-on-receipt. This is the sample-lifecycle finite-state machine at the heart of a laboratory: received → accessioned → aliquoted → tested → reported → archived or destroyed." ;
+    skos:scopeNote "Includes aliquot derivation and parent-child specimen relationships, freezer and storage-location management, stability and expiry, and custody transfers between collection site, transport, and testing laboratory. Corresponds to FHIR Specimen and its collection, processing, and container backbone." ;
+    skos:broader <https://signals360.example.org/sdg#SDG_LIMS> ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+<https://signals360.example.org/sdg#SDG_LIMS_ASSAY_EXECUTION> a skos:Concept ;
+    skos:prefLabel "Assay and Method Execution" ;
+    skos:notation "9.2" ;
+    skos:altLabel "Analytical Run" ;
+    skos:definition "The ordering, scheduling, and performance of an analytical assay or test method on a specimen using an instrument or workcell. A method consumes reagents, calibrators, and controls and produces measurements; a run reifies a protocol of ordered steps — sample and reagent addition, incubation, separation, detection — executed under defined parameters, and is allocated to a specific instrument and operator. Each assay declares its analytes, its measurement principle, its calibration model, and its acceptance criteria; a run records the instrument, lot numbers, environmental conditions, and the raw and processed signal from which results are computed." ;
+    skos:scopeNote "Includes test ordering and worklist scheduling, reagent-kit and instrument-model variants, method-to-instrument allocation, and protocol or standard-operating-procedure steps. Corresponds to FHIR ServiceRequest (the order) and Device/Substance (instruments and reagents) and the SysML action and allocation views." ;
+    skos:broader <https://signals360.example.org/sdg#SDG_LIMS> ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+<https://signals360.example.org/sdg#SDG_LIMS_RESULT_INTERPRETATION> a skos:Concept ;
+    skos:prefLabel "Result Capture and Interpretation" ;
+    skos:notation "9.3" ;
+    skos:altLabel "Test Result" ;
+    skos:definition "The capture, validation, and clinical or regulatory interpretation of the measured outcome of an assay. A result is a quantity — a value with a unit and a measurement uncertainty — or a coded qualitative finding, attached to a specimen and an analyte, produced by a method run. Results are validated against specification limits, reference ranges, and acceptance criteria, flagged when out of specification or critical, reviewed and released by a qualified reviewer, and assembled into a diagnostic report. Interpretation compares the measured value to thresholds and prior results, derives flags and verdicts, and records the responsible reviewer and the time of release." ;
+    skos:scopeNote "Includes measurement uncertainty and significant figures, reference-range and spec-limit comparison, out-of-specification handling, delta checks, result amendment, and report assembly. Corresponds to FHIR Observation (the result) and DiagnosticReport (the released report)." ;
+    skos:broader <https://signals360.example.org/sdg#SDG_LIMS> ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+<https://signals360.example.org/sdg#SDG_LIMS_QUALITY_TRACEABILITY> a skos:Concept ;
+    skos:prefLabel "Quality, Compliance and Traceability" ;
+    skos:notation "9.4" ;
+    skos:altLabel "QA/QC and Compliance" ;
+    skos:definition "The quality-management and regulatory backbone of a laboratory: quality-control samples and control charts, instrument calibration and maintenance, proficiency testing, and the end-to-end traceability that links each released result back through the method, the instrument, the reagent lots, the operator, the specimen, and the originating specification or requirement. Acceptance criteria and specification limits are enforced as parametric constraints over result columns; deviations, nonconformances, and corrective actions are recorded; and an audit trail makes every state change attributable. This is the specification → method → result traceability matrix that GxP and ISO/IEC 17025 accreditation require." ;
+    skos:scopeNote "Includes control charts and Westgard-style rules, calibration verification, audit trails, deviation and CAPA management, and requirement-to-result traceability. Corresponds to the SysML requirement satisfy/verify and constraint views and to regulated-laboratory compliance regimes." ;
+    skos:broader <https://signals360.example.org/sdg#SDG_LIMS> ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
