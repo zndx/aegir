@@ -663,6 +663,115 @@ def _verbalize_for_template(
     return _markers_to_slots(chosen, slot_names), ""
 
 
+# ---- Parse-tree extraction (Comp 3: multi-frame verbalization) ----
+
+
+def _walk_cfg(node, slot_names):
+    """Recursively decompose a verbalised CfgNode (OntologyVerbaliser output) into
+    ``(constraints, named_supers)``. Markers (ZZnameZZ) are lowered to ``{slot}`` so the parts stay
+    slot-faithful. Handles EX./ALL restrictions, AND/OR junctions, NEG, and bare IRIs."""
+    from aegir.ontology.verbalization import Constraint
+
+    constraints: list = []
+    supers: list[str] = []
+    try:
+        typ = node.get("type", "")
+    except AttributeError:
+        return constraints, supers
+
+    if typ.startswith("EX.") or typ.startswith("ALL"):
+        prop = _markers_to_slots(node["property"]["verbal"], slot_names).strip()
+        filler = _markers_to_slots(node["class"]["verbal"], slot_names).strip()
+        constraints.append(Constraint(property=prop, filler=filler,
+                                      quantifier="some" if typ.startswith("EX.") else "only"))
+    elif typ.startswith("AND") or typ.startswith("OR"):
+        for child in node.get("classes", []) or []:
+            cs, sp = _walk_cfg(child, slot_names)
+            constraints += cs
+            supers += sp
+    elif typ.startswith("NEG"):
+        cs, sp = _walk_cfg(node.get("class", {}), slot_names)
+        for c in cs:
+            c.negated = True
+        constraints += cs
+        supers += sp
+    elif typ == "IRI":
+        lbl = _markers_to_slots(node.get("verbal", ""), slot_names).strip()
+        if lbl:
+            supers.append(lbl)
+    return constraints, supers
+
+
+def extract_parts(template: CatalogTemplate):
+    """Walk a template's DeepOnto parse tree into ``VerbalizationParts`` (the Comp 3 multi-frame base).
+
+    Uses the OntologyVerbaliser CfgNode (the parse tree, NOT its single output string), reusing the same
+    render→load machinery as :func:`probe_template`. Returns ``None`` when the JVM is down, the template
+    has no Class head, or nothing verbalizable is found (caller falls back to the legacy verbal_template).
+    Requires :func:`ensure_jvm` first.
+    """
+    from aegir.ontology.verbalization import VerbalizationParts
+
+    if not _JVM_STARTED:
+        return None
+    head = _head_slot_name(template)
+    if head is None:
+        return None
+    try:
+        omn_content = render_template_ontology(template)
+    except Exception:
+        return None
+    try:
+        from deeponto.onto import Ontology, OntologyVerbaliser
+    except Exception:
+        return None
+
+    omn_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".omn", delete=False) as f:
+            f.write(omn_content)
+            omn_path = Path(f.name)
+        try:
+            onto = Ontology(str(omn_path))
+        except Exception:
+            return None
+        vb = OntologyVerbaliser(onto)
+        slot_names = set(template.slot_types)
+        constraints: list = []
+        supers: list[str] = []
+        for cc in onto.get_asserted_complex_classes():
+            try:
+                cfg = vb.verbalise_class_expression(cc)
+            except Exception:
+                continue
+            cs, sp = _walk_cfg(cfg, slot_names)
+            constraints += cs
+            supers += sp
+        named = _named_superclass_label(template)
+        if named:
+            supers.insert(0, named)
+        # slot-typed Class supers (e.g. ``{X} SubClassOf {Y}``) — neither a CURIE anchor nor a restriction,
+        # so add them as (slot-carrying) supers so bare templates still get a diverse frame set.
+        for conj in _split_conjuncts(_superclass_rhs(template)):
+            m = SLOT_RE.fullmatch(conj.strip())
+            if m and m.group("type") == "Class" and m.group("name") != head:
+                supers.append("{" + m.group("name") + "}")
+        # dedupe; drop the vacuous implicit-subject heads DeepOnto emits
+        supers = [s for s in dict.fromkeys(supers)
+                  if s and s.lower() not in ("something", "thing", "entity")]
+        if not constraints and not supers:
+            return None
+        kind = "equivalence" if list(onto.get_equivalence_axioms("Classes")) else "subsumption"
+        return VerbalizationParts(subject="{" + head + "}", constraints=constraints,
+                                  named_supers=supers, axiom_kind=kind)
+    finally:
+        if omn_path and omn_path.exists():
+            try:
+                omn_path.unlink()
+            except OSError:
+                pass
+
+
 # ---- Probe ----
 
 

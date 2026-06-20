@@ -37,7 +37,15 @@ class CatalogTemplate:
             rows.
         verbal_template: DeepOnto ``OntologyVerbaliser`` output with
             slot variables retained for runtime substitution. Empty
-            string for placeholder rows.
+            string for placeholder rows. The canonical (first) surface
+            form; kept for back-compat with consumers that want one
+            string. See ``verbal_templates`` for the diverse set.
+        verbal_templates: A SET of diverse, slot-faithful surface forms
+            for this template (Semantic-Layer-Upkeep Comp 3) — the
+            DeepOnto parse-tree-derived procedural frames plus any
+            LLM elaborations. Sampled per chapter so the corpus is not
+            "X is a Y"-flat. Empty ⇒ fall back to ``[verbal_template]``
+            (see :meth:`frames`).
         mean_verbal_length: Character length of the verbalization
             after slot substitution with representative fillers.
             Used by the verifier as the ``R_C`` semantic-richness
@@ -55,10 +63,18 @@ class CatalogTemplate:
     slot_types: dict[str, str]
     is_complex: bool = False
     verbal_template: str = ""
+    verbal_templates: list[str] = field(default_factory=list)
     mean_verbal_length: float = 0.0
     bfo_anchor_path: list[str] = field(default_factory=list)
     broader: list[str] = field(default_factory=list)
     provenance: dict[str, str] = field(default_factory=dict)
+
+    def frames(self) -> list[str]:
+        """The verbalization surface forms to sample from: the diverse ``verbal_templates`` set when
+        populated, else the single ``verbal_template`` (back-compat). Empty list if neither is set."""
+        if self.verbal_templates:
+            return self.verbal_templates
+        return [self.verbal_template] if self.verbal_template else []
 
 
 @dataclass

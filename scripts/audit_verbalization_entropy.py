@@ -29,6 +29,8 @@ _STRUCT = {"is", "a", "an", "that", "and", "or", "equivalent", "to", "some", "on
            "not", "of", "with", "the", "which", "by", "in", "for"}
 _SLOT_RE = re.compile(r"\{[^}]*\}")
 _TOK_RE = re.compile(r"§|[a-z0-9]+")
+# Manchester OWL restriction operators ⇒ the axiom is relational (vs pure subsumption).
+_RESTRICTION_RE = re.compile(r"\b(some|only|min|max|exactly|value)\b")
 
 
 def skeleton(v: str) -> str:
@@ -64,14 +66,20 @@ def compute_report(catalog_path: Path) -> dict:
     can score this dimension without subprocessing (see scripts/semantic_layer_gate.py)."""
     cat = load_catalog(catalog_path)
     templates = list(cat.templates)
-    verbals = [(t, (t.verbal_template or "").strip()) for t in templates]
-    have = [(t, v) for t, v in verbals if v]
+    # Score the SET of surface frames per template (Comp 3 verbal_templates), not one string. Back-compat:
+    # frames() falls back to [verbal_template] when the set is empty, so a pre-Comp-3 catalog scores identically.
+    have = [(t, v.strip()) for t in templates for v in t.frames() if v and v.strip()]
     n, nv = len(templates), len(have)
+    n_with = sum(1 for t in templates if t.frames())
 
     skels = [skeleton(v) for _, v in have]
     skel_freq = Counter(skels)
-    no_that = sum(1 for _, v in have if " that " not in f" {v.lower()} ")
-    relational = nv - no_that
+    # Relational-ness is a property of the AXIOM (does it carry an OWL restriction?), not of the surface
+    # string. The old `" that "` heuristic only detected DeepOnto's one framing and undercounts the diverse
+    # Comp-3 frames ("stands in the {p} relation", "… via {p}") that express relations without "that".
+    # Detect Manchester restriction keywords on the template instead — framing-agnostic ground truth.
+    relational = sum(1 for t, _ in have if _RESTRICTION_RE.search(t.manchester_template or ""))
+    no_that = nv - relational  # "bare" = pure subsumption (no restriction in the axiom)
 
     fam_stats: dict[str, dict] = {}
     by_fam: dict[str, list[str]] = {}
@@ -83,7 +91,8 @@ def compute_report(catalog_path: Path) -> dict:
                           "skeleton_entropy": round(_entropy(list(Counter(sk).values())), 3)}
 
     return {
-        "n_templates": n, "n_with_verbalization": nv,
+        "n_templates": n, "n_with_verbalization": n_with, "n_frames": nv,
+        "mean_frames_per_template": round(nv / n_with, 2) if n_with else 0.0,
         "distinct_skeletons": len(skel_freq),
         "skeleton_diversity": round(len(skel_freq) / nv, 4) if nv else 0.0,
         "skeleton_entropy_bits": round(_entropy(list(skel_freq.values())), 3),

@@ -135,10 +135,22 @@ throughout — reasoner (formal), corpus (empirical-fit), held-out H-Net+RWKV (b
   2. **value semantics** (`check_value_semantics`): placeholder_ratio ≤ 0.30 · domain_fraction ≥ 0.40 ·
      time_order_violations == 0.
   3. **column-name de-canning** (`check_decanning_entropy` vs SchemaPile p10): canned_anchors == 0.
-- *Baseline (trackA spine `28d9adca`, pre-upkeep):* **🔴 RED, 1/7 checks** — distinct_skeletons 60, top5 0.686,
-  relational_share 0.764 ✓; placeholder 0.455, domain 0.135, 39 time-order violations; 4 canned anchors. By
-  design red — the local upkeep loop (Comp 3 verbalization parse-tree rework, Comp 4 columns/values) drives it
-  GREEN, confirmed in the lineup (Comp 5), THEN paid scale-out proceeds.
+- *Baseline (trackA spine `28d9adca`, pre-upkeep):* **🔴 RED, 1/7 checks** — distinct_skeletons 60, top5 0.686;
+  placeholder 0.455, domain 0.135, 39 time-order violations; 4 canned anchors.
+- *Comp 3 — verbalization upkeep DONE (2026-06-20): the verbalization dimension is GREEN (3/3).* The
+  **template verbalizer** (`ontology/verbalization.py` + `deeponto_harness.extract_parts`) recomposes
+  DeepOnto's CfgNode parse tree into a SET of slot-faithful procedural frames (`verbal_templates`,
+  populated catalog-wide by `build_verbalization_frames.py`). **Head-to-head vs DeepOnto's single string**
+  (`compare_verbalizers.py`, 522 templates): distinct skeletons **60→300 (5×)**, top-1 frame **32%→7%**,
+  top-5 **0.686→0.340**, skeleton entropy **3.86→6.11 bits** — at **100% slot-faithfulness** (0 invented
+  slots, all frames per template share one slot set) and **+5 templates where it RECOVERS conjuncts DeepOnto
+  drops** (e.g. `existential_two_clauses`). Gate dimension: distinct 300 ≥ 90 ✓, top5 0.34 ≤ 0.55 ✓,
+  relational 0.87 ≥ 0.30 ✓ (relational-share metric repaired to read the axiom's restriction, not the
+  surface "that"). `generate_chapter` samples one frame per chapter (corpus diversity). The **LLM
+  elaboration layer** (`elaborate_verbalizations.py`, local engine, slot-validated + reasoning-trace
+  retained) is fixed and sample-validated (clean procedural prose, 4 accepted/template) — full 522-template
+  batch is a deferred opt-in run.
+- *Now (post-Comp-3): the gate is **🔴 RED, 3/7** — verbalization GREEN; value + de-canning still RED (Comp 4).*
 - *Decision rule (pre-registered):* no paid corpus scale-out until `semantic_layer_gate.py` returns GREEN
   (all evaluated dimensions pass) on the spine run that the scaled generation will draw its tables/views from.
 

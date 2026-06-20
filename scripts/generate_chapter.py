@@ -629,11 +629,21 @@ def build_style_section(anchors: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def build_axiom_section(templates: list[dict]) -> str:
+def pick_verbalization(t: dict, rng=None) -> str:
+    """Sample one surface form from the template's diverse ``verbal_templates`` set (Comp 3), so different
+    chapters citing the same template get different phrasings (corpus diversity). Falls back to the single
+    ``verbal_template`` when the set is absent or no ``rng`` is given (preserves legacy behavior)."""
+    frames = t.get("verbal_templates") or ([t["verbal_template"]] if t.get("verbal_template") else [])
+    if not frames:
+        return ""
+    return rng.choice(frames) if rng is not None else frames[0]
+
+
+def build_axiom_section(templates: list[dict], rng=None) -> str:
     lines = []
     for i, t in enumerate(templates, 1):
         manchester = t.get("manchester_template", "")
-        verbal = t.get("verbal_template", "")
+        verbal = pick_verbalization(t, rng)
         slots = t.get("slot_types", {})
         slots_fmt = ", ".join(f"{k}: {v}" for k, v in slots.items())
         lines.append(f"  AXIOM {i} (template_id: {t['template_id']}):")
@@ -645,7 +655,7 @@ def build_axiom_section(templates: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def build_axiom_section_with_ddl(templates: list[dict], family_complex=None) -> str:
+def build_axiom_section_with_ddl(templates: list[dict], family_complex=None, rng=None) -> str:
     """Axiom section with the deterministic DDL footprint injected (load-bearing ontology).
 
     Each cited template carries its rendered CREATE TABLE schema — slot-typed columns +
@@ -698,8 +708,9 @@ def build_axiom_section_with_ddl(templates: list[dict], family_complex=None) -> 
         slots_fmt = ", ".join(f"{k}: {v}" for k, v in t.get("slot_types", {}).items())
         lines.append(f"  AXIOM {i} (template_id: {t['template_id']}):")
         lines.append(f"    Manchester:   {t.get('manchester_template','')}")
-        if t.get("verbal_template"):
-            lines.append(f"    Verbalization: {t['verbal_template']}")
+        _verbal = pick_verbalization(t, rng)
+        if _verbal:
+            lines.append(f"    Verbalization: {_verbal}")
         lines.append(f"    Slot types:    {slots_fmt}")
         lines.append("    RELATIONAL SCHEMA:")
         lines.append("      " + render_ddl(st, fks_by_src.get(st.table.name, [])).replace("\n", "\n      "))
@@ -725,7 +736,7 @@ def serialize_payload_footer(payload) -> str:
     return json.dumps({"tables": tables}, separators=(",", ":"))
 
 
-def build_axiom_section_with_tables(templates: list[dict], payload) -> str:
+def build_axiom_section_with_tables(templates: list[dict], payload, rng=None) -> str:
     """Axiom section with the **fixed, populated** tables injected (Track A correct-by-construction).
 
     Each axiom carries its CREATE TABLE *and* the authoritative, referentially-consistent, typed,
@@ -756,8 +767,9 @@ def build_axiom_section_with_tables(templates: list[dict], payload) -> str:
         slots_fmt = ", ".join(f"{k}: {v}" for k, v in t.get("slot_types", {}).items())
         lines.append(f"  AXIOM {idx} (template_id: {t['template_id']}):")
         lines.append(f"    Manchester:   {t.get('manchester_template','')}")
-        if t.get("verbal_template"):
-            lines.append(f"    Verbalization: {t['verbal_template']}")
+        _verbal = pick_verbalization(t, rng)
+        if _verbal:
+            lines.append(f"    Verbalization: {_verbal}")
         lines.append(f"    Slot types:    {slots_fmt}")
         if st is not None:
             lines.append("    RELATIONAL SCHEMA:")
@@ -791,18 +803,22 @@ def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
     """
     tpl = PROMPT_BY_KIND[kind]
     payload = None
+    # Per-chapter rng for verbalization-frame sampling (Comp 3): same seed as the chapter, so the choice
+    # is deterministic/reproducible yet varies across chapters → corpus-level surface diversity.
+    import random
+    vrng = random.Random(seed)
     if kind in ("glm", "grok"):
         try:
             from aegir.ontology.chapter_tables import chapter_relational_payload
             payload = chapter_relational_payload(templates, family_complex, seed=seed)
-            axiom_section = build_axiom_section_with_tables(templates, payload)
+            axiom_section = build_axiom_section_with_tables(templates, payload, rng=vrng)
         except Exception as exc:  # noqa: BLE001 — RI/lowering failure must not abort a long run
             logger.warning(f"  relational payload failed ({type(exc).__name__}: {str(exc)[:100]}); "
                            f"falling back to schema-only axioms")
             payload = None
-            axiom_section = build_axiom_section_with_ddl(templates, family_complex)
+            axiom_section = build_axiom_section_with_ddl(templates, family_complex, rng=vrng)
     else:
-        axiom_section = build_axiom_section(templates)
+        axiom_section = build_axiom_section(templates, rng=vrng)
     # The Grok template doesn't substitute n_templates (it picks domain freely); GLM does.
     fmt_kwargs: dict[str, Any] = {
         "style_section": build_style_section(anchors),
