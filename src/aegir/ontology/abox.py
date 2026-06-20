@@ -18,6 +18,7 @@ the reasoner MUST be reloaded (HermiT classifies a snapshot) — see `refresh`.
 """
 from __future__ import annotations
 
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -102,6 +103,100 @@ def realize_relations(onto, subj_iri: str, prop_iri: str) -> list[str]:
     node_set = onto.reasoner.owl_reasoner.getObjectPropertyValues(
         _ind(onto, subj_iri), _obj_prop(onto, prop_iri))
     return [str(i.getIRI()) for i in node_set.getFlattened()]
+
+
+# ── inc-2d-full: corpus → ABox bridge (rows → individuals → realize → template labels) ──
+ABOX_NS = "http://aegir.example.org/abox#"
+
+
+def _san(s: str) -> str:
+    return re.sub(r"\W+", "_", str(s)).strip("_")
+
+
+def template_iris(template) -> dict:
+    """Deterministic ABox IRIs for one template: the subject class ``C_<tid>`` and, per
+    object-property restriction ``{p} some {Y}``, a property + target class. Shared by the TBox
+    generator and the row asserter so the asserted relation and the Domain/Range axiom agree."""
+    from aegir.ontology.ddl import parse_restrictions
+    tid = _san(template.template_id)
+    rests = []
+    for i, r in enumerate(parse_restrictions(template)):
+        rests.append({"prop": f"{ABOX_NS}P_{tid}_{i}",
+                      "target_class": f"{ABOX_NS}C_{tid}_{_san(r.target_slot)}",
+                      "target_slot": r.target_slot})
+    return {"template_id": template.template_id, "subject_class": f"{ABOX_NS}C_{tid}", "restrictions": rests}
+
+
+def derive_domain_range_tbox(templates, *, with_domain_range: bool = True) -> str:
+    """**The non-triviality step.** Lower each template's restrictions to a Manchester TBox: per
+    template a subject class ``C_<tid>``; each ``{p} some {Y}`` → ``ObjectProperty P Domain C_<tid>
+    Range C_<tid>_<Y>``. Asserting ``P(subject, obj)`` then lets HermiT *compute* ``subject : C_<tid>``
+    (Domain) — recovering the template the row instantiates **without it being asserted**.
+
+    ``with_domain_range=False`` is the **matched-token control**: identical classes + properties but
+    NO Domain/Range, so the reasoner cannot infer a subject's type from its relations. The selectivity
+    gap (full − control) IS the schema's contribution — capacity-free, byte-overlap-free.
+    """
+    lines = ["Ontology: <http://aegir.example.org/abox-corpus>"]
+    classes: set[str] = set()
+    props: list[str] = []
+    for t in templates:
+        info = template_iris(t)
+        classes.add(info["subject_class"])
+        for r in info["restrictions"]:
+            classes.add(r["target_class"])
+            if with_domain_range:
+                props.append(f"ObjectProperty: <{r['prop']}> "
+                             f"Domain: <{info['subject_class']}> Range: <{r['target_class']}>")
+            else:
+                props.append(f"ObjectProperty: <{r['prop']}>")
+    for c in sorted(classes):
+        lines.append(f"Class: <{c}>")
+    return "\n".join(lines + props) + "\n"
+
+
+def rows_to_individuals(onto, spine_table, rows, chapter_id: str, template) -> list[str]:
+    """Assert one ABox individual per row + its object-property facts (FK columns) — **without**
+    asserting the subject's type (that's what realization must compute). Returns the subject IRIs."""
+    info = template_iris(template)
+    cols = spine_table.table.columns
+    pk_i = next((i for i, c in enumerate(cols) if c.slot_ref == "__pk__"), 0)
+    rest_cols = []
+    for r in info["restrictions"]:
+        ci = next((i for i, c in enumerate(cols) if c.slot_ref == r["target_slot"]), None)
+        if ci is not None:
+            rest_cols.append((ci, r["prop"]))
+    tid = _san(template.template_id)
+    subj_iris: list[str] = []
+    for ri, row in enumerate(rows):
+        if pk_i >= len(row):
+            continue
+        subj = f"{ABOX_NS}i_{_san(chapter_id)}_{tid}_{ri}"
+        subj_iris.append(subj)
+        for ci, prop in rest_cols:
+            if ci < len(row) and str(row[ci]).strip():
+                obj = f"{ABOX_NS}o_{_san(chapter_id)}_{tid}_{ci}_{_san(row[ci])}"
+                assert_relation(onto, subj, prop, obj)
+    return subj_iris
+
+
+def iris_to_label_idx(inferred_iris, template_index: dict[str, int]) -> list[int]:
+    """Map HermiT-inferred subject-class IRIs (``…#C_<tid>``) back to template label indices.
+    ``template_index`` is keyed by the SANITIZED template_id. Target/object classes (``C_<tid>_<Y>``)
+    don't match a template key and are ignored."""
+    out: set[int] = set()
+    for iri in inferred_iris:
+        local = re.split(r"[#/]", iri)[-1]
+        if local.startswith("C_"):
+            idx = template_index.get(local[2:])
+            if idx is not None:
+                out.add(idx)
+    return sorted(out)
+
+
+def realize_individuals(onto, ind_iris, direct: bool = False) -> dict[str, list[str]]:
+    """Batch :func:`realize_types` over many individuals — call :func:`refresh` once first."""
+    return {iri: realize_types(onto, iri, direct=direct) for iri in dict.fromkeys(ind_iris)}
 
 
 def load_ontology(omn: str):
