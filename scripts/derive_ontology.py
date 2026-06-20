@@ -133,6 +133,25 @@ def _fallback_passages() -> list[str]:
     ]
 
 
+def _apply_domain_filter(docs: list[str], args) -> "tuple[list[str], list[dict | None], dict]":
+    """Aim the aperture: classify each doc against the SKOS domain index (ColBERT/Qdrant MaxSim) and keep
+    only those whose top concept falls in the requested subtree above the belief floor. Grounds the input
+    filter in the ontology — to widen coverage you widen the SKOS hierarchy first."""
+    from aegir.ontology import domain_index as DI
+    codes = DI.subtree_codes(DI.load_skos(), args.domain)
+    if not codes:
+        print(f"  domain '{args.domain}' not found in the SKOS hierarchy — add it first (expand-hierarchy-first)", file=sys.stderr)
+        return [], [], {"scanned": len(docs), "kept": 0, "subtree": 0}
+    kept, tags = [], []
+    for d in docs:
+        h = DI.classify_hierarchical(d, top_k=5, url=args.domain_url, collection=args.domain_collection)
+        top = h.get("top") or {}
+        if DI.in_subtree(top, codes) and h["belief"] >= args.domain_tau:
+            kept.append(d)
+            tags.append({"code": top.get("code"), "label": top.get("pref_label"), "belief": h["belief"]})
+    return kept, tags, {"scanned": len(docs), "kept": len(kept), "subtree": len(codes)}
+
+
 def _pattern_catalog() -> tuple[str, dict]:
     """Compact catalog text (class_template patterns only) the LLM picks from, + the name→pattern map."""
     pats = [p for p in patterns.library().values() if p.pattern_kind == "class_template"]
@@ -184,21 +203,39 @@ def main() -> int:
     ap.add_argument("--write-candidates", action="store_true", help="write admitted primitives → 08_derived.candidate.json")
     ap.add_argument("--no-jvm", dest="jvm", action="store_false", help="skip the DeepOnto JVM gates (G1-parse/G3); G2/clean/anchor/faithful still run")
     ap.add_argument("--k-verbal", type=int, default=3, help="G3 floor: min distinct procedural verbalization skeletons")
+    # ── semantic-domain aperture (ColBERT/Qdrant over the SKOS hierarchy) ──
+    ap.add_argument("--domain", default=None, help="SKOS subtree (notation code or prefLabel) to AIM the aperture at, e.g. 'Process' (LIMS once added)")
+    ap.add_argument("--domain-tau", type=float, default=0.0, help="min top-1 belief for a doc to pass the domain gate")
+    ap.add_argument("--domain-oversample", type=int, default=5, help="sample this many × n-docs, then filter to in-domain (so the gate doesn't starve n)")
+    ap.add_argument("--domain-url", default="http://localhost:6355")
+    ap.add_argument("--domain-collection", default="sdg_domains")
     args = ap.parse_args()
 
     corpus = _corpus_path(args.corpus)
     skip = args.skip_docs
     if skip is None:
         skip = json.loads(_CURSOR.read_text()).get("cursor", 0) if _CURSOR.exists() else 0
+    n_sample = args.n_docs * args.domain_oversample if args.domain else args.n_docs
     if corpus:
-        docs, new_cursor = sample_content(corpus, args.n_docs, skip, args.min_chars, args.max_chars)
+        docs, new_cursor = sample_content(corpus, n_sample, skip, args.min_chars, args.max_chars)
         src = f"{corpus.name} (skip={skip})"
     else:
-        docs, new_cursor = _fallback_passages()[: args.n_docs], skip
+        docs, new_cursor = _fallback_passages()[: n_sample], skip
         src = "fallback passages (no local corpus found — clean-room samples)"
     if not docs:
         print(f"no documents sampled from {src}", file=sys.stderr)
         return 1
+
+    # semantic-domain aperture: keep only docs whose top SKOS concept is in the requested subtree
+    domain_tags: list = [None] * len(docs)
+    if args.domain:
+        docs, domain_tags, fstats = _apply_domain_filter(docs, args)
+        print(f"DOMAIN APERTURE '{args.domain}': {fstats['kept']}/{fstats['scanned']} docs in-subtree "
+              f"({fstats['subtree']} SKOS concepts, tau={args.domain_tau})")
+        docs, domain_tags = docs[: args.n_docs], domain_tags[: args.n_docs]
+        if not docs:
+            print("  no in-domain docs in this window — widen the window or the SKOS subtree", file=sys.stderr)
+            return 1
 
     if args.jvm:
         try:
@@ -247,7 +284,7 @@ def main() -> int:
             funnel["anchor"] += int(bool(g["anchor_valid"]))
             funnel["faithful"] += int(bool(g["faithful"]))
             trace_fh.write(json.dumps({
-                "doc": di, "source": src, "pattern": pat.name, "tier": pat.tier,
+                "doc": di, "source": src, "domain": domain_tags[di], "pattern": pat.name, "tier": pat.tier,
                 "template_id": tmpl.template_id, "manchester": tmpl.manchester_template,
                 "source_span": prim.get("source_span", ""),
                 "gates": {k: v for k, v in g.items() if not k.startswith("_")},
@@ -263,6 +300,7 @@ def main() -> int:
                                  "verbal_template": tmpl.verbal_template, "bfo_anchor_path": tmpl.bfo_anchor_path,
                                  "_pattern": pat.name, "_tier": pat.tier, "_grounds_ddl": pat.grounds_ddl,
                                  "_source_span": prim.get("source_span", ""), "_complexity": g["g2_complexity"],
+                                 "_domain": domain_tags[di],
                                  "_new_properties": prim.get("new_properties") or [], "_utility": g["utility"]})
                 print(f"  ✓ [doc {di}|{pat.name}] {tmpl.template_id} (utility {g['utility']}, "
                       f"cx {g['g2_complexity']['score']}, {g['g3_verbal'].get('n_distinct', '-')} verbal)")
