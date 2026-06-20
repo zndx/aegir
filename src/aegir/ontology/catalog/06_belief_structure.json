@@ -10,6 +10,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that over frame of discernment {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that over frame of discernment some {Y}",
+        "For an entity to count as {X}, it must bear the over frame of discernment relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via over frame of discernment.",
+        "The over frame of discernment relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the over frame of discernment relation to at least one {Y}."
+      ],
       "mean_verbal_length": 82.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -33,6 +40,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that assigns mass to {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that assigns mass to some {Y}",
+        "For an entity to count as {X}, it must bear the assigns mass to relation to at least one {Y}.",
+        "The assigns mass to relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the assigns mass to relation to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which assigns mass to some {Y}."
+      ],
       "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -56,6 +70,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has normalization constant {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has normalization constant some {Y}",
+        "The has normalization constant relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has normalization constant relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has normalization constant.",
+        "Each {X} is defined as a descriptive information content entity which has normalization constant some {Y}."
+      ],
       "mean_verbal_length": 83.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -79,6 +100,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has focal element {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has focal element some {Y}",
+        "Each {X} is defined as a descriptive information content entity which has focal element some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has focal element.",
+        "Every {X} stands in the has focal element relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has focal element relation to at least one {Y}."
+      ],
       "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -102,6 +130,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that assigns mass to {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that assigns mass to only {Y}",
+        "For an entity to count as {X}, it must bear the assigns mass to relation to only {Y}.",
+        "Every {X} stands in the assigns mass to relation to only {Y}.",
+        "The assigns mass to relation connects each {X} to only {Y}.",
+        "Each {X} is defined as a descriptive information content entity which assigns mass to only {Y}."
+      ],
       "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -125,6 +160,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "{X} denotes a descriptive information content entity.",
+        "Every {X} is a descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity.",
+        "{X} is a type of descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -147,6 +189,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "{X} denotes a descriptive information content entity.",
+        "{X} is a type of descriptive information content entity.",
+        "Every {X} is a descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -169,6 +218,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -194,6 +244,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has belief lower bound {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has belief lower bound some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via has belief lower bound.",
+        "For an entity to count as {X}, it must bear the has belief lower bound relation to at least one {Y}.",
+        "The has belief lower bound relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has belief lower bound relation to at least one {Y}."
+      ],
       "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -217,6 +274,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has plausibility upper bound {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has plausibility upper bound some {Y}",
+        "The has plausibility upper bound relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has plausibility upper bound.",
+        "For an entity to count as {X}, it must bear the has plausibility upper bound relation to at least one {Y}.",
+        "Every {X} stands in the has plausibility upper bound relation to at least one {Y}."
+      ],
       "mean_verbal_length": 85.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -240,6 +304,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that for claim {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that for claim some {Y}",
+        "The for claim relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the for claim relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via for claim.",
+        "Every {X} stands in the for claim relation to at least one {Y}."
+      ],
       "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -263,6 +334,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that at confidence level {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that at confidence level some {Y}",
+        "Each {X} is defined as a descriptive information content entity which at confidence level some {Y}.",
+        "The at confidence level relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the at confidence level relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at confidence level."
+      ],
       "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -286,6 +364,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has belief lower bound {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has belief lower bound only {Y}",
+        "The has belief lower bound relation connects each {X} to only {Y}.",
+        "For an entity to count as {X}, it must bear the has belief lower bound relation to only {Y}.",
+        "Each {X} is defined as a descriptive information content entity which has belief lower bound only {Y}.",
+        "Any {X} necessarily relates to only {Y} via has belief lower bound."
+      ],
       "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -309,6 +394,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity.",
+        "{X} is a type of descriptive information content entity.",
+        "{X} denotes a descriptive information content entity.",
+        "Every {X} is a descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -332,6 +424,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity.",
+        "Every {X} is a descriptive information content entity.",
+        "{X} denotes a descriptive information content entity.",
+        "{X} is a type of descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -354,6 +453,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -379,6 +479,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that supports claim {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that supports claim some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via supports claim.",
+        "Each {X} is defined as a descriptive information content entity which supports claim some {Y}.",
+        "For an entity to count as {X}, it must bear the supports claim relation to at least one {Y}.",
+        "Every {X} stands in the supports claim relation to at least one {Y}."
+      ],
       "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -402,6 +509,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that refutes claim {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that refutes claim some {Y}",
+        "Each {X} is defined as a descriptive information content entity which refutes claim some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via refutes claim.",
+        "The refutes claim relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the refutes claim relation to at least one {Y}."
+      ],
       "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -425,6 +539,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has evidence source {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has evidence source some {Y}",
+        "The has evidence source relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has evidence source relation to at least one {Y}.",
+        "Every {X} stands in the has evidence source relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has evidence source."
+      ],
       "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -448,6 +569,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that at quality tier {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that at quality tier some {Y}",
+        "For an entity to count as {X}, it must bear the at quality tier relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at quality tier.",
+        "Each {X} is defined as a descriptive information content entity which at quality tier some {Y}.",
+        "Every {X} stands in the at quality tier relation to at least one {Y}."
+      ],
       "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -471,6 +599,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has mass function {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has mass function some {Y}",
+        "The has mass function relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has mass function relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has mass function relation to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which has mass function some {Y}."
+      ],
       "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -493,6 +628,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "{X} is a type of descriptive information content entity.",
+        "Every {X} is a descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity.",
+        "{X} denotes a descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -515,6 +657,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is equivalent to descriptive information content entity and {Y} or {Z}",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity {Y} {Z}.",
+        "{X} is a type of descriptive information content entity {Y} {Z}.",
+        "Every {X} is a descriptive information content entity {Y} {Z}.",
+        "{X} denotes a descriptive information content entity {Y} {Z}.",
+        "Any {X} qualifies as a descriptive information content entity {Y} {Z}."
+      ],
       "mean_verbal_length": 74.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -536,6 +685,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that claim about {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that claim about some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via claim about.",
+        "The claim about relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which claim about some {Y}.",
+        "For an entity to count as {X}, it must bear the claim about relation to at least one {Y}."
+      ],
       "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -559,6 +715,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that supported by evidence {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that supported by evidence some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via supported by evidence.",
+        "Every {X} stands in the supported by evidence relation to at least one {Y}.",
+        "The supported by evidence relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which supported by evidence some {Y}."
+      ],
       "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -582,6 +745,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that refuted by evidence {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that refuted by evidence some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via refuted by evidence.",
+        "Each {X} is defined as a descriptive information content entity which refuted by evidence some {Y}.",
+        "The refuted by evidence relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the refuted by evidence relation to at least one {Y}."
+      ],
       "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -605,6 +775,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has belief interval {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has belief interval some {Y}",
+        "Each {X} is defined as a descriptive information content entity which has belief interval some {Y}.",
+        "The has belief interval relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has belief interval relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has belief interval."
+      ],
       "mean_verbal_length": 76.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -628,6 +805,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity.",
+        "{X} is a type of descriptive information content entity.",
+        "Every {X} is a descriptive information content entity.",
+        "{X} denotes a descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -648,6 +832,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity.",
+        "{X} is a type of descriptive information content entity.",
+        "Every {X} is a descriptive information content entity.",
+        "{X} denotes a descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -669,6 +860,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is not {Y}",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity {Y}.",
+        "Any {X} qualifies as a descriptive information content entity {Y}.",
+        "{X} is a type of descriptive information content entity {Y}.",
+        "{X} denotes a descriptive information content entity {Y}.",
+        "Every {X} is a descriptive information content entity {Y}."
+      ],
       "mean_verbal_length": 14.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -689,6 +887,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that observed at some process",
+        "The observed at relation connects each {X} to at least one process.",
+        "For an entity to count as {X}, it must bear the observed at relation to at least one process.",
+        "Each {X} is defined as a descriptive information content entity which observed at some process.",
+        "Any {X} necessarily relates to at least one process via observed at."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -711,6 +916,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that governed by directive information content entity",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that governed by some directive information content entity",
+        "Every {X} stands in the governed by relation to at least one directive information content entity.",
+        "Any {X} necessarily relates to at least one directive information content entity via governed by.",
+        "Each {X} is defined as a descriptive information content entity which governed by some directive information content entity.",
+        "For an entity to count as {X}, it must bear the governed by relation to at least one directive information content entity."
+      ],
       "mean_verbal_length": 101.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"

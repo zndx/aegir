@@ -10,6 +10,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that uses entity {Y}",
+      "verbal_templates": [
+        "{X} is a process that uses entity some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via uses entity.",
+        "Each {X} is defined as a process which uses entity some {Y}.",
+        "The uses entity relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the uses entity relation to at least one {Y}."
+      ],
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -33,6 +40,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that generates entity {Y}",
+      "verbal_templates": [
+        "{X} is a process that generates entity some {Y}",
+        "For an entity to count as {X}, it must bear the generates entity relation to at least one {Y}.",
+        "The generates entity relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via generates entity.",
+        "Each {X} is defined as a process which generates entity some {Y}."
+      ],
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -56,6 +70,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that was associated with {Y}",
+      "verbal_templates": [
+        "{X} is a process that was associated with some {Y}",
+        "Every {X} stands in the was associated with relation to at least one {Y}.",
+        "Each {X} is defined as a process which was associated with some {Y}.",
+        "The was associated with relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via was associated with."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -79,6 +100,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that started at time {Y}",
+      "verbal_templates": [
+        "{X} is a process that started at time some {Y}",
+        "The started at time relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the started at time relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via started at time.",
+        "Each {X} is defined as a process which started at time some {Y}."
+      ],
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -102,6 +130,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that ended at time {Y}",
+      "verbal_templates": [
+        "{X} is a process that ended at time some {Y}",
+        "Every {X} stands in the ended at time relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the ended at time relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via ended at time.",
+        "The ended at time relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -123,6 +158,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that informed by {Y}",
+      "verbal_templates": [
+        "{X} is a process that informed by some {Y}",
+        "Every {X} stands in the informed by relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the informed by relation to at least one {Y}.",
+        "Each {X} is defined as a process which informed by some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via informed by."
+      ],
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -146,6 +188,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that has input dataset {Y}",
+      "verbal_templates": [
+        "{X} is a process that has input dataset some {Y}",
+        "Every {X} stands in the has input dataset relation to at least one {Y}.",
+        "The has input dataset relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has input dataset.",
+        "For an entity to count as {X}, it must bear the has input dataset relation to at least one {Y}."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -167,6 +216,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that has output dataset {Y}",
+      "verbal_templates": [
+        "{X} is a process that has output dataset some {Y}",
+        "The has output dataset relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has output dataset relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has output dataset.",
+        "For an entity to count as {X}, it must bear the has output dataset relation to at least one {Y}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -188,6 +244,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that uses entity {Y}",
+      "verbal_templates": [
+        "{X} is a process that uses entity only {Y}",
+        "For an entity to count as {X}, it must bear the uses entity relation to only {Y}.",
+        "The uses entity relation connects each {X} to only {Y}.",
+        "Each {X} is defined as a process which uses entity only {Y}.",
+        "Any {X} necessarily relates to only {Y} via uses entity."
+      ],
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -211,6 +274,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "{X} denotes a process.",
+        "Every {X} is a process.",
+        "{X} is a type of process.",
+        "Any {X} qualifies as a process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -234,6 +304,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "{X} denotes a process.",
+        "Every {X} is a process.",
+        "Any {X} qualifies as a process.",
+        "{X} is a type of process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -256,6 +333,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "Any {X} qualifies as a process.",
+        "Every {X} is a process.",
+        "{X} is a type of process.",
+        "{X} denotes a process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -277,6 +361,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that from source {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that from source some {Y}",
+        "The from source relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which from source some {Y}.",
+        "For an entity to count as {X}, it must bear the from source relation to at least one {Y}.",
+        "Every {X} stands in the from source relation to at least one {Y}."
+      ],
       "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -300,6 +391,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that to target {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that to target some {Y}",
+        "The to target relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via to target.",
+        "Each {X} is defined as a descriptive information content entity which to target some {Y}.",
+        "For an entity to count as {X}, it must bear the to target relation to at least one {Y}."
+      ],
       "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -323,6 +421,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that via transformation {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that via transformation some {Y}",
+        "The via transformation relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the via transformation relation to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which via transformation some {Y}.",
+        "For an entity to count as {X}, it must bear the via transformation relation to at least one {Y}."
+      ],
       "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -344,6 +449,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that at run time {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that at run time some {Y}",
+        "Every {X} stands in the at run time relation to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which at run time some {Y}.",
+        "For an entity to count as {X}, it must bear the at run time relation to at least one {Y}.",
+        "The at run time relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -367,6 +479,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that describes column flow {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that describes column flow some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via describes column flow.",
+        "For an entity to count as {X}, it must bear the describes column flow relation to at least one {Y}.",
+        "Every {X} stands in the describes column flow relation to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which describes column flow some {Y}."
+      ],
       "mean_verbal_length": 78.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -388,6 +507,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that with provenance {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that with provenance some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via with provenance.",
+        "For an entity to count as {X}, it must bear the with provenance relation to at least one {Y}.",
+        "Each {X} is defined as a descriptive information content entity which with provenance some {Y}.",
+        "The with provenance relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -411,6 +537,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that within dataset {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that within dataset only {Y}",
+        "Every {X} stands in the within dataset relation to only {Y}.",
+        "For an entity to count as {X}, it must bear the within dataset relation to only {Y}.",
+        "Any {X} necessarily relates to only {Y} via within dataset.",
+        "Each {X} is defined as a descriptive information content entity which within dataset only {Y}."
+      ],
       "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -434,6 +567,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity.",
+        "Every {X} is a descriptive information content entity.",
+        "{X} denotes a descriptive information content entity.",
+        "{X} is a type of descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -458,6 +598,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that from column {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that to column some {Z}, and that from column some {Y}",
+        "Each {X} is defined as a descriptive information content entity which to column some {Z}, and which from column some {Y}.",
+        "For an entity to count as {X}, it must bear the to column relation to at least one {Z}, and the from column relation to at least one {Y}.",
+        "Every {X} stands in the to column relation to at least one {Z}, and the from column relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Z} via to column, and to at least one {Y} via from column."
+      ],
       "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -481,6 +628,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has confidence {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has confidence some {Y}",
+        "Each {X} is defined as a descriptive information content entity which has confidence some {Y}.",
+        "Every {X} stands in the has confidence relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has confidence relation to at least one {Y}.",
+        "The has confidence relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -501,6 +655,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of descriptive information content entity.",
+        "{X} denotes a descriptive information content entity.",
+        "Every {X} is a descriptive information content entity.",
+        "Any {X} qualifies as a descriptive information content entity.",
+        "{X} is a type of descriptive information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -522,6 +683,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that executes transformation {Y}",
+      "verbal_templates": [
+        "{X} is a process that executes transformation some {Y}",
+        "Every {X} stands in the executes transformation relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via executes transformation.",
+        "For an entity to count as {X}, it must bear the executes transformation relation to at least one {Y}.",
+        "The executes transformation relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -545,6 +713,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that at run identifier {Y}",
+      "verbal_templates": [
+        "{X} is a process that at run identifier some {Y}",
+        "For an entity to count as {X}, it must bear the at run identifier relation to at least one {Y}.",
+        "The at run identifier relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the at run identifier relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at run identifier."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -568,6 +743,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that has input facet {Y}",
+      "verbal_templates": [
+        "{X} is a process that has input facet some {Y}",
+        "Every {X} stands in the has input facet relation to at least one {Y}.",
+        "The has input facet relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a process which has input facet some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has input facet."
+      ],
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -591,6 +773,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that has output facet {Y}",
+      "verbal_templates": [
+        "{X} is a process that has output facet some {Y}",
+        "Every {X} stands in the has output facet relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has output facet.",
+        "Each {X} is defined as a process which has output facet some {Y}.",
+        "The has output facet relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -612,6 +801,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that completed at {Y}",
+      "verbal_templates": [
+        "{X} is a process that completed at some {Y}",
+        "Every {X} stands in the completed at relation to at least one {Y}.",
+        "Each {X} is defined as a process which completed at some {Y}.",
+        "For an entity to count as {X}, it must bear the completed at relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via completed at."
+      ],
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -635,6 +831,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that has run status {Y}",
+      "verbal_templates": [
+        "{X} is a process that has run status some {Y}",
+        "The has run status relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has run status.",
+        "Each {X} is defined as a process which has run status some {Y}.",
+        "For an entity to count as {X}, it must bear the has run status relation to at least one {Y}."
+      ],
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -656,6 +859,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that was associated with {Y}",
+      "verbal_templates": [
+        "{X} is a process that was associated with some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via was associated with.",
+        "Each {X} is defined as a process which was associated with some {Y}.",
+        "The was associated with relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the was associated with relation to at least one {Y}."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -679,6 +889,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "{X} is a type of process.",
+        "Any {X} qualifies as a process.",
+        "Every {X} is a process.",
+        "{X} denotes a process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -701,6 +918,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "Every {X} is a process.",
+        "{X} denotes a process.",
+        "Any {X} qualifies as a process.",
+        "{X} is a type of process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -723,6 +947,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is equivalent to process and {Y} or {Z}",
+      "verbal_templates": [
+        "{X} is a kind of process {Y} {Z}.",
+        "{X} denotes a process {Y} {Z}.",
+        "Every {X} is a process {Y} {Z}.",
+        "{X} is a type of process {Y} {Z}.",
+        "Any {X} qualifies as a process {Y} {Z}."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -744,6 +975,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has responsibility {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has responsibility some {Y}",
+        "The has responsibility relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has responsibility.",
+        "Every {X} stands in the has responsibility relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which has responsibility some {Y}."
+      ],
       "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -767,6 +1005,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that acted on behalf of {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that acted on behalf of some {Y}",
+        "Every {X} stands in the acted on behalf of relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via acted on behalf of.",
+        "Each {X} is defined as an artifact which acted on behalf of some {Y}.",
+        "The acted on behalf of relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -790,6 +1035,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has agent role {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has agent role some {Y}",
+        "Each {X} is defined as an artifact which has agent role some {Y}.",
+        "Every {X} stands in the has agent role relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has agent role.",
+        "For an entity to count as {X}, it must bear the has agent role relation to at least one {Y}."
+      ],
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -813,6 +1065,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that responsible for {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that responsible for some {Y}",
+        "The responsible for relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as an artifact which responsible for some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via responsible for.",
+        "For an entity to count as {X}, it must bear the responsible for relation to at least one {Y}."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -836,6 +1095,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that identified by uri {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that identified by uri some {Y}",
+        "For an entity to count as {X}, it must bear the identified by uri relation to at least one {Y}.",
+        "The identified by uri relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via identified by uri.",
+        "Each {X} is defined as an artifact which identified by uri some {Y}."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -859,6 +1125,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that at organization {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that at organization some {Y}",
+        "The at organization relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the at organization relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at organization.",
+        "Each {X} is defined as an artifact which at organization some {Y}."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -881,6 +1154,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is an artifact",
+      "verbal_templates": [
+        "{X} is a kind of artifact.",
+        "Every {X} is an artifact.",
+        "{X} denotes an artifact.",
+        "Any {X} qualifies as an artifact.",
+        "{X} is a type of artifact."
+      ],
       "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -903,6 +1183,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is equivalent to artifact and {Y} or {Z}",
+      "verbal_templates": [
+        "{X} is a kind of artifact {Y} {Z}.",
+        "Every {X} is an artifact {Y} {Z}.",
+        "{X} is a type of artifact {Y} {Z}.",
+        "{X} denotes an artifact {Y} {Z}.",
+        "Any {X} qualifies as an artifact {Y} {Z}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -924,6 +1211,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that was derived from {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that was derived from some {Y}",
+        "Each {X} is defined as an artifact which was derived from some {Y}.",
+        "The was derived from relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the was derived from relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via was derived from."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -945,6 +1239,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that was revision of {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that was revision of some {Y}",
+        "The was revision of relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the was revision of relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via was revision of.",
+        "Every {X} stands in the was revision of relation to at least one {Y}."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -968,6 +1269,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that was generated by {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that was generated by some {Y}",
+        "For an entity to count as {X}, it must bear the was generated by relation to at least one {Y}.",
+        "Every {X} stands in the was generated by relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which was generated by some {Y}.",
+        "The was generated by relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -989,6 +1297,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that was attributed to {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that was attributed to some {Y}",
+        "Each {X} is defined as an artifact which was attributed to some {Y}.",
+        "Every {X} stands in the was attributed to relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the was attributed to relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via was attributed to."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -1009,6 +1324,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that governed by directive information content entity",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that governed by some directive information content entity",
+        "For an entity to count as {X}, it must bear the governed by relation to at least one directive information content entity.",
+        "The governed by relation connects each {X} to at least one directive information content entity.",
+        "Any {X} necessarily relates to at least one directive information content entity via governed by.",
+        "Each {X} is defined as a descriptive information content entity which governed by some directive information content entity."
+      ],
       "mean_verbal_length": 101.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -1029,6 +1351,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that observed at some process",
+        "Every {X} stands in the observed at relation to at least one process.",
+        "The observed at relation connects each {X} to at least one process.",
+        "Any {X} necessarily relates to at least one process via observed at.",
+        "Each {X} is defined as a descriptive information content entity which observed at some process."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -1052,6 +1381,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a descriptive information content entity that has column {Y}",
+      "verbal_templates": [
+        "{X} is a descriptive information content entity that has column some {Y}",
+        "The has column relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has column relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has column.",
+        "Each {X} is defined as a descriptive information content entity which has column some {Y}."
+      ],
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DescriptiveICE"
@@ -1075,6 +1411,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is not {Y}",
+      "verbal_templates": [
+        "{X} is a kind of process {Y}.",
+        "Every {X} is a process {Y}.",
+        "{X} denotes a process {Y}.",
+        "{X} is a type of process {Y}.",
+        "Any {X} qualifies as a process {Y}."
+      ],
       "mean_verbal_length": 14.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1097,6 +1440,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "bfo:Process"

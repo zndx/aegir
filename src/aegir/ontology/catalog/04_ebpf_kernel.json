@@ -10,6 +10,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that attaches to hook {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that attaches to hook some {Y}",
+        "Every {X} stands in the attaches to hook relation to at least one {Y}.",
+        "The attaches to hook relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via attaches to hook.",
+        "For an entity to count as {X}, it must bear the attaches to hook relation to at least one {Y}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -31,6 +38,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that writes to map {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that writes to map some {Y}",
+        "Each {X} is defined as an artifact which writes to map some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via writes to map.",
+        "Every {X} stands in the writes to map relation to at least one {Y}.",
+        "The writes to map relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -52,6 +66,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that observes syscall {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that observes syscall some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via observes syscall.",
+        "Each {X} is defined as an artifact which observes syscall some {Y}.",
+        "The observes syscall relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the observes syscall relation to at least one {Y}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -75,6 +96,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has program type {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has program type some {Y}",
+        "The has program type relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has program type relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has program type relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which has program type some {Y}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -96,6 +124,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has license {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has license some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via has license.",
+        "For an entity to count as {X}, it must bear the has license relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which has license some {Y}.",
+        "Every {X} stands in the has license relation to at least one {Y}."
+      ],
       "mean_verbal_length": 39.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -117,6 +152,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that loaded in {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that loaded in some {Y}",
+        "Each {X} is defined as an artifact which loaded in some {Y}.",
+        "For an entity to count as {X}, it must bear the loaded in relation to at least one {Y}.",
+        "The loaded in relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via loaded in."
+      ],
       "mean_verbal_length": 37.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -140,6 +182,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that verified safe by {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that verified safe by some {Y}",
+        "The verified safe by relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the verified safe by relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via verified safe by.",
+        "Every {X} stands in the verified safe by relation to at least one {Y}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -161,6 +210,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that attaches to hook {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that attaches to hook only {Y}",
+        "The attaches to hook relation connects each {X} to only {Y}.",
+        "For an entity to count as {X}, it must bear the attaches to hook relation to only {Y}.",
+        "Any {X} necessarily relates to only {Y} via attaches to hook.",
+        "Each {X} is defined as an artifact which attaches to hook only {Y}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -184,6 +240,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact",
+      "verbal_templates": [
+        "{X} is a kind of artifact.",
+        "Any {X} qualifies as an artifact.",
+        "Every {X} is an artifact.",
+        "{X} denotes an artifact.",
+        "{X} is a type of artifact."
+      ],
       "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -207,6 +270,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact",
+      "verbal_templates": [
+        "{X} is a kind of artifact.",
+        "{X} denotes an artifact.",
+        "Any {X} qualifies as an artifact.",
+        "{X} is a type of artifact.",
+        "Every {X} is an artifact."
+      ],
       "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -229,6 +299,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is an artifact",
+      "verbal_templates": [
+        "{X} is a kind of artifact.",
+        "Any {X} qualifies as an artifact.",
+        "Every {X} is an artifact.",
+        "{X} denotes an artifact.",
+        "{X} is a type of artifact."
+      ],
       "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -251,6 +328,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -276,6 +354,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that at kernel function {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that at kernel function some {Y}",
+        "The at kernel function relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the at kernel function relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which at kernel function some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at kernel function."
+      ],
       "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -297,6 +382,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that in kernel module {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that in kernel module some {Y}",
+        "Each {X} is defined as an artifact which in kernel module some {Y}.",
+        "The in kernel module relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the in kernel module relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via in kernel module."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -318,6 +410,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has attached program {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has attached program some {Y}",
+        "Each {X} is defined as an artifact which has attached program some {Y}.",
+        "For an entity to count as {X}, it must bear the has attached program relation to at least one {Y}.",
+        "The has attached program relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has attached program."
+      ],
       "mean_verbal_length": 48.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -339,6 +438,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that for kernel subsystem {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that for kernel subsystem some {Y}",
+        "Every {X} stands in the for kernel subsystem relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via for kernel subsystem.",
+        "The for kernel subsystem relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as an artifact which for kernel subsystem some {Y}."
+      ],
       "mean_verbal_length": 48.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -362,6 +468,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has hook kind {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has hook kind some {Y}",
+        "For an entity to count as {X}, it must bear the has hook kind relation to at least one {Y}.",
+        "Every {X} stands in the has hook kind relation to at least one {Y}.",
+        "The has hook kind relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as an artifact which has hook kind some {Y}."
+      ],
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -383,6 +496,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that observes event {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that observes event some {Y}",
+        "Each {X} is defined as an artifact which observes event some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via observes event.",
+        "Every {X} stands in the observes event relation to at least one {Y}.",
+        "The observes event relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -404,6 +524,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has hook kind {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has hook kind only {Y}",
+        "The has hook kind relation connects each {X} to only {Y}.",
+        "Any {X} necessarily relates to only {Y} via has hook kind.",
+        "For an entity to count as {X}, it must bear the has hook kind relation to only {Y}.",
+        "Every {X} stands in the has hook kind relation to only {Y}."
+      ],
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -427,6 +554,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact",
+      "verbal_templates": [
+        "{X} is a kind of artifact.",
+        "{X} denotes an artifact.",
+        "{X} is a type of artifact.",
+        "Any {X} qualifies as an artifact.",
+        "Every {X} is an artifact."
+      ],
       "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -447,6 +581,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is an artifact",
+      "verbal_templates": [
+        "{X} is a kind of artifact.",
+        "Any {X} qualifies as an artifact.",
+        "{X} denotes an artifact.",
+        "Every {X} is an artifact.",
+        "{X} is a type of artifact."
+      ],
       "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -468,6 +609,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity that in syscall subsystem {Y}",
+      "verbal_templates": [
+        "{X} is a designative information content entity that in syscall subsystem some {Y}",
+        "Every {X} stands in the in syscall subsystem relation to at least one {Y}.",
+        "Each {X} is defined as a designative information content entity which in syscall subsystem some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via in syscall subsystem.",
+        "For an entity to count as {X}, it must bear the in syscall subsystem relation to at least one {Y}."
+      ],
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -491,6 +639,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity that invoked by event {Y}",
+      "verbal_templates": [
+        "{X} is a designative information content entity that invoked by event some {Y}",
+        "The invoked by event relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via invoked by event.",
+        "Each {X} is defined as a designative information content entity which invoked by event some {Y}.",
+        "For an entity to count as {X}, it must bear the invoked by event relation to at least one {Y}."
+      ],
       "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -512,6 +667,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity that has return type {Y}",
+      "verbal_templates": [
+        "{X} is a designative information content entity that has return type some {Y}",
+        "Each {X} is defined as a designative information content entity which has return type some {Y}.",
+        "The has return type relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has return type relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has return type."
+      ],
       "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -533,6 +695,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity that has argument count {Y}",
+      "verbal_templates": [
+        "{X} is a designative information content entity that has argument count some {Y}",
+        "For an entity to count as {X}, it must bear the has argument count relation to at least one {Y}.",
+        "Every {X} stands in the has argument count relation to at least one {Y}.",
+        "The has argument count relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a designative information content entity which has argument count some {Y}."
+      ],
       "mean_verbal_length": 75.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -556,6 +725,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity that traceable by {Y}",
+      "verbal_templates": [
+        "{X} is a designative information content entity that traceable by some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via traceable by.",
+        "Each {X} is defined as a designative information content entity which traceable by some {Y}.",
+        "The traceable by relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the traceable by relation to at least one {Y}."
+      ],
       "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -579,6 +755,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity that at security tier {Y}",
+      "verbal_templates": [
+        "{X} is a designative information content entity that at security tier some {Y}",
+        "Every {X} stands in the at security tier relation to at least one {Y}.",
+        "The at security tier relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a designative information content entity which at security tier some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at security tier."
+      ],
       "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -602,6 +785,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity that in syscall subsystem {Y}",
+      "verbal_templates": [
+        "{X} is a designative information content entity that in syscall subsystem only {Y}",
+        "For an entity to count as {X}, it must bear the in syscall subsystem relation to only {Y}.",
+        "Every {X} stands in the in syscall subsystem relation to only {Y}.",
+        "Each {X} is defined as a designative information content entity which in syscall subsystem only {Y}.",
+        "The in syscall subsystem relation connects each {X} to only {Y}."
+      ],
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -625,6 +815,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity",
+      "verbal_templates": [
+        "{X} is a kind of designative information content entity.",
+        "{X} is a type of designative information content entity.",
+        "Any {X} qualifies as a designative information content entity.",
+        "{X} denotes a designative information content entity.",
+        "Every {X} is a designative information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -647,6 +844,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a designative information content entity",
+      "verbal_templates": [
+        "{X} is a kind of designative information content entity.",
+        "Any {X} qualifies as a designative information content entity.",
+        "{X} denotes a designative information content entity.",
+        "{X} is a type of designative information content entity.",
+        "Every {X} is a designative information content entity."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -668,6 +872,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -693,6 +898,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has map type {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has map type some {Y}",
+        "For an entity to count as {X}, it must bear the has map type relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which has map type some {Y}.",
+        "The has map type relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has map type."
+      ],
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -714,6 +926,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has key type {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has key type some {Y}",
+        "Every {X} stands in the has key type relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has key type.",
+        "For an entity to count as {X}, it must bear the has key type relation to at least one {Y}.",
+        "The has key type relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -737,6 +956,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has value type map {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has value type map some {Y}",
+        "The has value type map relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has value type map relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has value type map relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which has value type map some {Y}."
+      ],
       "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -760,6 +986,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has max entries {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has max entries some {Y}",
+        "Every {X} stands in the has max entries relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which has max entries some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has max entries.",
+        "For an entity to count as {X}, it must bear the has max entries relation to at least one {Y}."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -783,6 +1016,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that used by program {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that used by program some {Y}",
+        "For an entity to count as {X}, it must bear the used by program relation to at least one {Y}.",
+        "The used by program relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the used by program relation to at least one {Y}.",
+        "Each {X} is defined as an artifact which used by program some {Y}."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -806,6 +1046,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that pinned at path {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that pinned at path some {Y}",
+        "The pinned at path relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via pinned at path.",
+        "Each {X} is defined as an artifact which pinned at path some {Y}.",
+        "For an entity to count as {X}, it must bear the pinned at path relation to at least one {Y}."
+      ],
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -829,6 +1076,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that has value type map {Y}",
+      "verbal_templates": [
+        "{X} is an artifact that has value type map only {Y}",
+        "For an entity to count as {X}, it must bear the has value type map relation to only {Y}.",
+        "Every {X} stands in the has value type map relation to only {Y}.",
+        "The has value type map relation connects each {X} to only {Y}.",
+        "Any {X} necessarily relates to only {Y} via has value type map."
+      ],
       "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -852,6 +1106,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact",
+      "verbal_templates": [
+        "{X} is a kind of artifact.",
+        "Any {X} qualifies as an artifact.",
+        "Every {X} is an artifact.",
+        "{X} is a type of artifact.",
+        "{X} denotes an artifact."
+      ],
       "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -874,6 +1135,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is an artifact",
+      "verbal_templates": [
+        "{X} is a kind of artifact.",
+        "{X} is a type of artifact.",
+        "{X} denotes an artifact.",
+        "Any {X} qualifies as an artifact.",
+        "Every {X} is an artifact."
+      ],
       "mean_verbal_length": 18.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -896,6 +1164,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -921,6 +1190,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that observes syscall designative information content entity",
+      "verbal_templates": [
+        "{X} is a process that observes syscall some designative information content entity",
+        "For an entity to count as {X}, it must bear the observes syscall relation to at least one designative information content entity.",
+        "Each {X} is defined as a process which observes syscall some designative information content entity.",
+        "Every {X} stands in the observes syscall relation to at least one designative information content entity.",
+        "The observes syscall relation connects each {X} to at least one designative information content entity."
+      ],
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -941,6 +1217,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that via program artifact",
+      "verbal_templates": [
+        "{X} is a process that via program some artifact",
+        "Every {X} stands in the via program relation to at least one artifact.",
+        "Any {X} necessarily relates to at least one artifact via via program.",
+        "The via program relation connects each {X} to at least one artifact.",
+        "For an entity to count as {X}, it must bear the via program relation to at least one artifact."
+      ],
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -961,6 +1244,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that at kernel hook artifact",
+      "verbal_templates": [
+        "{X} is a process that at kernel hook some artifact",
+        "Every {X} stands in the at kernel hook relation to at least one artifact.",
+        "The at kernel hook relation connects each {X} to at least one artifact.",
+        "Any {X} necessarily relates to at least one artifact via at kernel hook.",
+        "For an entity to count as {X}, it must bear the at kernel hook relation to at least one artifact."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -981,6 +1271,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that attaches to hook artifact",
+      "verbal_templates": [
+        "{X} is an artifact that attaches to hook some artifact",
+        "Each {X} is defined as an artifact which attaches to hook some artifact.",
+        "The attaches to hook relation connects each {X} to at least one artifact.",
+        "For an entity to count as {X}, it must bear the attaches to hook relation to at least one artifact.",
+        "Every {X} stands in the attaches to hook relation to at least one artifact."
+      ],
       "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -1003,6 +1300,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that writes to map artifact",
+      "verbal_templates": [
+        "{X} is an artifact that writes to map some artifact",
+        "Each {X} is defined as an artifact which writes to map some artifact.",
+        "Any {X} necessarily relates to at least one artifact via writes to map.",
+        "Every {X} stands in the writes to map relation to at least one artifact.",
+        "For an entity to count as {X}, it must bear the writes to map relation to at least one artifact."
+      ],
       "mean_verbal_length": 46.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -1025,6 +1329,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that observes syscall designative information content entity",
+      "verbal_templates": [
+        "{X} is an artifact that observes syscall some designative information content entity",
+        "Each {X} is defined as an artifact which observes syscall some designative information content entity.",
+        "The observes syscall relation connects each {X} to at least one designative information content entity.",
+        "Any {X} necessarily relates to at least one designative information content entity via observes syscall.",
+        "For an entity to count as {X}, it must bear the observes syscall relation to at least one designative information content entity."
+      ],
       "mean_verbal_length": 79.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -1045,6 +1356,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is an artifact that governed by directive information content entity",
+      "verbal_templates": [
+        "{X} is an artifact that governed by some directive information content entity",
+        "For an entity to count as {X}, it must bear the governed by relation to at least one directive information content entity.",
+        "Each {X} is defined as an artifact which governed by some directive information content entity.",
+        "The governed by relation connects each {X} to at least one directive information content entity.",
+        "Every {X} stands in the governed by relation to at least one directive information content entity."
+      ],
       "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -1065,6 +1383,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a designative information content entity",
+      "verbal_templates": [
+        "{X} is a designative information content entity that audited by some process",
+        "Any {X} necessarily relates to at least one process via audited by.",
+        "Every {X} stands in the audited by relation to at least one process.",
+        "For an entity to count as {X}, it must bear the audited by relation to at least one process.",
+        "Each {X} is defined as a designative information content entity which audited by some process."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "cco:DesignativeICE"
@@ -1088,6 +1413,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is not {Y}",
+      "verbal_templates": [
+        "{X} is a kind of artifact {Y}.",
+        "Any {X} qualifies as an artifact {Y}.",
+        "{X} denotes an artifact {Y}.",
+        "Every {X} is an artifact {Y}.",
+        "{X} is a type of artifact {Y}."
+      ],
       "mean_verbal_length": 14.0,
       "bfo_anchor_path": [
         "cco:Artifact"
@@ -1110,6 +1442,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is equivalent to artifact and {Y} or {Z}",
+      "verbal_templates": [
+        "{X} is a kind of artifact {Y} {Z}.",
+        "Any {X} qualifies as an artifact {Y} {Z}.",
+        "{X} is a type of artifact {Y} {Z}.",
+        "{X} denotes an artifact {Y} {Z}.",
+        "Every {X} is an artifact {Y} {Z}."
+      ],
       "mean_verbal_length": 44.0,
       "bfo_anchor_path": [
         "cco:Artifact"

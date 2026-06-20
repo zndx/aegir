@@ -10,6 +10,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that specifies {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that specifies some {Y}",
+        "Each {X} is defined as a directive information content entity which specifies some {Y}.",
+        "Every {X} stands in the specifies relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the specifies relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via specifies."
+      ],
       "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -30,6 +37,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a directive information content entity that applies to some artifact",
+        "Each {X} is defined as a directive information content entity which applies to some artifact.",
+        "For an entity to count as {X}, it must bear the applies to relation to at least one artifact.",
+        "Every {X} stands in the applies to relation to at least one artifact.",
+        "Any {X} necessarily relates to at least one artifact via applies to."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -51,6 +65,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that verified by {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that verified by some {Y}",
+        "Every {X} stands in the verified by relation to at least one {Y}.",
+        "The verified by relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a directive information content entity which verified by some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via verified by."
+      ],
       "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -74,6 +95,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that has priority {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that has priority some {Y}",
+        "Each {X} is defined as a directive information content entity which has priority some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has priority.",
+        "The has priority relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has priority relation to at least one {Y}."
+      ],
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -97,6 +125,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that traces to {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that traces to some {Y}",
+        "Every {X} stands in the traces to relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the traces to relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via traces to.",
+        "Each {X} is defined as a directive information content entity which traces to some {Y}."
+      ],
       "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -118,6 +153,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that refines {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that refines some {Y}",
+        "Each {X} is defined as a directive information content entity which refines some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via refines.",
+        "The refines relation connects each {X} to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the refines relation to at least one {Y}."
+      ],
       "mean_verbal_length": 62.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -139,6 +181,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that satisfies {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that satisfies some {Y}",
+        "Every {X} stands in the satisfies relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the satisfies relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via satisfies.",
+        "Each {X} is defined as a directive information content entity which satisfies some {Y}."
+      ],
       "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -162,6 +211,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that under standard {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that under standard some {Y}",
+        "The under standard relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a directive information content entity which under standard some {Y}.",
+        "Every {X} stands in the under standard relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via under standard."
+      ],
       "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -185,6 +241,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that satisfied by {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that satisfied by only {Y}",
+        "The satisfied by relation connects each {X} to only {Y}.",
+        "Every {X} stands in the satisfied by relation to only {Y}.",
+        "Each {X} is defined as a directive information content entity which satisfied by only {Y}.",
+        "Any {X} necessarily relates to only {Y} via satisfied by."
+      ],
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -208,6 +271,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity.",
+        "Any {X} qualifies as a directive information content entity.",
+        "Every {X} is a directive information content entity.",
+        "{X} denotes a directive information content entity.",
+        "{X} is a type of directive information content entity."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -228,6 +298,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity.",
+        "{X} is a type of directive information content entity.",
+        "{X} denotes a directive information content entity.",
+        "Every {X} is a directive information content entity.",
+        "Any {X} qualifies as a directive information content entity."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -250,6 +327,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -273,6 +351,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that mitigates {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that mitigates some {Y}",
+        "Each {X} is defined as a directive information content entity which mitigates some {Y}.",
+        "For an entity to count as {X}, it must bear the mitigates relation to at least one {Y}.",
+        "The mitigates relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via mitigates."
+      ],
       "mean_verbal_length": 64.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -294,6 +379,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that implements {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that implements some {Y}",
+        "For an entity to count as {X}, it must bear the implements relation to at least one {Y}.",
+        "The implements relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a directive information content entity which implements some {Y}.",
+        "Every {X} stands in the implements relation to at least one {Y}."
+      ],
       "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -317,6 +409,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that addresses risk {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that addresses risk some {Y}",
+        "The addresses risk relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via addresses risk.",
+        "Every {X} stands in the addresses risk relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the addresses risk relation to at least one {Y}."
+      ],
       "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -337,6 +436,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a directive information content entity that has owner some person",
+        "For an entity to count as {X}, it must bear the has owner relation to at least one person.",
+        "The has owner relation connects each {X} to at least one person.",
+        "Each {X} is defined as a directive information content entity which has owner some person.",
+        "Every {X} stands in the has owner relation to at least one person."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -358,6 +464,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that requires evidence {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that requires evidence some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via requires evidence.",
+        "Each {X} is defined as a directive information content entity which requires evidence some {Y}.",
+        "Every {X} stands in the requires evidence relation to at least one {Y}.",
+        "The requires evidence relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -381,6 +494,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that at severity {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that at severity some {Y}",
+        "Each {X} is defined as a directive information content entity which at severity some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at severity.",
+        "Every {X} stands in the at severity relation to at least one {Y}.",
+        "The at severity relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -404,6 +524,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that observed via {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that observed via some {Y}",
+        "The observed via relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the observed via relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the observed via relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via observed via."
+      ],
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -427,6 +554,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that under framework {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that under framework some {Y}",
+        "For an entity to count as {X}, it must bear the under framework relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via under framework.",
+        "Each {X} is defined as a directive information content entity which under framework some {Y}.",
+        "Every {X} stands in the under framework relation to at least one {Y}."
+      ],
       "mean_verbal_length": 70.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -450,6 +584,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that addresses risk {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that addresses risk only {Y}",
+        "Every {X} stands in the addresses risk relation to only {Y}.",
+        "Each {X} is defined as a directive information content entity which addresses risk only {Y}.",
+        "For an entity to count as {X}, it must bear the addresses risk relation to only {Y}.",
+        "The addresses risk relation connects each {X} to only {Y}."
+      ],
       "mean_verbal_length": 69.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -472,6 +613,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity.",
+        "{X} is a type of directive information content entity.",
+        "Every {X} is a directive information content entity.",
+        "Any {X} qualifies as a directive information content entity.",
+        "{X} denotes a directive information content entity."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -492,6 +640,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity.",
+        "{X} is a type of directive information content entity.",
+        "Every {X} is a directive information content entity.",
+        "Any {X} qualifies as a directive information content entity.",
+        "{X} denotes a directive information content entity."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -513,6 +668,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -538,6 +694,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that governs scope {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that governs scope some {Y}",
+        "For an entity to count as {X}, it must bear the governs scope relation to at least one {Y}.",
+        "Each {X} is defined as a directive information content entity which governs scope some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via governs scope.",
+        "The governs scope relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -559,6 +722,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that has jurisdiction {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that has jurisdiction some {Y}",
+        "Every {X} stands in the has jurisdiction relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has jurisdiction relation to at least one {Y}.",
+        "The has jurisdiction relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has jurisdiction."
+      ],
       "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -582,6 +752,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that supersedes {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that supersedes some {Y}",
+        "Each {X} is defined as a directive information content entity which supersedes some {Y}.",
+        "Every {X} stands in the supersedes relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via supersedes.",
+        "For an entity to count as {X}, it must bear the supersedes relation to at least one {Y}."
+      ],
       "mean_verbal_length": 65.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -606,6 +783,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that has review cycle {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that has review cycle some {Y}",
+        "For an entity to count as {X}, it must bear the has review cycle relation to at least one {Y}.",
+        "The has review cycle relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the has review cycle relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has review cycle."
+      ],
       "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -629,6 +813,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that enforced by {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that enforced by some {Y}",
+        "Every {X} stands in the enforced by relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the enforced by relation to at least one {Y}.",
+        "Each {X} is defined as a directive information content entity which enforced by some {Y}.",
+        "The enforced by relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 66.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -652,6 +843,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that at classification tier {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that at classification tier some {Y}",
+        "Each {X} is defined as a directive information content entity which at classification tier some {Y}.",
+        "For an entity to count as {X}, it must bear the at classification tier relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at classification tier.",
+        "The at classification tier relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -672,6 +870,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a directive information content entity that governs scope only artifact",
+        "Any {X} necessarily relates to only artifact via governs scope.",
+        "For an entity to count as {X}, it must bear the governs scope relation to only artifact.",
+        "Each {X} is defined as a directive information content entity which governs scope only artifact.",
+        "Every {X} stands in the governs scope relation to only artifact."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -693,6 +898,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity.",
+        "{X} denotes a directive information content entity.",
+        "{X} is a type of directive information content entity.",
+        "Every {X} is a directive information content entity.",
+        "Any {X} qualifies as a directive information content entity."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -715,6 +927,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity.",
+        "{X} is a type of directive information content entity.",
+        "{X} denotes a directive information content entity.",
+        "Every {X} is a directive information content entity.",
+        "Any {X} qualifies as a directive information content entity."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -737,6 +956,7 @@
       },
       "is_complex": false,
       "verbal_template": "",
+      "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -762,6 +982,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that checks {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that checks some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via checks.",
+        "Each {X} is defined as a directive information content entity which checks some {Y}.",
+        "The checks relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the checks relation to at least one {Y}."
+      ],
       "mean_verbal_length": 61.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -783,6 +1010,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that has predicate {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that has predicate some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via has predicate.",
+        "Each {X} is defined as a directive information content entity which has predicate some {Y}.",
+        "Every {X} stands in the has predicate relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has predicate relation to at least one {Y}."
+      ],
       "mean_verbal_length": 68.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -806,6 +1040,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that evaluated during {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that evaluated during some {Y}",
+        "The evaluated during relation connects each {X} to at least one {Y}.",
+        "Every {X} stands in the evaluated during relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the evaluated during relation to at least one {Y}.",
+        "Each {X} is defined as a directive information content entity which evaluated during some {Y}."
+      ],
       "mean_verbal_length": 71.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -829,6 +1070,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that has severity {Y}",
+      "verbal_templates": [
+        "{X} is a directive information content entity that has severity some {Y}",
+        "Every {X} stands in the has severity relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the has severity relation to at least one {Y}.",
+        "The has severity relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has severity."
+      ],
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -850,6 +1098,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity.",
+        "{X} denotes a directive information content entity.",
+        "Every {X} is a directive information content entity.",
+        "{X} is a type of directive information content entity.",
+        "Any {X} qualifies as a directive information content entity."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -872,6 +1127,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a directive information content entity",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity.",
+        "{X} denotes a directive information content entity.",
+        "Any {X} qualifies as a directive information content entity.",
+        "Every {X} is a directive information content entity.",
+        "{X} is a type of directive information content entity."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -892,6 +1154,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that verifies directive information content entity",
+      "verbal_templates": [
+        "{X} is a process that verifies some directive information content entity",
+        "Each {X} is defined as a process which verifies some directive information content entity.",
+        "For an entity to count as {X}, it must bear the verifies relation to at least one directive information content entity.",
+        "Every {X} stands in the verifies relation to at least one directive information content entity.",
+        "The verifies relation connects each {X} to at least one directive information content entity."
+      ],
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -913,6 +1182,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that produces evidence {Y}",
+      "verbal_templates": [
+        "{X} is a process that produces evidence some {Y}",
+        "The produces evidence relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a process which produces evidence some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via produces evidence.",
+        "Every {X} stands in the produces evidence relation to at least one {Y}."
+      ],
       "mean_verbal_length": 43.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -936,6 +1212,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that via verification method {Y}",
+      "verbal_templates": [
+        "{X} is a process that via verification method some {Y}",
+        "Every {X} stands in the via verification method relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via via verification method.",
+        "The via verification method relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a process which via verification method some {Y}."
+      ],
       "mean_verbal_length": 49.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -959,6 +1242,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that targets artifact {Y}",
+      "verbal_templates": [
+        "{X} is a process that targets artifact some {Y}",
+        "The targets artifact relation connects each {X} to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via targets artifact.",
+        "Every {X} stands in the targets artifact relation to at least one {Y}.",
+        "Each {X} is defined as a process which targets artifact some {Y}."
+      ],
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -980,6 +1270,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that concludes with {Y}",
+      "verbal_templates": [
+        "{X} is a process that concludes with some {Y}",
+        "Any {X} necessarily relates to at least one {Y} via concludes with.",
+        "Every {X} stands in the concludes with relation to at least one {Y}.",
+        "For an entity to count as {X}, it must bear the concludes with relation to at least one {Y}.",
+        "Each {X} is defined as a process which concludes with some {Y}."
+      ],
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1001,6 +1298,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "{X} denotes a process.",
+        "{X} is a type of process.",
+        "Any {X} qualifies as a process.",
+        "Every {X} is a process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1023,6 +1327,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "Every {X} is a process.",
+        "{X} denotes a process.",
+        "Any {X} qualifies as a process.",
+        "{X} is a type of process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1043,6 +1354,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that attests to control directive information content entity",
+      "verbal_templates": [
+        "{X} is a process that attests to control some directive information content entity",
+        "The attests to control relation connects each {X} to at least one directive information content entity.",
+        "Every {X} stands in the attests to control relation to at least one directive information content entity.",
+        "Each {X} is defined as a process which attests to control some directive information content entity.",
+        "For an entity to count as {X}, it must bear the attests to control relation to at least one directive information content entity."
+      ],
       "mean_verbal_length": 77.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1065,6 +1383,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that signed by person",
+      "verbal_templates": [
+        "{X} is a process that signed by some person",
+        "Every {X} stands in the signed by relation to at least one person.",
+        "Each {X} is defined as a process which signed by some person.",
+        "The signed by relation connects each {X} to at least one person.",
+        "For an entity to count as {X}, it must bear the signed by relation to at least one person."
+      ],
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1088,6 +1413,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that at attestation period {Y}",
+      "verbal_templates": [
+        "{X} is a process that at attestation period some {Y}",
+        "For an entity to count as {X}, it must bear the at attestation period relation to at least one {Y}.",
+        "Each {X} is defined as a process which at attestation period some {Y}.",
+        "Every {X} stands in the at attestation period relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via at attestation period."
+      ],
       "mean_verbal_length": 47.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1111,6 +1443,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that with supporting evidence {Y}",
+      "verbal_templates": [
+        "{X} is a process that with supporting evidence some {Y}",
+        "For an entity to count as {X}, it must bear the with supporting evidence relation to at least one {Y}.",
+        "Each {X} is defined as a process which with supporting evidence some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via with supporting evidence.",
+        "The with supporting evidence relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1133,6 +1472,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "Every {X} is a process.",
+        "{X} denotes a process.",
+        "Any {X} qualifies as a process.",
+        "{X} is a type of process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1155,6 +1501,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "{X} denotes a process.",
+        "{X} is a type of process.",
+        "Every {X} is a process.",
+        "Any {X} qualifies as a process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1175,6 +1528,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that classifies artifact artifact",
+      "verbal_templates": [
+        "{X} is a process that classifies artifact some artifact",
+        "Any {X} necessarily relates to at least one artifact via classifies artifact.",
+        "Every {X} stands in the classifies artifact relation to at least one artifact.",
+        "The classifies artifact relation connects each {X} to at least one artifact.",
+        "For an entity to count as {X}, it must bear the classifies artifact relation to at least one artifact."
+      ],
       "mean_verbal_length": 50.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1196,6 +1556,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that assigns tier {Y}",
+      "verbal_templates": [
+        "{X} is a process that assigns tier some {Y}",
+        "Every {X} stands in the assigns tier relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via assigns tier.",
+        "The assigns tier relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a process which assigns tier some {Y}."
+      ],
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1219,6 +1586,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that under taxonomy {Y}",
+      "verbal_templates": [
+        "{X} is a process that under taxonomy some {Y}",
+        "The under taxonomy relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a process which under taxonomy some {Y}.",
+        "Every {X} stands in the under taxonomy relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via under taxonomy."
+      ],
       "mean_verbal_length": 40.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1241,6 +1615,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "{X} denotes a process.",
+        "Every {X} is a process.",
+        "{X} is a type of process.",
+        "Any {X} qualifies as a process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1261,6 +1642,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that audits control directive information content entity",
+      "verbal_templates": [
+        "{X} is a process that audits control some directive information content entity",
+        "Each {X} is defined as a process which audits control some directive information content entity.",
+        "Any {X} necessarily relates to at least one directive information content entity via audits control.",
+        "Every {X} stands in the audits control relation to at least one directive information content entity.",
+        "The audits control relation connects each {X} to at least one directive information content entity."
+      ],
       "mean_verbal_length": 73.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1282,6 +1670,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that has findings {Y}",
+      "verbal_templates": [
+        "{X} is a process that has findings some {Y}",
+        "For an entity to count as {X}, it must bear the has findings relation to at least one {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via has findings.",
+        "Every {X} stands in the has findings relation to at least one {Y}.",
+        "The has findings relation connects each {X} to at least one {Y}."
+      ],
       "mean_verbal_length": 38.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1304,6 +1699,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that conducted by person",
+      "verbal_templates": [
+        "{X} is a process that conducted by some person",
+        "The conducted by relation connects each {X} to at least one person.",
+        "Any {X} necessarily relates to at least one person via conducted by.",
+        "For an entity to count as {X}, it must bear the conducted by relation to at least one person.",
+        "Every {X} stands in the conducted by relation to at least one person."
+      ],
       "mean_verbal_length": 41.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1327,6 +1729,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that for audit period {Y}",
+      "verbal_templates": [
+        "{X} is a process that for audit period some {Y}",
+        "Every {X} stands in the for audit period relation to at least one {Y}.",
+        "The for audit period relation connects each {X} to at least one {Y}.",
+        "Each {X} is defined as a process which for audit period some {Y}.",
+        "Any {X} necessarily relates to at least one {Y} via for audit period."
+      ],
       "mean_verbal_length": 42.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1349,6 +1758,13 @@
       },
       "is_complex": false,
       "verbal_template": "{X} is a process",
+      "verbal_templates": [
+        "{X} is a kind of process.",
+        "Every {X} is a process.",
+        "{X} denotes a process.",
+        "Any {X} qualifies as a process.",
+        "{X} is a type of process."
+      ],
       "mean_verbal_length": 16.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1369,6 +1785,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that supersedes directive information content entity",
+      "verbal_templates": [
+        "{X} is a directive information content entity that supersedes some directive information content entity",
+        "The supersedes relation connects each {X} to at least one directive information content entity.",
+        "Each {X} is defined as a directive information content entity which supersedes some directive information content entity.",
+        "Every {X} stands in the supersedes relation to at least one directive information content entity.",
+        "For an entity to count as {X}, it must bear the supersedes relation to at least one directive information content entity."
+      ],
       "mean_verbal_length": 98.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -1389,6 +1812,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that traces to directive information content entity",
+      "verbal_templates": [
+        "{X} is a directive information content entity that traces to some directive information content entity",
+        "For an entity to count as {X}, it must bear the traces to relation to at least one directive information content entity.",
+        "The traces to relation connects each {X} to at least one directive information content entity.",
+        "Any {X} necessarily relates to at least one directive information content entity via traces to.",
+        "Each {X} is defined as a directive information content entity which traces to some directive information content entity."
+      ],
       "mean_verbal_length": 97.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -1409,6 +1839,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that audits control artifact",
+      "verbal_templates": [
+        "{X} is a process that audits control some artifact",
+        "The audits control relation connects each {X} to at least one artifact.",
+        "Any {X} necessarily relates to at least one artifact via audits control.",
+        "Every {X} stands in the audits control relation to at least one artifact.",
+        "Each {X} is defined as a process which audits control some artifact."
+      ],
       "mean_verbal_length": 45.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1429,6 +1866,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a process that verifies directive information content entity",
+      "verbal_templates": [
+        "{X} is a process that verifies some directive information content entity",
+        "For an entity to count as {X}, it must bear the verifies relation to at least one directive information content entity.",
+        "Every {X} stands in the verifies relation to at least one directive information content entity.",
+        "Each {X} is defined as a process which verifies some directive information content entity.",
+        "The verifies relation connects each {X} to at least one directive information content entity."
+      ],
       "mean_verbal_length": 67.0,
       "bfo_anchor_path": [
         "bfo:Process"
@@ -1449,6 +1893,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is a directive information content entity that at classification tier designative information content entity",
+      "verbal_templates": [
+        "{X} is a directive information content entity that at classification tier some designative information content entity",
+        "The at classification tier relation connects each {X} to at least one designative information content entity.",
+        "Every {X} stands in the at classification tier relation to at least one designative information content entity.",
+        "Any {X} necessarily relates to at least one designative information content entity via at classification tier.",
+        "For an entity to count as {X}, it must bear the at classification tier relation to at least one designative information content entity."
+      ],
       "mean_verbal_length": 112.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -1471,6 +1922,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is equivalent to directive information content entity and {Y} or {Z}",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity {Y} {Z}.",
+        "{X} is a type of directive information content entity {Y} {Z}.",
+        "Any {X} qualifies as a directive information content entity {Y} {Z}.",
+        "{X} denotes a directive information content entity {Y} {Z}.",
+        "Every {X} is a directive information content entity {Y} {Z}."
+      ],
       "mean_verbal_length": 72.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
@@ -1492,6 +1950,13 @@
       },
       "is_complex": true,
       "verbal_template": "{X} is not {Y}",
+      "verbal_templates": [
+        "{X} is a kind of directive information content entity {Y}.",
+        "{X} denotes a directive information content entity {Y}.",
+        "Every {X} is a directive information content entity {Y}.",
+        "Any {X} qualifies as a directive information content entity {Y}.",
+        "{X} is a type of directive information content entity {Y}."
+      ],
       "mean_verbal_length": 14.0,
       "bfo_anchor_path": [
         "cco:DirectiveICE"
