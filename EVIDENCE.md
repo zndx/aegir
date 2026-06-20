@@ -108,6 +108,39 @@ throughout — reasoner (formal), corpus (empirical-fit), held-out H-Net+RWKV (b
     treat repetition as a studied variable. **Implication:** at a large token budget the *current* corpus
     supports only a tiny grounded fraction — so M2 runs at modest N, or generation must scale Y_eff first
     (Track A + more topics raise it). A finding, not a bug.
+- *Precondition #43 — DISCRIMINATING relational eval = realization-as-CPA (inc-2d-full).* **MET 2026-06-19.**
+  The descoped G-rel (relational/type skill, floored at 13.5M) is **re-homed to HermiT**: per chapter,
+  cited templates → Domain/Range TBox (`abox.derive_domain_range_tbox`), corpus tables → ABox (FK
+  relations asserted, types NOT) → realization *computes* each subject's template — CPA by a sound-&-
+  complete oracle, not a learned probe. The **matched-token control** = the same TBox with Domain/Range
+  ablated (`--control no-domain-range`): nothing inferrable from relations. Pipeline:
+  `abox.py` (template_iris / derive_domain_range_tbox / rows_to_individuals / iris_to_label_idx) →
+  `scripts/realize_corpus_as_cpa.py` → `scripts/score_realization_cpa.py` (BCa CI + paired permutation,
+  the #55 helpers). **Pilot (20 held-out chapters, vs `atelier_release_v0_3/reference.parquet`):**
+  micro-precision **1.00**, **relational_recall 1.00**, **selectivity (F1 full−control) = 0.79, 95% BCa
+  CI [0.63, 0.88], permutation p = 1e-4 → CI-clean ⇒ DISCRIMINATING.** Decision rule (selectivity > control,
+  CI-clean vs reference) MET. Caveats: 20-ch pilot (full-set run is mechanical; signal overwhelming);
+  precision=1.0 partly structural (recovered ⇒ has a table ⇒ in reference) — the load-bearing numbers are
+  selectivity + relational_recall. Artifacts: `evidence/realization_cpa/{pred_full,pred_no-domain-range,score}`.
+
+**SLU — Semantic-Layer-Upkeep gate (the embedded-view semantic-quality gate). RED at baseline (2026-06-19).**
+- *Gates:* the **paid (Grok/Cerebras) end-stage corpus scale-out** that feeds M2 generation. Local iteration
+  (HermiT/JVM, the local capability/gRPC engine + local GPUs) is **normal overhead, NOT gated** — only the
+  paid remote API spend queues behind this gate. (Resource principle, per RH 2026-06-19.)
+- *Instrument:* `scripts/semantic_layer_gate.py` composes three dimensions, each its own scorer, vs
+  PROVISIONAL pre-registered floors (floors-to-clear, ratchet — NOT the destination; the north star is
+  genuine real-world relational complexity, see `roadmap/semantic_layer_upkeep.md`):
+  1. **verbalization diversity** (`audit_verbalization_entropy`): distinct_skeletons ≥ 90 · top5_skeleton_share
+     ≤ 0.55 · relational_share ≥ 0.30 — escape "X is a Y" *syntactic-frame collapse*.
+  2. **value semantics** (`check_value_semantics`): placeholder_ratio ≤ 0.30 · domain_fraction ≥ 0.40 ·
+     time_order_violations == 0.
+  3. **column-name de-canning** (`check_decanning_entropy` vs SchemaPile p10): canned_anchors == 0.
+- *Baseline (trackA spine `28d9adca`, pre-upkeep):* **🔴 RED, 1/7 checks** — distinct_skeletons 60, top5 0.686,
+  relational_share 0.764 ✓; placeholder 0.455, domain 0.135, 39 time-order violations; 4 canned anchors. By
+  design red — the local upkeep loop (Comp 3 verbalization parse-tree rework, Comp 4 columns/values) drives it
+  GREEN, confirmed in the lineup (Comp 5), THEN paid scale-out proceeds.
+- *Decision rule (pre-registered):* no paid corpus scale-out until `semantic_layer_gate.py` returns GREEN
+  (all evaluated dimensions pass) on the spine run that the scaled generation will draw its tables/views from.
 
 **M3 — scale + the FINAL PHASE GATE. UNTESTED.**
 - *Gate (decisive):* at RWKV-7-matched scale, the ontology-grounded mix yields an H-Net+RWKV that
