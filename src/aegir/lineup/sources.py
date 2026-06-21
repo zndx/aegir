@@ -17,7 +17,7 @@ from pathlib import Path
 from aegir.ontology.schema import CatalogTemplate
 
 REPO = Path(__file__).resolve().parents[3]
-CATALOG_GLOB = "src/aegir/ontology/catalog/0[1-7]_*.json"
+CATALOG_GLOB = "src/aegir/ontology/catalog/0*.json"  # 0* (incl. 08_derived); candidate/combined filtered below
 
 
 def kb_dir() -> Path:
