@@ -22,7 +22,9 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from aegir.ontology.ddl import (SpineTable, ViewSpec, cross_family_fks, dataprop_meta,
+import re
+
+from aegir.ontology.ddl import (SpineTable, ViewSpec, _prop_col, cross_family_fks, dataprop_meta,
                                 render_view_ddl, template_to_table)
 from aegir.ontology.rows import assert_referential_integrity, materialize_rows
 from aegir.ontology.schema import CatalogTemplate
@@ -135,19 +137,29 @@ def eval_view_rows(view: ViewSpec, base_by_name: dict[str, SpineTable]) -> list[
     return out
 
 
+def _view_stem(st: SpineTable) -> str:
+    """A semantically meaningful concept stem for a view name — the table's ontology concept (its
+    template_id, already SKOS/LLM-derived for content-first primitives), NOT the opaque ``t_…`` table id."""
+    stem = re.sub(r"\W+", "_", st.template.template_id or "").strip("_").lower()
+    return stem or st.table.name
+
+
 def build_views(spine: Sequence[SpineTable],
                 fks: Sequence[FKEdge]) -> list[tuple[ViewSpec, list[list[str]]]]:
-    """A projection view per base table + a join view per FK edge, each with its rows evaluated."""
+    """A projection view per base table + a join view per FK edge, each with its rows evaluated.
+    View names are semantically meaningful: ``v_<concept>`` and ``v_<src>__<relation>__<dst>`` (the FK's
+    relation, not a literal ``x``) — so the embedded corpus views read as domain objects, not slot ids."""
     by_name = {st.table.name: st for st in spine}
     views: list[tuple[ViewSpec, list[list[str]]]] = []
     for st in spine:
-        v = render_view_ddl(f"v_{st.table.name}", st)
+        v = render_view_ddl(f"v_{_view_stem(st)}", st)
         if v.columns:
             views.append((v, eval_view_rows(v, by_name)))
     for e in fks:
         src, dst = by_name.get(e.src_table), by_name.get(e.dst_table)
         if src is not None and dst is not None:
-            v = render_view_ddl(f"v_{src.table.name}__x__{dst.table.name}", src, dst, e)
+            rel = _prop_col(e.via_slot) or "related"   # the relation name, e.g. has_assay / part_of
+            v = render_view_ddl(f"v_{_view_stem(src)}__{rel}__{_view_stem(dst)}", src, dst, e)
             if v.columns:
                 views.append((v, eval_view_rows(v, by_name)))
     return views
