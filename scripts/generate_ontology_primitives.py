@@ -57,10 +57,13 @@ _SYSTEM = (
     "You are an ontology engineer extending a BFO 2020 / CCO-anchored ontology. You are given ONE axiom "
     "PATTERN (a Manchester skeleton with typed slots) and ONE domain concept. Propose a semantically rich, "
     "domain-faithful primitive that CONFORMS EXACTLY to the pattern's structure. Hard rules: (1) keep the "
-    "pattern's class slots {X:Class}/{Y:Class} as slots; fill only the property slots {p:ObjectProperty}/"
-    "{d:DataProperty} and any $DESIGN params with concrete sdg: IRIs you coin (camelCase, e.g. sdg:hasSpecimen). "
+    "pattern's class slots as SLOTS (never fill a class slot with an IRI) but RENAME each to a domain-meaningful "
+    "CamelCase concept via class_slot_names (class-slot-token -> ConceptName, e.g. {\"X\":\"Specimen\"}); fill only "
+    "the property slots {p:ObjectProperty}/{d:DataProperty} and any $DESIGN params with concrete sdg: IRIs you coin "
+    "(camelCase, e.g. sdg:hasSpecimen). "
     "(2) anchor to a real BFO/CCO class. (3) invent NO proprietary terminology codes (no SNOMED/LOINC). "
     "(4) OUTPUT CONTRACT: emit exactly one fenced ```json block with keys: template_id (snake_case), "
+    "class_slot_names (class-slot-token -> domain ConceptName), "
     "property_fillers (slot-token -> sdg:IRI), new_properties (list of {iri,label,domain,range}), "
     "bfo_anchor_path (list of prefixed BFO/CCO IRIs, leaf last), verbal_template (one sentence with the {slots}), "
     "rationale. Put reasoning OUTSIDE the json block."
@@ -125,10 +128,21 @@ def assemble(pattern: patterns.AxiomPattern, proposal: dict) -> "CatalogTemplate
     """Fill the pattern's property slots/$params with the proposal's IRIs → a CatalogTemplate."""
     if not proposal.get("template_id"):
         return None
+    tid = proposal["template_id"]
+    # The LLM sometimes echoes the PATTERN name as the template_id (e.g. "action_definition_behavior"),
+    # which would yield generic t_<pattern>/fact_<pattern> table names. Derive the real concept from the
+    # subject (head) class slot — the renamed primary entity ("Class: {VideoAnalyticsExecution:Class} …").
+    _lib = patterns.library()
+    if tid in _lib or any(tid.startswith(p + "_") for p in _lib):   # echoed the pattern name (± a tier suffix)
+        m = re.match(r"\s*Class:\s*\{(\w+):", pattern.manchester_skeleton)
+        subj = (proposal.get("class_slot_names") or {}).get(m.group(1)) if m else None
+        if subj:
+            tid = re.sub(r"(?<!^)(?=[A-Z])", "_", re.sub(r"\W+", "_", subj).strip("_")).strip("_").lower() or tid
     tdict = patterns.instantiate(
         pattern.name, proposal.get("property_fillers") or {},
-        template_id=proposal["template_id"], family="08_generated",
-        bfo_anchor_path=proposal.get("bfo_anchor_path") or [], verbal_template=proposal.get("verbal_template") or "")
+        template_id=tid, family="08_generated",
+        bfo_anchor_path=proposal.get("bfo_anchor_path") or [], verbal_template=proposal.get("verbal_template") or "",
+        class_names=proposal.get("class_slot_names") or {})
     return CatalogTemplate(
         template_id=tdict["template_id"], manchester_template=tdict["manchester_template"],
         slot_types=tdict["slot_types"], is_complex=tdict["is_complex"],

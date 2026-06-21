@@ -349,6 +349,10 @@ def skos_name_for_slot(template: CatalogTemplate, slot: str) -> str | None:
     key = (template.template_id, slot)
     if key in CURATED_SLOT_NAMES:
         return CURATED_SLOT_NAMES[key]
+    # a renamed domain slot (a multi-char concept token like ``AblationProcess`` — vs a bare ``X``/``Y``
+    # filler letter) names itself; the deriver now coins these per primitive (class_slot_names).
+    if len(slot) > 1 and slot.lower() not in _NAME_STOP:
+        return re.sub(r"(?<!^)(?=[A-Z])", "_", slot).strip("_").lower()
     toks = [t for t in re.split(r"[^A-Za-z]+", template.template_id)
             if len(t) >= 3 and t.lower() not in _NAME_STOP]
     if toks:

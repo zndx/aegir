@@ -137,10 +137,14 @@ def validate_all() -> dict:
 
 
 def instantiate(pattern_name: str, fillers: "dict[str, str]", *, template_id: str, family: str,
-                bfo_anchor_path: "list[str]", verbal_template: str = "") -> dict:
+                bfo_anchor_path: "list[str]", verbal_template: str = "",
+                class_names: "dict[str, str] | None" = None) -> dict:
     """Fill a pattern's property/data slots + ``$DESIGN`` params (proposed by the step-3 LLM, e.g.
     ``$PROP`` → ``sdg:hasComponent``) → a ``CatalogTemplate``-shaped dict. **Class/Individual slots
-    (``{X:Class}``) are NEVER filled — they stay slots for chapter-gen.** Substitution is anchored on the
+    (``{X:Class}``) are NEVER filled with an IRI** — they stay slots for chapter-gen — but they ARE
+    *renamed* to domain-meaningful tokens via ``class_names`` (``{"X": "AblationProcess"}``), so the
+    abstract ``{X/Y/Z}`` fillers carry domain semantics into the axiom, verbalization, prose and
+    realized columns/values instead of bare slot letters. Substitution is anchored on the
     EXACT slot token / ``$param`` boundary (a blind ``str.replace('at', …)`` once corrupted IRIs like
     ``cco:InformATionContentEntity`` and dropped property slots — see derivation audit 2026-06-20).
     The ``_unfilled_*`` fields let the membrane's instance gate reject anything left structurally incomplete.
@@ -166,6 +170,24 @@ def instantiate(pattern_name: str, fillers: "dict[str, str]", *, template_id: st
         if val:
             manchester = re.sub(r"(?<![A-Za-z0-9_])" + re.escape(param) + r"(?![A-Za-z0-9_])",
                                 lambda _m, _v=val: _v, manchester)
+    # rename Class/Individual slots to domain-meaningful tokens (LLM-proposed), anchored on the exact
+    # slot token (the {:Type} suffix is preserved) so IRIs and property slots are never touched. This is
+    # the only thing that turns abstract {X/Y/Z:Class} fillers into named domain entities downstream.
+    if class_names:
+        seen: set[str] = set()
+        for k, v in class_names.items():
+            if not isinstance(v, str) or not v.strip():
+                continue
+            key = k.strip().lstrip("{").rstrip("}").split(":")[0].strip()
+            tok = re.sub(r"\W+", "_", v.strip()).strip("_")
+            if not (key and tok and declared.get(key) in ("Class", "Individual")):
+                continue
+            new, i = tok, 2
+            while new in seen:                       # keep renamed tokens distinct within the template
+                new, i = f"{tok}_{i}", i + 1
+            seen.add(new)
+            manchester = re.sub(r"\{" + re.escape(key) + r":([^}]+)\}",
+                                lambda m, _n=new: "{" + _n + ":" + m.group(1) + "}", manchester)
     slots = {m.group(1): m.group(2).split(":")[0] for m in _SLOT_RE.finditer(manchester)}
     return {
         "template_id": template_id, "manchester_template": manchester, "slot_types": slots,
