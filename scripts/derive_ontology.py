@@ -155,6 +155,28 @@ def _apply_domain_filter(docs: list[str], args) -> "tuple[list[str], list[dict |
     return kept, tags, {"scanned": len(docs), "kept": len(kept), "subtree": len(codes)}
 
 
+def _load_harvest(store_path: str, n: int, max_chars: int) -> "tuple[list[str], list[dict | None], str]":
+    """Load pre-matched in-domain docs from the content-addressed harvest cache (``harvest_domain_docs``).
+    Already domain-filtered + deduped — derive directly, tagging each with its harvested SKOS domain."""
+    store = Path(store_path)
+    manifest: dict[str, dict] = {}
+    mf = store / "manifest.jsonl"
+    if mf.exists():
+        for line in mf.read_text().splitlines():
+            try:
+                r = json.loads(line)
+                manifest[r["hash"]] = r
+            except (ValueError, KeyError):
+                continue
+    docs, tags = [], []
+    for f in sorted((store / "docs").glob("*.txt"))[:n]:
+        docs.append(f.read_text(encoding="utf-8", errors="ignore")[:max_chars])
+        m = manifest.get(f.stem, {})
+        tags.append({"code": m.get("code"), "label": m.get("label"),
+                     "rel_margin": m.get("rel_margin"), "hash": f.stem})
+    return docs, tags, f"{store.name} ({len(docs)} docs)"
+
+
 def _pattern_catalog() -> tuple[str, dict]:
     """Compact catalog text (class_template patterns only) the LLM picks from, + the name→pattern map."""
     pats = [p for p in patterns.library().values() if p.pattern_kind == "class_template"]
@@ -212,33 +234,44 @@ def main() -> int:
     ap.add_argument("--domain-oversample", type=int, default=5, help="sample this many × n-docs, then filter to in-domain (so the gate doesn't starve n)")
     ap.add_argument("--domain-url", default="http://localhost:6355")
     ap.add_argument("--domain-collection", default="sdg_domains")
+    ap.add_argument("--from-harvest", nargs="?", const=str(REPO / "build" / "domain_harvest"), default=None,
+                    help="derive from the content-addressed harvest cache (pre-matched in-domain docs) instead of streaming; optional path")
     args = ap.parse_args()
 
-    corpus = _corpus_path(args.corpus)
-    skip = args.skip_docs
-    if skip is None:
-        skip = json.loads(_CURSOR.read_text()).get("cursor", 0) if _CURSOR.exists() else 0
-    n_sample = args.n_docs * args.domain_oversample if args.domain else args.n_docs
-    if corpus:
-        docs, new_cursor = sample_content(corpus, n_sample, skip, args.min_chars, args.max_chars)
-        src = f"{corpus.name} (skip={skip})"
-    else:
-        docs, new_cursor = _fallback_passages()[: n_sample], skip
-        src = "fallback passages (no local corpus found — clean-room samples)"
-    if not docs:
-        print(f"no documents sampled from {src}", file=sys.stderr)
-        return 1
-
-    # semantic-domain aperture: keep only docs whose top SKOS concept is in the requested subtree
-    domain_tags: list = [None] * len(docs)
-    if args.domain:
-        docs, domain_tags, fstats = _apply_domain_filter(docs, args)
-        print(f"DOMAIN APERTURE '{args.domain}': {fstats['kept']}/{fstats['scanned']} docs in-subtree "
-              f"({fstats['subtree']} SKOS concepts, tau={args.domain_tau})")
-        docs, domain_tags = docs[: args.n_docs], domain_tags[: args.n_docs]
+    corpus = None
+    new_cursor = 0
+    if args.from_harvest:
+        # consume the harvest cache: docs are already domain-matched + deduped (no re-filtering)
+        docs, domain_tags, src = _load_harvest(args.from_harvest, args.n_docs, args.max_chars)
         if not docs:
-            print("  no in-domain docs in this window — widen the window or the SKOS subtree", file=sys.stderr)
+            print(f"no harvested docs in {args.from_harvest}", file=sys.stderr)
             return 1
+        print(f"DERIVE FROM HARVEST: {len(docs)} pre-matched docs from {src}")
+    else:
+        corpus = _corpus_path(args.corpus)
+        skip = args.skip_docs
+        if skip is None:
+            skip = json.loads(_CURSOR.read_text()).get("cursor", 0) if _CURSOR.exists() else 0
+        n_sample = args.n_docs * args.domain_oversample if args.domain else args.n_docs
+        if corpus:
+            docs, new_cursor = sample_content(corpus, n_sample, skip, args.min_chars, args.max_chars)
+            src = f"{corpus.name} (skip={skip})"
+        else:
+            docs, new_cursor = _fallback_passages()[: n_sample], skip
+            src = "fallback passages (no local corpus found — clean-room samples)"
+        if not docs:
+            print(f"no documents sampled from {src}", file=sys.stderr)
+            return 1
+        # semantic-domain aperture: keep only docs whose top SKOS concept is in the requested subtree
+        domain_tags = [None] * len(docs)
+        if args.domain:
+            docs, domain_tags, fstats = _apply_domain_filter(docs, args)
+            print(f"DOMAIN APERTURE '{args.domain}': {fstats['kept']}/{fstats['scanned']} docs in-subtree "
+                  f"({fstats['subtree']} SKOS concepts, tau={args.domain_tau})")
+            docs, domain_tags = docs[: args.n_docs], domain_tags[: args.n_docs]
+            if not docs:
+                print("  no in-domain docs in this window — widen the window or the SKOS subtree", file=sys.stderr)
+                return 1
 
     if args.jvm:
         try:
