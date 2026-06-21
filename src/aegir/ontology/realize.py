@@ -293,8 +293,14 @@ def _realize_star(template: CatalogTemplate, family: str, rng, *, snowflake: boo
     tables: list[SpineTable] = []
     views: list[ViewSpec] = []
 
-    # dimensions from the relation targets (+ the subject as a degenerate dim)
-    dim_targets = [(re.sub(r"\W+", "_", r.target_slot).strip("_").lower() or f"dim{i}", r)
+    # dimensions from the relation targets (+ the subject as a degenerate dim). Name dims/keys
+    # SEMANTICALLY — the property/SKOS name from semantic_col_names — matching template_to_table and
+    # the junction/normalized profiles, never the raw slot letter (X/Y/Z → dim_y/y_key). colnames is
+    # already collision-disambiguated, so the dim names stay unique.
+    def _dim_name(r, i: int) -> str:
+        return (colnames.get(r.target_slot) or _prop_col(str(r.prop))
+                or re.sub(r"\W+", "_", r.target_slot).strip("_").lower() or f"dim{i}")
+    dim_targets = [(_dim_name(r, i), r)
                    for i, r in enumerate(restrictions)] or [(concept, None)]
     for dname, _r in dim_targets:
         dim_tbl = f"dim_{dname}"
