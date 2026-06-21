@@ -27,8 +27,9 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-from aegir.ontology.ddl import (CheckNote, SpineTable, ViewSpec, _dataprop_ranges, anchor_attributes,
-                                col_name, parse_restrictions, semantic_col_names, table_name)
+from aegir.ontology.ddl import (CheckNote, SpineTable, ViewSpec, _dataprop_ranges, _prop_col,
+                                anchor_attributes, col_name, parse_restrictions, semantic_col_names,
+                                table_name)
 from aegir.ontology.schema import CatalogTemplate
 from aegir.ontology.type_check import ColumnSpec, FKEdge, TableSpec
 
@@ -236,15 +237,18 @@ def _realize_junction(template: CatalogTemplate, family: str, rng) -> RealizedSc
     # a small ontology-grounded association-attribute pool (the relation itself carries data)
     _assoc_attrs = [("role", "xsd:string"), ("cardinality_note", "xsd:string"), ("since", "xsd:date")]
     for i, r in enumerate(restrictions):
-        tgt_name = re.sub(r"\W+", "_", r.target_slot).strip("_").lower() or f"target{i}"
+        # the relation (coined property) is the meaningful name; the target slot's SEMANTIC column name
+        # (not its bare slot letter X/Y) names the related entity — so no 't_..._x_y' leaks into the corpus.
+        rel = _prop_col(str(r.prop)) or f"rel{i}"
+        tgt_name = (colnames.get(r.target_slot) or _prop_col(str(r.prop))
+                    or re.sub(r"\W+", "_", r.target_slot).strip("_").lower() or f"target{i}")
         tgt_tbl = f"{base}_{tgt_name}"
         # the related entity gets its own table
         tables.append(_mk(tgt_tbl, template.template_id,
                           [_pk(), ColumnSpec(tgt_name, "Class", r.target_slot)],
                           family=family, template=template, kind="entity"))
-        # association-class junction (M:N) with its own attributes
-        jt = f"{base}_x_{tgt_name}"
-        rel = re.sub(r"\W+", "_", str(r.prop)).strip("_").lower() or "rel"
+        # association-class junction (M:N), named by its relation (Codd/Chen), with its own attributes
+        jt = f"{base}__{rel}" if tgt_name == rel else f"{base}__{rel}__{tgt_name}"
         aa = _assoc_attrs[: 1 + (i % 3)]
         jcols = [_pk(), ColumnSpec(f"{concept}_id", "Class", "fk:subject"),
                  ColumnSpec(f"{tgt_name}_id", "Class", "fk:target")]

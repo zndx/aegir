@@ -61,8 +61,10 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--chapters-run", required=True,
                    help="Path to a chapters_v0/<run_id>/ directory")
-    p.add_argument("--audit-run", required=True,
-                   help="Path to a coverage_v0/<run_id>/ for style anchors")
+    p.add_argument("--audit-run", default=None,
+                   help="Path to a coverage_v0/<run_id>/ for style anchors (topic-first). Optional: omit "
+                        "for content-first chapters — R_topic is then dropped and the composite is the "
+                        "geometric mean of R_iri/R_density/R_axiom.")
     p.add_argument("--catalog-dir", default="src/aegir/ontology/catalog",
                    help="Ontology catalog dir (for resolving template slot types)")
     p.add_argument("--embedding-model",
@@ -377,18 +379,19 @@ def main() -> int:
     args = parse_args()
 
     chapters_run = Path(args.chapters_run)
-    audit_run = Path(args.audit_run)
+    audit_run = Path(args.audit_run) if args.audit_run else None
     catalog_dir = REPO / args.catalog_dir
 
     chapters = pq.read_table(chapters_run / "chapters.parquet").to_pandas()
-    audit_topics = pq.read_table(audit_run / "topic_coverage.parquet").to_pandas()
     ontology = load_ontology_lookup(catalog_dir)
+    # Style anchors lookup (topic-first only): topic_id -> topic_repr_text. Content-first drops R_topic.
+    anchors_by_id: dict[int, str] = {}
+    if audit_run is not None:
+        audit_topics = pq.read_table(audit_run / "topic_coverage.parquet").to_pandas()
+        anchors_by_id = {int(r.topic_id): r.topic_repr_text or ""
+                         for _, r in audit_topics.iterrows()}
     logger.info(f"chapters: {len(chapters)}  ontology templates: {len(ontology)}  "
-                f"audit topics: {len(audit_topics)}")
-
-    # Style anchors lookup: topic_id -> topic_repr_text
-    anchors_by_id = {int(r.topic_id): r.topic_repr_text or ""
-                     for _, r in audit_topics.iterrows()}
+                f"audit topics: {len(anchors_by_id) if audit_run else 'n/a (content-first)'}")
 
     if args.device == "auto":
         import torch
@@ -423,11 +426,12 @@ def main() -> int:
         anchor_texts = [anchors_by_id.get(t, "") for t in style_ids]
         anchor_texts = [a for a in anchor_texts if a]
 
-        r_topic = score_topic(chapter_text, anchor_texts, embedder)
+        # R_topic only when an audit run supplies style anchors (topic-first); content-first drops it.
+        r_topic = score_topic(chapter_text, anchor_texts, embedder) if audit_run is not None else None
         r_iri = score_iri(chapter_text, cited_templates)
         r_density, tables = score_density(chapter_text, prompt_kind)
         r_axiom = score_axiom(tables, cited_templates)
-        r_composite = geometric_mean([r_topic, r_iri, r_density, r_axiom])
+        r_composite = geometric_mean([r for r in (r_topic, r_iri, r_density, r_axiom) if r is not None])
         rel_tables_json = (ch["rel_tables_json"] if "rel_tables_json" in ch.index else None)
         r_table_fidelity = score_table_fidelity(chapter_text, rel_tables_json)
 
@@ -439,7 +443,7 @@ def main() -> int:
             status = "rejected"
 
         notes_parts = []
-        if r_topic < 0.30: notes_parts.append("low_topic")
+        if r_topic is not None and r_topic < 0.30: notes_parts.append("low_topic")
         if r_iri < 0.50: notes_parts.append("low_iri")
         if r_density < 0.40: notes_parts.append("low_density")
         if r_axiom < 0.30: notes_parts.append("low_axiom")
@@ -456,7 +460,7 @@ def main() -> int:
             "n_tables": len(tables),
             "n_template_ids": len(cited_ids),
             "n_anchors": len(anchor_texts),
-            "r_topic": float(r_topic),
+            "r_topic": (float(r_topic) if r_topic is not None else None),
             "r_iri": float(r_iri),
             "r_density": float(r_density),
             "r_axiom": float(r_axiom),
@@ -505,7 +509,9 @@ def main() -> int:
         subset = [r for r in rows if r["prompt_kind"] == kind]
         if not subset:
             continue
-        s = lambda k: np.mean([r[k] for r in subset])
+        def s(k, _sub=subset):  # mean over non-None scores (R_topic is None for content-first)
+            vals = [r[k] for r in _sub if r[k] is not None]
+            return float(np.mean(vals)) if vals else float("nan")
         print(f"  {kind} (n={len(subset)}):")
         print(f"    R_topic   mean={s('r_topic'):.3f}")
         print(f"    R_iri     mean={s('r_iri'):.3f}")

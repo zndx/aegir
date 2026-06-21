@@ -125,8 +125,14 @@ def parse_args() -> argparse.Namespace:
                         "or in the measured-below-floor puncture set), "
                         "templates are filtered down to the largest allowed "
                         "face. Pass --family-complex '' to disable.")
-    p.add_argument("--audit-run", required=True,
-                   help="Path to coverage_v0/<run_id>/ for topic_coverage + template_density")
+    p.add_argument("--audit-run", default=None,
+                   help="Path to coverage_v0/<run_id>/ for topic_coverage + template_density "
+                        "(topic-first sampler). Required unless --from-harvest is given.")
+    p.add_argument("--from-harvest", nargs="?", const="build/domain_harvest", default=None,
+                   help="CONTENT-FIRST: write one chapter per harvested in-domain doc (the "
+                        "content-addressed harvest cache), grounded in the DERIVED ontology (08_derived) — "
+                        "prose + schema co-derived from the same source. Replaces the audit topic sampler. "
+                        "Optional path (default build/domain_harvest).")
     p.add_argument("--output", default="/raid/checkpoints/aegir-artifacts/chapters_v0/")
     p.add_argument("--mix",
                    default="cerebras/zai-glm-4.7:0.6,xai/grok-4.3:0.4",
@@ -217,6 +223,38 @@ def load_all_templates(catalog_dir: Path,
             t["_family"] = family
             all_templates[t["template_id"]] = t
     return all_templates
+
+
+def load_harvest_docs(store: Path, max_chars: int = 4000) -> list[dict]:
+    """Content-first inputs: the pre-matched in-domain docs from the harvest cache
+    (``harvest_domain_docs``), each as a style/content anchor + its harvested SKOS domain tag."""
+    manifest: dict[str, dict] = {}
+    mf = store / "manifest.jsonl"
+    if mf.exists():
+        for line in mf.read_text().splitlines():
+            try:
+                r = json.loads(line)
+                manifest[r["hash"]] = r
+            except (ValueError, KeyError):
+                continue
+    docs: list[dict] = []
+    for f in sorted((store / "docs").glob("*.txt")):
+        m = manifest.get(f.stem, {})
+        docs.append({"passage": f.read_text(encoding="utf-8", errors="ignore")[:max_chars],
+                     "topic_id": -1, "hash": f.stem, "code": m.get("code"), "label": m.get("label")})
+    return docs
+
+
+def select_content_first(i: int, docs: list[dict], pool: list[dict], k: int):
+    """One chapter per harvested doc: the doc is the content/style anchor, grounded in ``k`` derived
+    ontology primitives (round-robin over the derived pool). Returns (target_ns, anchors, chosen) in the
+    shapes the generation loop expects."""
+    from types import SimpleNamespace
+    doc = docs[i % len(docs)]
+    start = (i * k) % max(1, len(pool))
+    chosen = [pool[(start + j) % len(pool)] for j in range(min(k, len(pool)))]
+    target = SimpleNamespace(topic_id=-1, coverage_score=1.0, label=doc.get("label"))
+    return target, [doc], chosen
 
 
 def load_audit(audit_run: Path) -> tuple[Any, Any, Any]:
@@ -899,9 +937,10 @@ def main() -> int:
     args = parse_args()
 
     catalog_dir = REPO / args.catalog_dir
-    audit_run = Path(args.audit_run)
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
+    content_first = bool(args.from_harvest)
+    sampler_tag = "content-first" if content_first else "topic-first"
 
     # Inputs
     restrict_families = (
@@ -914,13 +953,34 @@ def main() -> int:
         f"{len({t['_family'] for t in all_templates.values()})} "
         f"families (restrict={restrict_families or 'all'})"
     )
-    topic_cov, _template_density, _family_density = load_audit(audit_run)
-    eligible_topics = int((topic_cov.coverage_score >= args.tau_anchor).sum())
-    logger.info(
-        f"loaded audit run from {audit_run}: "
-        f"{eligible_topics}/{len(topic_cov)} topics eligible at "
-        f"tau_anchor={args.tau_anchor}"
-    )
+
+    harvest_docs: list[dict] = []
+    derived_pool: list[dict] = []
+    topic_cov = None
+    if content_first:
+        # CONTENT-FIRST: one chapter per harvested in-domain doc, grounded in the DERIVED ontology.
+        store = Path(args.from_harvest)
+        if not store.is_absolute():
+            store = REPO / store
+        audit_run = store                       # stand-in: row/HX record `audit_run.name` = the harvest store
+        harvest_docs = load_harvest_docs(store)
+        derived_pool = [t for t in all_templates.values() if t["_family"] == "08_derived"] \
+            or list(all_templates.values())
+        if not harvest_docs:
+            raise SystemExit(f"no harvested docs in {store} — run harvest_domain_docs first")
+        logger.info(f"content-first: {len(harvest_docs)} harvested docs · "
+                    f"grounding pool = {len(derived_pool)} derived primitives")
+    else:
+        if not args.audit_run:
+            raise SystemExit("--audit-run is required for topic-first generation (or pass --from-harvest)")
+        audit_run = Path(args.audit_run)
+        topic_cov, _template_density, _family_density = load_audit(audit_run)
+        eligible_topics = int((topic_cov.coverage_score >= args.tau_anchor).sum())
+        logger.info(
+            f"loaded audit run from {audit_run}: "
+            f"{eligible_topics}/{len(topic_cov)} topics eligible at "
+            f"tau_anchor={args.tau_anchor}"
+        )
 
     # Load the family complex if provided. Empty string disables the guard.
     family_complex = None
@@ -1045,10 +1105,11 @@ def main() -> int:
     # Run id (encodes sampler+restriction) computed up front so the parquet can be
     # checkpointed periodically — a transient failure or budget stop never loses a long run.
     run_id_inputs = (
-        f"topic-first:{args.restrict_families or 'all'}:{args.n_chapters}:"
+        f"{sampler_tag}:{args.restrict_families or 'all'}:{args.n_chapters}:"
         f"{args.seed}:{args.mix}:{args.ablation}:"
         f"tau_anchor={args.tau_anchor}:tau_template={args.tau_template}:"
         f"fam_div={args.prefer_family_diverse}"
+        + (f":harvest={Path(args.from_harvest).name}" if content_first else "")
     )
     run_id = hashlib.sha256(run_id_inputs.encode()).hexdigest()[:16]
     out_run_dir = output_dir / run_id
@@ -1061,7 +1122,9 @@ def main() -> int:
                 out_run_dir / "chapters.parquet", compression="zstd",
             )
 
-    for i in range(args.n_chapters):
+    # content-first generates exactly one chapter per harvested doc; topic-first uses --n-chapters
+    n_to_generate = min(args.n_chapters, len(harvest_docs)) if content_first else args.n_chapters
+    for i in range(n_to_generate):
         seed_offset = i
         rng_local = np.random.default_rng(args.seed + seed_offset)
 
@@ -1070,38 +1133,35 @@ def main() -> int:
         provider = model.split("/", 1)[0]
         kind = prompt_kind_for_ablation(args.ablation, model)
 
-        # Topic-first: pick the target topic + style siblings via anti-rep
-        # weighting on the eligible (>= tau_anchor) topic pool. Updates
-        # topic_usage in place so the next chapter sees this draw's
-        # contribution to the repetition penalty.
-        target, anchors = pick_topic_and_anchors(
-            topic_cov, topic_usage, args.style_anchors, rng_local,
-            tau_anchor=args.tau_anchor,
-        )
-        chosen = pick_topic_templates(
-            target, all_templates,
-            k=args.templates_per_chapter,
-            tau_template=args.tau_template,
-            prefer_family_diverse=args.prefer_family_diverse,
-            restrict_families=restrict_families,
-        )
-        if not chosen:
-            # No templates above tau_template for this topic. Skip and let
-            # the loop re-draw — the anti-rep tracker still penalizes the
-            # used topic so we don't repeatedly hit the same dead end.
-            logger.warning(
-                f"chapter {i+1}/{args.n_chapters}: target topic "
-                f"{int(target.topic_id)} has no templates above "
-                f"tau_template={args.tau_template}; redrawing"
+        if content_first:
+            # CONTENT-FIRST: this doc is the content/style anchor; grounded in derived primitives.
+            target, anchors, chosen = select_content_first(i, harvest_docs, derived_pool,
+                                                           args.templates_per_chapter)
+        else:
+            # Topic-first: pick the target topic + style siblings via anti-rep weighting on the
+            # eligible (>= tau_anchor) topic pool; updates topic_usage in place.
+            target, anchors = pick_topic_and_anchors(
+                topic_cov, topic_usage, args.style_anchors, rng_local,
+                tau_anchor=args.tau_anchor,
             )
-            continue
+            chosen = pick_topic_templates(
+                target, all_templates,
+                k=args.templates_per_chapter,
+                tau_template=args.tau_template,
+                prefer_family_diverse=args.prefer_family_diverse,
+                restrict_families=restrict_families,
+            )
+            if not chosen:
+                logger.warning(
+                    f"chapter {i+1}/{n_to_generate}: target topic "
+                    f"{int(target.topic_id)} has no templates above "
+                    f"tau_template={args.tau_template}; redrawing"
+                )
+                continue
 
-        # Family-complex guard: if the chosen family-set isn't allowed by
-        # the empirical complex, filter templates to the largest allowed
-        # face. The data-driven complex prevents drawing combinations we
-        # know fail R_axiom (e.g. {01_foundation, 04_ebpf_kernel} pair,
-        # any simplex containing 05_provo_lineage).
-        if family_complex is not None:
+        # Family-complex guard (topic-first only — the derived family isn't in the empirical complex):
+        # if the chosen family-set isn't allowed, filter templates to the largest allowed face.
+        if family_complex is not None and not content_first:
             current_fams = frozenset(t["_family"] for t in chosen)
             allowed_fams = family_complex.best_face(current_fams)
             if allowed_fams != current_fams:
@@ -1194,7 +1254,8 @@ def main() -> int:
                 "template_ids": [t["template_id"] for t in chosen],
                 "style_topic_ids": [str(a["topic_id"]) for a in anchors],
                 "audit_run_id": audit_run.name,
-                "sampler": "topic-first",
+                "sampler": sampler_tag,
+                "harvest_doc": (anchors[0].get("hash") if content_first else None),
             },
         )
         try:
