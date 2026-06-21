@@ -1,0 +1,46 @@
+# Aegir Metaflow service plane (mirrors gaius/infra/tilt/Tiltfile; disambiguated for shared-RKE2 coexistence).
+# Deploys metaflow-service + UI (outerbounds metaflow-tools helm charts) into the aegir-metaflow namespace,
+# pointed at the aegir devenv postgres + MinIO via host Endpoints. Values are RENDERED with the runtime pg
+# port by scripts/metaflow/bootstrap.sh into $AEGIR_RENDER_DIR (build/metaflow/); read them from there.
+version_settings(constraint='>=0.22.2')
+allow_k8s_contexts(['default', 'kubernetes-admin@kubernetes'])
+
+config.define_string('namespace', usage='K8s namespace for the aegir metaflow stack')
+cfg = config.parse()
+NS = cfg.get('namespace', 'aegir-metaflow')
+RENDER = os.getenv('AEGIR_RENDER_DIR', os.path.abspath('../../build/metaflow'))
+
+load('ext://helm_remote', 'helm_remote')
+
+# Host Endpoints: aegir-postgres / aegir-minio → the devenv services on the tinybox host (rendered w/ pg port).
+k8s_yaml(os.path.join(RENDER, 'aegir-services.yaml'))
+k8s_resource(
+    objects=['aegir-postgres:service:' + NS, 'aegir-postgres:endpoints:' + NS],
+    new_name='aegir-postgres', labels=['devenv'])
+k8s_resource(
+    objects=['aegir-minio:service:' + NS, 'aegir-minio:endpoints:' + NS,
+             'aegir-minio-credentials:secret:' + NS],
+    new_name='aegir-minio', labels=['devenv'])
+
+helm_remote('metaflow-service',
+            repo_name='metaflow-tools',
+            repo_url='https://outerbounds.github.io/metaflow-tools',
+            namespace=NS,
+            values=[os.path.join(RENDER, 'metaflow-service-values.yaml')])
+k8s_resource('metaflow-service',
+             port_forwards=['9081:8080'],   # interactive (tilt up); bootstrap patches NodePort 30181 for headless
+             links=[link('http://localhost:9081/ping', 'Metaflow Service Health')],
+             labels=['metaflow'], resource_deps=['aegir-postgres'])
+
+helm_remote('metaflow-ui',
+            repo_name='metaflow-tools',
+            repo_url='https://outerbounds.github.io/metaflow-tools',
+            namespace=NS,
+            values=[os.path.join(RENDER, 'metaflow-ui-values.yaml')])
+k8s_resource('metaflow-ui-static',
+             port_forwards=['3001:3000'],
+             links=[link('http://localhost:3001', 'Metaflow UI')],
+             labels=['metaflow-ui'], resource_deps=['aegir-postgres', 'aegir-minio'])
+k8s_resource('metaflow-ui',
+             port_forwards=['9085:8083'],
+             labels=['metaflow-ui'], resource_deps=['aegir-postgres', 'aegir-minio'])

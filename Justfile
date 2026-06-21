@@ -119,6 +119,19 @@ mediate-h0 topics="124" coverage_run="/raid/checkpoints/aegir-artifacts/coverage
 kb-build:
     uv run --no-sync python -m aegir.lineup build
 
+# Run the full content-first pipeline end-to-end as one Metaflow flow (harvest → derive → membrane/
+# promote → realized DDL → content-first chapters → verify → lineup → Atlas). The Metaflow service
+# plane (service+UI+MinIO on RKE2) comes up via `devenv up`; this just runs the flow, traced to the
+# OTel collector (→ NiFi). One command. e.g. `just metaflow --n-docs 8`.
+metaflow *ARGS:
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4327 \
+    uv run --no-sync python -m aegir.flows.semantic_corpus_flow run {{ARGS}}
+
+# Manually (re)deploy the Metaflow service plane to RKE2 (idempotent; normally devenv does this on `up`).
+metaflow-up:
+    bash scripts/metaflow/db-setup.sh
+    bash scripts/metaflow/bootstrap.sh
+
 # Run a lineup KB upkeep op by hand (normally driven by pg_cron → scheduled_tasks →
 # the in-gateway processor). op = upkeep (age past-quarter scratch → archive) | snapshot
 # (current/ → archive snapshot) | reproject. `install-cron` registers the pg_cron jobs.

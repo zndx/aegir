@@ -1,0 +1,63 @@
+# Host Endpoints exposing the aegir devenv postgres + MinIO to in-cluster Metaflow pods.
+# Rendered by scripts/metaflow/bootstrap.sh (envsubst): $PGPORT (runtime devenv pg port), $AEGIR_HOST_IP
+# (tinybox), $AEGIR_MINIO_PORT (9012), $AEGIR_MF_NAMESPACE. Distinct from gaius's devenv-postgres/minio.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aegir-postgres
+  namespace: $AEGIR_MF_NAMESPACE
+spec:
+  type: ClusterIP
+  ports:
+    - name: psql
+      port: $PGPORT
+      targetPort: $PGPORT
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: aegir-postgres
+  namespace: $AEGIR_MF_NAMESPACE
+subsets:
+  - addresses:
+      - ip: "$AEGIR_HOST_IP"
+    ports:
+      - name: psql
+        port: $PGPORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aegir-minio
+  namespace: $AEGIR_MF_NAMESPACE
+spec:
+  type: ClusterIP
+  ports:
+    - name: s3
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: aegir-minio
+  namespace: $AEGIR_MF_NAMESPACE
+subsets:
+  - addresses:
+      - ip: "$AEGIR_HOST_IP"
+    ports:
+      - name: s3
+        port: $AEGIR_MINIO_PORT
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aegir-minio-credentials
+  namespace: $AEGIR_MF_NAMESPACE
+type: Opaque
+stringData:
+  AWS_ACCESS_KEY_ID: minioadmin
+  AWS_SECRET_ACCESS_KEY: minioadmin

@@ -1,0 +1,16 @@
+# Rendered by scripts/metaflow/bootstrap.sh (envsubst) → build/metaflow/. $PGPORT is the runtime devenv pg port.
+metadatadb:
+  host: aegir-postgres
+  port: "$PGPORT"
+  user: metaflow
+  password: "metaflow"
+  database: metaflow
+image:
+  repository: public.ecr.aws/outerbounds/metaflow_metadata_service
+  tag: "2.5.0"
+resources:
+  requests: {cpu: 100m, memory: 128Mi}
+  limits: {cpu: 500m, memory: 512Mi}
+env:
+  - name: MF_METADATA_DB_PSWD
+    value: "metaflow"

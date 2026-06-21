@@ -1,0 +1,31 @@
+# Rendered by scripts/metaflow/bootstrap.sh (envsubst) → build/metaflow/.
+uiBackend:
+  metadatadb:
+    host: aegir-postgres
+    port: "$PGPORT"
+    user: metaflow
+    password: "metaflow"
+    name: metaflow
+  metaflowDatastoreSysRootS3: "s3://aegir-metaflow/metaflow"
+  metaflowS3EndpointURL: "http://aegir-minio:9000"
+  image:
+    name: public.ecr.aws/outerbounds/metaflow_metadata_service
+    tag: "2.5.0"
+  env:
+    - name: AWS_ACCESS_KEY_ID
+      value: minioadmin
+    - name: AWS_SECRET_ACCESS_KEY
+      value: minioadmin
+    - name: METAFLOW_CARD_S3ROOT
+      value: "s3://aegir-metaflow/metaflow/cards"
+  resources:
+    requests: {cpu: 100m, memory: 512Mi}
+    limits: {cpu: 1000m, memory: 2Gi}
+uiStatic:
+  metaflowUIBackendURL: "http://$AEGIR_HOST_IP:9085/api"
+  image:
+    name: public.ecr.aws/outerbounds/metaflow_ui
+    tag: v1.3.14
+  resources:
+    requests: {cpu: 50m, memory: 64Mi}
+    limits: {cpu: 200m, memory: 256Mi}

@@ -46,6 +46,11 @@ in {
     flatbuffers
     maturin        # build polyglot-sql (Rust/PyO3) Python extension
     sops           # air-gap secret decryption (bin/bootstrap-secrets.sh)
+    minio-client   # `mc` — Metaflow datastore bucket management
+    tilt           # K8s deploy of the Metaflow service plane (`tilt ci`, mirrors gaius)
+    kubectl        # RKE2 control for the Metaflow service plane
+    kubernetes-helm # metaflow-tools chart (via tilt helm_remote)
+    gettext        # `envsubst` — render Endpoints/values with the runtime pg port
     # zarf         # uncomment when pkgs.zarf is upstreamed; for now
     #              # follow cybersec's convention: fetch via curl in CI or vendor
   ];
@@ -86,9 +91,16 @@ in {
     # recipes and downstream scripts read the same value devenv
     # used to gate services.
     AEGIR_WORKTREE_ROLE = worktreeRole;
+    # Metaflow + MinIO (the orchestration substrate; see config/metaflow/, infra/tilt/).
+    METAFLOW_HOME = "${config.devenv.root}/.metaflow";
+    AWS_ACCESS_KEY_ID = "minioadmin";
+    AWS_SECRET_ACCESS_KEY = "minioadmin";
+    MINIO_ROOT_USER = "minioadmin";
+    MINIO_ROOT_PASSWORD = "minioadmin";
   };
 
   enterShell = ''
+    export KUBECONFIG="$HOME/.config/kube/rke2.yaml"   # RKE2 for the Metaflow service plane
     if [ "${worktreeRole}" != "primary" ]; then
       echo "[aegir] devenv: worktree role = ${worktreeRole}; skipping postgres/qdrant/gateway/vite-dev."
       echo "        These services run only in the primary checkout to avoid port collisions."
@@ -108,7 +120,9 @@ in {
     enable = isPrimary;
     package = pkgs.postgresql_16;
     port = 5555;
-    listen_addresses = "127.0.0.1";
+    # "*" so in-cluster Metaflow pods can reach the host postgres via the aegir-postgres
+    # Endpoints (mirrors gaius). pg_hba is opened to the cluster CIDR below.
+    listen_addresses = "*";
     extensions = extensions: [
       extensions.age
       extensions.pg_cron
@@ -118,7 +132,43 @@ in {
     # loads its shared lib so cypher() resolves). Matches the working sibling
     # configs (signals "age,pg_cron", gaius "pg_cron,age"). pgvector needs no preload.
     settings.shared_preload_libraries = "age,pg_cron";
-    initialDatabases = [{ name = "aegir"; }];
+    initialDatabases = [{ name = "aegir"; } { name = "metaflow"; }];
+    # NOTE: in-cluster pod access also needs pg_hba to allow the RKE2 pod CIDR (calico 10.42.0.0/16,
+    # md5). devenv's default hba + listen_addresses="*" matches the working gaius setup; if the
+    # metaflow-service pod can't reach postgres at deploy, append a `host all all 10.42.0.0/16 md5` rule.
+  };
+
+  # ── MinIO (Metaflow S3 datastore) — devenv-native, mirrors gaius ─────────────
+  # API :9012 / console :9013 (gaius uses 9010/9011 — disambiguated for shared-host coexistence).
+  services.minio = lib.mkIf isPrimary {
+    enable = true;
+    buckets = [ "aegir-metaflow" ];
+    listenAddress = "0.0.0.0:9012";
+    consoleAddress = "0.0.0.0:9013";
+  };
+
+  # ── OpenTelemetry collector — the Step→OTel→NiFi spine (mirrors gaius) ────────
+  # Flow @traced_step spans → OTLP :4327/:4328 → forwarded to NiFi ListenOTLP :4329 (flow-viz) + debug.
+  # Aegir ports (4327/4328/4329, prom 8890) disambiguate from gaius (4317/4318/4319, 8889).
+  services.opentelemetry-collector = lib.mkIf isPrimary {
+    enable = true;
+    package = pkgs.opentelemetry-collector-contrib;
+    settings = {
+      receivers.otlp.protocols = {
+        grpc.endpoint = "0.0.0.0:4327";
+        http.endpoint = "0.0.0.0:4328";
+      };
+      processors.batch = { timeout = "5s"; send_batch_size = 1000; };
+      exporters = {
+        debug.verbosity = "basic";
+        prometheus = { endpoint = "0.0.0.0:8890"; namespace = "aegir"; };
+        otlphttp = { endpoint = "http://localhost:4329"; tls.insecure = true; };  # → NiFi ListenOTLP
+      };
+      service.pipelines = {
+        traces = { receivers = ["otlp"]; processors = ["batch"]; exporters = ["debug" "otlphttp"]; };
+        metrics = { receivers = ["otlp"]; processors = ["batch"]; exporters = ["prometheus"]; };
+      };
+    };
   };
 
   services.caddy = {
@@ -176,6 +226,41 @@ in {
         initial_delay_seconds = 2;
         period_seconds = 2;
         failure_threshold = 15;
+      };
+    };
+
+    # ── Metaflow service plane on RKE2 (mirrors gaius; ns aegir-metaflow) ──────
+    # db-setup (one-shot) → bootstrap (tilt ci, one-shot) → port-forwards (NodePort 30181 + UI).
+    # ui is opt-in (`devenv processes up metaflow-ui`). Disable all via DISABLE_METAFLOW=true.
+    metaflow-db-setup = {
+      exec = "exec ${config.devenv.root}/scripts/metaflow/db-setup.sh";
+      process-compose = {
+        depends_on.postgres.condition = "process_healthy";
+        availability.restart = "no";
+      };
+    };
+    metaflow-bootstrap = {
+      exec = "exec ${config.devenv.root}/scripts/metaflow/bootstrap.sh";
+      process-compose = {
+        depends_on = {
+          postgres.condition = "process_healthy";
+          metaflow-db-setup.condition = "process_completed_successfully";
+        };
+        availability.restart = "no";
+      };
+    };
+    metaflow-port-forwards = {
+      exec = "exec ${config.devenv.root}/scripts/metaflow/port-forwards.sh";
+      process-compose = {
+        depends_on.metaflow-bootstrap.condition = "process_completed_successfully";
+        availability.restart = "always";
+      };
+    };
+    metaflow-ui = {
+      exec = "exec ${config.devenv.root}/scripts/metaflow/ui.sh";
+      process-compose = {
+        depends_on.metaflow-db-setup.condition = "process_completed_successfully";
+        disabled = true;
       };
     };
 
