@@ -1,0 +1,6 @@
+{
+  "METAFLOW_DEFAULT_METADATA": "local",
+  "METAFLOW_DEFAULT_DATASTORE": "local",
+  "METAFLOW_DATASTORE_SYSROOT_LOCAL": "/raid/metaflow-aegir",
+  "METAFLOW_USER": "aegir"
+}

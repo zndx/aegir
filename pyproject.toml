@@ -45,6 +45,9 @@ dependencies = [
     "peft>=0.13",
     "trl>=0.12",
     "qdrant-client>=1.11",   # ColBERT/Qdrant SKOS domain index (content-first input filter)
+    "metaflow>=2.12",        # pipeline orchestration (SemanticCorpusFlow; service plane on RKE2)
+    "opentelemetry-sdk",     # Step→OTel→NiFi flow observability
+    "opentelemetry-exporter-otlp-proto-grpc",
     "outlines>=0.1",
     "accelerate>=1.1",
     # ── Tokenizer backends ──────────────────────────────────────
