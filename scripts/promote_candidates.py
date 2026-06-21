@@ -77,18 +77,19 @@ def main() -> int:
     cands = json.loads(cand_path.read_text()).get("templates", [])
     print(f"promoting from {cand_path.name}: {len(cands)} candidates")
 
-    coherence = None
+    RG = None
     if args.hermit:
         try:
-            from mediate_consistency import coherence as _coh
+            from aegir.ontology import reasoning_gates as RG
             from aegir.ontology.deeponto_harness import ensure_jvm
             ensure_jvm()
-            coherence = _coh
         except Exception as e:  # noqa: BLE001
             print(f"  HermiT unavailable ({type(e).__name__}); promoting on CPU/parse gates only", file=sys.stderr)
+            RG = None
 
-    promoted: list[CatalogTemplate] = []
-    funnel = {"in": len(cands), "regate": 0, "hermit": 0, "promoted": 0}
+    # Stage 1 — per-candidate CPU re-gate (G1 well-formed/parse, G2 complex, clean-room, anchor)
+    funnel = {"in": len(cands), "regate": 0, "reasoned": 0, "promoted": 0}
+    regated: list[CatalogTemplate] = []
     for d in cands:
         ct = _to_template(d)
         g = DM.content_membrane(ct, source_span=d.get("_source_span", ""), jvm=args.jvm)
@@ -97,15 +98,25 @@ def main() -> int:
             print(f"  ✘ re-gate {ct.template_id[:36]:36s} g1={g1_ok} g2={g['g2_is_complex_class']} {g['g1_reason']}")
             continue
         funnel["regate"] += 1
-        if coherence is not None:
-            res = coherence(ct)
-            if not res.get("consistent"):
-                print(f"  ✘ HermiT {ct.template_id[:36]:36s} {res.get('error') or res.get('unsat')}")
-                continue
-            funnel["hermit"] += 1
-        promoted.append(ct)
-        funnel["promoted"] += 1
-        print(f"  ✓ {ct.template_id}")
+        regated.append(ct)
+
+    # Stage 2 — AGGREGATE reasoner gate (Gate 4 consistency + unsat=0, Gate 5a equivalence dedup), ONE HermiT pass
+    promoted: list[CatalogTemplate] = regated
+    if RG is not None and regated:
+        bg = RG.batch_gate(regated)
+        if not bg["consistent"]:
+            print(f"  ✘ batch globally inconsistent ({bg['reason'].get('error')}) — nothing promoted", file=sys.stderr)
+            promoted = []
+        else:
+            promoted = bg["survivors"]
+            for tid, why in bg["dropped"].items():
+                print(f"  ✘ reasoner {tid[:36]:36s} {why}")
+            print(f"  reasoner: {len(promoted)}/{len(regated)} satisfiable+non-redundant · "
+                  f"mean inferred supers {bg['mean_inferred_supers']} · {bg['n_classes']} classes")
+        funnel["reasoned"] = len(promoted)
+    funnel["promoted"] = len(promoted)
+    for t in promoted:
+        print(f"  ✓ {t.template_id}")
 
     print(f"\nFUNNEL: {funnel}")
     if args.dry_run:
