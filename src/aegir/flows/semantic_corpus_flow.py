@@ -10,15 +10,18 @@ cuda-driver-libs for the engine).
     import aegir.metaflow_patch
     just metaflow            # = python -m aegir.flows.semantic_corpus_flow run --n-docs 8 ...
 """
+import os  # noqa: E402
+
 import aegir.metaflow_patch  # noqa: F401  — MUST precede the metaflow import (404-retry patch)
 from metaflow import FlowSpec, Parameter, current, step  # noqa: E402
 
 from aegir.flows.config import apply_metaflow_config  # noqa: E402
 from aegir.flows.trace import TracedFlow, traced_step  # noqa: E402
 
-apply_metaflow_config("rke2")
+# rke2 = service plane on RKE2 (versioned UI); local = local metadata + /raid datastore (no service plane,
+# runs the full DAG on the GPUs without K8s). AEGIR_METAFLOW_MODE selects; rke2 is the default.
+apply_metaflow_config(os.environ.get("AEGIR_METAFLOW_MODE", "rke2"))
 
-import os  # noqa: E402
 import subprocess  # noqa: E402
 import time  # noqa: E402
 from pathlib import Path  # noqa: E402
@@ -74,6 +77,8 @@ class SemanticCorpusFlow(TracedFlow, FlowSpec):
     domain = Parameter("domain", default="Laboratory Information Management", help="SKOS domain subtree")
     mix = Parameter("mix", default="engine/instruct:1.0", help="chapter-gen LLM mix (local Qwen3.6 default)")
     oversample = Parameter("oversample", default=12, type=int, help="harvest stream multiplier for the domain gate")
+    max_tokens = Parameter("max-tokens", default=24000, type=int,
+                           help="chapter-gen output cap; needs a 32768-ctx engine for complete reasoning traces")
 
     @traced_step
     @step
@@ -123,7 +128,8 @@ class SemanticCorpusFlow(TracedFlow, FlowSpec):
     def generate_chapters(self):
         _engine_up()
         _run(["scripts/generate_chapter.py", "--from-harvest", "--n-chapters", str(self.n_docs),
-              "--mix", self.mix, "--realize-schemas", "--output", f"{self.run_out}/chapters"])
+              "--mix", self.mix, "--realize-schemas", "--max-tokens", str(self.max_tokens),
+              "--output", f"{self.run_out}/chapters"])
         self.chapters_run = next((str(p.parent) for p in
                                  Path(f"{self.run_out}/chapters").glob("*/chapters.parquet")), "")
         self.next(self.verify)
@@ -139,8 +145,14 @@ class SemanticCorpusFlow(TracedFlow, FlowSpec):
     @step
     def project(self):
         # lineup KB projection (now incl. 08_derived) + Atlas relational/lineage projection.
-        _run(["-m", "aegir.lineup", "build"])
-        _run(["scripts/project_atlas_ddl.py", "--per-family", "2"])
+        try:
+            _run(["-m", "aegir.lineup", "build"])
+        except Exception as e:  # noqa: BLE001 — projection is the tail; never lose the corpus to it
+            print(f"  lineup build skipped ({e})", flush=True)
+        try:
+            _run(["scripts/project_atlas_ddl.py", "--per-family", "2"])
+        except Exception as e:  # noqa: BLE001 — Atlas may be down (devenv services not restarted)
+            print(f"  Atlas projection skipped ({e})", flush=True)
         self.next(self.end)
 
     @traced_step

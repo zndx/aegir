@@ -529,4 +529,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    from aegir.utils.clean_exit import clean_exit
+    clean_exit(main())

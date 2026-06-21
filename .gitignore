@@ -58,3 +58,6 @@ data/correspondence_*/T_I_centroids.npy
 # Local environment + secrets (devenv dotenv) and Claude Code local state
 .env
 .claude/
+
+# Metaflow local-mode run metadata (local datastore lives on /raid)
+.metaflow/

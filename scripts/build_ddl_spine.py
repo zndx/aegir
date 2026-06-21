@@ -381,4 +381,5 @@ def _write(path: Path, rows: list[dict], schema_fields: dict) -> None:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    from aegir.utils.clean_exit import clean_exit
+    clean_exit(main())
