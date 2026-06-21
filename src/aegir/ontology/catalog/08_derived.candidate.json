@@ -1,0 +1,3762 @@
+{
+ "family": "08_derived",
+ "templates": [
+  {
+   "template_id": "action_definition_behavior",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:requiresDocument some {Y:Class}, sdg:occursAt some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "The sign-in procedure is an occurrent that requires a photo identification document via sdg:requiresDocument and occurs at the main office via sdg:occursAt.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "Sign in at the main office when you arrive. Photo ID is required.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.1,
+    "hash": "11838e59e328ae2026e9eab793a7a3f22e37de1ac18d028cee6c17e13ff63c52"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:requiresDocument",
+     "label": "requires document",
+     "domain": "sdg:SignInProcedure",
+     "range": "sdg:PhotoIdentification"
+    },
+    {
+     "iri": "sdg:occursAt",
+     "label": "occurs at",
+     "domain": "sdg:SignInProcedure",
+     "range": "sdg:MainOffice"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "compressive_strength_requirement",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasMinimumStrength some xsd:decimal, sdg:hasUnitFactor some xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A compressive strength requirement is a descriptive information entity that has a minimum strength value and a unit factor.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "constraint_definition_parametric",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "Mean compressive strength not less than 7.3N/mm 2",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.104,
+    "hash": "3880b920ece735f2c423668f90c4ceee373dce63a7cf7ba996ef08e40bfec0f7"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasMinimumStrength",
+     "label": "has minimum strength",
+     "domain": "sdg:CompressiveStrengthRequirement",
+     "range": "xsd:decimal"
+    },
+    {
+     "iri": "sdg:hasUnitFactor",
+     "label": "has unit factor",
+     "domain": "sdg:CompressiveStrengthRequirement",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.651
+  },
+  {
+   "template_id": "permit_application_preparation",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:prepared_by some {Y:Class}, sdg:targets_facility some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A PermitApplicationPreparation is an Occurrent that involves some QualifiedAgent and targets some Facility.",
+   "bfo_anchor_path": [
+    "bfo:Occurrent"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "PERMIT APPLICATION PREPARED BY ... Name: ... Company: ...",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.104,
+    "hash": "4bd88e52e3d1dd8ea9db5dbc5e239567c0c1923a0b47277307df12d5d02c2b9d"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:prepared_by",
+     "label": "prepared by",
+     "domain": "sdg:PermitApplicationPreparation",
+     "range": "sdg:QualifiedAgent"
+    },
+    {
+     "iri": "sdg:targets_facility",
+     "label": "targets facility",
+     "domain": "sdg:PermitApplicationPreparation",
+     "range": "sdg:Facility"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "permit_application_reason",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:indicates_action_type some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A PermitApplicationReason is a DescriptiveICE that indicates some ConstructionActivityType.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "coded_concept_extensible_binding",
+   "_tier": "fhir_minimum",
+   "_grounds_ddl": "enum",
+   "_source_span": "REASON FOR APPLICATION ... Proposed construction of a new CAFF or MCAFF.",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.104,
+    "hash": "4bd88e52e3d1dd8ea9db5dbc5e239567c0c1923a0b47277307df12d5d02c2b9d"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:indicates_action_type",
+     "label": "indicates action type",
+     "domain": "sdg:PermitApplicationReason",
+     "range": "sdg:ConstructionActivityType"
+    }
+   ],
+   "_utility": 0.333
+  },
+  {
+   "template_id": "whois_database",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:contains_directory_entries some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A WHOISDatabase is an InformationContentEntity that contains directory entries.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "collection_membership",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "This server, together with the corresponding WHOIS Database can also deliver online look-up of individuals or their online mailboxes...",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.101,
+    "hash": "4f177f0d8839bf065dbf3ce60b1d2cc7e43e27be80c7c03d3fb293ec27f439da"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:contains_directory_entries",
+     "label": "contains directory entries",
+     "domain": "sdg:WHOISDatabase",
+     "range": "sdg:WHOISDirectoryRecord"
+    }
+   ],
+   "_utility": 0.326
+  },
+  {
+   "template_id": "directory_query_service",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A DirectoryQueryService is a process that participates in a WHOIS server.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "participation_occurrent_continuant",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The NICNAME/WHOIS Server is a TCP transaction based query/response server... that provides netwide directory service",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.101,
+    "hash": "4f177f0d8839bf065dbf3ce60b1d2cc7e43e27be80c7c03d3fb293ec27f439da"
+   },
+   "_new_properties": [],
+   "_utility": 0.333
+  },
+  {
+   "template_id": "video_analytic_rule_execution",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:executesAnalyticRule some {Y:Class}, sdg:targetsPlatform some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A video analytic rule execution is a process that executes an analytic rule and targets a video analytics platform.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "The Video Analytics can run single or multi analytic rules simultaneously irrespective of the platform selected.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.151,
+    "hash": "0154b6428292b92f57fc1cfe77c419bcf761f4ffeaf11b0d13675d90015ee858"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:executesAnalyticRule",
+     "label": "executes analytic rule",
+     "domain": "sdg:VideoAnalyticRuleExecution",
+     "range": "sdg:AnalyticRule"
+    },
+    {
+     "iri": "sdg:targetsPlatform",
+     "label": "targets platform",
+     "domain": "sdg:VideoAnalyticRuleExecution",
+     "range": "sdg:VideoAnalyticsPlatform"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "complete_security_solution_architecture",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000004, sdg:hasDirectPart some {D:Class}",
+   "slot_types": {
+    "X": "Class",
+    "D": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A complete security solution is a material entity that has direct parts including control room and camera subsystems.",
+   "bfo_anchor_path": [
+    "bfo:0000004"
+   ],
+   "_pattern": "componency_direct_part",
+   "_tier": "odp",
+   "_grounds_ddl": "nested-child",
+   "_source_span": "Complete security solutions \u2014 from the Control Room to the Cameras... stretch from the: - Control Room... To the cameras...",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.151,
+    "hash": "0154b6428292b92f57fc1cfe77c419bcf761f4ffeaf11b0d13675d90015ee858"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasDirectPart",
+     "label": "has direct part",
+     "domain": "sdg:CompleteSecuritySolution",
+     "range": "sdg:SecuritySubsystem"
+    }
+   ],
+   "_utility": 0.333
+  },
+  {
+   "template_id": "cetane_metric",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:has_numeric_value exactly 1 xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A cetane metric {has_numeric_value} exactly one decimal value.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity",
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "attribute_usage_datavalue",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "Cetane",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 1,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.106,
+    "hash": "019b1c3510a12f8b8e9f08c38703a581caf572560d4f97377b8985036ba84d95"
+   },
+   "_new_properties": [],
+   "_utility": 0.5
+  },
+  {
+   "template_id": "receptionist_role_definition",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasSupervisor exactly 1 {A:Class}, sdg:hasResponsibility some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "The {R} is a role that has exactly one supervisor from {A} and has some responsibility in {C}.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "Job Title: Receptionist\nSupervisor: Business Office Manager",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.13,
+    "hash": "04a7d20efa616ab46f25bb6d1187290e583a8feaa4afe57380cdc6dad48e3fd6"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasSupervisor",
+     "label": "has supervisor",
+     "domain": "sdg:Role",
+     "range": "sdg:Role"
+    },
+    {
+     "iri": "sdg:hasResponsibility",
+     "label": "has responsibility",
+     "domain": "sdg:Role",
+     "range": "sdg:OfficeTask"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "appointment_scheduling_behavior",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:involvesPatient some {Y:Class}, sdg:utilizesSystem some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "The {X} is an occurrent that involves some {Y} and utilizes some {Z}.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "Oversee patient flow and doctor scheduling\nUpdating schedules throughout the day\u2014adding/deleting/filling schedules as needed",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.13,
+    "hash": "04a7d20efa616ab46f25bb6d1187290e583a8feaa4afe57380cdc6dad48e3fd6"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:involvesPatient",
+     "label": "involves patient",
+     "domain": "sdg:Behavior",
+     "range": "sdg:Patient"
+    },
+    {
+     "iri": "sdg:utilizesSystem",
+     "label": "utilizes system",
+     "domain": "sdg:Behavior",
+     "range": "sdg:SchedulingSystem"
+    }
+   ],
+   "_utility": 0.611
+  },
+  {
+   "template_id": "patient_insurance_record_extension",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:recordsInsuranceProvider some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "The {X} is an information content entity that records some {Y}.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "open_world_extension",
+   "_tier": "fhir_minimum",
+   "_grounds_ddl": "nested-child",
+   "_source_span": "Entering patient/insurance information accurately",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.13,
+    "hash": "04a7d20efa616ab46f25bb6d1187290e583a8feaa4afe57380cdc6dad48e3fd6"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:recordsInsuranceProvider",
+     "label": "records insurance provider",
+     "domain": "sdg:Record",
+     "range": "sdg:InsuranceProvider"
+    }
+   ],
+   "_utility": 0.326
+  },
+  {
+   "template_id": "black_belt_certification_requirement",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:involvesAthlete some {A1:Class}, sdg:referencesCertification some {A2:Class}, sdg:hasSubmissionDeadline some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "BlackBeltCertificationRequirement is a reified n-ary relation where {a1} links to an athlete, {a2} links to a certification document, and {d} links to a submission deadline.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The form will include contact information so that USA Taekwondo can track that each person provides a copy of their black belt certification by the National Championships.",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.108,
+    "hash": "08b6174bb8568d1b869558044e1656bae0693f4c8934ba3a3426de858717892e"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:involvesAthlete",
+     "label": "involves athlete",
+     "domain": "sdg:BlackBeltCertificationRequirement",
+     "range": "sdg:CompetingAthlete"
+    },
+    {
+     "iri": "sdg:referencesCertification",
+     "label": "references certification",
+     "domain": "sdg:BlackBeltCertificationRequirement",
+     "range": "sdg:CertificationDocument"
+    },
+    {
+     "iri": "sdg:hasSubmissionDeadline",
+     "label": "has submission deadline",
+     "domain": "sdg:BlackBeltCertificationRequirement",
+     "range": "xsd:dateTime"
+    }
+   ],
+   "_utility": 0.857
+  },
+  {
+   "template_id": "youth_adult_partnership_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasYouthMember exactly 1 {A:Class}, sdg:realizedIn some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A Youth Adult Partnership Role is a role that has a youth member exactly 1 Youth Adolescent and is realized in some Organizational Structure.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "GSA Network is a youth-driven organization, and we operate on a model of youth-adult partnership. This carries all the way to the top of the organization: young people comprise about half of GSA Network's Board of Directors.",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.122,
+    "hash": "0b7888721f02b4a69232905ba79483ca15a0aaa14014b44aa522107f48e35ee0"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasYouthMember",
+     "label": "has youth member",
+     "domain": "sdg:YouthAdultPartnershipRole",
+     "range": "sdg:YouthAdolescent"
+    },
+    {
+     "iri": "sdg:realizedIn",
+     "label": "realized in",
+     "domain": "sdg:YouthAdultPartnershipRole",
+     "range": "sdg:OrganizationalStructure"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "school_to_prison_pipeline",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:targetsDemographic some {Y:Class}, sdg:implementedBy some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A School To Prison Pipeline is an occurrent that targets a demographic some Marginalized Youth and is implemented by some School District.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "the pipeline is polices and practices that school districts use to unintentionally push out LGBT, people of color, people with disabilities, or low income youth.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.122,
+    "hash": "0b7888721f02b4a69232905ba79483ca15a0aaa14014b44aa522107f48e35ee0"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:targetsDemographic",
+     "label": "targets demographic",
+     "domain": "sdg:SchoolToPrisonPipeline",
+     "range": "sdg:MarginalizedYouth"
+    },
+    {
+     "iri": "sdg:implementedBy",
+     "label": "implemented by",
+     "domain": "sdg:SchoolToPrisonPipeline",
+     "range": "sdg:SchoolDistrict"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "agent_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:reports_to exactly 1 {A:Class}, sdg:is_member_of some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A chief financial officer role is an organizational role that reports to exactly one executive leader and is a member of at least one executive team.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The CFO reports directly to the CEO and is a member of the 6-person Executive Team",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.138,
+    "hash": "6e18cc8fc9e5669b706837d822b11d176cb0e10077c664ef993be1c4448a8ea1"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:reports_to",
+     "label": "reports to",
+     "domain": "sdg:OrganizationalRole",
+     "range": "sdg:OrganizationalRole"
+    },
+    {
+     "iri": "sdg:is_member_of",
+     "label": "is member of",
+     "domain": "sdg:OrganizationalRole",
+     "range": "sdg:OrganizationalCollection"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "marital_status_certification",
+   "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:hasMaritalState some {D:Class}, sdg:hasConsentReason some {E:Class}",
+   "slot_types": {
+    "S": "Class",
+    "D": "Class",
+    "E": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "MaritalStatusCertification is an information content entity that uses sdg:hasMaritalState and sdg:hasConsentReason to describe the applicant's marital situation.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "description_and_situation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "I certify that (please complete one): I am not married / I am married ... / I am married, but my spouse has not signed the spousal consent on page 2 of this application for the following reason (please check one): Inability to locate spouse / Legal separation from or abandonment of the Member ... / Spouse is incapacitated ...",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.1",
+    "label": "Specimen Lifecycle Management",
+    "rel_margin": 0.115,
+    "hash": "14992ca2af216d73ed5ec2c87bf31b6c7d2bc7b3083d094047b02111510a2da9"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasMaritalState",
+     "label": "has marital state",
+     "domain": "sdg:MaritalStatusCertification",
+     "range": "sdg:MaritalState"
+    },
+    {
+     "iri": "sdg:hasConsentReason",
+     "label": "has consent reason",
+     "domain": "sdg:MaritalStatusCertification",
+     "range": "sdg:SpousalConsentReason"
+    }
+   ],
+   "_utility": 0.637
+  },
+  {
+   "template_id": "beneficiary_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:designatesBeneficiary exactly 1 {A:Class}, sdg:hasRelationship some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "BeneficiaryRole is a role that uses sdg:designatesBeneficiary to link to exactly one individual and sdg:hasRelationship to specify their connection to the applicant.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "I hereby designate as my Primary Beneficiary: Name: Relationship to Me: Social Security No: ... If the Primary Beneficiary is not living at my date of death, I hereby designate as Secondary Beneficiary: ...",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.1",
+    "label": "Specimen Lifecycle Management",
+    "rel_margin": 0.115,
+    "hash": "14992ca2af216d73ed5ec2c87bf31b6c7d2bc7b3083d094047b02111510a2da9"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:designatesBeneficiary",
+     "label": "designates beneficiary",
+     "domain": "sdg:BeneficiaryRole",
+     "range": "sdg:Individual"
+    },
+    {
+     "iri": "sdg:hasRelationship",
+     "label": "has relationship",
+     "domain": "sdg:BeneficiaryRole",
+     "range": "sdg:RelationshipType"
+    }
+   ],
+   "_utility": 0.694
+  },
+  {
+   "template_id": "benefit_option_election",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, (sdg:electsPayoutOption some {Y:Class}), (sdg:electsPayoutOption only {Y:Class})",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "BenefitOptionElection is a descriptive entity that uses sdg:electsPayoutOption to select exactly one retirement benefit payout option.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "polymorphic_value_choice",
+   "_tier": "fhir_minimum",
+   "_grounds_ddl": "eav",
+   "_source_span": "I hereby request that my NORMAL, EARLY OR DEFERRED retirement benefits be paid as a (please check only one): Life Annuity with a 5-Year Guarantee ...",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.1",
+    "label": "Specimen Lifecycle Management",
+    "rel_margin": 0.115,
+    "hash": "14992ca2af216d73ed5ec2c87bf31b6c7d2bc7b3083d094047b02111510a2da9"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:electsPayoutOption",
+     "label": "elects payout option",
+     "domain": "sdg:BenefitOptionElection",
+     "range": "sdg:RetirementBenefitPayoutOption"
+    }
+   ],
+   "_utility": 0.58
+  },
+  {
+   "template_id": "tax_approval_threshold_rule",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasThresholdAmount exactly 1 xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "sdg:TaxApprovalThresholdRule is a descriptive ICE that specifies a monetary limit via sdg:hasThresholdAmount.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "attribute_usage_datavalue",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "A threshold of $50,000 or over would go to voters and under that handled by Selectboard",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 1,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.109,
+    "hash": "17d5b6fdf9352ab19e6427c223cb353ade10928d20a81907989e113407152584"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasThresholdAmount",
+     "label": "has threshold amount",
+     "domain": "sdg:TaxApprovalThresholdRule",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.458
+  },
+  {
+   "template_id": "constraint_definition_parametric",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasCenterSpacing some xsd:decimal, sdg:hasWallSpacing some xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A StrapFixingConstraint is a descriptive information entity that has a center spacing decimal and a wall spacing decimal.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "constraint_definition_parametric",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "Use at least four 50mm long x 12 gauge zinc plated screws and plastic plugs @ 250mm centres. Minimum strap length 1.2m at maximum 2.0m centres along the wall.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.102,
+    "hash": "21eae30657e8c6b2ab4dd4482a04dccce2cd05f2892c1683a2f3db62b0cdd33d"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasCenterSpacing",
+     "label": "has center spacing",
+     "domain": "sdg:StrapFixingConstraint",
+     "range": "xsd:decimal"
+    },
+    {
+     "iri": "sdg:hasWallSpacing",
+     "label": "has wall spacing",
+     "domain": "sdg:StrapFixingConstraint",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.611
+  },
+  {
+   "template_id": "registered_auditor_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasAgent exactly 1 {A:Class}, sdg:realizesAuditActivity some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A registered auditor role is an agent role where the pf property exactly identifies the corporate agent and the ri property links to the financial audit activity it realizes.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "appointed a registered auditor for 2023 \u2013 AFA OOD",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.124,
+    "hash": "226a568ee00664893c3cdb0ced237850098dbf53ef1b63f7d547c6030732dc3d"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAgent",
+     "label": "has agent",
+     "domain": "sdg:RegisteredAuditorRole",
+     "range": "sdg:CorporateEntity"
+    },
+    {
+     "iri": "sdg:realizesAuditActivity",
+     "label": "realizes audit activity",
+     "domain": "sdg:RegisteredAuditorRole",
+     "range": "sdg:FinancialAuditActivity"
+    }
+   ],
+   "_utility": 0.669
+  },
+  {
+   "template_id": "chief_compliance_officer_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasAgent exactly 1 {A:Class}, sdg:administersPolicy some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "ChiefComplianceOfficer is a role instantiated by exactly one agent that administers the whistleblower policy.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The term \"Chief Compliance Officer\" refers to a College official appointed by the Chancellor to be responsible for the administration of this Policy and its associated rules and processes.",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.134,
+    "hash": "22b483b2bc3d148bbf8293b04520e41843475a5886081a86c5629d5863e8c57c"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAgent",
+     "label": "has agent",
+     "domain": "ChiefComplianceOfficer",
+     "range": "Person"
+    },
+    {
+     "iri": "sdg:administersPolicy",
+     "label": "administers policy",
+     "domain": "ChiefComplianceOfficer",
+     "range": "PolicyAdministration"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "retaliation_protection_requirement",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:protectsFrom some {Y:Class}, sdg:appliesTo some {C:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "RetaliationProtectionRequirement is a directive ICE that mandates protection from retaliation via {p} and applies to the college community via {q}.",
+   "bfo_anchor_path": [
+    "cco:DirectiveICE"
+   ],
+   "_pattern": "requirement_satisfy_verify",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "junction",
+   "_source_span": "recognizes that any person who makes a good faith report... must be protected from retaliation by the College, its employees and members of the Board of Trustees.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.134,
+    "hash": "22b483b2bc3d148bbf8293b04520e41843475a5886081a86c5629d5863e8c57c"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:protectsFrom",
+     "label": "protects from",
+     "domain": "RetaliationProtectionRequirement",
+     "range": "Retaliation"
+    },
+    {
+     "iri": "sdg:appliesTo",
+     "label": "applies to",
+     "domain": "RetaliationProtectionRequirement",
+     "range": "CollegeCommunity"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "anonymous_demographic_data",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:demographic_category some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "AnonymousDemographicData is a DescriptiveICE categorized by a DemographicAttribute.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "coded_concept_extensible_binding",
+   "_tier": "fhir_minimum",
+   "_grounds_ddl": "enum",
+   "_source_span": "collects anonymous demographic information, which is not unique to you, such as your ZIP code, age, gender, preferences, interests and favorites.",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.114,
+    "hash": "23a6d9539630b74e8e014186b126b0d63c2ed1d29911eca4492f1f3f75fd4d0a"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:demographic_category",
+     "label": "demographic category",
+     "domain": "sdg:AnonymousDemographicData",
+     "range": "sdg:DemographicAttribute"
+    }
+   ],
+   "_utility": 0.333
+  },
+  {
+   "template_id": "strategic_business_exit_plan",
+   "manchester_template": "Class: {R:Class} SubClassOf: cco:InformationContentEntity, sdg:targetsEvent exactly 1 {E:Class}, sdg:appliesTo exactly 1 {P:Class}, sdg:hasTimeframe some {T:Class}",
+   "slot_types": {
+    "R": "Class",
+    "E": "Class",
+    "P": "Class",
+    "T": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "sdg:StrategicExitPlan is an information content entity that targets exactly one business exit event, applies to exactly one business entity, and has some five year timeframe.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "time_indexed_participation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "33% of all the business owners said that they hoped to leave their businesses within five years and 80% of them have a plan to achieve this.",
+   "_complexity": {
+    "score": 8,
+    "n_restrictions": 3,
+    "n_cardinality": 2,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.121,
+    "hash": "27332510692f88212604e81a712ef494be06bb79ff0831243fc62453d26e1bed"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:targetsEvent",
+     "label": "targets event",
+     "domain": "sdg:StrategicExitPlan",
+     "range": "sdg:BusinessExit"
+    },
+    {
+     "iri": "sdg:appliesTo",
+     "label": "applies to",
+     "domain": "sdg:StrategicExitPlan",
+     "range": "sdg:BusinessEntity"
+    },
+    {
+     "iri": "sdg:hasTimeframe",
+     "label": "has timeframe",
+     "domain": "sdg:StrategicExitPlan",
+     "range": "sdg:FiveYearHorizon"
+    }
+   ],
+   "_utility": 1.0
+  },
+  {
+   "template_id": "talent_retention_priority_factor",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:identifiesFactor some {A1:Class}, sdg:targetsGroup some {A2:Class}, sdg:hasPriorityRank some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "sdg:TalentRetentionPriority is an information content entity that identifies some HR strategy, targets some talent pool, and has some decimal priority rank.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "When asked what the critical factors were in employee recruitment and retention, they said that having a clear culture and values was the most important factor. This was followed by training and development opportunities and finally providing career enhancement opportunities.",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.121,
+    "hash": "27332510692f88212604e81a712ef494be06bb79ff0831243fc62453d26e1bed"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:identifiesFactor",
+     "label": "identifies factor",
+     "domain": "sdg:TalentRetentionPriority",
+     "range": "sdg:HRStrategy"
+    },
+    {
+     "iri": "sdg:targetsGroup",
+     "label": "targets group",
+     "domain": "sdg:TalentRetentionPriority",
+     "range": "sdg:TalentPool"
+    },
+    {
+     "iri": "sdg:hasPriorityRank",
+     "label": "has priority rank",
+     "domain": "sdg:TalentRetentionPriority",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.955
+  },
+  {
+   "template_id": "planned_obsolescence_practice",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:involvesProductType some {Y:Class}, sdg:producesWasteStream some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {X} is a bfo:0000015 that involves a product type via sdg:involvesProductType and produces a waste stream via sdg:producesWasteStream.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "Deliberate obsolescence in all its forms \u2013 technological, psychological, or planned \u2013 is a uniquely American invention. Not only did we invent disposable products",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.128,
+    "hash": "28ff205c7365d5c94cb33c4ee980fb325a9293d2d9132c0157db1b4d4585aed4"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:involvesProductType",
+     "label": "involves product type",
+     "domain": "sdg:PlannedObsolescencePractice",
+     "range": "sdg:DisposableProduct"
+    },
+    {
+     "iri": "sdg:producesWasteStream",
+     "label": "produces waste stream",
+     "domain": "sdg:PlannedObsolescencePractice",
+     "range": "sdg:SolidWaste"
+    }
+   ],
+   "_utility": 0.58
+  },
+  {
+   "template_id": "advisory_engagement",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasAdviser exactly 1 {Y:Class}, sdg:hasAdvisoryFirm exactly 1 {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "An advisory engagement is a descriptive information content entity that has exactly one adviser and exactly one advisory firm.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "allocation_mapping",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "junction",
+   "_source_span": "Nominated Advisor and Broker James Maxwell Liz Yong... Financial Adviser Marc Young Charles Vivian",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 2,
+    "n_cardinality": 2,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.145,
+    "hash": "2d2005c0c3d9bd6b95c9834b5d824ac70c96931b8cbfabbf28927dfbd4a2c8ac"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAdviser",
+     "label": "has adviser",
+     "domain": "sdg:AdvisoryEngagement",
+     "range": "sdg:Person"
+    },
+    {
+     "iri": "sdg:hasAdvisoryFirm",
+     "label": "has advisory firm",
+     "domain": "sdg:AdvisoryEngagement",
+     "range": "sdg:CorporateEntity"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "institutional_vision_statement",
+   "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:describesSituation some {D:Class}, sdg:targetsGoal some {E:Class}",
+   "slot_types": {
+    "S": "Class",
+    "D": "Class",
+    "E": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "An institutional vision statement describes a knowledge society situation and targets a peace and prosperity goal.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "description_and_situation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "To develop enlightened citizenship for a knowledge society for peace and prosperity of individuals, nation and the larger world through promotion of innovation, creative endeavors and scholarly inquiry",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.1,
+    "hash": "346da2211ee5b206bf8f912e49e9ca2a561f3d02e07a4230272996172acbb582"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:describesSituation",
+     "label": "describes situation",
+     "domain": "sdg:InstitutionalVision",
+     "range": "sdg:KnowledgeSocietySituation"
+    },
+    {
+     "iri": "sdg:targetsGoal",
+     "label": "targets goal",
+     "domain": "sdg:InstitutionalVision",
+     "range": "sdg:PeaceAndProsperityGoal"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "central_globe_symbolism",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000004, sdg:designatesSymbolism exactly 1 {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A central globe logo component designates a global solidarity symbolism.",
+   "bfo_anchor_path": [
+    "bfo:0000004"
+   ],
+   "_pattern": "part_definition_usage",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "nested-child",
+   "_source_span": "The globe at the centre surrounded by the human chain and the pigeon flying above expresses University's belief that commitments represented by the trinity of three arcs shall lead to global peace, prosperity and human solidarity",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 1,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.1,
+    "hash": "346da2211ee5b206bf8f912e49e9ca2a561f3d02e07a4230272996172acbb582"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:designatesSymbolism",
+     "label": "designates symbolism",
+     "domain": "sdg:CentralGlobeComponent",
+     "range": "sdg:GlobalSolidarityConcept"
+    }
+   ],
+   "_utility": 0.5
+  },
+  {
+   "template_id": "holistic_learning_process",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:employsPedagogy some {Y:Class}, sdg:developsCompetency some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A holistic learning process employs innovative teaching pedagogy and develops analytical competency.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "enhance student's acquisition of useful knowledge, skills and analytical abilities through innovative teaching and holistic learning environment",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.1,
+    "hash": "346da2211ee5b206bf8f912e49e9ca2a561f3d02e07a4230272996172acbb582"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:employsPedagogy",
+     "label": "employs pedagogy",
+     "domain": "sdg:HolisticLearningProcess",
+     "range": "sdg:InnovativeTeachingMethod"
+    },
+    {
+     "iri": "sdg:developsCompetency",
+     "label": "develops competency",
+     "domain": "sdg:HolisticLearningProcess",
+     "range": "sdg:AnalyticalAbility"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "multi_restriction_conjunction",
+   "manchester_template": "Class: {X:Class} SubClassOf: sdg:hasCompressiveStrength some {Y:Class}, sdg:hasGrossDensity some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {X:Class} is a material that bears a compressive strength property and a gross density property.",
+   "bfo_anchor_path": [
+    "bfo:0000004"
+   ],
+   "_pattern": "multi_restriction_conjunction",
+   "_tier": "owl2_core",
+   "_grounds_ddl": "junction",
+   "_source_span": "Mean compressive strength not less than 7.3N/mm 2 ... Specified gross dry density 730kg/m 3",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.104,
+    "hash": "3880b920ece735f2c423668f90c4ceee373dce63a7cf7ba996ef08e40bfec0f7"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasCompressiveStrength",
+     "label": "has compressive strength",
+     "domain": "sdg:ConstructionBlock",
+     "range": "sdg:MaterialStrengthProperty"
+    },
+    {
+     "iri": "sdg:hasGrossDensity",
+     "label": "has gross density",
+     "domain": "sdg:ConstructionBlock",
+     "range": "sdg:DensityProperty"
+    }
+   ],
+   "_utility": 0.5
+  },
+  {
+   "template_id": "attribute_usage_datavalue",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasMoisturePercentage exactly 1 xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "An {X:Class} is a descriptive information entity that specifies exactly one decimal value representing the equilibrium moisture percentage.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "attribute_usage_datavalue",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "Weights quoted are based on 3% equilibrium moisture content.",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 1,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.104,
+    "hash": "3880b920ece735f2c423668f90c4ceee373dce63a7cf7ba996ef08e40bfec0f7"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasMoisturePercentage",
+     "label": "has moisture percentage",
+     "domain": "sdg:EquilibriumMoistureContent",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.458
+  },
+  {
+   "template_id": "program_duration_specification",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasDurationMinutes exactly 1 xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A ProgramDurationSpecification is a descriptive ICE that has exactly one duration in minutes.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "attribute_usage_datavalue",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "This happening could serve as a 30 \u2013 45 minute program for a regular chapter meeting.",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 1,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.132,
+    "hash": "4133971e5cdad079ea4ade3d0d4c27561c6d2772c4978ff596d4af66b6742f9b"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasDurationMinutes",
+     "label": "has duration minutes",
+     "domain": "sdg:ProgramDurationSpecification",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.417
+  },
+  {
+   "template_id": "project_leader_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:has_role_institution exactly 1 {A:Class}, sdg:executes_activities some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A project leader role is an agent role that has a role institution and executes project activities.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The ALPARC team is responsible for managing and coordinating international activities... The position will notably focus on collaborating on the Interreg Alpine Space project",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.16,
+    "hash": "455be55ba37b5d03a0c6bf0728161f560f43186e212ad620070664262b078da5"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:has_role_institution",
+     "label": "has role institution",
+     "domain": "sdg:ProjectLeaderRole",
+     "range": "sdg:ALPARC"
+    },
+    {
+     "iri": "sdg:executes_activities",
+     "label": "executes activities",
+     "domain": "sdg:ProjectLeaderRole",
+     "range": "sdg:ProjectActivity"
+    }
+   ],
+   "_utility": 0.814
+  },
+  {
+   "template_id": "ah_receptor_binding_mechanism",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasTargetEntity some {Y:Class}, sdg:hasMolecularEffect some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "An Ah receptor binding mechanism is a process that has a target entity and a molecular effect.",
+   "bfo_anchor_path": [
+    "bfo:0000015",
+    "bfo:0000006"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "initial binding of TCDD to the aryl or aromatic hydrocarbon (Ah) receptor... acts as a signal transducer and activator for gene transcription",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.109,
+    "hash": "49926c8adf8152a4ea00727c9a43d0d053ac0bf5e3af251e5ccabe67b1f3a582"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasTargetEntity",
+     "label": "has target entity",
+     "domain": "sdg:AhReceptorBindingMechanism",
+     "range": "sdg:ArylHydrocarbonReceptor"
+    },
+    {
+     "iri": "sdg:hasMolecularEffect",
+     "label": "has molecular effect",
+     "domain": "sdg:AhReceptorBindingMechanism",
+     "range": "sdg:GeneTranscriptionProcess"
+    }
+   ],
+   "_utility": 0.651
+  },
+  {
+   "template_id": "nerve_compression_pathological_effect",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "sdg:NerveCompressionPathologicalEffect is an occurrent that has a bfo:0000057 relation to at least one sdg:AdjacentNerveStructure.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "participation_occurrent_continuant",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "If they compress the adjacent nerve fascicles, they can cause pain, paresthesias, weakness, muscle denervation, and atrophy.",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.101,
+    "hash": "4c3690bb7ce2d03eeaef6eb9115fcc780b01c5282eb83f47fe1c2d3efeed3702"
+   },
+   "_new_properties": [],
+   "_utility": 0.29
+  },
+  {
+   "template_id": "project_segment_valuation_record",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:hasSegmentDescription some {A1:Class}, sdg:hasSegmentCount some {A2:Class}, sdg:hasSegmentValuation some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "ProjectSegmentValuationRecord is an information content entity characterized by a1 segment description, a2 segment count, and d segment valuation.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "PROJECT SEGMENT - DESCRIPTION | # OF SEGMENTS | VALUATION | FEE",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.1,
+    "hash": "5424110f2d769884c58b94ff1c09fd78d32715a77a44e041dddcf9b345d7b0ee"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasSegmentDescription",
+     "label": "has segment description",
+     "domain": "sdg:ProjectSegmentValuationRecord",
+     "range": "xsd:string"
+    },
+    {
+     "iri": "sdg:hasSegmentCount",
+     "label": "has segment count",
+     "domain": "sdg:ProjectSegmentValuationRecord",
+     "range": "xsd:integer"
+    },
+    {
+     "iri": "sdg:hasSegmentValuation",
+     "label": "has segment valuation",
+     "domain": "sdg:ProjectSegmentValuationRecord",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 1.0
+  },
+  {
+   "template_id": "allocation_mapping",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:targetsDivision exactly 1 {Y:Class}, sdg:allocatesResource exactly 1 {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A strategic business plan is a descriptive information content entity that targets exactly one business division and allocates exactly one corporate resource.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "allocation_mapping",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "junction",
+   "_source_span": "With the strategic planning component, strategic business plans can be created, communicated, executed, monitored, and managed. The 300 or so BI users agree on strategies with resources and provisions",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 2,
+    "n_cardinality": 2,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.176,
+    "hash": "5a203df6b53111a3e81140d914e8f45088af401242890012ee3eea51abd2bfda"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:targetsDivision",
+     "label": "targets division",
+     "domain": "sdg:StrategicBusinessPlan",
+     "range": "sdg:BusinessDivision"
+    },
+    {
+     "iri": "sdg:allocatesResource",
+     "label": "allocates resource",
+     "domain": "sdg:StrategicBusinessPlan",
+     "range": "sdg:CorporateResource"
+    }
+   ],
+   "_utility": 0.803
+  },
+  {
+   "template_id": "regional_qualifications_framework",
+   "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:articulates some {D:Class}, sdg:specifies some {E:Class}",
+   "slot_types": {
+    "S": "Class",
+    "D": "Class",
+    "E": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A Regional Qualifications Framework is an Information Content Entity that articulates a Regional Harmonization Situation and specifies Qualification Levels.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "description_and_situation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The regional qualifications framework will articulate harmonization of education and training systems, and qualifications thereby clearly indicating the programme learning outcomes, the different qualification levels",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.124,
+    "hash": "5e90afed3bba1a39b63bacb85d2f086159181b0ed10b3544aefb6411d7677e1f"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:articulates",
+     "label": "articulates",
+     "domain": "sdg:RegionalQualificationsFramework",
+     "range": "sdg:RegionalHarmonizationSituation"
+    },
+    {
+     "iri": "sdg:specifies",
+     "label": "specifies",
+     "domain": "sdg:RegionalQualificationsFramework",
+     "range": "sdg:QualificationLevel"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "qa_training_session",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:deliversTo some {A1:Class}, sdg:targets some {A2:Class}, sdg:hasDurationHours some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A Quality Assurance Training Session is an Information Content Entity that delivers to University Staff, targets a Quality Assurance System, and has a duration in hours.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The initiative involves establishment of appropriate guidelines, procedures and standards... focuses on capacity building through providing appropriate training on the implementation of the quality assurance system to staff in universities",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.124,
+    "hash": "5e90afed3bba1a39b63bacb85d2f086159181b0ed10b3544aefb6411d7677e1f"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:deliversTo",
+     "label": "delivers to",
+     "domain": "sdg:QualityAssuranceTrainingSession",
+     "range": "sdg:UniversityStaff"
+    },
+    {
+     "iri": "sdg:targets",
+     "label": "targets",
+     "domain": "sdg:QualityAssuranceTrainingSession",
+     "range": "sdg:QualityAssuranceSystem"
+    },
+    {
+     "iri": "sdg:hasDurationHours",
+     "label": "has duration hours",
+     "domain": "sdg:QualityAssuranceTrainingSession",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 1.0
+  },
+  {
+   "template_id": "qa_officer_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasAgent exactly 1 {A:Class}, sdg:realizesIn some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A Regional Quality Assurance Officer is a Role realized in a Regional Quality Assurance Office by a Staff Member.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "establish regional quality assurance office at the IUCEA Secretariat",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.124,
+    "hash": "5e90afed3bba1a39b63bacb85d2f086159181b0ed10b3544aefb6411d7677e1f"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAgent",
+     "label": "has agent",
+     "domain": "sdg:RegionalQualityAssuranceOfficer",
+     "range": "sdg:StaffMember"
+    },
+    {
+     "iri": "sdg:realizesIn",
+     "label": "realizes in",
+     "domain": "sdg:RegionalQualityAssuranceOfficer",
+     "range": "sdg:RegionalQualityAssuranceOffice"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "lethality_assessment_follow_up",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasTarget some {Y:Class}, sdg:hasPurpose some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A LethalityAssessmentFollowUp is a Process that hasTarget some DomesticViolenceSurvivor and hasPurpose some SafetyEvaluation.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "accompanies Law enforcement with follow-up calls on Lethality Assessment Project survivors.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.146,
+    "hash": "5f46c1f17e6e0f2c3339c03417535aff6d98ce88fe91fd0dfc18ab4d6b78653d"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasTarget",
+     "label": "has target",
+     "domain": "sdg:LethalityAssessmentFollowUp",
+     "range": "sdg:DomesticViolenceSurvivor"
+    },
+    {
+     "iri": "sdg:hasPurpose",
+     "label": "has purpose",
+     "domain": "sdg:LethalityAssessmentFollowUp",
+     "range": "sdg:SafetyEvaluation"
+    }
+   ],
+   "_utility": 0.637
+  },
+  {
+   "template_id": "domestic_violence_police_report",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:hasAuthor some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A DomesticViolencePoliceReport is an InformationContentEntity that hasAuthor some LawEnforcementOfficer.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "open_world_extension",
+   "_tier": "fhir_minimum",
+   "_grounds_ddl": "nested-child",
+   "_source_span": "Reviews domestic violence police reports and establishes contact with the victim(s) to check on their status/safety.",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.146,
+    "hash": "5f46c1f17e6e0f2c3339c03417535aff6d98ce88fe91fd0dfc18ab4d6b78653d"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAuthor",
+     "label": "has author",
+     "domain": "sdg:DomesticViolencePoliceReport",
+     "range": "sdg:LawEnforcementOfficer"
+    }
+   ],
+   "_utility": 0.333
+  },
+  {
+   "template_id": "participation_occurrent_continuant_01",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "An institutional farmland acquisition event is a BFO process that has a participant farmland parcel.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "participation_occurrent_continuant",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "institutional investors... is eager to capitalize on global farmland as a new and highly desirable asset class.",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.111,
+    "hash": "65ee88ccb3a6b6a86ecf155f2c705720ab815dba6a7cdb86a3059f4f7ad5fbea"
+   },
+   "_new_properties": [],
+   "_utility": 0.306
+  },
+  {
+   "template_id": "taper_tolerance_spec",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasLowerBound some xsd:decimal, sdg:hasUpperBound some xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A taper tolerance specification is a descriptive information content entity that has a lower bound and an upper bound expressed as decimals.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "constraint_definition_parametric",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "TAPER TOLERANCE +/-.000050 INCH PER INCH.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.145,
+    "hash": "6665f14fab2b957a701392be66b44fc6c4e7fa1a15eaca966fa133da2b402f65"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasLowerBound",
+     "label": "has lower bound",
+     "domain": "sdg:TaperToleranceSpecification",
+     "range": "xsd:decimal"
+    },
+    {
+     "iri": "sdg:hasUpperBound",
+     "label": "has upper bound",
+     "domain": "sdg:TaperToleranceSpecification",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.556
+  },
+  {
+   "template_id": "taper_gage_geometric_req",
+   "manchester_template": "Class: {X:Class} SubClassOf: sdg:hasSmallEndDiameter some {Y:Class}, sdg:hasIncludedAngle some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A taper gage geometric requirement is an information content entity that has a small end diameter and an included angle.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "multi_restriction_conjunction",
+   "_tier": "owl2_core",
+   "_grounds_ddl": "junction",
+   "_source_span": "Diameter @ Small End: ... Included Angle:",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.145,
+    "hash": "6665f14fab2b957a701392be66b44fc6c4e7fa1a15eaca966fa133da2b402f65"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasSmallEndDiameter",
+     "label": "has small end diameter",
+     "domain": "sdg:TaperGageGeometricRequirement",
+     "range": "sdg:SmallEndDiameterSpecification"
+    },
+    {
+     "iri": "sdg:hasIncludedAngle",
+     "label": "has included angle",
+     "domain": "sdg:TaperGageGeometricRequirement",
+     "range": "sdg:AngleSpecification"
+    }
+   ],
+   "_utility": 0.5
+  },
+  {
+   "template_id": "remote_vpn_access_service",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:employsTransportProtocol some {Y:Class}, sdg:implementsSecurityMechanism some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A remote VPN access service is a process that employs a network protocol via sdg:employsTransportProtocol and implements an encryption method via sdg:implementsSecurityMechanism.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "providing remote VPN access (IPsec or SSL VPN) to your company network.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.137,
+    "hash": "67c22431c89bdebd14e3174f8a3ed5f501f0f719d99ea34f17c7510eb1e592a0"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:employsTransportProtocol",
+     "label": "employs transport protocol",
+     "domain": "sdg:RemoteVPNAccessService",
+     "range": "sdg:NetworkProtocol"
+    },
+    {
+     "iri": "sdg:implementsSecurityMechanism",
+     "label": "implements security mechanism",
+     "domain": "sdg:RemoteVPNAccessService",
+     "range": "sdg:EncryptionMethod"
+    }
+   ],
+   "_utility": 0.59
+  },
+  {
+   "template_id": "remote_access_security_policy",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:governsAuthentication some {Y:Class}, sdg:assignsUserRoles some {C:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A remote access security policy is a directive information content entity that governs an authentication mechanism via sdg:governsAuthentication and assigns user roles via sdg:assignsUserRoles.",
+   "bfo_anchor_path": [
+    "cco:DirectiveICE"
+   ],
+   "_pattern": "requirement_satisfy_verify",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "junction",
+   "_source_span": "providing centralized management tools for authentication, user role mapping, resource and sign-in policies.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.137,
+    "hash": "67c22431c89bdebd14e3174f8a3ed5f501f0f719d99ea34f17c7510eb1e592a0"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:governsAuthentication",
+     "label": "governs authentication",
+     "domain": "sdg:RemoteAccessSecurityPolicy",
+     "range": "sdg:AuthenticationMechanism"
+    },
+    {
+     "iri": "sdg:assignsUserRoles",
+     "label": "assigns user roles",
+     "domain": "sdg:RemoteAccessSecurityPolicy",
+     "range": "sdg:UserRole"
+    }
+   ],
+   "_utility": 0.536
+  },
+  {
+   "template_id": "reified_nary_relation",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:assessesSupportSystem some {A1:Class}, sdg:evaluatesRiskFactor some {A2:Class}, sdg:hasRiskScore some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {sdg:DegradedConditionAcceptabilityAssessment} {sdg:assessesSupportSystem} a {sdg:SupportSystem}, {sdg:evaluatesRiskFactor} a {sdg:RiskFactor}, and {sdg:hasRiskScore} a decimal value.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "risk does not determine operability, however, risk is a part of the consideration of the acceptability of the degraded condition of the support system.",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.138,
+    "hash": "6fcd0458e817b3bb14383eff4c7304ed3b8213f4ce2e6d91f5789d3e61993b2e"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:assessesSupportSystem",
+     "label": "assesses support system",
+     "domain": "sdg:DegradedConditionAcceptabilityAssessment",
+     "range": "sdg:SupportSystem"
+    },
+    {
+     "iri": "sdg:evaluatesRiskFactor",
+     "label": "evaluates risk factor",
+     "domain": "sdg:DegradedConditionAcceptabilityAssessment",
+     "range": "sdg:RiskFactor"
+    },
+    {
+     "iri": "sdg:hasRiskScore",
+     "label": "has risk score",
+     "domain": "sdg:DegradedConditionAcceptabilityAssessment",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 1.0
+  },
+  {
+   "template_id": "time_indexed_participation",
+   "manchester_template": "Class: {R:Class} SubClassOf: cco:InformationContentEntity, sdg:referencesRegulatoryDocument exactly 1 {E:Class}, sdg:appliesToSupportSystem exactly 1 {P:Class}, sdg:effectiveAt some {T:Class}",
+   "slot_types": {
+    "R": "Class",
+    "E": "Class",
+    "P": "Class",
+    "T": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {sdg:TechnicalSpecificationLCOStatus} {sdg:referencesRegulatoryDocument} a {sdg:TechnicalSpecification}, {sdg:appliesToSupportSystem} a {sdg:SupportSystem}, and {sdg:effectiveAt} a time point.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "time_indexed_participation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "support system LCOs in technical specifications... consistency between the terms necessary and required",
+   "_complexity": {
+    "score": 8,
+    "n_restrictions": 3,
+    "n_cardinality": 2,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.138,
+    "hash": "6fcd0458e817b3bb14383eff4c7304ed3b8213f4ce2e6d91f5789d3e61993b2e"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:referencesRegulatoryDocument",
+     "label": "references regulatory document",
+     "domain": "sdg:TechnicalSpecificationLCOStatus",
+     "range": "sdg:TechnicalSpecification"
+    },
+    {
+     "iri": "sdg:appliesToSupportSystem",
+     "label": "applies to support system",
+     "domain": "sdg:TechnicalSpecificationLCOStatus",
+     "range": "sdg:SupportSystem"
+    },
+    {
+     "iri": "sdg:effectiveAt",
+     "label": "effective at",
+     "domain": "sdg:TechnicalSpecificationLCOStatus",
+     "range": "xsd:dateTime"
+    }
+   ],
+   "_utility": 0.857
+  },
+  {
+   "template_id": "description_and_situation",
+   "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:describesSystemCondition some {D:Class}, sdg:reflectsMaintenanceAction some {E:Class}",
+   "slot_types": {
+    "S": "Class",
+    "D": "Class",
+    "E": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {sdg:MaintenanceOperabilityStatusReport} {sdg:describesSystemCondition} a {sdg:SupportSystemCondition} and {sdg:reflectsMaintenanceAction} a {sdg:MaintenanceAction}.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "description_and_situation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "Integration of technical specifications and the maintenance rule... use of operability as it relates to maintenance as a criterion for determining availability of support systems.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9.4",
+    "label": "Quality, Compliance and Traceability",
+    "rel_margin": 0.138,
+    "hash": "6fcd0458e817b3bb14383eff4c7304ed3b8213f4ce2e6d91f5789d3e61993b2e"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:describesSystemCondition",
+     "label": "describes system condition",
+     "domain": "sdg:MaintenanceOperabilityStatusReport",
+     "range": "sdg:SupportSystemCondition"
+    },
+    {
+     "iri": "sdg:reflectsMaintenanceAction",
+     "label": "reflects maintenance action",
+     "domain": "sdg:MaintenanceOperabilityStatusReport",
+     "range": "sdg:MaintenanceAction"
+    }
+   ],
+   "_utility": 0.611
+  },
+  {
+   "template_id": "staff_training_participant_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:qualifies exactly 1 {A:Class}, sdg:participatesIn some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {R} {pf} an {A} and {ri} a {C}.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "training for Government and NGO staff in Bangladesh and the Asian Region",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.108,
+    "hash": "7401e1a1733917cdfb32bfd75d3e9c8ca21087770990277c8fda416b579645d4"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:qualifies",
+     "label": "qualifies as",
+     "domain": "sdg:TrainingParticipantRole",
+     "range": "sdg:NGOStaff"
+    },
+    {
+     "iri": "sdg:participatesIn",
+     "label": "participates in",
+     "domain": "sdg:TrainingParticipantRole",
+     "range": "sdg:CapacityBuildingProgram"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "annual_operating_budget",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasMonetaryValue exactly 1 xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {X} {d} a decimal.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "attribute_usage_datavalue",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "Currently, the CNU has a budget of about \u00a3160,000 per year.",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 1,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.108,
+    "hash": "7401e1a1733917cdfb32bfd75d3e9c8ca21087770990277c8fda416b579645d4"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasMonetaryValue",
+     "label": "has monetary value",
+     "domain": "sdg:AnnualOperatingBudget",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.458
+  },
+  {
+   "template_id": "flood_infrastructure_risk_assessment",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:involvesData some {Y:Class}, sdg:assessesCondition some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A flood infrastructure risk assessment is an occurrent that involves data and assesses condition.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "transform the reliability of flood defence condition characterisation by validating and integrating data from new and existing earth observation sources",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.136,
+    "hash": "77b7e068aa941649796b491ecb5d20046b679b25ccbfd6f7e41b6640f62cfa17"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:involvesData",
+     "label": "involves data",
+     "domain": "sdg:FloodInfrastructureRiskAssessment",
+     "range": "cco:InformationContentEntity"
+    },
+    {
+     "iri": "sdg:assessesCondition",
+     "label": "assesses condition",
+     "domain": "sdg:FloodInfrastructureRiskAssessment",
+     "range": "bfo:0000002"
+    }
+   ],
+   "_utility": 0.611
+  },
+  {
+   "template_id": "earth_observation_dataset",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:originatesFromProgramme some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "An earth observation dataset is an information content entity that originates from a programme.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "open_world_extension",
+   "_tier": "fhir_minimum",
+   "_grounds_ddl": "nested-child",
+   "_source_span": "exploit the latest developments from ESA's Copernicus programme to augment existing national datasets",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.136,
+    "hash": "77b7e068aa941649796b491ecb5d20046b679b25ccbfd6f7e41b6640f62cfa17"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:originatesFromProgramme",
+     "label": "originates from programme",
+     "domain": "sdg:EarthObservationDataset",
+     "range": "cco:InformationContentEntity"
+    }
+   ],
+   "_utility": 0.326
+  },
+  {
+   "template_id": "team_assessment_participation",
+   "manchester_template": "Class: {R:Class} SubClassOf: cco:InformationContentEntity, sdg:TeamAssessmentEvent exactly 1 {E:Class}, sdg:RetailLeadershipTeamMember exactly 1 {P:Class}, sdg:assessmentDateTime some {T:Class}",
+   "slot_types": {
+    "R": "Class",
+    "E": "Class",
+    "P": "Class",
+    "T": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {X} is a time-indexed participation in {ev} by {pt} occurring at {at}.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "time_indexed_participation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "all 17 members of the Retail Leadership Team completed Team Assessment Survey IIs and participated in 30-45-minute phone interviews",
+   "_complexity": {
+    "score": 8,
+    "n_restrictions": 3,
+    "n_cardinality": 2,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.11,
+    "hash": "7cc3c02d8b780c8f0f5ceafd6ca82de2b7057241ad154727292ce6f4a5421e0f"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAssessmentEvent",
+     "label": "has assessment event",
+     "domain": "sdg:TeamAssessmentParticipation",
+     "range": "sdg:TeamAssessmentEvent"
+    },
+    {
+     "iri": "sdg:hasParticipant",
+     "label": "has participant",
+     "domain": "sdg:TeamAssessmentParticipation",
+     "range": "sdg:RetailLeadershipTeamMember"
+    },
+    {
+     "iri": "sdg:assessmentDateTime",
+     "label": "assessment date time",
+     "domain": "sdg:TeamAssessmentParticipation",
+     "range": "xsd:dateTime"
+    }
+   ],
+   "_utility": 1.0
+  },
+  {
+   "template_id": "goal_responsibility_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:RetailLeadershipTeamMember exactly 1 {A:Class}, sdg:BrandGoal some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {X} is an agent role where {pf} realizes {ri}.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The Brand goals cascade down to individual Retail Leadership Team members. Members know what goals they are responsible for achieving",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.11,
+    "hash": "7cc3c02d8b780c8f0f5ceafd6ca82de2b7057241ad154727292ce6f4a5421e0f"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasRoleFiller",
+     "label": "has role filler",
+     "domain": "sdg:GoalResponsibilityRole",
+     "range": "sdg:RetailLeadershipTeamMember"
+    },
+    {
+     "iri": "sdg:realizesGoalInRole",
+     "label": "realizes goal in role",
+     "domain": "sdg:GoalResponsibilityRole",
+     "range": "sdg:BrandGoal"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "activity_board_alignment",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:BoardMeeting some {A1:Class}, sdg:TeamActivity some {A2:Class}, sdg:alignmentDelayDays some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {X} is a reified nary relation linking {a1} and {a2} with {d}.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The timing of many of the team's major activities is aligned to the Board of Directors' meeting schedule.",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.11,
+    "hash": "7cc3c02d8b780c8f0f5ceafd6ca82de2b7057241ad154727292ce6f4a5421e0f"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:alignsWith",
+     "label": "aligns with",
+     "domain": "sdg:ActivityBoardAlignment",
+     "range": "sdg:BoardMeeting"
+    },
+    {
+     "iri": "sdg:targetsActivity",
+     "label": "targets activity",
+     "domain": "sdg:ActivityBoardAlignment",
+     "range": "sdg:TeamActivity"
+    },
+    {
+     "iri": "sdg:alignmentDelayDays",
+     "label": "alignment delay days",
+     "domain": "sdg:ActivityBoardAlignment",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.917
+  },
+  {
+   "template_id": "senior_oracle_dba_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:inRoleOf exactly 1 {A:Class}, sdg:administers some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "sdg:SeniorOracleDatabaseAdministrator is an agent role borne by professionals via sdg:inRoleOf and administers environments via sdg:administers.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "\"Senior Oracle Developer \u2013 Cendien \u2013 Oracle Experts ... experience in Oracle database Administration in Consulting, Production support and Training\"",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.115,
+    "hash": "7df643b0cd44535c184fec9d3887594c7ec8b112745848a1d920107bcb7c87fd"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:inRoleOf",
+     "label": "in role of",
+     "domain": "sdg:SeniorOracleDatabaseAdministrator",
+     "range": "sdg:ITProfessional"
+    },
+    {
+     "iri": "sdg:administers",
+     "label": "administers",
+     "domain": "sdg:SeniorOracleDatabaseAdministrator",
+     "range": "sdg:OracleDatabaseEnvironment"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "statutory_investment_function",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:executes some {Y:Class}, sdg:requires some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {X} {p} a {Y} and {q} a {Z}.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "HSDC's narrowly defined purpose requires specialized venture capital investment expertise to execute.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.103,
+    "hash": "9171c34d689f3da81c8fc56a5101ec5de3c1fb4816a126bac5b8502a51d1fbce"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:executes",
+     "label": "executes",
+     "domain": "sdg:StatutoryInvestmentFunction",
+     "range": "sdg:VentureCapitalActivity"
+    },
+    {
+     "iri": "sdg:requires",
+     "label": "requires",
+     "domain": "sdg:StatutoryInvestmentFunction",
+     "range": "sdg:SpecializedExpertise"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "financial_assistance_program",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:targets some {A1:Class}, sdg:funds some {A2:Class}, sdg:publicFundAllocation some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {N} {a1} an {A1} and {a2} an {A2} with a {d} amount.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The corporation may use public funds to provide incentives to private investment activity, by co-investing public funds in private financial organizations...",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.103,
+    "hash": "9171c34d689f3da81c8fc56a5101ec5de3c1fb4816a126bac5b8502a51d1fbce"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:targets",
+     "label": "targets",
+     "domain": "sdg:FinancialAssistanceProgram",
+     "range": "sdg:PrivateEnterprise"
+    },
+    {
+     "iri": "sdg:funds",
+     "label": "funds",
+     "domain": "sdg:FinancialAssistanceProgram",
+     "range": "sdg:PrivateFinancialOrganization"
+    },
+    {
+     "iri": "sdg:publicFundAllocation",
+     "label": "public fund allocation",
+     "domain": "sdg:FinancialAssistanceProgram",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 1.0
+  },
+  {
+   "template_id": "agency_staffing_position",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:occupied_by exactly 1 {A:Class}, sdg:fulfills some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {R} is {pf} an {A} and {ri} a {C}.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "HSDC is currently staffed with one full time position, the president, to execute its mission.",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.103,
+    "hash": "9171c34d689f3da81c8fc56a5101ec5de3c1fb4816a126bac5b8502a51d1fbce"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:occupied_by",
+     "label": "occupied by",
+     "domain": "sdg:AgencyStaffingPosition",
+     "range": "cco:Agent"
+    },
+    {
+     "iri": "sdg:fulfills",
+     "label": "fulfills",
+     "domain": "sdg:AgencyStaffingPosition",
+     "range": "sdg:StatutoryMission"
+    }
+   ],
+   "_utility": 0.694
+  },
+  {
+   "template_id": "consolidation_impact_assessment",
+   "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:assesses some {D:Class}, sdg:reports_on some {E:Class}",
+   "slot_types": {
+    "S": "Class",
+    "D": "Class",
+    "E": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A {S} {sat} a {D} and {sf} an {E}.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "description_and_situation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "Impact Statement Prepared By... Cost/Benefit Analysis... report on the cost benefit analysis of consolidating...",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.103,
+    "hash": "9171c34d689f3da81c8fc56a5101ec5de3c1fb4816a126bac5b8502a51d1fbce"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:assesses",
+     "label": "assesses",
+     "domain": "sdg:ConsolidationImpactAssessment",
+     "range": "sdg:AgencyConsolidation"
+    },
+    {
+     "iri": "sdg:reports_on",
+     "label": "reports on",
+     "domain": "sdg:ConsolidationImpactAssessment",
+     "range": "sdg:CostBenefitAnalysis"
+    }
+   ],
+   "_utility": 0.556
+  },
+  {
+   "template_id": "forum_leadership_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:holdsPosition exactly 1 {A:Class}, sdg:affiliatedWithOrganization some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A forum leadership role is a role that holds exactly one person and is affiliated with some organization.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "NURSING AND CARE QUALITY FORUM MEMBERSHIP CHAIR Sally Brearley ... WORKSTREAM LEAD \u2013 Empowered and accountable nurse leadership Professor Janice Stevens CBE.",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "94c911e95e09a393921550b1b607c61492ad045e7d21a761c14d022af066d27f"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:holdsPosition",
+     "label": "holds position",
+     "domain": "sdg:ForumLeadershipRole",
+     "range": "cco:Person"
+    },
+    {
+     "iri": "sdg:affiliatedWithOrganization",
+     "label": "affiliated with organization",
+     "domain": "sdg:ForumLeadershipRole",
+     "range": "cco:Organization"
+    }
+   ],
+   "_utility": 0.725
+  },
+  {
+   "template_id": "governance_assurance_activity",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:overseesDomain some {Y:Class}, sdg:implementsStandard some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A governance assurance activity is an occurrent that oversees some quality attribute and implements some protocol.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "Tricia is responsible for Governance and Assurance across the Trust.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "94c911e95e09a393921550b1b607c61492ad045e7d21a761c14d022af066d27f"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:overseesDomain",
+     "label": "oversees domain",
+     "domain": "sdg:GovernanceAssuranceActivity",
+     "range": "cco:QualityAttribute"
+    },
+    {
+     "iri": "sdg:implementsStandard",
+     "label": "implements standard",
+     "domain": "sdg:GovernanceAssuranceActivity",
+     "range": "cco:Protocol"
+    }
+   ],
+   "_utility": 0.611
+  },
+  {
+   "template_id": "bundled_solution_package",
+   "manchester_template": "Class: {X:Class} SubClassOf: sdg:includesSoftwareComponent some {Y:Class}, sdg:includesHardwareComponent some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A bundled solution package is an artifact that sdg:includesSoftwareComponent and sdg:includesHardwareComponent.",
+   "bfo_anchor_path": [
+    "cco:Artifact"
+   ],
+   "_pattern": "multi_restriction_conjunction",
+   "_tier": "owl2_core",
+   "_grounds_ddl": "junction",
+   "_source_span": "bundled solution of Infinova Video Management software and DELL Server and Storage Options",
+   "_complexity": {
+    "score": 3,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.212,
+    "hash": "9a56c7cbde77ed5ad70038825e1efcbccb665e85dca4fe44b81c1df2d4d67f99"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:includesSoftwareComponent",
+     "label": "includes software component",
+     "domain": "sdg:BundledSolutionPackage",
+     "range": "sdg:VideoManagementSoftware"
+    },
+    {
+     "iri": "sdg:includesHardwareComponent",
+     "label": "includes hardware component",
+     "domain": "sdg:BundledSolutionPackage",
+     "range": "sdg:ServerStorageHardware"
+    }
+   ],
+   "_utility": 0.5
+  },
+  {
+   "template_id": "project_support_engagement",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:involvesPartner some {A1:Class}, sdg:involvesProvider some {A2:Class}, sdg:hasPricingValue some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A project support engagement is an information content entity that sdg:involvesPartner, sdg:involvesProvider, and sdg:hasPricingValue.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "ensure deliverance of complete support to their partners into the designing, implementation and pricing support for all their projects",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.212,
+    "hash": "9a56c7cbde77ed5ad70038825e1efcbccb665e85dca4fe44b81c1df2d4d67f99"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:involvesPartner",
+     "label": "involves partner",
+     "domain": "sdg:ProjectSupportEngagement",
+     "range": "sdg:ChannelPartner"
+    },
+    {
+     "iri": "sdg:involvesProvider",
+     "label": "involves provider",
+     "domain": "sdg:ProjectSupportEngagement",
+     "range": "sdg:TechnologyVendor"
+    },
+    {
+     "iri": "sdg:hasPricingValue",
+     "label": "has pricing value",
+     "domain": "sdg:ProjectSupportEngagement",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.917
+  },
+  {
+   "template_id": "device_expert_consultancy_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasAppointingOrganization exactly 1 {A:Class}, sdg:hasResponsibility some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A Device Expert Role is a Role that has exactly 1 Appointing Organization and has some Responsibility.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "Device Expert for Meaningful Connectivity... The Device Expert will survey the supplier landscape and available solutions... outline strategies to procure devices economically",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "9af75fee393730675d6d0b56c17f377dddde1828b5f23b611a2348174ae07dca"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAppointingOrganization",
+     "label": "has appointing organization",
+     "domain": "sdg:DeviceExpertRole",
+     "range": "sdg:UNICEFGiga"
+    },
+    {
+     "iri": "sdg:hasResponsibility",
+     "label": "has responsibility",
+     "domain": "sdg:DeviceExpertRole",
+     "range": "sdg:DeviceProcurementStrategy"
+    }
+   ],
+   "_utility": 0.814
+  },
+  {
+   "template_id": "meaningful_connectivity_specification",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:characterizes some {A1:Class}, sdg:requires some {A2:Class}, sdg:hasMinimumBandwidth some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A Meaningful Connectivity Specification is an Information Content Entity that characterizes some School Connectivity, requires some Educational Device, and has some Minimum Bandwidth.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "Meaningful connectivity is characterized by sufficient speed, an adequate device, enough data, and frequent connection.",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "9af75fee393730675d6d0b56c17f377dddde1828b5f23b611a2348174ae07dca"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:characterizes",
+     "label": "characterizes",
+     "domain": "sdg:MeaningfulConnectivitySpecification",
+     "range": "sdg:SchoolConnectivity"
+    },
+    {
+     "iri": "sdg:requires",
+     "label": "requires",
+     "domain": "sdg:MeaningfulConnectivitySpecification",
+     "range": "sdg:EducationalDevice"
+    },
+    {
+     "iri": "sdg:hasMinimumBandwidth",
+     "label": "has minimum bandwidth",
+     "domain": "sdg:MeaningfulConnectivitySpecification",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.955
+  },
+  {
+   "template_id": "giga_school_connectivity_initiative",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A Giga School Connectivity Initiative is an Occurrent that participates in some Global School Network.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "participation_occurrent_continuant",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "Giga's mission is to support governments to connect all schools in the world by 2030... Giga collaborates with the industry and governmental bodies to ensure that schools receive high-speed... connectivity",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "9af75fee393730675d6d0b56c17f377dddde1828b5f23b611a2348174ae07dca"
+   },
+   "_new_properties": [],
+   "_utility": 0.333
+  },
+  {
+   "template_id": "census_data_collection_process",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:targetsPopulation some {Y:Class}, sdg:employsMethod some {Z:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "Z": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "sdg:CensusDataCollectionProcess is a bfo:0000015 that targets sdg:SocialEnterprise and employs sdg:RepresentativeSurvey.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "action_definition_behavior",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "dimension",
+   "_source_span": "screening of over 20,000 organisations against the agreed definitional criteria; extraction and analysis of financial data... representative survey of the nation's social enterprises",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.115,
+    "hash": "9bfde4225719b64317f96d3a9bc188996fd545c3dabb6e8c6c3ef4b2ba3a4b0d"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:targetsPopulation",
+     "label": "targets population",
+     "domain": "sdg:CensusDataCollectionProcess",
+     "range": "sdg:SocialEnterprise"
+    },
+    {
+     "iri": "sdg:employsMethod",
+     "label": "employs method",
+     "domain": "sdg:CensusDataCollectionProcess",
+     "range": "sdg:RepresentativeSurvey"
+    }
+   ],
+   "_utility": 0.637
+  },
+  {
+   "template_id": "social_enterprise_financial_profile",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasAnnualIncome some xsd:decimal, sdg:hasIncomeThreshold some xsd:decimal",
+   "slot_types": {
+    "X": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "sdg:SocialEnterpriseFinancialProfile is a cco:DescriptiveICE with sdg:hasAnnualIncome some xsd:decimal and sdg:hasIncomeThreshold some xsd:decimal.",
+   "bfo_anchor_path": [
+    "cco:DescriptiveICE"
+   ],
+   "_pattern": "constraint_definition_parametric",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "constraint",
+   "_source_span": "operating with an annual income of less than \u00a3100,000",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.115,
+    "hash": "9bfde4225719b64317f96d3a9bc188996fd545c3dabb6e8c6c3ef4b2ba3a4b0d"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAnnualIncome",
+     "label": "has annual income",
+     "domain": "sdg:SocialEnterpriseFinancialProfile",
+     "range": "xsd:decimal"
+    },
+    {
+     "iri": "sdg:hasIncomeThreshold",
+     "label": "has income threshold",
+     "domain": "sdg:SocialEnterpriseFinancialProfile",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 0.667
+  },
+  {
+   "template_id": "participation_occurrent_continuant",
+   "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A Global Financial Crisis is a process that participates in a Financial Sector.",
+   "bfo_anchor_path": [
+    "bfo:0000015"
+   ],
+   "_pattern": "participation_occurrent_continuant",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "causes of the Global Financial Crisis (GFC) that began in 2007",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.124,
+    "hash": "a0eab5907300eee95aa5f023299951d32e29767d7c673d377455462a5f7fb29a"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:involvesFinancialSector",
+     "label": "involves financial sector",
+     "domain": "sdg:GlobalFinancialCrisis",
+     "range": "sdg:FinancialSector"
+    }
+   ],
+   "_utility": 0.333
+  },
+  {
+   "template_id": "job_application_submission",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:includesDocument some {A1:Class}, sdg:includesDocument some {A2:Class}, sdg:specifiesExpectedSalary some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A JobApplicationSubmission is an information entity that includes a resume, includes a project history, and specifies an expected salary.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "receiving your PDF application including your resume, project history, expected salary, and terms of notice.",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.141,
+    "hash": "a91f94995c093ccbd07a0b35f9f29756afab70680eb4e3d7c1e857cb4bdf091e"
+   },
+   "_new_properties": [],
+   "_utility": 1.0
+  },
+  {
+   "template_id": "technical_support_engineer_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:inheresIn exactly 1 {A:Class}, sdg:realizesActivity some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A TechnicalSupportEngineerRole is a role that inheres in an agent and realizes a technical support activity.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "we are looking for a Technical Support Engineer to join our Beijing-based team.",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.141,
+    "hash": "a91f94995c093ccbd07a0b35f9f29756afab70680eb4e3d7c1e857cb4bdf091e"
+   },
+   "_new_properties": [],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "case_review_protocol_membership",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:hasAssessmentDomain some {Y:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A case review protocol is an information content entity that has {m} some child welfare assessment domain.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "collection_membership",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "I have reviewed the current version of the case review protocol, the Community Service Review, and have concerns regarding the scope of the review",
+   "_complexity": {
+    "score": 2,
+    "n_restrictions": 1,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 1,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "ac90bb7777a07b2eca45ed82d023ff188fd17d76399b2198336fc8d137e633e9"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasAssessmentDomain",
+     "label": "has assessment domain",
+     "domain": "sdg:CaseReviewProtocol",
+     "range": "sdg:ChildWelfareAssessmentDomain"
+    }
+   ],
+   "_utility": 0.333
+  },
+  {
+   "template_id": "domain_responsibility_assignment",
+   "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:assignsDomainToAgency some {A1:Class}, sdg:hasResponsibilityLevel some {A2:Class}, sdg:hasResponsibilityScore some xsd:decimal",
+   "slot_types": {
+    "N": "Class",
+    "A1": "Class",
+    "A2": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A domain responsibility assignment is an information content entity that assigns domain to agency some child welfare agency, has responsibility level some permanency domain, and has responsibility score some decimal.",
+   "bfo_anchor_path": [
+    "cco:InformationContentEntity"
+   ],
+   "_pattern": "reified_nary_relation",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "The areas of permanency and child safety are the responsibility of a state child welfare agency, and not",
+   "_complexity": {
+    "score": 6,
+    "n_restrictions": 3,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 3,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "ac90bb7777a07b2eca45ed82d023ff188fd17d76399b2198336fc8d137e633e9"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:assignsDomainToAgency",
+     "label": "assigns domain to agency",
+     "domain": "sdg:DomainResponsibilityAssignment",
+     "range": "sdg:ChildWelfareAgency"
+    },
+    {
+     "iri": "sdg:hasResponsibilityLevel",
+     "label": "has responsibility level",
+     "domain": "sdg:DomainResponsibilityAssignment",
+     "range": "sdg:PermanencyDomain"
+    },
+    {
+     "iri": "sdg:hasResponsibilityScore",
+     "label": "has responsibility score",
+     "domain": "sdg:DomainResponsibilityAssignment",
+     "range": "xsd:decimal"
+    }
+   ],
+   "_utility": 1.0
+  },
+  {
+   "template_id": "principal_investigator_role",
+   "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasPrincipal exactly 1 {A:Class}, sdg:appliesToStudy some {C:Class}",
+   "slot_types": {
+    "R": "Class",
+    "A": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A principal investigator role is a role that has {pf} exactly 1 researcher and applies to study some child welfare evaluation study.",
+   "bfo_anchor_path": [
+    "bfo:0000023"
+   ],
+   "_pattern": "agent_role",
+   "_tier": "odp",
+   "_grounds_ddl": "junction",
+   "_source_span": "Currently I am the co-Principal Investigator on the evaluation of Florida's IV-E Waiver and the Principal Investigator for the evaluation of the Western and Pacific Child Welfare Implementation Center",
+   "_complexity": {
+    "score": 5,
+    "n_restrictions": 2,
+    "n_cardinality": 1,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "ac90bb7777a07b2eca45ed82d023ff188fd17d76399b2198336fc8d137e633e9"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:hasPrincipal",
+     "label": "has principal",
+     "domain": "sdg:PrincipalInvestigatorRole",
+     "range": "sdg:Researcher"
+    },
+    {
+     "iri": "sdg:appliesToStudy",
+     "label": "applies to study",
+     "domain": "sdg:PrincipalInvestigatorRole",
+     "range": "sdg:ChildWelfareEvaluationStudy"
+    }
+   ],
+   "_utility": 0.833
+  },
+  {
+   "template_id": "quality_assurance_monitoring",
+   "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:targetsSystem some {Y:Class}, sdg:usesIndicator some {C:Class}",
+   "slot_types": {
+    "X": "Class",
+    "Y": "Class",
+    "C": "Class"
+   },
+   "is_complex": true,
+   "verbal_template": "A quality assurance monitoring is a directive information content entity that targets system some child welfare system and uses indicator some administrative dataset.",
+   "bfo_anchor_path": [
+    "cco:DirectiveICE"
+   ],
+   "_pattern": "requirement_satisfy_verify",
+   "_tier": "sysmlv2",
+   "_grounds_ddl": "junction",
+   "_source_span": "I also believe that quality assurance systems need to rely on other indicators, including the use of administrative datasets (e.g., claims and eligibility files) and the use of standardized measures to assess progress on child functioning and clinical status.",
+   "_complexity": {
+    "score": 4,
+    "n_restrictions": 2,
+    "n_cardinality": 0,
+    "n_bool": 0,
+    "n_conjuncts": 2,
+    "disjoint": false,
+    "is_complex_class": true
+   },
+   "_domain": {
+    "code": "9",
+    "label": "Laboratory Information Management",
+    "rel_margin": 0.116,
+    "hash": "ac90bb7777a07b2eca45ed82d023ff188fd17d76399b2198336fc8d137e633e9"
+   },
+   "_new_properties": [
+    {
+     "iri": "sdg:targetsSystem",
+     "label": "targets system",
+     "domain": "sdg:QualityAssuranceMonitoring",
+     "range": "sdg:ChildWelfareSystem"
+    },
+    {
+     "iri": "sdg:usesIndicator",
+     "label": "uses indicator",
+     "domain": "sdg:QualityAssuranceMonitoring",
+     "range": "sdg:AdministrativeDataset"
+    }
+   ],
+   "_utility": 0.667
+  }
+ ]
+}

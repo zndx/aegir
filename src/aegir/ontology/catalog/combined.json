@@ -15503,6 +15503,1333 @@
       ],
       "broader": [],
       "provenance": {}
+    },
+    {
+      "template_id": "video_analytic_rule_execution",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:executesAnalyticRule some {Y:Class}, sdg:targetsPlatform some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A video analytic rule execution is a process that executes an analytic rule and targets a video analytics platform.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "complete_security_solution_architecture",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000004, sdg:hasDirectPart some {D:Class}",
+      "slot_types": {
+        "X": "Class",
+        "D": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A complete security solution is a material entity that has direct parts including control room and camera subsystems.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000004"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "cetane_metric",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:has_numeric_value exactly 1 xsd:decimal",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A cetane metric {has_numeric_value} exactly one decimal value.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity",
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "receptionist_role_definition",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasSupervisor exactly 1 {A:Class}, sdg:hasResponsibility some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "The {R} is a role that has exactly one supervisor from {A} and has some responsibility in {C}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "appointment_scheduling_behavior",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:involvesPatient some {Y:Class}, sdg:utilizesSystem some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "The {X} is an occurrent that involves some {Y} and utilizes some {Z}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "patient_insurance_record_extension",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:recordsInsuranceProvider some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "The {X} is an information content entity that records some {Y}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "black_belt_certification_requirement",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:involvesAthlete some {A1:Class}, sdg:referencesCertification some {A2:Class}, sdg:hasSubmissionDeadline some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "BlackBeltCertificationRequirement is a reified n-ary relation where {a1} links to an athlete, {a2} links to a certification document, and {d} links to a submission deadline.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "youth_adult_partnership_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasYouthMember exactly 1 {A:Class}, sdg:realizedIn some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A Youth Adult Partnership Role is a role that has a youth member exactly 1 Youth Adolescent and is realized in some Organizational Structure.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "school_to_prison_pipeline",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:targetsDemographic some {Y:Class}, sdg:implementedBy some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A School To Prison Pipeline is an occurrent that targets a demographic some Marginalized Youth and is implemented by some School District.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "agent_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:reports_to exactly 1 {A:Class}, sdg:is_member_of some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A chief financial officer role is an organizational role that reports to exactly one executive leader and is a member of at least one executive team.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "marital_status_certification",
+      "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:hasMaritalState some {D:Class}, sdg:hasConsentReason some {E:Class}",
+      "slot_types": {
+        "S": "Class",
+        "D": "Class",
+        "E": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "MaritalStatusCertification is an information content entity that uses sdg:hasMaritalState and sdg:hasConsentReason to describe the applicant's marital situation.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "beneficiary_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:designatesBeneficiary exactly 1 {A:Class}, sdg:hasRelationship some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "BeneficiaryRole is a role that uses sdg:designatesBeneficiary to link to exactly one individual and sdg:hasRelationship to specify their connection to the applicant.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "benefit_option_election",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, (sdg:electsPayoutOption some {Y:Class}), (sdg:electsPayoutOption only {Y:Class})",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "BenefitOptionElection is a descriptive entity that uses sdg:electsPayoutOption to select exactly one retirement benefit payout option.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "tax_approval_threshold_rule",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasThresholdAmount exactly 1 xsd:decimal",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "sdg:TaxApprovalThresholdRule is a descriptive ICE that specifies a monetary limit via sdg:hasThresholdAmount.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "constraint_definition_parametric",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasCenterSpacing some xsd:decimal, sdg:hasWallSpacing some xsd:decimal",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A StrapFixingConstraint is a descriptive information entity that has a center spacing decimal and a wall spacing decimal.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "registered_auditor_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasAgent exactly 1 {A:Class}, sdg:realizesAuditActivity some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A registered auditor role is an agent role where the pf property exactly identifies the corporate agent and the ri property links to the financial audit activity it realizes.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "chief_compliance_officer_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasAgent exactly 1 {A:Class}, sdg:administersPolicy some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "ChiefComplianceOfficer is a role instantiated by exactly one agent that administers the whistleblower policy.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "retaliation_protection_requirement",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:protectsFrom some {Y:Class}, sdg:appliesTo some {C:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "RetaliationProtectionRequirement is a directive ICE that mandates protection from retaliation via {p} and applies to the college community via {q}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "anonymous_demographic_data",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:demographic_category some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "AnonymousDemographicData is a DescriptiveICE categorized by a DemographicAttribute.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "strategic_business_exit_plan",
+      "manchester_template": "Class: {R:Class} SubClassOf: cco:InformationContentEntity, sdg:targetsEvent exactly 1 {E:Class}, sdg:appliesTo exactly 1 {P:Class}, sdg:hasTimeframe some {T:Class}",
+      "slot_types": {
+        "R": "Class",
+        "E": "Class",
+        "P": "Class",
+        "T": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "sdg:StrategicExitPlan is an information content entity that targets exactly one business exit event, applies to exactly one business entity, and has some five year timeframe.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "talent_retention_priority_factor",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:identifiesFactor some {A1:Class}, sdg:targetsGroup some {A2:Class}, sdg:hasPriorityRank some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "sdg:TalentRetentionPriority is an information content entity that identifies some HR strategy, targets some talent pool, and has some decimal priority rank.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "planned_obsolescence_practice",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:involvesProductType some {Y:Class}, sdg:producesWasteStream some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {X} is a bfo:0000015 that involves a product type via sdg:involvesProductType and produces a waste stream via sdg:producesWasteStream.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "advisory_engagement",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasAdviser exactly 1 {Y:Class}, sdg:hasAdvisoryFirm exactly 1 {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An advisory engagement is a descriptive information content entity that has exactly one adviser and exactly one advisory firm.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "institutional_vision_statement",
+      "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:describesSituation some {D:Class}, sdg:targetsGoal some {E:Class}",
+      "slot_types": {
+        "S": "Class",
+        "D": "Class",
+        "E": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An institutional vision statement describes a knowledge society situation and targets a peace and prosperity goal.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "central_globe_symbolism",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000004, sdg:designatesSymbolism exactly 1 {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A central globe logo component designates a global solidarity symbolism.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000004"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "holistic_learning_process",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:employsPedagogy some {Y:Class}, sdg:developsCompetency some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A holistic learning process employs innovative teaching pedagogy and develops analytical competency.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "multi_restriction_conjunction",
+      "manchester_template": "Class: {X:Class} SubClassOf: sdg:hasCompressiveStrength some {Y:Class}, sdg:hasGrossDensity some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {X:Class} is a material that bears a compressive strength property and a gross density property.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000004"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "attribute_usage_datavalue",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasMoisturePercentage exactly 1 xsd:decimal",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An {X:Class} is a descriptive information entity that specifies exactly one decimal value representing the equilibrium moisture percentage.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "program_duration_specification",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasDurationMinutes exactly 1 xsd:decimal",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A ProgramDurationSpecification is a descriptive ICE that has exactly one duration in minutes.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "project_leader_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:has_role_institution exactly 1 {A:Class}, sdg:executes_activities some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A project leader role is an agent role that has a role institution and executes project activities.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "ah_receptor_binding_mechanism",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasTargetEntity some {Y:Class}, sdg:hasMolecularEffect some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An Ah receptor binding mechanism is a process that has a target entity and a molecular effect.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015",
+        "bfo:0000006"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "nerve_compression_pathological_effect",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "sdg:NerveCompressionPathologicalEffect is an occurrent that has a bfo:0000057 relation to at least one sdg:AdjacentNerveStructure.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "project_segment_valuation_record",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:hasSegmentDescription some {A1:Class}, sdg:hasSegmentCount some {A2:Class}, sdg:hasSegmentValuation some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "ProjectSegmentValuationRecord is an information content entity characterized by a1 segment description, a2 segment count, and d segment valuation.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "allocation_mapping",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:targetsDivision exactly 1 {Y:Class}, sdg:allocatesResource exactly 1 {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A strategic business plan is a descriptive information content entity that targets exactly one business division and allocates exactly one corporate resource.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "regional_qualifications_framework",
+      "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:articulates some {D:Class}, sdg:specifies some {E:Class}",
+      "slot_types": {
+        "S": "Class",
+        "D": "Class",
+        "E": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A Regional Qualifications Framework is an Information Content Entity that articulates a Regional Harmonization Situation and specifies Qualification Levels.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "qa_training_session",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:deliversTo some {A1:Class}, sdg:targets some {A2:Class}, sdg:hasDurationHours some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A Quality Assurance Training Session is an Information Content Entity that delivers to University Staff, targets a Quality Assurance System, and has a duration in hours.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "qa_officer_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasAgent exactly 1 {A:Class}, sdg:realizesIn some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A Regional Quality Assurance Officer is a Role realized in a Regional Quality Assurance Office by a Staff Member.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "lethality_assessment_follow_up",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:hasTarget some {Y:Class}, sdg:hasPurpose some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A LethalityAssessmentFollowUp is a Process that hasTarget some DomesticViolenceSurvivor and hasPurpose some SafetyEvaluation.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "domestic_violence_police_report",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:hasAuthor some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "A DomesticViolencePoliceReport is an InformationContentEntity that hasAuthor some LawEnforcementOfficer.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "participation_occurrent_continuant_01",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An institutional farmland acquisition event is a BFO process that has a participant farmland parcel.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "taper_tolerance_spec",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasLowerBound some xsd:decimal, sdg:hasUpperBound some xsd:decimal",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A taper tolerance specification is a descriptive information content entity that has a lower bound and an upper bound expressed as decimals.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "taper_gage_geometric_req",
+      "manchester_template": "Class: {X:Class} SubClassOf: sdg:hasSmallEndDiameter some {Y:Class}, sdg:hasIncludedAngle some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A taper gage geometric requirement is an information content entity that has a small end diameter and an included angle.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "remote_vpn_access_service",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:employsTransportProtocol some {Y:Class}, sdg:implementsSecurityMechanism some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A remote VPN access service is a process that employs a network protocol via sdg:employsTransportProtocol and implements an encryption method via sdg:implementsSecurityMechanism.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "remote_access_security_policy",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:governsAuthentication some {Y:Class}, sdg:assignsUserRoles some {C:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A remote access security policy is a directive information content entity that governs an authentication mechanism via sdg:governsAuthentication and assigns user roles via sdg:assignsUserRoles.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "reified_nary_relation",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:assessesSupportSystem some {A1:Class}, sdg:evaluatesRiskFactor some {A2:Class}, sdg:hasRiskScore some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {sdg:DegradedConditionAcceptabilityAssessment} {sdg:assessesSupportSystem} a {sdg:SupportSystem}, {sdg:evaluatesRiskFactor} a {sdg:RiskFactor}, and {sdg:hasRiskScore} a decimal value.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "time_indexed_participation",
+      "manchester_template": "Class: {R:Class} SubClassOf: cco:InformationContentEntity, sdg:referencesRegulatoryDocument exactly 1 {E:Class}, sdg:appliesToSupportSystem exactly 1 {P:Class}, sdg:effectiveAt some {T:Class}",
+      "slot_types": {
+        "R": "Class",
+        "E": "Class",
+        "P": "Class",
+        "T": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {sdg:TechnicalSpecificationLCOStatus} {sdg:referencesRegulatoryDocument} a {sdg:TechnicalSpecification}, {sdg:appliesToSupportSystem} a {sdg:SupportSystem}, and {sdg:effectiveAt} a time point.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "description_and_situation",
+      "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:describesSystemCondition some {D:Class}, sdg:reflectsMaintenanceAction some {E:Class}",
+      "slot_types": {
+        "S": "Class",
+        "D": "Class",
+        "E": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {sdg:MaintenanceOperabilityStatusReport} {sdg:describesSystemCondition} a {sdg:SupportSystemCondition} and {sdg:reflectsMaintenanceAction} a {sdg:MaintenanceAction}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "staff_training_participant_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:qualifies exactly 1 {A:Class}, sdg:participatesIn some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {R} {pf} an {A} and {ri} a {C}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "annual_operating_budget",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasMonetaryValue exactly 1 xsd:decimal",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {X} {d} a decimal.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "flood_infrastructure_risk_assessment",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:involvesData some {Y:Class}, sdg:assessesCondition some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A flood infrastructure risk assessment is an occurrent that involves data and assesses condition.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "earth_observation_dataset",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:originatesFromProgramme some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "An earth observation dataset is an information content entity that originates from a programme.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "team_assessment_participation",
+      "manchester_template": "Class: {R:Class} SubClassOf: cco:InformationContentEntity, sdg:TeamAssessmentEvent exactly 1 {E:Class}, sdg:RetailLeadershipTeamMember exactly 1 {P:Class}, sdg:assessmentDateTime some {T:Class}",
+      "slot_types": {
+        "R": "Class",
+        "E": "Class",
+        "P": "Class",
+        "T": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {X} is a time-indexed participation in {ev} by {pt} occurring at {at}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "goal_responsibility_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:RetailLeadershipTeamMember exactly 1 {A:Class}, sdg:BrandGoal some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {X} is an agent role where {pf} realizes {ri}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "activity_board_alignment",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:BoardMeeting some {A1:Class}, sdg:TeamActivity some {A2:Class}, sdg:alignmentDelayDays some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {X} is a reified nary relation linking {a1} and {a2} with {d}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "senior_oracle_dba_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:inRoleOf exactly 1 {A:Class}, sdg:administers some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "sdg:SeniorOracleDatabaseAdministrator is an agent role borne by professionals via sdg:inRoleOf and administers environments via sdg:administers.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "statutory_investment_function",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:executes some {Y:Class}, sdg:requires some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {X} {p} a {Y} and {q} a {Z}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "financial_assistance_program",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:targets some {A1:Class}, sdg:funds some {A2:Class}, sdg:publicFundAllocation some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {N} {a1} an {A1} and {a2} an {A2} with a {d} amount.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "agency_staffing_position",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:occupied_by exactly 1 {A:Class}, sdg:fulfills some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {R} is {pf} an {A} and {ri} a {C}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "consolidation_impact_assessment",
+      "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:assesses some {D:Class}, sdg:reports_on some {E:Class}",
+      "slot_types": {
+        "S": "Class",
+        "D": "Class",
+        "E": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A {S} {sat} a {D} and {sf} an {E}.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "forum_leadership_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:holdsPosition exactly 1 {A:Class}, sdg:affiliatedWithOrganization some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A forum leadership role is a role that holds exactly one person and is affiliated with some organization.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "governance_assurance_activity",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:overseesDomain some {Y:Class}, sdg:implementsStandard some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A governance assurance activity is an occurrent that oversees some quality attribute and implements some protocol.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "bundled_solution_package",
+      "manchester_template": "Class: {X:Class} SubClassOf: sdg:includesSoftwareComponent some {Y:Class}, sdg:includesHardwareComponent some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A bundled solution package is an artifact that sdg:includesSoftwareComponent and sdg:includesHardwareComponent.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:Artifact"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "project_support_engagement",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:involvesPartner some {A1:Class}, sdg:involvesProvider some {A2:Class}, sdg:hasPricingValue some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A project support engagement is an information content entity that sdg:involvesPartner, sdg:involvesProvider, and sdg:hasPricingValue.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "device_expert_consultancy_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasAppointingOrganization exactly 1 {A:Class}, sdg:hasResponsibility some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A Device Expert Role is a Role that has exactly 1 Appointing Organization and has some Responsibility.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "meaningful_connectivity_specification",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:characterizes some {A1:Class}, sdg:requires some {A2:Class}, sdg:hasMinimumBandwidth some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A Meaningful Connectivity Specification is an Information Content Entity that characterizes some School Connectivity, requires some Educational Device, and has some Minimum Bandwidth.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "giga_school_connectivity_initiative",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A Giga School Connectivity Initiative is an Occurrent that participates in some Global School Network.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "census_data_collection_process",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:targetsPopulation some {Y:Class}, sdg:employsMethod some {Z:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "Z": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "sdg:CensusDataCollectionProcess is a bfo:0000015 that targets sdg:SocialEnterprise and employs sdg:RepresentativeSurvey.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "social_enterprise_financial_profile",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasAnnualIncome some xsd:decimal, sdg:hasIncomeThreshold some xsd:decimal",
+      "slot_types": {
+        "X": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "sdg:SocialEnterpriseFinancialProfile is a cco:DescriptiveICE with sdg:hasAnnualIncome some xsd:decimal and sdg:hasIncomeThreshold some xsd:decimal.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DescriptiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "participation_occurrent_continuant",
+      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A Global Financial Crisis is a process that participates in a Financial Sector.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000015"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "job_application_submission",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:includesDocument some {A1:Class}, sdg:includesDocument some {A2:Class}, sdg:specifiesExpectedSalary some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A JobApplicationSubmission is an information entity that includes a resume, includes a project history, and specifies an expected salary.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "technical_support_engineer_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:inheresIn exactly 1 {A:Class}, sdg:realizesActivity some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A TechnicalSupportEngineerRole is a role that inheres in an agent and realizes a technical support activity.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "case_review_protocol_membership",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:InformationContentEntity, sdg:hasAssessmentDomain some {Y:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A case review protocol is an information content entity that has {m} some child welfare assessment domain.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "domain_responsibility_assignment",
+      "manchester_template": "Class: {N:Class} SubClassOf: cco:InformationContentEntity, sdg:assignsDomainToAgency some {A1:Class}, sdg:hasResponsibilityLevel some {A2:Class}, sdg:hasResponsibilityScore some xsd:decimal",
+      "slot_types": {
+        "N": "Class",
+        "A1": "Class",
+        "A2": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A domain responsibility assignment is an information content entity that assigns domain to agency some child welfare agency, has responsibility level some permanency domain, and has responsibility score some decimal.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:InformationContentEntity"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "principal_investigator_role",
+      "manchester_template": "Class: {R:Class} SubClassOf: bfo:0000023, sdg:hasPrincipal exactly 1 {A:Class}, sdg:appliesToStudy some {C:Class}",
+      "slot_types": {
+        "R": "Class",
+        "A": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A principal investigator role is a role that has {pf} exactly 1 researcher and applies to study some child welfare evaluation study.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "bfo:0000023"
+      ],
+      "broader": [],
+      "provenance": {}
+    },
+    {
+      "template_id": "quality_assurance_monitoring",
+      "manchester_template": "Class: {X:Class} SubClassOf: cco:DirectiveICE, sdg:targetsSystem some {Y:Class}, sdg:usesIndicator some {C:Class}",
+      "slot_types": {
+        "X": "Class",
+        "Y": "Class",
+        "C": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A quality assurance monitoring is a directive information content entity that targets system some child welfare system and uses indicator some administrative dataset.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [
+        "cco:DirectiveICE"
+      ],
+      "broader": [],
+      "provenance": {}
     }
   ],
   "null_stats": {}
