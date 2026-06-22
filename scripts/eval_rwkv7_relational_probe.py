@@ -69,16 +69,22 @@ def _load_hypernyms() -> dict:
     return out
 
 
-def build_dataset(per_family: int, realize: bool, topk: int, max_cells: int, min_cells: int, hypernym_map=None):
+def build_dataset(per_family: int, realize: bool, topk: int, max_cells: int, min_cells: int,
+                  hypernym_map=None, mix=False):
     """In-process spine → RI-safe materialized rows → (cells-only text, concept) per non-PK column; top-K.
-    With ``hypernym_map``, the label is the column concept's PARENT (SKOS broader) — a hypernym-CTA."""
+    With ``hypernym_map``, the label is the column concept's PARENT (SKOS broader) — a hypernym-CTA. With
+    ``mix`` (C2.5 L1), parent-typed columns draw from the union of their children's pools (subtree mixing)."""
     from build_ddl_spine import catalog_files, load_spine
     from aegir.ontology.chapter_tables import definitions_for_spine, entity_pools_for_spine
     from aegir.ontology.rows import materialize_rows
     files = catalog_files(REPO / "src/aegir/ontology/catalog")
     spine, fks, *_ = load_spine(files, per_family if per_family > 0 else None, realize=realize)
-    materialize_rows(spine, fks, seed=123, definitions=definitions_for_spine(spine),
-                     entity_pools=entity_pools_for_spine(spine))
+    pools = entity_pools_for_spine(spine)
+    if mix and hypernym_map:
+        from aegir.ontology.subtree_mix import subtree_mixed_pools
+        pools, n_mixed = subtree_mixed_pools(pools, hypernym_map)
+        print(f"subtree-mix: {n_mixed} parent-typed columns mixed with children's pools", flush=True)
+    materialize_rows(spine, fks, seed=123, definitions=definitions_for_spine(spine), entity_pools=pools)
     recs: list[tuple[str, str]] = []
     for st in spine:
         cols, rows = st.table.columns, st.table.rows
@@ -195,14 +201,16 @@ def main() -> int:
     ap.add_argument("--seeds", type=int, nargs="+", default=[1, 2, 3])
     ap.add_argument("--test-frac", type=float, default=0.3)
     ap.add_argument("--hypernym", action="store_true", help="label by PARENT concept (SKOS broader) — hypernym CTA")
+    ap.add_argument("--mix", action="store_true", help="C2.5 subtree value-mixing (parent cols ← children's pools)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     dev = "cuda"
 
-    hmap = _load_hypernyms() if a.hypernym else None
-    if a.hypernym:
+    hmap = _load_hypernyms() if (a.hypernym or a.mix) else None
+    if hmap is not None:
         print(f"hypernym map: {len(hmap)} concept→parent edges (SKOS broader)", flush=True)
-    texts, y, labels = build_dataset(a.per_family, a.realize, a.topk, a.max_cells, a.min_cells, hmap)
+    texts, y, labels = build_dataset(a.per_family, a.realize, a.topk, a.max_cells, a.min_cells,
+                                     a.hypernym and hmap or None, mix=a.mix)
     print(f"dataset: {len(texts)} columns · {len(labels)} concept-labels (top-{a.topk}) · "
           f"majority={collections.Counter(y.tolist()).most_common(1)[0][1] / max(1, len(y)):.3f}", flush=True)
     tok = E.RWKV_TOKENIZER(a.tokenizer)
