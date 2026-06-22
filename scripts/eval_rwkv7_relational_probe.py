@@ -69,6 +69,18 @@ def _load_hypernyms() -> dict:
     return out
 
 
+def _load_domain_taxonomy(path) -> dict:
+    """member-concept → hypernym from the HermiT-admitted domain taxonomy (a domain child→parent broader map
+    that replaces the BFO-structural SKOS broaders for hypernym-labeling + subtree-mixing)."""
+    from aegir.ontology.subtree_mix import concept_of
+    d = json.loads(Path(path).read_text())
+    out: dict[str, str] = {}
+    for t in d.get("admitted", []):
+        for m in t["members"]:
+            out[concept_of(m)] = t["hypernym"]
+    return out
+
+
 def build_dataset(per_family: int, realize: bool, topk: int, max_cells: int, min_cells: int,
                   hypernym_map=None, mix=False):
     """In-process spine → RI-safe materialized rows → (cells-only text, concept) per non-PK column; top-K.
@@ -202,15 +214,22 @@ def main() -> int:
     ap.add_argument("--test-frac", type=float, default=0.3)
     ap.add_argument("--hypernym", action="store_true", help="label by PARENT concept (SKOS broader) — hypernym CTA")
     ap.add_argument("--mix", action="store_true", help="C2.5 subtree value-mixing (parent cols ← children's pools)")
+    ap.add_argument("--domain-taxonomy", default="",
+                    help="admitted domain-taxonomy json → domain broader map (replaces SKOS broader for --hypernym/--mix)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     dev = "cuda"
 
-    hmap = _load_hypernyms() if (a.hypernym or a.mix) else None
-    if hmap is not None:
+    if a.domain_taxonomy:
+        hmap = _load_domain_taxonomy(a.domain_taxonomy)
+        print(f"domain taxonomy: {len(hmap)} member→hypernym edges", flush=True)
+    elif a.hypernym or a.mix:
+        hmap = _load_hypernyms()
         print(f"hypernym map: {len(hmap)} concept→parent edges (SKOS broader)", flush=True)
+    else:
+        hmap = None
     texts, y, labels = build_dataset(a.per_family, a.realize, a.topk, a.max_cells, a.min_cells,
-                                     a.hypernym and hmap or None, mix=a.mix)
+                                     (hmap if a.hypernym else None), mix=a.mix)
     print(f"dataset: {len(texts)} columns · {len(labels)} concept-labels (top-{a.topk}) · "
           f"majority={collections.Counter(y.tolist()).most_common(1)[0][1] / max(1, len(y)):.3f}", flush=True)
     tok = E.RWKV_TOKENIZER(a.tokenizer)
