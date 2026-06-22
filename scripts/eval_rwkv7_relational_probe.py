@@ -46,8 +46,32 @@ def _concept(colname: str) -> str:
     return "_".join(toks) or "misc"
 
 
-def build_dataset(per_family: int, realize: bool, topk: int, max_cells: int, min_cells: int):
-    """In-process spine → RI-safe materialized rows → (cells-only text, concept) per non-PK column; top-K."""
+def _load_hypernyms() -> dict:
+    """norm(concept) → norm(parent) from the SKOS vocab's skos:broader (the ontology hypernym graph).
+    Lets C1 label columns by their PARENT concept — a hypernym-CTA (infer the general type from a
+    heterogeneous value population), which is the generalizable target and the de-leaked label for
+    subtree-mixing (C2.5). One level up; missing → leaf concept (identity)."""
+    try:
+        from rdflib import Graph
+        from rdflib.namespace import SKOS
+    except Exception:  # noqa: BLE001
+        return {}
+    ttl = REPO / "corpora" / "vocabulary" / "vocabulary.ttl"
+    if not ttl.exists():
+        return {}
+    g = Graph()
+    g.parse(str(ttl), format="turtle")
+    pref = {s: str(o) for s, _, o in g.triples((None, SKOS.prefLabel, None))}
+    out: dict[str, str] = {}
+    for s, _, o in g.triples((None, SKOS.broader, None)):
+        if s in pref and o in pref:
+            out[_concept(pref[s])] = _concept(pref[o])
+    return out
+
+
+def build_dataset(per_family: int, realize: bool, topk: int, max_cells: int, min_cells: int, hypernym_map=None):
+    """In-process spine → RI-safe materialized rows → (cells-only text, concept) per non-PK column; top-K.
+    With ``hypernym_map``, the label is the column concept's PARENT (SKOS broader) — a hypernym-CTA."""
     from build_ddl_spine import catalog_files, load_spine
     from aegir.ontology.chapter_tables import definitions_for_spine, entity_pools_for_spine
     from aegir.ontology.rows import materialize_rows
@@ -66,7 +90,10 @@ def build_dataset(per_family: int, realize: bool, topk: int, max_cells: int, min
             cells = [str(r[ci]).strip() for r in rows if ci < len(r) and str(r[ci]).strip()]
             if len(cells) < min_cells:
                 continue
-            recs.append((" | ".join(cells[:max_cells]), _concept(c.name)))  # cells-only (no header)
+            concept = _concept(c.name)
+            if hypernym_map:
+                concept = hypernym_map.get(concept, concept)  # label by parent concept (hypernym CTA)
+            recs.append((" | ".join(cells[:max_cells]), concept))  # cells-only (no header)
     keep = {c for c, _ in collections.Counter(c for _, c in recs).most_common(topk)}
     recs = [(t, c) for t, c in recs if c in keep]
     labels = sorted({c for _, c in recs})
@@ -167,15 +194,19 @@ def main() -> int:
     ap.add_argument("--shots", type=int, nargs="+", default=[64, 256, 1024, 0])
     ap.add_argument("--seeds", type=int, nargs="+", default=[1, 2, 3])
     ap.add_argument("--test-frac", type=float, default=0.3)
+    ap.add_argument("--hypernym", action="store_true", help="label by PARENT concept (SKOS broader) — hypernym CTA")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     dev = "cuda"
 
-    texts, y, labels = build_dataset(a.per_family, a.realize, a.topk, a.max_cells, a.min_cells)
+    hmap = _load_hypernyms() if a.hypernym else None
+    if a.hypernym:
+        print(f"hypernym map: {len(hmap)} concept→parent edges (SKOS broader)", flush=True)
+    texts, y, labels = build_dataset(a.per_family, a.realize, a.topk, a.max_cells, a.min_cells, hmap)
     print(f"dataset: {len(texts)} columns · {len(labels)} concept-labels (top-{a.topk}) · "
           f"majority={collections.Counter(y.tolist()).most_common(1)[0][1] / max(1, len(y)):.3f}", flush=True)
     tok = E.RWKV_TOKENIZER(a.tokenizer)
-    results = {"n_columns": len(texts), "n_labels": len(labels), "shots": a.shots,
+    results = {"n_columns": len(texts), "n_labels": len(labels), "shots": a.shots, "hypernym": bool(a.hypernym),
                "majority_frac": collections.Counter(y.tolist()).most_common(1)[0][1] / max(1, len(y)), "arms": {}}
     for spec in a.arms:
         name, ckpt = spec.split("=", 1)
