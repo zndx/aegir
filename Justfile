@@ -127,6 +127,13 @@ metaflow *ARGS:
     OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4327 \
     uv run --no-sync python -m aegir.flows.semantic_corpus_flow run {{ARGS}}
 
+# Path A: continue-pretrain RWKV-7 ± augmentation across α-arms, eval general+relational, write the ledger
+# (the data-value-isolation experiment as one CI-gated command). Arms train one-per-GPU; pass `--max-workers
+# N` to parallelize. e.g. `AEGIR_METAFLOW_MODE=local just train-path-a --alphas 0,0.02 --max-workers 2`.
+train-path-a *ARGS:
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4327 \
+    uv run --no-sync python -m aegir.flows.path_a_training_flow run {{ARGS}}
+
 # Manually (re)deploy the Metaflow service plane to RKE2 (idempotent; normally devenv does this on `up`).
 metaflow-up:
     bash scripts/metaflow/db-setup.sh
