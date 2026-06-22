@@ -19,6 +19,25 @@ let
   # single-worktree behavior.
   worktreeRole = lib.maybeEnv "AEGIR_WORKTREE_ROLE" "primary";
   isPrimary = worktreeRole == "primary";
+  # CUDA toolchain for compiling the fused RWKV-7 training kernel (rwkv7_clampw) via torch
+  # cpp_extension.load. nix-native (nvcc 12.8 + gcc-14.3 + libstdc++ all on nix glibc 2.42) so it is
+  # CONSISTENT with the nix python — the system CUDA-12.4 nvcc/cicc clashes (older system glibc) and
+  # cannot be used in-process. Trainer sets CUDA_HOME/CC/CXX/CUDAHOSTCXX from AEGIR_CUDA_* (below) for its
+  # own compile; we deliberately do NOT set CC/CXX globally (that would break rust/maturin builds).
+  # Re-import the pinned nixpkgs with cudaForwardCompat OFF. devenv's nixpkgs defaults it ON, which pulls
+  # `cuda_compat` (a forward-compat shim with no redistributable source here) → build failure. The system
+  # driver (build/cuda-driver-libs) already supports CUDA 12.8, so the compat shim is unneeded. (Verified:
+  # the merged toolchain builds + the fused kernel compiles+runs under it.)
+  cudaPkgs = import pkgs.path { inherit (pkgs) system; config = { allowUnfree = true; cudaForwardCompat = false; }; };
+  cuda = cudaPkgs.cudaPackages_12_8;
+  cudaMerged = cudaPkgs.symlinkJoin {
+    name = "aegir-cuda-12.8";
+    paths = [ cuda.cuda_nvcc cuda.cuda_cudart cuda.cuda_cccl ];
+    # torch cpp_extension probes $CUDA_HOME/lib64; nix uses lib → alias it.
+    postBuild = ''
+      if [ -d "$out/lib" ] && [ ! -e "$out/lib64" ]; then ln -s lib "$out/lib64"; fi
+    '';
+  };
 in {
   # https://devenv.sh/packages/
   packages = with pkgs; [
@@ -51,6 +70,7 @@ in {
     kubectl        # RKE2 control for the Metaflow service plane
     kubernetes-helm # metaflow-tools chart (via tilt helm_remote)
     gettext        # `envsubst` — render Endpoints/values with the runtime pg port
+    cudaMerged     # nix-native CUDA 12.8 (nvcc+cudart+cccl) for the fused RWKV-7 kernel compile
     # zarf         # uncomment when pkgs.zarf is upstreamed; for now
     #              # follow cybersec's convention: fetch via curl in CI or vendor
   ];
@@ -97,6 +117,10 @@ in {
     AWS_SECRET_ACCESS_KEY = "minioadmin";
     MINIO_ROOT_USER = "minioadmin";
     MINIO_ROOT_PASSWORD = "minioadmin";
+    # nix-native CUDA toolchain paths for the fused RWKV-7 kernel compile (the trainer reads these and sets
+    # CUDA_HOME/CC/CXX/CUDAHOSTCXX for its own cpp_extension.load — see scripts/continue_pretrain_rwkv7.py).
+    AEGIR_CUDA_HOME = "${cudaMerged}";
+    AEGIR_CUDA_CCBIN = "${cuda.backendStdenv.cc}/bin";
   };
 
   enterShell = ''
