@@ -99,6 +99,34 @@ def _fused_op(r, w, k, v, a, b, head_size):
 E.RWKV7_OP = _fused_op  # the model's Tmix now drives the fused training kernel
 
 
+def _hidden(model, idx):
+    """RWKV_x070 forward up to ln_out (pre-head) — lets the head+CE be chunked."""
+    x = model.emb(idx)
+    v_first = torch.empty_like(x)
+    for blk in model.blocks:
+        x, v_first = blk(x, v_first)
+    return model.ln_out(x)
+
+
+def _chunked_ce_backward(model, hidden, y, chunk):
+    """Memory-efficient next-token CE: apply head + CE in token-chunks with per-chunk backward into a
+    DETACHED hidden, then propagate once through the backbone. Never materializes the full (B,T,vocab)
+    logits — the ~3GB memory wall at 65536 vocab — so batch/model can grow. Math = plain mean CE: each
+    chunk contributes (sum_CE / n) and its backward accumulates the head grad + the per-token hidden grad
+    (hd.grad); `hidden.backward(hd.grad)` then carries that through ln_out/blocks/emb."""
+    B, T, C = hidden.shape
+    n = B * T
+    hd = hidden.detach().requires_grad_(True)
+    hf, yf = hd.reshape(n, C), y.reshape(n)
+    total = 0.0
+    for i in range(0, n, chunk):
+        l = F.cross_entropy(model.head(hf[i:i + chunk]).float(), yf[i:i + chunk], reduction="sum") / n
+        l.backward()
+        total += float(l.detach())
+    hidden.backward(hd.grad.reshape(B, T, C))
+    return total
+
+
 class MixedBinidx(torch.utils.data.Dataset):
     """Flat-stream window sampler over base⊕aug binidx; each item is drawn from aug with prob α else base."""
 
@@ -130,6 +158,7 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=6e-5)
     ap.add_argument("--warmup", type=int, default=50)
     ap.add_argument("--grad-clip", type=float, default=1.0)
+    ap.add_argument("--ce-chunk", type=int, default=2048, help="token-chunk for memory-efficient head+CE")
     ap.add_argument("--out", required=True)
     ap.add_argument("--log-every", type=int, default=20)
     ap.add_argument("--ckpt-every", type=int, default=2000)
@@ -165,18 +194,17 @@ def main() -> int:
         x, y = x.to(dev), y.to(dev)
         for g in opt.param_groups:
             g["lr"] = lr_at(step)
-        logits = model(x)
-        loss = F.cross_entropy(logits.reshape(-1, logits.size(-1)).float(), y.reshape(-1))
         opt.zero_grad(set_to_none=True)
-        loss.backward()
+        h = _hidden(model, x)
+        loss_v = _chunked_ce_backward(model, h, y, a.ce_chunk)
         gn = torch.nn.utils.clip_grad_norm_(model.parameters(), a.grad_clip)
         opt.step()
         tok += x.numel()
         step += 1
         if step % a.log_every == 0:
             tps = tok / (time.time() - t0)
-            print(f"step {step}/{steps} loss {loss.item():.4f} lr {lr_at(step):.2e} gnorm {gn:.2f} tok/s {tps:.0f}", flush=True)
-            metrics.append({"step": step, "loss": float(loss.item()), "lr": lr_at(step), "gnorm": float(gn), "tok_s": tps})
+            print(f"step {step}/{steps} loss {loss_v:.4f} lr {lr_at(step):.2e} gnorm {gn:.2f} tok/s {tps:.0f}", flush=True)
+            metrics.append({"step": step, "loss": loss_v, "lr": lr_at(step), "gnorm": float(gn), "tok_s": tps})
         if step % a.ckpt_every == 0:
             torch.save(model.state_dict(), f"{a.out}/ckpt_{step}.pth")
         if step >= steps:
