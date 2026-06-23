@@ -77,7 +77,11 @@ def snapshot(kb_dir: str | Path | None = None, key: str | None = None,
     kb = Path(kb_dir or S.kb_dir())
     cur = kb / "current"
     now = now or datetime.now(timezone.utc)
-    key = key or f"{now.year}Q{_quarter(now.date())}"
+    # Default to a per-day snapshot nested in its calendar-quarter dir: archive/<year>Q<n>/<iso-date>/.
+    # The quarter is the enclosing dir; each day is its own snapshot, so multiple snapshots coexist and the
+    # rmtree below only clears that day's (never the whole quarter / the existing archive). An explicit
+    # --key (e.g. 2026Q3) overrides for a quarter-level snapshot.
+    key = key or f"{now.year}Q{_quarter(now.date())}/{now.strftime('%Y-%m-%d')}"
     dest = kb / "archive" / key
     if dest.exists():
         shutil.rmtree(dest)
