@@ -103,6 +103,39 @@ def build_records() -> list[dict]:
                 "common_names": f"family={family}; slots={','.join(class_slots)}",
                 "example_values": "",  # harvested from the corpus later
             })
+
+    # 3) domain mid-tier from the HermiT-admitted domain taxonomy (Path A domain-taxonomy enrichment):
+    #    hypernym concepts broader=anchor, member concepts broader=hypernym (injective — each member once).
+    #    This adds the domain depth the BFO-anchor attach lacks (specimen ⊃ blood/serum), so skos:broader
+    #    carries real domain hypernymy for subtree-mixing + the lineup/Atlas glossary.
+    import json as _json
+    admitted_path = REPO / "build" / "domain_taxonomy_admitted.json"
+    if admitted_path.exists():
+        anchor_by_key = {"process": ("SDG.PROCESS", "1"),
+                         "independent_continuant": ("SDG.INDEPENDENT_CONTINUANT", "2"),
+                         "artifact": ("SDG.ARTIFACT", "2.1"), "information_content_entity": ("SDG.ICE", "3"),
+                         "descriptive_ice": ("SDG.ICE.DESCRIPTIVE", "3.1"),
+                         "directive_ice": ("SDG.ICE.DIRECTIVE", "3.2"),
+                         "designative_ice": ("SDG.ICE.DESIGNATIVE", "3.3")}
+        adm = _json.loads(admitted_path.read_text())
+        seen_members: set[str] = set()
+        for hi, t in enumerate(adm.get("admitted", []), 1):
+            a_code, a_notation = anchor_by_key.get(t["anchor"], (GENERIC[0], GENERIC[1]))
+            hyp_code = f"SDG.DOM.{t['hypernym'].upper()}"
+            records.append({"code": hyp_code, "label": _humanize(t["hypernym"]),
+                            "abbrev": t["hypernym"].upper(), "notation": f"{a_notation}.D{hi}",
+                            "parent_code": a_code, "taxonomy": "sdg",
+                            "description": f"Domain hypernym (LLM-derived, HermiT-admitted) under {t['anchor']}.",
+                            "common_names": "domain_hypernym",
+                            "example_values": " | ".join(t["members"][:8])})
+            for mi, m in enumerate(t["members"], 1):
+                if m in seen_members:
+                    continue  # injective: each member resolves to exactly one hypernym
+                seen_members.add(m)
+                records.append({"code": f"SDG.DOM.{m.upper()}", "label": _humanize(m), "abbrev": m.upper(),
+                                "notation": f"{a_notation}.D{hi}.{mi}", "parent_code": hyp_code,
+                                "taxonomy": "sdg", "description": f"Domain concept under {t['hypernym']}.",
+                                "common_names": "domain_member", "example_values": ""})
     return records
 
 
