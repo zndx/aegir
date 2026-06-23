@@ -84,7 +84,8 @@ def ensure_types():
     # which 404s on rdbms_table. Force-refresh it so it targets rdbms_table/rdbms_column.
     if "OntologyProvenance" in existing:
         d = api("GET", "types/businessmetadatadef/name/OntologyProvenance")
-        if not (d.ok and "rdbms_table" in d.text):  # stale hive-only def → refresh for rdbms_*
+        # stale hive-only def (no rdbms_table) OR pre-L2 def (no natural_name) → drop + recreate
+        if not (d.ok and "rdbms_table" in d.text and "natural_name" in d.text):
             api("DELETE", "types/typedef/name/OntologyProvenance")
             existing.discard("OntologyProvenance")
     class_defs, bm_defs = [], []
@@ -113,7 +114,10 @@ def ensure_types():
                         "description": "Provenance from the grounding ontology",
                         "attributeDefs": [bm_attr("template_id"), bm_attr("family"),
                                           bm_attr("bfo_anchor"), bm_attr("manchester"),
-                                          bm_attr("is_complex", "boolean")]})
+                                          bm_attr("is_complex", "boolean"),
+                                          # C2.5 L2 lineage — the entity is SEMANTIC-named (reference);
+                                          # natural_name is its canonical-deliverable (trained) physical name.
+                                          bm_attr("natural_name"), bm_attr("naming")]})
 
     if class_defs or bm_defs:
         r = api("POST", "types/typedefs", json={
@@ -554,6 +558,8 @@ def classify(base, base_tbl_guid, base_col_guid):
                 print(f"   classify {tname}: {r.status_code} {r.text[:160]}")
     print(f"  classifications: {applied} applications across {len(by_type)} types")
 
+    from aegir.ontology.natural_naming import load_natural_names
+    nat_names = load_natural_names()  # C2.5 L2 — semantic↔natural lineage (deduped table names)
     bm_set = 0
     for tid, b in base.items():
         tg = base_tbl_guid.get(tid)
@@ -564,9 +570,11 @@ def classify(base, base_tbl_guid, base_col_guid):
         r = api("POST", f"entity/guid/{tg}/businessmetadata?isOverwrite=true", timeout=600, json={
             "OntologyProvenance": {"template_id": tid, "family": st.family, "bfo_anchor": bfo,
                                    "manchester": st.template.manchester_template[:1900],
-                                   "is_complex": st.template.is_complex}})
+                                   "is_complex": st.template.is_complex,
+                                   "natural_name": nat_names.get(tid, {}).get("table", ""),
+                                   "naming": "semantic"}})
         bm_set += 1 if r.ok else 0
-    print(f"  business metadata: set on {bm_set} tables")
+    print(f"  business metadata: set on {bm_set} tables (+natural_name lineage)")
 
 
 def reset():
