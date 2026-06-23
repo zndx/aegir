@@ -49,7 +49,7 @@ def _concept(colname: str) -> str:
 def _load_hypernyms() -> dict:
     """norm(concept) → norm(parent) from the SKOS vocab's skos:broader (the ontology hypernym graph).
     Lets C1 label columns by their PARENT concept — a hypernym-CTA (infer the general type from a
-    heterogeneous value population), which is the generalizable target and the de-leaked label for
+    heterogeneous value population), which is the generalizable target and the natural-register label for
     subtree-mixing (C2.5). One level up; missing → leaf concept (identity)."""
     try:
         from rdflib import Graph

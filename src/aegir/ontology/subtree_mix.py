@@ -3,7 +3,8 @@
 A column typed at a PARENT concept draws cells from the UNION of its (SKOS-broader) children's value pools,
 so it holds a realistic HETEROGENEOUS subtype population (``specimen`` ← blood ∪ serum ∪ plasma) instead of a
 single concept's values. Two effects:
-  * **de-leaks further** — the values span subtypes, so no single concept name is recoverable from them; and
+  * **naturalizes further** — the values span subtypes (a realistic heterogeneous population), so no single
+    concept name is recoverable from them; and
   * **sets up the hypernym-CTA** — the generalizable task is "infer the parent type from a heterogeneous
     value population," which requires relational understanding rather than surface pattern-matching.
 
