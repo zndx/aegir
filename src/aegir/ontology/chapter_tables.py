@@ -144,6 +144,30 @@ def _view_stem(st: SpineTable) -> str:
     return stem or st.table.name
 
 
+def _domain_broader_map() -> "dict[str, str]":
+    """member-concept → hypernym from the HermiT-admitted domain taxonomy (L1 subtree-mix source).
+    Local build artifact; returns {} if absent → L1 is a graceful no-op."""
+    import json as _json
+    p = Path(__file__).resolve().parents[3] / "build" / "domain_taxonomy_admitted.json"
+    if not p.exists():
+        return {}
+    from aegir.ontology.subtree_mix import concept_of
+    d = _json.loads(p.read_text())
+    return {concept_of(m): t["hypernym"] for t in d.get("admitted", []) for m in t["members"]}
+
+
+def mixed_entity_pools(spine: Sequence[SpineTable]) -> dict:
+    """``entity_pools_for_spine`` + C2.5 L1 domain subtree-mixing: a column at a parent concept draws from the
+    union of its children's pools (the heterogeneous subtype population the hypernym-CTA tests). Values-only —
+    FK cols are overwritten from PK pools in materialize_rows, so RI is untouched. No-op if no taxonomy."""
+    pools = entity_pools_for_spine(spine)
+    bmap = _domain_broader_map()
+    if bmap:
+        from aegir.ontology.subtree_mix import subtree_mixed_pools
+        pools, _ = subtree_mixed_pools(pools, bmap)
+    return pools
+
+
 def build_views(spine: Sequence[SpineTable],
                 fks: Sequence[FKEdge]) -> list[tuple[ViewSpec, list[list[str]]]]:
     """A projection view per base table + a join view per FK edge, each with its rows evaluated.
@@ -172,7 +196,7 @@ def payload_from_spine(spine: list[SpineTable], family_complex, *,
     if family_complex is not None:
         fks, _ = cross_family_fks(spine, family_complex)
     materialize_rows(spine, fks, seed=seed, definitions=definitions_for_spine(spine),
-                     entity_pools=entity_pools_for_spine(spine))
+                     entity_pools=mixed_entity_pools(spine))  # C2 de-leaked + C2.5 L1 domain-mix
     assert_referential_integrity(spine, fks)
     return RelationalPayload(base_tables=spine, fks=fks, views=build_views(spine, fks))
 
@@ -212,7 +236,7 @@ def realized_payload_from_dicts(templates: Sequence[dict], family_complex, *,
                      if e.src_col in cols.get(e.src_table, set()) and e.dst_col in cols.get(e.dst_table, set())]
     fks = rfks + cross_fks
     materialize_rows(tables, fks, seed=seed, definitions=definitions_for_spine(tables),
-                     entity_pools=entity_pools_for_spine(tables))
+                     entity_pools=mixed_entity_pools(tables))  # C2 de-leaked + C2.5 L1 domain-mix
     assert_referential_integrity(tables, fks)
     views = [(v, []) for v in rviews] + build_views(primary, cross_fks)
     return RelationalPayload(base_tables=tables, fks=fks, views=views)
