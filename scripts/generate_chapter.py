@@ -167,6 +167,11 @@ def parse_args() -> argparse.Namespace:
                    help="write chapters around REALIZED schema subgraphs (EAV / junction / star / "
                         "snowflake via realize.py) instead of flat one-table-per-template — the "
                         "super-linear DDL+views deliverable with real-world structural diversity")
+    p.add_argument("--naming", choices=["natural", "semantic"], default="natural",
+                   help="C2.5 L2 physical naming of embedded tables/columns/views. 'natural' (default) = the "
+                        "CANONICAL trained deliverable (DBA-realistic names from natural_names.json, RI-safe); "
+                        "'semantic' = ontology-native names (Atlas/lineage reference). natural also breaks the "
+                        "concept-from-header training shortcut.")
     return p.parse_args()
 
 
@@ -836,7 +841,8 @@ def build_axiom_section_with_tables(templates: list[dict], payload, rng=None) ->
 
 
 def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
-                 family_complex=None, *, seed: int = 0, realize_schemas: bool = False) -> tuple:
+                 family_complex=None, *, seed: int = 0, realize_schemas: bool = False,
+                 naming: str = "natural") -> tuple:
     """Build the generation prompt; returns ``(prompt, payload | None)``.
 
     glm/grok get the **fixed populated tables** injected (Track A: load-bearing ontology + RI=1.0);
@@ -854,6 +860,11 @@ def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
             from aegir.ontology.chapter_tables import chapter_relational_payload
             payload = chapter_relational_payload(templates, family_complex, seed=seed,
                                                  realize=realize_schemas)
+            if naming == "natural":  # C2.5 L2 — the canonical-deliverable natural physical names (RI-safe)
+                from aegir.ontology.natural_naming import load_natural_names, natural_payload
+                nn = load_natural_names()
+                if nn:
+                    payload = natural_payload(payload, nn)
             axiom_section = build_axiom_section_with_tables(templates, payload, rng=vrng)
         except Exception as exc:  # noqa: BLE001 — RI/lowering failure must not abort a long run
             logger.warning(f"  relational payload failed ({type(exc).__name__}: {str(exc)[:100]}); "
@@ -1187,7 +1198,7 @@ def main() -> int:
 
         prompt, rel_payload = build_prompt(anchors, chosen, kind=kind, family_complex=family_complex,
                                            seed=args.seed + seed_offset,
-                                           realize_schemas=args.realize_schemas)
+                                           realize_schemas=args.realize_schemas, naming=args.naming)
         chapter_id = compute_chapter_id(prompt, model, seed_offset)
 
         logger.info(f"chapter {i+1}/{args.n_chapters} (id={chapter_id}):")
