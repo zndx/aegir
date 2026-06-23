@@ -449,6 +449,56 @@ include explanations of what you generated. Just the chapter.
 """
 
 
+# Natural/TOPICAL register (C2.5 L2) — paired with --naming natural. Same ontology grounding + tables, but
+# the chapter is written as a DOMAIN PRACTITIONER's handbook ABOUT THE SUBJECT (not about the ontology), so
+# the corpus accumulates a second, complementary surface from the same input: topical prose + DBA-real names.
+GLM_NATURAL_TEMPLATE = """You are writing one chapter of a practitioner's handbook in a specific SUBJECT
+AREA — the kind a senior professional writes for their own field (laboratory operations, kernel
+observability, data governance, clinical workflows, supply-chain QA, …). You write ABOUT THE SUBJECT,
+using its real working data tables as the backbone.
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 1 — STYLE REFERENCES (the chapter should LOOK LIKE these)
+═══════════════════════════════════════════════════════════════════════
+
+These are real passages from a technical-document corpus. Match the register, structure, density, and
+use of evidence. DO NOT copy their subject matter — they are style anchors, not content sources.
+
+{style_section}
+
+═══════════════════════════════════════════════════════════════════════
+SECTION 2 — THE DOMAIN'S DATA MODEL + RECORDS (your chapter is built around THIS)
+═══════════════════════════════════════════════════════════════════════
+
+Below are the working tables of this subject area — a relational schema with real records — and short
+factual statements about how they relate. Treat them as the OPERATIONAL DATA of the field: the tables a
+practitioner actually queries. The table and column names are the field's real schema — use them exactly
+as given. Build your chapter around these records; every entity you discuss must trace to one of them.
+
+{axiom_section}
+
+═══════════════════════════════════════════════════════════════════════
+INSTRUCTIONS
+═══════════════════════════════════════════════════════════════════════
+
+Write a single handbook chapter approximately 1500-3000 words long, IN THE VOICE OF A DOMAIN PRACTITIONER.
+
+REQUIREMENTS:
+- Write about the SUBJECT MATTER, not about data modelling. Do NOT use the words "ontology", "axiom",
+  "OWL", "schema template", or "concept" — a practitioner writes about specimens, runs, programs, and
+  policies, not about formal representation.
+- Open with a short scope paragraph framing the subject area (3-5 sentences).
+- Organize by TOPIC (the real things in the domain), each in a numbered section with prose and at least
+  one short worked example that references the data.
+- Embed AT LEAST 2 of the data tables verbatim (markdown, header + 3-7 rows) and refer to their rows
+  naturally in the prose (e.g. "as the sample-register table records, …"). Use the given column names as-is.
+- Maintain the dense, evidence-anchored register of the style references. No marketing, no padding.
+
+OUTPUT FORMAT: pure markdown. Begin with a level-1 heading (# Chapter title). No preamble, no
+meta-commentary. Just the chapter.
+"""
+
+
 # Grok prompt — depth + max ontology grounding + cross-joinable LIMS-style
 # relational tables. The Grok output is where the multi-hop relational
 # structure lives that lets TAPEX-style table reasoning emerge.
@@ -849,7 +899,9 @@ def build_prompt(anchors: list[dict], templates: list[dict], kind: str,
     the no-schema arm keeps plain-text axioms WITHOUT the DDL — the load-bearing contrast. The payload
     (or None) is returned so the caller can record the authoritative tables on the chapter row.
     """
-    tpl = PROMPT_BY_KIND[kind]
+    # natural naming pairs with the TOPICAL register (write about the subject, not the ontology); the
+    # semantic variant keeps the ontology-discourse template. Both accumulate → two corpus surfaces.
+    tpl = GLM_NATURAL_TEMPLATE if (naming == "natural" and kind == "glm") else PROMPT_BY_KIND[kind]
     payload = None
     # Per-chapter rng for verbalization-frame sampling (Comp 3): same seed as the chapter, so the choice
     # is deterministic/reproducible yet varies across chapters → corpus-level surface diversity.
