@@ -59,10 +59,13 @@ _ART = "/raid/checkpoints/aegir-artifacts"
 
 def corpus_run() -> Path | None:
     """Latest on-disk ``chapters.parquet`` (the content Data Product), or None. Prefers the
-    full ``sdg_corpus_v*`` runs (the real corpus) over the ``chapters_v*`` / ``chapters*`` dev
-    fixtures, so the content navigator populates from the real corpus by default — not the
-    5-chapter smoke fixture. ``AEGIR_CORPUS_RUN`` still overrides."""
-    return _first([f"{_ART}/sdg_corpus_v*/*/chapters.parquet",
+    C2.5 L2 **natural canonical-deliverable** corpus (path-a ``c3nat`` — de-leaked + domain-mixed +
+    natural-named + topical prose) over the older ``sdg_corpus_v*`` / ``chapters_v*`` runs, so the
+    content navigator shows the latest REFINED corpus by default (the pre-refinement sdg_corpus_v0_3
+    runs read as degraded). ``AEGIR_CORPUS_RUN`` still overrides; if/when the canonical corpus is
+    regenerated at scale with --naming natural, point this (or that override) at it."""
+    return _first(["/raid/build/aegir/path-a/c3nat/chapters/*/chapters.parquet",  # natural canonical deliverable — preferred
+                   f"{_ART}/sdg_corpus_v*/*/chapters.parquet",
                    f"{_ART}/chapters_v*/*/chapters.parquet",
                    f"{_ART}/chapters*/chapters.parquet"], "AEGIR_CORPUS_RUN")
 
