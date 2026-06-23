@@ -82,12 +82,24 @@ def ensure_types():
     existing = {h["name"] for h in api("GET", "types/typedefs/headers").json()}
     # A prior hive run may have created OntologyProvenance with applicableEntityTypes=hive_*,
     # which 404s on rdbms_table. Force-refresh it so it targets rdbms_table/rdbms_column.
+    def bm_attr(name, tn="string"):
+        return _attr(name, tn, options={
+            "applicableEntityTypes": "[\"rdbms_table\",\"rdbms_column\"]", "maxStrLength": "2000"})
+
     if "OntologyProvenance" in existing:
         d = api("GET", "types/businessmetadatadef/name/OntologyProvenance")
-        # stale hive-only def (no rdbms_table) OR pre-L2 def (no natural_name) → drop + recreate
-        if not (d.ok and "rdbms_table" in d.text and "natural_name" in d.text):
+        if not (d.ok and "rdbms_table" in d.text):
+            # stale hive-only def (no rdbms_table) → drop + recreate (no in-use entities on rdbms_*)
             api("DELETE", "types/typedef/name/OntologyProvenance")
             existing.discard("OntologyProvenance")
+        elif "natural_name" not in d.text:
+            # pre-L2 def is IN-USE (prior entities hold it → DELETE fails); PUT-ADD the C2.5 L2 attrs
+            # (an additive typedef update is allowed in-use — vs delete+recreate which is not).
+            upd = d.json()
+            upd["attributeDefs"] = upd.get("attributeDefs", []) + [bm_attr("natural_name"), bm_attr("naming")]
+            pr = api("PUT", "types/typedefs", json={"businessMetadataDefs": [upd], "classificationDefs": [],
+                     "enumDefs": [], "structDefs": [], "entityDefs": [], "relationshipDefs": []})
+            print(f"  OntologyProvenance: PUT +natural_name/naming -> {pr.status_code}")
     class_defs, bm_defs = [], []
 
     def cdef(name, desc):
@@ -106,10 +118,6 @@ def ensure_types():
             class_defs.append(cdef(n, d))
 
     if "OntologyProvenance" not in existing:
-        def bm_attr(name, tn="string"):
-            return _attr(name, tn, options={
-                "applicableEntityTypes": "[\"rdbms_table\",\"rdbms_column\"]",
-                "maxStrLength": "2000"})
         bm_defs.append({"name": "OntologyProvenance",
                         "description": "Provenance from the grounding ontology",
                         "attributeDefs": [bm_attr("template_id"), bm_attr("family"),
