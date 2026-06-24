@@ -23,6 +23,7 @@ const TRAINING = [
   { key: "sweeps", label: "Sweeps", seed: "training/sweeps", hint: "parallel coords" },
   { key: "reward", label: "Reward", seed: "training/reward", hint: "GRPO dynamics" },
   { key: "provenance", label: "Provenance", seed: "training/provenance", hint: "lineage DAG" },
+  { key: "metrics", label: "Metrics", seed: "training/metrics", hint: "gates & measures" },
 ];
 const ROOTS = ["archive", "current", "scratch"];
 
@@ -34,6 +35,20 @@ function tab(active: boolean): React.CSSProperties {
   };
 }
 
+// Persist the panel trail per-seed in sessionStorage so it survives a re-render/remount (e.g. on window
+// blur→focus / alt-tab). Without this, `trail` re-initializes to [seed] and the user loses their place.
+const trailKey = (s: string) => `lineup:trail:${s}`;
+function loadTrail(seed: string): string[] {
+  try {
+    const v = sessionStorage.getItem(trailKey(seed));
+    if (v) { const a = JSON.parse(v); if (Array.isArray(a) && a.length) return a as string[]; }
+  } catch { /* sessionStorage unavailable */ }
+  return [seed];
+}
+function saveTrail(seed: string, trail: string[]): void {
+  try { sessionStorage.setItem(trailKey(seed), JSON.stringify(trail)); } catch { /* ignore */ }
+}
+
 function Lineup() {
   const [params] = useSearchParams();
   const lensKey = params.get("lens") || "terms";
@@ -42,7 +57,7 @@ function Lineup() {
 
   const [root, setRoot] = useState("current");
   const [index, setIndex] = useState<KBIndex | null>(null);
-  const [trail, setTrail] = useState<string[]>([seed]);
+  const [trail, setTrail] = useState<string[]>(() => loadTrail(seed));
   const [cache, setCache] = useState<Record<string, KBNote | null>>({});
   const requested = useRef<Set<string>>(new Set());
 
@@ -60,7 +75,9 @@ function Lineup() {
   }, []);
 
   useEffect(() => { trail.forEach((id) => { if (!(id in cache)) fetchNote(id); }); }, [trail, cache, fetchNote]);
-  useEffect(() => { setTrail([seed]); }, [seed]);
+  // Restore (not reset) the trail when the seed changes or the component remounts — survives alt-tab.
+  useEffect(() => { setTrail(loadTrail(seed)); }, [seed]);
+  useEffect(() => { saveTrail(seed, trail); }, [trail, seed]);
 
   const openFrom = (fromIdx: number) => (targetId: string) =>
     setTrail((t) => [...t.slice(0, fromIdx + 1), targetId]);

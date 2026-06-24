@@ -690,6 +690,45 @@ def project_training() -> list[N.Note]:
     return [sweeps, reward, provenance]
 
 
+def project_metrics() -> list[N.Note]:
+    """Training → Metrics: the curated catalog of the project's quantitative controls (gates · measures · KPIs)
+    as a navigable tree (root → category → metric, panel-trail). From ``metrics_catalog.METRICS``."""
+    from aegir.lineup.metrics_catalog import METRICS
+    out: list[N.Note] = []
+    total = sum(len(c["metrics"]) for c in METRICS)
+    cat_lines = []
+    for c in METRICS:
+        cid = f"training/metrics/{c['slug']}"
+        cat_lines.append(f"- {N.wl(cid, c['title'])} — {len(c['metrics'])} · {c['blurb'][:80]}…")
+    out.append(N.Note(
+        id="training/metrics", title="Metrics", kind="training", data_product="training",
+        body=("**Metrics — the quantitative controls.** The gates, measures, and KPIs that steer the three "
+              "coupled products (ontology · corpus · model) toward higher quality and drive model fine-tuning "
+              f"+ H-Net+RWKV training. **{total} metrics across {len(METRICS)} categories** — open a category "
+              "for its metrics; a metric for its definition · formula · gate · role · source.\n\n"
+              + "\n".join(cat_lines))))
+    for c in METRICS:
+        cslug = c["slug"]
+        m_lines = []
+        for m in c["metrics"]:
+            mid = f"training/metrics/{cslug}/{m['slug']}"
+            g = f" — gate **{m['gate']}**" if m.get("gate") and m["gate"] != "—" else ""
+            m_lines.append(f"- {N.wl(mid, m['name'])}{g}")
+        out.append(N.Note(
+            id=f"training/metrics/{cslug}", title=c["title"], kind="training", data_product="training",
+            body=(f"{N.wl('training/metrics', '← all metrics')}\n\n**{c['title']}.** {c['blurb']}\n\n"
+                  + "\n".join(m_lines))))
+        for m in c["metrics"]:
+            g = f"\n- **gate / threshold:** {m['gate']}" if m.get("gate") and m["gate"] != "—" else ""
+            out.append(N.Note(
+                id=f"training/metrics/{cslug}/{m['slug']}", title=m["name"], kind="metric",
+                data_product="training",
+                body=(f"{N.wl(f'training/metrics/{cslug}', '← ' + c['title'])}\n\n"
+                      f"- **definition / formula:** {m['formula']}{g}\n"
+                      f"- **role:** {m['role']}\n- **defined in:** `{m['src']}`")))
+    return out
+
+
 def run(args=None) -> int:
     kb = S.kb_dir()
     current = kb / "current"
@@ -760,6 +799,9 @@ def run(args=None) -> int:
 
     notes += project_lenses(categories, bool(corpus), bool(coverage), maps)
     notes += project_training()
+    mt = project_metrics()
+    notes += mt
+    print(f"  training: 3 viz panels + metrics catalog ({len(mt)} notes)")
 
     for n in notes:
         N.write_note(kb, n)
