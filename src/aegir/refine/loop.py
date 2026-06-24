@@ -66,9 +66,11 @@ def _load_value_pools():
 
 
 class RefinementEffector:
-    def __init__(self, ch0: dict, propose_fn: Callable[[dict, dict], str]) -> None:
+    def __init__(self, ch0: dict, propose_fn: Callable[[dict, dict], str],
+                 scaffold_propose: "Callable | None" = None) -> None:
         self.ch0 = ch0
         self.propose_fn = propose_fn
+        self.scaffold_propose = scaffold_propose   # inc-2: agent proposes structured table edits
         self.pools = _load_value_pools()
 
     # ── gates → signals ──────────────────────────────────────────────────────
@@ -88,12 +90,28 @@ class RefinementEffector:
             return json.loads(json.dumps(self.ch0))   # fresh deep copy of the single-shot baseline
         c = json.loads(json.dumps(prev))               # copy-on-write per remediation
         if objective == "fix_value":
-            self._fix_value(c)
+            if not self._agent_edit(c, "fix_value", feedback):
+                self._fix_value(c)                     # deterministic membrane fallback
         elif objective == "fix_placeholders":
-            self._fix_placeholders(c)
+            if not self._agent_edit(c, "fix_placeholders", feedback):
+                self._fix_placeholders(c)
         elif objective == "fix_prose":
             c["prose"] = self.propose_fn(c, feedback)
         return c
+
+    def _agent_edit(self, c: dict, objective: str, feedback: dict) -> bool:
+        """inc-2 scaffold agency: the agent PROPOSES structured edits; ``scaffold.apply_edits`` DISPOSES them
+        RI-safe (keys untouched, values from the ontology pools). Returns whether any edit applied — else mint
+        falls back to deterministic remediation, so the membrane always closes the objective."""
+        if not self.scaffold_propose:
+            return False
+        from aegir.refine.scaffold import apply_edits
+        try:
+            edits = self.scaffold_propose(c, objective, feedback) or []
+        except Exception:  # noqa: BLE001 — an agent/transport failure must not break the loop
+            return False
+        applied, _ = apply_edits(c, edits)
+        return bool(applied)
 
     def _fix_value(self, c: dict) -> None:
         """Deterministic membrane remediation: replace each disjoint-contaminant cell with a clean value of the
@@ -137,11 +155,14 @@ class RefinementEffector:
                         k += 1
 
 
-def run_refinement(ch0: dict, *, propose_fn: Callable[[dict, dict], str], max_iters: int = 8,
+def run_refinement(ch0: dict, *, propose_fn: Callable[[dict, dict], str],
+                   scaffold_propose: "Callable | None" = None, dual_prose_fn: "Callable | None" = None,
+                   register: str = "natural", max_iters: int = 8,
                    trace_path: str | Path | None = None, commit_dir: str | Path | None = None) -> dict:
-    """Run the membrane-gated loop on one chapter. Returns
-    {baseline, refined, outcome, iterations, fired, baseline_metrics, refined_metrics, committed}."""
-    eff = RefinementEffector(ch0, propose_fn)
+    """Run the membrane-gated loop on one chapter. With ``scaffold_propose`` the agent gets agency over the
+    TABLES (inc-2); with ``dual_prose_fn`` COMMIT writes BOTH registers (the other register's prose over the
+    same RI-true tables). Returns {…, refined, surfaces:[(register, path)], committed}."""
+    eff = RefinementEffector(ch0, propose_fn, scaffold_propose=scaffold_propose)
     h = MetaHarness(refinement_rules(), eff, max_iters=max_iters, trace_path=trace_path)
     ctx = h.run(ch0.get("template_id", "ch0"))
     refined = ctx.construct or ch0
@@ -149,15 +170,27 @@ def run_refinement(ch0: dict, *, propose_fn: Callable[[dict, dict], str], max_it
     out = {
         "outcome": ctx.terminate, "iterations": ctx.iterations, "fired": fired,
         "baseline_metrics": ev.measure(ch0), "refined_metrics": ev.measure(refined),
-        "refined": refined, "committed": None,
+        "refined": refined, "committed": None, "surfaces": [],
     }
-    if ctx.terminate == "promote" and commit_dir is not None:   # COMMIT: scratch → current
+    if ctx.terminate == "promote" and commit_dir is not None:   # COMMIT: scratch → current (dual-register)
         cur = Path(commit_dir) / "current"
         cur.mkdir(parents=True, exist_ok=True)
         tid = ch0.get("template_id", "ch0")
-        (cur / f"{tid}.json").write_text(json.dumps(refined, indent=2))
+        surfaces = [(register, refined)]
+        if dual_prose_fn is not None:           # the OTHER register's prose over the SAME RI-true tables
+            other = "semantic" if register == "natural" else "natural"
+            alt = json.loads(json.dumps(refined))
+            try:
+                alt["prose"] = dual_prose_fn(refined)
+                surfaces.append((other, alt))
+            except Exception:  # noqa: BLE001
+                pass
+        for reg, surf in surfaces:
+            p = cur / f"{tid}.{reg}.json"
+            p.write_text(json.dumps({**surf, "register": reg}, indent=2))
+            out["surfaces"].append((reg, str(p)))
+        out["committed"] = out["surfaces"][0][1]
         (cur / f"{tid}.metrics.json").write_text(json.dumps(out["refined_metrics"], indent=2))
-        out["committed"] = str(cur / f"{tid}.json")
     return out
 
 
