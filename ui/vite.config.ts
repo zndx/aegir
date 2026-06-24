@@ -11,6 +11,12 @@ const silenceProxyError = (err: Error, _req: unknown, _res: unknown) => {
 
 export default defineConfig({
   plugins: [react()],
+  // @xyflow/react is reachable only through a lazy import (ProvenanceGraph), so Vite's startup dep-scan never
+  // pre-bundles it — opening Provenance then triggers an on-demand re-optimize and the in-flight dynamic import
+  // 504s ("Outdated Optimize Dep"). Force it into the startup optimization so the lazy chunk loads cleanly.
+  optimizeDeps: {
+    include: ["@xyflow/react"],
+  },
   server: {
     host: "0.0.0.0",
     port: 5173,
