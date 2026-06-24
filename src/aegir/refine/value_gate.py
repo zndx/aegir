@@ -39,8 +39,8 @@ def render_value_ontology(classes, subclass_of, disjoint, individuals) -> str:
         lines.append(f"Class: {_iri(c)}")
     for sub, sup in subclass_of:
         lines.append(f"Class: {_iri(sub)}\n    SubClassOf: {_iri(sup)}")
-    for a, b in disjoint:
-        lines.append(f"DisjointClasses: {_iri(a)}, {_iri(b)}")
+    for grp in disjoint:   # each group is mutually disjoint (n-ary); a 2-list is the pair case
+        lines.append("DisjointClasses: " + ", ".join(_iri(x) for x in grp))
     for iid, types in individuals:
         lines.append(f"Individual: {_iri(iid)}\n    Types: " + ", ".join(_iri(t) for t in types))
     return "\n".join(lines) + "\n"
@@ -79,6 +79,28 @@ def check_column(column_concept: str, value_sources, *, classes=(), subclass_of=
         doc = render_value_ontology(allcls, subclass_of, disjoint, [(v, [column_concept, s])])
         if not _is_consistent(doc):
             viol.append(v)
+    return {"consistent": False, "violations": viol}
+
+
+def check_chapter(columns, *, classes=(), subclass_of=(), disjoint=()) -> dict:
+    """Batched whole-chapter value check — ONE HermiT classification over every column's cells (each a unique
+    individual ``Types: column_concept, source``). On a clean chapter this is a single reasoner call; only if
+    the batch is inconsistent do we fall back to per-column ``check_column`` to pinpoint the violators. Lets the
+    refinement loop gate a full live chapter (dozens of columns) without a per-column reasoner storm.
+
+    ``columns``: ``[(col_id, column_concept, [(value, source)])]``. Returns ``{consistent, violations:[col_id:value]}``."""
+    allcls = set(classes)
+    inds = []
+    for col_id, concept, vs in columns:
+        allcls |= {concept} | {s for _, s in vs}
+        for i, (v, s) in enumerate(vs):
+            inds.append((f"{col_id}__{i}", [concept, s]))
+    if not inds or _is_consistent(render_value_ontology(allcls, subclass_of, disjoint, inds)):
+        return {"consistent": True, "violations": []}
+    viol = []
+    for col_id, concept, vs in columns:
+        r = check_column(concept, vs, classes=classes, subclass_of=subclass_of, disjoint=disjoint)
+        viol.extend(f"{col_id}:{v}" for v in r["violations"])
     return {"consistent": False, "violations": viol}
 
 

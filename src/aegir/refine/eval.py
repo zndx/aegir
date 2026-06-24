@@ -45,21 +45,18 @@ def disjointness_violations(construct) -> list[str]:
 
     A cell whose *source* concept is disjoint from its *column* concept (directly or inferred) is a violation
     — the audit's ASHRAE-in-imaging case. Reuses the validated ``value_gate`` (real reasoner)."""
-    from aegir.refine.value_gate import check_column
+    from aegir.refine.value_gate import check_chapter
     onto = construct.get("value_onto", {})
     kw = dict(classes=onto.get("classes", ()), subclass_of=onto.get("subclass_of", ()),
               disjoint=onto.get("disjoint", ()))
-    viol: list[str] = []
+    columns = []
     for t in construct.get("tables", []):
         for col in t.get("columns", []):
             concept = col.get("concept")
             vs = [(str(cell["value"]), cell.get("source", concept)) for cell in col.get("cells", [])]
-            if not concept or not vs:
-                continue
-            r = check_column(concept, vs, **kw)
-            if not r["consistent"]:
-                viol.extend(f"{t['name']}.{col['name']}:{v}" for v in r["violations"])
-    return viol
+            if concept and vs:
+                columns.append((f"{t['name']}.{col['name']}", concept, vs))
+    return check_chapter(columns, **kw)["violations"] if columns else []
 
 
 def ri_ok(construct) -> bool:
