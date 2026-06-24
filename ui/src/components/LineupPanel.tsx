@@ -123,6 +123,55 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
       );
       continue;
     }
+    if (ln.trim().startsWith("```")) {
+      const lang = ln.trim().slice(3).trim().toLowerCase();
+      const buf: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith("```")) { buf.push(lines[i]); i++; }
+      if (i < lines.length) i++; // consume closing fence
+      const raw = buf.join("\n");
+      let obj: any = null;
+      if (lang === "json" || raw.trim().startsWith("{") || raw.trim().startsWith("[")) {
+        try { obj = JSON.parse(raw); } catch { obj = null; }
+      }
+      if (obj && Array.isArray(obj.tables)) {
+        blocks.push(
+          <div key={`j-${i}`} style={{ margin: "8px 0" }}>
+            {obj.tables.map((t: any, ti: number) => (
+              <div key={ti} style={{ margin: "8px 0" }}>
+                <div style={{ fontSize: 11, color: "#888", fontFamily: "monospace", marginBottom: 2 }}>
+                  {String(t.name ?? `table ${ti + 1}`)} · {(t.rows?.length ?? 0)} rows
+                </div>
+                <table style={{ borderCollapse: "collapse", fontSize: 12, width: "100%" }}>
+                  {Array.isArray(t.columns) && t.columns.length > 0 && (
+                    <thead><tr>{t.columns.map((c: any, cj: number) => (
+                      <th key={cj} style={{ textAlign: "left", borderBottom: "1px solid #ddd", padding: "2px 6px", color: "#888" }}>{String(c)}</th>
+                    ))}</tr></thead>
+                  )}
+                  <tbody>
+                    {(t.rows || []).slice(0, 100).map((r: any, ri: number) => (
+                      <tr key={ri}>{(Array.isArray(r) ? r : [r]).map((c: any, cj: number) => (
+                        <td key={cj} style={{ borderBottom: "1px solid #f0f0f0", padding: "2px 6px" }}>{String(c)}</td>
+                      ))}</tr>
+                    ))}
+                  </tbody>
+                </table>
+                {(t.rows?.length ?? 0) > 100 && (
+                  <div style={{ fontSize: 11, color: "#aaa" }}>…{t.rows.length - 100} more rows</div>
+                )}
+              </div>
+            ))}
+          </div>,
+        );
+        continue;
+      }
+      blocks.push(
+        <pre key={`c-${i}`} style={{ background: "#f6f8fa", padding: 8, borderRadius: 4, fontSize: 11.5, overflowX: "auto", margin: "6px 0" }}>
+          {obj ? JSON.stringify(obj, null, 2) : raw}
+        </pre>,
+      );
+      continue;
+    }
     if (ln.trim() === "") { i++; continue; }
     blocks.push(<p key={`p-${i}`} style={{ margin: "6px 0", lineHeight: 1.5 }}>{renderInline(ln, onLink, `p-${i}`)}</p>);
     i++;

@@ -383,6 +383,26 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
 
 
 # ── content Data Product (on-disk corpus rows, if present) ───────────────────
+def _windows(full: str, w: int = 12000) -> list:
+    """Split text into ~``w``-char windows at LINE boundaries, never breaking inside a ``` code fence — so a
+    chapter's serialized JSON table payload stays whole for the panel renderer."""
+    out: list = []
+    cur: list = []
+    n = 0
+    fence = False
+    for ln in full.split("\n"):
+        if ln.lstrip().startswith("```"):
+            fence = not fence
+        cur.append(ln)
+        n += len(ln) + 1
+        if n >= w and not fence:
+            out.append("\n".join(cur))
+            cur, n = [], 0
+    if cur:
+        out.append("\n".join(cur))
+    return out or [""]
+
+
 def project_content(recs: list[dict]) -> list[N.Note]:
     out: list[N.Note] = []
     chapter_ids: list[str] = []
@@ -397,8 +417,7 @@ def project_content(recs: list[dict]) -> list[N.Note]:
             head += f"  ·  **Topic.** {N.wl(f'topic/{int(topic)}')}"
         reg = r.get("_register", "natural")
         full = r.get("response_text") or ""
-        W = 12000
-        wins = [full[j:j + W] for j in range(0, len(full), W)] or [""]
+        wins = _windows(full, 12000)
         n = len(wins)
         body0 = f"*Register: **{reg}***\n\n{head}\n\n{wins[0]}"
         if n > 1:   # the next 12K window opens in its own panel (panel-trail wikilink — NOT bold-wrapped:
