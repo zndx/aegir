@@ -401,8 +401,9 @@ def project_content(recs: list[dict]) -> list[N.Note]:
         wins = [full[j:j + W] for j in range(0, len(full), W)] or [""]
         n = len(wins)
         body0 = f"*Register: **{reg}***\n\n{head}\n\n{wins[0]}"
-        if n > 1:   # the next 12K window opens in its own panel (panel-trail wikilink)
-            body0 += f"\n\n**→ {N.wl(f'content/chapter/{cid}__w2', f'continue — window 2 of {n}')}**"
+        if n > 1:   # the next 12K window opens in its own panel (panel-trail wikilink — NOT bold-wrapped:
+            # the UI's inline regex alternates [[..]] | **..**, so bold around a wikilink swallows it)
+            body0 += f"\n\n→ {N.wl(f'content/chapter/{cid}__w2', f'continue — window 2 of {n}')}"
         out.append(N.Note(
             id=f"content/chapter/{cid}", title=f"chapter {cid} · {reg}" + (f" (1/{n})" if n > 1 else ""),
             kind="content-chapter", data_product="content", body=body0 + "\n", frontmatter={
@@ -410,9 +411,9 @@ def project_content(recs: list[dict]) -> list[N.Note]:
                 "register": reg, "target_topic_id": topic, "template_ids": tids, "windows": n}))
         for k in range(1, n):   # continuation windows — each its own panel, prev/next linked
             prev = f"content/chapter/{cid}" if k == 1 else f"content/chapter/{cid}__w{k}"
-            nav = f"**← {N.wl(prev, 'previous window')}**"
+            nav = f"← {N.wl(prev, 'previous window')}"
             if k + 1 < n:
-                nav += f"  ·  **→ {N.wl(f'content/chapter/{cid}__w{k + 2}', f'window {k + 2} of {n}')}**"
+                nav += f"  ·  → {N.wl(f'content/chapter/{cid}__w{k + 2}', f'window {k + 2} of {n}')}"
             out.append(N.Note(
                 id=f"content/chapter/{cid}__w{k + 1}", title=f"chapter {cid} · {reg} ({k + 1}/{n})",
                 kind="content-chapter", data_product="content", body=f"{nav}\n\n{wins[k]}\n",
