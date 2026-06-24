@@ -38,6 +38,8 @@ def main() -> int:
     ap.add_argument("--realize", action="store_true",
                     help="realized schemas (EAV/junction/star) — broad relational-construct space")
     ap.add_argument("--token-target", type=int, default=0, help="per-worker token target (0 = run to --n-chapters)")
+    ap.add_argument("--refresh-interval", type=int, default=600,
+                    help="re-project the lineup every N seconds WHILE workers run, as content lands (0 = only at the end)")
     ap.add_argument("--out", default=os.environ.get("AEGIR_REFINE_OUT", "/raid/build/aegir/path-a/refine_scale"))
     a = ap.parse_args()
     providers = [p.strip() for p in a.providers.split(",") if p.strip()]
@@ -62,10 +64,27 @@ def main() -> int:
         print(f"  → worker {i} [{prov}] pid {p.pid}  (log: worker_{i}_{prov}.log)", flush=True)
 
     t0 = time.time()
-    for i, prov, p, logf in procs:
-        rc = p.wait()
-        logf.close()
-        print(f"  ✓ worker {i} [{prov}] exited rc={rc}  ({time.time() - t0:.0f}s)", flush=True)
+    last_refresh, last_n = t0, 0
+    done: set[int] = set()
+    while len(done) < len(procs):
+        for i, prov, p, logf in procs:
+            if i not in done and p.poll() is not None:
+                done.add(i)
+                logf.close()
+                print(f"  ✓ worker {i} [{prov}] exited rc={p.returncode}  ({time.time() - t0:.0f}s)", flush=True)
+        if len(done) == len(procs):
+            break
+        # CONTINUOUS lineup refresh: while workers run, re-emit the parquet from the LIVE surfaces (cheap) and
+        # re-project ONLY when new content has landed (the build is the costly step). The workers write to the
+        # shared out/current/*.json; a mid-write file just fails to parse and is picked up the next round.
+        if a.refresh_interval and time.time() - last_refresh >= a.refresh_interval:
+            n = _emit_corpus_parquet(out)
+            if n > last_n:
+                _project_lineup()
+                print(f"  ↻ lineup refreshed: {n} surface-records live ({time.time() - t0:.0f}s)", flush=True)
+                last_n = n
+            last_refresh = time.time()
+        time.sleep(10)
 
     # merge the per-worker manifests into the canonical one, then finalize ONCE (the workers skipped this)
     merged: list[dict] = []
