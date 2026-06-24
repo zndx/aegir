@@ -80,11 +80,37 @@ def _recs(path: Path) -> list[dict]:
     return pq.read_table(path).to_pylist()
 
 
+def corpus_runs() -> list[tuple[Path, str]]:
+    """Both registers of the content Data Product as ``(path, register)``. The NATURAL corpus (path-a
+    ``c3nat`` — natural physical names + topical prose) is the canonical deliverable; the SEMANTIC corpus
+    (``c3`` / legacy ``sdg_corpus_v*`` — the ontology-discourse register) is ALSO valuable training material:
+    prose written around ontological constructs elucidates how and why the ontology takes this specific
+    materialization. Both surfaces are projected and tagged. Overrides: ``AEGIR_CORPUS_RUN_NATURAL`` /
+    ``AEGIR_CORPUS_RUN_SEMANTIC`` (``AEGIR_CORPUS_RUN`` still forces a single natural run)."""
+    out: list[tuple[Path, str]] = []
+    nat = _first(["/raid/build/aegir/path-a/c3nat/chapters/*/chapters.parquet"],
+                 "AEGIR_CORPUS_RUN_NATURAL") or corpus_run()
+    sem = _first(["/raid/build/aegir/path-a/c3/chapters/*/chapters.parquet",
+                  f"{_ART}/sdg_corpus_v*/*/chapters.parquet",
+                  f"{_ART}/chapters_v*/*/chapters.parquet"], "AEGIR_CORPUS_RUN_SEMANTIC")
+    if nat:
+        out.append((nat, "natural"))
+    if sem and sem != nat:
+        out.append((sem, "semantic"))
+    return out
+
+
 def corpus_recs() -> tuple[list[dict], Path | None]:
-    """(chapter rows, run path) for the content Data Product — read once so the build
-    can derive cross-references (term→chapters, topic→chapters) before projecting."""
-    r = corpus_run()
-    return (_recs(r), r) if r else ([], None)
+    """(chapter rows tagged with ``_register``, primary run path) for the content Data Product — reads BOTH
+    registers (natural ⊕ semantic) so the lineup mixes them; read once for the build's cross-references."""
+    runs = corpus_runs()
+    recs: list[dict] = []
+    for path, reg in runs:
+        for rec in _recs(path):
+            rec = dict(rec)
+            rec["_register"] = reg
+            recs.append(rec)
+    return recs, (runs[0][0] if runs else None)
 
 
 def coverage_recs() -> tuple[list[dict], Path | None]:

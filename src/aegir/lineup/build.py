@@ -396,17 +396,47 @@ def project_content(recs: list[dict]) -> list[N.Note]:
         if topic is not None:
             head += f"  ·  **Topic.** {N.wl(f'topic/{int(topic)}')}"
         text = (r.get("response_text") or "")[:3000]
+        reg = r.get("_register", "natural")
         out.append(N.Note(
-            id=f"content/chapter/{cid}", title=f"chapter {cid}", kind="content-chapter",
-            data_product="content", body=f"{head}\n\n{text}\n", frontmatter={
+            id=f"content/chapter/{cid}", title=f"chapter {cid} · {reg}", kind="content-chapter",
+            data_product="content", body=f"*Register: **{reg}***\n\n{head}\n\n{text}\n", frontmatter={
                 "category": r.get("family"), "model": r.get("model"), "ablation": r.get("ablation"),
-                "target_topic_id": topic, "template_ids": tids}))
-    body = (f"**Corpus** — {len(chapter_ids)} chapters.\n\n"
+                "register": reg, "target_topic_id": topic, "template_ids": tids}))
+    from collections import Counter
+    by_reg = Counter(r.get("_register", "natural") for r in recs)
+    breakdown = " · ".join(f"{n} {reg}" for reg, n in sorted(by_reg.items())) or "—"
+    body = (f"**Corpus** — {len(chapter_ids)} chapters ({breakdown}). Both registers mixed; "
+            f"see {N.wl('lens/register', 'the register lens')}.\n\n"
             + "\n".join(f"- {N.wl(f'content/chapter/{c}', f'chapter {c}')}" for c in chapter_ids)
             + f"\n\nFinePDFs topics: {N.wl('topic/index')}\n")
     out.append(N.Note(id="content/index", title="Corpus", kind="content-index",
-                      data_product="content", body=body, frontmatter={"n_chapters": len(chapter_ids)}))
+                      data_product="content", body=body,
+                      frontmatter={"n_chapters": len(chapter_ids), "registers": dict(by_reg)}))
     return out
+
+
+def project_registers(recs: list[dict]) -> list[N.Note]:
+    """The register lens — chapters grouped by register: the **natural** canonical deliverable vs the
+    **semantic** ontology-discourse register. Both are intentional, training-valuable surfaces of the same
+    ontology+FinePDFs input (semantic prose elucidates the ontology's materialization)."""
+    by_reg: dict[str, list[str]] = {}
+    for i, r in enumerate(recs):
+        by_reg.setdefault(r.get("_register", "natural"), []).append(_chapter_id(r, i))
+    desc = {"natural": "natural physical names + topical practitioner prose (canonical deliverable)",
+            "semantic": "ontology-discourse register — elucidates how/why the ontology materializes"}
+    rows = ["| register | chapters | surface |", "|---|---|---|"]
+    links = []
+    for reg in sorted(by_reg):
+        cids = by_reg[reg]
+        rows.append(f"| {N.wl('lens/register', reg)} | {len(cids)} | {desc.get(reg, '')} |")
+        links.append(f"\n**{reg}** ({len(cids)}): "
+                     + " · ".join(N.wl(f"content/chapter/{c}", c) for c in cids[:12])
+                     + (f" …(+{len(cids) - 12})" if len(cids) > 12 else ""))
+    body = ("**Register × Corpus.** The content Data Product in two registers from the same ontology+FinePDFs "
+            "input — both intentional training surfaces.\n\n" + "\n".join(rows) + "\n" + "\n".join(links))
+    return [N.Note(id="lens/register", title="Register × Corpus", kind="lens", data_product="content",
+                   frontmatter={"lens": "register", "registers": {k: len(v) for k, v in by_reg.items()}},
+                   body=body)]
 
 
 # ── topics (coverage rows, if present) — bridge content↔ontology ─────────────
@@ -676,7 +706,9 @@ def run(args=None) -> int:
     if corpus:
         c = project_content(corpus)
         notes += c
-        print(f"  content: {len(c)} notes  ({crun})")
+        rl = project_registers(corpus)
+        notes += rl
+        print(f"  content: {len(c)} notes  ({crun})  +register lens {rl[0].frontmatter.get('registers')}")
     else:
         print("  content: (no on-disk corpus run — skipped; set AEGIR_CORPUS_RUN to project)")
     if coverage:
