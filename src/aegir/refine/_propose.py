@@ -75,10 +75,14 @@ async def _run(construct: dict, mode: str, register: str, feedback: dict) -> dic
                 '[[providers]]\nname = "local-vllm"\napi_base = "http://127.0.0.1:8100/v1"\n'
                 'api_style = "openai"\n'
                 '[[models]]\nname = "instruct"\nprovider = "local-vllm"\nalias = "local"\n')
+    prompt = _prompt(construct, mode, register, feedback)
     async with BaseACPClient(vibe_acp_spec(FORK, home), fs_root=home) as c:
-        r = await c.prompt(_prompt(construct, mode, register, feedback), timeout=420)
+        r = await c.prompt(prompt, timeout=420)
     text = _strip_reasoning(r.text)
-    return {"edits": _parse_edits(text)} if mode == "edits" else {"prose": text}
+    out = {"edits": _parse_edits(text)} if mode == "edits" else {"prose": text}
+    # the RAW exchange (full response incl. reasoning) for the aegir-side hx/OL lineage capture
+    out["_exchange"] = {"prompt": prompt, "response": r.text, "reasoning": r.thoughts, "model": "instruct"}
+    return out
 
 
 def main() -> None:

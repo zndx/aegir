@@ -157,7 +157,7 @@ class RefinementEffector:
 
 def run_refinement(ch0: dict, *, propose_fn: Callable[[dict, dict], str],
                    scaffold_propose: "Callable | None" = None, dual_prose_fn: "Callable | None" = None,
-                   register: str = "natural", max_iters: int = 8,
+                   register: str = "natural", lineage: "object | None" = None, max_iters: int = 8,
                    trace_path: str | Path | None = None, commit_dir: str | Path | None = None) -> dict:
     """Run the membrane-gated loop on one chapter. With ``scaffold_propose`` the agent gets agency over the
     TABLES (inc-2); with ``dual_prose_fn`` COMMIT writes BOTH registers (the other register's prose over the
@@ -191,6 +191,9 @@ def run_refinement(ch0: dict, *, propose_fn: Callable[[dict, dict], str],
             out["surfaces"].append((reg, str(p)))
         out["committed"] = out["surfaces"][0][1]
         (cur / f"{tid}.metrics.json").write_text(json.dumps(out["refined_metrics"], indent=2))
+        if lineage is not None:   # hx/OL: the surfaces GROUNDS_TO the exchanges + the gate verdicts
+            out["lineage"] = lineage.emit(template_id=tid, surfaces=out["surfaces"],
+                                          gate_verdicts=out["refined_metrics"])
     return out
 
 

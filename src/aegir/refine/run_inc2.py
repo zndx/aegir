@@ -34,35 +34,42 @@ def _subproc(construct: dict, mode: str, register: str, feedback: dict) -> dict:
     return json.loads(p.stdout)
 
 
-def scaffold_propose(construct: dict, objective: str, feedback: dict) -> list:
-    return _subproc(construct, "edits", "natural", feedback).get("edits", [])
-
-
-def prose_natural(construct: dict, feedback: dict | None = None) -> str:
-    return _subproc(construct, "prose", "natural", feedback or {}).get("prose", "")
-
-
-def prose_semantic(construct: dict) -> str:
-    return _subproc(construct, "prose", "semantic", {}).get("prose", "")
-
-
 def main() -> int:
+    from aegir.refine.lineage import LineageRecorder
     OUT.mkdir(parents=True, exist_ok=True)
+    rec = LineageRecorder()
     ch0 = ev.controlled_ch0()
+
+    def scaffold_propose(c: dict, objective: str, feedback: dict) -> list:
+        d = _subproc(c, "edits", "natural", feedback)
+        rec.record_exchange(d.get("_exchange", {}), source_context={"objective": objective, "mode": "edits"})
+        return d.get("edits", [])
+
+    def prose_natural(c: dict, feedback: dict | None = None) -> str:
+        d = _subproc(c, "prose", "natural", feedback or {})
+        rec.record_exchange(d.get("_exchange", {}), source_context={"objective": "fix_prose", "register": "natural"})
+        return d.get("prose", "")
+
+    def prose_semantic(c: dict) -> str:
+        d = _subproc(c, "prose", "semantic", {})
+        rec.record_exchange(d.get("_exchange", {}), source_context={"objective": "dual_register", "register": "semantic"})
+        return d.get("prose", "")
+
     res = run_refinement(ch0, propose_fn=prose_natural, scaffold_propose=scaffold_propose,
-                         dual_prose_fn=prose_semantic, register="natural", max_iters=8,
+                         dual_prose_fn=prose_semantic, register="natural", lineage=rec, max_iters=8,
                          trace_path=str(OUT / "inc2.jsonl"), commit_dir=str(OUT))
     b, r = res["baseline_metrics"], res["refined_metrics"]
-    print("=== inc-2: agent scaffold agency + dual-register on ch0 ===")
+    print("=== inc-2 + inc-3: scaffold agency + dual-register + hx/OL lineage on ch0 ===")
     print("fired:", " → ".join(res["fired"]), "| outcome:", res["outcome"], "| iters:", res["iterations"])
     print(f"  placeholder {b['placeholder_rate']}→{r['placeholder_rate']} | "
           f"disjointness {len(b['disjointness_violations'])}→{len(r['disjointness_violations'])} | "
           f"ri {b['ri_ok']}→{r['ri_ok']} | entailment {b['prose_entailment']}→{r['prose_entailment']}")
     print("  dual-register surfaces:", [(reg, Path(p).name) for reg, p in res["surfaces"]])
-    ok = (res["outcome"] == "promote" and not r["disjointness_violations"]
-          and r["placeholder_rate"] == 0.0 and len(res["surfaces"]) == 2)
-    print(f"\ninc-2 {'PASS' if ok else 'PARTIAL'}: agent drove the table fixes (scaffold agency); "
-          f"both registers committed over the same RI-true tables.")
+    print(f"  LINEAGE: {len(rec.exchange_ids)} exchanges → raw.exchange | run-event: {res.get('lineage')}")
+    ok = (res["outcome"] == "promote" and not r["disjointness_violations"] and r["placeholder_rate"] == 0.0
+          and len(res["surfaces"]) == 2 and len(rec.exchange_ids) >= 1 and res.get("lineage"))
+    print(f"\ninc-2+3 {'PASS' if ok else 'PARTIAL'}: agent scaffold agency; dual-register committed; "
+          f"exchanges + run-event landed in the hx/OL lineage plane.")
     return 0 if ok else 1
 
 

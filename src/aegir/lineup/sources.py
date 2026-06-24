@@ -93,22 +93,26 @@ def corpus_runs() -> list[tuple[Path, str]]:
     sem = _first(["/raid/build/aegir/path-a/c3/chapters/*/chapters.parquet",
                   f"{_ART}/sdg_corpus_v*/*/chapters.parquet",
                   f"{_ART}/chapters_v*/*/chapters.parquet"], "AEGIR_CORPUS_RUN_SEMANTIC")
+    ref = _first(["/raid/build/aegir/path-a/refine_scale/chapters.parquet"], "AEGIR_REFINE_CORPUS")
     if nat:
         out.append((nat, "natural"))
     if sem and sem != nat:
         out.append((sem, "semantic"))
+    if ref:
+        out.append((ref, "refined"))   # refinement-loop corpus — register is PER-RECORD (see corpus_recs)
     return out
 
 
 def corpus_recs() -> tuple[list[dict], Path | None]:
-    """(chapter rows tagged with ``_register``, primary run path) for the content Data Product — reads BOTH
-    registers (natural ⊕ semantic) so the lineup mixes them; read once for the build's cross-references."""
+    """(chapter rows tagged with ``_register``, primary run path) for the content Data Product — reads ALL
+    registers (natural ⊕ semantic ⊕ the refined dual-register corpus) so the lineup mixes them; read once for
+    the build's cross-references. A record's own ``register`` column wins (the refined corpus is per-record)."""
     runs = corpus_runs()
     recs: list[dict] = []
     for path, reg in runs:
         for rec in _recs(path):
             rec = dict(rec)
-            rec["_register"] = reg
+            rec["_register"] = rec.get("register") or reg
             recs.append(rec)
     return recs, (runs[0][0] if runs else None)
 

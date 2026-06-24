@@ -52,18 +52,24 @@ def payload_to_construct(payload, *, template_id: str, prose: str = "") -> dict:
 
 
 def live_draft(*, n_templates: int = 2, family: str | None = None, seed: int = 0xAE61,
-               realize: bool = False) -> dict:
-    """One real chapter construct from the ontology pipeline (deterministic for a given seed/selection)."""
+               realize: bool = False, offset: int = 0) -> dict:
+    """One real chapter construct from the ontology pipeline (deterministic for a given seed/selection).
+    ``offset`` windows the template list so a scale run iterates DISTINCT chapters (offset 0, n, 2n, …)."""
     from aegir.ontology.chapter_tables import chapter_relational_payload
     from aegir.ontology.complex import FamilyComplex
     tpls = _load_templates()
     cands = sorted((t for t in tpls.values() if family is None or t["_family"] == family),
                    key=lambda t: t["template_id"])
-    chosen = cands[:n_templates]
+    if cands:
+        offset %= len(cands)
+    chosen = cands[offset:offset + n_templates] or cands[:n_templates]
     fc = FamilyComplex.from_json(Path(FAMILY_COMPLEX))
     payload = chapter_relational_payload(chosen, fc, seed=seed, realize=realize)
     tid = "ch_live_" + (chosen[0]["template_id"] if chosen else "empty")
-    return payload_to_construct(payload, template_id=tid)
+    ch = payload_to_construct(payload, template_id=tid)
+    ch["template_ids"] = [t["template_id"] for t in chosen]    # lineup: chapter → terms
+    ch["family"] = chosen[0]["_family"] if chosen else None
+    return ch
 
 
 if __name__ == "__main__":
