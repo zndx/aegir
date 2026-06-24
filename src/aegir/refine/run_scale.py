@@ -30,10 +30,11 @@ ROOT = Path(__file__).resolve().parents[3]
 FORK_PY = ROOT / "components" / "oss-mistral-cli" / ".venv" / "bin" / "python"
 
 
-def _subproc(construct: dict, mode: str, register: str, feedback: dict) -> dict:
+def _subproc(construct: dict, mode: str, register: str, feedback: dict, backend: str = "local") -> dict:
     env = {k: v for k, v in os.environ.items() if k not in ("VIRTUAL_ENV", "UV_PROJECT_ENVIRONMENT")}
     env["PYTHONPATH"] = str(ROOT / "src")
     env["AEGIR_FORK_DIR"] = str(ROOT / "components" / "oss-mistral-cli")
+    env["AEGIR_PROPOSE_BACKEND"] = backend   # local engine | grok (Grok Build, unmetered) | xai-api (metered)
     req = json.dumps({"construct": construct, "mode": mode, "register": register, "feedback": feedback})
     p = subprocess.run([str(FORK_PY), "-m", "aegir.refine._propose"], input=req,
                        capture_output=True, text=True, env=env, timeout=600)
@@ -42,21 +43,21 @@ def _subproc(construct: dict, mode: str, register: str, feedback: dict) -> dict:
     return json.loads(p.stdout)
 
 
-def _refine_one(offset: int, n_templates: int, out_dir: str, realize: bool = False) -> dict:
+def _refine_one(offset: int, n_templates: int, out_dir: str, realize: bool = False, backend: str = "local") -> dict:
     rec = LineageRecorder()
 
     def scaffold(c, obj, fb):
-        d = _subproc(c, "edits", "natural", fb)
+        d = _subproc(c, "edits", "natural", fb, backend)
         rec.record_exchange(d.get("_exchange", {}), source_context={"objective": obj, "mode": "edits"})
         return d.get("edits", [])
 
     def pnat(c, fb=None):
-        d = _subproc(c, "prose", "natural", fb or {})
+        d = _subproc(c, "prose", "natural", fb or {}, backend)
         rec.record_exchange(d.get("_exchange", {}), source_context={"objective": "fix_prose", "register": "natural"})
         return d.get("prose", "")
 
     def psem(c):
-        d = _subproc(c, "prose", "semantic", {})
+        d = _subproc(c, "prose", "semantic", {}, backend)
         rec.record_exchange(d.get("_exchange", {}), source_context={"objective": "dual_register", "register": "semantic"})
         return d.get("prose", "")
 
@@ -117,36 +118,49 @@ def main() -> int:
     ap.add_argument("--token-target", type=int, default=0,
                     help="stop once accumulated corpus tokens reach this (0 = run to --n-chapters)")
     ap.add_argument("--start", type=int, default=0, help="resume from this chapter index after a hiccup")
+    ap.add_argument("--backend", default="local",
+                    help="proposer backend: local (engine) | grok (Grok Build, unmetered) | xai-api (metered)")
+    ap.add_argument("--stride", type=int, default=1, help="parallel: process every Nth chapter (N = #workers)")
+    ap.add_argument("--worker-id", type=int, default=0, help="parallel: this worker's offset within the stride")
+    ap.add_argument("--worker", action="store_true",
+                    help="worker mode: per-worker manifest + skip parquet/projection (run_parallel finalizes)")
     ap.add_argument("--out", default=os.environ.get("AEGIR_REFINE_OUT", "/raid/build/aegir/path-a/refine_scale"))
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     manifest: list[dict] = []
-    mpath = out / "manifest.jsonl"
+    mpath = out / (f"manifest_w{a.worker_id}.jsonl" if a.worker else "manifest.jsonl")
     if mpath.exists():
         manifest = [json.loads(ln) for ln in mpath.read_text().splitlines() if ln.strip()]
     t0 = time.time()
     total_tokens = sum(m.get("tokens", 0) for m in manifest)
-    for i in range(a.start, a.n_chapters):
+    tag = f"w{a.worker_id}/{a.backend}"
+    for i in range(a.worker_id, a.n_chapters, a.stride):   # strided so parallel workers cover disjoint chapters
+        if i < a.start:
+            continue
         try:
-            r = _refine_one(i * a.n_templates, a.n_templates, str(out), realize=a.realize)
+            r = _refine_one(i * a.n_templates, a.n_templates, str(out), realize=a.realize, backend=a.backend)
             total_tokens += r.get("tokens", 0)
-            print(f"[{i + 1}/{a.n_chapters}] {r['template_id']} {r['outcome']} tok~{r.get('tokens', 0)} "
+            print(f"[{tag} {i + 1}/{a.n_chapters}] {r['template_id']} {r['outcome']} tok~{r.get('tokens', 0)} "
                   f"(cum ~{total_tokens}) ex={r['exchanges']} lineage={r['lineage']}", flush=True)
         except Exception as e:  # noqa: BLE001 — a chapter failure must never kill the run
             r = {"offset": i * a.n_templates, "index": i, "error": str(e)[:200]}
-            print(f"[{i + 1}/{a.n_chapters}] FAILED: {str(e)[:120]}", flush=True)
+            print(f"[{tag} {i + 1}/{a.n_chapters}] FAILED: {str(e)[:120]}", flush=True)
         manifest.append(r)
         mpath.write_text("\n".join(json.dumps(m) for m in manifest) + "\n")
-        if (i + 1) % 10 == 0:        # keep the lineup-projectable parquet current for a partial overnight run
+        if not a.worker and (i + 1) % 10 == 0:   # standalone keeps the parquet current; orchestrator finalizes
             _emit_corpus_parquet(out)
         if a.token_target and total_tokens >= a.token_target:
-            print(f"token target {a.token_target} reached (~{total_tokens} corpus tokens) — stopping.", flush=True)
+            print(f"[{tag}] token target {a.token_target} reached (~{total_tokens} tokens) — stopping.", flush=True)
             break
-    n_parq = _emit_corpus_parquet(out)        # the refined corpus in the lineup's content format
-    _project_lineup()                          # re-project so the new dual-register content surfaces
     promoted = sum(1 for m in manifest if m.get("outcome") == "promote")
     nex = sum(m.get("exchanges", 0) for m in manifest)
+    if a.worker:                                  # run_parallel merges the per-worker manifests + finalizes
+        print(f"\n[{tag}] worker done: {promoted} promoted, ~{total_tokens} tokens, {nex} exchanges, "
+              f"{time.time() - t0:.0f}s.", flush=True)
+        return 0
+    n_parq = _emit_corpus_parquet(out)        # the refined corpus in the lineup's content format
+    _project_lineup()                          # re-project so the new dual-register content surfaces
     nlin = sum(1 for m in manifest if m.get("lineage"))
     print(f"\nSCALE RUN done: {promoted} promoted, ~{total_tokens} corpus tokens, {nex} exchanges → "
           f"raw.exchange, {nlin} run-events, {n_parq} surface-records → chapters.parquet (lineup re-projected), "
