@@ -123,6 +123,8 @@ def main() -> int:
             print(f"[{i + 1}/{a.n_chapters}] FAILED: {str(e)[:120]}", flush=True)
         manifest.append(r)
         mpath.write_text("\n".join(json.dumps(m) for m in manifest) + "\n")
+        if (i + 1) % 10 == 0:        # keep the lineup-projectable parquet current for a partial overnight run
+            _emit_corpus_parquet(out)
     n_parq = _emit_corpus_parquet(out)        # the refined corpus in the lineup's content format
     _project_lineup()                          # re-project so the new dual-register content surfaces
     promoted = sum(1 for m in manifest if m.get("outcome") == "promote")
