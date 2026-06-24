@@ -430,7 +430,9 @@ def project_content(recs: list[dict]) -> list[N.Note]:
                 "register": reg, "target_topic_id": topic, "template_ids": tids, "windows": n}))
         for k in range(1, n):   # continuation windows — each its own panel, prev/next linked
             prev = f"content/chapter/{cid}" if k == 1 else f"content/chapter/{cid}__w{k}"
-            nav = f"← {N.wl(prev, 'previous window')}"
+            # the lineup always opens to the RIGHT (panel-trail) — every window link is → (no back arrow),
+            # disambiguated by window number rather than previous/next direction
+            nav = f"→ {N.wl(prev, f'window {k} of {n}')}"
             if k + 1 < n:
                 nav += f"  ·  → {N.wl(f'content/chapter/{cid}__w{k + 2}', f'window {k + 2} of {n}')}"
             out.append(N.Note(
