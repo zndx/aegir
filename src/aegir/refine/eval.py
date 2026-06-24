@@ -80,28 +80,59 @@ def ri_ok(construct) -> bool:
     return True
 
 
-def _entities(construct) -> set[str]:
-    ents = set()
+def _structural_entities(construct) -> set[str]:
+    """Table + column names — the SCHEMA the prose is expected to describe."""
+    ents: set[str] = set()
     for t in construct.get("tables", []):
         ents.add(t["name"])
         for col in t["columns"]:
             ents.add(col["name"])
-            if t.get("pk") != col["name"] and not any(fk["col"] == col["name"] for fk in t.get("fks", [])):
-                for cell in col["cells"]:
-                    v = str(cell["value"]).strip()
-                    if v and v.lower() not in PLACEHOLDER_TOKENS and not v.isdigit():
-                        ents.add(v)
     return {e for e in ents if e and len(e) > 2}
 
 
-def prose_entailment(construct) -> float:
-    """Fraction of table entities (table/column names + non-key cell values) the prose actually mentions."""
-    ents = _entities(construct)
+def _value_sample(construct, *, per_col: int = 2) -> set[str]:
+    """A capped SAMPLE of representative non-key cell values — so the prose grounds in real data without being
+    required to name every one of a realized schema's hundreds of cells."""
+    ents: set[str] = set()
+    for t in construct.get("tables", []):
+        fkcols = {fk["col"] for fk in t.get("fks", [])}
+        for col in t["columns"]:
+            if t.get("pk") == col["name"] or col["name"] in fkcols:
+                continue
+            seen = 0
+            for cell in col["cells"]:
+                v = str(cell["value"]).strip()
+                if v and v.lower() not in PLACEHOLDER_TOKENS and not v.isdigit() and len(v) > 2:
+                    ents.add(v)
+                    seen += 1
+                    if seen >= per_col:
+                        break
+    return ents
+
+
+def _frac_mentioned(ents: set[str], prose: str) -> float | None:
     if not ents:
-        return 1.0
+        return None
+    m = sum(1 for e in ents if re.sub(r"_", " ", e.lower()) in prose or e.lower() in prose)
+    return m / len(ents)
+
+
+def prose_entailment(construct) -> float:
+    """Prose↔table correspondence, calibrated for realized schemas: weight STRUCTURAL correspondence — does the
+    prose describe the tables and columns — at 0.7, over a capped SAMPLE of representative cell values at 0.3.
+    A many-table chapter is no longer penalized for not naming every one of its hundreds of cells (the old
+    all-cells metric made realized chapters un-passable in 2-3 paragraphs); a chapter that simply doesn't
+    describe its schema still fails."""
     prose = construct.get("prose", "").lower()
-    mentioned = sum(1 for e in ents if re.sub(r"_", " ", e.lower()) in prose or e.lower() in prose)
-    return mentioned / len(ents)
+    s = _frac_mentioned(_structural_entities(construct), prose)
+    v = _frac_mentioned(_value_sample(construct), prose)
+    if s is None and v is None:
+        return 1.0
+    if s is None:
+        return v if v is not None else 1.0
+    if v is None:
+        return s
+    return 0.7 * s + 0.3 * v
 
 
 def length_ok(construct, *, lo: int = 400, hi: int = 20000) -> bool:

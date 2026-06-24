@@ -61,9 +61,10 @@ METRICS: list[dict] = [
           "gate": "0", "role": "no canned/placeholder values in the tables", "src": "refine/eval.py"},
          {"slug": "ri-ok", "name": "ri_ok", "formula": "every FK referent resolves",
           "gate": "True", "role": "referential integrity of the materialized tables", "src": "refine/eval.py"},
-         {"slug": "prose-entailment", "name": "prose_entailment", "formula": "fraction of table entities the "
-          "prose mentions", "gate": "≥ 0.5", "role": "prose↔table correspondence (calibration note: over-counts "
-          "cell values on realized schemas — gate on schema entities)", "src": "refine/eval.py"},
+         {"slug": "prose-entailment", "name": "prose_entailment", "formula": "0.7·structural (table/column "
+          "names mentioned) + 0.3·value-sample (≤2 representative cells/col)", "gate": "≥ 0.5",
+          "role": "prose↔table correspondence, calibrated for realized schemas — structural-weighted so a "
+          "many-table chapter isn't penalized for not naming every one of its hundreds of cells", "src": "refine/eval.py"},
          {"slug": "length-ok", "name": "length_ok", "formula": "prose length within the FinePDFs band",
           "gate": "in-band", "role": "no truncated / runt chapters", "src": "refine/eval.py"}]},
 
