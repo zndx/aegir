@@ -85,11 +85,13 @@ def _agent_spec(home: str):
         if not os.environ.get("XAI_API_KEY"):
             raise RuntimeError("AEGIR_PROPOSE_BACKEND=xai-api but XAI_API_KEY is unset (metered xAI API)")
         model = os.environ.get("AEGIR_XAI_MODEL", "grok-4.3")
-        toml = ('active_model = "remote"\n[[providers]]\nname = "xai"\napi_base = "https://api.x.ai/v1"\n'
+        toml = ('active_model = "remote"\nsystem_prompt_id = "aegir_writer"\n'
+                '[[providers]]\nname = "xai"\napi_base = "https://api.x.ai/v1"\n'
                 'api_style = "openai"\napi_key_env_var = "XAI_API_KEY"\n'
                 f'[[models]]\nname = "{model}"\nprovider = "xai"\nalias = "remote"\n')
         return vibe_acp_spec(FORK, home), toml, model, "xai-api"
-    toml = ('active_model = "local"\n[[providers]]\nname = "local-vllm"\napi_base = "http://127.0.0.1:8100/v1"\n'
+    toml = ('active_model = "local"\nsystem_prompt_id = "aegir_writer"\n'
+            '[[providers]]\nname = "local-vllm"\napi_base = "http://127.0.0.1:8100/v1"\n'
             'api_style = "openai"\n[[models]]\nname = "instruct"\nprovider = "local-vllm"\nalias = "local"\n')
     return vibe_acp_spec(FORK, home), toml, "instruct", "engine"
 
