@@ -36,11 +36,15 @@ def _subproc(construct: dict, mode: str, register: str, feedback: dict, backend:
     env["AEGIR_FORK_DIR"] = str(ROOT / "components" / "oss-mistral-cli")
     env["AEGIR_PROPOSE_BACKEND"] = backend   # local engine | grok (Grok Build, unmetered) | xai-api (metered)
     req = json.dumps({"construct": construct, "mode": mode, "register": register, "feedback": feedback})
-    p = subprocess.run([str(FORK_PY), "-m", "aegir.refine._propose"], input=req,
-                       capture_output=True, text=True, env=env, timeout=600)
-    if p.returncode != 0:
-        raise RuntimeError(p.stderr[-400:])
-    return json.loads(p.stdout)
+    last = ""
+    for attempt in range(3):   # remote proposers (grok WS relay) + the engine hiccup transiently — retry first
+        p = subprocess.run([str(FORK_PY), "-m", "aegir.refine._propose"], input=req,
+                           capture_output=True, text=True, env=env, timeout=600)
+        if p.returncode == 0:
+            return json.loads(p.stdout)
+        last = p.stderr[-400:]
+        time.sleep(2 * (attempt + 1))
+    raise RuntimeError(last)
 
 
 def _refine_one(offset: int, n_templates: int, out_dir: str, realize: bool = False, backend: str = "local") -> dict:
