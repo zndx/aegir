@@ -6,6 +6,7 @@ client controls the filesystem surface, the session, and tool execution (via inj
 refinement loop gates everything the agent does. Pattern learned from the gaius/hermes ACP integrations;
 implementation original.
 """
-from aegir.refine.acp.client import ACPResult, AgentSpec, BaseACPClient, MCPServer, vibe_acp_spec
+from aegir.refine.acp.client import (
+    ACPResult, AgentSpec, BaseACPClient, MCPServer, grok_acp_spec, vibe_acp_spec)
 
-__all__ = ["BaseACPClient", "AgentSpec", "ACPResult", "MCPServer", "vibe_acp_spec"]
+__all__ = ["BaseACPClient", "AgentSpec", "ACPResult", "MCPServer", "vibe_acp_spec", "grok_acp_spec"]

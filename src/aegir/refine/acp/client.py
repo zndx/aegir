@@ -65,6 +65,18 @@ def vibe_acp_spec(fork_dir: str | Path, vibe_home: str | Path, *, extra_env: dic
     return AgentSpec(command=command, args=[], env=env, cwd=str(fork))
 
 
+def grok_acp_spec(cwd: str | Path, *, extra_env: dict | None = None) -> AgentSpec:
+    """AgentSpec for the authed ``grok`` CLI (Grok Build) as an ACP agent over stdio — the UNMETERED
+    subscription path (the Grok WS relay), DISTINCT from the metered ``XAI_API_KEY`` xAI API. ``grok agent
+    stdio`` speaks ACP, so ``BaseACPClient`` drives it directly; the CLI's cached session (one-time ``grok
+    login``, in ``~/.grok``) carries the subscription. Pattern (subscription device-auth + agent-over-stdio)
+    from the hermes / zndx-xai-auth integrations; implementation original."""
+    import shutil
+    binary = shutil.which("grok") or "grok"
+    return AgentSpec(command=binary, args=["agent", "stdio"], env=dict(extra_env or {}),
+                     cwd=str(Path(cwd).resolve()))
+
+
 class BaseACPClient:
     def __init__(self, agent: AgentSpec, *, fs_root: str | Path | None = None, allow_write: bool = True,
                  mcp_servers: "list[MCPServer] | None" = None, stream: StreamSink | None = None,

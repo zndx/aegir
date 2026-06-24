@@ -67,21 +67,48 @@ def _strip_reasoning(text: str) -> str:
     return text.rsplit("</think>", 1)[1].strip() if "</think>" in text else text.strip()
 
 
+def _agent_spec(home: str):
+    """``(spec, config_toml | None, model_id, provider)`` for the proposer backend (AEGIR_PROPOSE_BACKEND):
+
+    * ``local`` (default) → vibe-acp → the local vLLM engine.
+    * ``grok`` → the authed ``grok`` CLI (Grok Build) as the ACP agent over stdio — the **UNMETERED
+      subscription** (the Grok WS relay; one-time ``grok login``). No vibe config; the CLI carries the session.
+    * ``xai-api`` → vibe-acp → the **METERED** xAI API (``XAI_API_KEY``).
+
+    Grok / xai-api are OPT-IN — never the default (standing constraint). ``config_toml`` is None for grok
+    (its agent isn't vibe-acp)."""
+    from aegir.refine.acp import grok_acp_spec, vibe_acp_spec
+    backend = os.environ.get("AEGIR_PROPOSE_BACKEND", "local").lower()
+    if backend in ("grok", "grok-build"):
+        return grok_acp_spec(home), None, os.environ.get("AEGIR_GROK_MODEL", "grok"), "grok-build"
+    if backend in ("xai", "xai-api"):
+        if not os.environ.get("XAI_API_KEY"):
+            raise RuntimeError("AEGIR_PROPOSE_BACKEND=xai-api but XAI_API_KEY is unset (metered xAI API)")
+        model = os.environ.get("AEGIR_XAI_MODEL", "grok-4.3")
+        toml = ('active_model = "remote"\n[[providers]]\nname = "xai"\napi_base = "https://api.x.ai/v1"\n'
+                'api_style = "openai"\napi_key_env_var = "XAI_API_KEY"\n'
+                f'[[models]]\nname = "{model}"\nprovider = "xai"\nalias = "remote"\n')
+        return vibe_acp_spec(FORK, home), toml, model, "xai-api"
+    toml = ('active_model = "local"\n[[providers]]\nname = "local-vllm"\napi_base = "http://127.0.0.1:8100/v1"\n'
+            'api_style = "openai"\n[[models]]\nname = "instruct"\nprovider = "local-vllm"\nalias = "local"\n')
+    return vibe_acp_spec(FORK, home), toml, "instruct", "engine"
+
+
 async def _run(construct: dict, mode: str, register: str, feedback: dict) -> dict:
-    from aegir.refine.acp import BaseACPClient, vibe_acp_spec
-    home = tempfile.mkdtemp(prefix="vibe_home_")
-    with open(os.path.join(home, "config.toml"), "w") as f:
-        f.write('active_model = "local"\n'
-                '[[providers]]\nname = "local-vllm"\napi_base = "http://127.0.0.1:8100/v1"\n'
-                'api_style = "openai"\n'
-                '[[models]]\nname = "instruct"\nprovider = "local-vllm"\nalias = "local"\n')
+    from aegir.refine.acp import BaseACPClient
+    home = tempfile.mkdtemp(prefix="propose_home_")
+    spec, cfg_toml, model_id, provider = _agent_spec(home)
+    if cfg_toml:
+        with open(os.path.join(home, "config.toml"), "w") as f:
+            f.write(cfg_toml)
     prompt = _prompt(construct, mode, register, feedback)
-    async with BaseACPClient(vibe_acp_spec(FORK, home), fs_root=home) as c:
+    async with BaseACPClient(spec, fs_root=home) as c:
         r = await c.prompt(prompt, timeout=420)
     text = _strip_reasoning(r.text)
     out = {"edits": _parse_edits(text)} if mode == "edits" else {"prose": text}
     # the RAW exchange (full response incl. reasoning) for the aegir-side hx/OL lineage capture
-    out["_exchange"] = {"prompt": prompt, "response": r.text, "reasoning": r.thoughts, "model": "instruct"}
+    out["_exchange"] = {"prompt": prompt, "response": r.text, "reasoning": r.thoughts,
+                        "model": model_id, "provider": provider}
     return out
 
 
