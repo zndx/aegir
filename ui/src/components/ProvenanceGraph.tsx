@@ -1,11 +1,15 @@
-import { ReactFlow, Background, Controls } from "@xyflow/react";
-import type { Node, Edge } from "@xyflow/react";
-import { useEffect, useMemo, useState } from "react";
+import {
+  Background, Controls, Handle, Position, ReactFlow, ReactFlowProvider,
+} from "@xyflow/react";
+import type { Edge, Node, NodeProps } from "@xyflow/react";
+import { Component, useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import "@xyflow/react/dist/style.css";
 
 // The lineup Provenance panel: a first-order-neighbor EGO-GRAPH of one lineage node, read from
-// /api/provenance/ego. Clicking a neighbor opens ITS ego-graph in a new panel (panel-trail) — the lineage
-// is walked node-by-node, in true lineup fashion, rather than shown as one static DAG.
+// /api/provenance/ego. Clicking a neighbor opens ITS ego-graph in a new panel (panel-trail) — the lineage is
+// walked node-by-node, not shown as one static DAG. Built to match Atelier's working ReactFlow pattern:
+// ReactFlowProvider + a memoized custom node type with Handles (NOT the default node with a JSX data.label).
 
 interface Neighbor { vid: number; label: string; name: string; edge: string; out: boolean; }
 interface Ego {
@@ -19,62 +23,94 @@ const LABEL_COLOR: Record<string, string> = {
   Column: "#13a884", Dataset: "#13a884", Run: "#d4663a", Job: "#d4663a",
 };
 
-function nodeLabel(name: string, label: string) {
+interface ArtifactData { name: string; label: string; color: string; focal: boolean; }
+
+function ArtifactNode({ data }: NodeProps) {
+  const d = data as unknown as ArtifactData;
   return (
-    <div style={{ lineHeight: 1.2 }}>
-      <div style={{ fontWeight: 600, fontSize: 11 }}>{name}</div>
-      <div style={{ fontSize: 9, opacity: 0.55 }}>{label}</div>
+    <div style={{
+      background: d.focal ? "#222" : "#fff", color: d.focal ? "#fff" : "#333",
+      border: `2px solid ${d.focal ? "#4f7cff" : d.color}`, borderRadius: 8, padding: "5px 8px",
+      width: 150, textAlign: "center", fontSize: 11, cursor: d.focal ? "default" : "pointer",
+    }}>
+      <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
+      <div style={{ fontWeight: 600 }}>{d.name}</div>
+      <div style={{ fontSize: 9, opacity: 0.6 }}>{d.label}</div>
+      <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
     </div>
   );
 }
 
-function ProvenanceGraph({ focal, onLink }: { focal: number | null; onLink: (id: string) => void }) {
-  const [ego, setEgo] = useState<Ego | null>(null);
-  const [loading, setLoading] = useState(true);
+// Module-level so the object identity is stable — ReactFlow errors on a fresh nodeTypes object each render.
+const nodeTypes = { artifact: ArtifactNode };
 
-  useEffect(() => {
-    setLoading(true);
-    const q = focal == null ? "" : `?focal=${focal}`;
-    fetch(`/api/provenance/ego${q}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d: Ego | null) => { setEgo(d); setLoading(false); })
-      .catch(() => { setEgo(null); setLoading(false); });
-  }, [focal]);
-
+function Graph({ ego, onLink }: { ego: Ego; onLink: (id: string) => void }) {
+  const fid = String(ego.focal!.vid);
   const { nodes, edges } = useMemo<{ nodes: Node[]; edges: Edge[] }>(() => {
-    if (!ego?.focal) return { nodes: [], edges: [] };
-    const fid = String(ego.focal.vid);
-    // outgoing (this node → derived) to the right, incoming (sources → this node) to the left
+    const focal = ego.focal!;
+    // dedupe neighbor NODES by vid (a node reached by >1 edge appears once); drop self-references
+    const byVid = new Map<string, Neighbor>();
+    for (const n of ego.neighbors) {
+      const k = String(n.vid);
+      if (k !== fid && !byVid.has(k)) byVid.set(k, n);
+    }
+    const uniq = [...byVid.values()];
     const place = (arr: Neighbor[], side: number) =>
       arr.map((n, i) => ({
         n, x: side * 340,
         y: ((arr.length === 1 ? 0.5 : i / (arr.length - 1)) - 0.5) * Math.max(140, arr.length * 76),
       }));
-    const placed = [
-      ...place(ego.neighbors.filter((n) => n.out), 1),
-      ...place(ego.neighbors.filter((n) => !n.out), -1),
-    ];
+    const placed = [...place(uniq.filter((n) => n.out), 1), ...place(uniq.filter((n) => !n.out), -1)];
     const ns: Node[] = [
-      {
-        id: fid, position: { x: 0, y: 0 }, data: { label: nodeLabel(ego.focal.name, ego.focal.label) },
-        style: { background: "#222", color: "#fff", border: "2px solid #4f7cff", borderRadius: 8,
-                 padding: 6, width: 150, textAlign: "center" },
-      },
+      { id: fid, type: "artifact", position: { x: 0, y: 0 },
+        data: { name: focal.name, label: focal.label, color: "#4f7cff", focal: true } },
       ...placed.map(({ n, x, y }): Node => ({
-        id: String(n.vid), position: { x, y }, data: { label: nodeLabel(n.name, n.label) },
-        style: { background: "#fff", color: "#333", border: `2px solid ${LABEL_COLOR[n.label] || "#bbb"}`,
-                 borderRadius: 8, padding: 6, width: 150, textAlign: "center", cursor: "pointer" },
-      })),
+        id: String(n.vid), type: "artifact", position: { x, y },
+        data: { name: n.name, label: n.label, color: LABEL_COLOR[n.label] || "#bbb", focal: false } })),
     ];
-    const es: Edge[] = ego.neighbors.map((n): Edge => {
+    // one edge per relationship, unique id (incl. type), only between nodes that exist
+    const seen = new Set<string>();
+    const es: Edge[] = [];
+    for (const n of ego.neighbors) {
       const nid = String(n.vid);
+      if (nid === fid || !byVid.has(nid)) continue;
       const [source, target] = n.out ? [fid, nid] : [nid, fid];
-      return { id: `${source}->${target}`, source, target, label: n.edge,
-               style: { stroke: "#ccc" }, labelStyle: { fontSize: 9, fill: "#999" },
-               labelBgStyle: { fill: "#fff", fillOpacity: 0.8 } };
-    });
+      const id = `${source}->${target}:${n.edge}`;
+      if (seen.has(id)) continue;
+      seen.add(id);
+      es.push({ id, source, target, label: n.edge, style: { stroke: "#ccc" },
+                labelStyle: { fontSize: 9, fill: "#999" }, labelBgStyle: { fill: "#fff", fillOpacity: 0.85 } });
+    }
     return { nodes: ns, edges: es };
-  }, [ego]);
+  }, [ego, fid]);
+
+  return (
+    <ReactFlow
+      nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.2 }}
+      nodesDraggable={false} nodesConnectable={false} elementsSelectable
+      onNodeClick={(_, node) => { if (node.id !== fid) onLink(`provenance/${node.id}`); }}
+      proOptions={{ hideAttribution: true }}
+    >
+      <Background color="#eee" gap={16} />
+      <Controls showInteractive={false} />
+    </ReactFlow>
+  );
+}
+
+function Inner({ focal, onLink }: { focal: number | null; onLink: (id: string) => void }) {
+  const [ego, setEgo] = useState<Ego | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let live = true;
+    setLoading(true);
+    const q = focal == null ? "" : `?focal=${focal}`;
+    fetch(`/api/provenance/ego${q}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: Ego | null) => { if (live) { setEgo(d); setLoading(false); } })
+      .catch(() => { if (live) { setEgo(null); setLoading(false); } });
+    return () => { live = false; };
+  }, [focal]);
 
   if (loading) return <div style={{ padding: 16, color: "#888", fontSize: 12 }}>loading lineage…</div>;
   if (!ego || ego.error || !ego.focal)
@@ -86,16 +122,10 @@ function ProvenanceGraph({ focal, onLink }: { focal: number | null; onLink: (id:
 
   return (
     <div style={{ margin: "0 -4px 8px" }}>
-      <div style={{ height: 440, border: "1px solid #f0f0f0", borderRadius: 6, background: "#fcfcfd" }}>
-        <ReactFlow
-          nodes={nodes} edges={edges} fitView fitViewOptions={{ padding: 0.2 }}
-          nodesDraggable={false} nodesConnectable={false} elementsSelectable
-          onNodeClick={(_, node) => { if (ego.focal && node.id !== String(ego.focal.vid)) onLink(`provenance/${node.id}`); }}
-          proOptions={{ hideAttribution: true }}
-        >
-          <Background color="#eee" gap={16} />
-          <Controls showInteractive={false} />
-        </ReactFlow>
+      <div style={{ height: 440, width: "100%", border: "1px solid #f0f0f0", borderRadius: 6, background: "#fcfcfd" }}>
+        <ReactFlowProvider>
+          <Graph ego={ego} onLink={onLink} />
+        </ReactFlowProvider>
       </div>
       <div style={{ fontSize: 11, color: "#888", textAlign: "center", padding: "3px 0" }}>
         <b>{ego.focal.name}</b> ({ego.focal.label}) · {ego.neighbors.length} neighbors
@@ -105,4 +135,18 @@ function ProvenanceGraph({ focal, onLink }: { focal: number | null; onLink: (id:
   );
 }
 
-export default ProvenanceGraph;
+// A render error in the graph must never take down the whole lineup panel — contain it here.
+class Boundary extends Component<{ children: ReactNode }, { err: string | null }> {
+  state = { err: null as string | null };
+  static getDerivedStateFromError(e: unknown) { return { err: e instanceof Error ? e.message : String(e) }; }
+  render() {
+    if (this.state.err)
+      return <div style={{ padding: 16, color: "#c0392b", fontSize: 12 }}>
+        provenance graph failed to render: {this.state.err} (see the browser console)</div>;
+    return this.props.children;
+  }
+}
+
+export default function ProvenanceGraph(props: { focal: number | null; onLink: (id: string) => void }) {
+  return <Boundary><Inner {...props} /></Boundary>;
+}
