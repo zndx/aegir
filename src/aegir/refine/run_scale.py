@@ -42,7 +42,7 @@ def _subproc(construct: dict, mode: str, register: str, feedback: dict) -> dict:
     return json.loads(p.stdout)
 
 
-def _refine_one(offset: int, n_templates: int, out_dir: str) -> dict:
+def _refine_one(offset: int, n_templates: int, out_dir: str, realize: bool = False) -> dict:
     rec = LineageRecorder()
 
     def scaffold(c, obj, fb):
@@ -60,12 +60,21 @@ def _refine_one(offset: int, n_templates: int, out_dir: str) -> dict:
         rec.record_exchange(d.get("_exchange", {}), source_context={"objective": "dual_register", "register": "semantic"})
         return d.get("prose", "")
 
-    ch = live_draft(n_templates=n_templates, offset=offset)
+    ch = live_draft(n_templates=n_templates, offset=offset, realize=realize)
     res = run_refinement(ch, propose_fn=pnat, scaffold_propose=scaffold, dual_prose_fn=psem,
                          register="natural", lineage=rec, max_iters=8, commit_dir=out_dir)
+    toks = 0
+    for _, p in res.get("surfaces", []):
+        try:
+            c = json.loads(Path(p).read_text())
+            toks += len(c.get("prose", "")) + sum(
+                len(str(cell.get("value", ""))) + len(col.get("name", ""))
+                for t in c.get("tables", []) for col in t.get("columns", []) for cell in col.get("cells", []))
+        except Exception:  # noqa: BLE001
+            pass
     return {"template_id": ch["template_id"], "offset": offset, "outcome": res["outcome"],
             "surfaces": [r for r, _ in res["surfaces"]], "exchanges": len(rec.exchange_ids),
-            "lineage": bool(res.get("lineage")), "metrics": res["refined_metrics"]}
+            "lineage": bool(res.get("lineage")), "tokens": toks // 4, "metrics": res["refined_metrics"]}
 
 
 def _emit_corpus_parquet(out: Path) -> int:
@@ -101,8 +110,12 @@ def _project_lineup() -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--n-chapters", type=int, default=50)
+    ap.add_argument("--n-chapters", type=int, default=50, help="upper bound on chapters")
     ap.add_argument("--n-templates", type=int, default=3)
+    ap.add_argument("--realize", action="store_true",
+                    help="realized schemas (EAV/junction/star) — broad relational-construct space + ~3-4x tokens/chapter")
+    ap.add_argument("--token-target", type=int, default=0,
+                    help="stop once accumulated corpus tokens reach this (0 = run to --n-chapters)")
     ap.add_argument("--start", type=int, default=0, help="resume from this chapter index after a hiccup")
     ap.add_argument("--out", default=os.environ.get("AEGIR_REFINE_OUT", "/raid/build/aegir/path-a/refine_scale"))
     a = ap.parse_args()
@@ -113,11 +126,13 @@ def main() -> int:
     if mpath.exists():
         manifest = [json.loads(ln) for ln in mpath.read_text().splitlines() if ln.strip()]
     t0 = time.time()
+    total_tokens = sum(m.get("tokens", 0) for m in manifest)
     for i in range(a.start, a.n_chapters):
         try:
-            r = _refine_one(i * a.n_templates, a.n_templates, str(out))
-            print(f"[{i + 1}/{a.n_chapters}] {r['template_id']} {r['outcome']} "
-                  f"surfaces={r['surfaces']} ex={r['exchanges']} lineage={r['lineage']}", flush=True)
+            r = _refine_one(i * a.n_templates, a.n_templates, str(out), realize=a.realize)
+            total_tokens += r.get("tokens", 0)
+            print(f"[{i + 1}/{a.n_chapters}] {r['template_id']} {r['outcome']} tok~{r.get('tokens', 0)} "
+                  f"(cum ~{total_tokens}) ex={r['exchanges']} lineage={r['lineage']}", flush=True)
         except Exception as e:  # noqa: BLE001 — a chapter failure must never kill the run
             r = {"offset": i * a.n_templates, "index": i, "error": str(e)[:200]}
             print(f"[{i + 1}/{a.n_chapters}] FAILED: {str(e)[:120]}", flush=True)
@@ -125,13 +140,17 @@ def main() -> int:
         mpath.write_text("\n".join(json.dumps(m) for m in manifest) + "\n")
         if (i + 1) % 10 == 0:        # keep the lineup-projectable parquet current for a partial overnight run
             _emit_corpus_parquet(out)
+        if a.token_target and total_tokens >= a.token_target:
+            print(f"token target {a.token_target} reached (~{total_tokens} corpus tokens) — stopping.", flush=True)
+            break
     n_parq = _emit_corpus_parquet(out)        # the refined corpus in the lineup's content format
     _project_lineup()                          # re-project so the new dual-register content surfaces
     promoted = sum(1 for m in manifest if m.get("outcome") == "promote")
     nex = sum(m.get("exchanges", 0) for m in manifest)
     nlin = sum(1 for m in manifest if m.get("lineage"))
-    print(f"\nSCALE RUN done: {promoted} promoted, {nex} exchanges → raw.exchange, {nlin} run-events, "
-          f"{n_parq} surface-records → chapters.parquet (lineup re-projected), {time.time() - t0:.0f}s. → {out}")
+    print(f"\nSCALE RUN done: {promoted} promoted, ~{total_tokens} corpus tokens, {nex} exchanges → "
+          f"raw.exchange, {nlin} run-events, {n_parq} surface-records → chapters.parquet (lineup re-projected), "
+          f"{time.time() - t0:.0f}s. → {out}")
     return 0
 
 
