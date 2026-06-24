@@ -395,7 +395,9 @@ def project_content(recs: list[dict]) -> list[N.Note]:
         head = f"**Realizes terms.** {cites}"
         if topic is not None:
             head += f"  ·  **Topic.** {N.wl(f'topic/{int(topic)}')}"
-        text = (r.get("response_text") or "")[:3000]
+        full = r.get("response_text") or ""
+        text = full[:12000] + (f"\n\n*(preview — first 12,000 of {len(full):,} chars; full chapter in the "
+                               "corpus)*" if len(full) > 12000 else "")
         reg = r.get("_register", "natural")
         out.append(N.Note(
             id=f"content/chapter/{cid}", title=f"chapter {cid} · {reg}", kind="content-chapter",
