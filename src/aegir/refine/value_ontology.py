@@ -60,6 +60,31 @@ def value_ontology_from_taxonomy(path: str | Path = DEFAULT_TAXONOMY) -> dict:
             "disjoint": [hy] if len(hy) > 1 else [], "hypernyms": hy}
 
 
+def broader_map_from_taxonomy(path: str | Path = DEFAULT_TAXONOMY) -> dict:
+    """``{domain member → its hypernym}`` — the SKOS-broader map the subtree-mixing keys on."""
+    data = json.loads(Path(path).read_text())
+    return {m: e["hypernym"] for e in data.get("admitted", [])
+            for m in e.get("members", []) if m != e.get("hypernym")}
+
+
+def audit_mixing(entity_pools: dict, *, broader_map: dict | None = None,
+                 value_onto: dict | None = None) -> dict:
+    """Apply the VALUE_GATE to the subtree-mixing — the inc-1 → live link. For every mixed cell, check its
+    retained SOURCE sibling against its column concept under the bootstrapped hypernym-disjointness:
+    within-hypernym mixing is clean (siblings share a hypernym), a cross-hypernym source is a bad ``broader``
+    edge / too-high parent and is flagged. Returns ``{n_mixed_cols, leaks:[table.col:value]}``."""
+    from aegir.ontology.subtree_mix import concept_of, subtree_mixed_pools_traced
+    from aegir.refine.value_gate import check_chapter
+    bm = broader_map if broader_map is not None else broader_map_from_taxonomy()
+    vo = value_onto if value_onto is not None else value_ontology_from_taxonomy()
+    _, n_mixed, source_map = subtree_mixed_pools_traced(entity_pools, bm)
+    columns = [(f"{table}.{col}", concept_of(col), list(sm.items()))
+               for table, cols in source_map.items() for col, sm in cols.items()]
+    kw = dict(classes=vo["classes"], subclass_of=vo["subclass_of"], disjoint=vo["disjoint"])
+    leaks = check_chapter(columns, **kw)["violations"] if columns else []
+    return {"n_mixed_cols": n_mixed, "leaks": leaks}
+
+
 if __name__ == "__main__":
     from aegir.refine.value_gate import check_column
     onto = value_ontology_from_taxonomy()
@@ -78,3 +103,22 @@ if __name__ == "__main__":
     assert clean["consistent"] and not cross["consistent"] and "contam" in cross["violations"], \
         "bootstrapped fragment failed to separate domains"
     print("\nBootstrapped value-ontology separates admitted domains (cross-domain value flagged) — inc-1 OK.")
+
+    # audit_mixing — the VALUE_GATE applied to the subtree-mixing (cell-source-from-mixing retention).
+    H1, H2 = "hyp_alpha", "hyp_beta"
+    m1, m2, m3 = "leaf_a1", "leaf_a2", "leaf_b1"
+    vo = {"classes": [m1, m2, m3, H1, H2], "subclass_of": [[m1, H1], [m2, H1], [m3, H2]],
+          "disjoint": [[H1, H2]]}
+    pools = {"t": {m1: ["va1", "va2"], m2: ["va3"], m3: ["vb1"]}}
+    good = {m1: H1, m2: H1, m3: H2}                 # correct: m1,m2 ⊑ H1 ; m3 ⊑ H2
+    bad = {m1: H1, m2: H1, m3: H1}                  # WRONG edge: m3 (a H2 leaf) mixed under H1
+    ra, rb = audit_mixing(pools, broader_map=good, value_onto=vo), audit_mixing(pools, broader_map=bad, value_onto=vo)
+    print(f"mixing audit — correct broader map      : {ra}")
+    print(f"mixing audit — broken broader (m3→H1)   : {rb}")
+    assert not ra["leaks"] and rb["leaks"], "audit_mixing must confirm clean / catch the cross-hypernym leak"
+    pools_path = Path("src/aegir/ontology/entity_value_pools.json")
+    if pools_path.exists():
+        real = audit_mixing(json.loads(pools_path.read_text()))
+        print(f"REAL mixing audit (entity_value_pools.json): {real['n_mixed_cols']} mixed cols, "
+              f"{len(real['leaks'])} cross-hypernym leaks {real['leaks'][:5]}")
+    print("audit_mixing: within-hypernym mixing CLEAN; cross-hypernym leak CAUGHT — retention link OK.")

@@ -51,32 +51,53 @@ def _seed(*parts) -> int:
     return int.from_bytes(hashlib.blake2b(":".join(map(str, parts)).encode(), digest_size=8).digest(), "big")
 
 
-def subtree_mixed_pools(entity_pools: "dict[str, dict[str, list[str]]]", broader_map: "dict[str, str]",
-                        *, cap: int = 40, seed: int = 0xC25) -> "tuple[dict, int]":
-    """Return a COPY of ``entity_pools`` where each column whose concept ``C`` has a SKOS-broader parent ``P``
-    (with ≥2 children, i.e. ``C`` plus ≥1 sibling) draws from the union of ALL of ``P``'s children's pools —
-    "mix the subtrees under their common parent ``P``" (blood ∪ serum ∪ plasma for any specimen-subtype
-    column). This is the high-coverage form (keys on the column's PARENT, so every leaf with siblings mixes)
-    and it pairs exactly with the hypernym label ``broader(C)=P``: predict ``P`` from its heterogeneous
-    subtree. Leaf concepts with no parent / no siblings pass through. Deterministic. Returns
-    (mixed_pools, n_columns_mixed)."""
+def subtree_mixed_pools_traced(entity_pools: "dict[str, dict[str, list[str]]]",
+                               broader_map: "dict[str, str]", *, cap: int = 40, seed: int = 0xC25
+                               ) -> "tuple[dict, int, dict]":
+    """As ``subtree_mixed_pools`` but ALSO returns the per-value SOURCE provenance the mix would otherwise
+    discard: ``source_map[table][col][value] = source_sibling_concept`` (which child pool the value came from,
+    preferring the column's own concept ``C``). The source is **seed-independent** — a value belongs to
+    whichever sibling pool contains it — so it can be recovered post-hoc for any materialized cell. This is
+    what lets the VALUE_GATE AUDIT the mixing: every mixed cell's source vs its column concept under the
+    hypernym-disjointness (within-hypernym mixing → clean; a cross-hypernym source → a bad ``broader`` edge /
+    too-high parent, flagged). Returns (mixed_pools, n_columns_mixed, source_map)."""
     children = build_children(broader_map)
     cval = concept_value_index(entity_pools)
+    cval_set = {k: set(v) for k, v in cval.items()}
     mixed: dict[str, dict[str, list[str]]] = {}
+    source_map: dict[str, dict[str, dict[str, str]]] = {}
     n_mixed = 0
     for table, cols in entity_pools.items():
         mixed[table] = {}
+        source_map[table] = {}
         for col, vals in cols.items():
-            parent = broader_map.get(concept_of(col))
+            c = concept_of(col)
+            parent = broader_map.get(c)
             siblings = children.get(parent, []) if parent else []
             if len(siblings) < 2:  # need the column's concept + ≥1 sibling under a common parent
                 mixed[table][col] = vals
                 continue
+            own = set(vals)
             pool = set(vals)
             for sib in siblings:
                 pool.update(cval.get(sib, []))
             pool_list = sorted(pool)
             random.Random(_seed(seed, table, col)).shuffle(pool_list)
-            mixed[table][col] = pool_list[:cap]
+            kept = pool_list[:cap]
+            mixed[table][col] = kept
+            source_map[table][col] = {
+                v: (c if (v in own or v in cval_set.get(c, ()))
+                    else next((s for s in siblings if v in cval_set.get(s, ())), c))
+                for v in kept}
             n_mixed += 1
+    return mixed, n_mixed, source_map
+
+
+def subtree_mixed_pools(entity_pools: "dict[str, dict[str, list[str]]]", broader_map: "dict[str, str]",
+                        *, cap: int = 40, seed: int = 0xC25) -> "tuple[dict, int]":
+    """Mix each column's pool with its SKOS-broader siblings' pools (heterogeneous subtype population under the
+    common parent ``P``; pairs with the hypernym label ``broader(C)=P``). Leaf concepts with no parent / no
+    siblings pass through. Deterministic. Returns (mixed_pools, n_columns_mixed) — see
+    ``subtree_mixed_pools_traced`` for the per-value source provenance."""
+    mixed, n_mixed, _ = subtree_mixed_pools_traced(entity_pools, broader_map, cap=cap, seed=seed)
     return mixed, n_mixed
