@@ -1,10 +1,13 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Tag, Typography } from "antd";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import type { ReactNode } from "react";
 
 import PanelView from "./PanelView";
-import ProvenanceGraph from "./ProvenanceGraph";
+
+// Lazy so @xyflow/react is code-split off the main lineup path — the heavy graph lib loads only when a
+// Provenance panel opens, so it can never break the rest of the lineup (and the dev server pulls it on demand).
+const ProvenanceGraph = lazy(() => import("./ProvenanceGraph"));
 
 const { Text } = Typography;
 
@@ -240,7 +243,9 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
           </div>
         )}
         {note?.kind === "provenance" && (
-          <ProvenanceGraph focal={note.ego_focal ?? null} onLink={onLink} />
+          <Suspense fallback={<Text type="secondary" style={{ fontSize: 12 }}>loading graph…</Text>}>
+            <ProvenanceGraph focal={note.ego_focal ?? null} onLink={onLink} />
+          </Suspense>
         )}
         {note ? renderBody(note.body, onLink)
           : <Text type="secondary">{loading ? "loading…" : "This note is not in the current projection."}</Text>}
