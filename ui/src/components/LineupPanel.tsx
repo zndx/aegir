@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import PanelView from "./PanelView";
+import ProvenanceGraph from "./ProvenanceGraph";
 
 const { Text } = Typography;
 
@@ -19,6 +20,8 @@ export interface KBNote {
   links?: string[];
   // Training notes name the bokeh-server app their panel mounts (sweeps_app / reward_app / …).
   viz_app?: string;
+  // Provenance notes carry the AGE node id their ego-graph centers on (null = seed anchor).
+  ego_focal?: number | null;
 }
 
 // Flag accent per Data Product — the FedWiki "flag" reinterpreted as a lens color.
@@ -235,6 +238,9 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
               {note.viz_app === "provenance_app" && " · tap a node to open its lens"}
             </Text>
           </div>
+        )}
+        {note?.kind === "provenance" && (
+          <ProvenanceGraph focal={note.ego_focal ?? null} onLink={onLink} />
         )}
         {note ? renderBody(note.body, onLink)
           : <Text type="secondary">{loading ? "loading…" : "This note is not in the current projection."}</Text>}

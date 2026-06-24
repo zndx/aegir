@@ -150,6 +150,13 @@ def _register_api_routes(app: FastAPI) -> None:
 
     @app.get("/api/kb/note/{note_id:path}")
     def kb_note(note_id: str) -> dict:
+        # provenance/<vid> ids are synthetic (the live AGE graph, not a projected file) — resolve them to a
+        # provenance-kind note the React panel renders as a ReactFlow ego-graph centered on that node.
+        if note_id.startswith("provenance/"):
+            rest = note_id.split("/", 1)[1]
+            return {"id": note_id, "name": note_id, "title": "Provenance", "kind": "provenance",
+                    "data_product": "training", "ego_focal": int(rest) if rest.isdigit() else None,
+                    "body": "", "links": []}
         import json as _json
 
         from aegir.lineup import notes as _N
@@ -202,6 +209,58 @@ def _register_api_routes(app: FastAPI) -> None:
         args = dict(request.query_params) or None   # forward all query args to the bokeh session
         script = server_document(f"/viz/{app_name}", arguments=args, resources=None)
         return PlainTextResponse(script, media_type="text/html")
+
+    # ── /api/provenance/ego — first-order neighborhood of a lineage node (instance-level, navigable) ──
+    @app.get("/api/provenance/ego")
+    def provenance_ego(focal: int | None = None) -> dict:
+        """The 1-hop ego-graph of a provenance node (AGE internal id) for the lineup Provenance panel. No
+        ``focal`` → a seed anchor (Dataset/Run/Chapter). Returns the focal + its neighbors (capped), each
+        with a derived display name + edge type + direction; the React panel renders it and opens a node's
+        OWN ego-graph on click (panel-trail). Degrades gracefully if aegir_hx is down."""
+        from aegir.governance import graph as G
+        cap = 40
+
+        def _disp(label: str, mp: dict | None) -> str:
+            mp = mp or {}
+            for k in ("name", "title", "chapter_id", "template_id", "run_id", "dataset", "qualifiedName"):
+                if mp.get(k):
+                    return str(mp[k])
+            if mp.get("topic_id") is not None:
+                return f"topic {mp['topic_id']}"
+            return label
+
+        try:
+            with G.connect() as conn:
+                if focal is None:
+                    for lab in ("Dataset", "Run", "Chapter"):
+                        r = G.run(conn, f"MATCH (n:{lab}) RETURN {{vid: id(n)}} LIMIT 1")
+                        if r:
+                            focal = int(r[0]["vid"])
+                            break
+                    if focal is None:
+                        return {"focal": None, "neighbors": [], "truncated": False}
+                fv = int(focal)
+                f = G.run(conn, f"MATCH (n) WHERE id(n) = {fv} RETURN {{label: labels(n)[0], mp: properties(n)}}")
+                if not f:
+                    raise HTTPException(404, f"no provenance node {fv}")
+                nb = G.run(conn, f"MATCH (n)-[r]-(m) WHERE id(n) = {fv} AND labels(m)[0] <> 'vertex' "
+                                 "RETURN {mid: id(m), mlabel: labels(m)[0], etype: type(r), "
+                                 f"out: (startNode(r) = n), mp: properties(m)}} LIMIT {cap + 1}")
+                nb = [x for x in nb if not str(x.get("etype", "")).startswith("__rdbms")]
+                truncated = len(nb) > cap
+                nb = nb[:cap]
+                fl = f[0]
+                return {
+                    "focal": {"vid": fv, "label": fl["label"], "name": _disp(fl["label"], fl.get("mp"))},
+                    "neighbors": [{"vid": int(x["mid"]), "label": x["mlabel"],
+                                   "name": _disp(x["mlabel"], x.get("mp")), "edge": x["etype"],
+                                   "out": bool(x["out"])} for x in nb],
+                    "truncated": truncated, "cap": cap,
+                }
+        except HTTPException:
+            raise
+        except Exception as e:  # noqa: BLE001 — graph down/restarting; the panel shows an empty state
+            return {"focal": None, "neighbors": [], "error": type(e).__name__, "truncated": False}
 
     # ── /api/ontology/dbpedia-types ────────────────────────────
 
