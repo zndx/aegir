@@ -10,3 +10,6 @@
 	path = corpora
 	url = git@github.com:zndx/sdg-corpora.git
 	branch = trunk
+[submodule "components/oss-mistral-cli"]
+	path = components/oss-mistral-cli
+	url = git@github.com:zndx/oss-mistral-cli.git
