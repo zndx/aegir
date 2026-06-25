@@ -46,6 +46,19 @@ def _chapter_id(r: dict, i: int) -> str:
     return str(r.get("chapter_id") or r.get("hx_exchange_id") or f"idx{i}")
 
 
+def _chapter_title(cid: str, reg: str | None = None) -> str:
+    """Human label for a chapter link. Refined chapters encode their primary template + register in the id
+    (``ch_live_<template>.<register>``) → humanize it; c3 chapters carry a content hash → short-id fallback."""
+    body = cid
+    for rg in (".natural", ".semantic"):
+        if body.endswith(rg):
+            body, reg = body[: -len(rg)], reg or rg[1:]
+            break
+    name = (body[len("ch_live_"):].replace("_", " ").strip().title()
+            if body.startswith("ch_live_") else f"ch {cid[:8]}")
+    return f"{name} · {reg}" if reg else name
+
+
 _BOILER = frozenset(
     "the a an of for to and or is are be class subclassof some only exactly min max value "
     "equivalentto disjointwith disjointclasses subclass entity thing relation property type kind "
@@ -424,7 +437,7 @@ def project_content(recs: list[dict]) -> list[N.Note]:
             # the UI's inline regex alternates [[..]] | **..**, so bold around a wikilink swallows it)
             body0 += f"\n\n→ {N.wl(f'content/chapter/{cid}__w2', f'continue — window 2 of {n}')}"
         out.append(N.Note(
-            id=f"content/chapter/{cid}", title=f"chapter {cid} · {reg}" + (f" (1/{n})" if n > 1 else ""),
+            id=f"content/chapter/{cid}", title=_chapter_title(cid, reg) + (f" (1/{n})" if n > 1 else ""),
             kind="content-chapter", data_product="content", body=body0 + "\n", frontmatter={
                 "category": r.get("family"), "model": r.get("model"), "ablation": r.get("ablation"),
                 "register": reg, "target_topic_id": topic, "template_ids": tids, "windows": n}))
@@ -436,7 +449,7 @@ def project_content(recs: list[dict]) -> list[N.Note]:
             if k + 1 < n:
                 nav += f"  ·  → {N.wl(f'content/chapter/{cid}__w{k + 2}', f'window {k + 2} of {n}')}"
             out.append(N.Note(
-                id=f"content/chapter/{cid}__w{k + 1}", title=f"chapter {cid} · {reg} ({k + 1}/{n})",
+                id=f"content/chapter/{cid}__w{k + 1}", title=f"{_chapter_title(cid, reg)} ({k + 1}/{n})",
                 kind="content-chapter", data_product="content", body=f"{nav}\n\n{wins[k]}\n",
                 frontmatter={"register": reg, "window": k + 1, "of": n}))
     from collections import Counter
@@ -558,7 +571,8 @@ def project_collections(recs: list[dict], coverage: list[dict]) -> tuple[list[N.
             f"drawing on **{len(topics)} topics** (target + style · many-to-many), "
             f"**{len(terms)} terms**, **{len(cids)} chapters**.\n\n"
             + (f"> {gist} …\n\n" if gist else "")
-            + "**Documents.** " + (" · ".join(N.wl(f"content/chapter/{c}", f"ch {c[:8]}") for c in cids[:12]) or "—") + "\n\n"
+            + "**Documents.** " + (" · ".join(N.wl(f"content/chapter/{c}", _chapter_title(c, r.get("_register")))
+                                              for (_, r), c in zip(chs[:12], cids[:12])) or "—") + "\n\n"
             + "**Topics.** " + (" · ".join(N.wl(f"topic/{t}", f"topic {t}") for t in topics[:18]) or "—") + "\n\n"
             + "**Realizes terms.** " + (" · ".join(N.wl(f"ontology/term/{x}", x) for x in terms[:24]) or "—") + "\n\n"
             + "**Underlying tables.** " + (" · ".join(N.wl(f"relational/table/{_table_id(x)}", x) for x in terms[:24]) or "—") + "\n")
