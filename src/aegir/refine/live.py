@@ -60,9 +60,18 @@ def live_draft(*, n_templates: int = 2, family: str | None = None, seed: int = 0
     tpls = _load_templates()
     cands = sorted((t for t in tpls.values() if family is None or t["_family"] == family),
                    key=lambda t: t["template_id"])
-    if cands:
-        offset %= len(cands)
-    chosen = cands[offset:offset + n_templates] or cands[:n_templates]
+    # offset = chapter_index * n_templates (from run_scale). First pass: ordered contiguous windows cover every
+    # template once. Beyond one full pass: seeded-random DISTINCT subsets — so a large run STACKS thousands of
+    # unique chapters instead of wrapping back to duplicates (the old `offset %= len` just re-walked the windows).
+    import random
+    idx = offset // max(n_templates, 1)
+    n_windows = max(len(cands) // max(n_templates, 1), 1)
+    if not cands:
+        chosen = []
+    elif idx < n_windows:
+        chosen = cands[idx * n_templates:(idx + 1) * n_templates] or cands[:n_templates]
+    else:
+        chosen = random.Random(seed + idx).sample(cands, min(n_templates, len(cands)))
     fc = FamilyComplex.from_json(Path(FAMILY_COMPLEX))
     payload = chapter_relational_payload(chosen, fc, seed=seed, realize=realize)
     tid = "ch_live_" + (chosen[0]["template_id"] if chosen else "empty")
