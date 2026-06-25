@@ -74,7 +74,13 @@ def live_draft(*, n_templates: int = 2, family: str | None = None, seed: int = 0
         chosen = random.Random(seed + idx).sample(cands, min(n_templates, len(cands)))
     fc = FamilyComplex.from_json(Path(FAMILY_COMPLEX))
     payload = chapter_relational_payload(chosen, fc, seed=seed, realize=realize)
-    tid = "ch_live_" + (chosen[0]["template_id"] if chosen else "empty")
+    # UNIQUE per distinct template-set: with diverse sampling many chapters share a first template, so a bare
+    # ch_live_<first> id collides and overwrites (~54% loss observed). A short hash of the sorted set keeps the
+    # leading template readable while disambiguating distinct chapters; identical sets ARE the same chapter.
+    import hashlib
+    key = "|".join(sorted(t["template_id"] for t in chosen)) or "empty"
+    tid = ("ch_live_" + (chosen[0]["template_id"] if chosen else "empty")
+           + "_" + hashlib.sha1(key.encode()).hexdigest()[:6])
     ch = payload_to_construct(payload, template_id=tid)
     ch["template_ids"] = [t["template_id"] for t in chosen]    # lineup: chapter → terms
     ch["family"] = chosen[0]["_family"] if chosen else None

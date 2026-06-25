@@ -82,17 +82,46 @@ def _refine_one(offset: int, n_templates: int, out_dir: str, realize: bool = Fal
             "lineage": bool(res.get("lineage")), "tokens": toks // 4, "metrics": res["refined_metrics"]}
 
 
-def _tables_block(tables: list) -> str:
-    """The surface's structured tables as a ```json {tables:[…]} block — the lineup's table-render format — so
-    refined chapters SHOW their realized tables (consistent with the generated corpus's embedded json tables)."""
-    rt = []
+def _md_table(t: dict) -> str:
+    """One realized table as a GitHub-flavored markdown table (the woven, textbook-style format)."""
+    cols = [c.get("name", "") for c in t.get("columns", [])]
+    if not cols:
+        return ""
+    nrows = max((len(c.get("cells", [])) for c in t["columns"]), default=0)
+    lines = [f"**{t.get('name', 'table')}**", "",
+             "| " + " | ".join(cols) + " |", "| " + " | ".join(["---"] * len(cols)) + " |"]
+    for i in range(min(nrows, 8)):
+        lines.append("| " + " | ".join(
+            str(t["columns"][j]["cells"][i].get("value", "")) if i < len(t["columns"][j].get("cells", [])) else ""
+            for j in range(len(cols))) + " |")
+    return "\n".join(lines)
+
+
+def _weave_tables(prose: str, tables: list) -> str:
+    """Interleave the realized RI-true tables INTO the prose as markdown, each after the paragraph that best
+    references it (token overlap of the table's name + column concepts) — so a refined chapter reads as a woven
+    document like the topic-driven corpus, not prose with one data block bolted onto the end."""
+    import re
+    paras = [p for p in prose.split("\n\n") if p.strip()] or [prose]
+    slot: dict[int, list] = {i: [] for i in range(len(paras))}
+    tail: list = []
     for t in tables:
-        cols = t.get("columns", [])
-        nrows = max((len(col.get("cells", [])) for col in cols), default=0)
-        rows = [[(cols[j]["cells"][i].get("value") if i < len(cols[j].get("cells", [])) else "")
-                 for j in range(len(cols))] for i in range(nrows)]
-        rt.append({"name": t.get("name"), "columns": [col.get("name") for col in cols], "rows": rows})
-    return "```json\n" + json.dumps({"tables": rt}, ensure_ascii=False) + "\n```"
+        toks = {w for w in re.findall(r"[a-z]{4,}",
+                (t.get("name", "") + " " + " ".join(c.get("concept", "") for c in t.get("columns", [])))
+                .replace("_", " ").lower())}
+        best, bi = 0, None
+        for i, p in enumerate(paras):
+            pl = p.lower()
+            sc = sum(1 for w in toks if w in pl)
+            if sc > best:
+                best, bi = sc, i
+        (slot[bi] if bi is not None else tail).append(t)
+    parts: list = []
+    for i, p in enumerate(paras):
+        parts.append(p)
+        parts.extend(_md_table(t) for t in slot[i])
+    parts.extend(_md_table(t) for t in tail)
+    return "\n\n".join(x for x in parts if x)
 
 
 def _emit_corpus_parquet(out: Path) -> int:
@@ -110,8 +139,8 @@ def _emit_corpus_parquet(out: Path) -> int:
             continue
         prose = c.get("prose", "")
         tbls = c.get("tables") or []
-        if tbls:                                  # embed the realized tables so they render in the lineup + corpus
-            prose = prose.rstrip() + "\n\n" + _tables_block(tbls) + "\n"
+        if tbls:                                  # weave the realized tables INTO the prose (not appended at end)
+            prose = _weave_tables(prose, tbls)
         recs.append({"chapter_id": f.stem, "response_text": prose,
                      "template_ids": [str(t) for t in (c.get("template_ids") or [])],
                      "family": c.get("family"), "register": c.get("register", "natural"),

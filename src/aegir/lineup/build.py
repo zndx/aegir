@@ -54,8 +54,10 @@ def _chapter_title(cid: str, reg: str | None = None) -> str:
         if body.endswith(rg):
             body, reg = body[: -len(rg)], reg or rg[1:]
             break
-    name = (body[len("ch_live_"):].replace("_", " ").strip().title()
-            if body.startswith("ch_live_") else f"ch {cid[:8]}")
+    if body.startswith("ch_live_"):              # strip the trailing _<hash6> uniqueness suffix from the title
+        name = re.sub(r"_[0-9a-f]{6}$", "", body[len("ch_live_"):]).replace("_", " ").strip().title() or f"ch {cid[:8]}"
+    else:
+        name = f"ch {cid[:8]}"
     return f"{name} · {reg}" if reg else name
 
 
