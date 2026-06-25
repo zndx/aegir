@@ -775,17 +775,21 @@ def run(args=None) -> int:
                 tset.add(str(t))
         for t in tset:
             term_topics.setdefault(t, []).append(int(r["topic_id"]))
-    for r in corpus:                              # give refined (topic-less) chapters their dominant template-topic
-        cur = r.get("target_topic_id")
-        if cur is not None and int(cur) < 0:      # the BERTopic outlier (-1) is not a real topic — drop it
-            r["target_topic_id"] = cur = None
+    for r in corpus:                              # template-driven chapters → derive their topic THREAD from the
+        cur = r.get("target_topic_id")            # templates' coverage alignment: a dominant ANCHOR topic plus the
+        if cur is not None and int(cur) < 0:      # secondary alignments as STYLE topics — so a collection spans
+            r["target_topic_id"] = cur = None     # many topics and a topic threads many collections (the m:n graph).
+        if r.get("style_topic_ids"):              # scrub outlier (-1) style topics carried by older generations
+            r["style_topic_ids"] = [s for s in _idlist(r["style_topic_ids"]) if int(s) >= 0]
         if cur is None:
             votes: dict[int, int] = {}
             for tid in (r.get("template_ids") or []):
                 for tp in term_topics.get(str(tid), []):
                     votes[tp] = votes.get(tp, 0) + 1
             if votes:
-                r["target_topic_id"] = max(votes, key=lambda k: (votes[k], -k))
+                ranked = sorted(votes, key=lambda k: (-votes[k], k))
+                r["target_topic_id"] = ranked[0]
+                r["style_topic_ids"] = ranked[1:5]   # secondary template-topic alignments → the m:n thread
     term_chapters: dict[str, list[str]] = {}
     topic_chapters: dict[int, list[str]] = {}
     for i, r in enumerate(corpus):
