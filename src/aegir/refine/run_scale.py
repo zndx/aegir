@@ -82,6 +82,19 @@ def _refine_one(offset: int, n_templates: int, out_dir: str, realize: bool = Fal
             "lineage": bool(res.get("lineage")), "tokens": toks // 4, "metrics": res["refined_metrics"]}
 
 
+def _tables_block(tables: list) -> str:
+    """The surface's structured tables as a ```json {tables:[…]} block — the lineup's table-render format — so
+    refined chapters SHOW their realized tables (consistent with the generated corpus's embedded json tables)."""
+    rt = []
+    for t in tables:
+        cols = t.get("columns", [])
+        nrows = max((len(col.get("cells", [])) for col in cols), default=0)
+        rows = [[(cols[j]["cells"][i].get("value") if i < len(cols[j].get("cells", [])) else "")
+                 for j in range(len(cols))] for i in range(nrows)]
+        rt.append({"name": t.get("name"), "columns": [col.get("name") for col in cols], "rows": rows})
+    return "```json\n" + json.dumps({"tables": rt}, ensure_ascii=False) + "\n```"
+
+
 def _emit_corpus_parquet(out: Path) -> int:
     """Build a ``chapters.parquet`` (the lineup's content format) from the dual-register surface files, so the
     refined corpus surfaces in the register-mix lineup — one record per surface, register per-record."""
@@ -95,7 +108,11 @@ def _emit_corpus_parquet(out: Path) -> int:
             c = json.loads(f.read_text())
         except Exception:  # noqa: BLE001
             continue
-        recs.append({"chapter_id": f.stem, "response_text": c.get("prose", ""),
+        prose = c.get("prose", "")
+        tbls = c.get("tables") or []
+        if tbls:                                  # embed the realized tables so they render in the lineup + corpus
+            prose = prose.rstrip() + "\n\n" + _tables_block(tbls) + "\n"
+        recs.append({"chapter_id": f.stem, "response_text": prose,
                      "template_ids": [str(t) for t in (c.get("template_ids") or [])],
                      "family": c.get("family"), "register": c.get("register", "natural"),
                      "model": "engine-refine", "target_topic_id": None})
