@@ -121,6 +121,39 @@ def _emit_corpus_parquet(out: Path) -> int:
     return len(recs)
 
 
+def _quality_snapshot(out: Path) -> dict:
+    """Naturalness/health snapshot of the LIVE corpus — a self-managed run EVIDENCES the organic-prose rebalance
+    as it grows: mean entailment (gate health), schema-vocabulary density (mechanical 'table talk' — want LOW),
+    organic-opening rate (prose NOT opening 'The X table' — want HIGH), mean length."""
+    import re
+
+    from aegir.refine.eval import prose_entailment
+    SCHEMA = {"table", "tables", "column", "columns", "row", "rows", "key", "keys", "value", "values", "field",
+              "record", "records", "foreign", "primary", "schema", "tuple", "attribute", "fk", "pk", "join", "id"}
+    ents, dens, lens, organic = [], [], [], 0
+    for f in sorted((out / "current").glob("*.json")):
+        if f.name.endswith(".metrics.json"):
+            continue
+        try:
+            c = json.loads(f.read_text())
+        except Exception:  # noqa: BLE001
+            continue
+        p = c.get("prose", "")
+        if not p:
+            continue
+        ents.append(prose_entailment({"tables": c.get("tables", []), "prose": p}))
+        w = re.findall(r"[a-z]+", p.lower())
+        dens.append(sum(1 for x in w if x in SCHEMA) / max(len(w), 1))
+        if not re.match(r"\s*(the|this)\s+[`\w]+\s+(table|schema|view)", p.lower()):
+            organic += 1
+        lens.append(len(p))
+    n = len(ents)
+    if not n:
+        return {}
+    return {"n": n, "mean_entailment": round(sum(ents) / n, 3), "mean_schema_density": round(sum(dens) / n, 3),
+            "organic_open_rate": round(organic / n, 3), "mean_chars": int(sum(lens) / n)}
+
+
 def _project_lineup() -> None:
     """Re-project the KB lineup so the refined dual-register corpus surfaces (best-effort)."""
     try:

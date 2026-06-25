@@ -24,9 +24,21 @@ import sys
 import time
 from pathlib import Path
 
-from aegir.refine.run_scale import _emit_corpus_parquet, _project_lineup
+from aegir.refine.run_scale import _emit_corpus_parquet, _project_lineup, _quality_snapshot
 
 ROOT = Path(__file__).resolve().parents[3]
+
+
+def _log_quality(out: Path, t0: float, surfaces: int) -> None:
+    """Append a naturalness/health snapshot to quality_ledger.jsonl + echo it — the self-managed run evidences
+    the organic-prose rebalance as it grows (want schema_density LOW, organic_open_rate HIGH, chars up)."""
+    snap = _quality_snapshot(out)
+    if snap:
+        snap["t"], snap["surfaces"] = int(time.time() - t0), surfaces
+        with open(out / "quality_ledger.jsonl", "a") as qf:
+            qf.write(json.dumps(snap) + "\n")
+        print(f"  ✎ quality: n={snap['n']} entail={snap['mean_entailment']} density={snap['mean_schema_density']} "
+              f"organic={snap['organic_open_rate']} chars={snap['mean_chars']}", flush=True)
 
 
 def main() -> int:
@@ -82,6 +94,7 @@ def main() -> int:
             if n > last_n:
                 _project_lineup()
                 print(f"  ↻ lineup refreshed: {n} surface-records live ({time.time() - t0:.0f}s)", flush=True)
+                _log_quality(out, t0, n)
                 last_n = n
             last_refresh = time.time()
         time.sleep(10)
@@ -95,6 +108,7 @@ def main() -> int:
     (out / "manifest.jsonl").write_text("\n".join(json.dumps(m) for m in merged) + "\n")
     n_parq = _emit_corpus_parquet(out)
     _project_lineup()
+    _log_quality(out, t0, n_parq)
 
     promoted = sum(1 for m in merged if m.get("outcome") == "promote")
     toks = sum(m.get("tokens", 0) for m in merged)
