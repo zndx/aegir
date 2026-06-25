@@ -42,14 +42,25 @@ def _prompt(construct: dict, mode: str, register: str, feedback: dict) -> str:
             "— no prose, no markdown fence.\n\n"
             f"Gate feedback: {json.dumps({k: feedback.get(k) for k in ('disjointness_violations', 'placeholder_rate')})}\n\n"
             "Tables:\n" + _render_tables(construct))
-    style = ("a natural, topical practitioner voice (no ontology jargon — write as a data engineer describing "
-             "a real dataset)" if register == "natural" else
-             "a precise ontology-grounded technical voice (it is fine to reference the underlying concepts and "
-             "how the schema materializes them)")
-    return (f"Write 2-3 short paragraphs of accurate prose describing the tables below in {style}. Name each "
-            "table, its columns, and representative values, and explain the foreign-key relationship. Use only "
-            "the values shown. No preamble, no markdown headers — prose only.\n\nTables:\n"
-            + _render_tables(construct))
+    concepts = sorted({(col.get("concept") or "").replace("_", " ").strip()
+                       for t in construct.get("tables", []) for col in t.get("columns", [])
+                       if col.get("concept") and len(col.get("concept", "")) > 2})
+    if register == "natural":
+        frame = ("one section of a professional technical reference — a compliance handbook, governance "
+                 "framework, or operational guide — in dense, evidence-anchored prose")
+        teach = ("Teach the DOMAIN: explain what these things are, why they matter, and how they work in "
+                 "practice, drawing on the data below as concrete examples woven into the prose.")
+    else:
+        frame = ("one section of an ontology-grounded technical reference explaining how a domain is modelled, "
+                 "in precise conceptual prose")
+        teach = ("Teach the CONCEPTS and how the schema materializes them: explain the entities, their "
+                 "relationships, and how the records below instantiate them.")
+    return (
+        f"You are writing {frame}. The subject is: {', '.join(concepts[:12]) or 'the data below'}.\n\n"
+        f"{teach} The data is EVIDENCE, not the subject — do NOT open with 'The X table', do NOT enumerate "
+        "columns one by one, do NOT narrate a schema. Cite specific values only where they illustrate a point. "
+        "Write 4-6 substantial, flowing paragraphs. Begin with the subject matter — no preamble, no markdown "
+        "headers.\n\nData to draw on:\n" + _render_tables(construct))
 
 
 def _parse_edits(text: str) -> list:

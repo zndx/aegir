@@ -117,22 +117,40 @@ def _frac_mentioned(ents: set[str], prose: str) -> float | None:
     return m / len(ents)
 
 
+def _concepts(construct) -> set[str]:
+    """The DOMAIN concepts a chapter teaches — humanized table subjects + column concepts, NOT the schema
+    identifiers. Organic, concept-teaching prose mentions these; it need not enumerate the table/column NAMES
+    (the requirement that forced the mechanical 'The X table has columns a, b, c…' readout). Off-topic or
+    ungrounded prose still fails — it won't mention the domain concepts."""
+    ents: set[str] = set()
+    for t in construct.get("tables", []):
+        subj = re.sub(r"^(t_|dim_|fact_|bridge_|ref_|stg_)", "", t.get("name", "")).replace("_", " ").strip()
+        if len(subj) > 2:
+            ents.add(subj)
+        for col in t.get("columns", []):
+            c = (col.get("concept") or "").replace("_", " ").strip()
+            if len(c) > 2:
+                ents.add(c)
+    return ents
+
+
 def prose_entailment(construct) -> float:
-    """Prose↔table correspondence, calibrated for realized schemas: weight STRUCTURAL correspondence — does the
-    prose describe the tables and columns — at 0.7, over a capped SAMPLE of representative cell values at 0.3.
-    A many-table chapter is no longer penalized for not naming every one of its hundreds of cells (the old
-    all-cells metric made realized chapters un-passable in 2-3 paragraphs); a chapter that simply doesn't
-    describe its schema still fails."""
+    """Prose↔data correspondence, REBALANCED for organic exposition. The earlier version weighted STRUCTURAL
+    correspondence — naming the tables/columns — at 0.7, which forced a mechanical schema readout ("The X table
+    has columns a, b, c… a foreign key into Y") and made the loop *select against* the organic, concept-teaching,
+    FinePDFs-style prose the corpus exists to provide. Now reward teaching the DOMAIN CONCEPTS (0.6) and grounding
+    in representative VALUES (0.4); the embedded tables carry the schema structure, so the prose need not enumerate
+    it. Off-topic / ungrounded prose still fails (it won't mention the concepts or the values)."""
     prose = construct.get("prose", "").lower()
-    s = _frac_mentioned(_structural_entities(construct), prose)
+    c = _frac_mentioned(_concepts(construct), prose)
     v = _frac_mentioned(_value_sample(construct), prose)
-    if s is None and v is None:
+    if c is None and v is None:
         return 1.0
-    if s is None:
+    if c is None:
         return v if v is not None else 1.0
     if v is None:
-        return s
-    return 0.7 * s + 0.3 * v
+        return c
+    return 0.6 * c + 0.4 * v
 
 
 def length_ok(construct, *, lo: int = 400, hi: int = 20000) -> bool:
