@@ -22,7 +22,9 @@ from aegir.refine import eval as ev
 
 # objective → handled in mint(); thresholds for the gate booleans
 PLACEHOLDER_MAX = 0.05
-ENTAILMENT_MIN = 0.50
+ENTAILMENT_MIN = 0.30   # rebalanced for the concept/value gate (eval.prose_entailment): organic, grounded prose
+# scores ~0.33-0.69 concept+value coverage; 0.30 admits it while off-topic/ungrounded (~0) still fails. Was 0.50
+# — tuned to the old schema-naming gate, which scored organic prose 0.48 and forced the mechanical schema readout.
 
 
 def refinement_rules() -> list[Rule]:
