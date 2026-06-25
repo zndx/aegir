@@ -750,6 +750,8 @@ def run(args=None) -> int:
     # realize; without it they carry no topic and the topic/collections axis can't grow as the refined corpus does.
     term_topics: dict[str, list[int]] = {}
     for r in coverage:
+        if int(r["topic_id"]) < 0:            # BERTopic outlier/noise cluster (-1) — not a real topic; never assign
+            continue
         tset: set[str] = set()
         if r.get("top_template_id"):
             tset.add(str(r["top_template_id"]))
@@ -760,7 +762,10 @@ def run(args=None) -> int:
         for t in tset:
             term_topics.setdefault(t, []).append(int(r["topic_id"]))
     for r in corpus:                              # give refined (topic-less) chapters their dominant template-topic
-        if r.get("target_topic_id") is None:
+        cur = r.get("target_topic_id")
+        if cur is not None and int(cur) < 0:      # the BERTopic outlier (-1) is not a real topic — drop it
+            r["target_topic_id"] = cur = None
+        if cur is None:
             votes: dict[int, int] = {}
             for tid in (r.get("template_ids") or []):
                 for tp in term_topics.get(str(tid), []):
