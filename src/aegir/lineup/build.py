@@ -745,6 +745,28 @@ def run(args=None) -> int:
     # Read content/coverage once + derive cross-references (so Terms show what exercises them).
     corpus, crun = S.corpus_recs()
     coverage, cov = S.coverage_recs()
+    # template → aligned topic_ids (coverage top-template alignment — the rich `top_templates` list, ~5/topic).
+    # Built FIRST so template-driven (refinement) chapters get an ORGANIC target_topic_id from the templates they
+    # realize; without it they carry no topic and the topic/collections axis can't grow as the refined corpus does.
+    term_topics: dict[str, list[int]] = {}
+    for r in coverage:
+        tset: set[str] = set()
+        if r.get("top_template_id"):
+            tset.add(str(r["top_template_id"]))
+        for e in (r.get("top_templates") or []):
+            t = e.get("template_id") if isinstance(e, dict) else e
+            if t:
+                tset.add(str(t))
+        for t in tset:
+            term_topics.setdefault(t, []).append(int(r["topic_id"]))
+    for r in corpus:                              # give refined (topic-less) chapters their dominant template-topic
+        if r.get("target_topic_id") is None:
+            votes: dict[int, int] = {}
+            for tid in (r.get("template_ids") or []):
+                for tp in term_topics.get(str(tid), []):
+                    votes[tp] = votes.get(tp, 0) + 1
+            if votes:
+                r["target_topic_id"] = max(votes, key=lambda k: (votes[k], -k))
     term_chapters: dict[str, list[str]] = {}
     topic_chapters: dict[int, list[str]] = {}
     for i, r in enumerate(corpus):
@@ -754,11 +776,6 @@ def run(args=None) -> int:
         tp = r.get("target_topic_id")
         if tp is not None:
             topic_chapters.setdefault(int(tp), []).append(cid)
-    term_topics: dict[str, list[int]] = {}
-    for r in coverage:
-        top = r.get("top_template_id")
-        if top:
-            term_topics.setdefault(top, []).append(int(r["topic_id"]))
 
     broader, narrower = S.term_hierarchy()
 
