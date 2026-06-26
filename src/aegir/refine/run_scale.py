@@ -49,23 +49,23 @@ def _subproc(construct: dict, mode: str, register: str, feedback: dict, backend:
 
 def _refine_one(offset: int, n_templates: int, out_dir: str, realize: bool = False, backend: str = "local") -> dict:
     rec = LineageRecorder()
+    ch = live_draft(n_templates=n_templates, offset=offset, realize=realize)
+    anchor = ch.get("style_anchor", "")           # FinePDFs style anchor → flows into every proposer call
 
     def scaffold(c, obj, fb):
-        d = _subproc(c, "edits", "natural", fb, backend)
+        d = _subproc({**c, "style_anchor": anchor}, "edits", "natural", fb, backend)
         rec.record_exchange(d.get("_exchange", {}), source_context={"objective": obj, "mode": "edits"})
         return d.get("edits", [])
 
     def pnat(c, fb=None):
-        d = _subproc(c, "prose", "natural", fb or {}, backend)
+        d = _subproc({**c, "style_anchor": anchor}, "prose", "natural", fb or {}, backend)
         rec.record_exchange(d.get("_exchange", {}), source_context={"objective": "fix_prose", "register": "natural"})
         return d.get("prose", "")
 
     def psem(c):
-        d = _subproc(c, "prose", "semantic", {}, backend)
+        d = _subproc({**c, "style_anchor": anchor}, "prose", "semantic", {}, backend)
         rec.record_exchange(d.get("_exchange", {}), source_context={"objective": "dual_register", "register": "semantic"})
         return d.get("prose", "")
-
-    ch = live_draft(n_templates=n_templates, offset=offset, realize=realize)
     res = run_refinement(ch, propose_fn=pnat, scaffold_propose=scaffold, dual_prose_fn=psem,
                          register="natural", lineage=rec, max_iters=8, commit_dir=out_dir)
     toks = 0

@@ -55,12 +55,17 @@ def _prompt(construct: dict, mode: str, register: str, feedback: dict) -> str:
                  "in precise conceptual prose")
         teach = ("Teach the CONCEPTS and how the schema materializes them: explain the entities, their "
                  "relationships, and how the records below instantiate them.")
+    anchor = (construct.get("style_anchor") or "").strip()
+    anchor_block = ("\n\nEcho the REGISTER and information density of this real corpus passage — its formality, "
+                    "sentence rhythm, and how densely it packs evidence — as ONE style exemplar among many, while "
+                    "writing about the data below. Do NOT adopt its subject matter or copy it:\n"
+                    "«" + anchor[:1000] + "»") if anchor else ""
     return (
         f"You are writing {frame}. The subject is: {', '.join(concepts[:12]) or 'the data below'}.\n\n"
         f"{teach} The data is EVIDENCE, not the subject — do NOT open with 'The X table', do NOT enumerate "
         "columns one by one, do NOT narrate a schema. Cite specific values only where they illustrate a point. "
         "Write 4-6 substantial, flowing paragraphs. Begin with the subject matter — no preamble, no markdown "
-        "headers.\n\nData to draw on:\n" + _render_tables(construct))
+        "headers." + anchor_block + "\n\nData to draw on:\n" + _render_tables(construct))
 
 
 def _parse_edits(text: str) -> list:

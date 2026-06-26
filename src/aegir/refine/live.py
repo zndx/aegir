@@ -9,11 +9,53 @@ retain per-cell provenance, which is the next sub-step.
 """
 from __future__ import annotations
 
+import glob
 import json
+import os
 from pathlib import Path
 
 CATALOG_DIR = "src/aegir/ontology/catalog"
 FAMILY_COMPLEX = "src/aegir/ontology/family_complex.json"
+
+_GROUNDING: tuple[dict, dict] | None = None
+
+
+def _load_coverage() -> list:
+    """The FinePDFs coverage audit (topic_coverage.parquet): the topics + their template alignment + a real
+    representative passage. Found via AEGIR_COVERAGE_RUN or the latest coverage_v* artifact."""
+    import pyarrow.parquet as pq
+    p = os.environ.get("AEGIR_COVERAGE_RUN")
+    if not p or not Path(p).exists():
+        cands = sorted(glob.glob("/raid/checkpoints/aegir-artifacts/coverage_v*/*/topic_coverage.parquet"),
+                       key=lambda f: Path(f).stat().st_mtime)
+        p = cands[-1] if cands else None
+    return pq.read_table(p).to_pylist() if p and Path(p).exists() else []
+
+
+def _grounding() -> tuple[dict, dict]:
+    """FinePDFs grounding, cached per process: ``template_id → aligned topic_ids`` and ``topic_id → style anchor``
+    (a real FinePDFs passage). Lets a refined chapter be GROUNDED in the topic its templates align to — the
+    anchor steers the proposer's register + subject toward genuine corpus content (vs the house technical voice)."""
+    global _GROUNDING
+    if _GROUNDING is None:
+        term_topics: dict = {}
+        anchors: dict = {}
+        for r in _load_coverage():
+            tid = int(r.get("topic_id", -1))
+            if tid < 0:
+                continue
+            anchors[tid] = (r.get("topic_repr_text") or "").strip()[:1400]
+            tset = set()
+            if r.get("top_template_id"):
+                tset.add(str(r["top_template_id"]))
+            for e in (r.get("top_templates") or []):
+                t = e.get("template_id") if isinstance(e, dict) else e
+                if t:
+                    tset.add(str(t))
+            for t in tset:
+                term_topics.setdefault(t, []).append(tid)
+        _GROUNDING = (term_topics, anchors)
+    return _GROUNDING
 
 
 def _load_templates(catalog_dir: str = CATALOG_DIR) -> dict:
@@ -84,6 +126,15 @@ def live_draft(*, n_templates: int = 2, family: str | None = None, seed: int = 0
     ch = payload_to_construct(payload, template_id=tid)
     ch["template_ids"] = [t["template_id"] for t in chosen]    # lineup: chapter → terms
     ch["family"] = chosen[0]["_family"] if chosen else None
+    term_topics, anchors = _grounding()                        # FinePDFs grounding: dominant aligned topic + anchor
+    votes: dict[int, int] = {}
+    for t in chosen:
+        for tp in term_topics.get(t["template_id"], []):
+            votes[tp] = votes.get(tp, 0) + 1
+    if votes:
+        dom = max(votes, key=lambda k: (votes[k], -k))
+        ch["target_topic_id"] = dom
+        ch["style_anchor"] = anchors.get(dom, "")
     return ch
 
 
