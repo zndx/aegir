@@ -67,6 +67,9 @@ def main() -> int:
     ap.add_argument("--out", default="08_derived.json")
     ap.add_argument("--no-hermit", dest="hermit", action="store_false", help="skip HermiT consistency (CPU gates only)")
     ap.add_argument("--no-jvm", dest="jvm", action="store_false", help="skip the DeepOnto re-gate (G1 parse)")
+    ap.add_argument("--align-min", type=float, default=0.35,
+                    help="LINK-1 gate: min cosine(candidate verbalization, its FinePDFs _source_span) to admit — "
+                         "the membrane condition for 'the ontology is informed by the inputs' (0 = off)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -76,6 +79,17 @@ def main() -> int:
         return 1
     cands = json.loads(cand_path.read_text()).get("templates", [])
     print(f"promoting from {cand_path.name}: {len(cands)} candidates")
+
+    align: dict = {}                              # LINK-1: cos(verbalization, the candidate's FinePDFs source span)
+    if args.align_min > 0 and cands:
+        try:
+            from sentence_transformers import SentenceTransformer
+            enc = SentenceTransformer("all-MiniLM-L6-v2")
+            V = enc.encode([(d.get("verbal_template") or "") for d in cands], normalize_embeddings=True, show_progress_bar=False)
+            Sx = enc.encode([(d.get("_source_span") or "") for d in cands], normalize_embeddings=True, show_progress_bar=False)
+            align = {d["template_id"]: float((V[i] * Sx[i]).sum()) for i, d in enumerate(cands)}
+        except Exception as e:  # noqa: BLE001
+            print(f"  link-1 gate unavailable ({type(e).__name__}); promoting without it", file=sys.stderr)
 
     RG = None
     if args.hermit:
@@ -88,7 +102,7 @@ def main() -> int:
             RG = None
 
     # Stage 1 — per-candidate CPU re-gate (G1 well-formed/parse, G2 complex, clean-room, anchor)
-    funnel = {"in": len(cands), "regate": 0, "reasoned": 0, "promoted": 0}
+    funnel = {"in": len(cands), "regate": 0, "link1_drop": 0, "reasoned": 0, "promoted": 0}
     regated: list[CatalogTemplate] = []
     for d in cands:
         ct = _to_template(d)
@@ -96,6 +110,11 @@ def main() -> int:
         g1_ok = g["g1_well_formed"] and g["g1_deeponto_parses"] is not False
         if not (g1_ok and g["g2_is_complex_class"] and g["clean_room"] and g["anchor_valid"]):
             print(f"  ✘ re-gate {ct.template_id[:36]:36s} g1={g1_ok} g2={g['g2_is_complex_class']} {g['g1_reason']}")
+            continue
+        a = align.get(ct.template_id)
+        if a is not None and a < args.align_min:                 # LINK-1: verbalization orthogonal to its source
+            print(f"  ✘ link-1  {ct.template_id[:36]:36s} align={a:.3f} < {args.align_min} (orthogonal to FinePDFs source)")
+            funnel["link1_drop"] += 1
             continue
         funnel["regate"] += 1
         regated.append(ct)
