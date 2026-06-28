@@ -57,7 +57,7 @@ def _mirror_ontology() -> None:
     dst = CORPORA / "ontology"
     (dst / "catalog").mkdir(parents=True, exist_ok=True)
     n = 0
-    for f in sorted((SRC_ONTO / "catalog").glob("0[1-7]_*.json")):
+    for f in sorted((SRC_ONTO / "catalog").glob("0[1-8]_*.json")):
         if ".candidate." in f.name:        # staging copies — never shared
             continue
         shutil.copy2(f, dst / "catalog" / f.name)

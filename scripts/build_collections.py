@@ -37,7 +37,8 @@ from aegir.ontology.complex import FamilyComplex  # noqa: E402
 from aegir.ontology.schema import load_catalog  # noqa: E402
 
 FAMILIES = ["01_foundation", "02_observation_measurement", "03_directive_governance",
-            "04_ebpf_kernel", "05_provo_lineage", "06_belief_structure", "07_long_tail"]
+            "04_ebpf_kernel", "05_provo_lineage", "06_belief_structure", "07_long_tail",
+            "08_derived"]
 CAT = REPO / "src/aegir/ontology/catalog"
 FC = REPO / "src/aegir/ontology/family_complex.json"
 
