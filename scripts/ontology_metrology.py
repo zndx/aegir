@@ -96,27 +96,51 @@ def main() -> int:
     realiz_cls_uses = sum(n for iri, n in svf.items() if URIRef(iri) in realiz_cls)
 
     n = max(1, len(sdg))
+
+    # --- field-standard structural metrics (OntoQA / OQuaRE) — auto-computable, for industrial comparability
+    dataprops = [p for p in set(g.subjects(RDF.type, OWL.DatatypeProperty)) if isinstance(p, URIRef)]
+    IAO_DEF = URIRef("http://purl.obolibrary.org/obo/IAO_0000115")
+    SKOS_DEF = URIRef("http://www.w3.org/2004/02/skos/core#definition")
+    has_def = {c for c in sdg if (c, RDFS.comment, None) in g or (c, IAO_DEF, None) in g or (c, SKOS_DEF, None) in g}
+    depth_cache: dict = {}
+
+    def depth(c):  # longest subClassOf chain (DAG; temp-guard against cycles)
+        if c in depth_cache:
+            return depth_cache[c]
+        depth_cache[c] = 1
+        ps = [p for p in parents.get(c, []) if isinstance(p, URIRef)]
+        depth_cache[c] = 1 + max((depth(p) for p in ps), default=0)
+        return depth_cache[c]
+
+    dit = max((depth(c) for c in sdg), default=0)                                          # OQuaRE DITOnto
+    tangled = sum(1 for c in sdg if len([p for p in parents.get(c, []) if isinstance(p, URIRef)]) > 1) / n  # TMOnto
+    rr = n_some / max(1, n_sub + n_some)   # OntoQA relationship richness
+    ir = n_sub / n                         # OntoQA inheritance richness
+    ar = len(dataprops) / n                # OntoQA attribute richness
+    aronto = (n_some + n_all + n_card) / n  # OQuaRE axiomatic strength
+
     print(f"=== ONTOLOGY METROLOGY · {path.split('/')[-1]} ===")
-    print(f"domain classes (sdg:): {len(sdg)}   object properties (sdg:): {len(sdg_props)}   "
-          f"all named classes: {len(named)}")
+    print(f"domain classes (sdg:): {len(sdg)}   object properties: {len(sdg_props)}   datatype props: {len(dataprops)}")
     print()
-    print("DIMENSION                         OURS            IOF/BFO benchmark")
-    print(f"1 definitional completeness       {len(defined)/n:5.1%} ({len(defined)}/{len(sdg)})    ~{IOF['defin_complete']:.0%}  (≡ biconditional defs)")
-    print(f"2 BFO-grounded                    {len(grounded)/n:5.1%} ({len(grounded)}/{len(sdg)})    100% (every term BFO-anchored)")
-    print(f"3 relational richness (∃/class)   {n_some/n:5.2f}            rich (role/realizes patterns)")
-    print(f"4 realizable-machinery usage      {realiz_prop_uses + realiz_cls_uses:<5}           {IOF['realizable_classes']}+ role/disp/fn classes")
+    print("RIGOR DIMENSIONS  (IOF-derived — what the field's structural metrics MISS)   OURS      IOF/BFO")
+    print(f"  definitional completeness  (≡ defs vs subClassOf primitives)             {len(defined)/n:6.1%}   ~55%")
+    print(f"  BFO-grounded               (subsumption chain reaches a BFO category)    {len(grounded)/n:6.1%}   100%")
+    print(f"  realizable machinery       (role/disposition/function usage)             {realiz_prop_uses + realiz_cls_uses:<6}   14+")
+    print(f"  definition-annotation cov. (NL/FOL definitions, the IOF convention)      {len(has_def)/n:6.1%}   100% req")
     print()
-    print("AXIOM EXPRESSIVITY PROFILE")
-    print(f"  subClassOf (→ necessary):       {n_sub}")
-    print(f"  equivalentClass (≡ defining):   {n_equiv}")
-    print(f"  ∃ some (existential):           {n_some}")
-    print(f"  ∀ only (universal):             {n_all}")
-    print(f"  cardinality:                    {n_card}")
-    print(f"  disjointness:                   {n_disj}")
+    print("FIELD-STANDARD METRICS  (OntoQA / OQuaRE — auto-computable, comparable)      OURS")
+    print(f"  RR  relationship richness  (rich beyond taxonomy; pure tree -> 0)        {rr:6.2f}")
+    print(f"  IR  inheritance richness   (subclasses per class)                        {ir:6.2f}")
+    print(f"  AR  attribute richness     (datatype props per class)                    {ar:6.2f}")
+    print(f"  AROnto axiomatic strength  (restrictions per class)                      {aronto:6.2f}")
+    print(f"  DITOnto max depth          / TMOnto tangledness                          {dit:<3} / {tangled:.1%}")
     print()
-    print("BFO ANCHOR DISTRIBUTION (top):", dict(bfo_dist.most_common(8)))
+    print(f"AXIOM EXPRESSIVITY: {n_sub} subClassOf · {n_equiv} ≡ · {n_some} ∃some · {n_all} ∀only · {n_card} card · {n_disj} disjoint")
+    print(f"BFO ANCHORS (top): {dict(bfo_dist.most_common(6))}")
     print()
-    print(f"IOF note: {IOF['note']}")
+    print("READ: the FIELD-STANDARD metrics (RR/IR/AROnto) score us decently — they are blind to the")
+    print("rigor that distinguishes IOF. The IOF-DERIVED dimensions (definitional completeness, realizable")
+    print("machinery, definition coverage) are the discriminating add — and the generative deriver's roadmap.")
     return 0
 
 
