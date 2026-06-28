@@ -143,3 +143,34 @@ def term_hierarchy() -> tuple[dict[str, list[str]], dict[str, list[str]]]:
             broader.setdefault(t.template_id, []).append(p)
             narrower.setdefault(p, []).append(t.template_id)
     return broader, narrower
+
+
+def ontology_metrology() -> dict | None:
+    """The realized ontology's IOF/OQuaRE quality profile — ``ontology_metrology.compute`` (the rigor +
+    field-standard metrics) + ``ontology_oquare.oquare`` (the 1-5 quality model + the publish-gate verdict),
+    or None if the realized OWL is absent (graceful skip, like the corpus/coverage cross-refs). In-process,
+    pure rdflib (no JVM): consumes the realized ``corpora/ontology/sdg-ontology.owl`` + its HermiT certificate."""
+    owl = REPO / "corpora" / "ontology" / "sdg-ontology.owl"
+    cert = REPO / "corpora" / "ontology" / "HERMIT_CERTIFICATE.md"
+    if not owl.exists():
+        return None
+    import sys
+    sys.path.insert(0, str(REPO / "scripts"))
+    try:
+        from ontology_metrology import compute
+        from ontology_oquare import oquare
+        m = compute(str(owl))
+        oq = oquare(str(owl), str(cert) if cert.exists() else None)
+    except Exception:
+        return None
+    return {
+        "definitional_completeness": round(m["definitional_completeness"], 4),
+        "bfo_grounded": round(m["bfo_grounded"], 4),
+        "realizable_machinery": m["realizable_machinery"],
+        "def_annotation_coverage": round(m["def_annotation_coverage"], 4),
+        "ar": round(m["ar"], 4), "rr": round(m["rr"], 4), "ir": round(m["ir"], 4),
+        "aronto": round(m["aronto"], 4), "dit": m["dit"], "tm": round(m["tm"], 4),
+        "n_domain_classes": m["n_domain_classes"], "n_datatype_properties": m["n_datatype_properties"],
+        "oquare_aggregate": oq["aggregate"], "oquare_characteristics": oq["characteristics"],
+        "oquare_green": oq["gate_green"], "consistent": oq["consistent"],
+    }

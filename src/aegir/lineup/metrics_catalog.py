@@ -161,4 +161,22 @@ METRICS: list[dict] = [
           "gate": "True", "role": "the syntactic (SQL) axis of admission", "src": "meta_harness"},
          {"slug": "r1-ci-low", "name": "r1_ci_low", "formula": "domain-grounding R1 CI lower bound",
           "gate": "binding v0.4 constraint", "role": "the generator must clear domain-grounding, CI-honest", "src": "G-cov R1"}]},
+
+    {"slug": "ontology-rigor", "title": "Ontology rigor — IOF/BFO metrology + OQuaRE",
+     "blurb": "The IOF-derived rigor dimensions + the OQuaRE 1-5 quality gate on the realized, FinePDFs-derived "
+              "ontology (corpora/ontology/sdg-ontology.owl). Live values stamped from ontology_metrology.compute "
+              "+ ontology_oquare; benchmarked against the IOF/BFO signature (structurally clean → also rigorous).",
+     "metrics": [
+         {"slug": "defin-complete", "name": "definitional completeness", "formula": "≡-defined classes / domain classes",
+          "gate": "OQ-Rigor ≥0.45", "role": "genuine definitions (necessary+sufficient) vs subClassOf primitives — the IOF discriminator",
+          "src": "scripts/ontology_metrology.py"},
+         {"slug": "bfo-grounded", "name": "BFO grounding", "formula": "classes whose subsumption chain reaches a BFO category / domain classes",
+          "gate": "OQ-Structure ≥0.95", "role": "every domain class anchored in BFO (heads AND fillers)", "src": "scripts/ontology_metrology.py"},
+         {"slug": "realizable-machinery", "name": "realizable machinery", "formula": "role/disposition/function restriction + realizes/inheres property uses",
+          "gate": "OQ-Rigor >0", "role": "phase-sortals modeled as BFO ROLES, not rigid subclasses (the IOF discipline)", "src": "scripts/ontology_metrology.py"},
+         {"slug": "def-annotation", "name": "definition-annotation coverage", "formula": "classes with iao:0000115 / skos:definition / rdfs:comment / domain classes",
+          "gate": "OQ-Structure ≥0.90", "role": "NL/FOL definitions — the IAO/OBO documentation convention", "src": "scripts/ontology_metrology.py"},
+         {"slug": "oquare-aggregate", "name": "OQuaRE aggregate (1-5)", "formula": "mean of the 6 SQuaRE characteristic scores; each metric IOF-anchored → [1,5]",
+          "gate": "🟢 ≥3.5 (aim 3.9, Brick/RealEstateCore) AND FunctionalAdequacy ≥3.0", "role": "the hard publish gate on the ontology Data Product (sync._gate)",
+          "src": "scripts/ontology_oquare.py"}]},
 ]

@@ -733,10 +733,28 @@ def project_metrics() -> list[N.Note]:
             mid = f"training/metrics/{cslug}/{m['slug']}"
             g = f" — gate **{m['gate']}**" if m.get("gate") and m["gate"] != "—" else ""
             m_lines.append(f"- {N.wl(mid, m['name'])}{g}")
+        cat_fm: dict = {}
+        live_block = ""
+        if cslug == "ontology-rigor":
+            live = S.ontology_metrology()
+            if live:
+                cat_fm = {"ontology_quality": live}
+                ch = live["oquare_characteristics"]
+                live_block = (
+                    f"\n\n**Live** (`corpora/ontology/sdg-ontology.owl` · {live['n_domain_classes']} classes · "
+                    f"consistent={live['consistent']}): OQuaRE **{live['oquare_aggregate']}/5** "
+                    f"{'🟢 GREEN' if live['oquare_green'] else '🔴 RED'} · bfo-grounded **{live['bfo_grounded']:.0%}** · "
+                    f"def-annotation **{live['def_annotation_coverage']:.0%}** · def-completeness "
+                    f"**{live['definitional_completeness']:.1%}** · realizable **{live['realizable_machinery']}** · "
+                    f"AR **{live['ar']:.3f}** ({live['n_datatype_properties']} dataprops)\n\n"
+                    f"_characteristics (1-5)_ — Structural {ch['Structural']} · FunctionalAdequacy "
+                    f"{ch['FunctionalAdequacy']} · Reliability {ch['Reliability']} · Operability {ch['Operability']} · "
+                    f"Maintainability {ch['Maintainability']} · Transferability {ch['Transferability']}")
         out.append(N.Note(
             id=f"training/metrics/{cslug}", title=c["title"], kind="training", data_product="training",
-            body=(f"{N.wl('training/metrics', '← all metrics')}\n\n**{c['title']}.** {c['blurb']}\n\n"
-                  + "\n".join(m_lines))))
+            frontmatter=cat_fm,
+            body=(f"{N.wl('training/metrics', '← all metrics')}\n\n**{c['title']}.** {c['blurb']}"
+                  + live_block + "\n\n" + "\n".join(m_lines))))
         for m in c["metrics"]:
             g = f"\n- **gate / threshold:** {m['gate']}" if m.get("gate") and m["gate"] != "—" else ""
             out.append(N.Note(

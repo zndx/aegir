@@ -104,6 +104,12 @@ _restore-patched-wheels:
 check-ontology-schema:
     uv run --no-sync python scripts/check_ontology_schema.py
 
+# OQuaRE ontology-quality gate (IOF-anchored 1-5 model) on the realized OWL — the hard publish floor
+# (aggregate >=3.5 AND Functional-Adequacy >=3.0). Cert-driven consistency, JVM-free. (Wired into bdd-0
+# once the rigor gradient lands GREEN — see EVIDENCE.md OQ-Structure.)
+check-ontology-oquare:
+    uv run --no-sync python scripts/ontology_oquare.py corpora/ontology/sdg-ontology.owl --certificate corpora/ontology/HERMIT_CERTIFICATE.md
+
 # Meta-harness inc-2b: run the H₀ single-file harness over gap topics (frozen Grok
 # + ContractGate/HermiT) via the candidate filesystem. Needs the JVM libs
 # (DeepOnto/HermiT) + cuda driver libs. coverage-run defaults to the canonical v1 ground.

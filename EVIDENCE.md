@@ -23,6 +23,8 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 | M1 | H-Net+RWKV (byte + dynamic chunking) ≥ RWKV-7 at matched scale on standard data (tokenizer change isolated) | M2 | **UNTESTED** — pre-registered 2026-06-16 (Signals Programme) |
 | M2 | the ontology-grounded mix is non-degenerate (floor) AND lifts relational + DE-elucidation over no-ontology ablation (lift), matched budget | M3, SAE-Qwen generator loop, GRPO reward, v0.4 | **UNTESTED** — pre-registered 2026-06-16; subsumes the corpus-as-deliverable gate as a calibration target |
 | M3 | **FINAL PHASE GATE** — the lift persists at RWKV-7-matched scale | RASE generalization (M4), v0.4 release, scaled generation | **UNTESTED** — pre-registered 2026-06-16 |
+| OQ-Rigor | The derived ontology attains IOF-class DEFINITIONAL RIGOR: `definitional_completeness ≥ 0.45` AND `realizable_machinery > 0` (BFO role/disposition/function discipline, not rigid subclasses), measured by `scripts/ontology_metrology.py` against the IOF/BFO signature | the OQuaRE Functional-Adequacy floor (≥3.0) in `sync._gate`; the v0.4+ ontology Data Product release | **UNTESTED** — pre-registered 2026-06-28; baseline def_complete 0.019, realizable 0 (`build/oquare_baseline.json`) |
+| OQ-Structure | The derived ontology attains BFO-GROUNDING DISCIPLINE + documentation: `bfo_grounded ≥ 0.95` AND `def_annotation_coverage ≥ 0.90` AND `AR > 0` AND an OQuaRE `aggregate ≥ 3.5` (aim 3.9, Brick/RealEstateCore-class) | `corpora` SHARE publish (`sync._gate` — HARD, refuses `--push` below floor); lineup corpus-quality surface | **UNTESTED** — pre-registered 2026-06-28; baseline bfo_grounded 0.364, def_annotation 0.0, AR 0.0, OQuaRE aggregate 2.57 |
 
 ## Next-phase gate (pre-registered 2026-06-15; RE-SCOPED 2026-06-15 → corpus-as-deliverable; SUBSUMED 2026-06-16 → Signals Programme M2/M3, below)
 
@@ -194,6 +196,34 @@ throughout — reasoner (formal), corpus (empirical-fit), held-out H-Net+RWKV (b
   (M2 lift) / scale-drift (M3) — each with its own remediation.
 - *Supersedes* the proxy-only corpus-as-deliverable gate: proxies are calibrated by M2/M3, never trusted
   ahead of them.
+
+## OQ — ontology rigor (definitional rigor + BFO discipline; pre-registered 2026-06-28)
+
+The IOF/BFO comparison (`docs/scratch/2026-06-28/174941_iof_comparison_ontology_metrology.md`) + the new
+metrology (`scripts/ontology_metrology.py`) found the realized ontology (`corpora/ontology/sdg-ontology.owl`)
+**structurally clean but definitionally shallow**: the field-standard structural metrics (OntoQA/OQuaRE — RR
+0.35, IR 1.16, AROnto 0.70) score it decently while the IOF-derived rigor dimensions expose the gap.
+**Definitional rigor and BFO discipline are hereby first-class objectives with observable metrics** (OQ-Rigor /
+OQ-Structure in the ledger), instrumented by the metrology and gated by the OQuaRE quality model.
+
+- *Instrument.* `ontology_metrology.compute(owl) -> dict` (pure rdflib, single source of truth) +
+  `scripts/ontology_oquare.py` (the ISO-25000/SQuaRE 6-characteristic model; per-metric [1,5] bands anchored to
+  the IOF signature + OQuaRE-published scales, FIXED a priori — a stable distance-to-IOF; cite Duque-Ramos
+  OQuaRE + Smith IOF). Consistency is consumed from the upstream HermiT certificate (JVM-free; the reasoner
+  gate stays upstream).
+- *Baseline (RED, 2026-06-28, `build/oquare_baseline.json`).* def_complete 1.9% · bfo_grounded 36% ·
+  realizable 0 · def_annotation 0% · AR 0.0; OQuaRE aggregate **2.57/5** (Functional-Adequacy 1.06) → 🔴 RED.
+- *Content origin.* The ontology is DERIVED FROM FinePDFs, concept-filtered by qdrant (the ColBERT/Qdrant
+  MaxSim domain filter over the SKOS index, `derive_ontology._apply_domain_filter`). The rigor is the
+  IOF-discipline LAYER on a content-grounded ontology — the distinctive *generative + content-grounded +
+  IOF-rigorous* position, not the expert-authored IOF.
+- *Decision rule.* Phase A (realizer-side: filler grounding + definition annotations + datatype props, no
+  re-derivation) clears OQ-Structure's grounding/annotation/AR sub-targets; Phase B (deriver ≡ + roles, then a
+  FinePDFs re-derivation) clears OQ-Rigor. The composite HARD gate = OQuaRE aggregate ≥3.5 AND
+  Functional-Adequacy ≥3.0 (+ HermiT-consistent).
+- *Standing rule.* No `sync --push` of the ontology Data Product until OQuaRE is GREEN. Floors-to-clear; ratchet
+  toward the 3.9 Brick/RealEstateCore class. Sharpens the comprehension meta-objective's VALIDITY leg
+  (consistent → consistent AND field-benchmarked-rigorous).
 
 ## Already-supported claims (for completeness; artifacts on /raid)
 
