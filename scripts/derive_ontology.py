@@ -71,7 +71,7 @@ _SYSTEM = (
     "code systems). (4) FAITHFULLY and FULLY represent the domain — use as many distinct structural patterns "
     "as it genuinely requires (rich domains need disjoint partitions, cardinality, value-partitions, reified "
     "relations, composites). Repeating a pattern across primitives is FINE; do NOT avoid one because you used "
-    "it. Each primitive must be a genuinely COMPLEX asserted class (multiple constraints / disjointness / "
+    "it. (4b) DEFINITIONAL RIGOR (the IOF discipline): when a primitive is a DEFINED kind — you can state necessary AND SUFFICIENT conditions (a genus plus differentiating restrictions that EXACTLY characterize it) — express it with an equivalentClass (≡) pattern (e.g. equivalent_class_definition) rather than a bare SubClassOf; prefer ≡ wherever the differentia are genuinely sufficient (the IOF defines ~half its terms this way), making verbal_template a proper necessary-and-sufficient gloss for ≡ primitives. Model phase-sortals / agentive kinds (supplier, operator, reviewer, customer, sample-under-test) as BFO ROLES borne by an independent continuant (e.g. agent_role, bfo:0000023 + realizes/inheres-in), NOT as rigid subclasses. Each primitive must be a genuinely COMPLEX asserted class (multiple constraints / disjointness / "
     "cardinality), never a bare 'X is a Y'. (5) ground each primitive in a real quote (source_span); skip the "
     "passage if it implies no complex domain classes. OUTPUT CONTRACT: emit exactly one fenced ```json "
     "block holding {\"primitives\": [ ... ]}, each primitive an object with keys: pattern (a pattern name from "

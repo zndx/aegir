@@ -23,8 +23,8 @@ Statuses: `SUPPORTED` / `REFUTED` / `UNTESTED` / `PARTIAL`. Artifacts live under
 | M1 | H-Net+RWKV (byte + dynamic chunking) ≥ RWKV-7 at matched scale on standard data (tokenizer change isolated) | M2 | **UNTESTED** — pre-registered 2026-06-16 (Signals Programme) |
 | M2 | the ontology-grounded mix is non-degenerate (floor) AND lifts relational + DE-elucidation over no-ontology ablation (lift), matched budget | M3, SAE-Qwen generator loop, GRPO reward, v0.4 | **UNTESTED** — pre-registered 2026-06-16; subsumes the corpus-as-deliverable gate as a calibration target |
 | M3 | **FINAL PHASE GATE** — the lift persists at RWKV-7-matched scale | RASE generalization (M4), v0.4 release, scaled generation | **UNTESTED** — pre-registered 2026-06-16 |
-| OQ-Rigor | The derived ontology attains IOF-class DEFINITIONAL RIGOR: `definitional_completeness ≥ 0.45` AND `realizable_machinery > 0` (BFO role/disposition/function discipline, not rigid subclasses), measured by `scripts/ontology_metrology.py` against the IOF/BFO signature | the OQuaRE Functional-Adequacy floor (≥3.0) in `sync._gate`; the v0.4+ ontology Data Product release | **UNTESTED** — pre-registered 2026-06-28; baseline def_complete 0.019, realizable 0 (`build/oquare_baseline.json`) |
-| OQ-Structure | The derived ontology attains BFO-GROUNDING DISCIPLINE + documentation: `bfo_grounded ≥ 0.95` AND `def_annotation_coverage ≥ 0.90` AND `AR > 0` AND an OQuaRE `aggregate ≥ 3.5` (aim 3.9, Brick/RealEstateCore-class) | `corpora` SHARE publish (`sync._gate` — HARD, refuses `--push` below floor); lineup corpus-quality surface | **UNTESTED** — pre-registered 2026-06-28; baseline bfo_grounded 0.364, def_annotation 0.0, AR 0.0, OQuaRE aggregate 2.57 |
+| OQ-Rigor | The derived ontology attains IOF-class DEFINITIONAL RIGOR: `definitional_completeness ≥ 0.45` AND `realizable_machinery > 0` (BFO role/disposition/function discipline, not rigid subclasses), measured by `scripts/ontology_metrology.py` against the IOF/BFO signature | the OQuaRE Functional-Adequacy floor (≥3.0) in `sync._gate`; the v0.4+ ontology Data Product release | **PARTIAL (2026-06-28)** — deriver lever built (derive_ontology ≡/role prompt) + FinePDFs/qdrant re-derivation pipeline validated end-to-end (qdrant aperture → engine → membrane). But a prompt nudge does NOT reliably steer the LLM to ≡ (it judges ODP/SubClassOf best-fit; a hard push → 0 derived). def_complete ~0.015, realizable 0 → FunctionalAdequacy 2.37 → gate honestly RED. Reliable ≡-steering = pattern-selection work (future increment); the gate correctly withholds GREEN |
+| OQ-Structure | The derived ontology attains BFO-GROUNDING DISCIPLINE + documentation: `bfo_grounded ≥ 0.95` AND `def_annotation_coverage ≥ 0.90` AND `AR > 0` AND an OQuaRE `aggregate ≥ 3.5` (aim 3.9, Brick/RealEstateCore-class) | `corpora` SHARE publish (`sync._gate` — HARD, refuses `--push` below floor); lineup corpus-quality surface | **SUPPORTED (Phase A, 2026-06-28)** — `build/oquare_postA.json`: bfo_grounded 0.98, def_annotation 0.995, AR 0.029, OQuaRE aggregate **4.14** (all ≥ target), 0 unsat — realizer-side, no engine. Publish still jointly gated by OQ-Rigor's FunctionalAdequacy floor |
 
 ## Next-phase gate (pre-registered 2026-06-15; RE-SCOPED 2026-06-15 → corpus-as-deliverable; SUBSUMED 2026-06-16 → Signals Programme M2/M3, below)
 
@@ -221,6 +221,13 @@ OQ-Structure in the ledger), instrumented by the metrology and gated by the OQua
   re-derivation) clears OQ-Structure's grounding/annotation/AR sub-targets; Phase B (deriver ≡ + roles, then a
   FinePDFs re-derivation) clears OQ-Rigor. The composite HARD gate = OQuaRE aggregate ≥3.5 AND
   Functional-Adequacy ≥3.0 (+ HermiT-consistent).
+- *Result (2026-06-28).* **Phase A cleared OQ-Structure** (`build/oquare_postA.json`): bfo_grounded 36%→98%,
+  def_annotation 0%→99.5%, AR 0→0.029, OQuaRE aggregate **2.57→4.14**, 0 unsat — realizer-side, no engine; it
+  also surfaced + dropped 2 stale degenerate single-letter heads (HermiT/metrology catching the stale-template
+  defect). **Phase B (definitional rigor) is the hard leg, OPEN:** the FinePDFs/qdrant→engine→membrane
+  re-derivation pipeline is validated end-to-end, but reliably steering the LLM to ≡ definitions needs more than
+  a prompt nudge (a light nudge → 0 ≡; a hard push → 0 derived) — so FunctionalAdequacy 2.37 keeps the gate RED.
+  The instrument is working as designed: no false GREEN; the backstop holds the line on the rigor not yet there.
 - *Standing rule.* No `sync --push` of the ontology Data Product until OQuaRE is GREEN. Floors-to-clear; ratchet
   toward the 3.9 Brick/RealEstateCore class. Sharpens the comprehension meta-objective's VALIDITY leg
   (consistent → consistent AND field-benchmarked-rigorous).
