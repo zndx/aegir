@@ -24,7 +24,10 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 DEFAULT_QDRANT_URL = "http://localhost:6355"
-DEFAULT_COLLECTION = "sdg_domains"
+DEFAULT_COLLECTION = "sdg_domains"      # full vocab (catalog + domains) — for diagnose + the ontology SKOS
+DEFAULT_APERTURE = "sdg_aperture"       # domains-only AIMING collection — the harvest classifies against THIS
+# (the abstract foundation catalog in the full vocab otherwise absorbs the top concept — see the
+#  manufacturing/CSG routing finding: catalog roots 0-3 took 136/250 raw docs; removing them sharpened margins ~7x)
 _REPO = Path(__file__).resolve().parents[3]
 DEFAULT_VOCAB = _REPO / "corpora" / "vocabulary" / "vocabulary.ttl"
 # locally-authored rich DOMAIN concepts (the aperture targets); loaded ON TOP of the generated vocab.

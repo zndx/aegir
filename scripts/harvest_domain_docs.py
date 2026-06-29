@@ -51,7 +51,8 @@ def main() -> int:
     ap.add_argument("--max-chars", type=int, default=4000, help="chars fed to the classifier")
     ap.add_argument("--store", default=str(_STORE))
     ap.add_argument("--domain-url", default=DI.DEFAULT_QDRANT_URL)
-    ap.add_argument("--domain-collection", default=DI.DEFAULT_COLLECTION)
+    ap.add_argument("--domain-collection", default=DI.DEFAULT_APERTURE,
+                    help="domains-only AIMING collection (the full vocab's abstract catalog absorbs the top concept)")
     ap.add_argument("--no-resume", action="store_true", help="ignore the saved stream cursor (start at 0)")
     args = ap.parse_args()
 

@@ -54,6 +54,11 @@ def main() -> int:
         rep = DI.build_index(vocab=args.vocab, url=args.url, collection=args.collection)
         print(f"built domain index: {rep['concepts']} SKOS concepts → {rep['collection']} "
               f"(dim {rep['dim']}, {rep['url']})")
+        # also build the domains-only AIMING aperture the harvest filters against (the full vocab's abstract
+        # foundation catalog otherwise absorbs the top concept; see the manufacturing/CSG routing finding)
+        if args.collection == DI.DEFAULT_COLLECTION:
+            ap = DI.build_index(vocab=str(DI.DEFAULT_OVERLAY), url=args.url, collection=DI.DEFAULT_APERTURE)
+            print(f"built aiming aperture: {ap['concepts']} domain concepts → {ap['collection']}")
         return 0
 
     if args.cmd == "classify":
