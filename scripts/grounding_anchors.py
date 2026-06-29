@@ -32,6 +32,8 @@ FHIR_JSON = GROUND / "fhir-codesystem.json"
 OURS_OWL = REPO / "corpora" / "ontology" / "sdg-ontology.owl"
 INDEX_PKL = GROUND / "anchors.pkl"
 FHIR_NS = "http://hl7.org/fhir/"
+SYSML_JSON = REPO / "build" / "sysml" / "sysml_foundation.json"
+SYSML_NS = "http://www.signals360.org/sdg/sysml#"
 IAO_DEF = "http://purl.obolibrary.org/obo/IAO_0000115"
 
 _MODEL = None
@@ -108,7 +110,26 @@ def load_ours(path=OURS_OWL):
     return out
 
 
-def build_index(sources=("cco", "fhir", "ours")):
+def load_sysml(path=SYSML_JSON):
+    """SysMLv2 foundation seed → (iri, label, def, 'sysml'). EPL-clean: our glosses only, never SysML doc text.
+
+    The seed (build/sysml/sysml_foundation.json, from sysml_foundation.py) grounds each SysML construct's
+    REFERENT to a BFO/CCO genus; here each becomes a retrieval anchor so the deriver can ground manufacturing/
+    geometry/CSG domain classes onto the SysML foundation (e.g. an enclosure column → sysml:Part → cco:Artifact)."""
+    if not Path(path).exists():
+        return []
+    import re
+    out = []
+    for t in json.load(open(path)):
+        name = t["name"]
+        gloss = t.get("gloss") or (
+            f"{re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', name).lower()} — "
+            f"a {t.get('domain', 'core')} concept grounded as {t['genus']}")
+        out.append((SYSML_NS + name, name, gloss, "sysml"))
+    return out
+
+
+def build_index(sources=("cco", "fhir", "ours", "sysml")):
     anchors, meta = [], {}
     if "cco" in sources:
         cco, ice = load_cco()
@@ -118,6 +139,8 @@ def build_index(sources=("cco", "fhir", "ours")):
         anchors += load_fhir()
     if "ours" in sources:
         anchors += load_ours()
+    if "sysml" in sources:
+        anchors += load_sysml()
     seen, uniq = set(), []
     for a in anchors:
         if a[0] not in seen:
