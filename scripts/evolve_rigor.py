@@ -82,27 +82,34 @@ def parse_slots(manchester: str) -> dict:
     return {name: typ for name, typ in _SLOT_RE.findall(manchester)}
 
 
-def validate_axioms(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict[str, bool]":
-    """The boundary-condition membrane: render each agent-proposed axiom standalone + load it with OWLAPI.
-    Admits whatever is WELL-FORMED OWL — regardless of slot-DSL conformance — so the agent authors freely
-    (refined differentiae, BFO roles, novel structures); HermiT (at realize) + OntoClean dispose downstream.
-    Warm JVM, one session. ``candidates`` = [(template_id, proposed_manchester)] → {template_id: parses?}."""
+def validate_detailed(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict[str, tuple[bool, str]]":
+    """The boundary-condition membrane WITH its rejection REASON — so the agent can RESPOND to the gate (the
+    agent-mediated FEEDBACK LOOP, not a one-shot drop). Renders each agent-proposed axiom standalone + loads it
+    with OWLAPI; admits whatever is WELL-FORMED OWL regardless of slot-DSL conformance (refined differentiae,
+    BFO roles, novel structures); HermiT (at realize) + OntoClean dispose downstream. Warm JVM, one session.
+    Returns {template_id: (parses?, reason)} — ``reason`` is "" on admit, else the actionable failure."""
     from aegir.ontology import reasoning_gates as RG
     from aegir.ontology.deeponto_harness import ensure_jvm
     ensure_jvm()
     import jpype
     OWLManager = jpype.JClass("org.semanticweb.owlapi.apibinding.OWLManager")
     StringDocumentSource = jpype.JClass("org.semanticweb.owlapi.io.StringDocumentSource")
-    out: dict[str, bool] = {}
+    out: dict[str, tuple[bool, str]] = {}
     for tid, man in candidates:
         try:
             tmp = dataclasses.replace(by_id[tid], manchester_template=man, slot_types=parse_slots(man))
             doc, _ = RG.render_batch([tmp])
             onto = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(StringDocumentSource(doc))
-            out[tid] = int(onto.getClassesInSignature().size()) > 0
-        except Exception:  # noqa: BLE001
-            out[tid] = False
+            n = int(onto.getClassesInSignature().size())
+            out[tid] = (n > 0, "" if n > 0 else "parsed to 0 classes — undeclared prefix/property or malformed Manchester")
+        except Exception as e:  # noqa: BLE001
+            out[tid] = (False, f"{type(e).__name__}: {str(e)[:140]}")
     return out
+
+
+def validate_axioms(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict[str, bool]":
+    """Boolean view of :func:`validate_detailed` (the existing callers' contract)."""
+    return {tid: ok for tid, (ok, _err) in validate_detailed(candidates, by_id).items()}
 
 
 def main() -> int:
