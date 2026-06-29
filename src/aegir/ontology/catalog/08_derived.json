@@ -198,7 +198,7 @@
     },
     {
       "template_id": "young_adult_speaker_role",
-      "manchester_template": "Class: {YoungAdultSpeakerRole:Class} SubClassOf: bfo:0000023, sdg:hasQualifyingIndividual exactly 1 {YoungAdultIndividual:Class}, sdg:deliversPresentation some {EducationalPresentation:Class}",
+      "manchester_template": "Class: {YoungAdultSpeakerRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {YoungAdultIndividual:Class}, bfo:0000054 some {EducationalPresentation:Class}, sdg:hasQualifyingIndividual exactly 1 {YoungAdultIndividual:Class}, sdg:deliversPresentation some {EducationalPresentation:Class}",
       "slot_types": {
         "YoungAdultSpeakerRole": "Class",
         "YoungAdultIndividual": "Class",
@@ -216,10 +216,11 @@
     },
     {
       "template_id": "clinical_quality_research_role",
-      "manchester_template": "Class: {ClinicalQualityResearchRole:Class} SubClassOf: bfo:0000023, sdg:holdsRoleIn exactly 1 {EMSAuthority:Class}, sdg:appliesTo some {ClinicalQualityData:Class}",
+      "manchester_template": "Class: {ClinicalQualityResearchRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {EMSAuthority:Class}, bfo:0000054 some {ResearchProcess:Class}, sdg:holdsRoleIn exactly 1 {EMSAuthority:Class}, sdg:appliesTo some {ClinicalQualityData:Class}",
       "slot_types": {
         "ClinicalQualityResearchRole": "Class",
         "EMSAuthority": "Class",
+        "ResearchProcess": "Class",
         "ClinicalQualityData": "Class"
       },
       "is_complex": true,
@@ -768,10 +769,11 @@
     },
     {
       "template_id": "legal_advocate_role",
-      "manchester_template": "Class: {LegalAdvocateRole:Class} SubClassOf: bfo:0000023, sdg:hasRoleBearer exactly 1 {Person:Class}, sdg:assists some {DomesticViolenceSurvivor:Class}",
+      "manchester_template": "Class: {LegalAdvocateRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {Person:Class}, bfo:0000054 some {LegalAdvocacyProcess:Class}, sdg:hasRoleBearer exactly 1 {Person:Class}, sdg:assists some {DomesticViolenceSurvivor:Class}",
       "slot_types": {
         "LegalAdvocateRole": "Class",
         "Person": "Class",
+        "LegalAdvocacyProcess": "Class",
         "DomesticViolenceSurvivor": "Class"
       },
       "is_complex": true,
@@ -942,9 +944,11 @@
     },
     {
       "template_id": "executive_leadership_role",
-      "manchester_template": "Class: {ExecutiveLeadershipRole:Class} SubClassOf: bfo:0000023, sdg:reportsTo exactly 1 {ChiefExecutiveOfficerRole:Class}, sdg:memberOf some {ExecutiveTeam:Class}",
+      "manchester_template": "Class: {ExecutiveLeadershipRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {Person:Class}, bfo:0000054 some {ExecutiveLeadershipProcess:Class}, sdg:reportsTo exactly 1 {ChiefExecutiveOfficerRole:Class}, sdg:memberOf some {ExecutiveTeam:Class}",
       "slot_types": {
         "ExecutiveLeadershipRole": "Class",
+        "Person": "Class",
+        "ExecutiveLeadershipProcess": "Class",
         "ChiefExecutiveOfficerRole": "Class",
         "ExecutiveTeam": "Class"
       },
@@ -1185,7 +1189,7 @@
     },
     {
       "template_id": "professional_experience",
-      "manchester_template": "Class: {ProfessionalExperience:Class} SubClassOf: cco:InformationContentEntity, sdg:hasHolder some {Person:Class}, sdg:hasOrganization some {Organization:Class}, sdg:hasDurationYears some xsd:decimal",
+      "manchester_template": "Class: {ProfessionalExperience:Class} EquivalentTo: cco:InformationContentEntity and sdg:hasHolder some {Person:Class} and sdg:hasOrganization some {Organization:Class} and sdg:hasDurationYears some xsd:decimal",
       "slot_types": {
         "ProfessionalExperience": "Class",
         "Person": "Class",
@@ -1203,10 +1207,11 @@
     },
     {
       "template_id": "board_membership",
-      "manchester_template": "Class: {BoardMembership:Class} SubClassOf: bfo:0000015, bfo:0000057 some {Organization:Class}",
+      "manchester_template": "Class: {BoardMembership:Class} EquivalentTo: bfo:0000015 and bfo:0000057 some {Organization:Class} and sdg:involvesBoard some {Board:Class}",
       "slot_types": {
         "BoardMembership": "Class",
-        "Organization": "Class"
+        "Organization": "Class",
+        "Board": "Class"
       },
       "is_complex": true,
       "verbal_template": "A BoardMembership is an Occurrent that participates in an Organization.",
@@ -1220,7 +1225,7 @@
     },
     {
       "template_id": "marketing_director_role",
-      "manchester_template": "Class: {MarketingDirectorRole:Class} SubClassOf: bfo:0000023, sdg:hasRoleHolder exactly 1 {Person:Class}, sdg:realizedInActivity some {OrganizationalActivity:Class}",
+      "manchester_template": "Class: {MarketingDirectorRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {Person:Class}, bfo:0000054 some {OrganizationalActivity:Class}",
       "slot_types": {
         "MarketingDirectorRole": "Class",
         "Person": "Class",
@@ -1238,7 +1243,7 @@
     },
     {
       "template_id": "professional_expertise_domain",
-      "manchester_template": "Class: {ProfessionalExpertiseDomain:Class} SubClassOf: sdg:coversSector some {IndustrySector:Class}, sdg:providesServiceType some {ServiceType:Class}",
+      "manchester_template": "Class: {ProfessionalExpertiseDomain:Class} EquivalentTo: sdg:DescriptiveICE, sdg:coversSector some {IndustrySector:Class}, sdg:providesServiceType some {ServiceType:Class}",
       "slot_types": {
         "ProfessionalExpertiseDomain": "Class",
         "IndustrySector": "Class",
@@ -1256,7 +1261,7 @@
     },
     {
       "template_id": "radicalization_process",
-      "manchester_template": "Class: {RadicalizationProcess:Class} SubClassOf: bfo:0000015, bfo:0000057 some {AffiliatedOrganization:Class}",
+      "manchester_template": "Class: {RadicalizationProcess:Class} EquivalentTo: bfo:0000015, bfo:0000057 some {AffiliatedOrganization:Class}",
       "slot_types": {
         "RadicalizationProcess": "Class",
         "AffiliatedOrganization": "Class"
@@ -1291,7 +1296,7 @@
     },
     {
       "template_id": "human_rights_impact_report",
-      "manchester_template": "Class: {HumanRightsImpactReport:Class} SubClassOf: cco:InformationContentEntity, sdg:reportsOn some {FindingEntity:Class}",
+      "manchester_template": "Class: {HumanRightsImpactReport:Class} EquivalentTo: cco:InformationContentEntity, sdg:reportsOn some {FindingEntity:Class}",
       "slot_types": {
         "HumanRightsImpactReport": "Class",
         "FindingEntity": "Class"
@@ -1308,7 +1313,7 @@
     },
     {
       "template_id": "settlement_financing_activity",
-      "manchester_template": "Class: {SettlementFinancingActivity:Class} SubClassOf: bfo:0000015, sdg:funds some {FinancialInstitution:Class}, sdg:benefits some {SettlementProject:Class}",
+      "manchester_template": "Class: {SettlementFinancingActivity:Class} EquivalentTo: bfo:0000015 and sdg:funds some {FinancialInstitution:Class} and sdg:benefits some {SettlementProject:Class}",
       "slot_types": {
         "SettlementFinancingActivity": "Class",
         "FinancialInstitution": "Class",
@@ -1326,7 +1331,7 @@
     },
     {
       "template_id": "home_electricity_reduction_program",
-      "manchester_template": "Class: {ReductionProgram:Class} SubClassOf: bfo:0000015, sdg:targetsParticipant some {HouseholdParticipant:Class}, sdg:addressesUsageMetric some {TargetedUsageMetric:Class}",
+      "manchester_template": "Class: {ReductionProgram:Class} EquivalentTo: bfo:0000015 and sdg:targetsParticipant some {HouseholdParticipant:Class} and sdg:addressesUsageMetric some {TargetedUsageMetric:Class}",
       "slot_types": {
         "ReductionProgram": "Class",
         "HouseholdParticipant": "Class",
@@ -1344,7 +1349,7 @@
     },
     {
       "template_id": "electricity_usage_pattern_record",
-      "manchester_template": "Class: {UsagePatternRecord:Class} SubClassOf: cco:InformationContentEntity, sdg:recordsServiceCategory some {ServiceUsageCategory:Class}, sdg:correspondsToTariff some {TariffStructure:Class}, sdg:quantifiesVolume some xsd:decimal",
+      "manchester_template": "Class: {UsagePatternRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:recordsServiceCategory some {ServiceUsageCategory:Class} and sdg:correspondsToTariff some {TariffStructure:Class} and sdg:quantifiesVolume some xsd:decimal",
       "slot_types": {
         "UsagePatternRecord": "Class",
         "ServiceUsageCategory": "Class",
@@ -1362,10 +1367,11 @@
     },
     {
       "template_id": "bullying_response_process",
-      "manchester_template": "Class: {BullyingResponseProcess:Class} SubClassOf: bfo:0000015, bfo:0000057 some {SchoolStaffRole:Class}",
+      "manchester_template": "Class: {BullyingResponseProcess:Class} EquivalentTo: bfo:0000015 and bfo:0000057 some {SchoolStaffRole:Class} and sdg:addressesDisruptiveBehavior some {BullyingIncident:Class}",
       "slot_types": {
         "BullyingResponseProcess": "Class",
-        "SchoolStaffRole": "Class"
+        "SchoolStaffRole": "Class",
+        "BullyingIncident": "Class"
       },
       "is_complex": true,
       "verbal_template": "A BullyingResponseProcess is an Occurrent that has a participant who is a SchoolStaffRole.",
@@ -1379,7 +1385,7 @@
     },
     {
       "template_id": "census_data_collection_process",
-      "manchester_template": "Class: {CensusDataCollectionProcess:Class} SubClassOf: bfo:0000015, sdg:involvesScreening some {OrganizationalScreeningActivity:Class}, sdg:includesSurvey some {RepresentativeSurveyActivity:Class}",
+      "manchester_template": "Class: {CensusDataCollectionProcess:Class} EquivalentTo: bfo:0000015 and sdg:involvesScreening some {OrganizationalScreeningActivity:Class} and sdg:includesSurvey some {RepresentativeSurveyActivity:Class}",
       "slot_types": {
         "CensusDataCollectionProcess": "Class",
         "OrganizationalScreeningActivity": "Class",
@@ -1397,9 +1403,10 @@
     },
     {
       "template_id": "social_enterprise_annual_income",
-      "manchester_template": "Class: {SocialEnterpriseAnnualIncome:Class} SubClassOf: cco:DescriptiveICE, sdg:hasAnnualIncomeValue exactly 1 xsd:decimal",
+      "manchester_template": "Class: {SocialEnterpriseAnnualIncome:Class} EquivalentTo: cco:DescriptiveICE and sdg:describes some {SocialEnterprise:Class} and sdg:hasAnnualIncomeValue exactly 1 xsd:decimal",
       "slot_types": {
-        "SocialEnterpriseAnnualIncome": "Class"
+        "SocialEnterpriseAnnualIncome": "Class",
+        "SocialEnterprise": "Class"
       },
       "is_complex": true,
       "verbal_template": "A SocialEnterpriseAnnualIncome is a DescriptiveICE that has an AnnualIncomeValue of type decimal.",

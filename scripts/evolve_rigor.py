@@ -15,6 +15,7 @@ refine the axiom, distinguish itself, or say a flag is wrong.
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import re
 import sys
@@ -72,6 +73,38 @@ def to_equivalent(manchester: str) -> "str | None":
     return f"{m.group(1)} EquivalentTo: " + " and ".join(conjuncts) if conjuncts else None
 
 
+_SLOT_RE = re.compile(r"\{(\w+):(\w+)\}")
+
+
+def parse_slots(manchester: str) -> dict:
+    """Derive slot_types from a (possibly agent-authored) manchester — so the agent may add NEW slots
+    ({Bearer:Class}, {Process:Class}) that the original template never had. The slot DSL is self-describing."""
+    return {name: typ for name, typ in _SLOT_RE.findall(manchester)}
+
+
+def validate_axioms(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict[str, bool]":
+    """The boundary-condition membrane: render each agent-proposed axiom standalone + load it with OWLAPI.
+    Admits whatever is WELL-FORMED OWL — regardless of slot-DSL conformance — so the agent authors freely
+    (refined differentiae, BFO roles, novel structures); HermiT (at realize) + OntoClean dispose downstream.
+    Warm JVM, one session. ``candidates`` = [(template_id, proposed_manchester)] → {template_id: parses?}."""
+    from aegir.ontology import reasoning_gates as RG
+    from aegir.ontology.deeponto_harness import ensure_jvm
+    ensure_jvm()
+    import jpype
+    OWLManager = jpype.JClass("org.semanticweb.owlapi.apibinding.OWLManager")
+    StringDocumentSource = jpype.JClass("org.semanticweb.owlapi.io.StringDocumentSource")
+    out: dict[str, bool] = {}
+    for tid, man in candidates:
+        try:
+            tmp = dataclasses.replace(by_id[tid], manchester_template=man, slot_types=parse_slots(man))
+            doc, _ = RG.render_batch([tmp])
+            onto = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(StringDocumentSource(doc))
+            out[tid] = int(onto.getClassesInSignature().size()) > 0
+        except Exception:  # noqa: BLE001
+            out[tid] = False
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/08_derived.json"))
@@ -101,18 +134,23 @@ def main() -> int:
         } for v in chunk]
         try:
             out = complete_detailed(_batch_prompt(items), capability=args.capability, system_prompt=_SYS,
-                                    max_tokens=8192, temperature=args.temperature)
+                                    max_tokens=16000, temperature=args.temperature)
         except Exception as e:  # noqa: BLE001
             print(f"  batch {bi + 1}/{n_batches}: engine error {type(e).__name__}: {str(e)[:80]}")
             continue
-        m = re.search(r"```json\s*(.+?)```", out["text"], re.S)
-        if not m:
-            print(f"  batch {bi + 1}/{n_batches}: no json block")
+        text = out["text"]
+        m = re.search(r"```json\s*(.+?)```", text, re.S) or re.search(r"```\s*(\{.+?\})\s*```", text, re.S)
+        blob = m.group(1) if m else None
+        if blob is None:  # unfenced fallback — the outermost {...} carrying "upgrades"
+            m2 = re.search(r"\{[\s\S]*\"upgrades\"[\s\S]*\}", text)
+            blob = m2.group(0) if m2 else None
+        if blob is None:
+            print(f"  batch {bi + 1}/{n_batches}: no json (len {len(text)})")
             continue
         try:
-            ups = json.loads(m.group(1)).get("upgrades", [])
+            ups = json.loads(blob).get("upgrades", [])
         except ValueError:
-            print(f"  batch {bi + 1}/{n_batches}: malformed json")
+            print(f"  batch {bi + 1}/{n_batches}: malformed json (len {len(blob)})")
             continue
         ok = 0
         for u in ups:
@@ -128,18 +166,33 @@ def main() -> int:
               f"role {sum(1 for u in ups if u.get('decision') == 'role')} · "
               f"keep {sum(1 for u in ups if u.get('decision') == 'keep')})")
 
-    n_eq = n_role = 0
+    # boundary-condition validation — admit the agent's WELL-FORMED free-form axioms (refined ≡ + BFO roles),
+    # regardless of slot-DSL conformance; deterministic ≡ rewrite is the fallback when the agent's axiom fails.
+    cand = [(tid, u.get("manchester_template") or "") for tid, u in upgrades.items()
+            if u["decision"] in ("equivalent", "role") and (u.get("manchester_template") or "")]
+    valid = validate_axioms(cand, by_id) if cand else {}
+
+    n_eq = n_role = n_det = 0
     for tid, u in upgrades.items():
-        if u["decision"] == "equivalent":
-            new_man = to_equivalent(by_id[tid].manchester_template)
-            if new_man:
-                by_id[tid].manchester_template = new_man
+        dec, man = u["decision"], u.get("manchester_template") or ""
+        if dec == "equivalent":
+            if valid.get(tid) and "EquivalentTo" in man:            # the agent's REFINED ≡ (free, validated)
+                by_id[tid].manchester_template = man
+                by_id[tid].slot_types = parse_slots(man)
                 n_eq += 1
-        elif u["decision"] == "role":
-            by_id[tid].manchester_template = u["manchester_template"]
+            else:                                                   # deterministic fallback from the original
+                det = to_equivalent(by_id[tid].manchester_template)
+                if det:
+                    by_id[tid].manchester_template = det
+                    n_eq += 1
+                    n_det += 1
+        elif dec == "role" and valid.get(tid) and "0000023" in man:  # the agent's BFO ROLE (free, validated)
+            by_id[tid].manchester_template = man
+            by_id[tid].slot_types = parse_slots(man)
             n_role += 1
     save_catalog(cat, args.out)
-    print(f"\nAPPLIED: {n_eq} EquivalentTo definitions + {n_role} BFO-role re-models → {Path(args.out).name}")
+    print(f"\nAPPLIED: {n_eq} EquivalentTo ({n_eq - n_det} agent-refined · {n_det} deterministic) + "
+          f"{n_role} validated BFO roles → {Path(args.out).name}")
     print("DISPOSE next: build_realized_ontology.py --strict-grounding (HermiT) → ontology_metrology / ontology_oquare")
     return 0
 

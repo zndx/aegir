@@ -35,7 +35,10 @@ _INTERNAL = re.compile(
     r"capable of|disposition to|tendency to|propensity|liability to)", re.I)
 _FUNCTION = re.compile(r"\b(by design|designed to|in order to|evolved to|for the purpose of|intended to|serves to)", re.I)
 # already role/realizable-modelled in the axiom → leave it
-_REALIZABLE = re.compile(r"BFO_0000023|BFO_0000017|BFO_0000016|BFO_0000034|bfo:0000023|bfo:0000017|bfo:0000016|bfo:0000034|realizes|inheres|bearer")
+# the realizable-machinery PROPERTIES (realizes/inheres/bearer/realized) — a class counts as "already enriched"
+# only if it carries these RESTRICTIONS, not merely a bfo:0000023 role anchor (which still lacks the machinery).
+_REALIZABLE = re.compile(r"bfo:000005[2345]|BFO_000005[2345]|\brealizes\b|inheres|bearer of")
+_ROLE_ANCHOR = re.compile(r"bfo:0000023|BFO_0000023")
 # agentive deverbal nominalization — weak; only counts WITH corroboration, and never for these non-role -er/-or nouns
 _AGENTIVE = re.compile(r"(er|or|ant|ee|ist)$")  # NB: not -ent (catches -ment nominalizations: commitment/judgment)
 _NOT_AGENTIVE = {
@@ -78,9 +81,12 @@ def classify(label: str, definition: str = "", manchester: str = "", anchor=()) 
     relational = role_pred or role_lex or (agentive and has_restriction)
     anti_rigid = role_lex or antirigid_mark or role_pred or (agentive and relational)
     has_differentia = has_restriction or " and " in manchester.lower()
+    role_anchored = bool(_ROLE_ANCHOR.search(mancanchor))
 
     if already:
-        suggested, why = "keep", "already role/realizable-modelled"
+        suggested, why = "keep", "already realizable-enriched / defined"
+    elif role_anchored:  # role anchor present but no realizes/inheres machinery → ENRICH as a realizable role
+        suggested, why = "role", "bfo:0000023 role anchor but no realizes/inheres restriction → enrich (realizable_machinery)"
     elif internal and not (role_lex or role_pred):
         suggested = "function" if is_function else "disposition"
         why = f"internally grounded ({'design/purpose etiology' if is_function else 'capacity/tendency'}) → realizable, NOT a role"
