@@ -3,7 +3,7 @@
   "templates": [
     {
       "template_id": "host_connection_process",
-      "manchester_template": "Class: {HostConnectionProcess:Class} SubClassOf: bfo:0000015, bfo:0000057 some {ParasiticPlant:Class}",
+      "manchester_template": "Class: {HostConnectionProcess:Class} EquivalentTo: bfo:0000015 and bfo:0000057 some {ParasiticPlant:Class}",
       "slot_types": {
         "HostConnectionProcess": "Class",
         "ParasiticPlant": "Class"
@@ -20,7 +20,7 @@
     },
     {
       "template_id": "crop_parasitism_impact",
-      "manchester_template": "Class: {CropParasitismImpact:Class} SubClassOf: cco:InformationContentEntity, sdg:affectsCultivationSystem exactly 1 {RiceCultivationSystem:Class}, sdg:parasitisesHost exactly 1 {ParasiticWeed:Class}, sdg:impactsTarget some {AgriculturalHousehold:Class}",
+      "manchester_template": "Class: {CropParasitismImpact:Class} EquivalentTo: cco:InformationContentEntity and sdg:affectsCultivationSystem exactly 1 {RiceCultivationSystem:Class} and sdg:parasitisesHost exactly 1 {ParasiticWeed:Class} and sdg:impactsTarget some {AgriculturalHousehold:Class}",
       "slot_types": {
         "CropParasitismImpact": "Class",
         "RiceCultivationSystem": "Class",
@@ -39,7 +39,7 @@
     },
     {
       "template_id": "vehicle_equipment_specification",
-      "manchester_template": "Class: {VehicleEquipmentSpecification:Class} SubClassOf: cco:DirectiveICE, sdg:appliesToVehicleClass some {MotorVehicleClass:Class}, sdg:mandatesComponent some {VehicleComponent:Class}",
+      "manchester_template": "Class: {VehicleEquipmentSpecification:Class} EquivalentTo: cco:DirectiveICE and sdg:appliesToVehicleClass some {MotorVehicleClass:Class} and sdg:mandatesComponent some {VehicleComponent:Class}",
       "slot_types": {
         "VehicleEquipmentSpecification": "Class",
         "MotorVehicleClass": "Class",
@@ -57,7 +57,7 @@
     },
     {
       "template_id": "lane_compliance_behavior",
-      "manchester_template": "Class: {LaneComplianceBehavior:Class} SubClassOf: bfo:0000015, sdg:involvesOperator some {VehicleOperator:Class}, sdg:occursOnStreetType some {StreetTrafficConfiguration:Class}",
+      "manchester_template": "Class: {LaneComplianceBehavior:Class} EquivalentTo: bfo:0000015 and sdg:involvesOperator some {VehicleOperator:Class} and sdg:occursOnStreetType some {StreetTrafficConfiguration:Class}",
       "slot_types": {
         "LaneComplianceBehavior": "Class",
         "VehicleOperator": "Class",
@@ -75,7 +75,7 @@
     },
     {
       "template_id": "appointment_scheduling_process",
-      "manchester_template": "Class: {AppointmentSchedulingProcess:Class} SubClassOf: bfo:0000015, sdg:hasOperator some {ReceptionistAgent:Class}, sdg:targetsArtifact some {PatientAppointmentSchedule:Class}",
+      "manchester_template": "Class: {AppointmentSchedulingProcess:Class} EquivalentTo: bfo:0000015 and sdg:hasOperator some {ReceptionistAgent:Class} and sdg:targetsArtifact some {PatientAppointmentSchedule:Class}",
       "slot_types": {
         "AppointmentSchedulingProcess": "Class",
         "ReceptionistAgent": "Class",
@@ -93,7 +93,7 @@
     },
     {
       "template_id": "patient_insurance_record",
-      "manchester_template": "Class: {PatientInsuranceRecord:Class} SubClassOf: cco:InformationContentEntity, sdg:containsDataElement some {InsuranceInformationItem:Class}",
+      "manchester_template": "Class: {PatientInsuranceRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:containsDataElement some {InsuranceInformationItem:Class}",
       "slot_types": {
         "PatientInsuranceRecord": "Class",
         "InsuranceInformationItem": "Class"
@@ -110,7 +110,7 @@
     },
     {
       "template_id": "division_assignment_record",
-      "manchester_template": "Class: {DivisionAssignmentRecord:Class} SubClassOf: cco:DescriptiveICE, sdg:assignsAthlete exactly 1 {Athlete:Class}, sdg:assignsDivision exactly 1 {CompetitionDivision:Class}",
+      "manchester_template": "Class: {DivisionAssignmentRecord:Class} EquivalentTo: cco:DescriptiveICE and sdg:assignsAthlete exactly 1 {Athlete:Class} and sdg:assignsDivision exactly 1 {CompetitionDivision:Class}",
       "slot_types": {
         "DivisionAssignmentRecord": "Class",
         "Athlete": "Class",
@@ -128,7 +128,7 @@
     },
     {
       "template_id": "qualification_process",
-      "manchester_template": "Class: {QualificationProcess:Class} SubClassOf: bfo:0000015, sdg:requiresMembership some {MembershipRegistration:Class}, sdg:yieldsChampionshipEntry some {ChampionshipEntry:Class}",
+      "manchester_template": "Class: {QualificationProcess:Class} EquivalentTo: bfo:0000015 and sdg:requiresMembership some {MembershipRegistration:Class} and sdg:yieldsChampionshipEntry some {ChampionshipEntry:Class}",
       "slot_types": {
         "QualificationProcess": "Class",
         "MembershipRegistration": "Class",
@@ -164,7 +164,7 @@
     },
     {
       "template_id": "black_belt_certification_requirement",
-      "manchester_template": "Class: {BlackBeltCertificationRequirement:Class} SubClassOf: cco:DescriptiveICE, sdg:requiresDanLevel some xsd:decimal, sdg:requiresValidityMonths some xsd:decimal",
+      "manchester_template": "Class: {BlackBeltCertificationRequirement:Class} EquivalentTo: cco:DescriptiveICE and sdg:requiresDanLevel some xsd:decimal and sdg:requiresValidityMonths some xsd:decimal",
       "slot_types": {
         "BlackBeltCertificationRequirement": "Class"
       },
@@ -180,7 +180,7 @@
     },
     {
       "template_id": "mental_health_education_program",
-      "manchester_template": "Class: {MentalHealthEducationProgram:Class} SubClassOf: bfo:0000015, sdg:hasDeliveredPresentation some {EducationalPresentation:Class}, sdg:targetsDemographic some {YouthDemographic:Class}",
+      "manchester_template": "Class: {MentalHealthEducationProgram:Class} EquivalentTo: bfo:0000015 and sdg:hasDeliveredPresentation some {EducationalPresentation:Class} and sdg:targetsDemographic some {YouthDemographic:Class}",
       "slot_types": {
         "MentalHealthEducationProgram": "Class",
         "EducationalPresentation": "Class",
@@ -235,7 +235,7 @@
     },
     {
       "template_id": "pdsa_improvement_model",
-      "manchester_template": "Class: {PDSAImprovementModel:Class} SubClassOf: bfo:0000015, sdg:improves some {ClinicalCare:Class}, sdg:optimizes some {PatientOutcome:Class}",
+      "manchester_template": "Class: {PDSAImprovementModel:Class} EquivalentTo: bfo:0000015 and sdg:improves some {ClinicalCare:Class} and sdg:optimizes some {PatientOutcome:Class}",
       "slot_types": {
         "PDSAImprovementModel": "Class",
         "ClinicalCare": "Class",
@@ -254,7 +254,7 @@
     },
     {
       "template_id": "clinical_performance_evaluation",
-      "manchester_template": "Class: {ClinicalPerformanceEvaluation:Class} SubClassOf: cco:InformationContentEntity, sdg:utilizes some {QuantitativeAnalyticTool:Class}, sdg:evaluates some {ClinicalPerformanceData:Class}, sdg:evaluationMetric some xsd:decimal",
+      "manchester_template": "Class: {ClinicalPerformanceEvaluation:Class} EquivalentTo: cco:InformationContentEntity and sdg:utilizes some {QuantitativeAnalyticTool:Class} and sdg:evaluates some {ClinicalPerformanceData:Class} and sdg:evaluationMetric some xsd:decimal",
       "slot_types": {
         "ClinicalPerformanceEvaluation": "Class",
         "QuantitativeAnalyticTool": "Class",
@@ -273,7 +273,7 @@
     },
     {
       "template_id": "intermediate_floor_assembly",
-      "manchester_template": "Class: {IntermediateFloorAssembly:Class} SubClassOf: bfo:0000004, sdg:containsComponent some {LateralRestraintStrap:Class}",
+      "manchester_template": "Class: {IntermediateFloorAssembly:Class} EquivalentTo: bfo:0000004 and sdg:containsComponent some {LateralRestraintStrap:Class}",
       "slot_types": {
         "IntermediateFloorAssembly": "Class",
         "LateralRestraintStrap": "Class"
@@ -309,7 +309,7 @@
     },
     {
       "template_id": "third_party_data_sharing",
-      "manchester_template": "Class: {ThirdPartyDataSharing:Class} SubClassOf: bfo:0000015, bfo:0000057 some {ExternalBusinessPartner:Class}",
+      "manchester_template": "Class: {ThirdPartyDataSharing:Class} EquivalentTo: bfo:0000015 and bfo:0000057 some {ExternalBusinessPartner:Class}",
       "slot_types": {
         "ThirdPartyDataSharing": "Class",
         "ExternalBusinessPartner": "Class"
@@ -326,7 +326,7 @@
     },
     {
       "template_id": "video_surveillance_activity",
-      "manchester_template": "Class: {VideoSurveillanceActivity:Class} SubClassOf: bfo:0000015, sdg:monitors some {SchoolEnvironment:Class}, sdg:employsDevice some {SurveillanceDevice:Class}",
+      "manchester_template": "Class: {VideoSurveillanceActivity:Class} EquivalentTo: bfo:0000015 and sdg:monitors some {SchoolEnvironment:Class} and sdg:employsDevice some {SurveillanceDevice:Class}",
       "slot_types": {
         "VideoSurveillanceActivity": "Class",
         "SchoolEnvironment": "Class",
@@ -344,7 +344,7 @@
     },
     {
       "template_id": "student_privacy_expectation",
-      "manchester_template": "Class: {StudentPrivacyExpectation:Class} SubClassOf: cco:DescriptiveICE, sdg:appliesTo some {ProtectedLocation:Class}",
+      "manchester_template": "Class: {StudentPrivacyExpectation:Class} EquivalentTo: cco:DescriptiveICE and sdg:appliesTo some {ProtectedLocation:Class}",
       "slot_types": {
         "StudentPrivacyExpectation": "Class",
         "ProtectedLocation": "Class"
@@ -361,7 +361,7 @@
     },
     {
       "template_id": "school_security_policy",
-      "manchester_template": "Class: {SchoolSecurityPolicy:Class} SubClassOf: cco:DirectiveICE, sdg:targets some {SafetyObjective:Class}, sdg:mustSatisfy some {ConstitutionalConstraint:Class}",
+      "manchester_template": "Class: {SchoolSecurityPolicy:Class} EquivalentTo: cco:DirectiveICE and sdg:targets some {SafetyObjective:Class} and sdg:mustSatisfy some {ConstitutionalConstraint:Class}",
       "slot_types": {
         "SchoolSecurityPolicy": "Class",
         "SafetyObjective": "Class",
@@ -379,7 +379,7 @@
     },
     {
       "template_id": "chemical_exposure_risk_profile",
-      "manchester_template": "Class: {ChemicalExposureRiskProfile:Class} SubClassOf: cco:InformationContentEntity, sdg:assessesExposureTo some {ToxicIndustrialChemical:Class}, sdg:estimatesImpactOn some {HumanHealthOutcome:Class}, sdg:quantifiesRiskMagnitude some xsd:decimal",
+      "manchester_template": "Class: {ChemicalExposureRiskProfile:Class} EquivalentTo: cco:InformationContentEntity and sdg:assessesExposureTo some {ToxicIndustrialChemical:Class} and sdg:estimatesImpactOn some {HumanHealthOutcome:Class} and sdg:quantifiesRiskMagnitude some xsd:decimal",
       "slot_types": {
         "ChemicalExposureRiskProfile": "Class",
         "ToxicIndustrialChemical": "Class",
@@ -397,7 +397,7 @@
     },
     {
       "template_id": "institutional_vision_statement",
-      "manchester_template": "Class: {InstitutionalVisionStatement:Class} SubClassOf: cco:DirectiveICE, sdg:targetsGoal some {EducationalGoal:Class}, sdg:addressesStakeholder some {StakeholderGroup:Class}",
+      "manchester_template": "Class: {InstitutionalVisionStatement:Class} EquivalentTo: cco:DirectiveICE and sdg:targetsGoal some {EducationalGoal:Class} and sdg:addressesStakeholder some {StakeholderGroup:Class}",
       "slot_types": {
         "InstitutionalVisionStatement": "Class",
         "EducationalGoal": "Class",
@@ -415,7 +415,7 @@
     },
     {
       "template_id": "material_density_specification",
-      "manchester_template": "Class: {MaterialDensitySpecification:Class} SubClassOf: cco:DescriptiveICE, sdg:hasDensityValue exactly 1 xsd:decimal",
+      "manchester_template": "Class: {MaterialDensitySpecification:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasDensityValue exactly 1 xsd:decimal",
       "slot_types": {
         "MaterialDensitySpecification": "Class"
       },
@@ -449,7 +449,7 @@
     },
     {
       "template_id": "strategic_commitment",
-      "manchester_template": "Class: {StrategicCommitment:Class} SubClassOf: cco:DirectiveICE, sdg:pursuesObjective some {OrganizationalObjective:Class}, sdg:supportsStakeholder some {IndustryAssociationMember:Class}",
+      "manchester_template": "Class: {StrategicCommitment:Class} EquivalentTo: cco:DirectiveICE and sdg:pursuesObjective some {OrganizationalObjective:Class} and sdg:supportsStakeholder some {IndustryAssociationMember:Class}",
       "slot_types": {
         "StrategicCommitment": "Class",
         "OrganizationalObjective": "Class",
@@ -467,7 +467,7 @@
     },
     {
       "template_id": "technology_promotion_initiative",
-      "manchester_template": "Class: {TechnologyPromotionInitiative:Class} SubClassOf: bfo:0000015, sdg:targetsSector some {IndustrySector:Class}, sdg:utilizesChannel some {CommunicationChannel:Class}",
+      "manchester_template": "Class: {TechnologyPromotionInitiative:Class} EquivalentTo: bfo:0000015 and sdg:targetsSector some {IndustrySector:Class} and sdg:utilizesChannel some {CommunicationChannel:Class}",
       "slot_types": {
         "TechnologyPromotionInitiative": "Class",
         "IndustrySector": "Class",
@@ -485,7 +485,7 @@
     },
     {
       "template_id": "training_partnership_development",
-      "manchester_template": "Class: {TrainingPartnershipDevelopment:Class} SubClassOf: bfo:0000015, bfo:0000057 some {EducationalInstitution:Class}",
+      "manchester_template": "Class: {TrainingPartnershipDevelopment:Class} EquivalentTo: bfo:0000015 and bfo:0000057 some {EducationalInstitution:Class}",
       "slot_types": {
         "TrainingPartnershipDevelopment": "Class",
         "EducationalInstitution": "Class"
@@ -502,7 +502,7 @@
     },
     {
       "template_id": "ganglion_cyst_tissue_origin",
-      "manchester_template": "Class: {GanglionCystTissueOrigin:Class} SubClassOf: bfo:0000004, bfo:0000050 some {ConnectiveTissueStructure:Class}",
+      "manchester_template": "Class: {GanglionCystTissueOrigin:Class} EquivalentTo: bfo:0000004 and bfo:0000050 some {ConnectiveTissueStructure:Class}",
       "slot_types": {
         "GanglionCystTissueOrigin": "Class",
         "ConnectiveTissueStructure": "Class"
@@ -519,7 +519,7 @@
     },
     {
       "template_id": "myxoid_degeneration_process",
-      "manchester_template": "Class: {MyxoidDegenerationProcess:Class} SubClassOf: bfo:0000015, sdg:degrades some {ConnectiveTissueRegion:Class}, sdg:resultsIn some {GanglionCystFormation:Class}",
+      "manchester_template": "Class: {MyxoidDegenerationProcess:Class} EquivalentTo: bfo:0000015 and sdg:degrades some {ConnectiveTissueRegion:Class} and sdg:resultsIn some {GanglionCystFormation:Class}",
       "slot_types": {
         "MyxoidDegenerationProcess": "Class",
         "ConnectiveTissueRegion": "Class",
@@ -537,7 +537,7 @@
     },
     {
       "template_id": "ganglion_cyst_imaging_finding",
-      "manchester_template": "Class: {GanglionCystImagingFinding:Class} SubClassOf: cco:InformationContentEntity, sdg:visualizes some {MagneticResonanceImagingModality:Class}",
+      "manchester_template": "Class: {GanglionCystImagingFinding:Class} EquivalentTo: cco:InformationContentEntity and sdg:visualizes some {MagneticResonanceImagingModality:Class}",
       "slot_types": {
         "GanglionCystImagingFinding": "Class",
         "MagneticResonanceImagingModality": "Class"
@@ -554,7 +554,7 @@
     },
     {
       "template_id": "indoor_environmental_monitoring_process",
-      "manchester_template": "Class: {IndoorEnvironmentalMonitoringProcess:Class} SubClassOf: bfo:0000015, sdg:monitorsIndoorEnvironment some {IndoorEnvironment:Class}, sdg:usesMonitoringProtocol some {MonitoringProtocol:Class}",
+      "manchester_template": "Class: {IndoorEnvironmentalMonitoringProcess:Class} EquivalentTo: bfo:0000015 and sdg:monitorsIndoorEnvironment some {IndoorEnvironment:Class} and sdg:usesMonitoringProtocol some {MonitoringProtocol:Class}",
       "slot_types": {
         "IndoorEnvironmentalMonitoringProcess": "Class",
         "IndoorEnvironment": "Class",
@@ -572,7 +572,7 @@
     },
     {
       "template_id": "indoor_air_quality_action_plan",
-      "manchester_template": "Class: {IndoorAirQualityActionPlan:Class} SubClassOf: cco:DirectiveICE, sdg:targetsPollution some {IndoorAirPollution:Class}, sdg:verifiedByMetric some {HealthOutcomeMetric:Class}",
+      "manchester_template": "Class: {IndoorAirQualityActionPlan:Class} EquivalentTo: cco:DirectiveICE and sdg:targetsPollution some {IndoorAirPollution:Class} and sdg:verifiedByMetric some {HealthOutcomeMetric:Class}",
       "slot_types": {
         "IndoorAirQualityActionPlan": "Class",
         "IndoorAirPollution": "Class",
@@ -590,7 +590,7 @@
     },
     {
       "template_id": "directory_query_service",
-      "manchester_template": "Class: {DirectoryQueryService:Class} SubClassOf: bfo:0000015, sdg:targetsUser some {NetworkUser:Class}, sdg:generatesResponse some {DirectoryResponse:Class}",
+      "manchester_template": "Class: {DirectoryQueryService:Class} EquivalentTo: bfo:0000015 and sdg:targetsUser some {NetworkUser:Class} and sdg:generatesResponse some {DirectoryResponse:Class}",
       "slot_types": {
         "DirectoryQueryService": "Class",
         "NetworkUser": "Class",
@@ -608,7 +608,7 @@
     },
     {
       "template_id": "digital_media_service",
-      "manchester_template": "Class: {DigitalMediaService:Class} SubClassOf: cco:InformationContentEntity, sdg:providesFunction some {ServiceFunction:Class}",
+      "manchester_template": "Class: {DigitalMediaService:Class} EquivalentTo: cco:InformationContentEntity and sdg:providesFunction some {ServiceFunction:Class}",
       "slot_types": {
         "DigitalMediaService": "Class",
         "ServiceFunction": "Class"
@@ -626,7 +626,7 @@
     },
     {
       "template_id": "dengue_transmission_process",
-      "manchester_template": "Class: {DengueTransmissionProcess:Class} SubClassOf: bfo:0000015, sdg:involvesHost some {HumanPopulation:Class}, sdg:involvesVector some {AedesAegyptiVector:Class}",
+      "manchester_template": "Class: {DengueTransmissionProcess:Class} EquivalentTo: bfo:0000015 and sdg:involvesHost some {HumanPopulation:Class} and sdg:involvesVector some {AedesAegyptiVector:Class}",
       "slot_types": {
         "DengueTransmissionProcess": "Class",
         "HumanPopulation": "Class",
@@ -662,7 +662,7 @@
     },
     {
       "template_id": "internal_communication_requirement",
-      "manchester_template": "Class: {InternalCommunicationRequirement:Class} SubClassOf: cco:DirectiveICE, sdg:specifiesPlatform some {EnterpriseSocialMedia:Class}, sdg:targetsGoal some {OrganizationalCommunicationGoal:Class}",
+      "manchester_template": "Class: {InternalCommunicationRequirement:Class} EquivalentTo: cco:DirectiveICE and sdg:specifiesPlatform some {EnterpriseSocialMedia:Class} and sdg:targetsGoal some {OrganizationalCommunicationGoal:Class}",
       "slot_types": {
         "InternalCommunicationRequirement": "Class",
         "EnterpriseSocialMedia": "Class",
@@ -680,7 +680,7 @@
     },
     {
       "template_id": "strategic_planning_process",
-      "manchester_template": "Class: {StrategicPlanningProcess:Class} SubClassOf: bfo:0000015, sdg:targetsBusinessDivision some {BusinessDivision:Class}, sdg:producesPlanningArtifact some {PlanningArtifact:Class}",
+      "manchester_template": "Class: {StrategicPlanningProcess:Class} EquivalentTo: bfo:0000015 and sdg:targetsBusinessDivision some {BusinessDivision:Class} and sdg:producesPlanningArtifact some {PlanningArtifact:Class}",
       "slot_types": {
         "StrategicPlanningProcess": "Class",
         "BusinessDivision": "Class",
@@ -698,7 +698,7 @@
     },
     {
       "template_id": "regional_quality_benchmark",
-      "manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, sdg:hasMinimumThreshold some xsd:decimal, sdg:hasMaximumThreshold some xsd:decimal",
+      "manchester_template": "Class: {X:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasMinimumThreshold some xsd:decimal and sdg:hasMaximumThreshold some xsd:decimal",
       "slot_types": {
         "X": "Class"
       },
@@ -714,7 +714,7 @@
     },
     {
       "template_id": "qualifications_framework",
-      "manchester_template": "Class: {S:Class} SubClassOf: cco:InformationContentEntity, sdg:articulates some {LearningOutcome:Class}, sdg:specifies some {QualificationLevel:Class}",
+      "manchester_template": "Class: {S:Class} EquivalentTo: cco:InformationContentEntity and sdg:articulates some {LearningOutcome:Class} and sdg:specifies some {QualificationLevel:Class}",
       "slot_types": {
         "S": "Class",
         "LearningOutcome": "Class",
@@ -732,7 +732,7 @@
     },
     {
       "template_id": "quality_assurance_initiative",
-      "manchester_template": "Class: {X:Class} SubClassOf: bfo:0000015, sdg:targets some {HigherEducationInstitution:Class}, sdg:involves some {StaffMember:Class}",
+      "manchester_template": "Class: {X:Class} EquivalentTo: bfo:0000015 and sdg:targets some {HigherEducationInstitution:Class} and sdg:involves some {StaffMember:Class}",
       "slot_types": {
         "X": "Class",
         "HigherEducationInstitution": "Class",
@@ -750,7 +750,7 @@
     },
     {
       "template_id": "carbon_credit_transaction",
-      "manchester_template": "Class: {CarbonCreditTransaction:Class} SubClassOf: cco:InformationContentEntity, sdg:derivesFromProject some {CarbonCreditProject:Class}, sdg:transferredTo some {PurchasingEntity:Class}, sdg:creditVolume some xsd:decimal",
+      "manchester_template": "Class: {CarbonCreditTransaction:Class} EquivalentTo: cco:InformationContentEntity and sdg:derivesFromProject some {CarbonCreditProject:Class} and sdg:transferredTo some {PurchasingEntity:Class} and sdg:creditVolume some xsd:decimal",
       "slot_types": {
         "CarbonCreditTransaction": "Class",
         "CarbonCreditProject": "Class",
@@ -786,7 +786,7 @@
     },
     {
       "template_id": "safety_planning_process",
-      "manchester_template": "Class: {SafetyPlanningProcess:Class} SubClassOf: bfo:0000015, sdg:targets some {DomesticViolenceSurvivor:Class}, sdg:employs some {CrisisInterventionMethod:Class}",
+      "manchester_template": "Class: {SafetyPlanningProcess:Class} EquivalentTo: bfo:0000015 and sdg:targets some {DomesticViolenceSurvivor:Class} and sdg:employs some {CrisisInterventionMethod:Class}",
       "slot_types": {
         "SafetyPlanningProcess": "Class",
         "DomesticViolenceSurvivor": "Class",
@@ -804,7 +804,7 @@
     },
     {
       "template_id": "client_data_record",
-      "manchester_template": "Class: {ClientDataRecord:Class} SubClassOf: cco:InformationContentEntity, sdg:contains some {ClientStatisticalInformation:Class}",
+      "manchester_template": "Class: {ClientDataRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:contains some {ClientStatisticalInformation:Class}",
       "slot_types": {
         "ClientDataRecord": "Class",
         "ClientStatisticalInformation": "Class"
@@ -821,7 +821,7 @@
     },
     {
       "template_id": "quantum_computer",
-      "manchester_template": "Class: {QuantumComputer:Class} SubClassOf: bfo:0000004, bfo:0000050 some {Qubit:Class}",
+      "manchester_template": "Class: {QuantumComputer:Class} EquivalentTo: bfo:0000004 and bfo:0000050 some {Qubit:Class}",
       "slot_types": {
         "QuantumComputer": "Class",
         "Qubit": "Class"
@@ -838,7 +838,7 @@
     },
     {
       "template_id": "quantum_cyber_security_field",
-      "manchester_template": "Class: {QuantumCyberSecurityField:Class} SubClassOf: cco:InformationContentEntity, sdg:studiesDomainAspect some {CommunicationSecurityAspect:Class}",
+      "manchester_template": "Class: {QuantumCyberSecurityField:Class} EquivalentTo: cco:InformationContentEntity and sdg:studiesDomainAspect some {CommunicationSecurityAspect:Class}",
       "slot_types": {
         "QuantumCyberSecurityField": "Class",
         "CommunicationSecurityAspect": "Class"
@@ -855,7 +855,7 @@
     },
     {
       "template_id": "campus_event_participation",
-      "manchester_template": "Class: {CampusEvent:Class} SubClassOf: bfo:0000015, bfo:0000057 some {ParticipantGroup:Class}",
+      "manchester_template": "Class: {CampusEvent:Class} EquivalentTo: bfo:0000015 and bfo:0000057 some {ParticipantGroup:Class}",
       "slot_types": {
         "CampusEvent": "Class",
         "ParticipantGroup": "Class"
@@ -872,7 +872,7 @@
     },
     {
       "template_id": "farmland_acquisition_process",
-      "manchester_template": "Class: {FarmlandAcquisitionProcess:Class} SubClassOf: bfo:0000015, sdg:targetsInvestor some {InstitutionalInvestor:Class}, sdg:acquiresLand some {AgriculturalLandParcel:Class}",
+      "manchester_template": "Class: {FarmlandAcquisitionProcess:Class} EquivalentTo: bfo:0000015 and sdg:targetsInvestor some {InstitutionalInvestor:Class} and sdg:acquiresLand some {AgriculturalLandParcel:Class}",
       "slot_types": {
         "FarmlandAcquisitionProcess": "Class",
         "InstitutionalInvestor": "Class",
@@ -890,7 +890,7 @@
     },
     {
       "template_id": "taper_tolerance_constraint",
-      "manchester_template": "Class: {TaperToleranceConstraint:Class} SubClassOf: cco:DescriptiveICE, sdg:hasUpperToleranceLimit some xsd:decimal, sdg:hasLowerToleranceLimit some xsd:decimal",
+      "manchester_template": "Class: {TaperToleranceConstraint:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasUpperToleranceLimit some xsd:decimal and sdg:hasLowerToleranceLimit some xsd:decimal",
       "slot_types": {
         "TaperToleranceConstraint": "Class"
       },
@@ -906,7 +906,7 @@
     },
     {
       "template_id": "synthetic_apriori_judgment",
-      "manchester_template": "Class: {SyntheticAprioriJudgment:Class} SubClassOf: sdg:reliesOnIntuition some {IntuitiveFoundation:Class}, sdg:exhibitsAmpliation some {AmpliativeContent:Class}",
+      "manchester_template": "Class: {SyntheticAprioriJudgment:Class} EquivalentTo: sdg:reliesOnIntuition some {IntuitiveFoundation:Class} and sdg:exhibitsAmpliation some {AmpliativeContent:Class}",
       "slot_types": {
         "SyntheticAprioriJudgment": "Class",
         "IntuitiveFoundation": "Class",
@@ -924,7 +924,7 @@
     },
     {
       "template_id": "conceptual_construction_process",
-      "manchester_template": "Class: {ConceptualConstructionProcess:Class} SubClassOf: bfo:0000015, sdg:transformsSubject some {SubjectConcept:Class}, sdg:generatesPredicate some {ConstructedPredicate:Class}",
+      "manchester_template": "Class: {ConceptualConstructionProcess:Class} EquivalentTo: bfo:0000015 and sdg:transformsSubject some {SubjectConcept:Class} and sdg:generatesPredicate some {ConstructedPredicate:Class}",
       "slot_types": {
         "ConceptualConstructionProcess": "Class",
         "SubjectConcept": "Class",
@@ -960,7 +960,7 @@
     },
     {
       "template_id": "financial_strategy_oversight",
-      "manchester_template": "Class: {FinancialStrategyOversight:Class} SubClassOf: bfo:0000015, sdg:directs some {FinancialActivity:Class}, sdg:oversees some {RiskManagementActivity:Class}",
+      "manchester_template": "Class: {FinancialStrategyOversight:Class} EquivalentTo: bfo:0000015 and sdg:directs some {FinancialActivity:Class} and sdg:oversees some {RiskManagementActivity:Class}",
       "slot_types": {
         "FinancialStrategyOversight": "Class",
         "FinancialActivity": "Class",
@@ -978,7 +978,7 @@
     },
     {
       "template_id": "salary_requirement",
-      "manchester_template": "Class: {SalaryRequirement:Class} SubClassOf: cco:DescriptiveICE, sdg:hasSalaryAmount exactly 1 xsd:decimal",
+      "manchester_template": "Class: {SalaryRequirement:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasSalaryAmount exactly 1 xsd:decimal",
       "slot_types": {
         "SalaryRequirement": "Class"
       },
@@ -994,7 +994,7 @@
     },
     {
       "template_id": "social_networking_service_usage",
-      "manchester_template": "Class: {SocialNetworkingServiceUsage:Class} SubClassOf: bfo:0000015, sdg:involvesParticipant some {StaffMember:Class}, sdg:utilizesService some {SocialNetworkingService:Class}",
+      "manchester_template": "Class: {SocialNetworkingServiceUsage:Class} EquivalentTo: bfo:0000015 and sdg:involvesParticipant some {StaffMember:Class} and sdg:utilizesService some {SocialNetworkingService:Class}",
       "slot_types": {
         "SocialNetworkingServiceUsage": "Class",
         "StaffMember": "Class",
@@ -1012,7 +1012,7 @@
     },
     {
       "template_id": "account_authorization_record",
-      "manchester_template": "Class: {AccountAuthorizationRecord:Class} SubClassOf: cco:InformationContentEntity, sdg:registersApplication some {SocialNetworkingApplication:Class}, sdg:assignsAdministrator some {StaffAdministrator:Class}",
+      "manchester_template": "Class: {AccountAuthorizationRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:registersApplication some {SocialNetworkingApplication:Class} and sdg:assignsAdministrator some {StaffAdministrator:Class}",
       "slot_types": {
         "AccountAuthorizationRecord": "Class",
         "SocialNetworkingApplication": "Class",
@@ -1030,7 +1030,7 @@
     },
     {
       "template_id": "shell_dimension_specification",
-      "manchester_template": "Class: {ShellDimensionSpecification:Class} SubClassOf: cco:DescriptiveICE, sdg:hasDimensionValue exactly 1 xsd:decimal",
+      "manchester_template": "Class: {ShellDimensionSpecification:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasDimensionValue exactly 1 xsd:decimal",
       "slot_types": {
         "ShellDimensionSpecification": "Class"
       },
@@ -1046,7 +1046,7 @@
     },
     {
       "template_id": "insertion_loss_specification",
-      "manchester_template": "Class: {InsertionLossSpecification:Class} SubClassOf: cco:DescriptiveICE, sdg:hasInsertionLossValue some xsd:decimal, sdg:hasPhaseRelationshipValue some xsd:decimal",
+      "manchester_template": "Class: {InsertionLossSpecification:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasInsertionLossValue some xsd:decimal and sdg:hasPhaseRelationshipValue some xsd:decimal",
       "slot_types": {
         "InsertionLossSpecification": "Class"
       },
@@ -1062,7 +1062,7 @@
     },
     {
       "template_id": "port_isolation_measurement",
-      "manchester_template": "Class: {PortIsolationMeasurement:Class} SubClassOf: cco:InformationContentEntity, sdg:measuresPortIsolation some {PortPair:Class}, sdg:dependsOnImpedanceTermination some {ImpedanceTermination:Class}, sdg:hasIsolationDecibelValue some xsd:decimal",
+      "manchester_template": "Class: {PortIsolationMeasurement:Class} EquivalentTo: cco:InformationContentEntity and sdg:measuresPortIsolation some {PortPair:Class} and sdg:dependsOnImpedanceTermination some {ImpedanceTermination:Class} and sdg:hasIsolationDecibelValue some xsd:decimal",
       "slot_types": {
         "PortIsolationMeasurement": "Class",
         "PortPair": "Class",
@@ -1080,7 +1080,7 @@
     },
     {
       "template_id": "flood_defence_condition_characterisation",
-      "manchester_template": "Class: {FloodDefenceConditionCharacterisation:Class} SubClassOf: bfo:0000015, sdg:involvesEarthObservationData some {EarthObservationData:Class}, sdg:employsValidationProcess some {ValidationProcess:Class}",
+      "manchester_template": "Class: {FloodDefenceConditionCharacterisation:Class} EquivalentTo: bfo:0000015 and sdg:involvesEarthObservationData some {EarthObservationData:Class} and sdg:employsValidationProcess some {ValidationProcess:Class}",
       "slot_types": {
         "FloodDefenceConditionCharacterisation": "Class",
         "EarthObservationData": "Class",
@@ -1098,7 +1098,7 @@
     },
     {
       "template_id": "flood_asset_vulnerability_assessment",
-      "manchester_template": "Class: {FloodAssetVulnerabilityAssessment:Class} SubClassOf: cco:InformationContentEntity, sdg:assessesAssetCondition some {FloodAssetCondition:Class}, sdg:identifiesVulnerabilityState some {VulnerabilityState:Class}",
+      "manchester_template": "Class: {FloodAssetVulnerabilityAssessment:Class} EquivalentTo: cco:InformationContentEntity and sdg:assessesAssetCondition some {FloodAssetCondition:Class} and sdg:identifiesVulnerabilityState some {VulnerabilityState:Class}",
       "slot_types": {
         "FloodAssetVulnerabilityAssessment": "Class",
         "FloodAssetCondition": "Class",
@@ -1116,7 +1116,7 @@
     },
     {
       "template_id": "national_dataset_augmentation_process",
-      "manchester_template": "Class: {NationalDatasetAugmentationProcess:Class} SubClassOf: sdg:incorporatesObservationSource some {CopernicusObservationSource:Class}, sdg:augmentsExistingDataset some {ExistingNationalDataset:Class}",
+      "manchester_template": "Class: {NationalDatasetAugmentationProcess:Class} EquivalentTo: sdg:incorporatesObservationSource some {CopernicusObservationSource:Class} and sdg:augmentsExistingDataset some {ExistingNationalDataset:Class}",
       "slot_types": {
         "NationalDatasetAugmentationProcess": "Class",
         "CopernicusObservationSource": "Class",
@@ -1134,7 +1134,7 @@
     },
     {
       "template_id": "knowledge_base_integration",
-      "manchester_template": "Class: {KnowledgeBaseIntegration:Class} SubClassOf: cco:InformationContentEntity, sdg:incorporatesIndigenousKnowledge some {IndigenousKnowledgeBase:Class}, sdg:incorporatesScientificKnowledge some {ScientificKnowledgeBase:Class}, sdg:hasIntegrationConfidence some xsd:decimal",
+      "manchester_template": "Class: {KnowledgeBaseIntegration:Class} EquivalentTo: cco:InformationContentEntity and sdg:incorporatesIndigenousKnowledge some {IndigenousKnowledgeBase:Class} and sdg:incorporatesScientificKnowledge some {ScientificKnowledgeBase:Class} and sdg:hasIntegrationConfidence some xsd:decimal",
       "slot_types": {
         "KnowledgeBaseIntegration": "Class",
         "IndigenousKnowledgeBase": "Class",
@@ -1152,7 +1152,7 @@
     },
     {
       "template_id": "performance_tuning_configuration",
-      "manchester_template": "Class: {PerformanceTuningConfiguration:Class} SubClassOf: cco:DescriptiveICE, sdg:retentionPeriod some xsd:decimal, sdg:bufferSize some xsd:decimal",
+      "manchester_template": "Class: {PerformanceTuningConfiguration:Class} EquivalentTo: cco:DescriptiveICE and sdg:retentionPeriod some xsd:decimal and sdg:bufferSize some xsd:decimal",
       "slot_types": {
         "PerformanceTuningConfiguration": "Class"
       },
@@ -1168,7 +1168,7 @@
     },
     {
       "template_id": "storage_structure_composition",
-      "manchester_template": "Class: {StorageStructureComposition:Class} SubClassOf: bfo:0000004, sdg:comprises exactly 1 {DatabaseContainer:Class}",
+      "manchester_template": "Class: {StorageStructureComposition:Class} EquivalentTo: bfo:0000004 and sdg:comprises exactly 1 {DatabaseContainer:Class}",
       "slot_types": {
         "StorageStructureComposition": "Class",
         "DatabaseContainer": "Class"
@@ -1413,7 +1413,7 @@
     },
     {
       "template_id": "census_reporting_event",
-      "manchester_template": "Class: {CensusReportingEvent:Class} SubClassOf: cco:InformationContentEntity, sdg:occursDuringPeriod exactly 1 {CensusPeriod:Class}, sdg:tracksSector exactly 1 {SocialEnterpriseSector:Class}, sdg:publishedOnDate some {ReportingDate:Class}",
+      "manchester_template": "Class: {CensusReportingEvent:Class} EquivalentTo: cco:InformationContentEntity and sdg:occursDuringPeriod exactly 1 {CensusPeriod:Class} and sdg:tracksSector exactly 1 {SocialEnterpriseSector:Class} and sdg:publishedOnDate some {ReportingDate:Class}",
       "slot_types": {
         "CensusReportingEvent": "Class",
         "CensusPeriod": "Class",
@@ -1432,7 +1432,7 @@
     },
     {
       "template_id": "survey_response_record",
-      "manchester_template": "Class: {SurveyResponseRecord:Class} SubClassOf: cco:InformationContentEntity, sdg:capturesProfileAttribute some {ResearcherProfileAttribute:Class}",
+      "manchester_template": "Class: {SurveyResponseRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:capturesProfileAttribute some {ResearcherProfileAttribute:Class}",
       "slot_types": {
         "SurveyResponseRecord": "Class",
         "ResearcherProfileAttribute": "Class"
@@ -1449,7 +1449,7 @@
     },
     {
       "template_id": "information_dissemination_event",
-      "manchester_template": "Class: {InformationDisseminationEvent:Class} SubClassOf: bfo:0000015, sdg:utilizesChannel some {DisseminationChannel:Class}, sdg:reachesAudience some {TargetAudience:Class}, bfo:0000057 some {TemporalInterval:Class}",
+      "manchester_template": "Class: {InformationDisseminationEvent:Class} EquivalentTo: bfo:0000015 and sdg:utilizesChannel some {DisseminationChannel:Class} and sdg:reachesAudience some {TargetAudience:Class} and bfo:0000057 some {TemporalInterval:Class}",
       "slot_types": {
         "InformationDisseminationEvent": "Class",
         "DisseminationChannel": "Class",

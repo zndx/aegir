@@ -60,6 +60,17 @@ def compute(path: str) -> dict:
     for s, _, o in g.triples((None, RDFS.subClassOf, None)):
         if isinstance(s, URIRef) and isinstance(o, URIRef):
             parents.setdefault(s, []).append(o)
+    # equivalentClass grounding: a defined class X ≡ (Genus ⊓ …restrictions…) is subsumed by the NAMED members
+    # of the intersection (its genus) — the reasoner entails the subClassOf, so it counts for BFO-grounding.
+    from rdflib.collection import Collection  # noqa: PLC0415
+    for s, _, eq in g.triples((None, OWL.equivalentClass, None)):
+        if not isinstance(s, URIRef):
+            continue
+        lst = g.value(eq, OWL.intersectionOf)
+        if lst is not None:
+            for member in Collection(g, lst):
+                if isinstance(member, URIRef):
+                    parents.setdefault(s, []).append(member)
 
     def anchor(c, seen=None):
         seen = seen or set()

@@ -125,7 +125,8 @@ def ground_fillers(doc: str, exclude: "frozenset[str]" = frozenset()) -> "tuple[
     bfo_grounded ~36% → ~95%+. ``exclude`` (full IRIs) skips grounding for classes the --strict-grounding
     back-off found unsatisfiable. Returns (doc, grounded_filler_iris)."""
     declared = set(SDG_IRI.findall(doc))
-    grounded = set(re.findall(r"Class:\s*<(https://signals360\.example\.org/sdg#[A-Za-z0-9_]+)>\s+SubClassOf:", doc))
+    # a class is grounded/defined if it carries a SubClassOf OR an EquivalentTo (the genus grounds it)
+    grounded = set(re.findall(r"Class:\s*<(https://signals360\.example\.org/sdg#[A-Za-z0-9_]+)>\s+(?:SubClassOf|EquivalentTo):", doc))
     fillers = sorted(declared - grounded - set(exclude))
     if not fillers:
         return doc, []
