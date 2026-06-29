@@ -11,6 +11,7 @@
   - [Diagnostic Case Study: Representation Collapse](./pretraining/diagnostic_case_study.md)
 - [Training Regime: Sparse → Dense](./training_regime.md)
 - [Ontology](./ontology.md)
+  - [Authors Guide — metrics & quality gates](./ontology/authors_guide.md)
   - [Charter](./ontology/charter.md)
   - [Migration](./ontology/migration.md)
   - [Concept brief — RLVR for ontology generation](./ontology/concept_brief.md)
