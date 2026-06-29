@@ -71,7 +71,7 @@ the staged plan that resolved it is in
 
 ## Liveness gate before competitive F1 targets
 
-Per the [Ontology Charter](../ontology/charter.md#empirical-gate-before-any-vocabulary-expansion),
+Per the [v2 → SOTAB head fine-tune gate](../training_regime.md#11-the-v2-sotab-head-fine-tune-gate),
 the v2 → SOTAB head fine-tune must clear three liveness checks before
 any "competitive F1" target is meaningful:
 

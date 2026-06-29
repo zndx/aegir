@@ -5,6 +5,35 @@ generators into Ægir without breaking the consumer projects that use
 them today. Designed to be reversible up to the cutover, and to fail
 loudly rather than drift silently.
 
+> **Status (2026-06-29) — historical; partially executed, then
+> superseded.** This is the *original* migration plan as written on
+> 2026-05-09. Phase 0 and the authoring step of Phase 1 happened: the
+> renamed canonical vocabulary now lives in-tree at
+> `src/aegir/ontology/sdg-vocab.ttl` and the mechanical TTL checks run
+> in CI (`just check-ontology-schema`). The rest of the plan did **not**
+> execute as written and is retained here only as a record of intent:
+> - The named cutover artifact, `vocab_label_map.json` v1.0.0, was
+>   never produced, and there is no `aegir-vocab.ttl` in the tree. The
+>   project's vocabulary work moved past a benchmark-label-map
+>   deliverable to a **content-derived, HermiT-validated realized
+>   ontology** — `corpora/ontology/sdg-ontology.{omn,owl}` with a
+>   consistency certificate (`HERMIT_CERTIFICATE.md`) — authored as
+>   catalog templates and gated by the OQuaRE publish gate. The current
+>   reference for that artifact and its gates is the
+>   [Authors Guide](./authors_guide.md).
+> - The `_LABEL_DIMS["sotab"]` reconciliation in Phase 2 is **done**:
+>   `src/aegir/data/table_dataset.py` carries `"sotab": 82`.
+> - The synth-migration phases (4–6) and the SOTAB-CTA empirical gate
+>   (Phase 3) were not run; current evidence (`EVIDENCE.md`) and project
+>   framing treat SOTAB-CTA as likely the wrong eval and gate the
+>   ontology Data Product on OQuaRE instead.
+>
+> The phased plan below is preserved unchanged for provenance. Read it
+> as history, not as the plan of record. **Structural recommendation
+> (flagged, not performed): archive this page, or fold it into a short
+> "vocabulary provenance" note, once a maintainer confirms nothing
+> downstream still links to the phased cutover.**
+
 ## Starting state (2026-05-09)
 
 - **`atelier-vocab.ttl`** lives in a sibling project, ~1052 lines.
@@ -96,15 +125,15 @@ Concrete process:
    demonstrates need.
 4. Author `src/aegir/ontology/label_map.py` with `load()`,
    `iri_for()`, `bfo_ancestry()`, `labels_for_namespace()` helpers.
-5. Wire the [mechanical checks](./charter.md#mechanical-checks) into
+5. Wire the [mechanical checks](./charter.md#provenance-discipline) into
    CI: TTL parse + label/definition presence + BFO ancestry presence
    for `sdg:` terms + label-map JSON consistency + SPARQL totality.
 6. External working sets are unaffected.
 
 Ongoing discipline lives in PR review, guided by a short
 `src/aegir/ontology/PROVENANCE.md` reviewer's guide. The mechanical
-TTL checks listed in
-[Charter §Mechanical checks](./charter.md#mechanical-checks) cover
+TTL checks described in
+[Charter §Provenance discipline](./charter.md#provenance-discipline) cover
 structural integrity. Whether a candidate term reads as the project's
 own engineering work or as material lifted from elsewhere is an
 authorship judgment, made the way every other code-review judgment is
@@ -125,7 +154,7 @@ made.
 
 The v2→SOTAB head fine-tune runs from
 `outputs/mixed-v2/20260426T232240Z/final.pt`. The
-[charter](./charter.md#empirical-gate-before-any-vocabulary-expansion)
+[v2 → SOTAB head fine-tune gate](../training_regime.md#11-the-v2-sotab-head-fine-tune-gate)
 specifies the liveness thresholds:
 
 - ≥ 3 distinct embedding clusters at coarse MCL inflation

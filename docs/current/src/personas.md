@@ -192,34 +192,53 @@ the implicit invitation to give the feedback that would be
 given to a peer's work — not the deference owed to a senior
 authority's work.
 
-**Surface.** The authoritative reference in
-[production_state.md](./ontology/production_state.md); the
-concept brief in [concept_brief.md](./ontology/concept_brief.md);
-the locked C1 test set, held-out 50, and null-statistics
-snapshot; the verification gates (catalog schema check, C1 AUC
-regeneration, verifier determinism, end-to-end scaffold); the
+**Surface.** The [Ontology Authors Guide](./ontology/authors_guide.md)
+(the canonical reference for every ontology metric, gate, and
+membrane); the authoritative reference in
+[production_state.md](./ontology/production_state.md) and the
+concept brief in [concept_brief.md](./ontology/concept_brief.md)
+for the in-flight RLVR sub-track; the realized ontology artifact
+(`corpora/ontology/sdg-ontology.{omn,owl}`) and its
+`HERMIT_CERTIFICATE.md`; `EVIDENCE.md` (the pre-registered claims
+ledger); the locked C1 test set, held-out 50, and null-statistics
+snapshot; the verification gates (catalog schema check, the OQuaRE
+publish gate, the parse / HermiT / OntoClean disposal membranes, C1
+AUC regeneration, verifier determinism, end-to-end scaffold); the
 repository itself (clone and re-run).
 
-**Review workflow.** Reads the authoritative reference. Identifies
-the load-bearing claims — verifier discrimination on C1 (AUC
-0.9956, mean *R*-separation 0.336); held-out 50 separation
-(0.5129); the in-flight policy claim that GRPO can produce
-compositions whose *R*-distribution exceeds prompt-evolved and
-human-authored baselines. Picks one claim and tries to
-reproduce it from the repository alone, with no email to the
-authors. If reproduction works, asks the second-order
-questions: **Are baselines visible** — what does the
-*R*-distribution look like under a prompt-evolved policy?
-under a random-sampling policy? under no constraint at all?
-**Is each verifier component validated independently** — could
-*R_B* be removed without losing meaningful discrimination?
-what does *R_D* alone discriminate? **Is the experimental
-design honestly bounded** — are the claims stated at the
-confidence level the data supports? **Does the warm-start
-choice survive comparison** — is Option A's rejection-sampling
-+ SFT compared head-to-head against Option B's
-Instruct-paired baseline, or against Option C's on-policy
-SDFT alternative, under matched conditions?
+**Review workflow.** Reads the Authors Guide and the authoritative
+reference. Identifies the load-bearing claims. On the **ontology
+rigor program** (the primary, shipped track): that the realized SDG
+ontology clears the pre-registered objectives in `EVIDENCE.md` —
+**OQ-Rigor** (`definitional_completeness ≥ 0.45` ∧
+`realizable_machinery > 0`) and **OQ-Structure** (`bfo_grounded ≥
+0.95` ∧ `def_annotation_coverage ≥ 0.90` ∧ `ar > 0` ∧
+`oquare_aggregate ≥ 3.5`), with zero unsatisfiable classes under
+HermiT; and that the disposal membranes (parse → HermiT/CCO →
+OntoClean) are un-fakeable. On the **in-flight RLVR sub-track**:
+verifier discrimination on C1 (AUC 0.9956, mean *R*-separation
+0.336), held-out 50 separation (0.5129), and the policy claim that
+GRPO can produce compositions whose *R*-distribution exceeds
+prompt-evolved and human-authored baselines. Picks one claim and
+tries to reproduce it from the repository alone, with no email to
+the authors. If reproduction works, asks the second-order
+questions. For the rigor program: **Do the metrics regenerate** —
+does `scripts/ontology_metrology.py` on the realized `.owl` produce
+the reported numbers, and does `scripts/ontology_oquare.py` return
+GREEN against the certificate? **Are the gates actually un-fakeable**
+— does an injected contradiction or anti-rigid-over-rigid
+subsumption get rejected with a reason? For the RLVR sub-track:
+**Are baselines visible** — what does the *R*-distribution look like
+under a prompt-evolved policy? under a random-sampling policy? under
+no constraint at all? **Is each verifier component validated
+independently** — could *R_B* be removed without losing meaningful
+discrimination? what does *R_D* alone discriminate? **Is the
+experimental design honestly bounded** — are the claims stated at
+the confidence level the data supports? **Does the warm-start choice
+survive comparison** — is Option A's rejection-sampling + SFT
+compared head-to-head against Option B's Instruct-paired baseline,
+or against Option C's on-policy SDFT alternative, under matched
+conditions?
 
 **Definition of success.** They can reproduce any claim from
 the repository alone. They can swap one verifier component
@@ -299,13 +318,17 @@ Feature: C1 sweep reproducibility
 
 ## Cross-references
 
+- [Ontology Authors Guide](./ontology/authors_guide.md) — the
+  canonical reference for the ontology's metric suite, the OQuaRE
+  publish gate, and the disposal membranes; the primary surface the
+  reviewer persona audits against.
 - [Aegir's semantic engine — authoritative reference](./ontology/production_state.md)
   — the external/advisory-facing description that the
   reviewer-facing scenarios audit against, and that the
   practitioner scenarios produce evidence for.
 - [Concept brief — RLVR for ontology generation](./ontology/concept_brief.md)
-  — the research design that locks the experimental claims
-  the reviewer persona audits.
+  — the research design for the in-flight RLVR sub-track that locks
+  the experimental claims the reviewer persona audits.
 - [Ontology Charter](./ontology/charter.md) — the outward
   contract that the director persona owns operationally.
 

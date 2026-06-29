@@ -1,8 +1,9 @@
 # Lineup Landing — the collections × lens pivot
 
-**Status: DESIGN (spec) — not built.** · Co-designed with RH 2026-06-17/18. Defines the lineup's
-`current` beachhead: what a user sees on clicking **lineup**, and the data model the view sits on.
-Distinct from (but shares its graph with) the [SHARE-Docs phase](./phase_share_docs.md).
+**Status: BUILT (the spec that shipped).** · Co-designed with RH 2026-06-17/18; landed as the lineup's
+`current` beachhead (collections × lens pivot + the de-flattened many-to-many graph + the TF-IDF lens
+chords — see §Implications). Defines what a user sees on clicking **lineup**, and the data model the view
+sits on. Distinct from (but shares its graph with) the [SHARE-Docs phase](./phase_share_docs.md).
 
 ## What the user is seeking — a trailhead, not a dashboard
 
@@ -134,13 +135,19 @@ the skeleton is the trailheads, not spinners.
 
 ## Implications & dependencies
 
-1. **De-flatten the materializer.** `build_collections.py` must carry the intermediaries it currently
-   drops: `style_topic_ids` (→ content many-to-many) and the **view** layer (→ schema many-to-many).
-   This is one change of *kind* ("stop collapsing the hub and the view"), not three axis-specific ones.
-2. **Model `document` and `view` as first-class lineup notes** (with their edges) so the pivot is
-   computed over the true graph.
+The three implications below are **DONE** in the KB projector (`src/aegir/lineup/build.py`): the lineup
+projection — not the standalone `scripts/build_collections.py` release materializer — is now the live
+source of the landing's graph.
+
+1. ✅ **De-flatten the materializer.** `build.py::project_collections` carries the intermediaries the
+   early `build_collections.py` materialization dropped: `style_topic_ids` (→ content many-to-many) and the
+   **view** layer (→ schema many-to-many). One change of *kind* ("stop collapsing the hub and the view"),
+   not three axis-specific ones (tasks #52/#53).
+2. ✅ **Model `document` and `view` as first-class lineup notes** (with their edges) so the pivot is
+   computed over the true graph; `project_lenses` emits the collections × {terms, schema, content} pivots
+   over it, and the TF-IDF lens chords (`aegir.viz.lineup_app`, task #54) render the live associations.
 3. **Shares the graph with [SHARE-Docs](./phase_share_docs.md)** — the mdbook renders the same
-   collection ↔ document ↔ {terms, topics, views→tables} structure; build both against this model.
+   collection ↔ document ↔ {terms, topics, views→tables} structure; both are built against this model.
 
 ## Versioning — namespaced archive snapshots
 

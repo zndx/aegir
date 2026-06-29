@@ -80,7 +80,7 @@ With those weights, the verifier achieves AUC 0.9956 and mean
 RL work began, gives separation 0.5129 against the locked verifier
 — leakage-free with respect to any policy that subsequently trains
 against *R*. The full empirical surface is documented in the
-[semantic-engine authoritative reference §4](./production_state.md#4-the-four-component-verifier-ro-i).
+[semantic-engine authoritative reference](./production_state.md).
 
 The verifier is deterministic, hash-stable, and has no JVM or Java
 dependencies in its runtime hot path. DeepOnto is invoked only at
@@ -127,7 +127,7 @@ rejection-sampling SFT — currently running; Option B:
 Instruct-paired model + Instruct-paired SAE adapter; Option C:
 Self-Distillation Fine-Tuning [SDFT; Shenfeld et al. 2026]) is
 explicitly under revision; the
-[authoritative reference's empirical-test section](./production_state.md#6-the-current-empirical-test-under-revision)
+[authoritative reference](./production_state.md)
 names what the in-flight run will and will not settle.
 
 ## Generalizing the verifier: scaling beyond a single policy

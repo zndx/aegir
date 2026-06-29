@@ -114,7 +114,7 @@ inherit gradient from their parents — 1,000+ examples teaching
 The path-prediction head's softmax is naturally dual-center: each step's
 centroid is a parent-level cluster. The dual center loss we argued for
 on first principles (see
-[§ Hierarchical loss design](#hierarchical-loss-design)) falls out of
+[§ Hierarchical loss design](#6-hierarchical-loss-design)) falls out of
 the formulation for free.
 
 ## 4. Staged plan
@@ -469,9 +469,7 @@ the open wound that motivated v2 in the first place; closing that loop
 requires a fine-tune from `outputs/mixed-v2/20260426T232240Z/final.pt`
 that produces non-degenerate per-class F1.
 
-This is the M2 empirical gate, defined formally in the
-[Ontology Charter](./ontology/charter.md#empirical-gate-before-any-vocabulary-expansion).
-Three liveness thresholds:
+This is the M2 empirical gate. Three liveness thresholds:
 
 - ≥ 3 distinct embedding clusters at coarse MCL inflation (vs. the
   single cluster that flagged collapse in April)
@@ -494,9 +492,9 @@ v1.0.0 ships as the first outward release.
 
 ## 12. How this relates to v3
 
-The [v3 concept brief](../../build/draft-concept-brief_v3.md) proposes
-a phased plan: Phase 1 (Aegir-only baseline) → Phase 1.5 (Mergekit
-specialist fusion) → Phase 2 (conditional Nano latent alignment). All
+The v3 concept brief proposed a phased plan: Phase 1 (Aegir-only
+baseline) → Phase 1.5 (Mergekit specialist fusion) → Phase 2
+(conditional Nano latent alignment). All
 three phases assumed "a working Aegir baseline." The story in this
 chapter is what "working" means: Aegir cannot be trained from random
 on sparse classification — it needs pretraining + supervised fine-tune
@@ -522,8 +520,6 @@ to clear.
   formally specified, plus the outward contract Ægir publishes
 - [Phase 1 supervised roadmap](./roadmap/supervised.md) — current
   fine-tune-from-v2 plan that supersedes the from-random approach
-- [v3 concept brief](../../build/draft-concept-brief_v3.md) —
-  latent-guided training, Mergekit, Nano
 - [Training tactics](./pretraining/training_tactics.md) — pre-existing
   ontology-side training objectives
 - Session notes:

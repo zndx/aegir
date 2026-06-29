@@ -72,6 +72,15 @@ where `decay[t] = 1 - p[t]` and `p[t]` is the boundary probability for token `t`
 
 At boundary tokens (`p ~ 1`), the output snaps to the new chunk value. At non-boundary tokens (`p ~ 0`), the output carries forward the previous value. The boundary probability controls the blend continuously, allowing gradient flow through the routing decisions.
 
+### Scan Backends
+
+The EMA scan has two interchangeable backends that compute identical results:
+
+- **Sequential** (`_ema_scan_sequential`): the reference O(L)-depth loop above, accumulating outputs in a list and `torch.stack`-ing them (never in-place assignment, which would break autograd). Used on CPU, on non-CUDA devices, and as the fallback.
+- **SSD** (`_ema_scan_ssd`): a parallel scan that maps the EMA onto the Mamba-2 SSD recurrence (`A = -1`, `dt = -log(decay)`, `C = 1`) and runs the mamba-ssm `mamba_chunk_scan_combined` Triton kernel. Because that kernel is tuned for many small heads, the feature dimension `D` is sliced into heads of size `AEGIR_DECHUNK_SSD_HEADDIM` (default 64, must divide `D`) so the backward kernel stays within the shared-memory budget on Ampere/Ada.
+
+The `_ema_scan` dispatcher selects SSD only on CUDA when mamba-ssm is available and the post-chunk sequence length is at least `AEGIR_DECHUNK_SSD_MIN_L` (default 256); below that, the sequential scan is faster because the SSD kernel's fixed setup and `chunk_size=64` padding dominate. `AEGIR_DECHUNK_SCAN` (`auto` / `sequential` / `ssd`) overrides backend selection. Correctness at the edges is guaranteed by the sequential fallback.
+
 ### Reconstruction Steps
 
 1. Reorder the chunk outputs according to the original boundary positions.

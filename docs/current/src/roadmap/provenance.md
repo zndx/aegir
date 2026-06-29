@@ -1,42 +1,60 @@
 # Provenance — Verifiable Tasks & Lineage (the through-line)
 
-**Status: v1 BUILT — ILLUSTRATIVE, not definitive.** The cheapest first slice (live Atlas lineage DAG,
-no verification overlay yet). Captured 2026-06-19 (RH); v1 landed same day. Reframes the top-line
-**"Tasks"** card (an unlinked `Statistic`, originally conceived as an Atropos-style RL-task surface) into
-**Provenance: Verifiable Tasks & Lineage** — the spine the whole pipeline already has. The card now links
-to `/lineup?open=training/provenance`; the panel is a **Training ▸ Provenance** sibling of Sweeps and
-Reward (`src/aegir/viz/provenance_app.py`), rendering the type-level convergence chain read live from the
-`aegir_hx` Atlas graph, with **tap-a-node → open its data-product lens** navigation. Next: the
-**verification overlay** (per-edge gate verdicts) and instance-level drill-in (§Maturity, §Dependencies).
+**Status: BUILT (instance-level ego-graph) — ILLUSTRATIVE, not definitive.** Captured 2026-06-19 (RH);
+the first slice (a live type-level Atlas DAG) landed same day, and was **superseded 2026-06-24 by an
+instance-level ReactFlow ego-graph** (#97, commit `0657569`). Reframes the top-line **"Tasks"** card (an
+unlinked `Statistic`, originally conceived as an Atropos-style RL-task surface) into **Provenance:
+Verifiable Tasks & Lineage** — the spine the whole pipeline already has. The card links to
+`/lineup?open=training/provenance`; the panel is a **Training ▸ Provenance** sibling of Sweeps and Reward.
+The **verification overlay** (per-edge gate verdicts) is still absent — that is the increment that turns
+the navigable lineage walk into the thesis artifact (§Maturity, §Dependencies).
+
+## What is built (v1.5 — the instance-level ego-graph)
+The panel renders a node's **first-order neighbourhood** as a ReactFlow graph
+(`ui/src/components/ProvenanceGraph.tsx`, `@xyflow/react` 12), read live from the `aegir_hx` Atlas / Apache
+AGE graph via the gateway endpoint **`/api/provenance/ego?focal=<vid>`** (`src/aegir/gateway/app.py`).
+Outgoing/derived neighbours sit right, incoming/sources left, edges are labelled by relationship type;
+**clicking a neighbour opens *its* ego-graph in a new panel** — the lineage is walked node-by-node in
+panel-trail fashion, not shown as one static type-level DAG. With no `focal`, the endpoint seeds an anchor
+(a `Dataset` / `Run` / `Chapter`); each node uses the AGE internal `id()` as identity, the neighbourhood is
+capped at 40 (with "more exist" surfaced), and the Atlas-core `vertex` label and `__rdbms_*` table
+internals are excluded. The panel degrades gracefully to an empty state when the graph is down. A
+`provenance/<vid>` synthetic note (gateway `kb_note`) lets a clicked node resolve as a panel; the lineup
+note is `kind:"provenance"` carrying an `ego_focal` seed (`src/aegir/lineup/build.py`).
+
+This replaced the original v1 — a **type-level** HoloViews/bokeh DAG (`src/aegir/viz/provenance_app.py`:
+the convergence chain `Family/Topic → Template → Chapter → Column/Dataset → Job/Run` via
+`networkx.multipartite_layout` → `hv.Graph`). That bokeh app is left in place but **no longer embedded**;
+the live path is the React ReactFlow component (the `@xyflow/react` GraphRenderer renders correctly client-
+side, where the npm `@bokeh/bokehjs` build of an `hv.Graph` did not — the reason for the move).
 
 ## Maturity: illustrative, NOT definitive
-The v1 panel — both the DAG and the panels its node-clicks open — is a **legibility sketch**. It proves
-the surface (live Atlas graph → HoloViews DAG → tap-to-navigate at the narrow lens width), but every
-modelling choice in it is provisional scaffolding. **Do not build heavily on the current shapes.** The
-axes we expect to iterate (RH, 2026-06-19):
+The current panel is a **legibility sketch**. It proves the surface (live Atlas graph → ReactFlow ego-graph
+→ tap-to-walk at the narrow lens width), but several modelling choices remain provisional scaffolding. **Do
+not build heavily on the current shapes.** The axes (RH, 2026-06-19), with their status updated to the
+ego-graph:
 
-- **Granularity — type-level → instance-level.** Today each node is an artifact *type* (8 of them) and
-  edges are aggregated counts: a "shape of the pipeline" cartoon, not the real lineage. The definitive
-  view is the **versioned artifacts themselves** (catalog *vN*, corpus-snapshot hash, checkpoint, a
-  specific GRPO/eval run) with their actual derivation edges — likely expand/collapse between the two.
-- **Artifact set & layout — curated whitelist → topology-derived.** The `STAGE` map (which types, which
-  left→right column) is a hand-assigned constant that forces a clean multipartite layout. Real lineage
-  is not strictly layered (a Run touches Template/Topic/Chapter/Dataset across "stages"; the
-  `RE_GROUNDS_TO` loop-closure edge is a genuine cycle). Derive the node set + layout from the graph and
-  the v0.3/Signals artifact taxonomy; render the loop honestly instead of flattening it.
-- **Node→panel routing — coarse type→whole-lens → contextual drill-in.** Tapping a node opens its
-  data-product *lens in full* (the `TARGET` map), ignoring which instance was tapped — and Run/Job →
-  `lens/content` is frankly a stretch (Run/Job are training/orchestration; their real home is a
-  run-detail panel, or Sweeps/Reward scoped to that run, or a provenance instance note). Definitive: the
-  tapped artifact's identity seeds a panel *about that artifact* (this template, this run, this dataset).
-- **The verification overlay is absent — the "Verifiable" half is unbuilt.** Edges are plain
+- **Granularity — type-level → instance-level. ✅ DONE.** The ego-graph nodes are now the **versioned
+  artifacts themselves** (a specific `Chapter`, `Run`, `Dataset`, `Template`, …, by AGE node id), not
+  artifact *types* with aggregated counts. The earlier "shape of the pipeline" cartoon is superseded by the
+  real, walkable lineage neighbourhood.
+- **Node→panel routing — coarse type→whole-lens → contextual drill-in. PARTIALLY DONE.** Clicking a node
+  now opens *that node's own* ego-graph (its identity seeds the next panel), rather than the type's whole
+  lens. The remaining gap is a richer **artifact-detail** panel — e.g. a `Run`/`Job` should reach a
+  run-detail view (or Sweeps/Reward scoped to that run), not just its lineage neighbourhood.
+- **Artifact set & layout — curated whitelist → topology-derived. STILL OPEN.** The node set is now derived
+  from the live graph (the focal's actual neighbours), but the global lineage is still not laid out from
+  topology — there is no whole-graph multipartite/loop-aware view, and the `RE_GROUNDS_TO` loop-closure
+  edge is a genuine cycle that a single ego-hop does not render as a loop. A topology-derived overview
+  (expand/collapse between the walk and a whole-graph layout) remains future work.
+- **The verification overlay is absent — the "Verifiable" half is unbuilt. STILL OPEN.** Edges are plain
   derivations; the point of *Verifiable* Tasks & Lineage is per-edge gate verdicts (R-pass ·
-  HermiT-consistent · coverage-R1 · downstream-eval-lift) encoded on the graph. That is the increment
-  that turns the cartoon into the thesis artifact (§Dependencies).
+  HermiT-consistent · coverage-R1 · downstream-eval-lift) encoded on the graph. That is the increment that
+  turns the navigable lineage into the thesis artifact (§Dependencies).
 
-So: **current implementation = illustrative.** Definitive = instance-level, topology-derived,
-context-routed, verification-overlaid. Treat the v1 maps (`STAGE` / `TARGET`) and the type-level framing
-as scaffolding to be replaced, not as settled design.
+So: **current implementation = illustrative, instance-level navigation without verdicts.** Definitive =
+topology-derived overview + contextual artifact-detail panels + a verification overlay. Treat the present
+node/edge shapes as scaffolding to be extended, not as settled design.
 
 ## Why the pivot (what Atropos told us)
 [NousResearch/Atropos](https://github.com/NousResearch/Atropos) is a clean RL-environments gym: an
@@ -73,8 +91,9 @@ substrate. And it makes the **convergence loop** legible as a chain, not a vibe:
 Atlas (OpenLineage on AGE) holds the lineage; Provenance adds the **verification overlay** on the
 edges (R-pass, HermiT-consistent, coverage-R1, downstream-eval-lift) and the **artifact versions**
 (catalog versions, the lineup archive snapshots, corpus hashes, checkpoints). The Provenance panel
-sources the Atlas graph and renders it with gate verdicts — the integration RH sensed. Direction:
-emit the RL/eval gate events as OpenLineage facets on the existing run/dataset nodes.
+sources the Atlas graph live (`/api/provenance/ego`) and walks it node-by-node — the integration RH
+sensed. Direction: emit the RL/eval gate events as OpenLineage facets on the existing run/dataset nodes,
+then render those facets as the per-edge verdict overlay.
 
 ## Adopt-vs-keep Atropos (orthogonal to the pivot)
 Provenance *wraps* whichever RL harness — keep `grpo_loop` (our verifier R / HermiT / reasoner is a
@@ -83,21 +102,24 @@ pattern to borrow if we grow to *many* verifiable tasks (DE-elucidation, CPA, do
 separate environments feeding one trajectory queue). Borrow the shape, not necessarily the code.
 
 ## The card / panel (as built)
-"Tasks" (unlinked stub) → **Provenance** → a lineup panel rendering the artifact-lineage DAG
-(HoloViews graph via the bokeh-server `PanelView` — GraphRenderer renders correctly there, unlike the
-npm `@bokeh/bokehjs` build), sourced from Atlas. Unifies the lenses (artifacts) + Sweeps/Reward (runs)
-into one lineage view. **Landed as a Training ▸ Provenance sibling** (not its own nav group): a
-`kind:"training"` note carrying `frontmatter.viz_app="provenance_app"`, served by the `provenance_app`
-bokeh app — the exact pattern as the Sweeps/Reward panels. The verification overlay (per-edge gate
-verdicts) is the next increment on top of this surface.
+"Tasks" (unlinked stub) → **Provenance** → a lineup panel rendering a node's **instance-level ego-graph**
+(ReactFlow / `@xyflow/react`), sourced live from the `aegir_hx` Atlas graph via `/api/provenance/ego`.
+Unifies the lenses (artifacts) + Sweeps/Reward (runs) into one navigable lineage. **Landed as a Training ▸
+Provenance sibling** (not its own nav group): a `kind:"provenance"` note carrying an `ego_focal` seed.
+Unlike the bokeh Sweeps/Reward panels (which mount a `viz_app` via `PanelView`), Provenance is a native
+React component, the move that fixed the client-side graph-render path. The verification overlay (per-edge
+gate verdicts) is the next increment on top of this surface.
 
 ## Dependencies / sequencing
-- ✅ **DONE (v1)** — Cheapest first slice: render the **existing Atlas lineage subgraph** (ground →
-  ontology → corpus → run) as a HoloViews graph panel — proves the surface before the verification
-  overlay. Live in `provenance_app.py`: type-level meta-graph (Family/Topic → Template → Chapter →
-  Column/Dataset → Job/Run), `networkx.multipartite_layout` → `hv.Graph` directed, degrades gracefully
-  when Atlas is down. The 9 type-edges render (Run→Template 794, Run→Topic 397, Dataset→Column 386, …).
+- ✅ **DONE (v1)** — Cheapest first slice: rendered the **existing Atlas lineage subgraph** as a type-level
+  HoloViews graph panel (`provenance_app.py`: `Family/Topic → Template → Chapter → Column/Dataset →
+  Job/Run` via `networkx.multipartite_layout` → `hv.Graph`), proving the surface. **Superseded** by the
+  ego-graph below.
+- ✅ **DONE (v1.5)** — Instance-level **ReactFlow ego-graph** (`ProvenanceGraph.tsx` + `/api/provenance/ego`)
+  replacing the static type-level DAG: a node's 1-hop neighbourhood, click-to-walk in panel-trail fashion,
+  graceful empty state when Atlas is down (#97, commit `0657569`).
 - The verification overlay needs gate verdicts as data: the RLVR reward (have it), HermiT/coverage
   (have them), downstream RWKV evals (TBD — the observatory's downstream-coupling metrics feed here).
+- A topology-derived **whole-graph overview** (loop-aware layout, expand/collapse against the ego-walk).
 - Artifact versions: catalog versions + corpus hashes + lineup archive snapshots already exist; wire
   them as node versions (the `RunArtifacts.start` provenance stamp — also the observatory unblocker).

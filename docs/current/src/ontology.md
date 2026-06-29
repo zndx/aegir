@@ -1,62 +1,87 @@
 # Ontology
 
-Aegir is the canonical owner of the bespoke BFO/CCO-grounded
-vocabulary used by the metadata-tagging stack, and of the
-synthetic-data generators that produce in-distribution training
-bytes against that vocabulary. Vocabulary, generators, and the
-`vocab_label_map.json` artifact published outward all live in this
-chapter. The chapter covers the outward contract, the directory
-layout, and the empirical gate that any vocabulary expansion must
-clear.
+Aegir is the canonical owner of the bespoke BFO 2020 / CCO-grounded
+ontology used by the metadata-tagging stack — the **Signals Data
+Governance (SDG)** ontology — and of the ontology-grounded
+synthetic-data pipeline that produces in-distribution pretraining
+bytes against it. The ontology, its rigor program, and the realized
+OWL artifact published outward all live in this chapter. The chapter
+covers what the ontology *is* now, how its classes function as the
+annotation vocabulary, the quantitative rigor metrics and the formal
+publish gate every extension must clear, and the disposal membranes
+that enforce rigor rather than assert it.
 
-The label space conditions everything downstream — what the model is
-asked to predict, what synthetic data the pretraining corpus can include,
-which benchmark labels the system claims coverage of, and which BFO
-ancestry chains a leaderboard prediction can emit. Putting it next to
-the model is the only arrangement where these decisions stay coherent.
+The ontology conditions everything downstream — it is the
+**annotation vocabulary for Column Type / Column Property Annotation
+(CTA/CPA)** over wide relational tables. Its classes are not leaf
+terms but **intermediate-depth subsumers**: the property-bearing
+classes a heterogeneous-but-coherent column belongs to. Defining
+those classes well *is* building the annotation vocabulary, and the
+gates exist to keep every term a coherent, grounded annotation target.
+Putting the ontology next to the model is the only arrangement where
+these decisions stay coherent.
+
+## What the ontology is now
+
+`sdg-ontology` is **content-derived from FinePDFs** (qdrant/ColBERT
+MaxSim domain filtering over a SKOS index) and **realized to a
+HermiT-validated OWL artifact** at
+`corpora/ontology/sdg-ontology.{omn,owl}`, with a consistency
+certificate at `corpora/ontology/HERMIT_CERTIFICATE.md`. The seven
+family catalogs (`src/aegir/ontology/catalog/01…07`) are a **seed and
+regression baseline**; FinePDFs-derived intermediate classes accrete
+in `08_derived.json`, and the live driver is the content-first
+derivation pipeline (`scripts/derive_ontology.py`,
+`scripts/define_intermediate_classes.py`), not a fixed template count.
+
+The architecture is an **agent-mediated propose / dispose feedback
+loop**: an engine proposes axioms; a stack of deterministic membranes
+(parse → HermiT with CCO imported as a reasoning authority →
+OntoClean) disposes and returns the reason; the agent responds and
+refines. Rigor is *enforced, not asserted*. The
+[Authors Guide](./ontology/authors_guide.md) is the canonical
+reference for every metric, band, gate, and membrane.
 
 ## Scope summary
 
 | Concern | Owner | Notes |
 |---|---|---|
-| Vocabulary IRIs + BFO/CCO grounding | **Ægir** | `src/aegir/ontology/aegir-vocab.ttl` (target home) |
-| Synth value generators | **Ægir** | `src/aegir/synth/` (target home) |
-| Benchmark label → IRI lookup | **Ægir** | Build artifact: `vocab_label_map.json` |
-| SOTAB / GitTables / WikiTables bundle download | **Ægir** | Already wired (`scripts/download_sotab.py`, etc.) |
+| SDG ontology IRIs + BFO/CCO grounding | **Ægir** | `src/aegir/ontology/catalog/*.json` → realized `corpora/ontology/sdg-ontology.{omn,owl}` |
+| Content-first derivation (FinePDFs → classes) | **Ægir** | `scripts/derive_ontology.py`, `scripts/define_intermediate_classes.py` |
+| Grounding-anchor retrieval (CCO + FHIR + accretive) | **Ægir** | `scripts/grounding_anchors.py` |
+| Rigor metrology + OQuaRE publish gate | **Ægir** | `scripts/ontology_metrology.py`, `scripts/ontology_oquare.py` |
+| Disposal membranes (parse / HermiT / OntoClean) | **Ægir** | `scripts/build_realized_ontology.py`, `src/aegir/ontology/ontoclean.py` |
+| Ontology-grounded synthetic corpus + DDL spine | **Ægir** | `scripts/generate_chapter.py`, `scripts/verify_chapters.py`, `src/aegir/ontology/ddl.py`, `realize.py` |
 | CTA / CPA dataset loaders | **Ægir** | `src/aegir/data/table_dataset.py` |
-| BFO-grounded prediction emission | **Ægir** | Leaderboard gateway response payload |
-| Model training + evaluation | **Ægir** | `train.py`, `AegirForColumnAnnotation` |
-| Trained checkpoint distribution | **Ægir** | Existing `outputs/runs/` artifact discipline |
+| Model training + evaluation | **Ægir** | `train.py`, `train_pretrain.py`, `AegirForColumnAnnotation` |
 | **Consumer-side use of the above** | downstream projects | Outside Ægir's design constraints |
 
-A separate sibling project (Atelier) consumes Ægir-produced checkpoints
-as Dempster-Shafer evidence sources. Atelier's own docs describe what
-*it* needs from this contract, but those docs are advisory input here,
-not specification. Where Atelier proposes a tiered vocabulary expansion
-plan or a particular layout, Ægir is free to take, leave, or reorganize
-those suggestions on its own roadmap.
+A separate sibling project (Atelier) consumes Ægir-produced artifacts
+as an independent pretraining-efficacy gate. Atelier's own docs
+describe what *it* needs from this contract, but those docs are
+advisory input here, not specification.
 
 ## Sub-pages
 
-- [Charter](./ontology/charter.md) — the contract Ægir publishes
-  outward and the design constraints that follow from it
-- [Migration](./ontology/migration.md) — authoring the initial
-  bespoke vocabulary
+- [Authors Guide — metrics & quality gates](./ontology/authors_guide.md)
+  — **canonical**: the full quantitative metric suite (IOF rigor
+  dimensions, OntoQA/OQuaRE structural metrics, OntoClean proxies),
+  the OQuaRE publish gate with its `[1,5]` bands and floors, the
+  disposal membranes, and the pre-registered OQ-Rigor / OQ-Structure
+  objectives, with the exact formulas the tooling enforces
+- [Charter](./ontology/charter.md) — Ægir's internal direction-setter
+  for the ontology scope: provenance discipline, the committed
+  BFO/CCO branch structure, and external-standard anchors
+- [Migration](./ontology/migration.md) — authoring history for the
+  initial bespoke vocabulary
 - [Concept brief — RLVR for ontology generation](./ontology/concept_brief.md)
-  — a four-component verifiable reward *R* over OWL ontology
-  artifacts and a GRPO-trained LLM policy that targets it. Two-paper
-  scope: paper 1 establishes verifier discrimination + RLVR
-  optimizability; paper 2 (follow-on) tests downstream pretraining
-  utility
+  — an earlier research design framing a verifiable reward over OWL
+  artifacts and a GRPO-trained policy targeting it (historical; the
+  operational rigor program is the agent-mediated propose/dispose
+  loop documented in the Authors Guide)
 - [Semantic engine — authoritative reference](./ontology/production_state.md)
-  — the external/advisory-facing canonical description of the
-  operational state: SDG ontology + procedural catalog, the
-  four-component verifier with locked weights and empirical
-  validation, the closed-loop synthetic-data pipeline, and the
-  current empirical test of the GRPO policy warm-start
+  — the operational-state description of the SDG ontology, the rigor
+  program, and the closed-loop synthetic-data pipeline
 - [RLVR for ontology generation](./ontology/rlvr.md) — the
-  externally-readable methodological chapter for paper 1: the
-  verifiable-reward setting, the four-component verifier *R(O, I)*,
-  the GRPO training program, and how the verifier generalizes as
-  the project scales beyond a single policy (GEPA-style prompt
-  evolution, Agent-Lightning-style agent RL)
+  externally-readable methodological chapter for the RLVR research
+  framing

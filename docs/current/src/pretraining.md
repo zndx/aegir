@@ -78,65 +78,80 @@ M3 of [Track 1](./roadmap.md) describes the planned step-up to
 evaluation thresholds — keep `eval.fineweb-held` ≤ 1.61, push
 `eval.finepdfs-lab-held` below 1.78, no regression on SchemaPile or
 SQaLe — anchor v3 against the v2 baseline. The v3 corpus mix may
-incorporate verifier-passing synthetic slices from Track 2's RLVR
-policy once that policy produces compositions at corpus scale; see
-the next section.
+incorporate verifier-passing synthetic slices from the
+ontology-grounded corpus pipeline once that corpus is available at
+the budget v3 needs; see the next section.
 
 ## The long-term direction — ontology-grounded synthetic data
 
 The byte-level pretraining track exists alongside a coupled research
-program that generates structured training data from a deterministic
-ontology rather than discovering structure in scraped corpora. The
-shape of that program is described in detail in the [semantic-engine
-authoritative reference](./ontology/production_state.md) — Figure 3.1
-is the closed-loop pipeline diagram. The short version:
+program that generates structured training data from a
+deterministically-grounded ontology rather than discovering
+structure in scraped corpora. The ontology, the rigor program that
+governs it, and the closed-loop corpus pipeline are documented in the
+[Ontology chapter](./ontology.md); the
+[Authors Guide](./ontology/authors_guide.md) is the **canonical**
+reference for every metric, gate, and disposal membrane. The short
+version of how that program produces pretraining bytes:
 
-1. Verbalize OWL ontology compositions from the SDG procedural
-   catalog (540 templates, 522 verbalized) into natural-language
-   text via the cached DeepOnto verbalizations. The verbalizations
-   are deterministic and reproducible from the locked catalog.
-2. Score compositions via the four-component deterministic verifier
-   *R(O, I)* (described in the [Ontology chapter](./ontology.md)),
-   retaining only verifier-passing compositions.
-3. Render synthetic relational tables from catalog compositions
-   under known ontological provenance, so each column's source
-   entity is known by construction.
-4. Mix verbalizations and synthetic tables into a v3-or-later
-   pretraining corpus alongside real text.
-5. Evaluate the pretrain lift on the Track 1 stratified-eval surface
-   to attribute any improvement to the ontology-grounded slice —
-   the **paper 2** claim, scoped in [Roadmap](./roadmap.md).
+1. **Derive and realize the ontology.** `sdg-ontology` is a
+   BFO 2020 / CCO-grounded domain ontology, content-derived from
+   FinePDFs and realized to a HermiT-validated OWL artifact at
+   `corpora/ontology/sdg-ontology.{omn,owl}` (with a consistency
+   certificate at `corpora/ontology/HERMIT_CERTIFICATE.md`). Its
+   classes are **intermediate-depth subsumers** — the property-bearing
+   classes a heterogeneous-but-coherent column belongs to — and they
+   *are* the CTA/CPA annotation vocabulary. An **agent-mediated
+   propose / dispose feedback loop** drives the ontology: an engine
+   proposes axioms; deterministic membranes (parse → HermiT with CCO
+   imported as a reasoning authority → OntoClean) dispose and return
+   their reason; the agent refines. The seven family catalogs
+   (`src/aegir/ontology/catalog/01…07`) are a seed and regression
+   baseline; the live driver is the content-first derivation pipeline,
+   not a fixed template count.
+2. **Generate ontology-grounded chapters.** `scripts/generate_chapter.py`
+   synthesizes textbook chapters grounded in the ontology — in the
+   current path, content-first from a FinePDFs harvest
+   (`--from-harvest`) — calling a generation backend that is either the
+   local gRPC engine (`engine/<capability>`, $0) or a weighted
+   GLM / Grok mix. Each chapter cites ontology templates, verbalizes
+   their axioms into prose, and embeds RI-true relational tables and
+   views projected from the DDL spine (`src/aegir/ontology/ddl.py`,
+   `realize.py`), so each column's source entity is known by
+   construction.
+3. **Verify each chapter.** `scripts/verify_chapters.py` runs a
+   four-scorer verification loop — `R_topic` (alignment with FinePDFs
+   style anchors; dropped for content-first chapters), `R_iri` (cited
+   templates' key terms present in prose), `R_density` (markdown-table
+   structure), and `R_axiom` (table headers match slot types) — and
+   composites them as a geometric mean, accepting at `τ_accept` 0.50.
+4. **Mix the accepted chapters into a v3-or-later pretraining corpus**
+   alongside real text, and **evaluate the pretrain lift** on the
+   Track 1 stratified-eval surface to attribute any improvement to the
+   ontology-grounded slice — the **paper 2** claim, scoped in
+   [Roadmap](./roadmap.md).
 
-The ontology-grounded synthetic-data direction has converged on the
-procedural-catalog approach above. The current iteration of that
-approach is the in-flight RLVR policy that produces OWL compositions
-in Track 2 of the roadmap. Until that policy produces
-verifier-passing compositions at corpus scale, the v3 pretrain works
-against the v2 mix or a manually-curated extension of it; the
-ontology-grounded slice is added at the point where Track 2's
-outputs are operationally available.
+The ontology-grounded corpus is also published as an independent
+deliverable: the [SHARE-docs](./roadmap/phase_share_docs.md) browsable
+corpus and the `corpora/` submodule (zndx/sdg-corpora). Its publication
+is gated on the ontology's OQuaRE quality model — `sync --push` is
+refused below GREEN, the hard gate the Authors Guide documents.
 
 ### Why this scales
 
 The bottleneck in conventional table annotation is human labeling.
-The bottleneck in this synthetic regime is policy throughput — the
-RLVR policy must produce verifier-passing compositions, and the
-verifier must score them — which is embarrassingly parallel. The
-multiplicative structure of the pipeline gives generous headroom:
-
-| Stage | Multiplier | Source |
-|---|---|---|
-| Catalog templates | 540 | SDG catalog (Batches 1–7) |
-| Slot-fill compositions | 10²–10⁴ per template | Combinatorial slot-fill space |
-| Verbalization rendering | 1:1 with composition | Cached DeepOnto verbalizations |
-| Verifier-passing fraction | constrained by R-threshold | Locked weights `{0.50, 0.05, 0.45}` |
-
-The diversity of the training data is bounded by the SDG ontology's
-expressivity — currently 540 templates with explicit cross-context
-cousining across LIMS, governance, kernel observability, lineage,
-and Dempster-Shafer belief structures. The ontology itself is a
-versioned outward contract; growth happens through the Track 2
-process documented in the [Ontology chapter](./ontology.md).
+The bottleneck in this synthetic regime is generation-and-verification
+throughput — the pipeline must generate ontology-grounded chapters and
+the verifier must score them — which is embarrassingly parallel, and
+runs at $0 against the local gRPC engine on local GPUs. The diversity
+of the training data is bounded by the ontology's expressivity, which
+is itself growing: the content-first derivation accretes
+FinePDFs-derived intermediate classes rather than enumerating a fixed
+catalog. Independent constraints on the regime are tracked as
+pre-registered gates in `EVIDENCE.md` — in particular the corpus's
+maximum **non-repetitive token yield**, which caps the ontology-grounded
+fraction of any large pretraining budget, and the M2 lift that the v3
+corpus mix must demonstrate over a no-ontology control.
 
 ### How this connects to Aegir's three target tasks
 
@@ -149,8 +164,8 @@ downstream tasks:
   per-column entity types under known provenance.
 - **Column Property Annotation (CPA).** Cross-column relationships
   in real corpora are noisy; synthetic slices supply clean
-  cross-column relations from the catalog's `sdg:*` property
-  declarations.
+  cross-column relations from the ontology's `sdg:*` property
+  declarations and the DDL spine's FK edges.
 - **Data Element Discovery.** Cross-table groupings under known
   ontological provenance are the synthetic regime's distinctive
   contribution — real corpora do not supply ground-truth data
@@ -158,7 +173,7 @@ downstream tasks:
 
 The first two tasks are addressable from v2 alone. The third
 benefits most directly from the synthetic regime and is the
-strongest motivator for completing Track 2.
+strongest motivator for completing the corpus pipeline.
 
 ## Sub-pages
 
@@ -170,8 +185,8 @@ five **Stage**-named sub-pages
 [Stage 4: Training Objective](./pretraining/training_objective.md),
 [End-to-End Example](./pretraining/end_to_end_example.md))
 describe an earlier exploratory SysMLv2 / ORM pipeline that
-preceded the convergence on the procedural-catalog approach above.
-Each carries a "Deferred framing" banner pointing at the active
+preceded the convergence on the ontology-grounded chapter pipeline
+above. Each carries a "Deferred framing" banner pointing at the active
 work. They are preserved in the repository for archival continuity.
 
 The [Diagnostic Case Study](./pretraining/diagnostic_case_study.md)

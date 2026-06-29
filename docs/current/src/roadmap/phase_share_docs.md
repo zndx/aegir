@@ -1,9 +1,10 @@
 # Phase — SHARE Docs (browsable corpus in sdg-corpora)
 
-**Status: content layer MATERIALIZED 2026-06-17 (155 collections in-tree); mdbook renderer PLANNED.**
-· **Decision:** scoped 2026-06-17 · **Depends on:** the lineup (UI-U0/U1/U2, delivered), the
-`aegir.lineup sync` SHARE verb (delivered), and a corpus regen against the current ontology
-(see [Dependencies](#dependencies)).
+**Status: Phase A DELIVERED (in-aegir mdbook renderer, commit `ae7dbee`, `just kb-mdbook`);
+content layer MATERIALIZED (collections in-tree); Phase B (graduate to `sdg-corpora`) PENDING —
+the gate is met at Phase B.** · **Decision:** scoped 2026-06-17 · **Depends on:** the lineup
+(UI-U0/U1/U2, delivered), the `aegir.lineup sync` SHARE verb (delivered), and a corpus regen
+against the current ontology (see [Dependencies](#dependencies)).
 
 This phase turns the public `sdg-corpora` repo from machine-readable artifacts (parquet / TTL /
 JSON) into a **human-browsable, cross-linked mdbook document** — the *static SHARE-tier rendering
@@ -22,7 +23,7 @@ Two corrections to the original framing, both now in force:
    (`reference.parquet`, the column→SKOS-code scoring key — held out so the blind eval stays valid).
    Everything else — chapters (as text), underlying tables, terms — ships in the tree. (Bulk *binary*
    parquet via LFS/release is a real concern only at ~100K-table scale; not a v0.3 reason to omit
-   11 MB of the actual product.)
+   the actual product.)
 
 2. **The unit is a `collection`, not a flat chapter list.** A **collection** = a FinePDFs-grounded
    **topic** (carried forward from the coverage audit) + its **chapters** (prose + embedded views) +
@@ -32,11 +33,12 @@ Two corrections to the original framing, both now in force:
 
 **Materialized** (`scripts/build_collections.py`, deterministic): the v0.3 corpus →
 `corpus/collections/topic-NNN-<family>/{README.md, chapters/<id>.md, tables/<name>.sql,
-manifest.json}` + `INDEX.md`. First run: **155 populated collections** (1,935 chapters, 655 table
-DDLs) + 45 gap topics, ~31 MB in-tree. The mdbook renderer (below) now organizes **by collection**
-(a collection = a book section); Phase A/B otherwise unchanged. Known caveat this release surfaces:
-the chapters' *embedded* views are the generation-time (thin) schema, while the *underlying* tables
-carry this session's semantic columns — the divergence motivates the corpus regen.
+manifest.json}` + `INDEX.md`. Current release: **121 populated collections** (1,977 chapters,
+4,116 table DDLs) + 79 gap topics (no chapters yet), in-tree. The mdbook renderer (below)
+organizes **by collection** (a collection = a book section); Phase A/B otherwise unchanged. Known
+caveat this release surfaces: the chapters' *embedded* views are the generation-time (thin) schema,
+while the *underlying* tables carry this session's semantic columns — the divergence motivates the
+corpus regen.
 
 ## The thesis it certifies
 
@@ -74,9 +76,12 @@ An mdbook site (the devenv already ships mdbook + d2/katex/mermaid) with three c
 
 2. **The renderer reuses `aegir.lineup.build`; it does not reinvent the cross-link.** `build.py`
    already projects the tri-layer KB (ontology / relational / content notes with `[[wikilinks]]`)
-   into `build/dev`. The mdbook emitter is a new *output target* over that projection: KB
-   projection → `SUMMARY.md` + per-page markdown, with `[[wikilinks]]` lowered to mdbook relative
-   links.
+   into `build/dev`. The mdbook emitter (`scripts/render_lineup_mdbook.py`) is an *output target*
+   over that projection: KB projection → `book.toml` + `src/SUMMARY.md` + one flat page per note,
+   with the lineup `[[id|label]]` wikilinks lowered to mdbook relative links. The SUMMARY leads
+   with the collections × lens pivot (the landing), then the collections, the lenses, and the
+   ontology / relational / content products — the lineup's panel-trail flattened into a navigable
+   document.
 
 3. **Self-contained from published artifacts.** The final renderer reads **only** what ships in
    `corpora/` — `ontology/catalog/*.json` (with `broader` + slot_types + manchester + verbal +
@@ -86,14 +91,15 @@ An mdbook site (the devenv already ships mdbook + d2/katex/mermaid) with three c
 
 ## Phasing (A → B) — prove before scaffolding
 
-**Phase A — prove the renderer in aegir.** Add an mdbook target to `aegir.lineup` (`build --target
-mdbook`, or a sibling emitter) reusing `build.py`'s projection. Output the cross-linked site;
-validate the three link directions resolve, view-tables and DDL render, and the resolved-template
-ontology pages are correct. Cheap, where the projection + hydration data already live. *No new
+**Phase A — prove the renderer in aegir. DELIVERED (commit `ae7dbee`, #49).** An mdbook target over
+`aegir.lineup`'s projection (`scripts/render_lineup_mdbook.py`, run via `just kb-mdbook` —
+optionally `--build` to invoke `mdbook build`) reuses `build.py`'s projection. It outputs the
+cross-linked site, lowering wikilinks to relative page links, with the collections × lens landing
+at the head of `SUMMARY.md`. Cheap, where the projection + hydration data already live. *No new
 devenv, no new repo structure.*
 
-**Phase B — graduate to `sdg-corpora` as a proper project.** Once A is proven, extract a
-self-contained renderer into `sdg-corpora`:
+**Phase B — graduate to `sdg-corpora` as a proper project. PENDING (the gate, #50).** Once A is
+proven, extract a self-contained renderer into `sdg-corpora`:
 - promote `sdg-corpora` to a Python project: its own **devenv**, a **`src/sdg/`** package, and a
   **`just docs-sync`** recipe (mirrors aegir's `just kb-sync` ergonomics);
 - the renderer reads only the repo's published artifacts (design decision 3) → emits `docs/` (the
@@ -105,13 +111,14 @@ self-contained renderer into `sdg-corpora`:
 **PASS when:** a fresh clone of `sdg-corpora` → `just docs-sync` produces a browsable mdbook site
 where every chapter, its rendered view-tables, the relational tables, and the resolved-template
 ontology entries are cross-linked and **all links resolve**, built with **zero aegir dependency**.
-(Phase A is the in-aegir proof of the renderer + link model; the gate is met at Phase B.)
+(Phase A is the in-aegir proof of the renderer + link model — now delivered; the gate is met at
+Phase B.)
 
 ## Dependencies
 
 - **Corpus consistency.** The docs are only honest once the corpus is regenerated against the
-  current (broader-enriched) ontology — otherwise old-ontology chapter view-tables would link to
-  new-ontology entries. **Sequence this phase after (or bundled with) a corpus regen** via the
+  current ontology — otherwise old-ontology chapter view-tables would link to new-ontology
+  entries. **Sequence this phase after (or bundled with) a corpus regen** via the
   `generate_chapter.py` pipeline. Until then, Phase A can run against the current (mismatched)
   artifacts purely to prove the renderer.
 - **`sync` already done.** The ontology Data Product is current in `corpora/` as of
@@ -119,8 +126,8 @@ ontology entries are cross-linked and **all links resolve**, built with **zero a
 
 ## Scale (deferred)
 
-At v0.3 scale (~575 tables / 540 ontology entries / ~1,900 chapters) a flat mdbook renders fine.
-At the production target (~100K relational tables / ~10K chapters) 100K+ static pages need
+At v0.3 scale (~hundreds of tables / ontology entries / ~2,000 chapters) a flat mdbook renders
+fine. At the production target (~100K relational tables / ~10K chapters) 100K+ static pages need
 **sharding / pagination / on-demand rendering** — that design is **deferred to when production
 data lands** and must not block the v0.3 browsable release. `log()` any truncation if a cap is
 applied at scale.

@@ -127,8 +127,12 @@ Each default `data:` event carries one `SAELogRecord` dict:
   spike here flags an under-budgeted moment (the L0 sparsity dropped a
   concept that mattered for this composition).
 - `layer_index` — which transformer layer's residual produced this
-  record. For Qwen3.5-9B-Base, the default 4-layer subset is `[0, 10, 20,
-  30]`; for 27B it's `[0, 16, 32, 48]`.
+  record. The hooked layers are chosen by `default_layers_to_hook(num_layers,
+  n)` (`aegir.rl.policy`), `n` evenly-spaced indices via `step = num_layers // n`.
+  `n` is the `--sae-num-layers` flag, default **2** — so Qwen3.5-9B-Base (40
+  layers) hooks `[0, 20]` and the 27B base (64 layers) hooks `[0, 32]`. Raising
+  `--sae-num-layers 4` spreads them wider (`[0, 10, 20, 30]` on the 9B, `[0, 16,
+  32, 48]` on the 27B).
 
 ## Smoke test
 

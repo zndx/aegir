@@ -56,7 +56,7 @@ The suffix automaton runs on CPU. Tensors are moved to CPU before matching and r
 
 - Suffix automata use pointer-chasing data structures (dictionaries, linked suffix links) that are not amenable to GPU parallelism.
 - The per-channel parallelism (`B*C` independent sequences) provides sufficient throughput for moderate batch sizes.
-- During inference, ROSA blocks primarily contribute during prefill; the `step` method falls back to zero output since the automaton requires the full sequence context.
+- ROSA is a prefill-only operator. A single-token query has no prior context to match against, so the 1-bit suffix-matching output is structurally ill-defined in step mode. `RWKV_ROSA.step` therefore raises `NotImplementedError` rather than returning a placeholder (an earlier zero-output fallback masked a real correctness trap). This path is unreachable in practice — no current `arch_layout` uses `r`/`R` blocks — and the docstring notes a possible future rolling-window decoder (replay the last K tokens through `forward` and extract the tail).
 
 ## When to Use ROSA vs RWKV-7
 

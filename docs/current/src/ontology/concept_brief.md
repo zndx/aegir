@@ -5,6 +5,31 @@
 *Draft v0.5 — 2026-05-09 — companion to [Charter](./charter.md) and
 [Migration](./migration.md). Supersedes v0.1, v0.2, v0.3, v0.4.*
 
+> **Status (2026-06-29) — research design of record; the empirical and
+> externally-readable surfaces have moved ahead of it.** This brief is
+> the original, detailed research design for the RLVR program (the
+> verifier *R*, the prior-art positioning, and the P0–P9 phase
+> structure). It remains the authoritative statement of the
+> *contribution claim* and the seven required prior-art
+> differentiations. For the **current** state of the program read its
+> two companions, which supersede this brief's forward-looking
+> specifics where they differ:
+> - the [RLVR chapter](./rlvr.md) — the externally-readable
+>   methodological description, with the locked verifier and current
+>   policy; and
+> - the [semantic-engine authoritative reference](./production_state.md)
+>   — the canonical empirical surface (locked weights, AUC, the
+>   in-flight GRPO run).
+>
+> Where this brief's specifics have been overtaken, they are corrected
+> inline below; the verifier definition, the prior-art
+> differentiations, and the phase/gate methodology are preserved as
+> written. Note also that this brief concerns the **RLVR/GRPO research
+> track**, which is distinct from the ontology **rigor** program (the
+> OQuaRE publish gate, OntoClean membranes, and intermediate-class
+> authoring documented in the [Authors Guide](./authors_guide.md)); the
+> two share the SDG ontology but are governed separately.
+
 ## Objective
 
 Define a four-component deterministic verifier *R* over OWL ontology
@@ -190,9 +215,8 @@ hyperbolic-space hierarchy/role/conjunction losses.
 These seven citations are required in the related-work section of
 any paper that emerges from this brief. Secondary methodological
 precedents (SRL / RL-Struct, AMR-RL chain, CodeRL / Reasoning-SQL,
-DRAGON, Lehmann & Haase 2012, OLLM) are listed in the
-[lit review v1](`docs/scratch/2026-05-09/225830_lit_review_v1.md`)
-citations index.
+DRAGON, Lehmann & Haase 2012, OLLM) are listed in the lit review v1
+(`docs/scratch/2026-05-09/225830_lit_review_v1.md`) citations index.
 
 P0 exit gate is **firmly green** as of v1; the chain-of-three claim
 survives a depth-of-search expansion across the three highest-risk
@@ -354,7 +378,13 @@ SQLite table where each row is a *template* and contains:
    shuffles) of compositions over *C* and cache the per-shuffle
    `complex_count` and `R_D` values. τ_B and R_D's null calibration
    live in *C*'s metadata.
-5. Commit *C* as a versioned artifact at `src/aegir/ontology/catalog/C-v0.1.{json,sqlite}`.
+5. Commit *C* as a versioned artifact. *(As built, the catalog is the
+   seven family JSON files in `src/aegir/ontology/catalog/`
+   (`01_foundation` … `07_long_tail`) plus the FinePDFs-derived
+   `08_derived.json`, not the single `C-v0.1.{json,sqlite}` file this
+   brief originally proposed; the null statistics live in
+   `null_stats_canonical.json` and the frozen topic model in
+   `T_I_canonical.pkl`.)*
 
 After P1, the JVM is gone. The RL loop, verifier, and any v3
 pretraining pipeline consume *C* by lookup.
@@ -467,7 +497,13 @@ re-run the null construction.
 
 ### RL policy and training loop
 
-**Base policy.** `SAE-Res-Qwen3.5-27B-W80K-L0_100` (instruct
+**Base policy.** *(Superseded — see the [authoritative
+reference](./production_state.md):
+the operational policy is now `Qwen3.5-9B-Base` with a held-out
+`SAE-Res-Qwen3.5-9B-Base-W64K-L0_50` residual-stream adapter, sized
+to the 6×4090 envelope. The 27B design below is the brief's original
+target and the rationale for it still holds at the smaller scale.)*
+`SAE-Res-Qwen3.5-27B-W80K-L0_100` (instruct
 variant), a Qwen 3.5 27B base with a residual-stream sparse
 autoencoder of width 80K and average L0 ≈ 100 active features per
 token. Two reasons for this choice:

@@ -124,7 +124,7 @@ weights via Group Relative Policy Optimization
 choice when there is one policy, the corpus is bounded, and
 training compute is available in chunks. The in-flight run
 described in
-[authoritative reference §6](./ontology/production_state.md#6-the-current-empirical-test-under-revision)
+[authoritative reference](./ontology/production_state.md)
 is the first end-to-end test of this layer.
 
 ### Prompt-level: GEPA
