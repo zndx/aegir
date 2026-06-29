@@ -33,6 +33,7 @@ OURS_OWL = REPO / "corpora" / "ontology" / "sdg-ontology.owl"
 INDEX_PKL = GROUND / "anchors.pkl"
 FHIR_NS = "http://hl7.org/fhir/"
 SYSML_JSON = REPO / "build" / "sysml" / "sysml_foundation.json"
+FOUNDATION_DIR = REPO / "build" / "foundation"
 SYSML_NS = "http://www.signals360.org/sdg/sysml#"
 IAO_DEF = "http://purl.obolibrary.org/obo/IAO_0000115"
 
@@ -110,26 +111,39 @@ def load_ours(path=OURS_OWL):
     return out
 
 
-def load_sysml(path=SYSML_JSON):
-    """SysMLv2 foundation seed → (iri, label, def, 'sysml'). EPL-clean: our glosses only, never SysML doc text.
+def _foundation_terms(terms, default_source):
+    """Domain-standard foundation terms (SysMLv2/WITSML/BRL-CAD…) → (iri, label, def, source-prefix).
 
-    The seed (build/sysml/sysml_foundation.json, from sysml_foundation.py) grounds each SysML construct's
-    REFERENT to a BFO/CCO genus; here each becomes a retrieval anchor so the deriver can ground manufacturing/
-    geometry/CSG domain classes onto the SysML foundation (e.g. an enclosure column → sysml:Part → cco:Artifact)."""
-    if not Path(path).exists():
-        return []
+    Each standard EXTENDS the BFO/CCO/FHIR foundation with domain vocabulary so the deriver can ground domain
+    columns onto it (an enclosure → sysml:Part → cco:Artifact; a wellbore → witsml:Wellbore → bfo:site) AND so
+    the qdrant classifier can DISCRIMINATE domains. EPL/Apache/US-gov-clean: our glosses only, names drawn+cited."""
     import re
     out = []
-    for t in json.load(open(path)):
-        name = t["name"]
+    for t in terms:
+        name, src = t["name"], t.get("source", default_source)
         gloss = t.get("gloss") or (
             f"{re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', name).lower()} — "
             f"a {t.get('domain', 'core')} concept grounded as {t['genus']}")
-        out.append((SYSML_NS + name, name, gloss, "sysml"))
+        out.append((f"http://www.signals360.org/sdg/{src}#{name}", name, gloss, src))
     return out
 
 
-def build_index(sources=("cco", "fhir", "ours", "sysml")):
+def load_sysml(path=SYSML_JSON):
+    """SysMLv2 foundation seed (build/sysml/sysml_foundation.json, from sysml_foundation.py)."""
+    return _foundation_terms(json.load(open(path)), "sysml") if Path(path).exists() else []
+
+
+def load_domain_foundations(d=FOUNDATION_DIR):
+    """Curated domain-standard foundations (WITSML, BRL-CAD…) from build/foundation/*_foundation.json
+    (domain_foundations.py). Each file's terms carry a 'source' prefix (witsml / brlcad / …)."""
+    out = []
+    if Path(d).exists():
+        for f in sorted(Path(d).glob("*_foundation.json")):
+            out += _foundation_terms(json.load(open(f)), f.stem.split("_")[0])
+    return out
+
+
+def build_index(sources=("cco", "fhir", "ours", "sysml", "domains")):
     anchors, meta = [], {}
     if "cco" in sources:
         cco, ice = load_cco()
@@ -141,6 +155,8 @@ def build_index(sources=("cco", "fhir", "ours", "sysml")):
         anchors += load_ours()
     if "sysml" in sources:
         anchors += load_sysml()
+    if "domains" in sources:
+        anchors += load_domain_foundations()
     seen, uniq = set(), []
     for a in anchors:
         if a[0] not in seen:
