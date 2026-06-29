@@ -139,19 +139,25 @@ def build_index(sources=("cco", "fhir", "ours")):
 
 
 class Retriever:
-    """Top-k grounded anchors for a concept. The boundary's signal carrier."""
+    """Top-k grounded anchors for a concept — the boundary's signal carrier. In-memory cosine over the pickled
+    matrix; fine at ~2k anchors. SCALE PATH (as our ontology accretes): swap this for a dedicated qdrant
+    collection behind the same ``retrieve()`` contract — index CCO+FHIR once, upsert each newly-grounded sdg
+    class so the corpus grows server-side without a full re-embed (qdrant @6355 already runs for the SKOS index)."""
 
     def __init__(self, path=INDEX_PKL):
         with open(path, "rb") as f:
             self.ix = pickle.load(f)
         self.emb = self.ix["emb"]
 
-    def retrieve(self, text, k=6, prefixes=None):
+    def retrieve(self, text, k=6, prefixes=None, exclude=()):
+        ex = {e.lower() for e in exclude}  # skip self-matches — never offer the filler its own name as a genus
         q = _model().encode([text], normalize_embeddings=True)[0]
         sims = self.emb @ q
         out = []
         for i in np.argsort(-sims):
             if prefixes and self.ix["prefixes"][i] not in prefixes:
+                continue
+            if self.ix["labels"][i].lower() in ex or self.ix["curies"][i].lower() in ex:
                 continue
             out.append({"label": self.ix["labels"][i], "curie": self.ix["curies"][i],
                         "prefix": self.ix["prefixes"][i], "sim": float(sims[i]), "def": self.ix["defs"][i]})

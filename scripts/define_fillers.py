@@ -28,17 +28,24 @@ sys.path.insert(0, str(REPO / "scripts"))
 from aegir.engine.client import complete_detailed  # noqa: E402
 from aegir.ontology.schema import CatalogTemplate, load_catalog, save_catalog  # noqa: E402
 from evolve_rigor import parse_slots, validate_detailed  # noqa: E402
+from grounding_anchors import Retriever  # noqa: E402
 
 _SLOT = re.compile(r"\{(\w+):(\w+)\}")
+_CAMEL = re.compile(r"(?<=[a-z0-9])(?=[A-Z])")
+
+
+def _decamel(s: str) -> str:
+    """camelCase filler name → retrieval query: 'ParasiticPlant' -> 'parasitic plant'."""
+    return _CAMEL.sub(" ", s).replace("_", " ").lower()
 # the syntax rules the membrane enforces (diagnosed 2026-06-29 — the engine's first pass violated all three)
 _SYNTAX = (
     "SYNTAX (axioms that break these FAIL to parse — the membrane will reject them):\n"
-    "1. prefixes are LOWERCASE only: cco: bfo: sdg: — NEVER CCO: or BFO:.\n"
+    "1. prefixes are LOWERCASE only: cco: bfo: fhir: sdg: — NEVER CCO: or BFO:.\n"
     "2. EVERY property is prefixed: write `sdg:derivesNutrientsFrom some X`, never bare `participates_in`.\n"
-    "3. coined classes AND properties use the sdg: prefix (camelCase props) — do NOT invent cco:/bfo: names "
-    "(those are NUMERIC IRIs). The genus must be a declared category: bfo:0000040 (material entity) / "
-    "bfo:0000015 (process) / bfo:0000031 (generically dependent continuant) / bfo:0000019 (quality) / "
-    "bfo:0000023 (role), OR an sdg: class, OR a {Slot:Class}.\n"
+    "3. Use the EXACT cco:/fhir: IRIs from the provided anchors (e.g. cco:ont00000871) — do NOT INVENT cco:/bfo: "
+    "names. Coin sdg: (camelCase) only for genuinely new classes/properties. The genus must be a provided ANCHOR "
+    "(cco:/fhir:/sdg:) OR a BFO category (bfo:0000040 material entity / bfo:0000015 process / bfo:0000031 "
+    "generically dependent continuant / bfo:0000019 quality / bfo:0000023 role) OR a {Slot:Class}.\n"
 )
 _SYS = (
     "You are defining REFERENCED domain classes (fillers) of a BFO 2020 / CCO ontology. Each is a primitive "
@@ -48,6 +55,13 @@ _SYS = (
     "`ParasiticPlant` emit `Class: {ParasiticPlant:Class} EquivalentTo: …`). Define ONLY a filler you can "
     "genuinely characterize by a sufficient condition; if it is a bare natural kind you cannot define, set "
     "keep=true and skip it.\n\n" + _SYNTAX +
+    "\nGROUNDING — each filler is given CANDIDATE GROUNDED ANCHORS (real classes: cco: real-world genera, "
+    "fhir: clinical/record types, sdg: our own). For the GENUS and EACH differentia filler, PREFER the "
+    "best-fitting anchor over a generic bfo: category or a coined sdg: term — the anchors are already "
+    "BFO-grounded, so reusing them grounds your definition meaningfully. The GENUS must be a class BROADER "
+    "than the filler (a parent kind) — NEVER the filler itself or a near-synonym; for an information/record "
+    "concept ground to cco:ont00000958 (Information Content Entity) or a fhir: type. Fall back to a bare bfo: "
+    "category only when NO anchor fits.\n"
     "\nOUTPUT exactly one ```json block {\"definitions\":[{\"manchester_template\":\"…\",\"keep\":false,"
     "\"verbal\":\"one-sentence gloss\"}]}. Reasoning OUTSIDE the json."
 )
@@ -68,16 +82,19 @@ def _parse_defs(text: str) -> list:
         return []
 
 
-def _propose(chunk: list, contexts: dict, feedback: dict, cap: str, temp: float) -> dict:
-    """One proposal pass over ``chunk`` → {filler: manchester}, binding on the head slot. Re-tries carry the
-    gate's prior verdict so the agent can RESPOND to it."""
+def _propose(chunk: list, contexts: dict, feedback: dict, retriever: "Retriever", cap: str, temp: float) -> dict:
+    """One proposal pass over ``chunk`` → {filler: manchester}, binding on the head slot. Each filler carries
+    its top-k retrieved grounding anchors (the boundary's domain-vocabulary signal); re-tries carry the gate's
+    prior verdict so the agent can RESPOND to it."""
     lines = []
     for f in chunk:
         ctx = ", ".join(sorted(set(contexts[f]))[:4])
+        ex = {_decamel(f), f.lower(), f"sdg:{f}".lower()}  # the genus must be BROADER — never the filler itself
+        alist = " · ".join(f"{a['curie']} ({a['label']})" for a in retriever.retrieve(_decamel(f), k=7, exclude=ex))
+        block = f"- {f}  (appears in: {ctx})\n  anchors (prefer for genus + differentia fillers): {alist}"
         if f in feedback:
-            lines.append(f"- {f}  (appears in: {ctx})\n  PRIOR ATTEMPT REJECTED — {feedback[f]}  → fix the syntax and re-emit.")
-        else:
-            lines.append(f"- {f}  (appears in: {ctx})")
+            block += f"\n  PRIOR ATTEMPT REJECTED — {feedback[f]}  → fix and re-emit."
+        lines.append(block)
     out = complete_detailed("Define these referenced fillers:\n\n" + "\n".join(lines),
                             capability=cap, system_prompt=_SYS, max_tokens=16000, temperature=temp)
     proposed = {}
@@ -121,6 +138,7 @@ def main() -> int:
     if args.limit:
         fillers = fillers[:args.limit]
     print(f"define-fillers: {len(fillers)} referenced fillers · feedback loop ≤{args.rounds} rounds (heads {len(heads)})")
+    retriever = Retriever()  # the grounding-anchor signal source (CCO + FHIR + our accreting classes)
 
     accepted: dict[str, CatalogTemplate] = {}
     feedback: dict[str, str] = {}
@@ -132,7 +150,7 @@ def main() -> int:
         for bi in range(0, len(pending), args.batch):
             chunk = pending[bi:bi + args.batch]
             try:
-                proposed.update(_propose(chunk, contexts, feedback, args.capability, args.temperature))
+                proposed.update(_propose(chunk, contexts, feedback, retriever, args.capability, args.temperature))
             except Exception as e:  # noqa: BLE001
                 print(f"  round {rnd + 1} batch @{bi}: engine error {type(e).__name__}")
         # membrane — admit + capture the REASON for the rejects (the feedback channel)

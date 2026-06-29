@@ -45,11 +45,33 @@ def loc(iri: str) -> str:
     return iri.replace(BFO, "bfo:").split("#")[-1].split("/")[-1]
 
 
+_CCO_BACKBONE = None
+
+
+def _cco_backbone():
+    """CCO's named-class subClassOf backbone (cached). The realize imports CCO so HermiT validates against its
+    disjointness; rdflib does NOT follow owl:imports, so we merge the backbone here — making cco:-grounded sdg
+    chains reach BFO. bfo_grounded then lifts because the grounding is REAL (the agent referenced actual CCO
+    classes), not because the metric was redefined."""
+    global _CCO_BACKBONE
+    if _CCO_BACKBONE is None:
+        cco = Path(__file__).resolve().parents[1] / "build" / "grounding" / "cco-merged.ttl"
+        _CCO_BACKBONE = rdflib.Graph()
+        if cco.exists():
+            src = rdflib.Graph().parse(str(cco), format="turtle")
+            for s, _p, o in src.triples((None, RDFS.subClassOf, None)):
+                if isinstance(s, URIRef) and isinstance(o, URIRef):
+                    _CCO_BACKBONE.add((s, RDFS.subClassOf, o))
+    return _CCO_BACKBONE
+
+
 def compute(path: str) -> dict:
     """The full ontology-quality profile for an OWL file — the single source of truth for the OQuaRE gate
     and the lineup. Pure rdflib (no JVM)."""
     g = rdflib.Graph()
     g.parse(path)
+    for t in _cco_backbone():  # resolve cco: references against CCO's real chains to BFO (rdflib won't follow imports)
+        g.add(t)
 
     named = [c for c in set(g.subjects(RDF.type, OWL.Class)) if isinstance(c, URIRef)]
     sdg = [c for c in named if str(c).startswith(SDG)]

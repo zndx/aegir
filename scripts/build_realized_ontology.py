@@ -190,6 +190,28 @@ def _reason(doc: str):
     return onto, path, consistent, n_classes, unsat
 
 
+CCO_TTL = REPO / "build" / "grounding" / "cco-merged.ttl"
+CCO_ICE = "cco:ont00000958"  # Information Content Entity (real opaque CCO IRI) — the FHIR-resource bridge target
+
+
+def import_cco_bridge_fhir(doc: str) -> str:
+    """Make CCO a REASONING authority (not just a naming one): align the cco: prefix to CCO's https IRIs, import
+    cco-merged.ttl so HermiT validates grounding against CCO's 26 disjointness axioms (it will REJECT
+    Plant⊑Vehicle), declare fhir:, and bridge each referenced FHIR type to cco:InformationContentEntity (FHIR
+    resources ARE records). bfo: already aligns (purl obo BFO_ in both ontologies), so the chains are coherent."""
+    out = doc.replace("Prefix: cco: <http://www.commoncoreontologies.org/>",
+                      "Prefix: cco: <https://www.commoncoreontologies.org/>")
+    if "Prefix: fhir:" not in out:
+        out = out.replace("Prefix: cco: <https://www.commoncoreontologies.org/>\n",
+                          "Prefix: cco: <https://www.commoncoreontologies.org/>\nPrefix: fhir: <http://hl7.org/fhir/>\n")
+    if CCO_TTL.exists() and "\nImport:" not in out:
+        out = re.sub(r"(Ontology: <[^>]+>\n)", rf"\1Import: <file:{CCO_TTL}>\n", out, count=1)
+    fhirs = sorted(set(re.findall(r"\bfhir:[A-Za-z][A-Za-z0-9]*", out)))
+    if fhirs:
+        out = out.rstrip() + "\n\n" + "\n".join(f"Class: {c} SubClassOf: {CCO_ICE}" for c in fhirs) + "\n"
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="realize FinePDFs-derived templates → HermiT-validated OWL")
     ap.add_argument("--no-definitions", action="store_true", help="skip Phase-A.2 definition annotations")
@@ -211,6 +233,7 @@ def main() -> int:
     base_doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
                            "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
     base_doc, degen = drop_degenerate(base_doc)
+    base_doc = import_cco_bridge_fhir(base_doc)  # CCO reasoning authority (HermiT validates disjointness) + FHIR bridge
     if degen:
         print(f"   dropped {len(degen)} degenerate stale head(s) (single-letter slots): {degen}")
 
