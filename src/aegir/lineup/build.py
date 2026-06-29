@@ -749,7 +749,10 @@ def project_metrics() -> list[N.Note]:
                     f"AR **{live['ar']:.3f}** ({live['n_datatype_properties']} dataprops)\n\n"
                     f"_characteristics (1-5)_ — Structural {ch['Structural']} · FunctionalAdequacy "
                     f"{ch['FunctionalAdequacy']} · Reliability {ch['Reliability']} · Operability {ch['Operability']} · "
-                    f"Maintainability {ch['Maintainability']} · Transferability {ch['Transferability']}")
+                    f"Maintainability {ch['Maintainability']} · Transferability {ch['Transferability']}\n\n"
+                    f"_OntoClean (un-gameable)_ — taxonomic-cleanliness **{live['taxonomic_cleanliness']}** · "
+                    f"violations {live['ontoclean_violations']} · cycles {live['subsumption_cycles']} · "
+                    f"sibling-disjoint {live['sibling_disjointness']}")
         out.append(N.Note(
             id=f"training/metrics/{cslug}", title=c["title"], kind="training", data_product="training",
             frontmatter=cat_fm,

@@ -21,10 +21,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections import Counter
+from pathlib import Path
 
 import rdflib
 from rdflib import OWL, RDF, RDFS, URIRef
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+from aegir.ontology import ontoclean  # noqa: E402  (the lexical anti-rigidity prior for the OntoClean proxies)
 
 BFO = "http://purl.obolibrary.org/obo/BFO_"
 SDG = "https://signals360.example.org/sdg#"
@@ -122,6 +127,45 @@ def compute(path: str) -> dict:
         return depth_cache[c]
 
     n = max(1, len(sdg))
+
+    # ── OntoClean Tier-A/B taxonomic-correctness proxies (un-gameable; the OntoClean survey synthesis) ──
+    sdg_set = set(sdg)
+    sdg_parents = {c: [p for p in parents.get(c, []) if p in sdg_set] for c in sdg}
+
+    def _reaches(c, target, seen):
+        for p in parents.get(c, []):
+            if p == target:
+                return True
+            if p not in seen:
+                seen.add(p)
+                if _reaches(p, target, seen):
+                    return True
+        return False
+
+    subsumption_cycles = sum(1 for c in sdg if _reaches(c, c, set()))             # OOPS! P06 — hard floor 0
+    role_anchor = URIRef(BFO + "0000023")
+    role_classes = {c for c in sdg if _reaches(c, role_anchor, set())}
+    label_of = {c: (str(g.value(c, RDFS.label)) if g.value(c, RDFS.label) is not None else str(c).split("#")[-1]) for c in sdg}
+    comment_of = {c: str(g.value(c, RDFS.comment) or "") for c in sdg}
+    anti = {c: (c in role_classes or ontoclean.anti_rigid_lexical(label_of[c], comment_of[c])) for c in sdg}
+    # the OntoClean rigidity constraint: an anti-rigid (role) class may NOT subsume a non-anti-rigid (rigid) one
+    ontoclean_violations = sum(1 for c in sdg for p in sdg_parents.get(c, []) if anti.get(p) and not anti.get(c))
+    children_of: dict = {}
+    for c in sdg:
+        for p in sdg_parents.get(c, []):
+            children_of.setdefault(p, []).append(c)
+    disjoint_pairs = {frozenset((s, o)) for s, _, o in g.triples((None, OWL.disjointWith, None))
+                      if isinstance(s, URIRef) and isinstance(o, URIRef)}
+    sib_total = sib_disjoint = 0
+    for kids in children_of.values():
+        for i in range(len(kids)):
+            for j in range(i + 1, len(kids)):
+                sib_total += 1
+                sib_disjoint += frozenset((kids[i], kids[j])) in disjoint_pairs
+    sibling_disjointness = sib_disjoint / max(1, sib_total)                       # OOPS! P10
+    orphan_rate = sum(1 for c in sdg if not parents.get(c)) / n                   # OOPS! P04 — islands
+    taxonomic_cleanliness = round(1.0 - (subsumption_cycles + ontoclean_violations) / max(1, n_sub), 4)
+
     return {
         "path": path,
         "n_domain_classes": len(sdg), "n_object_properties": len(sdg_props),
@@ -143,6 +187,10 @@ def compute(path: str) -> dict:
         "n_card": n_card, "n_disjoint": n_disj, "bfo_anchors": dict(bfo_dist.most_common(8)),
         # raw counts (for the OQuaRE module + diagnostics)
         "n_defined": len(defined), "n_grounded": len(grounded), "n_annotated": len(has_def),
+        # OntoClean Tier-A/B taxonomic-correctness proxies (un-gameable)
+        "subsumption_cycles": subsumption_cycles, "ontoclean_violations": ontoclean_violations,
+        "sibling_disjointness": round(sibling_disjointness, 4), "orphan_rate": round(orphan_rate, 4),
+        "taxonomic_cleanliness": taxonomic_cleanliness,
     }
 
 
@@ -163,6 +211,13 @@ def _print_profile(m: dict) -> None:
     print(f"  AR  attribute richness     (datatype props per class)                    {m['ar']:6.2f}")
     print(f"  AROnto axiomatic strength  (restrictions per class)                      {m['aronto']:6.2f}")
     print(f"  DITOnto max depth          / TMOnto tangledness                          {m['dit']:<3} / {m['tm']:.1%}")
+    print()
+    print("ONTOCLEAN TAXONOMIC-CORRECTNESS  (un-gameable — reasoner-invisible defects)  OURS")
+    print(f"  taxonomic cleanliness      (1 − (cycles+violations)/subClassOf)          {m['taxonomic_cleanliness']:6.3f}")
+    print(f"  subsumption cycles         (OOPS! P06 — must be 0)                        {m['subsumption_cycles']:<6}")
+    print(f"  OntoClean violations       (anti-rigid role subsumes a rigid kind)       {m['ontoclean_violations']:<6}")
+    print(f"  sibling disjointness       (OOPS! P10 — identity-incompatible → disjoint){m['sibling_disjointness']:6.2f}")
+    print(f"  orphan rate                (OOPS! P04 — ungrounded islands)              {m['orphan_rate']:6.1%}")
     print()
     print(f"AXIOM EXPRESSIVITY: {m['n_subclass']} subClassOf · {m['n_equiv']} ≡ · {m['n_some']} ∃some · "
           f"{m['n_all']} ∀only · {m['n_card']} card · {m['n_disjoint']} disjoint")

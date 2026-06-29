@@ -105,6 +105,15 @@ def classify(label: str, definition: str = "", manchester: str = "", anchor=()) 
             "has_differentia": has_differentia}
 
 
+def anti_rigid_lexical(label: str, definition: str = "") -> bool:
+    """Lexical anti-rigidity prior (no axiom needed) — for the metrology's OntoClean violation proxy. Uses only
+    the HIGH-PRECISION lexical signals (role lexicon · role-predication · anti-rigidity markers). AEON's caution
+    is that rigidity is the least-reliable auto-tag, so this is a PROXY (reported, not a hard gate)."""
+    text = f"{label}. {definition}"
+    return (head_noun(label) in _ROLE_LEXICON or bool(_ROLE_PREDICATION.search(text))
+            or bool(_ANTIRIGID_MARK.search(text)))
+
+
 def classify_template(t) -> dict:
     """Classify a derived CatalogTemplate by its HEAD slot (first ``{Name:...}`` of the manchester_template)."""
     man = getattr(t, "manchester_template", "") or ""

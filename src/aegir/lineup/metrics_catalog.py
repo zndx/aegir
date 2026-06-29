@@ -178,5 +178,11 @@ METRICS: list[dict] = [
           "gate": "OQ-Structure ≥0.90", "role": "NL/FOL definitions — the IAO/OBO documentation convention", "src": "scripts/ontology_metrology.py"},
          {"slug": "oquare-aggregate", "name": "OQuaRE aggregate (1-5)", "formula": "mean of the 6 SQuaRE characteristic scores; each metric IOF-anchored → [1,5]",
           "gate": "🟢 ≥3.5 (aim 3.9, Brick/RealEstateCore) AND FunctionalAdequacy ≥3.0", "role": "the hard publish gate on the ontology Data Product (sync._gate)",
-          "src": "scripts/ontology_oquare.py"}]},
+          "src": "scripts/ontology_oquare.py"},
+         {"slug": "taxonomic-cleanliness", "name": "taxonomic cleanliness", "formula": "1 − (subsumption-cycles + OntoClean-violations) / subClassOf",
+          "gate": "—", "role": "un-gameable taxonomic correctness — reasoner-INVISIBLE defects a generic LLM cannot fake", "src": "scripts/ontology_metrology.py"},
+         {"slug": "ontoclean-violations", "name": "OntoClean violations", "formula": "edges where an anti-rigid (role) class subsumes a non-anti-rigid (rigid) one",
+          "gate": "—", "role": "the OntoClean anti-rigidity constraint (a role cannot subsume a kind) — the un-fakeable rigor discriminator", "src": "scripts/ontology_metrology.py"},
+         {"slug": "subsumption-cycles", "name": "subsumption cycles", "formula": "classes reachable from themselves via subClassOf (OOPS! P06)",
+          "gate": "must be 0", "role": "a hard taxonomic-correctness floor — the hierarchy must be a DAG", "src": "scripts/ontology_metrology.py"}]},
 ]

@@ -173,4 +173,7 @@ def ontology_metrology() -> dict | None:
         "n_domain_classes": m["n_domain_classes"], "n_datatype_properties": m["n_datatype_properties"],
         "oquare_aggregate": oq["aggregate"], "oquare_characteristics": oq["characteristics"],
         "oquare_green": oq["gate_green"], "consistent": oq["consistent"],
+        # OntoClean Tier-A/B taxonomic-correctness proxies (un-gameable)
+        "taxonomic_cleanliness": m["taxonomic_cleanliness"], "ontoclean_violations": m["ontoclean_violations"],
+        "subsumption_cycles": m["subsumption_cycles"], "sibling_disjointness": m["sibling_disjointness"],
     }
