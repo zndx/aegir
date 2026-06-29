@@ -520,8 +520,9 @@ to clear.
   formally specified, plus the outward contract Ægir publishes
 - [Phase 1 supervised roadmap](./roadmap/supervised.md) — current
   fine-tune-from-v2 plan that supersedes the from-random approach
-- [Training tactics](./pretraining/training_tactics.md) — pre-existing
-  ontology-side training objectives
+- *Training tactics* (`docs/current/src/pretraining/training_tactics.md`,
+  not wired into the rendered book) — pre-existing ontology-side
+  training objectives
 - Session notes:
   - `docs/scratch/2026-04-19/` and `docs/scratch/2026-04-20/` — Stage A/B
     findings

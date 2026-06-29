@@ -75,13 +75,17 @@ advisory input here, not specification.
 - [Migration](./ontology/migration.md) — authoring history for the
   initial bespoke vocabulary
 - [Concept brief — RLVR for ontology generation](./ontology/concept_brief.md)
-  — an earlier research design framing a verifiable reward over OWL
-  artifacts and a GRPO-trained policy targeting it (historical; the
-  operational rigor program is the agent-mediated propose/dispose
-  loop documented in the Authors Guide)
+  — the design of the long-horizon **Signals M4** apparatus: a
+  four-component verifiable reward *R(O, I)* over OWL artifacts and a
+  GRPO-trained, SAE-instrumented local policy targeting it. That reward
+  is now **realized as the deterministic membrane stack** (HermiT/CCO,
+  OntoClean, OQuaRE) that the agent-mediated propose/dispose loop —
+  documented in the Authors Guide — is building and proving today
 - [Semantic engine — authoritative reference](./ontology/production_state.md)
   — the operational-state description of the SDG ontology, the rigor
   program, and the closed-loop synthetic-data pipeline
 - [RLVR for ontology generation](./ontology/rlvr.md) — the
-  externally-readable methodological chapter for the RLVR research
-  framing
+  externally-readable methodological chapter for the long-horizon M4
+  apparatus: the verifier *R(O, I)*, now realized as the membrane stack,
+  and the SAE-instrumented-Qwen policy that GRPO trains against it to
+  autonomously generate ontology extensions

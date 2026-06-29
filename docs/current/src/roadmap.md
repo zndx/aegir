@@ -19,24 +19,23 @@ that runs it are specified in
 This page summarises what is **delivered**, what is **in flight**, and
 what is **gated**, and points to the authoritative reference for each.
 
-> Two earlier framings are **superseded** and survive only for archival
-> continuity. (1) A four-phase K2.5 PARL roadmap (supervised → reward →
-> PARL → swarm RL); the swarm modules remain in the codebase as
-> infrastructure but no operational training uses them. (2) A two-paper
-> *RLVR-for-ontology-generation* structure built around a GRPO policy and
-> a four-component verifier *R(O, I)*; that line has been reframed into
-> the Signals Programme — the ontology is now evolved by an
-> agent-mediated **propose/dispose** loop disposed by deterministic
-> membranes (HermiT, OntoClean), and the SAE-instrumented-Qwen generator
-> with process-reward fine-tuning is an **M4 forward-door** item unlocked
-> only by the final gate, not a current training run. The legacy
-> ontology pages ([Concept brief](./ontology/concept_brief.md),
-> [Semantic engine reference](./ontology/production_state.md),
-> [RLVR chapter](./ontology/rlvr.md)) and the PARL pages
-> ([Reward modeling](./roadmap/reward.md), [PARL](./roadmap/parl.md),
-> [Agent swarm RL](./roadmap/swarm_rl.md)) describe those superseded
-> framings. **Structural recommendation (flagged, not performed): archive
-> them, or annotate each with a superseded-by banner.**
+> Two earlier framings have been **reorganized under the Signals
+> Programme — not retired.** (1) The four-phase K2.5 PARL roadmap
+> (supervised → reward → PARL → swarm RL) folded into the Signals
+> milestone ladder; the swarm modules persist as infrastructure and the
+> RL approach evolves through the GEPA / Agent-Lightning layers (see
+> [Agent Swarm](./agent_swarm.md)). (2) The *RLVR-for-ontology-generation*
+> line is **long-horizon, not superseded**: its four-component verifier
+> *R(O, I)* is now **realized as the deterministic membrane stack**
+> (HermiT/CCO, OntoClean, OQuaRE) built this cycle, and an
+> SAE-instrumented-Qwen generator fine-tuned by GRPO against that reward
+> is the **Signals M4** apparatus for autonomous, local ontology
+> extension. The agent-mediated **propose/dispose** loop is building and
+> proving that reward *now* — current work in direct service of M4. The
+> [Concept brief](./ontology/concept_brief.md),
+> [Semantic engine reference](./ontology/production_state.md), and
+> [RLVR chapter](./ontology/rlvr.md) carry the M4 research design; the
+> reward-modeling / PARL / swarm-RL design notes remain in the tree.
 
 ## Delivered substrate
 
@@ -250,12 +249,12 @@ Both artifacts depend on shared substrate beyond the ontology:
    this discipline are easy to diagnose; an honest revision pass on this
    document is the only protection against drift.
 
-## Deferred work
+## Long-horizon work
 
 The [agent swarm](./agent_swarm.md) modules in `src/aegir/swarm/` are
-infrastructure scaffolding for a future multi-agent training task; no
-operational training currently uses them. The legacy
-[Reward Modeling](./roadmap/reward.md), [PARL Training](./roadmap/parl.md),
-and [Agent Swarm RL](./roadmap/swarm_rl.md) pages describe the superseded
-four-phase K2.5 PARL roadmap and remain for archival continuity (see the
-banner at the top of this page).
+scaffolding for the long-horizon multi-agent training task; no operational
+training uses them yet. The four-phase K2.5 PARL roadmap (supervised →
+reward → PARL → swarm RL) folded into the Signals milestone ladder, and
+the RL approach evolves through the GEPA / Agent-Lightning layers; the
+reward-modeling, PARL-training, and swarm-RL design notes remain in the
+tree as that design record.

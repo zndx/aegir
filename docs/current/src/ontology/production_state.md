@@ -11,14 +11,18 @@ duplicate the guide's formulas.*
 > 2026-05-12) described a four-component verifier *R(O, I)* over
 > (ontology composition, corpus) pairs and a GRPO/RLVR policy trained
 > against it, with a 540-template catalog as the deliverable. That
-> framing — the *Concept brief / RLVR* research design (see
-> [Concept brief](./concept_brief.md), [RLVR](./rlvr.md)) — has been
-> superseded operationally by the **content-first derivation + rigor
-> program** documented here and in the Authors Guide. The RLVR pages
-> are retained as the historical research framing. *Structural note
-> (flagged, not performed):* this page now overlaps substantially with
-> the Authors Guide and the [Charter](./charter.md); a future editorial
-> pass may want to merge or re-scope it.
+> framing — the *Concept brief / RLVR* design (see
+> [Concept brief](./concept_brief.md), [RLVR](./rlvr.md)) — is the
+> **long-horizon Signals M4 apparatus**: its verifier *R(O, I)* is now
+> **realized as the deterministic membrane stack** (HermiT/CCO,
+> OntoClean, OQuaRE) and the **content-first derivation + rigor
+> program** documented here and in the Authors Guide is the
+> agent-mediated propose/dispose loop building and proving that reward
+> today, in direct service of M4. The RLVR pages carry the M4 research
+> design. *Structural note (flagged, not performed):* this page now
+> overlaps substantially with the Authors Guide and the
+> [Charter](./charter.md); a future editorial pass may want to merge or
+> re-scope it.
 
 ## Abstract
 
@@ -462,4 +466,5 @@ with stable public distributions.
   discipline, committed branch structure and external anchors.
 - Aegir [Migration](./migration.md) — vocabulary authorship history.
 - Aegir [Concept brief](./concept_brief.md) / [RLVR](./rlvr.md) — the
-  earlier RLVR-for-ontology-generation research framing (historical).
+  research design for the long-horizon Signals M4 apparatus (the RLVR
+  generator whose reward is now realized as the membrane stack).

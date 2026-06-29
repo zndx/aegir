@@ -5,15 +5,19 @@
 *Draft v0.5 — 2026-05-09 — companion to [Charter](./charter.md) and
 [Migration](./migration.md). Supersedes v0.1, v0.2, v0.3, v0.4.*
 
-> **Status (2026-06-29) — research design of record; the empirical and
-> externally-readable surfaces have moved ahead of it.** This brief is
-> the original, detailed research design for the RLVR program (the
-> verifier *R*, the prior-art positioning, and the P0–P9 phase
-> structure). It remains the authoritative statement of the
-> *contribution claim* and the seven required prior-art
-> differentiations. For the **current** state of the program read its
-> two companions, which supersede this brief's forward-looking
-> specifics where they differ:
+> **Status (2026-06-29) — research design of the long-horizon Signals
+> M4 apparatus.** This brief is the detailed research design for the
+> RLVR program (the verifier *R*, the prior-art positioning, and the
+> P0–P9 phase structure) — the **Signals M4** apparatus, an
+> SAE-instrumented-Qwen local policy GRPO-trained to autonomously
+> generate ontology extensions. Its four-component verifier *R(O, I)*
+> is now **realized as the deterministic membrane stack** (HermiT/CCO,
+> OntoClean, OQuaRE), and the agent-mediated propose/dispose loop is
+> building and proving that reward today, in direct service of M4. This
+> brief remains the authoritative statement of the *contribution claim*
+> and the seven required prior-art differentiations. For the **current**
+> state of the program read its two companions, which carry the
+> empirical and externally-readable surfaces:
 > - the [RLVR chapter](./rlvr.md) — the externally-readable
 >   methodological description, with the locked verifier and current
 >   policy; and

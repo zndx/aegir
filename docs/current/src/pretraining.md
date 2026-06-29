@@ -177,17 +177,14 @@ strongest motivator for completing the corpus pipeline.
 
 ## Sub-pages
 
-[Training Tactics](./pretraining/training_tactics.md) and the
-five **Stage**-named sub-pages
-([Stage 1: Ontology Extraction](./pretraining/ontology_extraction.md),
-[Stage 2: Schema Projection](./pretraining/schema_projection.md),
-[Stage 3: Synthetic Data Generation](./pretraining/synthetic_generation.md),
-[Stage 4: Training Objective](./pretraining/training_objective.md),
-[End-to-End Example](./pretraining/end_to_end_example.md))
-describe an earlier exploratory SysMLv2 / ORM pipeline that
-preceded the convergence on the ontology-grounded chapter pipeline
-above. Each carries a "Deferred framing" banner pointing at the active
-work. They are preserved in the repository for archival continuity.
+The **Training Tactics** note and the five **Stage**-named sub-pages
+(*Stage 1: Ontology Extraction*, *Stage 2: Schema Projection*,
+*Stage 3: Synthetic Data Generation*, *Stage 4: Training Objective*,
+*End-to-End Example*) describe an exploratory SysMLv2 / ORM pipeline —
+a long-horizon framing that preceded the convergence on the
+ontology-grounded chapter pipeline above. They are preserved in the
+repository (`docs/current/src/pretraining/`) as background to the
+active work; they are not wired into the rendered book.
 
 The [Diagnostic Case Study](./pretraining/diagnostic_case_study.md)
 documents the 2026-04-19 SOTAB-CTA representation-collapse incident
