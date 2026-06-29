@@ -185,6 +185,19 @@ engine-serve:
 engine-ping prompt="In one sentence, what is a foreign key?":
     uv run --no-sync python -c "from aegir.engine.client import complete; print(complete('''{{prompt}}''', capability='instruct', max_tokens=64, temperature=0.3))"
 
+# Resilient launch for a long (multi-day) run: a SUPERVISOR that restarts the engine on crash with
+# exponential backoff + a max-retry cap, claims the engine's GPUs exclusively up front (refuses to start
+# if another instance/foreign process holds them), and waits for genuine readiness after each (re)start.
+# Structured restart events → ${AEGIR_ENGINE_LOG_DIR:-/tmp/aegir-engine}/supervisor_events.jsonl.
+# Knobs: AEGIR_ENGINE_MAX_RETRIES, AEGIR_ENGINE_BACKOFF_{BASE,CAP}, AEGIR_ENGINE_RETRY_WINDOW.
+engine-supervise *args:
+    LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs uv run --no-sync python -m aegir.engine.supervisor {{args}}
+
+# Wait for the engine to be actually SERVING (model loaded; a trivial Complete round-trips) before a
+# workload commits. Exits non-zero if not ready within the timeout, so a run can gate on it.
+engine-ready timeout="1200":
+    uv run --no-sync python -c "import sys; from aegir.engine.readiness import wait_for_ready, Readiness; r = wait_for_ready(level=Readiness.SERVING, timeout=float('{{timeout}}')); print(r.detail); sys.exit(0 if r.ok else 1)"
+
 # ── mdbook documentation ──────────────────────────────────────
 #
 # The book lives at ``docs/current/`` (standard ``mdbook init``
