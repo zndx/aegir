@@ -1,17 +1,22 @@
-"""Define the referenced FILLER classes — the definitional-completeness lever the re-derivation can't reach.
+"""Define the intermediate domain classes — the property-bearing subsumers that real columns annotate to.
 
-def_completeness = ≡-defined / ALL classes, and ~131 of ~210 classes are FILLERS (referenced types like
-ParasiticPlant / SampleAliquot) that Phase A grounds + annotates but leaves PRIMITIVE. A re-derivation adds
-heads AND fillers in the same ratio (dilution-neutral); the direct lever is to DEFINE the fillers.
+These are NOT "fillers" (a slot-mechanics artifact of them filling {Slot:Class} differentia positions): they
+are intermediate-depth hierarchical classes — the CTA/CPA annotation TARGETS. A column such as
+driver_stops_schedule.stops_addresses holds a heterogeneous-but-coherent mix (origin + destination,
+residential + business shipping addresses, each bearing an avg-time-on-site); no leaf type fits — the column
+belongs to the least common SUBSUMER that is still property-bearing. Defining these classes well IS building
+the annotation vocabulary. ~131 of ~210 classes are intermediate classes Phase A grounds but leaves PRIMITIVE;
+the lever is to DEFINE them (def_completeness = ≡-defined / ALL classes).
 
-This is the agent-mediated propose/dispose loop CLOSED into a FEEDBACK LOOP (per RH 2026-06-29): the engine
-authors a genus-differentia EquivalentTo definition for each filler; the per-axiom validation membrane
-(`evolve_rigor.validate_detailed`) returns admit + REASON; rejected axioms are RE-PROMPTED back to the engine
-WITH the specific failure, up to --rounds. The agent RESPONDS to the gate — it isn't a one-shot drop. HermiT
-disposes at realize. The engine may KEEP a filler primitive when it genuinely cannot define it.
+The agent-mediated propose/dispose loop, CLOSED over BOTH membranes (RH 2026-06-29):
+  • PARSE membrane (`evolve_rigor.validate_detailed`) — admits well-formed Manchester, returns the reason.
+  • REASONING-AUTHORITY membrane (`build_realized_ontology.consistency_check`) — imports CCO and runs HermiT,
+    so a class grounded to a CCO-disjoint / BFO-incompatible genus is REJECTED and fed back to the agent.
+Each intermediate class carries its top-k retrieved grounding anchors (CCO/FHIR/our own); rejects are
+re-prompted WITH the specific failure, up to --rounds. The agent RESPONDS to parser AND reasoner.
 
     just engine-serve
-    LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/define_fillers.py --rounds 3 [--limit N]
+    LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/define_intermediate_classes.py --rounds 4 [--limit N]
 """
 from __future__ import annotations
 
@@ -29,6 +34,7 @@ from aegir.engine.client import complete_detailed  # noqa: E402
 from aegir.ontology.schema import CatalogTemplate, load_catalog, save_catalog  # noqa: E402
 from evolve_rigor import parse_slots, validate_detailed  # noqa: E402
 from grounding_anchors import Retriever  # noqa: E402
+from build_realized_ontology import consistency_check  # noqa: E402
 
 _SLOT = re.compile(r"\{(\w+):(\w+)\}")
 _CAMEL = re.compile(r"(?<=[a-z0-9])(?=[A-Z])")
@@ -137,7 +143,7 @@ def main() -> int:
     fillers = sorted(set(contexts) - heads - defined_heads)
     if args.limit:
         fillers = fillers[:args.limit]
-    print(f"define-fillers: {len(fillers)} referenced fillers · feedback loop ≤{args.rounds} rounds (heads {len(heads)})")
+    print(f"define-intermediate-classes: {len(fillers)} intermediate classes · two-membrane loop ≤{args.rounds} rounds (heads {len(heads)})")
     retriever = Retriever()  # the grounding-anchor signal source (CCO + FHIR + our accreting classes)
 
     accepted: dict[str, CatalogTemplate] = {}
@@ -170,11 +176,27 @@ def main() -> int:
                 n_new += 1
             elif not ok:
                 feedback[f] = f"`{man}` → {reason}"
-        print(f"  round {rnd + 1}/{args.rounds}: proposed {len(proposed)} · +{n_new} admitted · {len(accepted)}/{len(fillers)} total · {len(feedback)} pending feedback")
+        # REASONING-AUTHORITY membrane — HermiT validates the round's grounding against CCO's disjointness;
+        # an intermediate class grounded to a disjoint/incompatible genus is DEMOTED back to the agent.
+        n_demoted = 0
+        if accepted:
+            _consistent, unsat = consistency_check(list(cat.templates) + list(accepted.values()))
+            unsat_local = {u.rsplit("#", 1)[-1].rsplit("/", 1)[-1].lower() for u in unsat}
+            for f in list(accepted):
+                if f.lower() in unsat_local:
+                    gm = re.search(r"EquivalentTo:\s*(\S+)", accepted[f].manchester_template or "")
+                    feedback[f] = (f"HermiT: '{f}' is UNSATISFIABLE under CCO disjointness — the genus "
+                                   f"{gm.group(1) if gm else '?'} is incompatible with how it is used (disjoint "
+                                   "CCO parents, or a continuant genus where a process/ICE is required). "
+                                   "Re-ground to a single COMPATIBLE parent from the anchors.")
+                    del accepted[f]
+                    n_demoted += 1
+        print(f"  round {rnd + 1}/{args.rounds}: proposed {len(proposed)} · +{n_new} admitted · "
+              f"{n_demoted} HermiT-demoted · {len(accepted)}/{len(fillers)} total · {len(feedback)} pending")
 
     cat.templates.extend(accepted.values())
     save_catalog(cat, args.out)
-    print(f"\nAPPLIED: {len(accepted)} filler ≡-definitions (agent-mediated feedback loop) → {Path(args.out).name}")
+    print(f"\nAPPLIED: {len(accepted)} intermediate-class ≡-definitions (parse + HermiT membranes) → {Path(args.out).name}")
     print("DISPOSE next: build_realized_ontology.py --strict-grounding (HermiT) → ontology_metrology / ontology_oquare")
     return 0
 

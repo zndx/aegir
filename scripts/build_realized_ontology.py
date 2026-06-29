@@ -212,6 +212,26 @@ def import_cco_bridge_fhir(doc: str) -> str:
     return out
 
 
+def consistency_check(templates) -> "tuple[bool, list[str]]":
+    """The CCO reasoning-authority membrane for the intermediate-class define loop: render the templates +
+    import CCO + run HermiT → (consistent, [unsatisfiable sdg IRIs]). Catches axioms that PARSE but ground an
+    intermediate class to a CCO-disjoint or BFO-incompatible genus — so the agent RESPONDS to the reasoner
+    (not just the parser). No Phase-A grounding here: we judge the agent's ≡ genus, not the realizer's defaults."""
+    doc, head_iri = RG.render_batch(templates)
+    if not head_iri:
+        return True, []
+    doc = PROBE_RE.sub(lambda m: SDG_NS + m.group(0).split("__")[-1], doc)
+    doc = LABEL_RE.sub(lambda m: '"' + humanize(m.group(1)) + '"', doc)
+    doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
+                      "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
+    doc, _ = drop_degenerate(doc)
+    doc = import_cco_bridge_fhir(doc)
+    ensure_jvm()
+    _onto, path, consistent, _n, unsat = _reason(doc)
+    Path(path).unlink(missing_ok=True)
+    return consistent, unsat
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="realize FinePDFs-derived templates → HermiT-validated OWL")
     ap.add_argument("--no-definitions", action="store_true", help="skip Phase-A.2 definition annotations")

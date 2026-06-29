@@ -1474,29 +1474,13 @@
       "provenance": {}
     },
     {
-      "template_id": "filler_clinicalcare",
-      "manchester_template": "Class: {ClinicalCare:Class} EquivalentTo: bfo:0000015 and sdg:involvesApplicationOfMedicalKnowledgeToPatients some bfo:0000040",
-      "slot_types": {
-        "ClinicalCare": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A process that applies medical knowledge and interventions to patients to maintain or restore health.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
       "template_id": "filler_clinicalperformancedata",
-      "manchester_template": "Class: {ClinicalPerformanceData:Class} EquivalentTo: bfo:0000031 and sdg:representsMetricsOfClinicalServiceDelivery some bfo:0000015",
+      "manchester_template": "Class: {ClinicalPerformanceData:Class} EquivalentTo: sdg:ClientStatisticalInformation and bfo:about some sdg:ClinicalPerformanceEvaluation",
       "slot_types": {
         "ClinicalPerformanceData": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant that encodes quantitative or qualitative metrics regarding the efficiency and effectiveness of clinical service delivery.",
+      "verbal_template": "Statistical information that pertains to the evaluation of clinical performance.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1507,12 +1491,12 @@
     },
     {
       "template_id": "filler_clinicalqualitydata",
-      "manchester_template": "Class: {ClinicalQualityData:Class} EquivalentTo: bfo:0000031 and sdg:encodesInformationUsedToAssessHealthcareStandards some bfo:0000015",
+      "manchester_template": "Class: {ClinicalQualityData:Class} EquivalentTo: cco:ont00000314 and bfo:about some cco:ont00000575",
       "slot_types": {
         "ClinicalQualityData": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant that contains information utilized to evaluate, monitor, or improve the quality of healthcare delivery.",
+      "verbal_template": "An information quality entity that pertains to clinical quality specifications.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1523,28 +1507,12 @@
     },
     {
       "template_id": "filler_communicationchannel",
-      "manchester_template": "Class: {CommunicationChannel:Class} EquivalentTo: bfo:0000040 and sdg:providesMediumForTransmittingInformation some bfo:0000015",
+      "manchester_template": "Class: {CommunicationChannel:Class} EquivalentTo: cco:ont00000346 and bfo:has_role some sdg:DisseminationChannel",
       "slot_types": {
         "CommunicationChannel": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity that serves as a physical or logical medium enabling the transmission of information between communicators.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_communicationsecurityaspect",
-      "manchester_template": "Class: {CommunicationSecurityAspect:Class} EquivalentTo: bfo:0000019 and sdg:characterizesProtectionLevelOfDataTransmission some bfo:0000015",
-      "slot_types": {
-        "CommunicationSecurityAspect": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A quality that characterizes the degree of protection implemented to safeguard data during transmission over communication networks.",
+      "verbal_template": "A communication instrument that functions as a channel for disseminating information.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1555,12 +1523,12 @@
     },
     {
       "template_id": "filler_competitiondivision",
-      "manchester_template": "Class: {CompetitionDivision:Class} EquivalentTo: bfo:0000023 and sdg:classifiesParticipantsByCompetitiveCriteria some bfo:0000040",
+      "manchester_template": "Class: {CompetitionDivision:Class} EquivalentTo: cco:ont00001114 and bfo:has_participant some sdg:ChampionshipEntry",
       "slot_types": {
         "CompetitionDivision": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A role that categorizes participants or teams into distinct groups based on established competitive criteria such as skill level or age.",
+      "verbal_template": "A division of delimiting domain that includes championship entries in a competitive context.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1571,28 +1539,12 @@
     },
     {
       "template_id": "filler_connectivetissueregion",
-      "manchester_template": "Class: {ConnectiveTissueRegion:Class} EquivalentTo: bfo:0000040 and sdg:partOfConnectiveTissueSystem some bfo:0000040",
+      "manchester_template": "Class: {ConnectiveTissueRegion:Class} EquivalentTo: bfo:0000006 and bfo:located_in some sdg:ConnectiveTissueStructure",
       "slot_types": {
         "ConnectiveTissueRegion": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity that constitutes a distinct anatomical region within the connective tissue system of an organism.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_connectivetissuestructure",
-      "manchester_template": "Class: {ConnectiveTissueStructure:Class} EquivalentTo: bfo:0000040 and sdg:constitutesFunctionalComponentOfConnectiveTissue some bfo:0000040",
-      "slot_types": {
-        "ConnectiveTissueStructure": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity that forms a specialized structural component providing support, cohesion, or protection within connective tissue.",
+      "verbal_template": "A spatial region that is located within a connective tissue structure.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1603,12 +1555,12 @@
     },
     {
       "template_id": "filler_constitutionalconstraint",
-      "manchester_template": "Class: {ConstitutionalConstraint:Class} EquivalentTo: bfo:0000031 and sdg:derivedFromConstitutionalFramework some bfo:0000031",
+      "manchester_template": "Class: {ConstitutionalConstraint:Class} EquivalentTo: cco:ont00001314 and sdg:derives_from some cco:ont00000532",
       "slot_types": {
         "ConstitutionalConstraint": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant that imposes a rule or limitation based on the provisions of a governing constitutional document.",
+      "verbal_template": "A legal system act that derives its authority from a government of a country.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1619,12 +1571,12 @@
     },
     {
       "template_id": "filler_constructedpredicate",
-      "manchester_template": "Class: {ConstructedPredicate:Class} EquivalentTo: bfo:0000031 and sdg:composedOfLogicalOperatorsAndVariables some bfo:0000031",
+      "manchester_template": "Class: {ConstructedPredicate:Class} EquivalentTo: cco:ont00001069 and bfo:realized_in some sdg:ConceptualConstructionProcess",
       "slot_types": {
         "ConstructedPredicate": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant that represents a logical expression formed by combining operators and variables to evaluate truth conditions.",
+      "verbal_template": "A representational information content entity that is realized in a conceptual construction process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1635,12 +1587,12 @@
     },
     {
       "template_id": "filler_copernicusobservationsource",
-      "manchester_template": "Class: {CopernicusObservationSource:Class} EquivalentTo: bfo:0000040 and sdg:operatedByCopernicusProgram some bfo:0000015",
+      "manchester_template": "Class: {CopernicusObservationSource:Class} EquivalentTo: cco:ont00000547 and bfo:has_role some sdg:NationalDatasetAugmentationProcess",
       "slot_types": {
         "CopernicusObservationSource": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity that functions as an Earth observation platform or data provider under the European Union's Copernicus program.",
+      "verbal_template": "A telescope that functions as a source for observations in a national dataset augmentation process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1651,12 +1603,12 @@
     },
     {
       "template_id": "filler_crisisinterventionmethod",
-      "manchester_template": "Class: {CrisisInterventionMethod:Class} EquivalentTo: bfo:0000015 and sdg:designedToMitigateAcutePsychologicalDistress some bfo:0000015",
+      "manchester_template": "Class: {CrisisInterventionMethod:Class} EquivalentTo: cco:ont00000228 and bfo:involves_participant some sdg:VulnerabilityState",
       "slot_types": {
         "CrisisInterventionMethod": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A process that implements structured techniques to stabilize individuals experiencing acute psychological or situational crises.",
+      "verbal_template": "A planned act that involves addressing a vulnerability state.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1667,12 +1619,12 @@
     },
     {
       "template_id": "filler_crossdivisiontransfer",
-      "manchester_template": "Class: {CrossDivisionTransfer:Class} EquivalentTo: bfo:0000015 and sdg:involvesReassignmentBetweenCompetitiveDivisions some bfo:0000015",
+      "manchester_template": "Class: {CrossDivisionTransfer:Class} EquivalentTo: sdg:DivisionAssignmentRecord and bfo:has_participant some sdg:CompetitionDivision",
       "slot_types": {
         "CrossDivisionTransfer": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A process that entails the formal reassignment of a participant or entity from one competitive division to another.",
+      "verbal_template": "A division assignment record that involves a competition division.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -1683,508 +1635,12 @@
     },
     {
       "template_id": "filler_databasecontainer",
-      "manchester_template": "Class: {DatabaseContainer:Class} EquivalentTo: bfo:0000040 and sdg:storesDigitalRecordsForComputationalAccess some bfo:0000031",
+      "manchester_template": "Class: {DatabaseContainer:Class} EquivalentTo: cco:ont00000020 and bfo:has_participant some cco:ont00002006",
       "slot_types": {
         "DatabaseContainer": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity that physically or logically houses digital records to enable structured computational access and management.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_directoryresponse",
-      "manchester_template": "Class: {DirectoryResponse:Class} EquivalentTo: bfo:0000031 and sdg:isResponseTo some sdg:DirectoryQuery",
-      "slot_types": {
-        "DirectoryResponse": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A generically dependent continuant that constitutes the information returned in response to a directory query.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_disseminationchannel",
-      "manchester_template": "Class: {DisseminationChannel:Class} EquivalentTo: bfo:0000040 and sdg:transmitsInformation some bfo:0000031",
-      "slot_types": {
-        "DisseminationChannel": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity that functions to transmit information to a target audience.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_emsauthority",
-      "manchester_template": "Class: {EMSAuthority:Class} EquivalentTo: bfo:0000040 and sdg:exercisesJurisdictionOver some sdg:EmergencyMedicalServices",
-      "slot_types": {
-        "EMSAuthority": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity that exercises regulatory or jurisdictional authority over emergency medical services.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_externalbusinesspartner",
-      "manchester_template": "Class: {ExternalBusinessPartner:Class} EquivalentTo: bfo:0000040 and sdg:hasBusinessRelationship some sdg:Organization and sdg:isExternalTo some sdg:PrimaryEntity",
-      "slot_types": {
-        "ExternalBusinessPartner": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity that maintains a commercial relationship with a primary organization but operates outside its internal structure.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_financialactivity",
-      "manchester_template": "Class: {FinancialActivity:Class} EquivalentTo: bfo:0000015 and sdg:involvesFinancialResourceTransfer some sdg:FinancialResource",
-      "slot_types": {
-        "FinancialActivity": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A process that entails the transfer, management, or allocation of financial resources.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_financialinstitution",
-      "manchester_template": "Class: {FinancialInstitution:Class} EquivalentTo: bfo:0000040 and sdg:providesFinancialServices some sdg:FinancialService",
-      "slot_types": {
-        "FinancialInstitution": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity organized to provide financial services such as lending, investing, or payment processing.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_findingentity",
-      "manchester_template": "Class: {FindingEntity:Class} EquivalentTo: bfo:0000031 and sdg:reportsOnHumanRightsIssue some sdg:HumanRightsIssue",
-      "slot_types": {
-        "FindingEntity": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "An information content entity that documents an observed fact or conclusion regarding a human rights issue.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_floodassetcondition",
-      "manchester_template": "Class: {FloodAssetCondition:Class} EquivalentTo: bfo:0000019 and sdg:characterizesAssetVulnerabilityToFlood some sdg:Asset",
-      "slot_types": {
-        "FloodAssetCondition": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A quality inhering in an asset that indicates its susceptibility to flood damage.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_ganglioncystformation",
-      "manchester_template": "Class: {GanglionCystFormation:Class} EquivalentTo: bfo:0000015 and sdg:involvesPathologicalFluidAccumulation some sdg:JointTissue",
-      "slot_types": {
-        "GanglionCystFormation": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A biological process characterized by the development of a fluid-filled sac near joints or tendons.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_healthoutcomemetric",
-      "manchester_template": "Class: {HealthOutcomeMetric:Class} EquivalentTo: bfo:0000031 and sdg:measuresPopulationHealthStatus some sdg:Population",
-      "slot_types": {
-        "HealthOutcomeMetric": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "An information content entity that quantifies or tracks health status indicators in a population.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_highereducationinstitution",
-      "manchester_template": "Class: {HigherEducationInstitution:Class} EquivalentTo: bfo:0000040 and sdg:confersAcademicDegrees some sdg:AcademicDegree",
-      "slot_types": {
-        "HigherEducationInstitution": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity organized to provide advanced education and award academic degrees.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_householdparticipant",
-      "manchester_template": "Class: {HouseholdParticipant:Class} EquivalentTo: bfo:0000023 and sdg:participatesInReductionProgram some sdg:ReductionProgram",
-      "slot_types": {
-        "HouseholdParticipant": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A role borne by a household member engaged in a resource or waste reduction initiative.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_humanhealthoutcome",
-      "manchester_template": "Class: {HumanHealthOutcome:Class} EquivalentTo: bfo:0000015 and sdg:resultsFromChemicalExposure some sdg:Chemical",
-      "slot_types": {
-        "HumanHealthOutcome": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A biological process representing a change in human health status following exposure to a chemical substance.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_humanpopulation",
-      "manchester_template": "Class: {HumanPopulation:Class} EquivalentTo: bfo:0000040 and sdg:consistsOfHumanIndividuals some sdg:HumanIndividual",
-      "slot_types": {
-        "HumanPopulation": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity comprising a group of human individuals residing in a defined area.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_impedancetermination",
-      "manchester_template": "Class: {ImpedanceTermination:Class} EquivalentTo: bfo:0000040 and sdg:matchesPortImpedance some sdg:ElectricalPort",
-      "slot_types": {
-        "ImpedanceTermination": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A physical component designed to match the characteristic impedance of an electrical port to prevent signal reflection.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_indigenousknowledgebase",
-      "manchester_template": "Class: {IndigenousKnowledgeBase:Class} EquivalentTo: bfo:0000031 and sdg:containsTraditionalEcologicalKnowledge some sdg:TraditionalEcologicalKnowledge",
-      "slot_types": {
-        "IndigenousKnowledgeBase": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "An information content entity that systematically stores knowledge systems developed by indigenous communities.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_indoorairpollution",
-      "manchester_template": "Class: {IndoorAirPollution:Class} EquivalentTo: bfo:0000015 and sdg:involvesContaminantRelease some sdg:IndoorEnvironment",
-      "slot_types": {
-        "IndoorAirPollution": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A process characterized by the introduction of harmful contaminants into an indoor atmospheric environment.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_indoorenvironment",
-      "manchester_template": "Class: {IndoorEnvironment:Class} EquivalentTo: bfo:0000040 and sdg:boundedBy some sdg:Building and sdg:designedForHumanOccupancy some sdg:Human",
-      "slot_types": {
-        "IndoorEnvironment": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity bounded by a building structure and designed for human occupancy.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_industryassociationmember",
-      "manchester_template": "Class: {IndustryAssociationMember:Class} EquivalentTo: bfo:0000023 and sdg:borneBy some sdg:Organization and sdg:inRelationTo some sdg:IndustryAssociation",
-      "slot_types": {
-        "IndustryAssociationMember": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A role borne by an organization in relation to an industry association.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_industrysector",
-      "manchester_template": "Class: {IndustrySector:Class} EquivalentTo: bfo:0000031 and sdg:designatesGroupOfOrganizationsSharingEconomicActivity some sdg:Organization",
-      "slot_types": {
-        "IndustrySector": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A generically dependent continuant that designates a group of organizations sharing a common economic activity or market domain.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_institutionalinvestor",
-      "manchester_template": "Class: {InstitutionalInvestor:Class} EquivalentTo: bfo:0000023 and sdg:borneBy some sdg:Organization and sdg:managesCapitalForBenefitOfOthers some sdg:ThirdParty",
-      "slot_types": {
-        "InstitutionalInvestor": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A role borne by an organization that manages investment capital on behalf of third parties.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_insuranceinformationitem",
-      "manchester_template": "Class: {InsuranceInformationItem:Class} EquivalentTo: bfo:0000031 and sdg:encodesDiscreteFact some sdg:InsuranceCoverage",
-      "slot_types": {
-        "InsuranceInformationItem": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "An information content entity that encodes a discrete fact about an insurance policy or coverage.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_intuitivefoundation",
-      "manchester_template": "Class: {IntuitiveFoundation:Class} EquivalentTo: bfo:0000031 and sdg:servesAsCognitiveBasisFor some sdg:SyntheticAprioriJudgment",
-      "slot_types": {
-        "IntuitiveFoundation": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A generically dependent continuant that serves as the cognitive basis for synthetic a priori judgments.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_lateralrestraintstrap",
-      "manchester_template": "Class: {LateralRestraintStrap:Class} EquivalentTo: bfo:0000040 and sdg:designedToProvideLateralSupport some sdg:IntermediateFloorAssembly",
-      "slot_types": {
-        "LateralRestraintStrap": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A material entity designed to provide lateral support within an intermediate floor assembly.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_learningoutcome",
-      "manchester_template": "Class: {LearningOutcome:Class} EquivalentTo: bfo:0000031 and sdg:representsAcquiredKnowledgeOrSkill some sdg:Person",
-      "slot_types": {
-        "LearningOutcome": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A generically dependent continuant that represents the knowledge, skill, or attitude acquired through an educational process.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_leberopticatrophy",
-      "manchester_template": "Class: {LeberOpticAtrophy:Class} EquivalentTo: bfo:0000015 and sdg:causesProgressiveVisionLoss some sdg:Human",
-      "slot_types": {
-        "LeberOpticAtrophy": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A pathological process characterized by mitochondrial dysfunction that causes progressive vision loss.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_legaladvocacyprocess",
-      "manchester_template": "Class: {LegalAdvocacyProcess:Class} EquivalentTo: bfo:0000015 and sdg:involvesRepresentingClientInterests some sdg:LegalProceeding",
-      "slot_types": {
-        "LegalAdvocacyProcess": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A process involving the representation of a client's interests within legal proceedings.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_magneticresonanceimagingmodality",
-      "manchester_template": "Class: {MagneticResonanceImagingModality:Class} EquivalentTo: bfo:0000015 and sdg:usesMagneticFieldsAndRadioWaves some sdg:DiagnosticImaging",
-      "slot_types": {
-        "MagneticResonanceImagingModality": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A diagnostic process that uses magnetic fields and radio waves to produce internal images of the body.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_membershipregistration",
-      "manchester_template": "Class: {MembershipRegistration:Class} EquivalentTo: bfo:0000015 and sdg:formalActOfEnrolling some sdg:Organization",
-      "slot_types": {
-        "MembershipRegistration": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A process constituting the formal act of enrolling an individual or entity in an organization or program.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_monitoringprotocol",
-      "manchester_template": "Class: {MonitoringProtocol:Class} EquivalentTo: bfo:0000031 and sdg:documentsStandardizedProceduresForSystematicObservation some sdg:EnvironmentalData",
-      "slot_types": {
-        "MonitoringProtocol": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A generically dependent continuant that documents a standardized set of procedures for systematic observation and data collection.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_motorvehicleclass",
-      "manchester_template": "Class: {MotorVehicleClass:Class} EquivalentTo: bfo:0000031 and sdg:classifiesVehiclesByTypeOrFunction some sdg:MotorVehicle",
-      "slot_types": {
-        "MotorVehicleClass": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A generically dependent continuant that classifies motor vehicles according to their type, size, or intended function.",
+      "verbal_template": "A container that holds a database.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2195,12 +1651,12 @@
     },
     {
       "template_id": "filler_demographicinformation",
-      "manchester_template": "Class: {DemographicInformation:Class} EquivalentTo: bfo:0000031 and sdg:relatesTo some bfo:0000040 and sdg:encodesDemographicData some bfo:0000004",
+      "manchester_template": "Class: {DemographicInformation:Class} EquivalentTo: sdg:EnvironmentalData and sdg:characterizes some sdg:Population",
       "slot_types": {
         "DemographicInformation": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant that relates to a material entity and encodes demographic data.",
+      "verbal_template": "Information that characterizes a population or its constituent members.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2210,13 +1666,13 @@
       }
     },
     {
-      "template_id": "filler_doctrinalnarrative",
-      "manchester_template": "Class: {DoctrinalNarrative:Class} EquivalentTo: bfo:0000031 and sdg:conveysDoctrinalContent some bfo:0000004 and sdg:isNarrativeForm some bfo:0000004",
+      "template_id": "filler_disseminationchannel",
+      "manchester_template": "Class: {DisseminationChannel:Class} EquivalentTo: sdg:CommunicationChannel and sdg:usedIn some sdg:InformationDisseminationEvent",
       "slot_types": {
-        "DoctrinalNarrative": "Class"
+        "DisseminationChannel": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant that conveys doctrinal content and takes a narrative form.",
+      "verbal_template": "A communication channel used in an information dissemination event.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2227,12 +1683,28 @@
     },
     {
       "template_id": "filler_domesticviolencesurvivor",
-      "manchester_template": "Class: {DomesticViolenceSurvivor:Class} EquivalentTo: bfo:0000040 and sdg:hasExperienced some sdg:DomesticViolence and sdg:hasSurvived some bfo:0000004",
+      "manchester_template": "Class: {DomesticViolenceSurvivor:Class} EquivalentTo: bfo:0000040 and sdg:experienced some sdg:DomesticViolence",
       "slot_types": {
         "DomesticViolenceSurvivor": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity that has experienced domestic violence and survived it.",
+      "verbal_template": "A material entity that has experienced domestic violence.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_emsauthority",
+      "manchester_template": "Class: {EMSAuthority:Class} EquivalentTo: cco:ont00000187 and sdg:pertainsTo some cco:ont00000647",
+      "slot_types": {
+        "EMSAuthority": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An authority role pertaining to an organization member.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2243,28 +1715,12 @@
     },
     {
       "template_id": "filler_earthobservationdata",
-      "manchester_template": "Class: {EarthObservationData:Class} EquivalentTo: bfo:0000031 and sdg:originatesFromRemoteSensing some bfo:0000004 and sdg:describesEarthSystem some bfo:0000004",
+      "manchester_template": "Class: {EarthObservationData:Class} EquivalentTo: sdg:EnvironmentalData and sdg:collectedBy some cco:ont00000352",
       "slot_types": {
         "EarthObservationData": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant originating from remote sensing that describes the Earth system.",
-      "verbal_templates": [],
-      "mean_verbal_length": 0.0,
-      "bfo_anchor_path": [],
-      "broader": [],
-      "provenance": {
-        "source": "define_fillers"
-      }
-    },
-    {
-      "template_id": "filler_educationalgoal",
-      "manchester_template": "Class: {EducationalGoal:Class} EquivalentTo: bfo:0000031 and sdg:specifiesDesiredLearningOutcome some bfo:0000004 and sdg:isFormulatedByEducationalInstitution some bfo:0000040",
-      "slot_types": {
-        "EducationalGoal": "Class"
-      },
-      "is_complex": true,
-      "verbal_template": "A generically dependent continuant specifying a desired learning outcome and formulated by an educational institution.",
+      "verbal_template": "Environmental data collected by a satellite artifact.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2275,12 +1731,12 @@
     },
     {
       "template_id": "filler_educationalinstitution",
-      "manchester_template": "Class: {EducationalInstitution:Class} EquivalentTo: bfo:0000040 and sdg:providesEducationalServices some bfo:0000004 and sdg:isOrganizedForInstruction some bfo:0000004",
+      "manchester_template": "Class: {EducationalInstitution:Class} EquivalentTo: cco:ont00000270 and sdg:provides some cco:ont00000463",
       "slot_types": {
         "EducationalInstitution": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity providing educational services and organized for instruction.",
+      "verbal_template": "An educational facility that provides acts of educational training instruction.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2291,12 +1747,12 @@
     },
     {
       "template_id": "filler_educationalpresentation",
-      "manchester_template": "Class: {EducationalPresentation:Class} EquivalentTo: bfo:0000015 and sdg:deliversEducationalContent some bfo:0000004 and sdg:targetsLearners some bfo:0000040",
+      "manchester_template": "Class: {EducationalPresentation:Class} EquivalentTo: cco:ont00001374 and sdg:pertainsTo some cco:ont00000463",
       "slot_types": {
         "EducationalPresentation": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A process delivering educational content and targeting learners.",
+      "verbal_template": "An act of declarative communication pertaining to educational training instruction.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2307,12 +1763,12 @@
     },
     {
       "template_id": "filler_enterprisesocialmedia",
-      "manchester_template": "Class: {EnterpriseSocialMedia:Class} EquivalentTo: bfo:0000040 and sdg:facilitatesInternalCommunication some bfo:0000004 and sdg:isRestrictedToOrganizationalMembers some bfo:0000040",
+      "manchester_template": "Class: {EnterpriseSocialMedia:Class} EquivalentTo: sdg:SocialNetworkingService and sdg:usedIn some sdg:SocialEnterprise",
       "slot_types": {
         "EnterpriseSocialMedia": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity facilitating internal communication and restricted to organizational members.",
+      "verbal_template": "A social networking service used within a social enterprise.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2323,12 +1779,12 @@
     },
     {
       "template_id": "filler_executiveleadershipprocess",
-      "manchester_template": "Class: {ExecutiveLeadershipProcess:Class} EquivalentTo: bfo:0000015 and sdg:involvesStrategicDecisionMaking some bfo:0000015 and sdg:isPerformedByExecutives some bfo:0000040",
+      "manchester_template": "Class: {ExecutiveLeadershipProcess:Class} EquivalentTo: bfo:0000015 and sdg:pertainsTo some sdg:ExecutiveTeam",
       "slot_types": {
         "ExecutiveLeadershipProcess": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A process involving strategic decision making and performed by executives.",
+      "verbal_template": "A process pertaining to an executive team.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2339,12 +1795,12 @@
     },
     {
       "template_id": "filler_executiveteam",
-      "manchester_template": "Class: {ExecutiveTeam:Class} EquivalentTo: bfo:0000040 and sdg:consistsOfSeniorManagers some bfo:0000040 and sdg:coordinatesOrganizationalStrategy some bfo:0000004",
+      "manchester_template": "Class: {ExecutiveTeam:Class} EquivalentTo: cco:ont00001180 and sdg:comprises some cco:ont00000175",
       "slot_types": {
         "ExecutiveTeam": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity consisting of senior managers and coordinating organizational strategy.",
+      "verbal_template": "An organization that comprises organization member roles.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -2355,12 +1811,444 @@
     },
     {
       "template_id": "filler_existingnationaldataset",
-      "manchester_template": "Class: {ExistingNationalDataset:Class} EquivalentTo: bfo:0000031 and sdg:isMaintainedByNationalGovernment some bfo:0000040 and sdg:hasPriorCollectionHistory some bfo:0000004",
+      "manchester_template": "Class: {ExistingNationalDataset:Class} EquivalentTo: cco:ont00002006 and sdg:usedIn some sdg:NationalDatasetAugmentationProcess",
       "slot_types": {
         "ExistingNationalDataset": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant maintained by a national government and possessing prior collection history.",
+      "verbal_template": "A database used in a national dataset augmentation process.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_externalbusinesspartner",
+      "manchester_template": "Class: {ExternalBusinessPartner:Class} EquivalentTo: cco:ont00000506 and sdg:hasDataSharingContext some sdg:ThirdPartyDataSharing",
+      "slot_types": {
+        "ExternalBusinessPartner": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A contractor role that participates in a third-party data sharing arrangement.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_financialactivity",
+      "manchester_template": "Class: {FinancialActivity:Class} EquivalentTo: cco:ont00000836 and sdg:involvesFinancialResource some sdg:FinancialResource",
+      "slot_types": {
+        "FinancialActivity": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An act of financial instrument use that involves a financial resource.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_financialinstitution",
+      "manchester_template": "Class: {FinancialInstitution:Class} EquivalentTo: cco:ont00001295 and sdg:facilitates some sdg:SettlementFinancingActivity",
+      "slot_types": {
+        "FinancialInstitution": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A financial facility that facilitates a settlement financing activity.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_findingentity",
+      "manchester_template": "Class: {FindingEntity:Class} EquivalentTo: cco:ont00000958 and sdg:reportedIn some sdg:HumanRightsImpactReport",
+      "slot_types": {
+        "FindingEntity": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An information content entity that is reported in a human rights impact report.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_floodassetcondition",
+      "manchester_template": "Class: {FloodAssetCondition:Class} EquivalentTo: sdg:Asset and sdg:assessedIn some sdg:FloodAssetVulnerabilityAssessment",
+      "slot_types": {
+        "FloodAssetCondition": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An asset whose condition is assessed in a flood asset vulnerability assessment.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_ganglioncystformation",
+      "manchester_template": "Class: {GanglionCystFormation:Class} EquivalentTo: sdg:MyxoidDegenerationProcess and sdg:resultsIn some sdg:GanglionCystTissueOrigin",
+      "slot_types": {
+        "GanglionCystFormation": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A myxoid degeneration process that results in a ganglion cyst tissue origin.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_healthoutcomemetric",
+      "manchester_template": "Class: {HealthOutcomeMetric:Class} EquivalentTo: sdg:ClinicalQualityData and sdg:usedIn some sdg:IndoorAirQualityActionPlan",
+      "slot_types": {
+        "HealthOutcomeMetric": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A clinical quality data entity used in an indoor air quality action plan.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_highereducationinstitution",
+      "manchester_template": "Class: {HigherEducationInstitution:Class} EquivalentTo: cco:ont00000564 and sdg:confers some sdg:AcademicDegree",
+      "slot_types": {
+        "HigherEducationInstitution": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An educational organization that confers an academic degree.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_householdparticipant",
+      "manchester_template": "Class: {HouseholdParticipant:Class} EquivalentTo: cco:ont00000914 and sdg:participatesIn some sdg:ReductionProgram",
+      "slot_types": {
+        "HouseholdParticipant": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A group of persons that participates in a reduction program.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_humanhealthoutcome",
+      "manchester_template": "Class: {HumanHealthOutcome:Class} EquivalentTo: sdg:PatientOutcome and sdg:arisesFrom some sdg:ChemicalExposureRiskProfile",
+      "slot_types": {
+        "HumanHealthOutcome": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A patient outcome that arises from a chemical exposure risk profile.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_humanpopulation",
+      "manchester_template": "Class: {HumanPopulation:Class} EquivalentTo: cco:ont00000141 and sdg:affectedBy some sdg:DengueTransmissionProcess",
+      "slot_types": {
+        "HumanPopulation": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A populace that is affected by a dengue transmission process.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_impedancetermination",
+      "manchester_template": "Class: {ImpedanceTermination:Class} EquivalentTo: cco:ont00000407 and sdg:measuredIn some sdg:PortIsolationMeasurement",
+      "slot_types": {
+        "ImpedanceTermination": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An electrical resistance artifact function that is measured in a port isolation measurement.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_indigenousknowledgebase",
+      "manchester_template": "Class: {IndigenousKnowledgeBase:Class} EquivalentTo: cco:ont00000958 and sdg:integratedIn some sdg:KnowledgeBaseIntegration",
+      "slot_types": {
+        "IndigenousKnowledgeBase": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An information content entity that is integrated in a knowledge base integration.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_indoorairpollution",
+      "manchester_template": "Class: {IndoorAirPollution:Class} EquivalentTo: sdg:IndoorEnvironment and sdg:monitoredIn some sdg:IndoorEnvironmentalMonitoringProcess",
+      "slot_types": {
+        "IndoorAirPollution": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An indoor environment that is monitored in an indoor environmental monitoring process.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_indoorenvironment",
+      "manchester_template": "Class: {IndoorEnvironment:Class} EquivalentTo: bfo:0000040 and bfo:part_of some cco:ont00000410",
+      "slot_types": {
+        "IndoorEnvironment": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A material entity that is part of a residential facility.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_industryassociationmember",
+      "manchester_template": "Class: {IndustryAssociationMember:Class} EquivalentTo: cco:ont00000647 and bfo:realizes_role_of some sdg:IndustryAssociation",
+      "slot_types": {
+        "IndustryAssociationMember": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An organization member that realizes the role of an industry association.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_industrysector",
+      "manchester_template": "Class: {IndustrySector:Class} EquivalentTo: cco:ont00001239 and bfo:part_of some sdg:IndustryAssociation",
+      "slot_types": {
+        "IndustrySector": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A group of organizations that is part of an industry association.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_institutionalinvestor",
+      "manchester_template": "Class: {InstitutionalInvestor:Class} EquivalentTo: cco:ont00000010 and bfo:participates_in some cco:ont00000537",
+      "slot_types": {
+        "InstitutionalInvestor": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An incorporated organization that participates in a financial instrument.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_insuranceinformationitem",
+      "manchester_template": "Class: {InsuranceInformationItem:Class} EquivalentTo: cco:ont00000253 and bfo:realizes_role_of some sdg:InsuranceCoverage",
+      "slot_types": {
+        "InsuranceInformationItem": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An information bearing entity that realizes the role of insurance coverage.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_intuitivefoundation",
+      "manchester_template": "Class: {IntuitiveFoundation:Class} EquivalentTo: cco:ont00000119 and bfo:has_quality some cco:ont00000177",
+      "slot_types": {
+        "IntuitiveFoundation": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A spatial orientation that possesses an affordance quality.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_lateralrestraintstrap",
+      "manchester_template": "Class: {LateralRestraintStrap:Class} EquivalentTo: bfo:0000040 and bfo:part_of some sdg:IntermediateFloorAssembly",
+      "slot_types": {
+        "LateralRestraintStrap": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A material entity that is part of an intermediate floor assembly.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_learningoutcome",
+      "manchester_template": "Class: {LearningOutcome:Class} EquivalentTo: cco:ont00000626 and bfo:realizes_role_of some cco:ont00001074",
+      "slot_types": {
+        "LearningOutcome": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A predictive information content entity that realizes the role of an act of educational training acquisition.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_legaladvocacyprocess",
+      "manchester_template": "Class: {LegalAdvocacyProcess:Class} EquivalentTo: sdg:LegalProceeding and sdg:featuresParticipant some sdg:LegalAdvocateRole",
+      "slot_types": {
+        "LegalAdvocacyProcess": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Legal advocacy process is a legal proceeding featuring a legal advocate role.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_magneticresonanceimagingmodality",
+      "manchester_template": "Class: {MagneticResonanceImagingModality:Class} EquivalentTo: sdg:DiagnosticImaging and sdg:employsTechnology some cco:ont00000771",
+      "slot_types": {
+        "MagneticResonanceImagingModality": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Magnetic resonance imaging modality is a diagnostic imaging employing an imaging instrument.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_membershipregistration",
+      "manchester_template": "Class: {MembershipRegistration:Class} EquivalentTo: cco:ont00000744 and sdg:confersStatus some cco:ont00000647",
+      "slot_types": {
+        "MembershipRegistration": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Membership registration is an act of social group membership conferring the status of an organization member.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_monitoringprotocol",
+      "manchester_template": "Class: {MonitoringProtocol:Class} EquivalentTo: bfo:0000015 and sdg:specifiesDataCollection some cco:ont00000569",
+      "slot_types": {
+        "MonitoringProtocol": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Monitoring protocol is a process specifying data collection by a sensor.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      }
+    },
+    {
+      "template_id": "filler_motorvehicleclass",
+      "manchester_template": "Class: {MotorVehicleClass:Class} EquivalentTo: cco:ont00000713 and sdg:classifiedAs some cco:ont00000053",
+      "slot_types": {
+        "MotorVehicleClass": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Motor vehicle class is a vehicle classified as a ground motor vehicle.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
