@@ -110,6 +110,14 @@ check-ontology-schema:
 check-ontology-oquare:
     uv run --no-sync python scripts/ontology_oquare.py corpora/ontology/sdg-ontology.owl --certificate corpora/ontology/HERMIT_CERTIFICATE.md
 
+# Idempotent def-rigor GATE-REALIZER: drive the ontology to OQuaRE-GREEN (the FunctionalAdequacy leg — ≡ genus+
+# differentia defs + free-authored BFO roles) via define_intermediate_classes -> evolve_rigor -> re-realize ->
+# re-gate, looping until green. No-op if already green; fails loud if it can't converge. Needs jvm-libs (HermiT)
+# + cuda-driver-libs (engine). The first gate-realizer stage of the end-to-end pipeline.
+evolve-rigor max_rounds="3":
+    LD_LIBRARY_PATH=$(pwd)/build/jvm-libs:$(pwd)/build/cuda-driver-libs \
+        uv run --no-sync python scripts/evolve_rigor_to_green.py --max-rounds {{max_rounds}}
+
 # Meta-harness inc-2b: run the H₀ single-file harness over gap topics (frozen Grok
 # + ContractGate/HermiT) via the candidate filesystem. Needs the JVM libs
 # (DeepOnto/HermiT) + cuda driver libs. coverage-run defaults to the canonical v1 ground.
