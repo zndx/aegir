@@ -173,6 +173,37 @@ def emit_datatype_props(doc: str, derived) -> "tuple[str, int]":
     return doc + "\n\n" + block + "\n", len(asserts)
 
 
+def declare_used_properties(doc: str) -> "tuple[str, list[str]]":
+    """Belt-and-suspenders for an incomplete LLM ``new_properties`` list: an sdg: property USED in a
+    restriction but never declared makes the Manchester parser fail, and the OWLAPI then SILENTLY degrades
+    the whole ontology to its OBO fallback (0 classes → vacuous HermiT). Auto-declare every undeclared used
+    sdg: property (ObjectProperty by default; DataProperty when its filler is a datatype)."""
+    declared = set(re.findall(r"^(?:Object|Data)Property:\s*(sdg:[A-Za-z0-9_]+)", doc, re.M))
+    used = set(re.findall(r"(sdg:[A-Za-z][A-Za-z0-9_]*)\s+(?:some|only|value|self|(?:exactly|min|max)\s+\d+)", doc))
+    missing = sorted(used - declared)
+    if not missing:
+        return doc, []
+    dt = r"\s+(?:some|only|value|(?:exactly|min|max)\s+\d+)\s+(?:xsd:\w+|decimal|string|integer|boolean|dateTime|float|double|date)\b"
+    lines = [f"{'DataProperty' if re.search(re.escape(p) + dt, doc) else 'ObjectProperty'}: {p}" for p in missing]
+    return doc + "\n\n" + "\n".join(lines) + "\n", missing
+
+
+def drop_classes(doc: str, iris: "list[str]") -> str:
+    """Remove every Class: frame (inline or indented) whose head is one of ``iris`` — used to shed a class
+    that stays unsatisfiable after the grounding back-off (a derived axiom mis-using a BFO role)."""
+    targets = {i.split("#")[-1] for i in iris}
+    out, skip = [], False
+    for line in doc.split("\n"):
+        m = re.match(r"^Class: <[^>]*#([A-Za-z0-9_]+)>", line)
+        if m:
+            skip = m.group(1) in targets
+        elif line[:1].strip():
+            skip = False
+        if not skip:
+            out.append(line)
+    return "\n".join(out)
+
+
 def _reason(doc: str):
     """Write the OMN to a temp file, load it under HermiT, return (onto, tmp_path, consistent, n_classes, unsat)."""
     with tempfile.NamedTemporaryFile("w", suffix=".omn", delete=False) as f:
@@ -182,7 +213,7 @@ def _reason(doc: str):
     onto = Ontology(path, reasoner_type="hermit")
     r = onto.reasoner.owl_reasoner
     consistent = bool(r.isConsistent())
-    n_classes = len(getattr(onto, "owl_classes", {}) or {})
+    n_classes = int(onto.owl_onto.getClassesInSignature().size())
     unsat: list = []
     if consistent:
         bottom = r.getUnsatisfiableClasses()
@@ -226,6 +257,7 @@ def consistency_check(templates) -> "tuple[bool, list[str]]":
                       "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
     doc, _ = drop_degenerate(doc)
     doc = import_cco_bridge_fhir(doc)
+    doc, _ = declare_used_properties(doc)
     ensure_jvm()
     _onto, path, consistent, _n, unsat = _reason(doc)
     Path(path).unlink(missing_ok=True)
@@ -266,6 +298,9 @@ def main() -> int:
             d, na = annotate_definitions(d, derived)
         if not args.no_datatype_props:
             d, nd = emit_datatype_props(d, derived)
+        d, _undecl = declare_used_properties(d)
+        if _undecl:
+            print(f"   auto-declared {len(_undecl)} used-but-undeclared propert{'y' if len(_undecl)==1 else 'ies'}: {_undecl}")
         return d, nf, na, nd
 
     ensure_jvm()
@@ -282,6 +317,15 @@ def main() -> int:
         print(f"   ⚠ {len(bad)} unsatisfiable — dropping their grounding + re-reasoning ({len(exclude)} excluded)")
         Path(path).unlink(missing_ok=True)
         doc, nf, na, nd = build(ground=True, exclude=frozenset(exclude))
+        onto, path, consistent, n_classes, unsat = _reason(doc)
+    # a class still unsatisfiable after the grounding back-off has a bad DERIVED axiom (e.g. a mis-used BFO
+    # role); the membrane should catch it but a degenerate parse can mask it — shed it for a clean realize.
+    for _ in range(3):
+        if not unsat:
+            break
+        print(f"   ⚠ dropping {len(unsat)} class(es) unsatisfiable after back-off: {[u.split('#')[-1] for u in unsat[:6]]}")
+        doc = drop_classes(doc, unsat)
+        Path(path).unlink(missing_ok=True)
         onto, path, consistent, n_classes, unsat = _reason(doc)
     try:
         print(f"   Phase-A: grounded {nf} fillers · annotated {na} classes · {nd} datatype-prop assertions")
