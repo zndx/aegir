@@ -76,6 +76,22 @@ def render_batch(templates: "list[CatalogTemplate]") -> "tuple[str, dict[str, st
     return doc, head_iri
 
 
+def declare_used_properties(doc: str) -> "tuple[str, list[str]]":
+    """Belt-and-suspenders for an incomplete LLM ``new_properties`` list: an sdg: property USED in a
+    restriction but never declared makes the OWLAPI Manchester parser fail → it then SILENTLY degrades the
+    whole ontology to its OBO fallback (0 classes → a vacuous HermiT ``isConsistent``). Auto-declare every
+    undeclared used sdg: property (ObjectProperty; DataProperty when its filler is a datatype). Shared by the
+    promote's ``reason`` gate and the realizer (``build_realized_ontology``)."""
+    declared = set(re.findall(r"^(?:Object|Data)Property:\s*(sdg:[A-Za-z0-9_]+)", doc, re.M))
+    used = set(re.findall(r"(sdg:[A-Za-z][A-Za-z0-9_]*)\s+(?:some|only|value|self|(?:exactly|min|max)\s+\d+)", doc))
+    missing = sorted(used - declared)
+    if not missing:
+        return doc, []
+    dt = r"\s+(?:some|only|value|(?:exactly|min|max)\s+\d+)\s+(?:xsd:\w+|decimal|string|integer|boolean|dateTime|float|double|date)\b"
+    lines = [f"{'DataProperty' if re.search(re.escape(p) + dt, doc) else 'ObjectProperty'}: {p}" for p in missing]
+    return doc + "\n\n" + "\n".join(lines) + "\n", missing
+
+
 def reason(templates: "list[CatalogTemplate]") -> dict:
     """Classify the batch once and read off all reasoner gates. Returns:
     {consistent, unsat (tids), equivalent (tid->[iris]), inferred (tid->n_supers), n_classes, error}."""
@@ -85,6 +101,7 @@ def reason(templates: "list[CatalogTemplate]") -> dict:
     if not head_iri:
         return {"consistent": False, "unsat": [], "equivalent": {}, "inferred": {}, "n_classes": 0,
                 "error": "no renderable candidates"}
+    doc, _ = declare_used_properties(doc)  # an undeclared property would OBO-degrade the parse → vacuous HermiT
     iri_to_tid = {v: k for k, v in head_iri.items()}
     path = None
     try:
@@ -94,8 +111,15 @@ def reason(templates: "list[CatalogTemplate]") -> dict:
         onto = Ontology(path, reasoner_type="hermit")
         r = onto.reasoner.owl_reasoner
         consistent = bool(r.isConsistent())
+        # FAIL LOUD: a Manchester syntax error (e.g. an undeclared property) silently degrades to the OBO
+        # parser (0 classes) → a hollow consistent=True. If far fewer classes than heads parsed, the reasoner
+        # never actually saw the ontology — treat it as a failed batch, never a vacuous pass.
+        n_sig = int(onto.owl_onto.getClassesInSignature().size())
+        if n_sig < len(head_iri):
+            return {"consistent": False, "unsat": [], "equivalent": {}, "inferred": {}, "n_classes": n_sig,
+                    "error": f"parse degraded: {n_sig} classes < {len(head_iri)} heads (OBO fallback / vacuous HermiT)"}
         out = {"consistent": consistent, "unsat": [], "equivalent": {}, "inferred": {},
-               "n_classes": 0, "error": ""}
+               "n_classes": n_sig, "error": ""}
         if not consistent:
             out["error"] = "globally inconsistent batch"
             return out
