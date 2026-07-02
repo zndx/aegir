@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import os
 import re
 import sys
 import tempfile
@@ -252,6 +253,16 @@ def drop_classes(doc: str, iris: "list[str]") -> str:
     return "\n".join(out)
 
 
+# Default 90 min (RH 2026-07-02: 30 min to start, "~90 minutes acceptable" — real, meaningful ontologies
+# take time to validate; validation TIME is a cost we pay willingly, ontology SUBSTANCE is not). The wall
+# exists to catch the PATHOLOGICAL grind (the ABox×≡ mode), never to rush the reasoner — and when it fires,
+# the response ORDER is: pay more time first; shape the INPUT only with a stated losslessness argument
+# (e.g. a ⊥-module preserves all entailments over its signature); NEVER thin the curated ontology itself —
+# purposeful, substantive curation is a core objective (it grounds the DDL+views corpus that drives the
+# mixed text+views pre-training corpus).
+REASON_BUDGET_S = int(os.environ.get("AEGIR_REASON_BUDGET_S", "5400"))
+
+
 def _reason(doc: str, explain: bool = False):
     """Write the OMN to a temp file, load it under HermiT, return (onto, tmp_path, consistent, n_classes, unsat, why).
 
@@ -265,11 +276,30 @@ def _reason(doc: str, explain: bool = False):
     with tempfile.NamedTemporaryFile("w", suffix=".omn", delete=False) as f:
         f.write(doc)
         path = f.name
+    # WALL-CLOCK BUDGET (RH 2026-07-02: HermiT must not fall into a pathological grind on trivial-but-
+    # expensive inputs — measured: 248 Types-only individuals × 374 ≡-classes ground a single core >20 min
+    # unfinished vs ~3 min TBox-only). A JVM tableau can't be interrupted in-process, so the watchdog is a
+    # process wall: past AEGIR_REASON_BUDGET_S it emits the tractability SIGNAL and exits 3 (distinct from
+    # 2=inconsistent). The reasoner is ground truth; the budget is how long we let it testify.
+    import threading
+    import time as _time
+    t0 = _time.monotonic()
+    done = threading.Event()
+
+    def _watchdog() -> None:
+        if not done.wait(REASON_BUDGET_S):
+            print(f"✘ REASONING BUDGET EXCEEDED ({REASON_BUDGET_S}s; AEGIR_REASON_BUDGET_S) — a pathological "
+                  "input is grinding HermiT (ABox × ≡-classes is the known shape; retry with "
+                  "--no-individuals, or raise the budget deliberately)", file=sys.stderr, flush=True)
+            os._exit(3)
+
+    threading.Thread(target=_watchdog, daemon=True).start()
     from deeponto.onto import Ontology
     onto = Ontology(path, reasoner_type="hermit")
     r = onto.reasoner.owl_reasoner
     consistent = bool(r.isConsistent())
     n_classes = int(onto.owl_onto.getClassesInSignature().size())
+    n_inds_sig = int(onto.owl_onto.getIndividualsInSignature().size())
     unsat: list = []
     if consistent:
         bottom = r.getUnsatisfiableClasses()
@@ -278,6 +308,9 @@ def _reason(doc: str, explain: bool = False):
     if explain and unsat:
         from aegir.ontology.explain import explain_unsatisfiable
         why = explain_unsatisfiable(onto.owl_onto, r, unsat)
+    done.set()
+    print(f"   reasoned in {_time.monotonic() - t0:.0f}s (classes={n_classes} individuals={n_inds_sig} "
+          f"consistent={consistent} unsat={len(unsat)}; budget {REASON_BUDGET_S}s)")
     return onto, path, consistent, n_classes, unsat, why
 
 
@@ -343,6 +376,8 @@ def main() -> int:
     ap.add_argument("--no-datatype-props", action="store_true", help="skip Phase-A.3 typed DataProperties")
     ap.add_argument("--strict-grounding", action="store_true",
                     help="if Phase-A.1 filler grounding yields an unsatisfiable class, drop it and re-reason")
+    ap.add_argument("--no-individuals", action="store_true",
+                    help="realize the TBox only (skip the individual registry's ABox)")
     args = ap.parse_args()
     if not CCO_TTL.exists():  # INVARIANT: the theory must be present — never realize against a vacuous CCO-less check
         print(f"✘ the theory π(CCO) is not built ({CCO_TTL.name}) — run scripts/build_cco_module.py first; "
@@ -366,6 +401,23 @@ def main() -> int:
     if degen:
         print(f"   dropped {len(degen)} degenerate stale head(s) (single-letter slots): {degen}")
 
+    # ABox: the individual registry's membrane-admitted, class-typed individuals — the ontology
+    # INSTANTIATED (Convert 1b). Held ASIDE here and joined only after the TBox converges: the ABox pass
+    # costs > the whole TBox pass (ladder 2026-07-02: TBox 480s; +248 individuals > 1200s — instance
+    # classification ≈ individuals × ≡-classes), so the strict-grounding/narrowing rounds must not re-pay
+    # it. "Least-trusted layer" also means ENTERS LAST — one certification pass against the clean theory.
+    abox_block, n_inds = "", 0
+    if not args.no_individuals:
+        from aegir.ontology import individuals as IND
+        _reg = IND.load_registry()
+        abox_block = IND.abox_manchester(_reg)
+        if abox_block:
+            n_inds = IND.n_individuals(_reg)
+            n_equiv = base_doc.count("EquivalentTo")
+            print(f"   instantiation queued: {n_inds} individuals × {n_equiv} ≡-classes (instance-check "
+                  f"load ≈ {n_inds * n_equiv:,}) — ONE ABox pass after the TBox converges; "
+                  f"budget {REASON_BUDGET_S}s/pass")
+
     def build(ground: bool, exclude: "frozenset[str]" = frozenset()) -> "tuple[str, int, int, int]":
         d, nf, na, nd = base_doc, 0, 0, 0
         if ground:
@@ -383,10 +435,24 @@ def main() -> int:
             print(f"   grounding-closure: +{n_closure} direct BFO anchors (sdg: classes whose ≡ genera don't reach BFO)")
         return d, nf, na, nd
 
+    def _degraded(nc: int, d: str) -> bool:
+        # NON-VACUITY floor: a Manchester parse that silently falls back leaves almost nothing in the
+        # signature while isConsistent() stays trivially True — the masked-inconsistency failure mode.
+        # The signature must carry at least half the doc's DISTINCT declared class IRIs (frames ≠ classes:
+        # a class spans several `Class: <iri>` frames — declaration/annotations/≡ — so counting frame
+        # occurrences false-positived at 830 real classes vs 2182 frames).
+        declared = len(set(re.findall(r"\nClass: (<[^>]+>)", d)))
+        return nc < max(50, declared // 2)
+
     ensure_jvm()
     exclude: "set[str]" = set()
     doc, nf, na, nd = build(ground=True)
     onto, path, consistent, n_classes, unsat, why = _reason(doc, explain=True)
+    if _degraded(n_classes, doc):  # INVARIANT: never emit a vacuously-"consistent" artifact
+        print(f"✘ parse degraded ({n_classes} classes in signature vs {doc.count(chr(10) + 'Class: <')} "
+              "declared) — a fallback parser swallowed the document; refusing to emit a vacuous artifact",
+              file=sys.stderr)
+        return 2
     # --strict-grounding: greedily drop ONLY the filler-grounding edges that introduce unsatisfiability,
     # re-reasoning until clean (or no further progress) — keeps the bulk of the grounding gain.
     for _ in range(5):
@@ -428,6 +494,50 @@ def main() -> int:
         for iri in unsat[:12]:
             print(f"    {iri.split('#')[-1]}: {why.get(iri, {}).get('why', '?')}", file=sys.stderr)
         return 2
+
+    # ── DECOMPOSED ABox certification (the greenfield move, RH 2026-07-02: own the decomposition calculus,
+    # keep HermiT as the atomic oracle). THEOREM (our shape): with a NOMINAL-FREE TBox (gate-verified) and a
+    # Types-only ABox (no Facts/SameAs — enforced by abox_manchester's construction), the KB is consistent
+    # ⟺ the TBox is consistent ∧ every asserted type-conjunction is satisfiable. Proof sketch: nothing
+    # connects individuals, so a model is the disjoint union of the clean TBox model with one witness model
+    # per conjunction (disjoint unions preserve nominal-free SHIQ satisfaction). Singleton type-sets are
+    # ALREADY certified by unsat=∅ above; only multi-typed individuals need a check — each one fast HermiT
+    # isSatisfiable call on the loaded TBox reasoner. HermiT's monolithic pass on the same input ground
+    # >20 min (ladder: TBox 480s, +248 individuals >1200s) doing generic work this shape doesn't need.
+    n_withheld = 0
+    if abox_block:
+        import time as _t2
+        from aegir.ontology import individuals as IND2
+        t_abox = _t2.monotonic()
+        tbi = IND2.types_by_individual(IND2.load_registry())
+        multi = sorted({frozenset(ts) for ts in tbi.values() if len(ts) > 1}, key=sorted)
+        bad_sets: "list[frozenset]" = []
+        if multi:
+            import jpype
+            df = onto.owl_onto.getOWLOntologyManager().getOWLDataFactory()
+            IRIC = jpype.JClass("org.semanticweb.owlapi.model.IRI")
+            HashSet = jpype.JClass("java.util.HashSet")
+            rzr = onto.reasoner.owl_reasoner
+            for ts in multi:
+                s = HashSet()
+                for c in sorted(ts):
+                    s.add(df.getOWLClass(IRIC.create(SDG_NS + c)))
+                if not bool(rzr.isSatisfiable(df.getOWLObjectIntersectionOf(s))):
+                    bad_sets.append(ts)
+        if bad_sets:
+            withheld_ids = {i for i, ts in tbi.items() if frozenset(ts) in set(bad_sets)}
+            n_withheld = len(withheld_ids)
+            for ts in bad_sets:  # the boundary SIGNAL: these type-conjunctions are disjoint under the theory
+                print(f"   ⚠ instance-level clash: {{{', '.join(sorted(ts))}}} is UNSATISFIABLE — "
+                      f"withholding its individuals (re-author in individual_registry.json)", file=sys.stderr)
+            abox_block = "\n\n".join(f for f in abox_block.split("\n\n")
+                                     if not any(f"<{SDG_NS}{i}>" in f for i in withheld_ids))
+            n_inds -= n_withheld
+        if abox_block:
+            doc = doc.rstrip() + "\n\n" + abox_block + "\n"
+        print(f"   ABox certified by decomposition in {_t2.monotonic() - t_abox:.1f}s: {n_inds} individuals "
+              f"({len(multi)} multi-typed conjunction checks, {len(bad_sets)} clashes withheld)")
+
     try:
         print(f"   Phase-A: grounded {nf} fillers · annotated {na} classes · {nd} datatype-prop assertions")
         print(f"REALIZED: consistent={consistent}  named_classes={n_classes}  unsatisfiable={len(unsat)}  "
@@ -438,13 +548,22 @@ def main() -> int:
         OUT.mkdir(parents=True, exist_ok=True)
         (OUT / "sdg-ontology.omn").write_text(doc)
         owl_ok = False
-        try:  # best-effort RDF/XML for owlready2 / Protégé consumers
+        try:  # best-effort RDF/XML for owlready2 / Protégé consumers — re-parse the FINAL doc (the loaded
+            # `onto` is the TBox-only reasoner ontology; the emitted doc also carries the certified ABox).
+            # Pure parse+serialize, no reasoner. Guards: signature must carry the classes AND individuals.
             import jpype
             fmt = jpype.JClass("org.semanticweb.owlapi.formats.RDFXMLDocumentFormat")()
             jiri = jpype.JClass("org.semanticweb.owlapi.model.IRI")
             jfile = jpype.JClass("java.io.File")
+            OWLManager = jpype.JClass("org.semanticweb.owlapi.apibinding.OWLManager")
+            man2 = OWLManager.createOWLOntologyManager()
+            o2 = man2.loadOntologyFromOntologyDocument(jfile(str(OUT / "sdg-ontology.omn")))
+            nc2 = int(o2.getClassesInSignature().size())
+            ni2 = int(o2.getIndividualsInSignature().size())
+            if _degraded(nc2, doc) or ni2 < n_inds:
+                raise RuntimeError(f"final-doc parse degraded (classes={nc2} individuals={ni2}/{n_inds})")
             owl_path = OUT / "sdg-ontology.owl"
-            onto.owl_onto.getOWLOntologyManager().saveOntology(onto.owl_onto, fmt, jiri.create(jfile(str(owl_path))))
+            man2.saveOntology(o2, fmt, jiri.create(jfile(str(owl_path))))
             owl_ok = owl_path.exists()
         except Exception as e:  # noqa: BLE001
             print(f"  (.owl RDF/XML save skipped: {type(e).__name__}: {str(e)[:80]})")
@@ -459,7 +578,11 @@ def main() -> int:
             + f"- **realized from**: the {len(derived)} FinePDFs-derived templates (`08_derived`)\n"
             f"- **rigor (Phase A)**: {nf} filler classes BFO-grounded · {na} classes carry NL definitions "
             f"(iao:0000115) · {nd} typed DataProperty assertions\n"
-            "- **reasoner**: HermiT (OWLAPI, via DeepOnto)\n"
+            + (f"- **individuals**: {n_inds} membrane-admitted (ABox included) — instance-level consistency "
+               f"certified by DECOMPOSITION: nominal-free TBox + Types-only ABox ⇒ KB consistent ⟺ TBox "
+               f"consistent ∧ every asserted type-conjunction satisfiable (each conjunction checked by "
+               f"HermiT{f'; {n_withheld} withheld as clashing' if n_withheld else ''})\n" if n_inds else "")
+            + "- **reasoner**: HermiT (OWLAPI, via DeepOnto)\n"
             "- **grounding**: BFO 2020 (incl. continuant ⊥ occurrent) + CCO upper\n"
             f"- **generated**: {datetime.date.today().isoformat()} by `scripts/build_realized_ontology.py`\n\n"
             "This is the **realized** ontology — the templates instantiated into concrete OWL axioms, not the\n"
