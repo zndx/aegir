@@ -60,10 +60,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--row-seed", type=lambda x: int(x, 0), default=0xAE61,
                    help="deterministic row-synthesis seed (hex ok, e.g. 0xAE61)")
     p.add_argument("--realize", action="store_true",
-                   help="realize each template into a stochastic schema SUBGRAPH (EAV / junction / "
-                        "star / snowflake) instead of one flat table — the super-linear DDL+views deliverable")
+                   help="realize each template into a schema SUBGRAPH (EAV / junction / star / snowflake) "
+                        "instead of one flat table — the super-linear DDL+views deliverable. The profile is "
+                        "DETERMINISTIC from the template's provenance.grounds_ddl (no sampling)")
     p.add_argument("--realize-seed", type=lambda x: int(x, 0), default=0x5EED,
-                   help="seed for per-template structural-profile sampling")
+                   help="retained for compatibility; profiles are deterministic (provenance.grounds_ddl), "
+                        "the seed no longer selects structure")
     p.add_argument("--output-dir",
                    default="/raid/checkpoints/aegir-artifacts/ddl_spine_v0/")
     return p.parse_args()
@@ -332,6 +334,7 @@ def main() -> int:
             r["created_at"] = created_at
         _write(out / "structural_complexity.parquet", complexity_rows, {
             "template_id": pa.string(), "family": pa.string(), "profile": pa.string(),
+            "profile_source": pa.string(),
             "n_tables": pa.int32(), "n_views": pa.int32(), "n_fks": pa.int32(),
             "eav_tables": pa.int32(), "junction_tables": pa.int32(), "attr_count": pa.int32(),
             "eav_ratio": pa.float64(), "m2n_density": pa.float64(), "fk_depth": pa.int32(),
@@ -340,6 +343,9 @@ def main() -> int:
         tt = sum(r["n_tables"] for r in complexity_rows)
         realize_summary = {
             "profile_distribution": dict(_C(r["profile"] for r in complexity_rows)),
+            # the authenticity audit: how each profile was CHOSEN (grounds_ddl:* = lowering-by-theorem;
+            # default-minimal = no grounding signal, the work-queue; there is no sampled path)
+            "profile_source_distribution": dict(_C(r.get("profile_source", "?") for r in complexity_rows)),
             "total_tables": tt, "total_views": sum(r["n_views"] for r in complexity_rows),
             "tables_per_template": round(tt / len(complexity_rows), 2),
             "mean_eav_ratio": round(sum(r["eav_ratio"] for r in complexity_rows) / len(complexity_rows), 3),

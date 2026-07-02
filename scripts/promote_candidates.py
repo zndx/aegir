@@ -36,10 +36,20 @@ _DERIVED_VERSION = "0.3.0-derived"
 
 
 def _to_template(d: dict) -> CatalogTemplate:
+    # The candidate's derivation SIGNALS (_pattern/_grounds_ddl/_domain/_tier) must CROSS this boundary into
+    # provenance — grounds_ddl drives the deterministic realize profile (lowering-by-theorem), domain is the
+    # cross-domain tag for emergence. Dropping them here severed the ontology↔DDL loop once (0/433 promoted
+    # templates retained grounds_ddl → 100% dice-rolled spine); do not re-sever.
+    prov = dict(d.get("provenance") or {})
+    for key, src in (("pattern", "_pattern"), ("tier", "_tier"),
+                     ("grounds_ddl", "_grounds_ddl"), ("domain", "_domain")):
+        if d.get(src) and key not in prov:
+            prov[key] = d[src]
     return CatalogTemplate(
         template_id=d["template_id"], manchester_template=d["manchester_template"],
         slot_types=d.get("slot_types") or {}, is_complex=bool(d.get("is_complex")),
-        verbal_template=d.get("verbal_template", ""), bfo_anchor_path=d.get("bfo_anchor_path") or [])
+        verbal_template=d.get("verbal_template", ""), bfo_anchor_path=d.get("bfo_anchor_path") or [],
+        provenance=prov)
 
 
 def build_combined() -> dict:

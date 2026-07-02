@@ -17,7 +17,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.142,
+          "hash": "01a31dc8d305cf96bf65dda5e40ea6e96efb49ea918232aa91a5338d86812054"
+        }
+      }
     },
     {
       "template_id": "clinical_documentation_activity",
@@ -35,7 +45,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.116,
+          "hash": "01e6377096f7ed8b0e8b28efc08cf89f5661ea30ed6825d96e8786407454ee38"
+        }
+      }
     },
     {
       "template_id": "pdf_export_process",
@@ -54,7 +74,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "item_flow_transfer",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.112,
+          "hash": "023983eca8a2fc1b7ff80c33e8176dfa5061882b4fb6757bca994ff5bc15d93c"
+        }
+      }
     },
     {
       "template_id": "lecture_session",
@@ -72,7 +102,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "multi_restriction_conjunction",
+        "tier": "owl2_core",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.105,
+          "hash": "03a341dadd1411f7acdb42cf451d28c66778fa6c4ac6f93d354782845184a759"
+        }
+      }
     },
     {
       "template_id": "young_researcher_role",
@@ -90,7 +130,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.214,
+          "hash": "0501ee1b3505871938c7874e1e824203e9676214c389fcf4728d7851692db48f"
+        }
+      }
     },
     {
       "template_id": "library_student_assistant_role",
@@ -108,7 +158,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "0681738f96b8a6963de8b75d337c0e52b3933cff05d93ee2f399ec7dc908ef89"
+        }
+      }
     },
     {
       "template_id": "condiment_station",
@@ -126,7 +186,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "multi_restriction_conjunction",
+        "tier": "owl2_core",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.103,
+          "hash": "06a002769008a33b79466ba524f1ba48ca628809524b46c6115ac8544c5dc305"
+        }
+      }
     },
     {
       "template_id": "indigenous_child_role",
@@ -144,7 +214,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.111,
+          "hash": "081382c7a105b53592074b56de3dc6567462f6619281e777dccd1eb71861ab20"
+        }
+      }
     },
     {
       "template_id": "police_officer_role",
@@ -162,7 +242,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.168,
+          "hash": "0bf5440d54a01a6f11317a88edf3e6889647a5bb8fcdfb08c88a72470ddd257a"
+        }
+      }
     },
     {
       "template_id": "responsive_website_development",
@@ -180,7 +270,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.214,
+          "hash": "0e510987f65d4da71cd7fae471a33ebd2cac0bbff74095fb41c19d6cf23d0682"
+        }
+      }
     },
     {
       "template_id": "campaign_coordination",
@@ -198,7 +298,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.214,
+          "hash": "0e510987f65d4da71cd7fae471a33ebd2cac0bbff74095fb41c19d6cf23d0682"
+        }
+      }
     },
     {
       "template_id": "benefit_option_election",
@@ -216,7 +326,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.115,
+          "hash": "14992ca2af216d73ed5ec2c87bf31b6c7d2bc7b3083d094047b02111510a2da9"
+        }
+      }
     },
     {
       "template_id": "retirement_benefit_option",
@@ -232,7 +352,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "constraint_definition_parametric",
+        "tier": "sysmlv2",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.115,
+          "hash": "14992ca2af216d73ed5ec2c87bf31b6c7d2bc7b3083d094047b02111510a2da9"
+        }
+      }
     },
     {
       "template_id": "marital_status_certification",
@@ -250,7 +380,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.115,
+          "hash": "14992ca2af216d73ed5ec2c87bf31b6c7d2bc7b3083d094047b02111510a2da9"
+        }
+      }
     },
     {
       "template_id": "beneficiary_designation",
@@ -266,7 +406,17 @@
         "cco:DirectiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "requirement_satisfy_verify",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.115,
+          "hash": "14992ca2af216d73ed5ec2c87bf31b6c7d2bc7b3083d094047b02111510a2da9"
+        }
+      }
     },
     {
       "template_id": "clinical_quality_improvement_program",
@@ -284,7 +434,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.111,
+          "hash": "171e04549b58e7aae639db445a27a336f278bfef4496e1be9f6ec6cd190c6633"
+        }
+      }
     },
     {
       "template_id": "law_and_society_track_requirement",
@@ -302,7 +462,17 @@
         "cco:DirectiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "requirement_satisfy_verify",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.105,
+          "hash": "1814e44d5fe04568ace78eb25f314d121997e45808faf9767a09edcbd64782db"
+        }
+      }
     },
     {
       "template_id": "senior_animal_services_officer_role",
@@ -320,7 +490,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.149,
+          "hash": "1da7ef2d7474560f5226b8a6080d158f142bac859d6f16d6fddda47b4df43e3c"
+        }
+      }
     },
     {
       "template_id": "vector_control_activity",
@@ -338,7 +518,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.149,
+          "hash": "1da7ef2d7474560f5226b8a6080d158f142bac859d6f16d6fddda47b4df43e3c"
+        }
+      }
     },
     {
       "template_id": "specification_testing_event",
@@ -356,7 +546,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.106,
+          "hash": "1ee20e7d2cc1c21476ff697fc501d0c5eb3d966826178f29d7e3867c307dc1c1"
+        }
+      }
     },
     {
       "template_id": "mathematical_learning_process",
@@ -374,7 +574,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.109,
+          "hash": "20a13d527d5e7d089833db5f49831c0f9ba861d4916a7f10e5d7c250d617a728"
+        }
+      }
     },
     {
       "template_id": "data_controller_role",
@@ -392,7 +602,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.119,
+          "hash": "216f5ce2a984a1848a3d7c1abf6d0530212016b4137250f80e7f58236b50feb8"
+        }
+      }
     },
     {
       "template_id": "personal_data_processing_activity",
@@ -410,7 +630,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.119,
+          "hash": "216f5ce2a984a1848a3d7c1abf6d0530212016b4137250f80e7f58236b50feb8"
+        }
+      }
     },
     {
       "template_id": "strap_fixing_process",
@@ -428,7 +658,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.102,
+          "hash": "21eae30657e8c6b2ab4dd4482a04dccce2cd05f2892c1683a2f3db62b0cdd33d"
+        }
+      }
     },
     {
       "template_id": "investor_relations_director_role",
@@ -446,7 +686,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.124,
+          "hash": "226a568ee00664893c3cdb0ced237850098dbf53ef1b63f7d547c6030732dc3d"
+        }
+      }
     },
     {
       "template_id": "corporate_information_disclosure_process",
@@ -464,7 +714,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.124,
+          "hash": "226a568ee00664893c3cdb0ced237850098dbf53ef1b63f7d547c6030732dc3d"
+        }
+      }
     },
     {
       "template_id": "personal_health_record",
@@ -482,7 +742,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.138,
+          "hash": "227817224c87de2e81d06c5ce07075e89daa520cca319382acf480fe8af34428"
+        }
+      }
     },
     {
       "template_id": "chief_compliance_officer_role",
@@ -500,7 +770,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.134,
+          "hash": "22b483b2bc3d148bbf8293b04520e41843475a5886081a86c5629d5863e8c57c"
+        }
+      }
     },
     {
       "template_id": "protected_disclosure_process",
@@ -518,7 +798,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.134,
+          "hash": "22b483b2bc3d148bbf8293b04520e41843475a5886081a86c5629d5863e8c57c"
+        }
+      }
     },
     {
       "template_id": "improper_conduct_event",
@@ -536,7 +826,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.134,
+          "hash": "22b483b2bc3d148bbf8293b04520e41843475a5886081a86c5629d5863e8c57c"
+        }
+      }
     },
     {
       "template_id": "college_official_role",
@@ -554,7 +854,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.134,
+          "hash": "22b483b2bc3d148bbf8293b04520e41843475a5886081a86c5629d5863e8c57c"
+        }
+      }
     },
     {
       "template_id": "compliance_coordinator_role",
@@ -573,7 +883,17 @@
         "cco:Role"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.102,
+          "hash": "260d8e825e09765ce614386f82c859584d0e26ff39ce617392727946df48d156"
+        }
+      }
     },
     {
       "template_id": "credit_hour_certification_process",
@@ -591,7 +911,17 @@
         "bfo:0000057"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "participation_occurrent_continuant",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.102,
+          "hash": "260d8e825e09765ce614386f82c859584d0e26ff39ce617392727946df48d156"
+        }
+      }
     },
     {
       "template_id": "athletic_attendant_role",
@@ -609,7 +939,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.145,
+          "hash": "2a425a99b31f3b2218adda1f87ae157601b0b9e9f4b70d5fc70ec3bf65816c9c"
+        }
+      }
     },
     {
       "template_id": "conference_programme",
@@ -626,7 +966,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "2a95c27a107c6d269d242ba2fb10131e0587cca9c87219085f66b6f4d96b52f1"
+        }
+      }
     },
     {
       "template_id": "scientific_organization",
@@ -644,7 +994,17 @@
         "cco:Artifact"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "multi_restriction_conjunction",
+        "tier": "owl2_core",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "2a95c27a107c6d269d242ba2fb10131e0587cca9c87219085f66b6f4d96b52f1"
+        }
+      }
     },
     {
       "template_id": "donor_profile",
@@ -661,7 +1021,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.166,
+          "hash": "2c3fe68dc0eeace774f9380718f1271228bb45f1c716b282a8ae2da93f3bf43a"
+        }
+      }
     },
     {
       "template_id": "donation_transaction_record",
@@ -679,7 +1049,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.166,
+          "hash": "2c3fe68dc0eeace774f9380718f1271228bb45f1c716b282a8ae2da93f3bf43a"
+        }
+      }
     },
     {
       "template_id": "membership_transfer_process",
@@ -697,7 +1077,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.137,
+          "hash": "30e256c49c4e7a3e9f8a8ba57f0886ac927ac2795dabfdb3845f8ce691a9a900"
+        }
+      }
     },
     {
       "template_id": "retaining_employee_role",
@@ -715,7 +1105,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.137,
+          "hash": "30e256c49c4e7a3e9f8a8ba57f0886ac927ac2795dabfdb3845f8ce691a9a900"
+        }
+      }
     },
     {
       "template_id": "membership_transfer_request",
@@ -732,7 +1132,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.137,
+          "hash": "30e256c49c4e7a3e9f8a8ba57f0886ac927ac2795dabfdb3845f8ce691a9a900"
+        }
+      }
     },
     {
       "template_id": "education_health_care_plan",
@@ -750,7 +1160,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.112,
+          "hash": "3158807e302148caac0de0c98141818552bcb47f04e5721812d7cf3b88a77e07"
+        }
+      }
     },
     {
       "template_id": "educational_placement_process",
@@ -768,7 +1188,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.112,
+          "hash": "3158807e302148caac0de0c98141818552bcb47f04e5721812d7cf3b88a77e07"
+        }
+      }
     },
     {
       "template_id": "provider_change_request_process",
@@ -786,7 +1216,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.11,
+          "hash": "3f2e5f74a1055dcb9e354cd1151769469ddeede3e7c3707f069cd8ba93849e66"
+        }
+      }
     },
     {
       "template_id": "ozone_therapy_session",
@@ -804,7 +1244,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.1,
+          "hash": "410522f9e4692c1a736a5f45fddc141788ba9438503ca969450ff75adf0f9721"
+        }
+      }
     },
     {
       "template_id": "cloud_storage_allocation",
@@ -822,7 +1272,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "allocation_mapping",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "11",
+          "label": "Energy and Well Drilling",
+          "rel_margin": 0.118,
+          "hash": "42ec9b460feb00027126f44316d054fbb5a369464f9d0da04652338b61996201"
+        }
+      }
     },
     {
       "template_id": "measurement_capability",
@@ -840,7 +1300,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.14,
+          "hash": "43cb487986008b381365d62c95b260aad105119db73e45d810f83dde5a841760"
+        }
+      }
     },
     {
       "template_id": "cybersecurity_incident",
@@ -858,7 +1328,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.116,
+          "hash": "457123b6ff1e9b8470a956bbd2556c801be1f0ed3b4190925bef05f2778011a5"
+        }
+      }
     },
     {
       "template_id": "device_inventory_record",
@@ -875,7 +1355,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.116,
+          "hash": "457123b6ff1e9b8470a956bbd2556c801be1f0ed3b4190925bef05f2778011a5"
+        }
+      }
     },
     {
       "template_id": "community_learning_disability_nurse",
@@ -893,7 +1383,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "486f898e33c96accf01a56ba3d7ff8e84baa64837f35d8d89b24a43b7d783cf4"
+        }
+      }
     },
     {
       "template_id": "role_perception",
@@ -910,7 +1410,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "486f898e33c96accf01a56ba3d7ff8e84baa64837f35d8d89b24a43b7d783cf4"
+        }
+      }
     },
     {
       "template_id": "cardiothoracic_radiologist_role",
@@ -928,7 +1438,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "4a715b7c7825eff3aef1aeab9e6140eef0915e5e599d6fe87e5c2525cb0edf85"
+        }
+      }
     },
     {
       "template_id": "preclinical_imaging_core",
@@ -945,7 +1465,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "partonomy_bfo_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "4a715b7c7825eff3aef1aeab9e6140eef0915e5e599d6fe87e5c2525cb0edf85"
+        }
+      }
     },
     {
       "template_id": "general_manager_role",
@@ -963,7 +1493,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.113,
+          "hash": "4a8bdfaaf381a8d90d10f72ff83a1a904abcf705ef1898f14f9866f83bc06b43"
+        }
+      }
     },
     {
       "template_id": "quality_practice",
@@ -981,7 +1521,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "complement_negation",
+        "tier": "owl2_core",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "11.3",
+          "label": "Wellbore Trajectory and Survey",
+          "rel_margin": 0.16,
+          "hash": "54830053b53383d410afab7ef36a585aafaa968c7cc86fce21f4a18c802fd080"
+        }
+      }
     },
     {
       "template_id": "dns_abuse_study",
@@ -999,7 +1549,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.104,
+          "hash": "55695748284d0b4dca61cf3820bc85b8b306414b8596435510ad2fba2e4163d2"
+        }
+      }
     },
     {
       "template_id": "safeguard_measure",
@@ -1017,7 +1577,17 @@
         "cco:DirectiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "requirement_satisfy_verify",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.104,
+          "hash": "55695748284d0b4dca61cf3820bc85b8b306414b8596435510ad2fba2e4163d2"
+        }
+      }
     },
     {
       "template_id": "responsible_investment_fund_collection",
@@ -1034,7 +1604,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.101,
+          "hash": "579b9a8c1421c5eab978df8c8fc52ccfeabc6e7c0ad977f15d9834e882368022"
+        }
+      }
     },
     {
       "template_id": "corporate_reputation_influence_situation",
@@ -1052,7 +1632,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.101,
+          "hash": "579b9a8c1421c5eab978df8c8fc52ccfeabc6e7c0ad977f15d9834e882368022"
+        }
+      }
     },
     {
       "template_id": "molecular_dynamics_simulation_process",
@@ -1070,7 +1660,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.107,
+          "hash": "5982edf4be463cd505a646391e98332113c9acf68fc8aeb96cfde4e3f98620eb"
+        }
+      }
     },
     {
       "template_id": "matched_sme_dataset",
@@ -1087,7 +1687,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.101,
+          "hash": "5d11990cb930175ce1dd2e246dd727ebc3ab19e0335b0b955d406a7a1c2ed040"
+        }
+      }
     },
     {
       "template_id": "it_governance_process",
@@ -1105,7 +1715,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "5e429b690eff4b34685a45a1bafa5fdca7388099d4cc812dd799c6ddcfd4458f"
+        }
+      }
     },
     {
       "template_id": "stakeholder_need",
@@ -1122,7 +1742,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "5e429b690eff4b34685a45a1bafa5fdca7388099d4cc812dd799c6ddcfd4458f"
+        }
+      }
     },
     {
       "template_id": "legal_advocacy_process",
@@ -1140,7 +1770,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.146,
+          "hash": "5f46c1f17e6e0f2c3339c03417535aff6d98ce88fe91fd0dfc18ab4d6b78653d"
+        }
+      }
     },
     {
       "template_id": "academic_program_requirement",
@@ -1156,7 +1796,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "constraint_definition_parametric",
+        "tier": "sysmlv2",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.134,
+          "hash": "5f7bb57c073ef4a9f779b3de5be221275b53703394c21284b68f9fe293131f03"
+        }
+      }
     },
     {
       "template_id": "sequencing_coverage_parameter",
@@ -1172,7 +1822,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "attribute_usage_datavalue",
+        "tier": "sysmlv2",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "650aa382e5dc729ba4de49b247c8befba2e7ccbb7567131a89bcbc49ce5999b5"
+        }
+      }
     },
     {
       "template_id": "clinical_genomic_analysis_program",
@@ -1190,7 +1850,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "650aa382e5dc729ba4de49b247c8befba2e7ccbb7567131a89bcbc49ce5999b5"
+        }
+      }
     },
     {
       "template_id": "genomic_sequencing_test",
@@ -1208,7 +1878,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.14,
+          "hash": "67db165e58d902f8464480394e12b1aca2d07b62388e8080a6960bc7d44ef021"
+        }
+      }
     },
     {
       "template_id": "personal_health_profile",
@@ -1226,7 +1906,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.14,
+          "hash": "67db165e58d902f8464480394e12b1aca2d07b62388e8080a6960bc7d44ef021"
+        }
+      }
     },
     {
       "template_id": "concept_construction_process",
@@ -1244,7 +1934,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.3",
+          "label": "Result Capture and Interpretation",
+          "rel_margin": 0.104,
+          "hash": "6837a95bd1f61bc3be8f3e325c9d0512b0de79b29a4c5c358c9f1a458032ca73"
+        }
+      }
     },
     {
       "template_id": "rendered_animation_artifact",
@@ -1262,7 +1962,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "information_realization",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.118,
+          "hash": "697cf75a5995560d2bf25150ea2549e5b98366d9aded2fbd5350777f512da1b4"
+        }
+      }
     },
     {
       "template_id": "social_media_account_administrator",
@@ -1280,7 +1990,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.106,
+          "hash": "6beafc0aa3ef01c2eab1f5414f193afbbc2f14eb66455c9adecca0473c3b5e19"
+        }
+      }
     },
     {
       "template_id": "social_media_account_registration",
@@ -1298,7 +2018,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.106,
+          "hash": "6beafc0aa3ef01c2eab1f5414f193afbbc2f14eb66455c9adecca0473c3b5e19"
+        }
+      }
     },
     {
       "template_id": "chief_financial_officer_role",
@@ -1316,7 +2046,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.138,
+          "hash": "6e18cc8fc9e5669b706837d822b11d176cb0e10077c664ef993be1c4448a8ea1"
+        }
+      }
     },
     {
       "template_id": "financial_strategy_and_planning_process",
@@ -1334,7 +2074,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.138,
+          "hash": "6e18cc8fc9e5669b706837d822b11d176cb0e10077c664ef993be1c4448a8ea1"
+        }
+      }
     },
     {
       "template_id": "executive_team_roster",
@@ -1351,7 +2101,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.138,
+          "hash": "6e18cc8fc9e5669b706837d822b11d176cb0e10077c664ef993be1c4448a8ea1"
+        }
+      }
     },
     {
       "template_id": "risk_informed_acceptability_evaluation",
@@ -1369,7 +2129,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.138,
+          "hash": "6fcd0458e817b3bb14383eff4c7304ed3b8213f4ce2e6d91f5789d3e61993b2e"
+        }
+      }
     },
     {
       "template_id": "qualified_source_testing_individual",
@@ -1387,7 +2157,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.102,
+          "hash": "72783abd6795629d4b3e5217b082ddfe9d82aadf6baad238871632b217e0ede6"
+        }
+      }
     },
     {
       "template_id": "continuous_emissions_monitoring_evaluation",
@@ -1405,7 +2185,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.102,
+          "hash": "72783abd6795629d4b3e5217b082ddfe9d82aadf6baad238871632b217e0ede6"
+        }
+      }
     },
     {
       "template_id": "field_equipment_coordination",
@@ -1423,7 +2213,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "participation_occurrent_continuant",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.102,
+          "hash": "72783abd6795629d4b3e5217b082ddfe9d82aadf6baad238871632b217e0ede6"
+        }
+      }
     },
     {
       "template_id": "supervised_test_unit_catalog",
@@ -1441,7 +2241,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.102,
+          "hash": "72783abd6795629d4b3e5217b082ddfe9d82aadf6baad238871632b217e0ede6"
+        }
+      }
     },
     {
       "template_id": "malnutrition_treatment_process",
@@ -1459,7 +2269,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.108,
+          "hash": "7401e1a1733917cdfb32bfd75d3e9c8ca21087770990277c8fda416b579645d4"
+        }
+      }
     },
     {
       "template_id": "hypothesis_test",
@@ -1477,7 +2297,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.3",
+          "label": "Result Capture and Interpretation",
+          "rel_margin": 0.149,
+          "hash": "75c2dda43099f8e5412037ac3256fb238910ed6969aea3aed69205d8e47b7a22"
+        }
+      }
     },
     {
       "template_id": "staff_social_media_account_administrator_role",
@@ -1495,7 +2325,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.17,
+          "hash": "76178f37f45c1c2e96ae391b1cbf4899050f8b9df07bf5f6f4195827798dabaf"
+        }
+      }
     },
     {
       "template_id": "social_networking_service_platform",
@@ -1512,7 +2352,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "coded_concept_extensible_binding",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "enum",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.17,
+          "hash": "76178f37f45c1c2e96ae391b1cbf4899050f8b9df07bf5f6f4195827798dabaf"
+        }
+      }
     },
     {
       "template_id": "back_shell_dimension_spec",
@@ -1530,7 +2380,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.11,
+          "hash": "76791a75e0ca977e7f5e66e7b7dd92ee666f121e595875a9bcf27522fff580b8"
+        }
+      }
     },
     {
       "template_id": "menu_course",
@@ -1547,7 +2407,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "partonomy_bfo_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.124,
+          "hash": "77257b61e509608ebb7c4ba3351fd64cc2a61438e60c97f08b4c3153b962c4ae"
+        }
+      }
     },
     {
       "template_id": "service_staff_role",
@@ -1565,7 +2435,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.124,
+          "hash": "77257b61e509608ebb7c4ba3351fd64cc2a61438e60c97f08b4c3153b962c4ae"
+        }
+      }
     },
     {
       "template_id": "flood_asset_condition_assessment",
@@ -1583,7 +2463,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.136,
+          "hash": "77b7e068aa941649796b491ecb5d20046b679b25ccbfd6f7e41b6640f62cfa17"
+        }
+      }
     },
     {
       "template_id": "record_authorization_role",
@@ -1601,7 +2491,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.109,
+          "hash": "7a2a57ec6ec46de918698880b15278ad6f092f74f3ef6128c5db2f247b56a974"
+        }
+      }
     },
     {
       "template_id": "communicable_disease_notification_requirement",
@@ -1619,7 +2519,17 @@
         "cco:DirectiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "requirement_satisfy_verify",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.109,
+          "hash": "7a2a57ec6ec46de918698880b15278ad6f092f74f3ef6128c5db2f247b56a974"
+        }
+      }
     },
     {
       "template_id": "youth_health_care_summary",
@@ -1637,7 +2547,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.109,
+          "hash": "7a2a57ec6ec46de918698880b15278ad6f092f74f3ef6128c5db2f247b56a974"
+        }
+      }
     },
     {
       "template_id": "mentorship_program",
@@ -1655,7 +2575,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.117,
+          "hash": "7afa1cab7d346a7bc69f15414df311b26145e26a8826736376e737695a88749f"
+        }
+      }
     },
     {
       "template_id": "student_entrepreneur_role",
@@ -1673,7 +2603,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.117,
+          "hash": "7afa1cab7d346a7bc69f15414df311b26145e26a8826736376e737695a88749f"
+        }
+      }
     },
     {
       "template_id": "incubation_program",
@@ -1691,7 +2631,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "participation_occurrent_continuant",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.117,
+          "hash": "7afa1cab7d346a7bc69f15414df311b26145e26a8826736376e737695a88749f"
+        }
+      }
     },
     {
       "template_id": "academic_curriculum_program",
@@ -1709,7 +2659,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.143,
+          "hash": "7bcf958f9bd3f7fd35c24c782d4975abc3abdf853393fcfb0bc8cd2f862bb52a"
+        }
+      }
     },
     {
       "template_id": "retail_leadership_team_member",
@@ -1727,7 +2687,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "7cc3c02d8b780c8f0f5ceafd6ca82de2b7057241ad154727292ce6f4a5421e0f"
+        }
+      }
     },
     {
       "template_id": "team_assessment_event",
@@ -1746,7 +2716,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "7cc3c02d8b780c8f0f5ceafd6ca82de2b7057241ad154727292ce6f4a5421e0f"
+        }
+      }
     },
     {
       "template_id": "abuse_indicator",
@@ -1763,7 +2743,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "coded_concept_extensible_binding",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "enum",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.116,
+          "hash": "80eb40e8c2830c9be626d67379217302c990ab4deb5e2f1b3b4488684c362e8d"
+        }
+      }
     },
     {
       "template_id": "safeguarding_report_process",
@@ -1781,7 +2771,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.116,
+          "hash": "80eb40e8c2830c9be626d67379217302c990ab4deb5e2f1b3b4488684c362e8d"
+        }
+      }
     },
     {
       "template_id": "legal_service_advertiser_role",
@@ -1799,7 +2799,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.138,
+          "hash": "84b708d6b2f644e949afd992649cf3ad68512768bbd34d7ce771a0b6b23d1706"
+        }
+      }
     },
     {
       "template_id": "donation_event",
@@ -1817,7 +2827,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.166,
+          "hash": "886758798f9f6f91c746af2c79b373daa5e55c1cffd5d23b6c2954b8eeeb0d63"
+        }
+      }
     },
     {
       "template_id": "international_growth_initiative",
@@ -1835,7 +2855,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.129,
+          "hash": "8abed5fdebce1bb8f07bb716c22b94b4625add1da60f0b970dbf5b783a58b606"
+        }
+      }
     },
     {
       "template_id": "promotional_calendar_order",
@@ -1853,7 +2883,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.117,
+          "hash": "8b2f5f708c1804a1bf35181c0ded45710f015dfef081f9cf88ca3fdd97aab859"
+        }
+      }
     },
     {
       "template_id": "clinical_performance_data_evaluation",
@@ -1871,7 +2911,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.111,
+          "hash": "8b904ab05d7420281efbb0c1ec05b240380d7a7894af170cf6c1437c09a04b36"
+        }
+      }
     },
     {
       "template_id": "quality_improvement_presentation",
@@ -1889,7 +2939,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.111,
+          "hash": "8b904ab05d7420281efbb0c1ec05b240380d7a7894af170cf6c1437c09a04b36"
+        }
+      }
     },
     {
       "template_id": "energy_efficient_appliance",
@@ -1906,7 +2966,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "componency_direct_part",
+        "tier": "odp",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.108,
+          "hash": "8ff26aac93c468ac00e98e99dc19c4f209406b6b1d0313b2e038e1a3d001cbe2"
+        }
+      }
     },
     {
       "template_id": "animation_sequence_creation",
@@ -1924,7 +2994,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.118,
+          "hash": "9148d9695d6e360c9f47eb0622f0de3f5a14ed93deb358c62478af283c737c95"
+        }
+      }
     },
     {
       "template_id": "independent_committee_investigation",
@@ -1942,7 +3022,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.109,
+          "hash": "93112a07a030f6bb6b838ed58e4165baf2705e1b00f262e7b18e5d1cf115616c"
+        }
+      }
     },
     {
       "template_id": "digital_forensic_analysis",
@@ -1959,7 +3049,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "participation_occurrent_continuant",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.109,
+          "hash": "93112a07a030f6bb6b838ed58e4165baf2705e1b00f262e7b18e5d1cf115616c"
+        }
+      }
     },
     {
       "template_id": "legal_tech_service_provision",
@@ -1977,7 +3077,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.109,
+          "hash": "93112a07a030f6bb6b838ed58e4165baf2705e1b00f262e7b18e5d1cf115616c"
+        }
+      }
     },
     {
       "template_id": "wavelength_variant",
@@ -1995,7 +3105,17 @@
         "bfo:0000040"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "variation_variant_point",
+        "tier": "sysmlv2",
+        "grounds_ddl": "enum",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.105,
+          "hash": "933015815fe49ee439edd75d9a7f1ddb85588d99a4cd14df3363d662867ecaca"
+        }
+      }
     },
     {
       "template_id": "authorized_representative_role",
@@ -2013,7 +3133,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.141,
+          "hash": "950766f6cf363de472fe280ba92bd5ecf2cf10fc045a17b5637049101777f4c5"
+        }
+      }
     },
     {
       "template_id": "financial_product_advice_service",
@@ -2031,7 +3161,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.141,
+          "hash": "950766f6cf363de472fe280ba92bd5ecf2cf10fc045a17b5637049101777f4c5"
+        }
+      }
     },
     {
       "template_id": "product_disclosure_statement",
@@ -2048,7 +3188,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.141,
+          "hash": "950766f6cf363de472fe280ba92bd5ecf2cf10fc045a17b5637049101777f4c5"
+        }
+      }
     },
     {
       "template_id": "developer_representative_role",
@@ -2066,7 +3216,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.127,
+          "hash": "98b0547db1442c6b76b45800a804187d46e2c6cbe5c130516d9b3adc3c9b2536"
+        }
+      }
     },
     {
       "template_id": "final_construction_inspection_process",
@@ -2084,7 +3244,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.127,
+          "hash": "98b0547db1442c6b76b45800a804187d46e2c6cbe5c130516d9b3adc3c9b2536"
+        }
+      }
     },
     {
       "template_id": "stage_5_checklist",
@@ -2101,7 +3271,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.127,
+          "hash": "98b0547db1442c6b76b45800a804187d46e2c6cbe5c130516d9b3adc3c9b2536"
+        }
+      }
     },
     {
       "template_id": "device_expert_role",
@@ -2119,7 +3299,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.116,
+          "hash": "9af75fee393730675d6d0b56c17f377dddde1828b5f23b611a2348174ae07dca"
+        }
+      }
     },
     {
       "template_id": "supplier_landscape_survey",
@@ -2137,7 +3327,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.116,
+          "hash": "9af75fee393730675d6d0b56c17f377dddde1828b5f23b611a2348174ae07dca"
+        }
+      }
     },
     {
       "template_id": "environmental_permitting_supervision_activity",
@@ -2155,7 +3355,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.203,
+          "hash": "9da7d2d67fc709f9af6e3f9a284a76df35723778a8314d2b918cbc9e991a43ce"
+        }
+      }
     },
     {
       "template_id": "financial_planning_process",
@@ -2173,7 +3383,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.107,
+          "hash": "9e55166c547400d03c62206517809e64b955f28dc0fbddb74e54443dcf673dec"
+        }
+      }
     },
     {
       "template_id": "leadership_experience_requirement",
@@ -2189,7 +3409,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "attribute_usage_datavalue",
+        "tier": "sysmlv2",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.107,
+          "hash": "9e55166c547400d03c62206517809e64b955f28dc0fbddb74e54443dcf673dec"
+        }
+      }
     },
     {
       "template_id": "financial_report_artifact",
@@ -2207,7 +3437,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.107,
+          "hash": "9e55166c547400d03c62206517809e64b955f28dc0fbddb74e54443dcf673dec"
+        }
+      }
     },
     {
       "template_id": "executive_director_role",
@@ -2226,7 +3466,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.115,
+          "hash": "9f1c6b26220a17ca1fa6cc700618f777121238d03f54abeab47546fa19a2a89b"
+        }
+      }
     },
     {
       "template_id": "venue_operations_oversight",
@@ -2245,7 +3495,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "multi_restriction_conjunction",
+        "tier": "owl2_core",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.115,
+          "hash": "9f1c6b26220a17ca1fa6cc700618f777121238d03f54abeab47546fa19a2a89b"
+        }
+      }
     },
     {
       "template_id": "registered_manager_role",
@@ -2263,7 +3523,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "9fdc6d585408a9ac24d67cc6b00d442e8f40fa0bbc1ba4806551bae71e2ae489"
+        }
+      }
     },
     {
       "template_id": "weight_reduction_service_execution",
@@ -2281,7 +3551,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "9fdc6d585408a9ac24d67cc6b00d442e8f40fa0bbc1ba4806551bae71e2ae489"
+        }
+      }
     },
     {
       "template_id": "clinical_efficacy_monitoring_system",
@@ -2299,7 +3579,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "information_realization",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "9fdc6d585408a9ac24d67cc6b00d442e8f40fa0bbc1ba4806551bae71e2ae489"
+        }
+      }
     },
     {
       "template_id": "patient_feedback_record",
@@ -2317,7 +3607,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "9fdc6d585408a9ac24d67cc6b00d442e8f40fa0bbc1ba4806551bae71e2ae489"
+        }
+      }
     },
     {
       "template_id": "young_physician_ambassador_role",
@@ -2336,7 +3636,17 @@
         "cco:Role"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "a0229d91d58ecbc60fbb17624d8e8e88ff8d4c054e747eb5e6a4b9c2a6e448a6"
+        }
+      }
     },
     {
       "template_id": "young_physician_eligibility_constraint",
@@ -2353,7 +3663,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "constraint_definition_parametric",
+        "tier": "sysmlv2",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "a0229d91d58ecbc60fbb17624d8e8e88ff8d4c054e747eb5e6a4b9c2a6e448a6"
+        }
+      }
     },
     {
       "template_id": "cme_seminar",
@@ -2371,7 +3691,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "a0229d91d58ecbc60fbb17624d8e8e88ff8d4c054e747eb5e6a4b9c2a6e448a6"
+        }
+      }
     },
     {
       "template_id": "financial_crisis_event",
@@ -2390,7 +3720,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.124,
+          "hash": "a0eab5907300eee95aa5f023299951d32e29767d7c673d377455462a5f7fb29a"
+        }
+      }
     },
     {
       "template_id": "social_tagging_process",
@@ -2408,7 +3748,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.108,
+          "hash": "a398849ff43de872bd7502d43b5be12ec009a5a52da1580f14dbe9476ea32760"
+        }
+      }
     },
     {
       "template_id": "arctic_expedition",
@@ -2427,7 +3777,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.137,
+          "hash": "a4f5e5a0bb1709b8f80f35f1a5fb8cce68fee4639dafc1d2b130feca2ac221b6"
+        }
+      }
     },
     {
       "template_id": "variation_margin_rule_set",
@@ -2445,7 +3805,17 @@
         "cco:DirectiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "requirement_satisfy_verify",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.114,
+          "hash": "a7e3ee7a9ed8c84eb4f3d18c80deb1dea061f0e8cd1c1a312634a237e548011c"
+        }
+      }
     },
     {
       "template_id": "recognition_manager_role",
@@ -2463,7 +3833,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.124,
+          "hash": "b07202945cdff68ea169585da3d9d0629e04fba24283c22fab91d4b597750f85"
+        }
+      }
     },
     {
       "template_id": "small_group_surcharge_rule",
@@ -2479,7 +3859,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "constraint_definition_parametric",
+        "tier": "sysmlv2",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.101,
+          "hash": "b25dc9bf5759d991931652d56f66526c0834d014faadc87dab385c5a571c87ae"
+        }
+      }
     },
     {
       "template_id": "service_charge_rate",
@@ -2495,7 +3885,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "attribute_usage_datavalue",
+        "tier": "sysmlv2",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.101,
+          "hash": "b25dc9bf5759d991931652d56f66526c0834d014faadc87dab385c5a571c87ae"
+        }
+      }
     },
     {
       "template_id": "employee_feedback_survey",
@@ -2513,7 +3913,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.14,
+          "hash": "b2684e944f7ab6d912db7753cc63d44f919f9245f26d74fabbe171b0dafb2b09"
+        }
+      }
     },
     {
       "template_id": "workplace_culture_dimension",
@@ -2530,7 +3940,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "coded_concept_extensible_binding",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "enum",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.14,
+          "hash": "b2684e944f7ab6d912db7753cc63d44f919f9245f26d74fabbe171b0dafb2b09"
+        }
+      }
     },
     {
       "template_id": "top_workplace_award",
@@ -2548,7 +3968,17 @@
         "cco:DirectiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "requirement_satisfy_verify",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.14,
+          "hash": "b2684e944f7ab6d912db7753cc63d44f919f9245f26d74fabbe171b0dafb2b09"
+        }
+      }
     },
     {
       "template_id": "b_corporation_member",
@@ -2566,7 +3996,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.14,
+          "hash": "b2684e944f7ab6d912db7753cc63d44f919f9245f26d74fabbe171b0dafb2b09"
+        }
+      }
     },
     {
       "template_id": "traditional_religious_healer_role",
@@ -2584,7 +4024,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.107,
+          "hash": "b7198f4010447b15456659ed9450a20df4bcfba34f31fa205b81bef579a8ffc5"
+        }
+      }
     },
     {
       "template_id": "ritual_act_to_restore_order",
@@ -2602,7 +4052,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.107,
+          "hash": "b7198f4010447b15456659ed9450a20df4bcfba34f31fa205b81bef579a8ffc5"
+        }
+      }
     },
     {
       "template_id": "ancestor_veneration_ceremony",
@@ -2619,7 +4079,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "participation_occurrent_continuant",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.107,
+          "hash": "b7198f4010447b15456659ed9450a20df4bcfba34f31fa205b81bef579a8ffc5"
+        }
+      }
     },
     {
       "template_id": "disabled_adult_parent_role",
@@ -2638,7 +4108,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.142,
+          "hash": "b789f836e90f16f59eb841eae3b6cf560bb9f48bdb606f1127fe8e0223b6b3ba"
+        }
+      }
     },
     {
       "template_id": "municipal_swimming_pool_assistant_manager",
@@ -2656,7 +4136,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.142,
+          "hash": "b877d5b117bdeaba65b3ae44941dfd9bb8252f7cd3c69bfdfb301b0ff66986c0"
+        }
+      }
     },
     {
       "template_id": "municipal_pool_operations_management_activity",
@@ -2674,7 +4164,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.142,
+          "hash": "b877d5b117bdeaba65b3ae44941dfd9bb8252f7cd3c69bfdfb301b0ff66986c0"
+        }
+      }
     },
     {
       "template_id": "water_quality_monitoring_activity",
@@ -2692,7 +4192,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.142,
+          "hash": "b877d5b117bdeaba65b3ae44941dfd9bb8252f7cd3c69bfdfb301b0ff66986c0"
+        }
+      }
     },
     {
       "template_id": "thermal_operating_range_constraint",
@@ -2708,7 +4218,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "constraint_definition_parametric",
+        "tier": "sysmlv2",
+        "grounds_ddl": "constraint",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.138,
+          "hash": "baf61c4f0108b3ff85c842712e1ef144572a3084e97fa674042cf9ab1da58380"
+        }
+      }
     },
     {
       "template_id": "attendance_tracking_process",
@@ -2726,7 +4246,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "participation_occurrent_continuant",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.114,
+          "hash": "bcc9f264966846dc07f768263fc2ad9ffc4ed9e72f9c2ba8976f8cb6a98ca1f7"
+        }
+      }
     },
     {
       "template_id": "educational_course",
@@ -2744,7 +4274,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.1,
+          "hash": "bd8b15ecb5431738c13263e11c8869c819ae63046afdf2dde321eaf4d5dab9e6"
+        }
+      }
     },
     {
       "template_id": "assessment_standard",
@@ -2761,7 +4301,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "coded_concept_extensible_binding",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "enum",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.1,
+          "hash": "bd8b15ecb5431738c13263e11c8869c819ae63046afdf2dde321eaf4d5dab9e6"
+        }
+      }
     },
     {
       "template_id": "intelligence_analysis_process",
@@ -2779,7 +4329,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.121,
+          "hash": "c0f78d39959ee7e30032117f4ee6411c817ebb4911cdca330830dd0ed07036a3"
+        }
+      }
     },
     {
       "template_id": "faculty_member_role",
@@ -2797,7 +4357,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.106,
+          "hash": "c10dcbe986443cfe06a1f79f5973016f8f7083b50d05d7189f75e313a7f3fefc"
+        }
+      }
     },
     {
       "template_id": "student_conduct_administrator_role",
@@ -2815,7 +4385,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.106,
+          "hash": "c10dcbe986443cfe06a1f79f5973016f8f7083b50d05d7189f75e313a7f3fefc"
+        }
+      }
     },
     {
       "template_id": "executive_officer_role",
@@ -2833,7 +4413,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.155,
+          "hash": "c17735f02db6e81dcf0fab2b0b3c9abd464e20495b338aeaaa1d7fb192bc238e"
+        }
+      }
     },
     {
       "template_id": "board_of_auditors_role",
@@ -2851,7 +4441,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.155,
+          "hash": "c17735f02db6e81dcf0fab2b0b3c9abd464e20495b338aeaaa1d7fb192bc238e"
+        }
+      }
     },
     {
       "template_id": "management_meeting_process",
@@ -2869,7 +4469,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.155,
+          "hash": "c17735f02db6e81dcf0fab2b0b3c9abd464e20495b338aeaaa1d7fb192bc238e"
+        }
+      }
     },
     {
       "template_id": "internal_auditing_division",
@@ -2887,7 +4497,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "componency_direct_part",
+        "tier": "odp",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.155,
+          "hash": "c17735f02db6e81dcf0fab2b0b3c9abd464e20495b338aeaaa1d7fb192bc238e"
+        }
+      }
     },
     {
       "template_id": "fine_assessment_event",
@@ -2905,7 +4525,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.109,
+          "hash": "c1c2989ef0376c6ae237a03fa35dcea6449c6068ca907ec91fcd71622ea9c482"
+        }
+      }
     },
     {
       "template_id": "inspection_report",
@@ -2922,7 +4552,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.106,
+          "hash": "c2ba4cfe249e899c614dc7ade884754eb3d84880fcfbc019de62716a2cbbf7be"
+        }
+      }
     },
     {
       "template_id": "secretary_role",
@@ -2942,7 +4582,17 @@
         "cco:Organization"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.3",
+          "label": "Result Capture and Interpretation",
+          "rel_margin": 0.154,
+          "hash": "c56249814944df4fe213a2600ac2e0aaf217d29a8f330d28947efbe0410ef47b"
+        }
+      }
     },
     {
       "template_id": "emergency_supplies_kit",
@@ -2960,7 +4610,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "componency_direct_part",
+        "tier": "odp",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "11.4",
+          "label": "Drilling Operations and Rig Equipment",
+          "rel_margin": 0.1,
+          "hash": "c807a05ccf8d54f3fa6bd009a1a4ec1185e0a35784462ad9bb1a1e70769c0347"
+        }
+      }
     },
     {
       "template_id": "evacuation_instruction",
@@ -2978,7 +4638,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "11.4",
+          "label": "Drilling Operations and Rig Equipment",
+          "rel_margin": 0.1,
+          "hash": "c807a05ccf8d54f3fa6bd009a1a4ec1185e0a35784462ad9bb1a1e70769c0347"
+        }
+      }
     },
     {
       "template_id": "research_management_activity",
@@ -2996,7 +4666,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.14,
+          "hash": "c9be3677dca3d1e3e1746696d8e488fb2661cf5e4a90764083d4b73832886ffd"
+        }
+      }
     },
     {
       "template_id": "ddos_mitigation_process",
@@ -3014,7 +4694,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.106,
+          "hash": "cb2de72e7d84b4464de124ea3cf5ba6a6bae74c79b76f4780ad638034d8f6c8a"
+        }
+      }
     },
     {
       "template_id": "clean_traffic_redirection",
@@ -3033,7 +4723,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "item_flow_transfer",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.106,
+          "hash": "cb2de72e7d84b4464de124ea3cf5ba6a6bae74c79b76f4780ad638034d8f6c8a"
+        }
+      }
     },
     {
       "template_id": "entrepreneur_role",
@@ -3051,7 +4751,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.146,
+          "hash": "cb52d8b7f49f8bd976a82f22b8e5c26b988534b5c25fe6806dd7d9cd7305efc4"
+        }
+      }
     },
     {
       "template_id": "business_plan",
@@ -3069,7 +4779,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.146,
+          "hash": "cb52d8b7f49f8bd976a82f22b8e5c26b988534b5c25fe6806dd7d9cd7305efc4"
+        }
+      }
     },
     {
       "template_id": "entrepreneurial_activity_process",
@@ -3087,7 +4807,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.146,
+          "hash": "cb52d8b7f49f8bd976a82f22b8e5c26b988534b5c25fe6806dd7d9cd7305efc4"
+        }
+      }
     },
     {
       "template_id": "internal_audit_strategy",
@@ -3105,7 +4835,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.133,
+          "hash": "ce7dc2a3d5c3d496a38f84b7ade7ddbb69237e800208babade266cac3338f858"
+        }
+      }
     },
     {
       "template_id": "joint_board_chair_role",
@@ -3123,7 +4863,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.129,
+          "hash": "d48edc8ad633938b0f2ba45a1a9cea95ecb357e0f42873ee24a2b43ad83bd333"
+        }
+      }
     },
     {
       "template_id": "information_service",
@@ -3141,7 +4891,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.129,
+          "hash": "d48edc8ad633938b0f2ba45a1a9cea95ecb357e0f42873ee24a2b43ad83bd333"
+        }
+      }
     },
     {
       "template_id": "joint_information_environment",
@@ -3158,7 +4918,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "partonomy_bfo_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.129,
+          "hash": "d48edc8ad633938b0f2ba45a1a9cea95ecb357e0f42873ee24a2b43ad83bd333"
+        }
+      }
     },
     {
       "template_id": "call_admission_control",
@@ -3176,7 +4946,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.105,
+          "hash": "d521b5e17a9cd979af6697ef060621b3796295e47e6750aff833f19e1c5cc5b2"
+        }
+      }
     },
     {
       "template_id": "service_level_agreement",
@@ -3194,7 +4974,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "multi_restriction_conjunction",
+        "tier": "owl2_core",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.105,
+          "hash": "d521b5e17a9cd979af6697ef060621b3796295e47e6750aff833f19e1c5cc5b2"
+        }
+      }
     },
     {
       "template_id": "network_resource_mapping",
@@ -3212,7 +5002,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "allocation_mapping",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.105,
+          "hash": "d521b5e17a9cd979af6697ef060621b3796295e47e6750aff833f19e1c5cc5b2"
+        }
+      }
     },
     {
       "template_id": "petitioner_role",
@@ -3230,7 +5030,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.112,
+          "hash": "d58f19558dde4b1786efd274a16f8052d37e9b34a0d376871bed9463c6888f4a"
+        }
+      }
     },
     {
       "template_id": "adult_adoption_process",
@@ -3248,7 +5058,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.112,
+          "hash": "d58f19558dde4b1786efd274a16f8052d37e9b34a0d376871bed9463c6888f4a"
+        }
+      }
     },
     {
       "template_id": "adoption_application_form",
@@ -3266,7 +5086,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.112,
+          "hash": "d58f19558dde4b1786efd274a16f8052d37e9b34a0d376871bed9463c6888f4a"
+        }
+      }
     },
     {
       "template_id": "healthcare_analytics_process",
@@ -3284,7 +5114,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.138,
+          "hash": "d848278aa9c9c4da9f55b8857343994278cad407f47c8e7653a3fdfa70dec836"
+        }
+      }
     },
     {
       "template_id": "clinical_intelligence_artifact",
@@ -3301,7 +5141,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.138,
+          "hash": "d848278aa9c9c4da9f55b8857343994278cad407f47c8e7653a3fdfa70dec836"
+        }
+      }
     },
     {
       "template_id": "performance_based_care_provider_role",
@@ -3319,7 +5169,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.138,
+          "hash": "d848278aa9c9c4da9f55b8857343994278cad407f47c8e7653a3fdfa70dec836"
+        }
+      }
     },
     {
       "template_id": "hssseq_issue_document",
@@ -3337,7 +5197,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.1,
+          "hash": "d8bb38e5a07862d4327f323c96d1e0724548ce99b9b1554349552aa537feb2df"
+        }
+      }
     },
     {
       "template_id": "decision_maker_role",
@@ -3356,7 +5226,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "10.3",
+          "label": "Requirements, Constraints and Analysis",
+          "rel_margin": 0.221,
+          "hash": "d9c53cfd1347d5a6884898fe153f96d536ee3f4b66fa492ae15aab15fa4461ea"
+        }
+      }
     },
     {
       "template_id": "etymological_deciphering",
@@ -3374,7 +5254,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "12",
+          "label": "Geometric and Constructive Solid Geometry Design",
+          "rel_margin": 0.109,
+          "hash": "db827bd2658ac5be82f42bac6a60a1f7c714b3275fd2d3b2242b9729da498aa9"
+        }
+      }
     },
     {
       "template_id": "graduation_eligibility_assessment",
@@ -3392,7 +5282,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.1,
+          "hash": "ddbe93ccee6fdc6045e2ea1272439958cec50b616be2ebfdbd100495f7921472"
+        }
+      }
     },
     {
       "template_id": "residency_requirement",
@@ -3410,7 +5310,17 @@
         "cco:DirectiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "requirement_satisfy_verify",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.1,
+          "hash": "ddbe93ccee6fdc6045e2ea1272439958cec50b616be2ebfdbd100495f7921472"
+        }
+      }
     },
     {
       "template_id": "appeal_waiver_certification",
@@ -3429,7 +5339,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "time_indexed_participation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.134,
+          "hash": "dea245b47e1e46fd6b5dfb21ee15f449055fd2b2a2619210c07bf5da3f7226f2"
+        }
+      }
     },
     {
       "template_id": "board_meeting_agenda_item",
@@ -3447,7 +5367,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.134,
+          "hash": "dea245b47e1e46fd6b5dfb21ee15f449055fd2b2a2619210c07bf5da3f7226f2"
+        }
+      }
     },
     {
       "template_id": "cancer_support_program",
@@ -3465,7 +5395,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.11,
+          "hash": "e0f1631bcb384e61619ced524201dc81f4b9bcc2d0ffeebdf255f818e7342575"
+        }
+      }
     },
     {
       "template_id": "unaccompanied_minor_role",
@@ -3483,7 +5423,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.112,
+          "hash": "e269bc8409353af14399f580fcc74fa79e6ba6176a8a79e7a8b745c5adbf3328"
+        }
+      }
     },
     {
       "template_id": "pick_drop_location",
@@ -3500,7 +5450,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "partonomy_bfo_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.1",
+          "label": "Specimen Lifecycle Management",
+          "rel_margin": 0.112,
+          "hash": "e269bc8409353af14399f580fcc74fa79e6ba6176a8a79e7a8b745c5adbf3328"
+        }
+      }
     },
     {
       "template_id": "urine_drug_screening_procedure",
@@ -3520,7 +5480,17 @@
         "cco:Process"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.101,
+          "hash": "e270cd81adcfcbbc0e0fead029ec82fd2e3e5a7d57d00d645618b936e89288b5"
+        }
+      }
     },
     {
       "template_id": "juvenile_offender_patient_role",
@@ -3540,7 +5510,17 @@
         "cco:AgentRole"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.101,
+          "hash": "e270cd81adcfcbbc0e0fead029ec82fd2e3e5a7d57d00d645618b936e89288b5"
+        }
+      }
     },
     {
       "template_id": "payment_method_category",
@@ -3559,7 +5539,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "coded_concept_extensible_binding",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "enum",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.101,
+          "hash": "e270cd81adcfcbbc0e0fead029ec82fd2e3e5a7d57d00d645618b936e89288b5"
+        }
+      }
     },
     {
       "template_id": "biocultural_research_design",
@@ -3577,7 +5567,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.125,
+          "hash": "e33b544750d245ee1cf179910bf0c40327b8771d3a822aa16b9008b035cdac9f"
+        }
+      }
     },
     {
       "template_id": "nutritional_status_indicator",
@@ -3594,7 +5594,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "polymorphic_value_choice",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "eav",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.125,
+          "hash": "e33b544750d245ee1cf179910bf0c40327b8771d3a822aa16b9008b035cdac9f"
+        }
+      }
     },
     {
       "template_id": "informed_consent_process",
@@ -3612,7 +5622,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.125,
+          "hash": "e33b544750d245ee1cf179910bf0c40327b8771d3a822aa16b9008b035cdac9f"
+        }
+      }
     },
     {
       "template_id": "board_member_role",
@@ -3630,7 +5650,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.112,
+          "hash": "e3eaf0ec779239503247f2023473c70218e94b0b4cfe2dbd47bfa9b00242289f"
+        }
+      }
     },
     {
       "template_id": "property_assessment_notice",
@@ -3647,7 +5677,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.112,
+          "hash": "e3eaf0ec779239503247f2023473c70218e94b0b4cfe2dbd47bfa9b00242289f"
+        }
+      }
     },
     {
       "template_id": "animal_control_officer_role",
@@ -3665,7 +5705,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.171,
+          "hash": "e4f9c6ca8f4d7009b6f806f3299cd799919e14c90f7e195fd1137cea4f5b7d72"
+        }
+      }
     },
     {
       "template_id": "eligible_raffle_conductor_role",
@@ -3683,7 +5733,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.109,
+          "hash": "e804d585fad8cf6c85857de2c2be3d8fe4b9acee9d599fbd36937e79ed596c52"
+        }
+      }
     },
     {
       "template_id": "data_export_process",
@@ -3701,7 +5761,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.114,
+          "hash": "eb2eaf2bdc15ffd354c465e99cb84bfd3dc032dba6e1e643d1dbc3f6c0c1ddfa"
+        }
+      }
     },
     {
       "template_id": "patient_educational_content_package",
@@ -3719,7 +5789,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.163,
+          "hash": "ee1f40d58d721ae5729521512e33226cc0e811cf7806babcc634804b441349ae"
+        }
+      }
     },
     {
       "template_id": "observatory_mounting_configuration",
@@ -3737,7 +5817,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "allocation_mapping",
+        "tier": "sysmlv2",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.106,
+          "hash": "ee7309543bb91b6f3825915303a5ea3b2a6559b6425113eff36d25dea52d3f03"
+        }
+      }
     },
     {
       "template_id": "telemarketer_sales_administrator_role",
@@ -3755,7 +5845,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.111,
+          "hash": "efe9643e3cce7cb6a92606c4dedefb73e3a3b24dea77a91af92e4d8f431b1f1d"
+        }
+      }
     },
     {
       "template_id": "telemarketing_kpi_constraint",
@@ -3773,7 +5873,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.111,
+          "hash": "efe9643e3cce7cb6a92606c4dedefb73e3a3b24dea77a91af92e4d8f431b1f1d"
+        }
+      }
     },
     {
       "template_id": "weekly_sales_report",
@@ -3792,7 +5902,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "description_and_situation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.111,
+          "hash": "efe9643e3cce7cb6a92606c4dedefb73e3a3b24dea77a91af92e4d8f431b1f1d"
+        }
+      }
     },
     {
       "template_id": "clearing_broker_role",
@@ -3810,7 +5930,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.183,
+          "hash": "f1e204b571c13a8d8fc2f1de45d677e86aee0c1f956ef31cb88dadb4953d819a"
+        }
+      }
     },
     {
       "template_id": "security_infrastructure",
@@ -3827,7 +5957,17 @@
         "bfo:0000004"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "componency_direct_part",
+        "tier": "odp",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.183,
+          "hash": "f1e204b571c13a8d8fc2f1de45d677e86aee0c1f956ef31cb88dadb4953d819a"
+        }
+      }
     },
     {
       "template_id": "duplicating_request",
@@ -3845,7 +5985,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "f59af2109f25dac613f76b8370f50dfd0c31c549a5a5300b4f4cabf7fa3cc22e"
+        }
+      }
     },
     {
       "template_id": "mail_dispatch_process",
@@ -3863,7 +6013,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.103,
+          "hash": "f59af2109f25dac613f76b8370f50dfd0c31c549a5a5300b4f4cabf7fa3cc22e"
+        }
+      }
     },
     {
       "template_id": "referral_source_role",
@@ -3881,7 +6041,17 @@
         "bfo:0000023"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "agent_role",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.112,
+          "hash": "fa0c59a0658bce4082be2826b1548cf16d4ee97beb0b998b653159a63ee8ba4e"
+        }
+      }
     },
     {
       "template_id": "survey_finding",
@@ -3899,7 +6069,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.112,
+          "hash": "fa0c59a0658bce4082be2826b1548cf16d4ee97beb0b998b653159a63ee8ba4e"
+        }
+      }
     },
     {
       "template_id": "vehicle_power_type",
@@ -3917,7 +6097,17 @@
         "cco:DescriptiveICE"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "variation_variant_point",
+        "tier": "sysmlv2",
+        "grounds_ddl": "enum",
+        "domain": {
+          "code": "11.4",
+          "label": "Drilling Operations and Rig Equipment",
+          "rel_margin": 0.104,
+          "hash": "fa1374ee3ca52a77c058f66df9187db5b8063fab14b05cf87720dc088878b846"
+        }
+      }
     },
     {
       "template_id": "breeding_program_application",
@@ -3934,7 +6124,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "collection_membership",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.103,
+          "hash": "fd95ba699bc7670d46e08908b4275b8c817767f8b65c01723ad1ae711ccd17cc"
+        }
+      }
     },
     {
       "template_id": "measurement_capability_profile",
@@ -3952,7 +6152,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "reified_nary_relation",
+        "tier": "odp",
+        "grounds_ddl": "junction",
+        "domain": {
+          "code": "9.4",
+          "label": "Quality, Compliance and Traceability",
+          "rel_margin": 0.14,
+          "hash": "ff4cb277a234e06321500cb1b70c553cfbc3d3ac37a05d4d752c84840f80d8b1"
+        }
+      }
     },
     {
       "template_id": "debt_casework_process",
@@ -3970,7 +6180,17 @@
         "bfo:0000015"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "action_definition_behavior",
+        "tier": "sysmlv2",
+        "grounds_ddl": "dimension",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.113,
+          "hash": "ff66dccb66d47e3109941481e7a411c3c17587ca1dcd8e527001851b61366ae6"
+        }
+      }
     },
     {
       "template_id": "housing_policy_information",
@@ -3987,7 +6207,17 @@
         "cco:InformationContentEntity"
       ],
       "broader": [],
-      "provenance": {}
+      "provenance": {
+        "pattern": "open_world_extension",
+        "tier": "fhir_minimum",
+        "grounds_ddl": "nested-child",
+        "domain": {
+          "code": "9",
+          "label": "Laboratory Information Management",
+          "rel_margin": 0.113,
+          "hash": "ff66dccb66d47e3109941481e7a411c3c17587ca1dcd8e527001851b61366ae6"
+        }
+      }
     },
     {
       "template_id": "filler_businessactivityprocess",

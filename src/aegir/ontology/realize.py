@@ -45,12 +45,12 @@ _NUMERIC_XSD = {"xsd:integer", "xsd:int", "xsd:long", "xsd:decimal", "xsd:double
 _GENERIC = {"class", "subclass", "basic", "template", "generic", "foundation", "long", "tail",
             "complex", "axiom", "the", "and", "for", "with", "via", "to", "of", "an", "from"}
 
-# Per-family archetype mix — emptied when the hand-authored 01-07 seed families were retired. Content-derived
-# templates (08_derived) carry no hand-tuned family archetype: a template's DDL shape comes from the ontology
-# PATTERN it grounds (GROUNDS_TO_PROFILE below — the reasoner-faithful route), else falls to _DEFAULT_MIX.
-# (Kept as an extension point should a future family want an explicit archetype.)
-FAMILY_PROFILES: dict[str, dict[str, float]] = {}
-_DEFAULT_MIX = {"normalized": 0.3, "eav": 0.3, "junction": 0.25, "star": 0.15}
+# The DDL shape of a derived template comes from the axiom pattern it GROUNDS (GROUNDS_TO_PROFILE below —
+# lowering-by-theorem), carried in provenance.grounds_ddl across the promote boundary. There is NO archetype
+# mix and NO sampled fallback: a missing grounding signal gets the MINIMAL commitment (normalized), visibly
+# tagged in provenance — never a dice-roll. (Trivial-stochastic choice launders a missing signal into false
+# structure; randomness is admissible only where it represents calibrated uncertainty — Jøsang, subjective
+# logic — which a uniform profile draw does not.)
 
 # Closes the ontology↔DDL loop: an axiom pattern's grounds_ddl (patterns.py) → the realize profile that
 # faithfully materializes it. So a reified-relation primitive deterministically becomes a junction (not a
@@ -343,19 +343,32 @@ _GENERATORS = {
 }
 
 
-def choose_profile(template: CatalogTemplate, family: str, rng) -> str:
-    mix = FAMILY_PROFILES.get(family, _DEFAULT_MIX)
-    profiles, weights = zip(*mix.items())
-    return rng.choices(list(profiles), weights=list(weights), k=1)[0]
+def choose_profile(template: CatalogTemplate, family: str, rng=None) -> "tuple[str, str]":
+    """DETERMINISTIC profile choice → ``(profile, profile_source)``. The signal is the template's
+    ``provenance.grounds_ddl`` (the axiom pattern's declared DDL structure, threaded across the promote
+    boundary): present → the lowering-by-theorem profile. Absent → the minimal commitment (``normalized``),
+    with the source recording the missing signal — the visible work-queue for deriving groundings, not a
+    dice-roll that would fabricate structure from noise. ``rng`` is retained for caller compatibility and
+    unused."""
+    grounds = str((template.provenance or {}).get("grounds_ddl") or "")
+    if grounds:
+        return profile_for_grounds(grounds), f"grounds_ddl:{grounds}"
+    return "normalized", "default-minimal(no-grounding-signal)"
 
 
 def realize_schema(template: CatalogTemplate, family: str, *, profile: str | None = None,
                    rng=None) -> RealizedSchema:
-    """Realize a template into a schema subgraph under a structural ``profile`` (sampled by family
-    archetype if not given). Falls back gracefully when a profile's preconditions aren't met."""
+    """Realize a template into a schema subgraph under a structural ``profile`` (deterministic from the
+    template's declared DDL grounding if not given — see ``choose_profile``). Falls back gracefully when a
+    profile's preconditions aren't met. ``rs.complexity['profile_source']`` records the provenance of the
+    choice (grounds_ddl / default-minimal / explicit) — the authenticity audit travels with the artifact."""
     import random
     rng = rng or random.Random(0)
-    profile = profile or choose_profile(template, family, rng)
+    if profile is None:
+        profile, profile_source = choose_profile(template, family)
+    else:
+        profile_source = "explicit"
     gen = _GENERATORS.get(profile, _realize_normalized)
     rs = gen(template, family, rng)
+    rs.complexity["profile_source"] = profile_source
     return rs
