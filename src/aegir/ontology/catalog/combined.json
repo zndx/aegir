@@ -2673,14 +2673,13 @@
     },
     {
       "template_id": "retail_leadership_team_member",
-      "manchester_template": "Class: {RetailLeadershipTeamMember:Class} SubClassOf: bfo:0000023, bfo:0000052 some {CorporateEmployee:Class}, bfo:0000054 some {TeamFunction:Class}",
+      "manchester_template": "Class: {RetailLeadershipTeamMember:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {CorporateEmployee:Class} and bfo:0000054 some bfo:0000015",
       "slot_types": {
         "RetailLeadershipTeamMember": "Class",
-        "CorporateEmployee": "Class",
-        "TeamFunction": "Class"
+        "CorporateEmployee": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A RetailLeadershipTeamMember is a role borne by exactly one CorporateEmployee that realizes some TeamFunction.",
+      "verbal_template": "A role realized in a corporate employee that realizes a process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -3451,14 +3450,13 @@
     },
     {
       "template_id": "executive_director_role",
-      "manchester_template": "Class: {ExecutiveDirectorRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {OrganizationMember:Class}, bfo:0000054 some {ExecutiveDirectorFunction:Class}",
+      "manchester_template": "Class: {ExecutiveDirectorRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {OrganizationMember:Class} and bfo:0000054 some bfo:0000015",
       "slot_types": {
         "ExecutiveDirectorRole": "Class",
-        "OrganizationMember": "Class",
-        "ExecutiveDirectorFunction": "Class"
+        "OrganizationMember": "Class"
       },
       "is_complex": true,
-      "verbal_template": "An ExecutiveDirectorRole is an agent_role that bearsRoleOf exactly one OrganizationMember and realizesFunction some ExecutiveDirectorFunction.",
+      "verbal_template": "A role realized in an organization member that realizes a process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -3819,14 +3817,13 @@
     },
     {
       "template_id": "recognition_manager_role",
-      "manchester_template": "Class: {RecognitionManagerRole:Class} SubClassOf: bfo:0000023 and bfo:0000052 some {RegulatoryAuthority:Class} and bfo:0000054 some {AccreditationFunction:Class}",
+      "manchester_template": "Class: {RecognitionManagerRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {RegulatoryAuthority:Class} and bfo:0000054 some bfo:0000015",
       "slot_types": {
         "RecognitionManagerRole": "Class",
-        "RegulatoryAuthority": "Class",
-        "AccreditationFunction": "Class"
+        "RegulatoryAuthority": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A RecognitionManagerRole is a BFO role borne by exactly one RegulatoryAuthority and realizes some AccreditationFunction.",
+      "verbal_template": "A role realized in a regulatory authority that realizes a process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -3982,14 +3979,13 @@
     },
     {
       "template_id": "b_corporation_member",
-      "manchester_template": "Class: {BCorporationMember:Class} SubClassOf: bfo:0000023 and bfo:0000052 some {BusinessEntity:Class} and bfo:0000054 some {CorporateCoalition:Class}",
+      "manchester_template": "Class: {BCorporationMember:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {BusinessEntity:Class} and bfo:0000054 some bfo:0000015",
       "slot_types": {
         "BCorporationMember": "Class",
-        "BusinessEntity": "Class",
-        "CorporateCoalition": "Class"
+        "BusinessEntity": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A BCorporationMember is a role borne by exactly one BusinessEntity that realizes a CorporateCoalition role.",
+      "verbal_template": "A role realized in a business entity that realizes a process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -4427,14 +4423,13 @@
     },
     {
       "template_id": "board_of_auditors_role",
-      "manchester_template": "Class: {BoardOfAuditorsRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {CorporateAgent:Class}, bfo:0000054 some {CorporateAuditFunction:Class}",
+      "manchester_template": "Class: {BoardOfAuditorsRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {CorporateAgent:Class} and bfo:0000054 some bfo:0000015",
       "slot_types": {
         "BoardOfAuditorsRole": "Class",
-        "CorporateAgent": "Class",
-        "CorporateAuditFunction": "Class"
+        "CorporateAgent": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A BoardOfAuditorsRole is a role borne by exactly one CorporateAgent that realizes a CorporateAuditFunction.",
+      "verbal_template": "A role realized in a corporate agent that realizes a process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -4566,14 +4561,14 @@
     },
     {
       "template_id": "secretary_role",
-      "manchester_template": "Class: {SecretaryRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {StateGovernment:Class}, bfo:0000054 some {LegislativeDepartment:Class}, sdg:hasOrganizationalAffiliation exactly 1 {StateGovernment:Class}, sdg:realizesFunction some {LegislativeDepartment:Class}",
+      "manchester_template": "Class: {SecretaryRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {StateGovernment:Class} and bfo:0000054 some bfo:0000015 and sdg:hasOrganizationalAffiliation exactly 1 {StateGovernment:Class} and sdg:realizesFunction some {LegislativeDepartment:Class}",
       "slot_types": {
         "SecretaryRole": "Class",
         "StateGovernment": "Class",
         "LegislativeDepartment": "Class"
       },
       "is_complex": true,
-      "verbal_template": "An agent role borne by a state government entity that realizes a legislative department function.",
+      "verbal_template": "A role realized in a state government that realizes a process, with specific organizational affiliation.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -5494,14 +5489,13 @@
     },
     {
       "template_id": "juvenile_offender_patient_role",
-      "manchester_template": "Class: {JuvenileOffenderPatientRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {IndependentContinuant:Class}, bfo:0000054 some {TreatmentProgram:Class}",
+      "manchester_template": "Class: {JuvenileOffenderPatientRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {IndependentContinuant:Class} and bfo:0000054 some bfo:0000015",
       "slot_types": {
         "JuvenileOffenderPatientRole": "Class",
-        "IndependentContinuant": "Class",
-        "TreatmentProgram": "Class"
+        "IndependentContinuant": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A JuvenileOffenderPatientRole is a role borne by exactly one IndependentContinuant that realizes a function in a TreatmentProgram.",
+      "verbal_template": "A role realized in an independent continuant that realizes a process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
