@@ -99,7 +99,7 @@ def ensure_jvm(memory: str | None = None) -> None:
     global _JVM_STARTED
     if _JVM_STARTED:
         return
-    mem = memory or os.environ.get("JVM_MEMORY", "4g")
+    mem = memory or os.environ.get("JVM_MEMORY", "24g")  # HermiT on the cold-start scale (~2.6k classes w/ CCO + ≡) OOMs at 4g
     os.environ.setdefault("JVM_MEMORY", mem)
 
     import jpype  # noqa: F401  (forces a clear error if absent)

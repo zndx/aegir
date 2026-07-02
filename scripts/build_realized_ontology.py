@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import os
 import re
 import sys
 import tempfile
@@ -241,7 +242,7 @@ def consistency_check(templates) -> "tuple[bool, list[str]]":
     doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
                       "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
     doc, _ = drop_degenerate(doc)
-    doc = import_cco_bridge_fhir(doc)
+    doc = doc if os.environ.get("AEGIR_NO_CCO") == "1" else import_cco_bridge_fhir(doc)
     doc, _ = RG.declare_used_properties(doc)
     ensure_jvm()
     _onto, path, consistent, _n, unsat = _reason(doc)
@@ -255,7 +256,12 @@ def main() -> int:
     ap.add_argument("--no-datatype-props", action="store_true", help="skip Phase-A.3 typed DataProperties")
     ap.add_argument("--strict-grounding", action="store_true",
                     help="if Phase-A.1 filler grounding yields an unsatisfiable class, drop it and re-reason")
+    ap.add_argument("--no-cco", action="store_true",
+                    help="skip the full CCO import in reasoning — 1665 classes + disjointness make HermiT "
+                         "intractable once the ontology carries hundreds of ≡; BFO's disjointness still validates")
     args = ap.parse_args()
+    if args.no_cco:
+        os.environ["AEGIR_NO_CCO"] = "1"
 
     derived = load_catalog(REPO / "src/aegir/ontology/catalog/08_derived.json").templates
     doc, head_iri = RG.render_batch(derived)
@@ -270,7 +276,7 @@ def main() -> int:
     base_doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
                            "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
     base_doc, degen = drop_degenerate(base_doc)
-    base_doc = import_cco_bridge_fhir(base_doc)  # CCO reasoning authority (HermiT validates disjointness) + FHIR bridge
+    base_doc = base_doc if os.environ.get("AEGIR_NO_CCO") == "1" else import_cco_bridge_fhir(base_doc)  # CCO authority; --no-cco skips it — the 1665-class CCO + disjointness is intractable once hundreds of ≡ interact with it
     if degen:
         print(f"   dropped {len(degen)} degenerate stale head(s) (single-letter slots): {degen}")
 
