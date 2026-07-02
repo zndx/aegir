@@ -137,6 +137,68 @@ def ground_fillers(doc: str, exclude: "frozenset[str]" = frozenset()) -> "tuple[
     return doc + "\n\n" + block + "\n", fillers
 
 
+_BACKBONE_PARENTS = None
+
+
+def _backbone_parents() -> dict:
+    """CCO's subClassOf backbone (cached), keyed by full IRI — real cco: *opaque* IRIs → … → BFO. Mirrors the
+    metrology's own merge so grounding-reachability agrees with the metrology's bfo_grounded."""
+    global _BACKBONE_PARENTS
+    if _BACKBONE_PARENTS is None:
+        import rdflib
+        from rdflib import RDFS, URIRef
+        _BACKBONE_PARENTS = {}
+        cco = REPO / "build" / "grounding" / "cco-merged.ttl"
+        if cco.exists():
+            for s, _, o in rdflib.Graph().parse(str(cco), format="turtle").triples((None, RDFS.subClassOf, None)):
+                if isinstance(s, URIRef) and isinstance(o, URIRef):
+                    _BACKBONE_PARENTS.setdefault(str(s), []).append(str(o))
+    return _BACKBONE_PARENTS
+
+
+def ground_closure(doc: str) -> "tuple[str, int]":
+    """A.1b — ground every sdg: class that cannot actually REACH BFO. ``ground_fillers`` trusts any
+    SubClassOf/≡ as grounding, but the engine's ≡ genera include CCO refs it invented as readable http IRIs
+    (``cco:DescriptiveICE``) that don't match CCO's real opaque https IRIs — so they never resolve to BFO —
+    and sdg: genus chains can dead-end. Compute real reachability (subClassOf + ≡-first-genus, prefixes
+    resolved, CCO backbone merged) and add a DIRECT ``SubClassOf: <bfo category>`` for each unreachable sdg:
+    class — a correct coarse grounding that leaves the ≡ intact. Recovers bfo_grounded to what the ontology
+    actually warrants (the metrology's anchor-walk agrees)."""
+    pfx = dict(re.findall(r"Prefix:\s*(\w+):\s*<([^>]+)>", doc))
+    bfo_ns = [x for x in (pfx.get("bfo"), "http://purl.obolibrary.org/obo/BFO_") if x]
+
+    def resolve(tok: str) -> str:
+        tok = tok.strip()
+        if tok.startswith("<") and tok.endswith(">"):
+            return tok[1:-1]
+        if ":" in tok and tok.split(":", 1)[0] in pfx:
+            p, local = tok.split(":", 1)
+            return pfx[p] + local
+        return tok
+
+    parents = {k: list(v) for k, v in _backbone_parents().items()}
+    doc_refs: set = set()
+    for m in re.finditer(r"Class:\s*(<[^>]+>|\w+:[\w-]+)\s+(?:SubClassOf|EquivalentTo):\s*([^\n]+)", doc):
+        x = resolve(m.group(1))
+        doc_refs.add(x)
+        gm = re.match(r"\s*(<[^>]+>|\w+:[\w-]+)", m.group(2))
+        if gm:
+            g = resolve(gm.group(1))
+            parents.setdefault(x, []).append(g)
+            doc_refs.add(g)
+
+    # Ground the TERMINAL dead-ends the ≡ chains bottom out at — the parentless, non-BFO IRIs the doc references
+    # (the fictional cco: genera the engine invented + sdg: leaves ground_fillers didn't reach). Grounding THESE
+    # (not the ≡-heads) lets each head reach BFO THROUGH its genus with no 2nd parent, so bfo_grounded recovers
+    # with NO tangledness penalty (a head ≡ sdg:Y ⊓ …, Y ≡ cco:Fictional resolves once cco:Fictional is grounded).
+    ung = sorted(c for c in doc_refs
+                 if c.startswith("http") and not parents.get(c) and not any(c.startswith(b) for b in bfo_ns))
+    if not ung:
+        return doc, 0
+    block = "\n".join(f"Class: <{c}> SubClassOf: {_filler_anchor(c)}" for c in ung)
+    return doc + "\n\n" + block + "\n", len(ung)
+
+
 def annotate_definitions(doc: str, derived) -> "tuple[str, int]":
     """A.2 — emit a definition annotation (iao:0000115 + rdfs:comment) for every sdg: class: the head's
     ``verbal_template`` (a genuine NL definition), or a minimal label gloss for a referenced filler.
@@ -292,6 +354,9 @@ def main() -> int:
         d, _undecl = RG.declare_used_properties(d)
         if _undecl:
             print(f"   auto-declared {len(_undecl)} used-but-undeclared propert{'y' if len(_undecl)==1 else 'ies'}: {_undecl}")
+        d, n_closure = ground_closure(d)
+        if n_closure:
+            print(f"   grounding-closure: +{n_closure} direct BFO anchors (sdg: classes whose ≡ genera don't reach BFO)")
         return d, nf, na, nd
 
     ensure_jvm()
