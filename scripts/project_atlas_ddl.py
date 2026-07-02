@@ -43,8 +43,9 @@ ATLAS = "http://127.0.0.1:21000"
 CLUSTER = "aegir"
 CATALOG_DIR = REPO / "src/aegir/ontology/catalog"
 FC_PATH = REPO / "src/aegir/ontology/family_complex.json"
-FAMILIES = ["01_foundation", "02_observation_measurement", "03_directive_governance",
-            "04_ebpf_kernel", "05_provo_lineage", "06_belief_structure", "07_long_tail"]
+# the family list comes from the catalog (content-first: just 08_derived after the 01-07 seed retirement)
+FAMILIES = [p.stem for p in sorted(CATALOG_DIR.glob("0*.json"))
+            if ".candidate" not in p.name and "combined" not in p.name]
 
 S = requests.Session()
 S.auth = ("admin", "admin")

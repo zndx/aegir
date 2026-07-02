@@ -37,7 +37,7 @@ from aegir.ontology.patterns import _FORBIDDEN  # clean-room tripwire (shared)
 from aegir.ontology.schema import CatalogTemplate, load_catalog
 
 _CATALOG_DIR = Path(__file__).resolve().parent / "catalog"
-_ALLOWED_PREFIXES = {"sdg", "bfo", "cco", "xsd", "owl", "rdf", "rdfs", "obo"}
+_ALLOWED_PREFIXES = {"sdg", "bfo", "cco", "fhir", "xsd", "owl", "rdf", "rdfs", "obo"}
 _AXIOM_KW = re.compile(r"\b(SubClassOf|EquivalentTo|DisjointWith|DisjointUnionOf|SubPropertyOf|"
                        r"SubPropertyChain|Characteristics)\b")
 _PREFIXED = re.compile(r"\b([a-z][a-z0-9]*):[A-Za-z0-9_]+")
@@ -122,16 +122,44 @@ def deeponto_parses(template: CatalogTemplate) -> "tuple[bool, str]":
 
 # ── complementary gates ─────────────────────────────────────────────────────────
 
+_CCO_MODULE = _CATALOG_DIR.parents[3] / "build" / "grounding" / "cco-module.ttl"  # π(CCO): the fixed theory
+
+
+@lru_cache(maxsize=1)
+def _theory_anchors() -> frozenset:
+    """Real class curies from the fixed theory π(CCO) (``cco-module.ttl``) — ``cco:``/``bfo:`` forms, for the
+    anchor fast-path. Graceful-empty if the module isn't built (anchors then defer to HermiT ancestry)."""
+    if not _CCO_MODULE.exists():
+        return frozenset()
+    try:
+        import rdflib
+        g = rdflib.Graph()
+        g.parse(str(_CCO_MODULE), format="turtle")
+        out: set[str] = set()
+        for s in set(g.subjects()):
+            iri = str(s)
+            if "commoncoreontologies.org/" in iri:
+                out.add("cco:" + iri.rsplit("/", 1)[-1])
+            elif "/obo/BFO_" in iri:
+                out.add("bfo:" + iri.rsplit("BFO_", 1)[-1])
+        return frozenset(out)
+    except Exception:  # noqa: BLE001
+        return frozenset()
+
+
 @lru_cache(maxsize=1)
 def known_anchors() -> frozenset:
-    """BFO/CCO anchor leaves the committed seed catalog already uses (a real-anchor allowlist for the cheap
-    anchor gate; new anchors fall through to HermiT BFO-ancestry at promotion)."""
-    out: set[str] = set()
-    for f in _CATALOG_DIR.glob("0[1-7]_*.json"):
+    """Real BFO/CCO/FHIR anchor leaves — the cheap real-anchor allowlist for the anchor gate (new anchors
+    fall through to HermiT BFO-ancestry at promotion). Sourced from the FIXED THEORY π(CCO) + our own
+    ACCRETING derived classes (``08_derived``) — NOT the retired hand-authored seed families (01-07). The
+    deriver grounds to real CCO/FHIR classes + what we have already grounded, adapting to organic inputs."""
+    out: set[str] = set(_theory_anchors())
+    for f in _CATALOG_DIR.glob("08_*.json"):
+        if ".candidate" in f.name:
+            continue
         try:
             for t in load_catalog(f).templates:
-                for a in (t.bfo_anchor_path or []):
-                    out.add(a)
+                out.update(t.bfo_anchor_path or [])
         except Exception:  # noqa: BLE001
             continue
     return frozenset(out)
@@ -142,11 +170,11 @@ def anchor_valid(bfo_anchor_path: "list[str]") -> "tuple[bool, str]":
         return False, "no anchor"
     leaf = bfo_anchor_path[-1]
     pref = leaf.split(":")[0] if ":" in leaf else ""
-    if pref not in ("bfo", "cco", "obo"):
-        return False, f"anchor leaf {leaf!r} not a BFO/CCO IRI"
+    if pref not in ("bfo", "cco", "obo", "fhir"):
+        return False, f"anchor leaf {leaf!r} not a BFO/CCO/FHIR IRI"
     if leaf in known_anchors():
         return True, ""
-    # unknown but well-formed BFO/CCO IRI: allow through to the HermiT ancestry check at promotion
+    # unknown but well-formed BFO/CCO/FHIR IRI: allow through to the HermiT ancestry check at promotion
     return True, "unverified-anchor(defer-to-hermit)"
 
 

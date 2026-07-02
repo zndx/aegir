@@ -45,17 +45,11 @@ _NUMERIC_XSD = {"xsd:integer", "xsd:int", "xsd:long", "xsd:decimal", "xsd:double
 _GENERIC = {"class", "subclass", "basic", "template", "generic", "foundation", "long", "tail",
             "complex", "axiom", "the", "and", "for", "with", "via", "to", "of", "an", "from"}
 
-# Per-family profile mix (the archetype library): which real-world structural shapes each family leans to.
-# observation→LIMS (facts+EAV+junctions), long_tail→retail/ERP (EAV+junctions), lineage→junctions, etc.
-FAMILY_PROFILES: dict[str, dict[str, float]] = {
-    "01_foundation": {"normalized": 0.6, "eav": 0.4},
-    "02_observation_measurement": {"star": 0.3, "snowflake": 0.15, "eav": 0.3, "junction": 0.25},
-    "03_directive_governance": {"normalized": 0.35, "junction": 0.4, "eav": 0.25},
-    "04_ebpf_kernel": {"star": 0.4, "normalized": 0.3, "junction": 0.3},
-    "05_provo_lineage": {"junction": 0.5, "normalized": 0.25, "star": 0.25},
-    "06_belief_structure": {"eav": 0.45, "junction": 0.3, "normalized": 0.25},
-    "07_long_tail": {"eav": 0.4, "junction": 0.35, "star": 0.25},
-}
+# Per-family archetype mix — emptied when the hand-authored 01-07 seed families were retired. Content-derived
+# templates (08_derived) carry no hand-tuned family archetype: a template's DDL shape comes from the ontology
+# PATTERN it grounds (GROUNDS_TO_PROFILE below — the reasoner-faithful route), else falls to _DEFAULT_MIX.
+# (Kept as an extension point should a future family want an explicit archetype.)
+FAMILY_PROFILES: dict[str, dict[str, float]] = {}
 _DEFAULT_MIX = {"normalized": 0.3, "eav": 0.3, "junction": 0.25, "star": 0.15}
 
 # Closes the ontology↔DDL loop: an axiom pattern's grounds_ddl (patterns.py) → the realize profile that
