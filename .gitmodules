@@ -13,3 +13,6 @@
 [submodule "components/oss-mistral-cli"]
 	path = components/oss-mistral-cli
 	url = git@github.com:zndx/oss-mistral-cli.git
+[submodule "components/kvasir"]
+	path = components/kvasir
+	url = git@github.com:zndx/kvasir.git
