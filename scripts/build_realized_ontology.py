@@ -32,6 +32,7 @@ from aegir.ontology.schema import load_catalog  # noqa: E402
 
 OUT = REPO / "corpora" / "ontology"
 SDG_NS = "https://signals360.example.org/sdg#"
+SIGNALS_OUT = REPO / "build" / "realize_signals.json"  # boundary signals (unsat justifications) → the re-authoring loop
 
 # Numeric BFO 2020 grounding so the derived axioms (which anchor to bfo:0000015 etc.) are reasoned
 # MEANINGFULLY — the continuant⊥occurrent disjointness is what makes a cross-category head unsatisfiable.
@@ -251,8 +252,16 @@ def drop_classes(doc: str, iris: "list[str]") -> str:
     return "\n".join(out)
 
 
-def _reason(doc: str):
-    """Write the OMN to a temp file, load it under HermiT, return (onto, tmp_path, consistent, n_classes, unsat)."""
+def _reason(doc: str, explain: bool = False):
+    """Write the OMN to a temp file, load it under HermiT, return (onto, tmp_path, consistent, n_classes, unsat, why).
+
+    This is the realize BOUNDARY — the one place a full-context logical conflict (a class the derivation
+    authored that is empty against BFO + π(CCO)) first becomes visible. On its own it emits only a NAME
+    ("X is unsatisfiable"), a signal no agent can adapt to. With ``explain=True`` it also emits the SIGNAL:
+    ``why[iri] = {"axioms": [minimal justification], "why": <legible cause>}`` (via aegir.ontology.explain),
+    so the offending conjunct can be RE-AUTHORED, not just shed. Off by default because justification search
+    is expensive; only the actionable drop/halt sets need it, and when ``unsat`` is empty ``why`` is ``{}``
+    at zero cost."""
     with tempfile.NamedTemporaryFile("w", suffix=".omn", delete=False) as f:
         f.write(doc)
         path = f.name
@@ -265,7 +274,21 @@ def _reason(doc: str):
     if consistent:
         bottom = r.getUnsatisfiableClasses()
         unsat = sorted({str(c.getIRI()) for c in bottom.getEntities().toArray() if not c.isOWLNothing()})
-    return onto, path, consistent, n_classes, unsat
+    why: dict = {}
+    if explain and unsat:
+        from aegir.ontology.explain import explain_unsatisfiable
+        why = explain_unsatisfiable(onto.owl_onto, r, unsat)
+    return onto, path, consistent, n_classes, unsat, why
+
+
+def _write_signals(signals: "dict[str, dict]") -> None:
+    """Surface the boundary's per-class justifications to a stable record — the interface between the
+    reasoner boundary and the agent that re-authors the offending conjunct. Each entry is
+    ``{iri: {"axioms": [...], "why": ...}}`` for a class the realize narrowed out of the domain."""
+    import json
+    SIGNALS_OUT.parent.mkdir(parents=True, exist_ok=True)
+    SIGNALS_OUT.write_text(json.dumps(signals, indent=2, sort_keys=True))
+    print(f"   ⚑ {len(signals)} boundary signal(s) → {SIGNALS_OUT.relative_to(REPO)} (for re-authoring)")
 
 
 CCO_TTL = REPO / "build" / "grounding" / "cco-module.ttl"  # π(CCO): the ⊥-locality module — BFO + π is the one fixed theory (gate-certified tractable; full cco-merged.ttl is intractable, see build_cco_module.py)
@@ -309,7 +332,7 @@ def consistency_check(templates) -> "tuple[bool, list[str]]":
     doc = import_cco_bridge_fhir(doc)  # always aligns cco: NS; self-gates the CCO import
     doc, _ = RG.declare_used_properties(doc)
     ensure_jvm()
-    _onto, path, consistent, _n, unsat = _reason(doc)
+    _onto, path, consistent, _n, unsat, _why = _reason(doc)
     Path(path).unlink(missing_ok=True)
     return consistent, unsat
 
@@ -363,7 +386,7 @@ def main() -> int:
     ensure_jvm()
     exclude: "set[str]" = set()
     doc, nf, na, nd = build(ground=True)
-    onto, path, consistent, n_classes, unsat = _reason(doc)
+    onto, path, consistent, n_classes, unsat, why = _reason(doc, explain=True)
     # --strict-grounding: greedily drop ONLY the filler-grounding edges that introduce unsatisfiability,
     # re-reasoning until clean (or no further progress) — keeps the bulk of the grounding gain.
     for _ in range(5):
@@ -374,20 +397,36 @@ def main() -> int:
         print(f"   ⚠ {len(bad)} unsatisfiable — dropping their grounding + re-reasoning ({len(exclude)} excluded)")
         Path(path).unlink(missing_ok=True)
         doc, nf, na, nd = build(ground=True, exclude=frozenset(exclude))
-        onto, path, consistent, n_classes, unsat = _reason(doc)
-    # a class still unsatisfiable after the grounding back-off has a bad DERIVED axiom (e.g. a mis-used BFO
-    # role); the membrane should catch it but a degenerate parse can mask it — shed it for a clean realize.
+        onto, path, consistent, n_classes, unsat, why = _reason(doc, explain=True)
+    # Domain-narrowing is the boundary where the conflict is finally VISIBLE: a class still unsatisfiable
+    # after the grounding back-off carries a bad DERIVED axiom (a mis-used BFO role / a filler grounded
+    # into a disjoint category). Emit the SIGNAL — the minimal justification per class (why + axioms),
+    # recorded for the re-authoring loop — BEFORE dropping, so a shed class is something the agent can
+    # re-author, not a silent last-resort bailout.
+    signals: dict = {}
     for _ in range(8):
         if not unsat:
             break
-        print(f"   ⚠ narrowing domain: dropping {len(unsat)} class(es) unsatisfiable vs the theory: "
-              f"{[u.split('#')[-1] for u in unsat[:8]]}")
+        signals.update(why)
+        for iri in unsat:
+            sig = why.get(iri, {})
+            print(f"   ⚠ narrowing: {iri.split('#')[-1]} — {sig.get('why', 'unsatisfiable vs the theory')}")
+            for ax in sig.get("axioms", [])[:5]:
+                print(f"       · {ax}")
         doc = drop_classes(doc, unsat)
         Path(path).unlink(missing_ok=True)
-        onto, path, consistent, n_classes, unsat = _reason(doc)
+        onto, path, consistent, n_classes, unsat, why = _reason(doc, explain=True)
+    if unsat:
+        signals.update(why)  # fold the post-back-off residual into the record too
+    if signals:
+        _write_signals(signals)  # the surfaced record — the interface to the re-authoring loop
+    elif SIGNALS_OUT.exists():
+        SIGNALS_OUT.unlink()  # clean build: clear any stale signal record
     if unsat:  # INVARIANT: the emitted artifact MUST be consistent w.r.t. BFO+π(CCO) — halt, never emit inconsistent
         print(f"✘ {len(unsat)} class(es) remain unsatisfiable after domain-narrowing — cannot emit a consistent "
-              f"artifact against the theory (fix the generation): {[u.split('#')[-1] for u in unsat[:12]]}", file=sys.stderr)
+              f"artifact against the theory (fix the generation):", file=sys.stderr)
+        for iri in unsat[:12]:
+            print(f"    {iri.split('#')[-1]}: {why.get(iri, {}).get('why', '?')}", file=sys.stderr)
         return 2
     try:
         print(f"   Phase-A: grounded {nf} fillers · annotated {na} classes · {nd} datatype-prop assertions")
@@ -415,7 +454,9 @@ def main() -> int:
             f"- **isConsistent**: `{consistent}`\n"
             f"- **named classes**: {n_classes}\n"
             f"- **unsatisfiable classes**: {len(unsat)}\n"
-            f"- **realized from**: the {len(derived)} FinePDFs-derived templates (`08_derived`)\n"
+            + (f"- **domain-narrowed**: {len(signals)} class(es) shed as unsatisfiable vs the theory — "
+               f"justifications recorded in `build/realize_signals.json` (the re-authoring signal)\n" if signals else "")
+            + f"- **realized from**: the {len(derived)} FinePDFs-derived templates (`08_derived`)\n"
             f"- **rigor (Phase A)**: {nf} filler classes BFO-grounded · {na} classes carry NL definitions "
             f"(iao:0000115) · {nd} typed DataProperty assertions\n"
             "- **reasoner**: HermiT (OWLAPI, via DeepOnto)\n"
