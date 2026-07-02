@@ -84,10 +84,12 @@ def parse_slots(manchester: str) -> dict:
 
 def validate_detailed(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict[str, tuple[bool, str]]":
     """The boundary-condition membrane WITH its rejection REASON — so the agent can RESPOND to the gate (the
-    agent-mediated FEEDBACK LOOP, not a one-shot drop). Renders each agent-proposed axiom standalone + loads it
-    with OWLAPI; admits whatever is WELL-FORMED OWL regardless of slot-DSL conformance (refined differentiae,
-    BFO roles, novel structures); HermiT (at realize) + OntoClean dispose downstream. Warm JVM, one session.
-    Returns {template_id: (parses?, reason)} — ``reason`` is "" on admit, else the actionable failure."""
+    agent-mediated FEEDBACK LOOP, not a one-shot drop). TWO checks: (1) WELL-FORMED OWL (render + OWLAPI parse,
+    admitting refined differentiae / BFO roles / novel structures regardless of slot-DSL conformance); (2)
+    SATISFIABLE vs the theory BFO + π(CCO) — the SAME theory the realize holds, so a class that merely parses
+    but is logically empty (e.g. a role `realized_in some Function`) is caught HERE, at authoring, not left for
+    the realize to drop. Membrane-unification: the realize is no longer the only reasoning checkpoint.
+    Returns {template_id: (ok?, reason)} — ``reason`` is "" on admit, else the actionable failure for re-authoring."""
     from aegir.ontology import reasoning_gates as RG
     from aegir.ontology.deeponto_harness import ensure_jvm
     ensure_jvm()
@@ -104,6 +106,28 @@ def validate_detailed(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict
             out[tid] = (n > 0, "" if n > 0 else "parsed to 0 classes — undeclared prefix/property or malformed Manchester")
         except Exception as e:  # noqa: BLE001
             out[tid] = (False, f"{type(e).__name__}: {str(e)[:140]}")
+
+    # (2) SATISFIABILITY vs the theory (BFO + π(CCO)) — the unified membrane. A parse-OK candidate can still be
+    # logically empty; reason over the parse-OK ones against the same theory the realize holds, in one batched
+    # HermiT pass, so the agent re-authors against the REASONER's reason rather than the realize silently dropping.
+    parse_ok = [(tid, man) for tid, man in candidates if out.get(tid, (False, ""))[0]]
+    if parse_ok:
+        try:
+            from build_realized_ontology import consistency_check  # noqa: PLC0415
+            tmpls = [dataclasses.replace(by_id[tid], manchester_template=man, slot_types=parse_slots(man))
+                     for tid, man in parse_ok]
+            _consistent, unsat = consistency_check(tmpls)
+            unsat_names = {str(u).rsplit("#", 1)[-1].rsplit("/", 1)[-1] for u in (unsat or [])}
+            for tid, man in parse_ok:
+                h = re.search(r"Class:\s*\{(\w+)", man) or re.search(r"Class:\s*<[^#>]*#(\w+)>", man)
+                if h and h.group(1) in unsat_names:
+                    hint = ("realized_in (bfo:0000054) needs a Process/occurrent filler" if "0000054" in man
+                            else "inheres_in (bfo:0000052) needs an independent-continuant bearer" if "0000052" in man
+                            else "check BFO role discipline + CCO disjointness")
+                    out[tid] = (False, f"unsatisfiable vs BFO+π(CCO): the class can have no instances — {hint}; "
+                                       "re-author the offending conjunct")
+        except Exception as e:  # noqa: BLE001 — infra failure must NOT silently pass unverified axioms
+            print(f"   ⚠ satisfiability membrane errored ({type(e).__name__}: {str(e)[:90]}) — parse-only this round")
     return out
 
 
