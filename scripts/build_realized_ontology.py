@@ -274,16 +274,18 @@ CCO_ICE = "cco:ont00000958"  # Information Content Entity (real opaque CCO IRI) 
 
 
 def import_cco_bridge_fhir(doc: str) -> str:
-    """Make CCO a REASONING authority (not just a naming one): align the cco: prefix to CCO's https IRIs, import
-    cco-merged.ttl so HermiT validates grounding against CCO's 26 disjointness axioms (it will REJECT
-    Plant⊑Vehicle), declare fhir:, and bridge each referenced FHIR type to cco:InformationContentEntity (FHIR
-    resources ARE records). bfo: already aligns (purl obo BFO_ in both ontologies), so the chains are coherent."""
+    """Align the cco: prefix to CCO's real https IRIs (ALWAYS — so our 140 cco:ont refs resolve to CCO's deep
+    hierarchy for grounding, independent of reasoning), declare fhir:, and bridge each referenced FHIR type to
+    cco:InformationContentEntity. UNLESS AEGIR_NO_CCO: also import cco-merged.ttl to make CCO a REASONING
+    authority (HermiT validates grounding against CCO's disjointness — it REJECTs Plant⊑Vehicle). The import is
+    gated because full CCO (inverse+transitive+⊔) is intractable once hundreds of ≡ interact with it (the OOM);
+    the namespace alignment is NOT — decoupling them is what lets --no-cco stay tractable yet grounded."""
     out = doc.replace("Prefix: cco: <http://www.commoncoreontologies.org/>",
                       "Prefix: cco: <https://www.commoncoreontologies.org/>")
     if "Prefix: fhir:" not in out:
         out = out.replace("Prefix: cco: <https://www.commoncoreontologies.org/>\n",
                           "Prefix: cco: <https://www.commoncoreontologies.org/>\nPrefix: fhir: <http://hl7.org/fhir/>\n")
-    if CCO_TTL.exists() and "\nImport:" not in out:
+    if CCO_TTL.exists() and "\nImport:" not in out and os.environ.get("AEGIR_NO_CCO") != "1":
         out = re.sub(r"(Ontology: <[^>]+>\n)", rf"\1Import: <file:{CCO_TTL}>\n", out, count=1)
     fhirs = sorted(set(re.findall(r"\bfhir:[A-Za-z][A-Za-z0-9]*", out)))
     if fhirs:
@@ -304,7 +306,7 @@ def consistency_check(templates) -> "tuple[bool, list[str]]":
     doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
                       "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
     doc, _ = drop_degenerate(doc)
-    doc = doc if os.environ.get("AEGIR_NO_CCO") == "1" else import_cco_bridge_fhir(doc)
+    doc = import_cco_bridge_fhir(doc)  # always aligns cco: NS; self-gates the CCO import
     doc, _ = RG.declare_used_properties(doc)
     ensure_jvm()
     _onto, path, consistent, _n, unsat = _reason(doc)
@@ -338,7 +340,7 @@ def main() -> int:
     base_doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
                            "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
     base_doc, degen = drop_degenerate(base_doc)
-    base_doc = base_doc if os.environ.get("AEGIR_NO_CCO") == "1" else import_cco_bridge_fhir(base_doc)  # CCO authority; --no-cco skips it — the 1665-class CCO + disjointness is intractable once hundreds of ≡ interact with it
+    base_doc = import_cco_bridge_fhir(base_doc)  # ALWAYS aligns cco: NS (grounding); self-gates the CCO reasoning import on AEGIR_NO_CCO
     if degen:
         print(f"   dropped {len(degen)} degenerate stale head(s) (single-letter slots): {degen}")
 
