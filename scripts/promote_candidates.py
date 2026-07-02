@@ -42,7 +42,8 @@ def _to_template(d: dict) -> CatalogTemplate:
     # templates retained grounds_ddl → 100% dice-rolled spine); do not re-sever.
     prov = dict(d.get("provenance") or {})
     for key, src in (("pattern", "_pattern"), ("tier", "_tier"),
-                     ("grounds_ddl", "_grounds_ddl"), ("domain", "_domain")):
+                     ("grounds_ddl", "_grounds_ddl"), ("domain", "_domain"),
+                     ("source_span", "_source_span")):  # the link-1 "informed by the inputs" EVIDENCE
         if d.get(src) and key not in prov:
             prov[key] = d[src]
     return CatalogTemplate(
