@@ -84,16 +84,23 @@ def _mirror_ontology() -> None:
     dst = CORPORA / "ontology"
     (dst / "catalog").mkdir(parents=True, exist_ok=True)
     n = 0
+    live = set()
     for f in sorted((SRC_ONTO / "catalog").glob("0[1-8]_*.json")):
         if ".candidate." in f.name:        # staging copies — never shared
             continue
         shutil.copy2(f, dst / "catalog" / f.name)
+        live.add(f.name)
         n += 1
-    for name in ("family_complex.json", "sdg-vocab.ttl", "SLOT_DSL.md"):
+    for stale in sorted((dst / "catalog").glob("0[1-8]_*.json")):  # a retired family leaves the mirror too
+        if stale.name not in live:
+            stale.unlink()
+            print(f"   mirror: dropped retired catalog {stale.name}")
+    for name in ("sdg-vocab.ttl", "SLOT_DSL.md"):  # family_complex.json retired (pre-wired gate → measured stat)
         src = SRC_ONTO / name
         if src.exists():
             shutil.copy2(src, dst / name)
-    print(f"   mirrored {n} family catalogs + family_complex + sdg-vocab.ttl + SLOT_DSL.md")
+    (dst / "family_complex.json").unlink(missing_ok=True)  # drop the retired artifact from the mirror
+    print(f"   mirrored {n} family catalogs + sdg-vocab.ttl + SLOT_DSL.md")
 
 
 def _regen_vocabulary() -> bool:

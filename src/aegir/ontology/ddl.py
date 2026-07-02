@@ -548,6 +548,16 @@ def _anchor_root(template: CatalogTemplate) -> str | None:
     return template.bfo_anchor_path[-1] if template.bfo_anchor_path else None
 
 
+class _NoSanction:
+    """The fc=None stand-in since the family-complex retirement: no pre-wired sanction exists, so no
+    cross-family edge is emitted — candidates are still audited (the measurement survives the gate).
+    Cross-domain relational structure is the deriver's to EARN (Convert 2: relations asserted between
+    classes, lowered by theorem), never a name-match heuristic's to wire."""
+
+    def is_allowed(self, simplex) -> bool:  # noqa: ARG002 — uniform interface
+        return False
+
+
 def cross_family_fks(spine: list[SpineTable], fc) -> tuple[list[FKEdge], list[dict]]:
     """Emit cross-family FK edges sanctioned by the :class:`FamilyComplex`.
 
@@ -556,7 +566,10 @@ def cross_family_fks(spine: list[SpineTable], fc) -> tuple[list[FKEdge], list[di
     shares the source's BFO anchor root (or both anchorless). The edge is emitted
     only if ``fc.is_allowed({src_family, dst_family})`` — punctured/out-of-closure
     simplices are suppressed. Every candidate is returned in the audit list.
+    ``fc=None`` (normal since the family-complex retirement) → :class:`_NoSanction`.
     """
+    if fc is None:
+        fc = _NoSanction()
     edges: list[FKEdge] = []
     audit: list[dict] = []
     by_fam: dict[str, list[SpineTable]] = {}

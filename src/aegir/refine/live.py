@@ -114,7 +114,7 @@ def live_draft(*, n_templates: int = 2, family: str | None = None, seed: int = 0
         chosen = cands[idx * n_templates:(idx + 1) * n_templates] or cands[:n_templates]
     else:
         chosen = random.Random(seed + idx).sample(cands, min(n_templates, len(cands)))
-    fc = FamilyComplex.from_json(Path(FAMILY_COMPLEX))
+    fc = FamilyComplex.load_optional(Path(FAMILY_COMPLEX))  # None post-retirement (no pre-wired gate)
     payload = chapter_relational_payload(chosen, fc, seed=seed, realize=realize)
     # UNIQUE per distinct template-set: with diverse sampling many chapters share a first template, so a bare
     # ch_live_<first> id collides and overwrites (~54% loss observed). A short hash of the sorted set keeps the

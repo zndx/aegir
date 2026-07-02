@@ -128,7 +128,7 @@ def main() -> int:
     args = ap.parse_args()
 
     objs, fam_of = load_catalog_objs()
-    fc = FamilyComplex.from_json(str(REPO / "src/aegir/ontology/family_complex.json"))
+    fc = FamilyComplex.load_optional(str(REPO / "src/aegir/ontology/family_complex.json"))
 
     # realized set from the corpus (if given)
     realized = set()

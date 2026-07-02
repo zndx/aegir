@@ -134,6 +134,16 @@ class FamilyComplex:
         return self.r_axiom_floor + 0.01
 
     @classmethod
+    def load_optional(cls, path: str | Path) -> "FamilyComplex | None":
+        """``from_json`` that returns None when the artifact is absent/unreadable — the normal state since
+        the family-complex retirement ([[convert_priority_cas]]): cross-family co-occurrence is a MEASURED
+        post-derivation statistic now, never a pre-wired gate. Callers treat None as 'no sanction'."""
+        try:
+            return cls.from_json(path)
+        except (OSError, ValueError, KeyError):
+            return None
+
+    @classmethod
     def from_json(cls, path: str | Path) -> "FamilyComplex":
         path = Path(path)
         data = json.loads(path.read_text())

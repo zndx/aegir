@@ -146,7 +146,7 @@ def build_spine(per_family):
         cat = load_catalog(CATALOG_DIR / f"{f}.json")
         for t in cat.templates[:per_family]:
             spine.append(D.template_to_table(t, f))
-    fks, _ = D.cross_family_fks(spine, FamilyComplex.from_json(FC_PATH))
+    fks, _ = D.cross_family_fks(spine, FamilyComplex.load_optional(FC_PATH))
     n_valid = 0
     try:
         for st in spine:
