@@ -1,0 +1,465 @@
+{
+ "templates": {
+  "clinical_documentation_activity": {
+   "columns": {
+    "clinical_documentation_activity": [
+     "Discharge Summary",
+     "Admission Note",
+     "Progress Note",
+     "Consultation Report",
+     "Operative Record",
+     "Transfer Note",
+     "Referral Letter",
+     "Medication Reconciliation",
+     "Prenatal Assessment",
+     "Postoperative Review"
+    ],
+    "records_patient_encounter": [
+     "ER Visit",
+     "Inpatient Stay",
+     "Outpatient Clinic",
+     "Surgical Procedure",
+     "Telehealth Consult",
+     "Home Health Visit",
+     "Labor Delivery",
+     "Dialysis Session",
+     "Vaccination Drive",
+     "Well Child Exam"
+    ],
+    "utilizes_information_system": [
+     "Epic EHR",
+     "Cerner Millennium",
+     "Allscripts Sunrise",
+     "Meditech Expanse",
+     "AthenaHealth",
+     "NextGen Practice",
+     "Veradigm Healthix",
+     "OpenEMR",
+     "DrChrono",
+     "eCW Platform"
+    ]
+   },
+   "domain": "Laboratory Information Management",
+   "entity_classes": {
+    "clinical_documentation_activity": "ClinicalDocumentationActivity",
+    "records_patient_encounter": "PatientEncounter",
+    "utilizes_information_system": "InformationSystem"
+   },
+   "provenance": {
+    "membrane": {
+     "clinical_documentation_activity": "ok",
+     "records_patient_encounter": "ok",
+     "utilizes_information_system": "ok"
+    },
+    "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+    "run": "2026-07-02",
+    "source": "seed_individuals"
+   }
+  },
+  "condiment_station": {
+   "columns": {
+    "condiment_station": [
+     "KetchupDispenser",
+     "MustardStation",
+     "RelishTray",
+     "MayoPump",
+     "BBQSauceCup",
+     "HotSauceShaker",
+     "RanchSqueeze",
+     "SrirachaDrizzle",
+     "TeriyakiGlaze",
+     "VinegarSpritz"
+    ],
+    "located_at": [
+     "CafeteriaMainHall",
+     "BreakRoomUpper",
+     "CateringUnitA",
+     "LobbyCounterB",
+     "GymCafeteria",
+     "LabBreakArea",
+     "ConferenceSuiteA",
+     "DiningHallWest",
+     "OfficeKitchen1",
+     "EventSpaceEast"
+    ],
+    "offers_topping": [
+     "YellowMustard",
+     "DijonRelish",
+     "SweetChiliSauce",
+     "GarlicAioli",
+     "SpicyKetchup",
+     "RanchDressing",
+     "BBQGlaze",
+     "Sriracha",
+     "TeriyakiSauce",
+     "HotSauce"
+    ]
+   },
+   "domain": "Geometric and Constructive Solid Geometry Design",
+   "entity_classes": {
+    "condiment_station": "CondimentStation",
+    "located_at": "StationLocation",
+    "offers_topping": "AvailableTopping"
+   },
+   "provenance": {
+    "membrane": {
+     "condiment_station": "ok",
+     "located_at": "ok",
+     "offers_topping": "ok"
+    },
+    "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+    "run": "2026-07-02",
+    "source": "seed_individuals"
+   }
+  },
+  "indigenous_child_role": {
+   "columns": {
+    "bears_on": [
+     "IND-4421",
+     "SUBJ-9902",
+     "PID-8823",
+     "CUST-7710",
+     "REF-2201",
+     "OBJ-5540",
+     "PER-1199",
+     "REG-3388"
+    ],
+    "indigenous_child_role": [
+     "First Nations ward",
+     "Inuit foster child",
+     "Aboriginal student",
+     "Native youth",
+     "Tribal minor",
+     "Indigenous dependent",
+     "First Nations dependent",
+     "Inuit adolescent",
+     "Aboriginal ward",
+     "Native guardian ward"
+    ],
+    "realizes": [
+     "Custody transfer",
+     "Guardianship assignment",
+     "Language program",
+     "Cultural enrollment",
+     "Heritage registration",
+     "Welfare placement",
+     "Education enrollment",
+     "Health screening",
+     "Legal representation",
+     "Identity verification"
+    ]
+   },
+   "domain": "Laboratory Information Management",
+   "entity_classes": {
+    "bears_on": "IndependentContinuant",
+    "indigenous_child_role": "IndigenousChildRole",
+    "realizes": "RightsExercise"
+   },
+   "provenance": {
+    "membrane": {
+     "bears_on": "ok",
+     "indigenous_child_role": "ok",
+     "realizes": "ok"
+    },
+    "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+    "run": "2026-07-02",
+    "source": "seed_individuals"
+   }
+  },
+  "lecture_session": {
+   "columns": {
+    "computational_example": [
+     "Notebook-ETL-Pipeline.nb",
+     "Script-Telemetry-Filter.m",
+     "Func-Lab-Cleanse",
+     "Rule-Governance-Check",
+     "Module-Provenance-Trace",
+     "Class-Schema-Validate",
+     "Model-Causal-Graph",
+     "Index-Metadata-Search",
+     "Proc-Sensor-Calibrate",
+     "Chart-KPI-Dashboard"
+    ],
+    "educational_resource": [
+     "ETL-Handout-2024",
+     "Telemetry-Basics-Slides",
+     "Lab-Safety-Checklist",
+     "Governance-Compliance-List",
+     "Provenance-Trace-Log",
+     "Schema-Migration-Guide",
+     "Causal-Model-Diagram",
+     "Metadata-Standard-Spec",
+     "Sensor-Array-Manual",
+     "KPI-Threshold-Table"
+    ],
+    "lecture_session": [
+     "DS402-Intro-ETL",
+     "TEL-2023-Q4-Review",
+     "LAB-PROT-V3-Training",
+     "GOV-AUDIT-2024",
+     "PROV-CHAIN-SEMINAR",
+     "META-SCHEMA-WORKSHOP",
+     "CAUSAL-INFERENCE-LEC",
+     "DATA-LINEAGE-INTRO",
+     "SENSOR-FUSION-TRAINING",
+     "KPI-REPORTING-SESSION"
+    ]
+   },
+   "domain": "Geometric and Constructive Solid Geometry Design",
+   "entity_classes": {
+    "computational_example": "MathematicaExample",
+    "educational_resource": "LectureNotes",
+    "lecture_session": "LectureSession"
+   },
+   "provenance": {
+    "membrane": {
+     "computational_example": "ok",
+     "educational_resource": "ok",
+     "lecture_session": "ok"
+    },
+    "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+    "run": "2026-07-02",
+    "source": "seed_individuals"
+   }
+  },
+  "library_student_assistant_role": {
+   "columns": {
+    "borne_by": [
+     "Maya Chen",
+     "Julian Ortiz",
+     "Priya Patel",
+     "Elias Vance",
+     "Sofia Rossi",
+     "Marcus Thorne",
+     "Aisha Khan",
+     "Leo Nguyen",
+     "Chloe Dubois",
+     "Noah Fitzpatrick"
+    ],
+    "library_student_assistant_role": [
+     "Circulation Desk Lead",
+     "Research Help Desk",
+     "Stacks Re-shelver",
+     "Periodicals Assistant",
+     "Interlibrary Loan Clerk",
+     "Youth Services Aide",
+     "Archives Processing Assistant",
+     "Reference Desk Support",
+     "Bookmobile Attendant",
+     "Special Collections Handler"
+    ],
+    "realizes": [
+     "Book Returns Processing",
+     "Cataloging Metadata",
+     "Desk Reference Queries",
+     "Shelving Operations",
+     "Database Training",
+     "Collection Development Review",
+     "Patron Registration",
+     "Archive Digitization",
+     "Journal Binding",
+     "Interlibrary Request Routing"
+    ]
+   },
+   "domain": "Laboratory Information Management",
+   "entity_classes": {
+    "borne_by": "Student",
+    "library_student_assistant_role": "LibraryStudentAssistantRole",
+    "realizes": "LibraryAssistanceActivity"
+   },
+   "provenance": {
+    "membrane": {
+     "borne_by": "ok",
+     "library_student_assistant_role": "ok",
+     "realizes": "ok"
+    },
+    "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+    "run": "2026-07-02",
+    "source": "seed_individuals"
+   }
+  },
+  "parenting_role": {
+   "columns": {
+    "inheres_in": [
+     "CaseRef-A7F2",
+     "CaseRef-B3C9",
+     "CaseRef-D1E4",
+     "CaseRef-F5G6",
+     "CaseRef-H8J9",
+     "CaseRef-K2L3",
+     "CaseRef-M4N5",
+     "CaseRef-P6Q7",
+     "CaseRef-R8S9",
+     "CaseRef-T1U2"
+    ],
+    "parenting_role": [
+     "PrimaryCaregiver-Alpha",
+     "GuardianAdLitem",
+     "CustodialParent",
+     "FosterParent-Unit4",
+     "LegalGuardian",
+     "KinshipCaregiver",
+     "RespiteParent",
+     "CaseManager-Parent",
+     "StepParent-Active",
+     "SurrogateParent"
+    ],
+    "realizes": [
+     "DailyHygieneSupport",
+     "MealPreparation",
+     "SchoolTransport",
+     "MedicationManagement",
+     "FinancialBudgeting",
+     "HomeMaintenance",
+     "MedicalAppointmentCoordination",
+     "EmotionalCounseling",
+     "HouseholdBudgeting",
+     "EducationalAdvocacy"
+    ]
+   },
+   "domain": "Laboratory Information Management",
+   "entity_classes": {
+    "inheres_in": "DisabledAdult",
+    "parenting_role": "ParentingRole",
+    "realizes": "ParentingActivity"
+   },
+   "provenance": {
+    "membrane": {
+     "inheres_in": "ok",
+     "parenting_role": "ok",
+     "realizes": "ok"
+    },
+    "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+    "run": "2026-07-02",
+    "source": "seed_individuals"
+   }
+  },
+  "pdf_export_process": {
+   "columns": {
+    "has_participant": [
+     "ops_admin_lead",
+     "data_pipeline_svc",
+     "reviewer_smith",
+     "auto_scanner_svc",
+     "compliance_officer",
+     "etl_engine_core",
+     "qa_lead_martinez",
+     "archive_svc",
+     "system_monitor",
+     "export_gateway"
+    ],
+    "ingests_image_set": [
+     "Scan_Set_Alpha",
+     "Photo_Batch_Field",
+     "Microfilm_Archive",
+     "Orbital_Drone_Set",
+     "Xray_Clinical_Cohort",
+     "Blueprint_Revision",
+     "Satellite_Mosaic",
+     "Handwritten_Logs",
+     "Defect_Photo_Set",
+     "Map_Overlay_Scan"
+    ],
+    "pdf_export_process": [
+     "Financial_Export_Run",
+     "Specimen_Review_Job",
+     "Inventory_Scan_Task",
+     "Records_Migration_Run",
+     "Response_Archive_Job",
+     "Tiff_Compile_Task",
+     "Verification_Export",
+     "Log_Aggregation_Run",
+     "Calibration_Export",
+     "Audit_Trail_Job"
+    ],
+    "produces_output_file": [
+     "Final_Report_Digest.pdf",
+     "Specimen_Index_Output.pdf",
+     "Asset_Catalog_Bundle.pdf",
+     "Patient_Summary_File.pdf",
+     "Survey_Archive_Index.pdf",
+     "Geo_Compile_Draft.pdf",
+     "Contract_Review_Final.pdf",
+     "Log_Summary_Digest.pdf",
+     "Calibration_Results.pdf",
+     "Audit_Compliance.pdf"
+    ]
+   },
+   "domain": "Geometric and Constructive Solid Geometry Design",
+   "entity_classes": {
+    "has_participant": "ExportExecution",
+    "ingests_image_set": "ScannedImageSet",
+    "pdf_export_process": "PdfExportProcess",
+    "produces_output_file": "PdfDocument"
+   },
+   "provenance": {
+    "membrane": {
+     "has_participant": "ok",
+     "ingests_image_set": "ok",
+     "pdf_export_process": "ok",
+     "produces_output_file": "ok"
+    },
+    "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+    "run": "2026-07-02",
+    "source": "seed_individuals"
+   }
+  },
+  "young_researcher_role": {
+   "columns": {
+    "bears_role": [
+     "Dr. Aris Thorne",
+     "Elena Rostova",
+     "Chen Wei",
+     "Maya Patel",
+     "Samir Al-Fayed",
+     "Dr. Linnea Voss",
+     "Julian Hayes",
+     "Dr. Priya Mehta",
+     "Thomas Kowalski",
+     "Dr. Yuna Park"
+    ],
+    "realizes": [
+     "Genomic Sequencing Run",
+     "Climate Model Calibration",
+     "Satellite Telemetry Ingest",
+     "Wet Chemistry Assay",
+     "Neural Net Training Pass",
+     "Field Survey Deployment",
+     "Codebase Validation Suite",
+     "Patient Cohort Analysis",
+     "Sensor Array Calibration",
+     "Material Stress Testing"
+    ],
+    "young_researcher_role": [
+     "Early-Career Scientist",
+     "Postdoctoral Fellow",
+     "Graduate Researcher",
+     "Junior Lab Analyst",
+     "Research Associate",
+     "PhD Candidate",
+     "Junior Data Scientist",
+     "Field Researcher",
+     "Junior Instrument Operator",
+     "Trainee Investigator"
+    ]
+   },
+   "domain": "Laboratory Information Management",
+   "entity_classes": {
+    "bears_role": "IndependentContinuant",
+    "realizes": "ResearchActivity",
+    "young_researcher_role": "YoungResearcherRole"
+   },
+   "provenance": {
+    "membrane": {
+     "bears_role": "ok",
+     "realizes": "ok",
+     "young_researcher_role": "ok"
+    },
+    "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+    "run": "2026-07-02",
+    "source": "seed_individuals"
+   }
+  }
+ },
+ "version": "1"
+}

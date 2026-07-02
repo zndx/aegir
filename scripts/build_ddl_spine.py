@@ -145,8 +145,10 @@ def main() -> int:
     logger.info("lowered %d templates → %d tables (%s) across %d families", n_templates, len(spine),
                 "realized subgraphs" if args.realize else "flat", len(files))
 
-    fc = FamilyComplex.from_json(REPO / args.family_complex if not Path(args.family_complex).is_absolute()
-                                 else Path(args.family_complex))
+    # None since the family-complex retirement (co-occurrence is measured, never a pre-wired gate);
+    # cross_family_fks treats None as no-sanction and still audits the candidates.
+    fc = FamilyComplex.load_optional(REPO / args.family_complex if not Path(args.family_complex).is_absolute()
+                                     else Path(args.family_complex))
     primary: list = []
     cross_fks: list = []
     if args.realize:
@@ -176,12 +178,20 @@ def main() -> int:
     base_index_rows: list[dict] = []
     view_out_rows: list[dict] = []
     n_views_valid = 0
+    pool_src: dict = {}
     if not args.no_materialize_rows:
         from aegir.ontology.chapter_tables import (build_views, definitions_for_spine,
-                                                    entity_pools_for_spine)
+                                                    entity_pool_sources, entity_pools_for_spine)
         from aegir.ontology.rows import assert_referential_integrity, materialize_rows
         materialize_rows(spine, fk_edges, seed=args.row_seed, definitions=definitions_for_spine(spine),
                          entity_pools=entity_pools_for_spine(spine))
+        # the value-provenance audit (Convert 1b): which source fed each pooled template's entity cells —
+        # registry (in-loop derived individuals, membrane-gated) vs legacy (frozen pool) vs unpooled
+        # (curated/type generators). The static fraction should shrink toward 0 as the registry accretes.
+        src_map = entity_pool_sources()
+        from collections import Counter as _C2
+        pool_src = _C2(src_map.get(st.template.template_id, "unpooled") for st in spine)
+        logger.info("entity-value sources (tables): %s", dict(pool_src))
         try:
             assert_referential_integrity(spine, fk_edges)
             ri_ok = True
@@ -346,6 +356,8 @@ def main() -> int:
             # the authenticity audit: how each profile was CHOSEN (grounds_ddl:* = lowering-by-theorem;
             # default-minimal = no grounding signal, the work-queue; there is no sampled path)
             "profile_source_distribution": dict(_C(r.get("profile_source", "?") for r in complexity_rows)),
+            # and which source fed entity-cell values (registry = in-loop individuals; legacy = frozen pool)
+            "value_pool_sources": dict(pool_src) if not args.no_materialize_rows else {},
             "total_tables": tt, "total_views": sum(r["n_views"] for r in complexity_rows),
             "tables_per_template": round(tt / len(complexity_rows), 2),
             "mean_eav_ratio": round(sum(r["eav_ratio"] for r in complexity_rows) / len(complexity_rows), 3),

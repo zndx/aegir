@@ -75,18 +75,34 @@ def definitions_for_spine(spine: Sequence[SpineTable]) -> dict[str, dict[str, st
 
 _ENTITY_POOLS_PATH = Path(__file__).resolve().parent / "entity_value_pools.json"
 _ENTITY_POOLS_CACHE: "dict[str, dict[str, list[str]]] | None" = None
+_ENTITY_POOL_SOURCE: "dict[str, str]" = {}  # template_id → "registry" | "legacy" (the authenticity audit)
 
 
 def _entity_value_pools() -> "dict[str, dict[str, list[str]]]":
-    """The committed ``template_id → {col → [domain values]}`` resource (LLM-seeded, RI-safe), cached.
-    Absent file → empty (the generator falls back to curated pools + type generators)."""
+    """``template_id → {col → [domain values]}``, cached. REGISTRY-FIRST (Convert 1b): the accreting,
+    membrane-gated individual registry (in-loop derived, provenance-stamped) wins per template; the frozen
+    legacy ``entity_value_pools.json`` remains only as transitional fallback and is tagged so the audit
+    sees the static fraction shrink. Absent both → empty (curated pools + type generators downstream)."""
     global _ENTITY_POOLS_CACHE
     if _ENTITY_POOLS_CACHE is None:
         try:
-            _ENTITY_POOLS_CACHE = json.loads(_ENTITY_POOLS_PATH.read_text())
+            legacy = json.loads(_ENTITY_POOLS_PATH.read_text())
         except (OSError, ValueError):
-            _ENTITY_POOLS_CACHE = {}
+            legacy = {}
+        from aegir.ontology import individuals as IND
+        registry = IND.pools_view(IND.load_registry())
+        _ENTITY_POOL_SOURCE.clear()
+        _ENTITY_POOL_SOURCE.update({tid: "legacy" for tid in legacy})
+        _ENTITY_POOL_SOURCE.update({tid: "registry" for tid in registry})
+        _ENTITY_POOLS_CACHE = {**legacy, **registry}
     return _ENTITY_POOLS_CACHE or {}
+
+
+def entity_pool_sources() -> "dict[str, str]":
+    """{template_id → 'registry'|'legacy'} for whatever `_entity_value_pools` served — the per-template
+    value-provenance the spine's audit aggregates."""
+    _entity_value_pools()
+    return dict(_ENTITY_POOL_SOURCE)
 
 
 def entity_pools_for_spine(spine: Sequence[SpineTable]) -> dict[str, dict[str, list[str]]]:

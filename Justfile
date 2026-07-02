@@ -127,6 +127,13 @@ reauthor-unsat rounds="4":
     LD_LIBRARY_PATH=$(pwd)/build/jvm-libs:$(pwd)/build/cuda-driver-libs \
         uv run --no-sync python scripts/reauthor_unsat.py --rounds {{rounds}}
 
+# Convert 1b — in-loop individual seeding: the engine derives domain-real INDIVIDUALS per (domain, template)
+# for entity columns; the membrane disposes with a REASON (generic filler / mechanical stems / dupes) and
+# rejects are re-prompted with it; admitted survivors accrete to individual_registry.json (values for the
+# DDL spine + the realized ontology's ABox — HermiT certifies instance-level consistency at realize).
+seed-individuals limit="0" rounds="3":
+    uv run --no-sync python scripts/seed_individuals.py --limit {{limit}} --rounds {{rounds}}
+
 # Meta-harness inc-2b: run the H₀ single-file harness over gap topics (frozen Grok
 # + ContractGate/HermiT) via the candidate filesystem. Needs the JVM libs
 # (DeepOnto/HermiT) + cuda driver libs. coverage-run defaults to the canonical v1 ground.
