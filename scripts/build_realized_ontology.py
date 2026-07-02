@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import argparse
 import datetime
-import os
 import re
 import sys
 import tempfile
@@ -269,23 +268,24 @@ def _reason(doc: str):
     return onto, path, consistent, n_classes, unsat
 
 
-CCO_TTL = REPO / "build" / "grounding" / "cco-merged.ttl"
+CCO_TTL = REPO / "build" / "grounding" / "cco-module.ttl"  # π(CCO): the ⊥-locality module — BFO + π is the one fixed theory (gate-certified tractable; full cco-merged.ttl is intractable, see build_cco_module.py)
 CCO_ICE = "cco:ont00000958"  # Information Content Entity (real opaque CCO IRI) — the FHIR-resource bridge target
 
 
 def import_cco_bridge_fhir(doc: str) -> str:
-    """Align the cco: prefix to CCO's real https IRIs (ALWAYS — so our 140 cco:ont refs resolve to CCO's deep
-    hierarchy for grounding, independent of reasoning), declare fhir:, and bridge each referenced FHIR type to
-    cco:InformationContentEntity. UNLESS AEGIR_NO_CCO: also import cco-merged.ttl to make CCO a REASONING
-    authority (HermiT validates grounding against CCO's disjointness — it REJECTs Plant⊑Vehicle). The import is
-    gated because full CCO (inverse+transitive+⊔) is intractable once hundreds of ≡ interact with it (the OOM);
-    the namespace alignment is NOT — decoupling them is what lets --no-cco stay tractable yet grounded."""
+    """Align the cco: prefix to CCO's real https IRIs (so our 140 cco:ont refs resolve to CCO's deep hierarchy
+    for grounding), declare fhir:, bridge each referenced FHIR type to cco:InformationContentEntity, and import
+    π(CCO) — the ⊥-locality module (CCO_TTL) — to make CCO a REASONING authority: HermiT validates grounding
+    against CCO's disjointness (it REJECTs Plant⊑Vehicle). π(CCO) replaces full CCO, which is intractable once
+    hundreds of ≡ interact with its inverse/transitive/⊔; the module is lossless over our signature, so every
+    disjointness that could refute a grounding is preserved. There is no knob to skip it: BFO + π(CCO) is THE
+    theory, always applied. bfo: already aligns (purl obo BFO_ in both), so the chains are coherent."""
     out = doc.replace("Prefix: cco: <http://www.commoncoreontologies.org/>",
                       "Prefix: cco: <https://www.commoncoreontologies.org/>")
     if "Prefix: fhir:" not in out:
         out = out.replace("Prefix: cco: <https://www.commoncoreontologies.org/>\n",
                           "Prefix: cco: <https://www.commoncoreontologies.org/>\nPrefix: fhir: <http://hl7.org/fhir/>\n")
-    if CCO_TTL.exists() and "\nImport:" not in out and os.environ.get("AEGIR_NO_CCO") != "1":
+    if CCO_TTL.exists() and "\nImport:" not in out:
         out = re.sub(r"(Ontology: <[^>]+>\n)", rf"\1Import: <file:{CCO_TTL}>\n", out, count=1)
     fhirs = sorted(set(re.findall(r"\bfhir:[A-Za-z][A-Za-z0-9]*", out)))
     if fhirs:
@@ -320,12 +320,11 @@ def main() -> int:
     ap.add_argument("--no-datatype-props", action="store_true", help="skip Phase-A.3 typed DataProperties")
     ap.add_argument("--strict-grounding", action="store_true",
                     help="if Phase-A.1 filler grounding yields an unsatisfiable class, drop it and re-reason")
-    ap.add_argument("--no-cco", action="store_true",
-                    help="skip the full CCO import in reasoning — 1665 classes + disjointness make HermiT "
-                         "intractable once the ontology carries hundreds of ≡; BFO's disjointness still validates")
     args = ap.parse_args()
-    if args.no_cco:
-        os.environ["AEGIR_NO_CCO"] = "1"
+    if not CCO_TTL.exists():  # INVARIANT: the theory must be present — never realize against a vacuous CCO-less check
+        print(f"✘ the theory π(CCO) is not built ({CCO_TTL.name}) — run scripts/build_cco_module.py first; "
+              "refusing to realize against a vacuous, CCO-less theory", file=sys.stderr)
+        return 2
 
     derived = load_catalog(REPO / "src/aegir/ontology/catalog/08_derived.json").templates
     doc, head_iri = RG.render_batch(derived)
@@ -340,7 +339,7 @@ def main() -> int:
     base_doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
                            "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
     base_doc, degen = drop_degenerate(base_doc)
-    base_doc = import_cco_bridge_fhir(base_doc)  # ALWAYS aligns cco: NS (grounding); self-gates the CCO reasoning import on AEGIR_NO_CCO
+    base_doc = import_cco_bridge_fhir(base_doc)  # aligns cco: NS + imports π(CCO) — BFO + π is the one fixed theory
     if degen:
         print(f"   dropped {len(degen)} degenerate stale head(s) (single-letter slots): {degen}")
 
@@ -378,13 +377,18 @@ def main() -> int:
         onto, path, consistent, n_classes, unsat = _reason(doc)
     # a class still unsatisfiable after the grounding back-off has a bad DERIVED axiom (e.g. a mis-used BFO
     # role); the membrane should catch it but a degenerate parse can mask it — shed it for a clean realize.
-    for _ in range(3):
+    for _ in range(8):
         if not unsat:
             break
-        print(f"   ⚠ dropping {len(unsat)} class(es) unsatisfiable after back-off: {[u.split('#')[-1] for u in unsat[:6]]}")
+        print(f"   ⚠ narrowing domain: dropping {len(unsat)} class(es) unsatisfiable vs the theory: "
+              f"{[u.split('#')[-1] for u in unsat[:8]]}")
         doc = drop_classes(doc, unsat)
         Path(path).unlink(missing_ok=True)
         onto, path, consistent, n_classes, unsat = _reason(doc)
+    if unsat:  # INVARIANT: the emitted artifact MUST be consistent w.r.t. BFO+π(CCO) — halt, never emit inconsistent
+        print(f"✘ {len(unsat)} class(es) remain unsatisfiable after domain-narrowing — cannot emit a consistent "
+              f"artifact against the theory (fix the generation): {[u.split('#')[-1] for u in unsat[:12]]}", file=sys.stderr)
+        return 2
     try:
         print(f"   Phase-A: grounded {nf} fillers · annotated {na} classes · {nd} datatype-prop assertions")
         print(f"REALIZED: consistent={consistent}  named_classes={n_classes}  unsatisfiable={len(unsat)}  "
