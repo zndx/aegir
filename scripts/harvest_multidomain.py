@@ -21,7 +21,7 @@ from aegir.ontology import domain_index as DI
 
 REPO = Path(__file__).resolve().parents[1]
 STORE = REPO / "build" / "domain_harvest"
-DOMAIN_ROOTS = {"9", "10", "11", "12"}  # content domains: LIMS, manufacturing, energy, CSG
+DOMAIN_ROOTS = {"9", "10", "11", "12", "13"}  # LIMS, SysML-manufacturing, energy/WITSML, CSG-electronics, utility networks
 
 
 def _hash(t: str) -> str:

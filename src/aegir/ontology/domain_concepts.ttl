@@ -175,12 +175,12 @@
     skos:inScheme <https://signals360.example.org/sdg/scheme> .
 
 <https://signals360.example.org/sdg#SDG_CSG> a skos:Concept ;
-    skos:prefLabel "Geometric and Constructive Solid Geometry Design" ;
+    skos:prefLabel "Solid Geometry Design for Consumer Electronics" ;
     skos:notation "12" ;
-    skos:altLabel "CSG Solid Modeling" ;
-    skos:definition "The domain of representing three-dimensional solid shapes and constructing them by combining primitives. Constructive solid geometry builds a complex solid as a boolean tree over primitive solids — spheres, ellipsoids, tori, cones, cylinders, and arbitrary polyhedra — combined by union, intersection, and difference into regions and combinations. Solids may alternatively be represented by their boundary as meshes, NURBS surfaces, or n-manifold geometry, or generated parametrically by sketching a profile and extruding or revolving it. This is the BRL-CAD solid-modeling view: primitives, the CSG boolean tree, and boundary representations." ;
-    skos:scopeNote "Covers mechanical CAD, solid modeling, computer-aided geometric design, and engineering analysis geometry. Maps onto the BRL-CAD primitive set (arb8, sph, ell, tor, tgc, bot, nmg, brep, bspline, superell) and CSG combination machinery (regions, combinations, boolean union/intersection/difference), and onto the SysML v2 geometry library (shape and spatial items)." ;
-    rdfs:comment "Solid primitives, boolean CSG operations, regions and combinations, boundary representation, NURBS, meshes, sketch-extrude-revolve." ;
+    skos:altLabel "CSG for Electronics Product Design" ;
+    skos:definition "The domain of designing the three-dimensional solid geometry of consumer-electronics products and preparing it for fabrication. Constructive solid geometry builds an enclosure, chassis, heat sink, or bracket as a boolean tree over primitive solids — blocks, cylinders, cones, tori, and arbitrary polyhedra — combined by union, intersection, and difference into regions and combinations; boundary representations (meshes, NURBS, n-manifold geometry) and sketch-extrude-revolve construction give the curved housings, button and display apertures, connector openings, snap-fit and boss features, ribs, and thermal cutouts of an electronic product. The geometry is designed against the electronics it packages — board outlines and keep-outs, connector envelopes, antenna windows, thermal paths — and against the process that will fabricate it. This is the BRL-CAD solid-modeling view applied to electronics product design: primitives, the CSG boolean tree, and boundary representations, in the service of devices that must be molded, formed, machined, and assembled." ;
+    skos:scopeNote "Covers enclosure and housing design for phones, wearables, network equipment, and lab instruments; chassis, frames, heat sinks, light pipes, gaskets, and fastening features; PCB outline and keep-out geometry; design-for-manufacture of molded and formed parts. Maps onto the BRL-CAD primitive set (arb8, sph, ell, tor, tgc, bot, nmg, brep, bspline, superell) and CSG combination machinery (regions, combinations, boolean union/intersection/difference), and onto the SysML v2 geometry library (shape and spatial items)." ;
+    rdfs:comment "Enclosures, housings, heat sinks, snap-fits, bosses and ribs, board keep-outs; solid primitives, boolean CSG, boundary representation; design for molding and forming." ;
     bfo:0000023 cco:Artifact ;
     skos:inScheme <https://signals360.example.org/sdg/scheme> .
 
@@ -209,4 +209,62 @@
     skos:definition "The representation of a solid by its bounding surface rather than by a boolean tree. A boundary representation describes a solid as a set of trimmed faces, edges, and vertices; n-manifold geometry and NURBS or B-spline surfaces give exact curved boundaries, while a bag-of-triangles mesh tessellates the surface into facets for display and analysis. Boundary representations interoperate with constructive solid geometry — a CSG model can be evaluated into a boundary representation, and surfaces can be combined into solids." ;
     skos:scopeNote "Includes boundary representation, n-manifold geometry, NURBS and B-spline surfaces, and polygonal meshes and tessellation. Corresponds to the BRL-CAD brep/nmg/bot/bspline primitives." ;
     skos:broader <https://signals360.example.org/sdg#SDG_CSG> ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+<https://signals360.example.org/sdg#SDG_CSG_FABRICATION> a skos:Concept ;
+    skos:prefLabel "Design for Fabrication of Electronic Products" ;
+    skos:notation "12.4" ;
+    skos:altLabel "Electronics DFM" ;
+    skos:definition "The discipline of shaping consumer-electronics geometry so it can actually be made. Design for fabrication constrains the solid model by the production process that will realize it: injection-molded housings carry draft angles, uniform wall thickness, boss and rib proportions, gate and ejector locations, and parting-line placement; sheet-metal chassis respect bend radii, relief cuts, and flat-pattern development; machined heat sinks and bezels respect tool access and fillet radii; and every mating feature carries the tolerances that make snap-fits, fasteners, and gaskets assemble. Tolerance stack-up across the enclosure, board, and connectors decides whether the device closes; the fabricated part is verified against the solid model by inspection dimensions. This is where the geometric design meets the manufacturing processes that produce it — the same molding, forming, machining, and assembly operations that manufacturing engineering plans and routes." ;
+    skos:scopeNote "Includes draft, wall-thickness, boss and rib rules for injection molding; bend and relief rules for sheet metal; tolerance stack-up and fit for snap-together assemblies; inspection dimensions and first-article verification. Intersects the manufacturing-process domain (process planning, tooling, routing) — the CSG-to-manufacturing seam." ;
+    skos:broader <https://signals360.example.org/sdg#SDG_CSG> ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+## ----------------------------------------------------------------------
+## Aperture R1 extension (2026-07-02, RH): SysML's admissible concepts
+## include AT LEAST manufacturing and utility-scale networks — SysML is
+## the systems-engineering umbrella cited in the definitions, not a
+## sibling domain. Root 13 gives utility-scale networks their own
+## aperture (power T&D, water, carrier telecom) in the SysML v2
+## interconnection view: parts bearing ports, connections carrying
+## power, fluid, and data. CSG (12) narrowed to consumer-electronics
+## design + fabrication in the same change. LIMS (9), MFG (10), and
+## ENERGY/WITSML (11) hold their ground.
+## ----------------------------------------------------------------------
+
+<https://signals360.example.org/sdg#SDG_UTILITY> a skos:Concept ;
+    skos:prefLabel "Utility-Scale Networks" ;
+    skos:notation "13" ;
+    skos:altLabel "Utility Infrastructure Networks" ;
+    skos:definition "The domain of engineering, operating, and maintaining utility-scale infrastructure networks: electric power transmission and distribution, water and wastewater systems, and carrier-grade telecommunications. A utility network is a system of connected assets — substations, transformers, and feeders; pumping stations, mains, and valves; central offices, fiber routes, and switching elements — whose topology carries a flow of power, fluid, or data from sources to consumers. Networks are modeled in the systems view: assets are parts bearing ports, spans and mains are connections realizing interfaces, capacity and reliability are requirements and constraints, and switching, outage response, and maintenance are the operational actions and states. Telemetry from field devices monitors flows, pressures, voltages, and traffic against operating limits, and network state — energized, pressurized, in-service, degraded — is tracked per asset and per span. This is the SysML v2 interconnection view applied at utility scale: connected parts, typed flows, allocation of service demand onto physical infrastructure, and requirement-driven operation." ;
+    skos:scopeNote "Covers electric transmission and distribution, water and wastewater conveyance, and carrier telecommunications networks; network topology and asset registries; SCADA-style telemetry and operating limits; capacity planning, contingency, and outage management. Maps onto the SysML v2 systems libraries (Parts, Ports, Interfaces, Connections, Flows, Requirements, Constraints, States, Actions) and the Quantities-and-Units (ISQ/SI) domain library for flows, voltages, and pressures." ;
+    rdfs:comment "Grids, mains, and carrier networks as connected part topologies; flows and capacities; telemetry against limits; switching, outages, and maintenance operations." ;
+    bfo:0000023 cco:Artifact ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+<https://signals360.example.org/sdg#SDG_UTILITY_POWER> a skos:Concept ;
+    skos:prefLabel "Electric Power Transmission and Distribution" ;
+    skos:notation "13.1" ;
+    skos:altLabel "Power Grid" ;
+    skos:definition "The networked delivery of electric power from generation to load. Transmission moves bulk power at high voltage between substations over lines and cables; distribution steps voltage down through transformers and carries it along feeders, laterals, and service drops to customers. Substations compose transformers, buses, breakers, switches, and protection relays into switching topologies; grid operation balances load against capacity, maintains voltage and frequency within limits, reconfigures the network by switching, and isolates faults through protection coordination. Asset registries record each transformer, breaker, and line span with its ratings, age, and condition; telemetry streams voltages, currents, and breaker states against operating limits; and contingency analysis asks whether the network survives the loss of any single element." ;
+    skos:scopeNote "Includes substations, transformers, feeders and laterals, protection and switching, load and capacity ratings, voltage regulation, outage and reliability indices, and grid telemetry. The network is a connected-part topology with typed electrical flows in the systems view." ;
+    skos:broader <https://signals360.example.org/sdg#SDG_UTILITY> ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+<https://signals360.example.org/sdg#SDG_UTILITY_WATER> a skos:Concept ;
+    skos:prefLabel "Water and Wastewater Networks" ;
+    skos:notation "13.2" ;
+    skos:altLabel "Water Distribution and Collection" ;
+    skos:definition "The networked conveyance of potable water from sources to consumers and of wastewater from consumers to treatment. A distribution system composes intakes, treatment works, pumping stations, storage tanks, and pressure zones connected by mains, with valves, hydrants, meters, and service connections as controllable and measurable points; a collection system gathers sewage and stormwater through gravity mains, lift stations, and interceptors to treatment plants. Hydraulic behaviour — flows, pressures, and levels — is monitored against operating bands; pumps and valves are the actuated elements that move the system between states; and asset condition, leakage, and main breaks drive maintenance and renewal programs. Water quality is sampled and tested along the network, tying the utility domain to laboratory analysis." ;
+    skos:scopeNote "Includes pumping stations, pressure zones, storage, mains and valves, metering, leakage and non-revenue water, lift stations and interceptors, and hydraulic telemetry. Water-quality sampling and testing intersect the laboratory domain — the utility-to-LIMS seam." ;
+    skos:broader <https://signals360.example.org/sdg#SDG_UTILITY> ;
+    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+
+<https://signals360.example.org/sdg#SDG_UTILITY_TELECOM> a skos:Concept ;
+    skos:prefLabel "Carrier-Grade Telecommunications Networks" ;
+    skos:notation "13.3" ;
+    skos:altLabel "Carrier Networks" ;
+    skos:definition "The networked delivery of communications service at carrier scale. A carrier network composes central offices, points of presence, and data centers connected by fiber routes, conduits, and microwave links, with switching, routing, and transport elements — network equipment as engineered hardware — terminating and cross-connecting circuits and packet flows. Network elements expose ports; spans and cross-connects realize connections; aggregation, ring, and mesh topologies provide capacity and survivability; and service provisioning allocates customer demand onto physical paths. Operations monitor traffic, loss, and latency against service objectives, manage faults and protection switchover, and track every element, card, port, and fiber strand in inventory with its location, state, and connectivity — the physical-network record from which the network is operated and grown." ;
+    skos:scopeNote "Includes central offices and points of presence, fiber-plant and conduit records, switching and routing elements, transport and aggregation topologies, circuit and service provisioning, network inventory, and performance and fault management. The equipment itself is manufactured electronics — the utility-to-manufacturing seam." ;
+    skos:broader <https://signals360.example.org/sdg#SDG_UTILITY> ;
     skos:inScheme <https://signals360.example.org/sdg/scheme> .
