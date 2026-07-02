@@ -24,9 +24,9 @@
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
 @prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
 @prefix cco:     <http://www.commoncoreontologies.org/> .
-@prefix sdg:     <https://signals360.example.org/sdg#> .
+@prefix sdg:     <https://signals.zndx.org/sdg#> .
 
-<https://signals360.example.org/sdg#SDG_LIMS> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_LIMS> a skos:Concept ;
     skos:prefLabel "Laboratory Information Management" ;
     skos:notation "9" ;
     skos:altLabel "LIMS" ;
@@ -34,43 +34,43 @@
     skos:scopeNote "Covers analytical, clinical, environmental-monitoring, biobank, and quality-control laboratories operating under GxP, ISO/IEC 17025, CLIA, or OECD test-guideline regimes. The governed entities map onto FHIR diagnostics resources (Specimen, ServiceRequest, Observation, DiagnosticReport, Device, Substance) and onto a SysML systems view in which the laboratory is a system whose sample lifecycle, instrument allocations, and acceptance constraints are first-class." ;
     rdfs:comment "Sample receipt, accessioning, testing, result review, reporting, and archival; analyte measurement; turnaround and throughput; accreditation and audit." ;
     bfo:0000023 cco:Artifact ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_LIMS_SPECIMEN_LIFECYCLE> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_LIMS_SPECIMEN_LIFECYCLE> a skos:Concept ;
     skos:prefLabel "Specimen Lifecycle Management" ;
     skos:notation "9.1" ;
     skos:altLabel "Sample Lifecycle" ;
     skos:definition "The governed progression of a physical specimen through its laboratory states: collection from a subject or source, receipt and accessioning under a unique identifier, partitioning into aliquots, storage at a controlled location and temperature, assignment to testing, and finally reporting, retention, and disposal. Each state transition is an event with a timestamp, an actor, and a chain-of-custody record establishing unbroken provenance; specimens carry collection method, body site or sampling point, container and preservative, volume, and condition-on-receipt. This is the sample-lifecycle finite-state machine at the heart of a laboratory: received → accessioned → aliquoted → tested → reported → archived or destroyed." ;
     skos:scopeNote "Includes aliquot derivation and parent-child specimen relationships, freezer and storage-location management, stability and expiry, and custody transfers between collection site, transport, and testing laboratory. Corresponds to FHIR Specimen and its collection, processing, and container backbone." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_LIMS> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_LIMS> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_LIMS_ASSAY_EXECUTION> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_LIMS_ASSAY_EXECUTION> a skos:Concept ;
     skos:prefLabel "Assay and Method Execution" ;
     skos:notation "9.2" ;
     skos:altLabel "Analytical Run" ;
     skos:definition "The ordering, scheduling, and performance of an analytical assay or test method on a specimen using an instrument or workcell. A method consumes reagents, calibrators, and controls and produces measurements; a run reifies a protocol of ordered steps — sample and reagent addition, incubation, separation, detection — executed under defined parameters, and is allocated to a specific instrument and operator. Each assay declares its analytes, its measurement principle, its calibration model, and its acceptance criteria; a run records the instrument, lot numbers, environmental conditions, and the raw and processed signal from which results are computed." ;
     skos:scopeNote "Includes test ordering and worklist scheduling, reagent-kit and instrument-model variants, method-to-instrument allocation, and protocol or standard-operating-procedure steps. Corresponds to FHIR ServiceRequest (the order) and Device/Substance (instruments and reagents) and the SysML action and allocation views." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_LIMS> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_LIMS> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_LIMS_RESULT_INTERPRETATION> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_LIMS_RESULT_INTERPRETATION> a skos:Concept ;
     skos:prefLabel "Result Capture and Interpretation" ;
     skos:notation "9.3" ;
     skos:altLabel "Test Result" ;
     skos:definition "The capture, validation, and clinical or regulatory interpretation of the measured outcome of an assay. A result is a quantity — a value with a unit and a measurement uncertainty — or a coded qualitative finding, attached to a specimen and an analyte, produced by a method run. Results are validated against specification limits, reference ranges, and acceptance criteria, flagged when out of specification or critical, reviewed and released by a qualified reviewer, and assembled into a diagnostic report. Interpretation compares the measured value to thresholds and prior results, derives flags and verdicts, and records the responsible reviewer and the time of release." ;
     skos:scopeNote "Includes measurement uncertainty and significant figures, reference-range and spec-limit comparison, out-of-specification handling, delta checks, result amendment, and report assembly. Corresponds to FHIR Observation (the result) and DiagnosticReport (the released report)." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_LIMS> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_LIMS> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_LIMS_QUALITY_TRACEABILITY> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_LIMS_QUALITY_TRACEABILITY> a skos:Concept ;
     skos:prefLabel "Quality, Compliance and Traceability" ;
     skos:notation "9.4" ;
     skos:altLabel "QA/QC and Compliance" ;
     skos:definition "The quality-management and regulatory backbone of a laboratory: quality-control samples and control charts, instrument calibration and maintenance, proficiency testing, and the end-to-end traceability that links each released result back through the method, the instrument, the reagent lots, the operator, the specimen, and the originating specification or requirement. Acceptance criteria and specification limits are enforced as parametric constraints over result columns; deviations, nonconformances, and corrective actions are recorded; and an audit trail makes every state change attributable. This is the specification → method → result traceability matrix that GxP and ISO/IEC 17025 accreditation require." ;
     skos:scopeNote "Includes control charts and Westgard-style rules, calibration verification, audit trails, deviation and CAPA management, and requirement-to-result traceability. Corresponds to the SysML requirement satisfy/verify and constraint views and to regulated-laboratory compliance regimes." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_LIMS> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_LIMS> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 ## ----------------------------------------------------------------------
 ## Cold-start domain extension (2026-06-29): manufacturing (SysMLv2),
@@ -82,7 +82,7 @@
 ## domain_foundations.py.
 ## ----------------------------------------------------------------------
 
-<https://signals360.example.org/sdg#SDG_MFG> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_MFG> a skos:Concept ;
     skos:prefLabel "Manufacturing and Systems Engineering" ;
     skos:notation "10" ;
     skos:altLabel "Systems Engineering" ;
@@ -90,45 +90,45 @@
     skos:scopeNote "Covers consumer electronics, networking and telecommunications hardware, mechanical and electromechanical assemblies, industrial equipment, and laboratory-automation hardware. Maps onto the SysML v2 standard library (Parts, Items, Ports, Interfaces, Connections, Actions, States, Requirements, Constraints, AnalysisCases) and the Quantities-and-Units (ISQ/SI) domain library." ;
     rdfs:comment "Parts, assemblies, interfaces, requirements, tolerances, manufacturing processes, bills of material, verification." ;
     bfo:0000023 cco:Artifact ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_MFG_STRUCTURE> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_MFG_STRUCTURE> a skos:Concept ;
     skos:prefLabel "Parts, Assemblies and Bills of Material" ;
     skos:notation "10.1" ;
     skos:altLabel "Product Structure" ;
     skos:definition "The structural decomposition of an engineered product into parts, components, assemblies, and subassemblies, with the bill of material that enumerates them by quantity, material, and fastener. A part is a designed physical artifact; an assembly composes parts through joints and mates; the product structure is a hierarchy from the top-level system down to piece-parts and standard hardware. Each part carries a part number, revision, material, mass, finish, and reference designators, and the engineering bill of material drives procurement and production." ;
     skos:scopeNote "Includes part numbering and revision control, make-versus-buy, standard-part and fastener libraries, and the engineering bill of material. Corresponds to SysML PartDefinition/PartUsage and Items." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_MFG> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_MFG> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_MFG_INTERFACE> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_MFG_INTERFACE> a skos:Concept ;
     skos:prefLabel "Interfaces, Ports and Connections" ;
     skos:notation "10.2" ;
     skos:altLabel "System Interconnection" ;
     skos:definition "The points and means by which parts of a system connect and interact. A port is a connection point of a part exposing a capability; an interface defines the interaction realized between mated ports; a connection is the structural link that carries signals, power, fluid, or mechanical load between parts. Interface definitions specify the form, fit, and function of a junction — mechanical mating, electrical pinout, fluid coupling, or data protocol — and connections compose parts into a functioning assembly or network." ;
     skos:scopeNote "Includes connectors, harnesses, buses, mounts, and mating features; mechanical, electrical, fluid, and signal interfaces. Corresponds to SysML Ports, Interfaces, and Connections." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_MFG> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_MFG> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_MFG_REQUIREMENT> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_MFG_REQUIREMENT> a skos:Concept ;
     skos:prefLabel "Requirements, Constraints and Analysis" ;
     skos:notation "10.3" ;
     skos:altLabel "Specification and Verification" ;
     skos:definition "The specification of what a system shall do and the analyses that confirm it does. A requirement is a required condition or capability a system shall satisfy; a constraint is an expression bounding system properties; an analysis case evaluates a model against those requirements. Specifications are verified by analysis and test — stress and finite-element analysis, tolerance stack-up and geometric dimensioning and tolerancing, thermal and signal-integrity studies — and traced from requirement to design to verification result. Quantities and units (ISQ/SI) make the bounds measurable." ;
     skos:scopeNote "Includes requirement traceability, constraint blocks, verification and validation, tolerance analysis (GD&T), and engineering analysis cases. Corresponds to SysML Requirements, Constraints, and AnalysisCases." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_MFG> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_MFG> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_MFG_PROCESS> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_MFG_PROCESS> a skos:Concept ;
     skos:prefLabel "Manufacturing Processes and Behaviour" ;
     skos:notation "10.4" ;
     skos:altLabel "Production and Behaviour" ;
     skos:definition "How engineered systems are produced and how they behave in operation. Manufacturing processes transform stock and components into finished parts and assemblies — machining and CNC milling, injection molding, sheet-metal forming, welding, additive manufacturing, and assembly operations — using tooling, fixtures, and process parameters. System behaviour is modeled as actions performed and states maintained over time, the dynamic counterpart to the structural decomposition. Process plans, routings, and work instructions sequence the operations that realize a design." ;
     skos:scopeNote "Includes process planning and routing, tooling and fixturing, CNC and additive workflows, assembly sequencing, and operational state machines. Corresponds to SysML Actions and States and to manufacturing-process vocabulary." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_MFG> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_MFG> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_ENERGY> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_ENERGY> a skos:Concept ;
     skos:prefLabel "Energy and Well Drilling" ;
     skos:notation "11" ;
     skos:altLabel "Upstream Oil and Gas" ;
@@ -136,45 +136,45 @@
     skos:scopeNote "Covers well planning, directional drilling, well logging and petrophysics, mud logging, casing and completion, and drilling operations. Maps onto the WITSML 2.0 data model (Well, Wellbore, Trajectory, Log, Channel, MudLog, Rig, BhaRun, Tubular, DrillReport) and the Energistics transfer protocol." ;
     rdfs:comment "Wells, wellbores, drilling, logging, trajectory survey, mud, rig and bottom-hole assembly, casing, formation evaluation." ;
     bfo:0000023 cco:Artifact ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_ENERGY_WELLBORE> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_ENERGY_WELLBORE> a skos:Concept ;
     skos:prefLabel "Wells, Wellbores and Subsurface Targets" ;
     skos:notation "11.1" ;
     skos:altLabel "Well Construction" ;
     skos:definition "The constructed subsurface features of a drilling project. A well is the facility that accesses a subsurface target; a wellbore is the drilled hole within it, with an as-built geometry of hole sizes, casing strings, and cement. Wells are planned to reach geological targets at depth, drilled in sections, and cased and completed to produce or inject fluids. Each wellbore records its geometry, the formations it penetrates, and the casing and completion that line it." ;
     skos:scopeNote "Includes hole sections, casing and tubing strings, completions, and subsurface targets. Corresponds to WITSML Well, Wellbore, WellboreGeometry, and Target." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_ENERGY> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_ENERGY> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_ENERGY_LOGGING> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_ENERGY_LOGGING> a skos:Concept ;
     skos:prefLabel "Well Logging and Downhole Measurement" ;
     skos:notation "11.2" ;
     skos:altLabel "Formation Evaluation" ;
     skos:definition "The measurement of subsurface properties along a wellbore and the records it produces. A well log is a record of one or more measurement channels indexed by depth or time; a mud log records formation and cuttings observations made while drilling; formation markers pick the boundaries of geological units. Logging quantifies petrophysical properties — porosity, resistivity, gamma, density — through wireline and measurement-while-drilling tools, and the resulting channels and channel-sets are the primary evidence for formation evaluation." ;
     skos:scopeNote "Includes wireline and measurement-while-drilling logs, channel sets, petrophysical curves, mud logs, and formation tops. Corresponds to WITSML Log, WellLog, ChannelSet, Channel, MudLog, and FormationMarker." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_ENERGY> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_ENERGY> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_ENERGY_TRAJECTORY> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_ENERGY_TRAJECTORY> a skos:Concept ;
     skos:prefLabel "Wellbore Trajectory and Survey" ;
     skos:notation "11.3" ;
     skos:altLabel "Directional Survey" ;
     skos:definition "The geometric path of a wellbore through space and its measurement. A trajectory is the three-dimensional path the wellbore follows from surface to target; trajectory stations are surveyed points along it, each recording measured depth, inclination, and azimuth from which position is computed. Directional drilling steers the wellbore along a planned trajectory to hit subsurface targets while honouring dogleg and anti-collision constraints, and the survey program defines how and where the path is measured." ;
     skos:scopeNote "Includes directional plans, survey stations, minimum-curvature position computation, dogleg severity, and anti-collision. Corresponds to WITSML Trajectory, TrajectoryStation, and SurveyProgram." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_ENERGY> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_ENERGY> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_ENERGY_OPERATIONS> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_ENERGY_OPERATIONS> a skos:Concept ;
     skos:prefLabel "Drilling Operations and Rig Equipment" ;
     skos:notation "11.4" ;
     skos:altLabel "Rig Operations" ;
     skos:definition "The operations and equipment that drill and service a well. A rig is the equipment assembly that drills the well, running a bottom-hole assembly with a bit on a string of tubulars; operations include drilling ahead, tripping, cementing, and well stimulation, each recorded against a plan in drilling and operations reports. Equipment, fluids, time breakdown, and operational risks are logged so that performance and non-productive time can be analysed and the next operation planned." ;
     skos:scopeNote "Includes bottom-hole-assembly runs, bits and tubulars, cementing and stimulation jobs, daily drilling reports, fluids reports, and risk logs. Corresponds to WITSML Rig, BhaRun, Tubular, Bit, CementJob, StimJob, DrillReport, FluidsReport, and Risk." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_ENERGY> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_ENERGY> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_CSG> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_CSG> a skos:Concept ;
     skos:prefLabel "Solid Geometry Design for Consumer Electronics" ;
     skos:notation "12" ;
     skos:altLabel "CSG for Electronics Product Design" ;
@@ -182,43 +182,43 @@
     skos:scopeNote "Covers enclosure and housing design for phones, wearables, network equipment, and lab instruments; chassis, frames, heat sinks, light pipes, gaskets, and fastening features; PCB outline and keep-out geometry; design-for-manufacture of molded and formed parts. Maps onto the BRL-CAD primitive set (arb8, sph, ell, tor, tgc, bot, nmg, brep, bspline, superell) and CSG combination machinery (regions, combinations, boolean union/intersection/difference), and onto the SysML v2 geometry library (shape and spatial items)." ;
     rdfs:comment "Enclosures, housings, heat sinks, snap-fits, bosses and ribs, board keep-outs; solid primitives, boolean CSG, boundary representation; design for molding and forming." ;
     bfo:0000023 cco:Artifact ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_CSG_PRIMITIVE> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_CSG_PRIMITIVE> a skos:Concept ;
     skos:prefLabel "Solid Primitives and Shapes" ;
     skos:notation "12.1" ;
     skos:altLabel "Geometric Primitives" ;
     skos:definition "The basic solid building blocks of constructive solid geometry. A primitive is a parametric solid shape with a closed-form boundary: spheres and ellipsoids, tori, truncated general cones and elliptical cylinders, arbitrary convex polyhedra, superellipsoids, hyperboloids, and particles. Each primitive is defined by a handful of parameters — radii, vertices, axes — and occupies a spatial region; primitives are the leaves of the CSG boolean tree from which compound solids are built." ;
     skos:scopeNote "Includes the canonical solid primitives and their parameters. Corresponds to the BRL-CAD primitives arb8/arbn/sph/ell/tor/tgc/rec/rhc/rpc/ehy/epa/eto/superell/hyp/half/part and the SysML shape items." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_CSG> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_CSG> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_CSG_BOOLEAN> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_CSG_BOOLEAN> a skos:Concept ;
     skos:prefLabel "Constructive Solid Geometry and Boolean Composition" ;
     skos:notation "12.2" ;
     skos:altLabel "CSG Boolean Tree" ;
     skos:definition "The construction of compound solids by boolean composition of primitives. Constructive solid geometry combines solids by union, intersection, and difference (subtraction) into a CSG tree whose internal nodes are boolean operations and whose leaves are primitives. A region is a combination of primitives forming a solid with assigned material; a combination is a boolean tree over primitives and sub-combinations. Parametric construction sketches a two-dimensional profile and extrudes or revolves it into a solid, then composes the results into the final model." ;
     skos:scopeNote "Includes boolean union, intersection, and difference; the CSG tree; regions and combinations; and sketch-extrude-revolve construction. Corresponds to the BRL-CAD region/combination model and boolean operators, and SysML CSG examples." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_CSG> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_CSG> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_CSG_BREP> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_CSG_BREP> a skos:Concept ;
     skos:prefLabel "Boundary Representation, Meshes and NURBS" ;
     skos:notation "12.3" ;
     skos:altLabel "B-rep and Tessellation" ;
     skos:definition "The representation of a solid by its bounding surface rather than by a boolean tree. A boundary representation describes a solid as a set of trimmed faces, edges, and vertices; n-manifold geometry and NURBS or B-spline surfaces give exact curved boundaries, while a bag-of-triangles mesh tessellates the surface into facets for display and analysis. Boundary representations interoperate with constructive solid geometry — a CSG model can be evaluated into a boundary representation, and surfaces can be combined into solids." ;
     skos:scopeNote "Includes boundary representation, n-manifold geometry, NURBS and B-spline surfaces, and polygonal meshes and tessellation. Corresponds to the BRL-CAD brep/nmg/bot/bspline primitives." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_CSG> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_CSG> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_CSG_FABRICATION> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_CSG_FABRICATION> a skos:Concept ;
     skos:prefLabel "Design for Fabrication of Electronic Products" ;
     skos:notation "12.4" ;
     skos:altLabel "Electronics DFM" ;
     skos:definition "The discipline of shaping consumer-electronics geometry so it can actually be made. Design for fabrication constrains the solid model by the production process that will realize it: injection-molded housings carry draft angles, uniform wall thickness, boss and rib proportions, gate and ejector locations, and parting-line placement; sheet-metal chassis respect bend radii, relief cuts, and flat-pattern development; machined heat sinks and bezels respect tool access and fillet radii; and every mating feature carries the tolerances that make snap-fits, fasteners, and gaskets assemble. Tolerance stack-up across the enclosure, board, and connectors decides whether the device closes; the fabricated part is verified against the solid model by inspection dimensions. This is where the geometric design meets the manufacturing processes that produce it — the same molding, forming, machining, and assembly operations that manufacturing engineering plans and routes." ;
     skos:scopeNote "Includes draft, wall-thickness, boss and rib rules for injection molding; bend and relief rules for sheet metal; tolerance stack-up and fit for snap-together assemblies; inspection dimensions and first-article verification. Intersects the manufacturing-process domain (process planning, tooling, routing) — the CSG-to-manufacturing seam." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_CSG> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_CSG> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 ## ----------------------------------------------------------------------
 ## Aperture R1 extension (2026-07-02, RH): SysML's admissible concepts
@@ -232,7 +232,7 @@
 ## ENERGY/WITSML (11) hold their ground.
 ## ----------------------------------------------------------------------
 
-<https://signals360.example.org/sdg#SDG_UTILITY> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_UTILITY> a skos:Concept ;
     skos:prefLabel "Utility-Scale Networks" ;
     skos:notation "13" ;
     skos:altLabel "Utility Infrastructure Networks" ;
@@ -240,31 +240,31 @@
     skos:scopeNote "Covers electric transmission and distribution, water and wastewater conveyance, and carrier telecommunications networks; network topology and asset registries; SCADA-style telemetry and operating limits; capacity planning, contingency, and outage management. Maps onto the SysML v2 systems libraries (Parts, Ports, Interfaces, Connections, Flows, Requirements, Constraints, States, Actions) and the Quantities-and-Units (ISQ/SI) domain library for flows, voltages, and pressures." ;
     rdfs:comment "Grids, mains, and carrier networks as connected part topologies; flows and capacities; telemetry against limits; switching, outages, and maintenance operations." ;
     bfo:0000023 cco:Artifact ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_UTILITY_POWER> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_UTILITY_POWER> a skos:Concept ;
     skos:prefLabel "Electric Power Transmission and Distribution" ;
     skos:notation "13.1" ;
     skos:altLabel "Power Grid" ;
     skos:definition "The networked delivery of electric power from generation to load. Transmission moves bulk power at high voltage between substations over lines and cables; distribution steps voltage down through transformers and carries it along feeders, laterals, and service drops to customers. Substations compose transformers, buses, breakers, switches, and protection relays into switching topologies; grid operation balances load against capacity, maintains voltage and frequency within limits, reconfigures the network by switching, and isolates faults through protection coordination. Asset registries record each transformer, breaker, and line span with its ratings, age, and condition; telemetry streams voltages, currents, and breaker states against operating limits; and contingency analysis asks whether the network survives the loss of any single element." ;
     skos:scopeNote "Includes substations, transformers, feeders and laterals, protection and switching, load and capacity ratings, voltage regulation, outage and reliability indices, and grid telemetry. The network is a connected-part topology with typed electrical flows in the systems view." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_UTILITY> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_UTILITY> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_UTILITY_WATER> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_UTILITY_WATER> a skos:Concept ;
     skos:prefLabel "Water and Wastewater Networks" ;
     skos:notation "13.2" ;
     skos:altLabel "Water Distribution and Collection" ;
     skos:definition "The networked conveyance of potable water from sources to consumers and of wastewater from consumers to treatment. A distribution system composes intakes, treatment works, pumping stations, storage tanks, and pressure zones connected by mains, with valves, hydrants, meters, and service connections as controllable and measurable points; a collection system gathers sewage and stormwater through gravity mains, lift stations, and interceptors to treatment plants. Hydraulic behaviour — flows, pressures, and levels — is monitored against operating bands; pumps and valves are the actuated elements that move the system between states; and asset condition, leakage, and main breaks drive maintenance and renewal programs. Water quality is sampled and tested along the network, tying the utility domain to laboratory analysis." ;
     skos:scopeNote "Includes pumping stations, pressure zones, storage, mains and valves, metering, leakage and non-revenue water, lift stations and interceptors, and hydraulic telemetry. Water-quality sampling and testing intersect the laboratory domain — the utility-to-LIMS seam." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_UTILITY> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_UTILITY> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-<https://signals360.example.org/sdg#SDG_UTILITY_TELECOM> a skos:Concept ;
+<https://signals.zndx.org/sdg#SDG_UTILITY_TELECOM> a skos:Concept ;
     skos:prefLabel "Carrier-Grade Telecommunications Networks" ;
     skos:notation "13.3" ;
     skos:altLabel "Carrier Networks" ;
     skos:definition "The networked delivery of communications service at carrier scale. A carrier network composes central offices, points of presence, and data centers connected by fiber routes, conduits, and microwave links, with switching, routing, and transport elements — network equipment as engineered hardware — terminating and cross-connecting circuits and packet flows. Network elements expose ports; spans and cross-connects realize connections; aggregation, ring, and mesh topologies provide capacity and survivability; and service provisioning allocates customer demand onto physical paths. Operations monitor traffic, loss, and latency against service objectives, manage faults and protection switchover, and track every element, card, port, and fiber strand in inventory with its location, state, and connectivity — the physical-network record from which the network is operated and grown." ;
     skos:scopeNote "Includes central offices and points of presence, fiber-plant and conduit records, switching and routing elements, transport and aggregation topologies, circuit and service provisioning, network inventory, and performance and fault management. The equipment itself is manufactured electronics — the utility-to-manufacturing seam." ;
-    skos:broader <https://signals360.example.org/sdg#SDG_UTILITY> ;
-    skos:inScheme <https://signals360.example.org/sdg/scheme> .
+    skos:broader <https://signals.zndx.org/sdg#SDG_UTILITY> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .

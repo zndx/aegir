@@ -34,7 +34,7 @@ INDEX_PKL = GROUND / "anchors.pkl"
 FHIR_NS = "http://hl7.org/fhir/"
 SYSML_JSON = REPO / "build" / "sysml" / "sysml_foundation.json"
 FOUNDATION_DIR = REPO / "build" / "foundation"
-SYSML_NS = "http://www.signals360.org/sdg/sysml#"
+SYSML_NS = "https://signals.zndx.org/sdg/sysml#"
 IAO_DEF = "http://purl.obolibrary.org/obo/IAO_0000115"
 
 _MODEL = None
@@ -124,7 +124,7 @@ def _foundation_terms(terms, default_source):
         gloss = t.get("gloss") or (
             f"{re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', name).lower()} — "
             f"a {t.get('domain', 'core')} concept grounded as {t['genus']}")
-        out.append((f"http://www.signals360.org/sdg/{src}#{name}", name, gloss, src))
+        out.append((f"https://signals.zndx.org/sdg/{src}#{name}", name, gloss, src))
     return out
 
 

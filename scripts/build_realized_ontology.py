@@ -32,7 +32,7 @@ from aegir.ontology.deeponto_harness import TEST_NAMESPACE, ensure_jvm  # noqa: 
 from aegir.ontology.schema import load_catalog  # noqa: E402
 
 OUT = REPO / "corpora" / "ontology"
-SDG_NS = "https://signals360.example.org/sdg#"
+SDG_NS = "https://signals.zndx.org/sdg#"
 SIGNALS_OUT = REPO / "build" / "realize_signals.json"  # boundary signals (unsat justifications) → the re-authoring loop
 
 # Numeric BFO 2020 grounding so the derived axioms (which anchor to bfo:0000015 etc.) are reasoned
@@ -62,7 +62,7 @@ ObjectProperty: bfo:0000066
 PROBE_RE = re.compile(re.escape(TEST_NAMESPACE) + r"#T_[A-Za-z0-9_]+")
 LABEL_RE = re.compile(r'"ZZ([A-Za-z0-9_]+)ZZ"')
 # an sdg: domain class as a full IRI (the form render_batch emits after PROBE_RE unification)
-SDG_IRI = re.compile(r"<(https://signals360\.example\.org/sdg#[A-Za-z0-9_]+)>")
+SDG_IRI = re.compile(r"<(https://signals\.zndx\.org/sdg#[A-Za-z0-9_]+)>")
 # name cue: a class whose head noun reads as an occurrent (process/activity) grounds under bfo:0000003
 _OCCURRENT_CUE = re.compile(
     r"(Process|Procedure|Activity|Event|Operation|Reaction|Transition|Assessment|Analysis|Behaviou?r|"
@@ -87,7 +87,7 @@ def _head_map(derived) -> dict:
     return out
 
 
-_DEGEN = re.compile(r"^Class:\s*<https://signals360\.example\.org/sdg#([A-Z])>(?:\s|$)")
+_DEGEN = re.compile(r"^Class:\s*<https://signals\.zndx\.org/sdg#([A-Z])>(?:\s|$)")
 
 
 def drop_degenerate(doc: str) -> "tuple[str, list[str]]":
@@ -128,7 +128,7 @@ def ground_fillers(doc: str, exclude: "frozenset[str]" = frozenset()) -> "tuple[
     back-off found unsatisfiable. Returns (doc, grounded_filler_iris)."""
     declared = set(SDG_IRI.findall(doc))
     # a class is grounded/defined if it carries a SubClassOf OR an EquivalentTo (the genus grounds it)
-    grounded = set(re.findall(r"Class:\s*<(https://signals360\.example\.org/sdg#[A-Za-z0-9_]+)>\s+(?:SubClassOf|EquivalentTo):", doc))
+    grounded = set(re.findall(r"Class:\s*<(https://signals\.zndx\.org/sdg#[A-Za-z0-9_]+)>\s+(?:SubClassOf|EquivalentTo):", doc))
     fillers = sorted(declared - grounded - set(exclude))
     if not fillers:
         return doc, []
@@ -310,7 +310,7 @@ def _reason(doc: str, explain: bool = False):
         why = explain_unsatisfiable(onto.owl_onto, r, unsat)
     done.set()
     print(f"   reasoned in {_time.monotonic() - t0:.0f}s (classes={n_classes} individuals={n_inds_sig} "
-          f"consistent={consistent} unsat={len(unsat)}; budget {REASON_BUDGET_S}s)")
+          f"consistent={consistent} unsat={len(unsat)}; budget {REASON_BUDGET_S}s)", flush=True)
     return onto, path, consistent, n_classes, unsat, why
 
 
@@ -360,7 +360,7 @@ def consistency_check(templates) -> "tuple[bool, list[str]]":
     doc = PROBE_RE.sub(lambda m: SDG_NS + m.group(0).split("__")[-1], doc)
     doc = LABEL_RE.sub(lambda m: '"' + humanize(m.group(1)) + '"', doc)
     doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
-                      "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
+                      "Ontology: <https://signals.zndx.org/sdg>\n" + NUMERIC_BFO)
     doc, _ = drop_degenerate(doc)
     doc = import_cco_bridge_fhir(doc)  # always aligns cco: NS; self-gates the CCO import
     doc, _ = RG.declare_used_properties(doc)
@@ -395,7 +395,7 @@ def main() -> int:
     doc = PROBE_RE.sub(lambda m: SDG_NS + m.group(0).split("__")[-1], doc)
     doc = LABEL_RE.sub(lambda m: '"' + humanize(m.group(1)) + '"', doc)
     base_doc = doc.replace("Ontology: <http://example.org/aegir-batch>",
-                           "Ontology: <https://signals360.example.org/sdg>\n" + NUMERIC_BFO)
+                           "Ontology: <https://signals.zndx.org/sdg>\n" + NUMERIC_BFO)
     base_doc, degen = drop_degenerate(base_doc)
     base_doc = import_cco_bridge_fhir(base_doc)  # aligns cco: NS + imports π(CCO) — BFO + π is the one fixed theory
     if degen:
@@ -407,16 +407,32 @@ def main() -> int:
     # classification ≈ individuals × ≡-classes), so the strict-grounding/narrowing rounds must not re-pay
     # it. "Least-trusted layer" also means ENTERS LAST — one certification pass against the clean theory.
     abox_block, n_inds = "", 0
+    probe_sets: "dict[str, frozenset]" = {}
     if not args.no_individuals:
         from aegir.ontology import individuals as IND
         _reg = IND.load_registry()
         abox_block = IND.abox_manchester(_reg)
         if abox_block:
             n_inds = IND.n_individuals(_reg)
-            n_equiv = base_doc.count("EquivalentTo")
-            print(f"   instantiation queued: {n_inds} individuals × {n_equiv} ≡-classes (instance-check "
-                  f"load ≈ {n_inds * n_equiv:,}) — ONE ABox pass after the TBox converges; "
-                  f"budget {REASON_BUDGET_S}s/pass")
+            # CONJUNCTION PROBES (the decomposition, folded into the main pass): each distinct multi-typed
+            # conjunction becomes a probe class judged by getUnsatisfiableClasses alongside everything else
+            # — HermiT's internal batching/caching prices these at ~0.5s/class, vs 13-20s+ per FRESH
+            # isSatisfiable expression call (measured 2026-07-02: 166 fresh calls ground >57 min, outside
+            # any budget/print — the uninstrumented phase this design deletes). Probes ride the budgeted,
+            # timed _reason; they are instrumentation, stripped before emission.
+            tbi = IND.types_by_individual(_reg)
+            for k, ts in enumerate(sorted({frozenset(ts) for ts in tbi.values() if len(ts) > 1},
+                                          key=sorted)):
+                probe_sets[f"__conjprobe_{k}"] = ts
+            if probe_sets:
+                probes = "\n".join(
+                    f"Class: <{SDG_NS}{name}> EquivalentTo: "
+                    + " and ".join(f"<{SDG_NS}{c}>" for c in sorted(ts))
+                    for name, ts in probe_sets.items())
+                base_doc = base_doc.rstrip() + "\n\n" + probes + "\n"
+            print(f"   instantiation queued: {n_inds} individuals · {len(probe_sets)} conjunction probes "
+                  f"folded into the main pass (multi-typed sets; singletons ride unsat=∅); "
+                  f"budget {REASON_BUDGET_S}s/pass", flush=True)
 
     def build(ground: bool, exclude: "frozenset[str]" = frozenset()) -> "tuple[str, int, int, int]":
         d, nf, na, nd = base_doc, 0, 0, 0
@@ -453,10 +469,20 @@ def main() -> int:
               "declared) — a fallback parser swallowed the document; refusing to emit a vacuous artifact",
               file=sys.stderr)
         return 2
+    # conjunction PROBES are instrumentation, not content: partition their verdicts out of every loop —
+    # an unsat probe is an ABox withhold decision, never a grounding back-off or narrowing target.
+    def _split_probes(us: "list") -> "tuple[list, set]":
+        real = [u for u in us if "__conjprobe_" not in u]
+        probes = {u.rsplit("#", 1)[-1] for u in us if "__conjprobe_" in u}
+        return real, probes
+
+    probe_unsat: "set[str]" = set()
+    unsat, pu = _split_probes(unsat)
+    probe_unsat |= pu
     # --strict-grounding: greedily drop ONLY the filler-grounding edges that introduce unsatisfiability,
     # re-reasoning until clean (or no further progress) — keeps the bulk of the grounding gain.
     for _ in range(5):
-        bad = {u for u in unsat if "signals360" in u} if args.strict_grounding else set()
+        bad = {u for u in unsat if SDG_NS in u} if args.strict_grounding else set()
         if not bad or bad <= exclude:
             break
         exclude |= bad
@@ -464,6 +490,8 @@ def main() -> int:
         Path(path).unlink(missing_ok=True)
         doc, nf, na, nd = build(ground=True, exclude=frozenset(exclude))
         onto, path, consistent, n_classes, unsat, why = _reason(doc, explain=True)
+        unsat, pu = _split_probes(unsat)
+        probe_unsat |= pu
     # Domain-narrowing is the boundary where the conflict is finally VISIBLE: a class still unsatisfiable
     # after the grounding back-off carries a bad DERIVED axiom (a mis-used BFO role / a filler grounded
     # into a disjoint category). Emit the SIGNAL — the minimal justification per class (why + axioms),
@@ -473,7 +501,7 @@ def main() -> int:
     for _ in range(8):
         if not unsat:
             break
-        signals.update(why)
+        signals.update({k: v for k, v in why.items() if "__conjprobe_" not in k})
         for iri in unsat:
             sig = why.get(iri, {})
             print(f"   ⚠ narrowing: {iri.split('#')[-1]} — {sig.get('why', 'unsatisfiable vs the theory')}")
@@ -482,8 +510,10 @@ def main() -> int:
         doc = drop_classes(doc, unsat)
         Path(path).unlink(missing_ok=True)
         onto, path, consistent, n_classes, unsat, why = _reason(doc, explain=True)
+        unsat, pu = _split_probes(unsat)
+        probe_unsat |= pu
     if unsat:
-        signals.update(why)  # fold the post-back-off residual into the record too
+        signals.update({k: v for k, v in why.items() if "__conjprobe_" not in k})
     if signals:
         _write_signals(signals)  # the surfaced record — the interface to the re-authoring loop
     elif SIGNALS_OUT.exists():
@@ -498,45 +528,51 @@ def main() -> int:
     # ── DECOMPOSED ABox certification (the greenfield move, RH 2026-07-02: own the decomposition calculus,
     # keep HermiT as the atomic oracle). THEOREM (our shape): with a NOMINAL-FREE TBox (gate-verified) and a
     # Types-only ABox (no Facts/SameAs — enforced by abox_manchester's construction), the KB is consistent
-    # ⟺ the TBox is consistent ∧ every asserted type-conjunction is satisfiable. Proof sketch: nothing
-    # connects individuals, so a model is the disjoint union of the clean TBox model with one witness model
-    # per conjunction (disjoint unions preserve nominal-free SHIQ satisfaction). Singleton type-sets are
-    # ALREADY certified by unsat=∅ above; only multi-typed individuals need a check — each one fast HermiT
-    # isSatisfiable call on the loaded TBox reasoner. HermiT's monolithic pass on the same input ground
-    # >20 min (ladder: TBox 480s, +248 individuals >1200s) doing generic work this shape doesn't need.
+    # ⟺ the TBox is consistent ∧ every asserted type-conjunction is satisfiable. Singleton type-sets ride
+    # unsat=∅ above; the multi-typed conjunctions were judged as PROBE CLASSES inside the main budgeted,
+    # timed pass (HermiT's batched per-class tests ≈ 0.5s/class, vs 13-20s+ per fresh isSatisfiable
+    # expression call — the uninstrumented, unbudgeted loop this design replaced). Here we only read the
+    # verdicts, withhold clashing conjunctions' individuals, and STRIP the probes from the artifact.
     n_withheld = 0
     if abox_block:
-        import time as _t2
         from aegir.ontology import individuals as IND2
-        t_abox = _t2.monotonic()
+        # regenerate the ABox against the FINAL doc's declared classes (the writer-side coherence gate):
+        # seeding ran against an earlier catalog state, so entity_classes may reference classes the
+        # converged TBox no longer declares (withheld conjuncts, degenerate slots) — one ghost Types:
+        # name fails the whole Manchester parse downstream.
+        declared = set(re.findall(rf"Class: <{re.escape(SDG_NS)}([A-Za-z0-9_]+)>", doc))
+        abox_block = IND2.abox_manchester(IND2.load_registry(), declared=declared)
+        n_ghosted = n_inds - abox_block.count("Individual:")
+        if n_ghosted:
+            print(f"   ⚠ {n_ghosted} individual(s) skipped — typed only by classes the converged TBox "
+                  "does not declare (ghost types; re-seed reconciles)", flush=True)
+            n_inds -= n_ghosted
         tbi = IND2.types_by_individual(IND2.load_registry())
-        multi = sorted({frozenset(ts) for ts in tbi.values() if len(ts) > 1}, key=sorted)
-        bad_sets: "list[frozenset]" = []
-        if multi:
-            import jpype
-            df = onto.owl_onto.getOWLOntologyManager().getOWLDataFactory()
-            IRIC = jpype.JClass("org.semanticweb.owlapi.model.IRI")
-            HashSet = jpype.JClass("java.util.HashSet")
-            rzr = onto.reasoner.owl_reasoner
-            for ts in multi:
-                s = HashSet()
-                for c in sorted(ts):
-                    s.add(df.getOWLClass(IRIC.create(SDG_NS + c)))
-                if not bool(rzr.isSatisfiable(df.getOWLObjectIntersectionOf(s))):
-                    bad_sets.append(ts)
+        bad_sets = [probe_sets[p] for p in sorted(probe_unsat) if p in probe_sets]
         if bad_sets:
-            withheld_ids = {i for i, ts in tbi.items() if frozenset(ts) in set(bad_sets)}
+            bad_lookup = set(bad_sets)
+            withheld_ids = {i for i, ts in tbi.items() if frozenset(ts) in bad_lookup}
             n_withheld = len(withheld_ids)
             for ts in bad_sets:  # the boundary SIGNAL: these type-conjunctions are disjoint under the theory
                 print(f"   ⚠ instance-level clash: {{{', '.join(sorted(ts))}}} is UNSATISFIABLE — "
                       f"withholding its individuals (re-author in individual_registry.json)", file=sys.stderr)
+            # persist the instance-level signals (the re-seed/re-author interface — prints are not a record)
+            import json as _json
+            abox_signals = [{"conjunction": sorted(ts),
+                             "individuals": sorted(i for i, t2 in tbi.items() if frozenset(t2) == ts)}
+                            for ts in bad_sets]
+            (REPO / "build" / "abox_clash_signals.json").write_text(_json.dumps(abox_signals, indent=1))
+            print(f"   ⚑ {len(bad_sets)} instance-level clash signal(s) → build/abox_clash_signals.json",
+                  flush=True)
             abox_block = "\n\n".join(f for f in abox_block.split("\n\n")
                                      if not any(f"<{SDG_NS}{i}>" in f for i in withheld_ids))
             n_inds -= n_withheld
+        if probe_sets:  # strip the instrumentation from the artifact
+            doc = drop_classes(doc, [SDG_NS + p for p in probe_sets])
         if abox_block:
             doc = doc.rstrip() + "\n\n" + abox_block + "\n"
-        print(f"   ABox certified by decomposition in {_t2.monotonic() - t_abox:.1f}s: {n_inds} individuals "
-              f"({len(multi)} multi-typed conjunction checks, {len(bad_sets)} clashes withheld)")
+        print(f"   ABox certified by decomposition: {n_inds} individuals ({len(probe_sets)} conjunction "
+              f"probes judged in the main pass, {len(bad_sets)} clashes withheld)", flush=True)
 
     try:
         print(f"   Phase-A: grounded {nf} fillers · annotated {na} classes · {nd} datatype-prop assertions")
@@ -548,22 +584,23 @@ def main() -> int:
         OUT.mkdir(parents=True, exist_ok=True)
         (OUT / "sdg-ontology.omn").write_text(doc)
         owl_ok = False
-        try:  # best-effort RDF/XML for owlready2 / Protégé consumers — re-parse the FINAL doc (the loaded
-            # `onto` is the TBox-only reasoner ontology; the emitted doc also carries the certified ABox).
-            # Pure parse+serialize, no reasoner. Guards: signature must carry the classes AND individuals.
+        artifact_classes = n_classes - len(probe_sets)  # the reason pass counted the (stripped) probes
+        try:  # best-effort RDF/XML for owlready2 / Protégé consumers — re-parse the FINAL doc via the
+            # PROVEN DeepOnto loader (raw OWLManager auto-detection parse-degraded the Manchester doc on
+            # first live use, 2026-07-02 — the guard caught it). Guards: classes AND individuals present.
             import jpype
-            fmt = jpype.JClass("org.semanticweb.owlapi.formats.RDFXMLDocumentFormat")()
-            jiri = jpype.JClass("org.semanticweb.owlapi.model.IRI")
-            jfile = jpype.JClass("java.io.File")
-            OWLManager = jpype.JClass("org.semanticweb.owlapi.apibinding.OWLManager")
-            man2 = OWLManager.createOWLOntologyManager()
-            o2 = man2.loadOntologyFromOntologyDocument(jfile(str(OUT / "sdg-ontology.omn")))
+            from deeponto.onto import Ontology as _Onto
+            o2 = _Onto(str(OUT / "sdg-ontology.omn"), reasoner_type="hermit").owl_onto
             nc2 = int(o2.getClassesInSignature().size())
             ni2 = int(o2.getIndividualsInSignature().size())
             if _degraded(nc2, doc) or ni2 < n_inds:
                 raise RuntimeError(f"final-doc parse degraded (classes={nc2} individuals={ni2}/{n_inds})")
+            artifact_classes = nc2
+            fmt = jpype.JClass("org.semanticweb.owlapi.formats.RDFXMLDocumentFormat")()
+            jiri = jpype.JClass("org.semanticweb.owlapi.model.IRI")
+            jfile = jpype.JClass("java.io.File")
             owl_path = OUT / "sdg-ontology.owl"
-            man2.saveOntology(o2, fmt, jiri.create(jfile(str(owl_path))))
+            o2.getOWLOntologyManager().saveOntology(o2, fmt, jiri.create(jfile(str(owl_path))))
             owl_ok = owl_path.exists()
         except Exception as e:  # noqa: BLE001
             print(f"  (.owl RDF/XML save skipped: {type(e).__name__}: {str(e)[:80]})")
@@ -571,7 +608,7 @@ def main() -> int:
         cert = (
             "# HermiT consistency certificate — `sdg-ontology`\n\n"
             f"- **isConsistent**: `{consistent}`\n"
-            f"- **named classes**: {n_classes}\n"
+            f"- **named classes**: {artifact_classes}\n"
             f"- **unsatisfiable classes**: {len(unsat)}\n"
             + (f"- **domain-narrowed**: {len(signals)} class(es) shed as unsatisfiable vs the theory — "
                f"justifications recorded in `build/realize_signals.json` (the re-authoring signal)\n" if signals else "")

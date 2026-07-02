@@ -58,7 +58,7 @@ ANCHORS: dict[str, tuple[str, str, str, str, str | None, str]] = {
 # Anchorless templates (empty bfo_anchor_path) attach here.
 GENERIC = ("SDG.GENERIC", "0", "Generic Entity", "GENERIC", None,
            "Foundational / domain-agnostic axiom patterns without a specific BFO/CCO anchor.")
-SCHEME_IRI = "https://signals360.example.org/sdg/scheme"
+SCHEME_IRI = "https://signals.zndx.org/sdg/scheme"
 
 
 def _humanize(tid: str) -> str:
@@ -66,7 +66,7 @@ def _humanize(tid: str) -> str:
 
 
 def _iri(code: str) -> str:
-    return f"https://signals360.example.org/sdg#{code.replace('.', '_')}"
+    return f"https://signals.zndx.org/sdg#{code.replace('.', '_')}"
 
 
 def build_records() -> list[dict]:
@@ -161,7 +161,7 @@ def write_ttl(records: list[dict], path: Path) -> None:
         return s.replace("\\", "\\\\").replace('"', '\\"')
     lines = [
         "@prefix skos: <http://www.w3.org/2004/02/skos/core#> .",
-        "@prefix sdg:  <https://signals360.example.org/sdg#> .", "",
+        "@prefix sdg:  <https://signals.zndx.org/sdg#> .", "",
         f"<{SCHEME_IRI}> a skos:ConceptScheme ;",
         '    skos:prefLabel "SDG column-type vocabulary (ontology-derived)" .', "",
     ]

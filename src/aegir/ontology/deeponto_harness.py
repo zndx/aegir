@@ -248,7 +248,7 @@ def render_template_ontology(template: CatalogTemplate) -> str:
         "Prefix: obi: <http://purl.obolibrary.org/obo/OBI_>\n"
         "Prefix: schema: <https://schema.org/>\n"
         "Prefix: dbo: <http://dbpedia.org/ontology/>\n"
-        "Prefix: sdg: <https://signals360.example.org/sdg#>\n"
+        "Prefix: sdg: <https://signals.zndx.org/sdg#>\n"
         "\n"
         "Ontology: <http://example.org/aegir-probe>\n"
         "\n"

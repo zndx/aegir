@@ -103,7 +103,7 @@ _VOCAB_PATH = Path(__file__).resolve().parent / "sdg-vocab.ttl"
 _NS = {
     "http://purl.obolibrary.org/obo/BFO_": "bfo:",
     "http://www.commoncoreontologies.org/": "cco:",
-    "https://signals360.example.org/sdg#": "sdg:",
+    "https://signals.zndx.org/sdg#": "sdg:",
     "http://www.w3.org/2001/XMLSchema#": "xsd:",
 }
 # anchor → parent anchor, so a table inherits its ancestors' typed attributes.

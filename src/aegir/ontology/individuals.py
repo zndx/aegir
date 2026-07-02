@@ -97,7 +97,8 @@ def _slug(label: str) -> str:
     return _SLUG.sub("_", label.lower()).strip("_")[:60] or "unnamed"
 
 
-def abox_manchester(reg: dict, *, ns: str = "https://signals360.example.org/sdg#") -> str:
+def abox_manchester(reg: dict, *, ns: str = "https://signals.zndx.org/sdg#",
+                    declared: "set[str] | None" = None) -> str:
     """Render the registry's ENTITY-column values as OWL ``Individual:`` frames typed by the class the
     column references (each record's stored ``entity_classes``) — the ontology INSTANTIATED. Values of
     data/string columns are literals, not individuals, and are not emitted. The same label reused across
@@ -113,6 +114,13 @@ def abox_manchester(reg: dict, *, ns: str = "https://signals360.example.org/sdg#
         for col, cls in (rec.get("entity_classes") or {}).items():
             cls = re.sub(r"[^A-Za-z0-9_]", "", cls or "")
             if not cls:
+                continue
+            # WRITER-SIDE COHERENCE GATE: the ABox may not reference classes the target document does not
+            # declare — one ghost `Types:` name makes the Manchester parser fail the WHOLE doc (measured
+            # 2026-07-02: a class withheld from the TBox after seeding, plus a degenerate 'X' slot, turned
+            # the artifact into an 11-axiom vacuous parse). Ghost-typed values are skipped here, loudly
+            # countable by the caller; the registry entry remains for the re-seed loop to reconcile.
+            if declared is not None and cls not in declared:
                 continue
             for v in rec.get("columns", {}).get(col, []):
                 ind = f"i_{_slug(v)}"

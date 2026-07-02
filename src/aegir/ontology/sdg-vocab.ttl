@@ -24,15 +24,15 @@
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
 @prefix cco:     <http://www.commoncoreontologies.org/> .
-@prefix sdg:     <https://signals360.example.org/sdg#> .
+@prefix sdg:     <https://signals.zndx.org/sdg#> .
 
-<https://signals360.example.org/sdg> a owl:Ontology ;
+<https://signals.zndx.org/sdg> a owl:Ontology ;
     rdfs:label "Signals Data Governance Ontology" ;
     dcterms:title "Signals Data Governance (SDG) Ontology" ;
     dcterms:description
         "A bespoke OWL ontology grounded in BFO 2020 and the Common Core Ontologies, covering observable artifacts, designative / descriptive / directive information content entities, observation processes, derivation lineage, governance processes, and a Dempster-Shafer belief structure. Authored as the basis for Aegir's RLVR-trained ontology generation policy and downstream byte-level pretraining."@en ;
     dcterms:creator "Signals 360" ;
-    owl:versionIRI <https://signals360.example.org/sdg/v0.1.0> ;
+    owl:versionIRI <https://signals.zndx.org/sdg/v0.1.0> ;
     owl:versionInfo "0.1.0-foundation" .
 
 ## ======================================================================

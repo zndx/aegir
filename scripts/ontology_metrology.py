@@ -32,7 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 from aegir.ontology import ontoclean  # noqa: E402  (the lexical anti-rigidity prior for the OntoClean proxies)
 
 BFO = "http://purl.obolibrary.org/obo/BFO_"
-SDG = "https://signals360.example.org/sdg#"
+SDG = "https://signals.zndx.org/sdg#"
 # BFO realizable-entity backbone (the IOF's modeling discipline)
 REALIZABLE_CLASSES = {"0000023": "role", "0000016": "disposition", "0000034": "function", "0000017": "realizable entity"}
 REALIZABLE_PROPS = ("0000055", "0000052", "0000053", "0000054")  # realizes / inheres-in / bearer-of / realized-in
