@@ -118,6 +118,15 @@ evolve-rigor max_rounds="3":
     LD_LIBRARY_PATH=$(pwd)/build/jvm-libs:$(pwd)/build/cuda-driver-libs \
         uv run --no-sync python scripts/evolve_rigor_to_green.py --max-rounds {{max_rounds}}
 
+# Close the loop on the realize BOUNDARY's signal: build_realized_ontology narrows unsatisfiable classes
+# out of the domain and records each one's minimal justification to build/realize_signals.json; this drives
+# the engine to RE-AUTHOR the offending conjunct (guided by that signal) so the class becomes satisfiable —
+# agency over the reasoner's feedback, not a silent drop. No-op if there are no signals (a clean realize).
+# Needs jvm-libs (HermiT membrane) + cuda-driver-libs (engine). Re-realize after to confirm the loop closed.
+reauthor-unsat rounds="4":
+    LD_LIBRARY_PATH=$(pwd)/build/jvm-libs:$(pwd)/build/cuda-driver-libs \
+        uv run --no-sync python scripts/reauthor_unsat.py --rounds {{rounds}}
+
 # Meta-harness inc-2b: run the H₀ single-file harness over gap topics (frozen Grok
 # + ContractGate/HermiT) via the candidate filesystem. Needs the JVM libs
 # (DeepOnto/HermiT) + cuda driver libs. coverage-run defaults to the canonical v1 ground.
