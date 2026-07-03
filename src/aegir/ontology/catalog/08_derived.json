@@ -5076,10 +5076,9 @@
     },
     {
       "template_id": "joint_information_environment",
-      "manchester_template": "Class: {JointInformationEnvironment:Class} EquivalentTo: bfo:0000004 and bfo:0000050 some {SecureInfrastructureService:Class}",
+      "manchester_template": "Class: {JointInformationEnvironment:Class} SubClassOf: bfo:0000004",
       "slot_types": {
-        "JointInformationEnvironment": "Class",
-        "SecureInfrastructureService": "Class"
+        "JointInformationEnvironment": "Class"
       },
       "is_complex": true,
       "verbal_template": "A JointInformationEnvironment is a bfo:0000004 that isPartOf some SecureInfrastructureService.",
@@ -5099,7 +5098,9 @@
           "rel_margin": 0.129,
           "hash": "d48edc8ad633938b0f2ba45a1a9cea95ecb357e0f42873ee24a2b43ad83bd333"
         },
-        "source_span": "Supported by a mandatory and common foundation based upon DoD CIO/DNI CIO jointly-developed standards, rules, and interoperable secure infrastructure services."
+        "source_span": "Supported by a mandatory and common foundation based upon DoD CIO/DNI CIO jointly-developed standards, rules, and interoperable secure infrastructure services.",
+        "withheld_conjunct": "bfo:0000050 some {SecureInfrastructureService:Class}",
+        "withheld_reason": "tractability (2026-07-02): activating this axiom phase-changed the TBox tableau 478s -> >48min (jstack: AnywhereBlocking.computeBlocking under expandExistentials - the exists-expansion x blocking grind, mode #2). The pre-repair {X:Class} degeneracy had been an ACCIDENTAL SHIELD (drop_degenerate discarded the head every realize). Withheld pending re-authoring with a bounded relation/filler; this provenance IS the boundary signal."
       }
     },
     {

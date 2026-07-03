@@ -1,0 +1,5438 @@
+{
+ "account_authorization_record": {
+  "cols": {
+   "account_authorization_record": "auth_id",
+   "assigns_administrator": "admin_id",
+   "encoding": "encoding_type",
+   "label_text": "display_name",
+   "registers_application": "app_id"
+  },
+  "table": "auth_grants"
+ },
+ "agent_acts_on_behalf_of": {
+  "cols": {
+   "acted_on_behalf_of": "principal_id",
+   "agent": "delegate_id",
+   "created_date": "created_at",
+   "owner": "owner_id"
+  },
+  "table": "agent_delegation"
+ },
+ "agent_at_organization": {
+  "cols": {
+   "agent": "agent_id",
+   "at_organization": "org_id",
+   "created_date": "created_at",
+   "owner": "owner_id"
+  },
+  "table": "agent_org"
+ },
+ "agent_basic": {
+  "cols": {
+   "agent": "id",
+   "checksum": "hash_val",
+   "name": "label"
+  },
+  "table": "agent_registry"
+ },
+ "agent_identified_by_uri": {
+  "cols": {
+   "agent": "agent_id",
+   "identified_by_u_r_i": "uri",
+   "identifier": "id_value",
+   "owner": "owner_id"
+  },
+  "table": "agent_identities"
+ },
+ "agent_responsible_for": {
+  "cols": {
+   "agent": "agent_id",
+   "checksum": "checksum",
+   "responsible_for": "target_id",
+   "uri": "rel_uri"
+  },
+  "table": "agent_responsibility"
+ },
+ "agent_software_or_human": {
+  "cols": {
+   "agent": "id",
+   "agent_2": "type_code",
+   "agent_3": "status_code",
+   "license": "license_id",
+   "name": "display_name"
+  },
+  "table": "agent_ref"
+ },
+ "agent_with_role": {
+  "cols": {
+   "agent": "agent_id",
+   "agent_role": "role_code",
+   "identifier": "id",
+   "size_bytes": "file_size"
+  },
+  "table": "artifact_role_assignment"
+ },
+ "aggregation_aggregates_measurement": {
+  "cols": {
+   "aggregates": "measurement_id",
+   "aggregation": "aggregate_id",
+   "confidence": "confidence_level",
+   "uncertainty": "uncertainty_value"
+  },
+  "table": "measurement_aggregate"
+ },
+ "aggregation_basic": {
+  "cols": {
+   "aggregation": "agg_type",
+   "encoding": "encoding_type",
+   "unit": "unit_code"
+  },
+  "table": "agg_config"
+ },
+ "aggregation_grouped_by": {
+  "cols": {
+   "aggregation": "group_id",
+   "label_text": "label",
+   "language": "lang_code"
+  },
+  "table": "grouped_descriptions"
+ },
+ "aggregation_over_time_window": {
+  "cols": {
+   "aggregation": "agg_value",
+   "dimension_kind": "dim_type",
+   "over_time_window": "window_start",
+   "uncertainty": "error_margin"
+  },
+  "table": "metric_rollup"
+ },
+ "aggregation_uses_function": {
+  "cols": {
+   "aggregation": "entity_id",
+   "label_text": "display_name",
+   "recorded_at": "created_at",
+   "uses_aggregation_function": "agg_func_id"
+  },
+  "table": "agg_func_mapping"
+ },
+ "alert_governed_by_runbook": {
+  "cols": {
+   "alert": "alert_id",
+   "encoding": "encoding_type",
+   "priority": "priority_level"
+  },
+  "table": "alert_runbook"
+ },
+ "alert_triggered_by": {
+  "cols": {
+   "alert": "alert_id",
+   "duration_seconds": "duration_sec",
+   "scheduled_at": "scheduled_time",
+   "triggered_by_metric": "trigger_metric_id"
+  },
+  "table": "alert_trigger"
+ },
+ "allocation_associated_with_agent": {
+  "cols": {
+   "allocation": "alloc_id",
+   "phase": "phase_code",
+   "triggered_by": "initiated_by",
+   "was_associated_with": "agent_id"
+  },
+  "table": "alloc_agent_map"
+ },
+ "allocation_at_run_id": {
+  "cols": {
+   "allocation": "allocation_id",
+   "at_run_identifier": "run_id",
+   "duration_seconds": "duration_sec",
+   "retry_count": "retry_count"
+  },
+  "table": "alloc_run"
+ },
+ "allocation_basic": {
+  "cols": {
+   "allocation": "id",
+   "exit_code": "exit_code",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "job_alloc"
+ },
+ "allocation_completed_at": {
+  "cols": {
+   "allocation": "alloc_id",
+   "completed_at": "completion_ts",
+   "log_level": "log_level",
+   "start_time": "started_at"
+  },
+  "table": "alloc_completion_log"
+ },
+ "allocation_exactly_one_run_id": {
+  "cols": {
+   "allocation": "allocation_id",
+   "at_run_identifier": "run_id",
+   "phase": "phase_code",
+   "status": "status_code"
+  },
+  "table": "run_allocation"
+ },
+ "allocation_subclass": {
+  "cols": {
+   "allocation": "alloc_ref",
+   "executes_transformation": "transform_id",
+   "scheduled_at": "scheduled_at",
+   "triggered_by": "initiated_by"
+  },
+  "table": "alloc_job"
+ },
+ "allocation_succeeded_or_failed": {
+  "cols": {
+   "allocation": "alloc_id",
+   "allocation_2": "alloc_ref_id",
+   "allocation_3": "alloc_line_id",
+   "status": "status_code",
+   "triggered_by": "trigger_id"
+  },
+  "table": "alloc_outcome_log"
+ },
+ "allocation_with_input_facets": {
+  "cols": {
+   "allocation": "allocation_id",
+   "input_facet": "input_ref",
+   "start_time": "started_at",
+   "triggered_by": "trigger_id"
+  },
+  "table": "alloc_inputs"
+ },
+ "allocation_with_output_facets": {
+  "cols": {
+   "allocation": "alloc_id",
+   "host_name": "host_name",
+   "output_facet": "output_id",
+   "status": "status_code"
+  },
+  "table": "alloc_output_map"
+ },
+ "allocation_with_run_status": {
+  "cols": {
+   "allocation": "job_id",
+   "exit_code": "exit_code",
+   "run_status": "status_code",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "job_run"
+ },
+ "annotation_assigned_by": {
+  "cols": {
+   "annotation": "target_id",
+   "assigned_by": "assigner_id",
+   "dimension_kind": "dimension_type",
+   "method": "method_code"
+  },
+  "table": "annotation_assignment"
+ },
+ "annotation_at_tier": {
+  "cols": {
+   "annotation": "annotation_id",
+   "at_tier": "tier_id",
+   "confidence": "confidence_score",
+   "value": "value_code"
+  },
+  "table": "annotation_tier"
+ },
+ "annotation_basic": {
+  "cols": {
+   "annotation": "text",
+   "dimension_kind": "type",
+   "language": "lang_code"
+  },
+  "table": "annotation"
+ },
+ "annotation_classifies_artifact": {
+  "cols": {
+   "annotation": "classification",
+   "encoding": "charset",
+   "language": "lang_code"
+  },
+  "table": "artifact_classifications"
+ },
+ "annotation_classifies_class": {
+  "cols": {
+   "annotation": "annotation_id",
+   "classifies": "target_class_id",
+   "confidence": "confidence_score",
+   "encoding": "encoding_type"
+  },
+  "table": "class_assignment"
+ },
+ "annotation_governed_by_classification_policy": {
+  "cols": {
+   "annotation": "subject_id",
+   "label_text": "policy_label",
+   "uncertainty": "confidence_score"
+  },
+  "table": "policy_annotation"
+ },
+ "annotation_only_about_artifact": {
+  "cols": {
+   "annotation": "description",
+   "language": "lang_code",
+   "recorded_at": "created_at"
+  },
+  "table": "artifact_annotations"
+ },
+ "annotation_with_confidence": {
+  "cols": {
+   "annotation": "target_id",
+   "confidence": "confidence_score",
+   "uncertainty": "uncertainty_val",
+   "unit": "unit_code"
+  },
+  "table": "annotation_record"
+ },
+ "anomaly_in_metric": {
+  "cols": {
+   "anomaly": "anomaly_type",
+   "anomaly_in_metric": "metric_id",
+   "recorded_at": "recorded_at",
+   "uncertainty": "error_margin"
+  },
+  "table": "metric_anomalies"
+ },
+ "anonymous_demographic_information": {
+  "cols": {
+   "anonymous_demographic_information": "id",
+   "demographic_information": "demo_attr",
+   "method": "method_code",
+   "personally_identifiable_information": "pii_flag",
+   "value": "attr_value"
+  },
+  "table": "anon_demographics"
+ },
+ "apolitical_islam": {
+  "cols": {
+   "apolitical_islam": "id",
+   "doctrinal_narrative": "narrative_text",
+   "label_text": "title",
+   "language": "lang_code",
+   "political_islam_stance": "political_status"
+  },
+  "table": "doctrinal_narratives"
+ },
+ "appointment_scheduling_process": {
+  "cols": {
+   "appointment_scheduling_process": "id",
+   "operator": "staff_id",
+   "targets_artifact": "schedule_id"
+  },
+  "table": "appointment_logs"
+ },
+ "artifact_described_by_attrkey": {
+  "cols": {
+   "artifact": "artifact_id",
+   "location": "storage_location",
+   "uri": "designator_uri"
+  },
+  "table": "artifact_catalog_refs"
+ },
+ "artifact_either_active_or_archived": {
+  "cols": {
+   "artifact": "id",
+   "artifact_2": "parent_artifact_id",
+   "artifact_3": "related_artifact_id",
+   "created_date": "created_at",
+   "name": "display_name"
+  },
+  "table": "artifact_registry"
+ },
+ "artifact_either_internal_or_external": {
+  "cols": {
+   "artifact": "artifact_id",
+   "artifact_2": "related_artifact_id",
+   "artifact_3": "secondary_artifact_id",
+   "checksum": "record_checksum",
+   "created_date": "created_at"
+  },
+  "table": "artifact_type_map"
+ },
+ "artifact_governed_by_policy": {
+  "cols": {
+   "artifact": "artifact_id",
+   "size_bytes": "data_size",
+   "version": "ver_num"
+  },
+  "table": "artifact_policy_map"
+ },
+ "artifact_has_id": {
+  "cols": {
+   "artifact": "artifact_id",
+   "identifier": "identifier_id",
+   "version": "version_num"
+  },
+  "table": "artifact_identifiers"
+ },
+ "artifact_max_one_owner": {
+  "cols": {
+   "artifact": "artifact_id",
+   "mime_type": "content_type",
+   "owner": "owner_id",
+   "tags": "tag_list"
+  },
+  "table": "artifact"
+ },
+ "artifact_min_one_id": {
+  "cols": {
+   "artifact": "id",
+   "license": "license_type",
+   "location": "location_id"
+  },
+  "table": "artifact"
+ },
+ "artifact_min_one_owner": {
+  "cols": {
+   "artifact": "id",
+   "owner": "owner_id",
+   "size_bytes": "file_size",
+   "version": "version"
+  },
+  "table": "digital_asset"
+ },
+ "artifact_not_deprecated": {
+  "cols": {
+   "artifact": "child_artifact_id",
+   "artifact_2": "parent_artifact_id",
+   "identifier": "id",
+   "owner": "owner_id"
+  },
+  "table": "artifact_class"
+ },
+ "artifact_not_revoked": {
+  "cols": {
+   "artifact": "artifact_id",
+   "artifact_2": "parent_artifact_id",
+   "tags": "tag_list",
+   "version": "version_num"
+  },
+  "table": "artifact_type_map"
+ },
+ "artifact_subclass_two_parents": {
+  "cols": {
+   "artifact": "child_artifact_id",
+   "artifact_2": "parent_artifact_id",
+   "identifier": "id",
+   "tags": "tags"
+  },
+  "table": "artifact_hierarchy"
+ },
+ "artifact_with_existential": {
+  "cols": {
+   "artifact": "artifact_id",
+   "checksum": "data_checksum",
+   "related": "target_id",
+   "version": "version_num"
+  },
+  "table": "artifact_relation"
+ },
+ "artifact_with_min_two_parts": {
+  "cols": {
+   "artifact": "id",
+   "checksum": "data_checksum",
+   "version": "version"
+  },
+  "table": "artifact_assembly"
+ },
+ "artifact_with_role": {
+  "cols": {
+   "artifact": "artifact_id",
+   "checksum": "checksum",
+   "role": "role_code",
+   "size_bytes": "size_bytes"
+  },
+  "table": "artifact_roles"
+ },
+ "artifact_with_universal": {
+  "cols": {
+   "artifact": "artifact_id",
+   "created_date": "created_at",
+   "location": "location_code",
+   "related": "target_id"
+  },
+  "table": "artifact_rel"
+ },
+ "attestation_about_compliance_claim": {
+  "cols": {
+   "attestation": "id",
+   "confidence": "confidence_level",
+   "encoding": "format_type"
+  },
+  "table": "compliance_certification"
+ },
+ "attestation_at_period": {
+  "cols": {
+   "at_attestation_period": "period_id",
+   "attestation": "attestation_id",
+   "duration_seconds": "duration_sec",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "audit_cycle"
+ },
+ "attestation_basic": {
+  "cols": {
+   "attestation": "attestation_id",
+   "retry_count": "retry_count",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "attestation_proc"
+ },
+ "attestation_min_one_signer": {
+  "cols": {
+   "attestation": "attestation_id",
+   "phase": "workflow_phase",
+   "scheduled_at": "phase_scheduled_at"
+  },
+  "table": "attestation_process"
+ },
+ "attestation_signed_by": {
+  "cols": {
+   "attestation": "document_id",
+   "host_name": "signer_id",
+   "phase": "stage"
+  },
+  "table": "signing_events"
+ },
+ "attestation_subclass": {
+  "cols": {
+   "attestation": "verification_id",
+   "exit_code": "status_code",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "verification_run"
+ },
+ "attestation_with_supporting_evidence": {
+  "cols": {
+   "attestation": "verification_id",
+   "phase": "stage_code",
+   "triggered_by": "initiated_by",
+   "with_supporting_evidence": "evidence_id"
+  },
+  "table": "attestation_evidence"
+ },
+ "attribute_set_basic": {
+  "cols": {
+   "attribute": "attr_key",
+   "label_text": "display_name",
+   "value": "attr_val"
+  },
+  "table": "info_descriptor"
+ },
+ "attribute_set_max_attrs": {
+  "cols": {
+   "attribute": "attr_key",
+   "dimension_kind": "dim_type",
+   "unit": "uom"
+  },
+  "table": "attr_config"
+ },
+ "attribute_set_min_one": {
+  "cols": {
+   "attribute": "attr_name",
+   "confidence": "confidence_score",
+   "unit": "unit_of_measure"
+  },
+  "table": "attr_definitions"
+ },
+ "attribute_set_subclass": {
+  "cols": {
+   "attribute": "designator_id",
+   "confidence": "confidence_score",
+   "dimension_kind": "dimension_type"
+  },
+  "table": "attr_set_link"
+ },
+ "attribute_set_supports_outlier_claim": {
+  "cols": {
+   "attribute": "attr_ref",
+   "language": "lang_code",
+   "supports": "outlier_ref",
+   "uncertainty": "uncertainty_val"
+  },
+  "table": "attr_outlier_support"
+ },
+ "attrkey_subclass": {
+  "cols": {
+   "attrkey": "attr_key_id",
+   "describes_property": "target_prop",
+   "format": "data_format",
+   "namespace": "context"
+  },
+  "table": "attr_def"
+ },
+ "attrkey_with_value_type": {
+  "cols": {
+   "attrkey": "field_key",
+   "checksum_algo": "hash_algo",
+   "code": "ref_code",
+   "value_type": "data_type"
+  },
+  "table": "attr_defs"
+ },
+ "audit_basic": {
+  "cols": {
+   "audit": "audit_id",
+   "log_level": "log_severity",
+   "triggered_by": "initiated_by"
+  },
+  "table": "audit_log"
+ },
+ "audit_conducted_by": {
+  "cols": {
+   "audit": "audit_id",
+   "log_level": "severity",
+   "start_time": "started_at"
+  },
+  "table": "audit_execution"
+ },
+ "audit_for_period": {
+  "cols": {
+   "audit": "audit_id",
+   "exit_code": "status_code",
+   "for_audit_period": "period_id",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "audit_run"
+ },
+ "audit_produces_evidence": {
+  "cols": {
+   "audit": "audit_id",
+   "encoding": "format_code",
+   "unit": "org_unit_id"
+  },
+  "table": "audit_evidence"
+ },
+ "audit_subclass": {
+  "cols": {
+   "audit": "audit_id",
+   "exit_code": "result_code",
+   "retry_count": "retry_cnt"
+  },
+  "table": "audit_task"
+ },
+ "audit_targets_data_artifact": {
+  "cols": {
+   "audit": "audit_id",
+   "retry_count": "retry_count",
+   "status": "status_code"
+  },
+  "table": "audit_run"
+ },
+ "audit_with_findings": {
+  "cols": {
+   "audit": "audit_id",
+   "duration_seconds": "duration_sec",
+   "findings": "finding_id",
+   "host_name": "hostname"
+  },
+  "table": "audit_event"
+ },
+ "backward_compatible_with": {
+  "cols": {
+   "backward": "is_backward",
+   "backward_compatible_with": "target_ref",
+   "uncertainty": "confidence",
+   "unit": "unit_code"
+  },
+  "table": "compat_mapping"
+ },
+ "baseline_for_metric": {
+  "cols": {
+   "baseline": "baseline_value",
+   "baseline_for": "metric_id",
+   "label_text": "display_label",
+   "unit": "unit"
+  },
+  "table": "metric_baseline"
+ },
+ "belief_function_for": {
+  "cols": {
+   "belief": "id",
+   "belief_for_claim": "claim_id",
+   "label_text": "description",
+   "recorded_at": "created_at"
+  },
+  "table": "belief"
+ },
+ "belief_interval_at_confidence_level": {
+  "cols": {
+   "at_confidence_level": "confidence_score",
+   "belief": "entity_ref",
+   "dimension_kind": "measure_type",
+   "value": "metric_val"
+  },
+  "table": "confidence_metric"
+ },
+ "belief_interval_basic": {
+  "cols": {
+   "belief": "belief_val",
+   "dimension_kind": "dim_type",
+   "method": "method_type"
+  },
+  "table": "belief_interval"
+ },
+ "belief_interval_equiv_bel_and_pl": {
+  "cols": {
+   "belief": "belief_val",
+   "belief_lower_bound": "belief_lower",
+   "language": "lang_code",
+   "plausibility_upper_bound": "plausibility_upper",
+   "value": "target_val"
+  },
+  "table": "belief_intervals"
+ },
+ "belief_interval_exactly_two_bounds": {
+  "cols": {
+   "belief": "point_estimate",
+   "belief_lower_bound": "lower_bound",
+   "unit": "unit_code",
+   "value": "upper_bound"
+  },
+  "table": "value_bounds"
+ },
+ "belief_interval_for_claim": {
+  "cols": {
+   "belief": "confidence_score",
+   "dimension_kind": "metric_type",
+   "for_claim": "claim_id",
+   "value": "interval_val"
+  },
+  "table": "claim_confidence"
+ },
+ "belief_interval_only_unit_range": {
+  "cols": {
+   "belief": "metric_val",
+   "belief_lower_bound": "lower_threshold",
+   "recorded_at": "recorded_at",
+   "unit": "unit_code"
+  },
+  "table": "metric_bounds"
+ },
+ "belief_interval_subclass": {
+  "cols": {
+   "belief": "point_estimate",
+   "belief_lower_bound": "lower_bound",
+   "confidence": "confidence_level",
+   "value": "observed_value"
+  },
+  "table": "belief_interval"
+ },
+ "belief_interval_with_upper_bound": {
+  "cols": {
+   "belief": "belief_val",
+   "dimension_kind": "dimension_type",
+   "plausibility_upper_bound": "plausibility_upper",
+   "uncertainty": "uncertainty_val"
+  },
+  "table": "belief_intervals"
+ },
+ "black_belt_certification_requirement": {
+  "cols": {
+   "black_belt_certification_requirement": "id",
+   "dimension_kind": "req_type",
+   "encoding": "req_code"
+  },
+  "table": "belt_cert_req"
+ },
+ "board_membership": {
+  "cols": {
+   "board_membership": "id",
+   "has_participant": "member_id"
+  },
+  "table": "board_memberships"
+ },
+ "bpf_helper_called_by": {
+  "cols": {
+   "bpf": "helper_id",
+   "called_by_program": "program_id",
+   "owner": "owner_ref",
+   "version": "helper_version"
+  },
+  "table": "bpf_helper_calls"
+ },
+ "bpf_helper_subclass": {
+  "cols": {
+   "b_p_f_helper_function": "helper_func",
+   "bpf": "bpf_id",
+   "location": "source_path",
+   "tags": "labels"
+  },
+  "table": "bpf_helper_artifacts"
+ },
+ "breaking_change_subclass": {
+  "cols": {
+   "breaking": "source_id",
+   "breaking_change_for": "target_id",
+   "confidence": "confidence_score",
+   "unit": "confidence_unit"
+  },
+  "table": "breaking_change_rel"
+ },
+ "bullying_response_process": {
+  "cols": {
+   "bullying_response_process": "id",
+   "has_participant": "responding_staff_id"
+  },
+  "table": "bully_response_events"
+ },
+ "campus_event_participation": {
+  "cols": {
+   "campus_event": "event_id",
+   "has_participant": "participant_group_id"
+  },
+  "table": "event_participation"
+ },
+ "carbon_credit_transaction": {
+  "cols": {
+   "carbon_credit_transaction": "txn_id",
+   "derives_from_project": "project_id",
+   "encoding": "encoding_type",
+   "language": "lang_code",
+   "transferred_to": "buyer_id"
+  },
+  "table": "carbon_credit_txn"
+ },
+ "cardinality_exactly_one_generic": {
+  "cols": {
+   "cardinality": "cardinality_val",
+   "related": "target_ref"
+  },
+  "table": "cardinality_constraint"
+ },
+ "cardinality_max_one_generic": {
+  "cols": {
+   "cardinality": "source_id",
+   "related": "target_id"
+  },
+  "table": "assoc_link"
+ },
+ "cardinality_max_three_generic": {
+  "cols": {
+   "cardinality": "item_count",
+   "related": "target_id"
+  },
+  "table": "rel_triplet"
+ },
+ "cardinality_min_one_generic": {
+  "cols": {
+   "cardinality": "min_count",
+   "related": "target_id"
+  },
+  "table": "assoc_config"
+ },
+ "cardinality_min_two_generic": {
+  "cols": {
+   "cardinality": "min_count",
+   "related": "target_ref"
+  },
+  "table": "cardinality_constraints"
+ },
+ "census_data_collection_process": {
+  "cols": {
+   "census_data_collection_process": "process_id",
+   "includes_survey": "survey_id",
+   "involves_screening": "screening_id"
+  },
+  "table": "census_process"
+ },
+ "census_reporting_event": {
+  "cols": {
+   "census_reporting_event": "report_id",
+   "encoding": "format_type",
+   "label_text": "title",
+   "occurs_during_period": "period_id",
+   "published_on_date": "publish_date",
+   "tracks_sector": "sector_id"
+  },
+  "table": "census_report"
+ },
+ "cgroup_skb_subclass": {
+  "cols": {
+   "attaches_to_cgroup": "skb_id",
+   "cgroup": "cgroup_id",
+   "license": "software_license",
+   "version": "release_version"
+  },
+  "table": "skb_cgroup_assoc"
+ },
+ "chemical_exposure_risk_profile": {
+  "cols": {
+   "assesses_exposure_to": "chemical_id",
+   "chemical_exposure_risk_profile": "profile_id",
+   "encoding": "data_encoding",
+   "estimates_impact_on": "health_outcome_id",
+   "language": "lang_code"
+  },
+  "table": "chem_risk_profile"
+ },
+ "claim_basic": {
+  "cols": {
+   "claim": "claim_text",
+   "confidence": "confidence_score",
+   "value": "extracted_value"
+  },
+  "table": "claim_records"
+ },
+ "claim_governed_by_directive": {
+  "cols": {
+   "claim": "id",
+   "encoding": "encoding_type",
+   "recorded_at": "recorded_at"
+  },
+  "table": "directive_registry"
+ },
+ "claim_min_one_evidence": {
+  "cols": {
+   "claim": "claim_id",
+   "confidence": "confidence_score",
+   "supported_by_evidence": "evidence_id",
+   "uncertainty": "uncertainty_score"
+  },
+  "table": "claim_evidence"
+ },
+ "claim_not_disconfirmed": {
+  "cols": {
+   "claim": "statement",
+   "claim_2": "related_claim_id",
+   "dimension_kind": "category",
+   "encoding": "format"
+  },
+  "table": "assertion"
+ },
+ "claim_observed_by_event": {
+  "cols": {
+   "claim": "claim_desc",
+   "confidence": "confidence_score",
+   "recorded_at": "observed_at"
+  },
+  "table": "observed_claim"
+ },
+ "claim_refuted_by_evidence": {
+  "cols": {
+   "claim": "claim_id",
+   "language": "lang_code",
+   "recorded_at": "created_at",
+   "refuted_by_evidence": "evidence_id"
+  },
+  "table": "claim_refutation"
+ },
+ "claim_subclass": {
+  "cols": {
+   "claim": "claim_text",
+   "claim_about": "target_id",
+   "label_text": "display_label",
+   "method": "method_code"
+  },
+  "table": "claim_records"
+ },
+ "claim_supported_by_evidence": {
+  "cols": {
+   "claim": "claim_id",
+   "supported_by_evidence": "evidence_id",
+   "uncertainty": "confidence_score",
+   "unit": "unit_code"
+  },
+  "table": "claim_evidence"
+ },
+ "claim_with_belief_interval": {
+  "cols": {
+   "belief_interval": "confidence_interval",
+   "claim": "claim_text",
+   "language": "lang_code",
+   "method": "method_type"
+  },
+  "table": "claim_confidence"
+ },
+ "classification_assigns_tier": {
+  "cols": {
+   "assigns_tier": "tier_id",
+   "classification": "class_id",
+   "log_level": "log_level",
+   "retry_count": "retry_count"
+  },
+  "table": "tier_assignment"
+ },
+ "classification_basic": {
+  "cols": {
+   "classification": "class_code",
+   "phase": "phase_cd",
+   "triggered_by": "trigger_ref"
+  },
+  "table": "proc_class"
+ },
+ "classification_subclass": {
+  "cols": {
+   "classification": "category_code",
+   "exit_code": "process_exit_code",
+   "status": "status_code"
+  },
+  "table": "artifact_classification"
+ },
+ "classification_under_taxonomy": {
+  "cols": {
+   "classification": "entity_id",
+   "duration_seconds": "duration_sec",
+   "phase": "stage_code",
+   "under_taxonomy": "taxon_id"
+  },
+  "table": "taxon_class_map"
+ },
+ "client_data_record": {
+  "cols": {
+   "client_data_record": "id",
+   "contains": "stat_ref",
+   "encoding": "char_encoding",
+   "language": "lang_code"
+  },
+  "table": "client_records"
+ },
+ "clinical_performance_evaluation": {
+  "cols": {
+   "clinical_performance_evaluation": "evaluation_id",
+   "evaluates": "dataset_id",
+   "utilizes": "analytic_tool_id"
+  },
+  "table": "clinical_evaluation"
+ },
+ "clinical_quality_research_role": {
+  "cols": {
+   "applies_to": "data_id",
+   "clinical_quality_research_role": "id",
+   "holds_role_in": "authority_id"
+  },
+  "table": "clinical_role"
+ },
+ "column_added_at_version": {
+  "cols": {
+   "added_at_schema_version": "added_ver",
+   "column": "col_name",
+   "uncertainty": "confidence",
+   "value": "field_val"
+  },
+  "table": "schema_col_additions"
+ },
+ "column_distinctness": {
+  "cols": {
+   "column": "target_col",
+   "distinctness_ratio": "distinct_ratio",
+   "encoding": "char_encoding",
+   "label_text": "col_label"
+  },
+  "table": "data_col_distinct"
+ },
+ "column_dropped_at_version": {
+  "cols": {
+   "column": "column_name",
+   "confidence": "confidence_score",
+   "dropped_at_schema_version": "retired_version",
+   "recorded_at": "created_at"
+  },
+  "table": "column_retirement_log"
+ },
+ "column_lineage_describes_pair": {
+  "cols": {
+   "column": "id",
+   "confidence": "confidence_score",
+   "from_column": "source_col",
+   "method": "derivation_method",
+   "to_column": "target_col"
+  },
+  "table": "col_lineage"
+ },
+ "column_lineage_for_compliance_claim": {
+  "cols": {
+   "column": "source_col",
+   "recorded_at": "created_at",
+   "value": "claim_id"
+  },
+  "table": "compliance_lineage"
+ },
+ "column_lineage_for_table_column": {
+  "cols": {
+   "column": "target_col",
+   "column_2": "source_col",
+   "unit": "unit_code",
+   "value": "col_value"
+  },
+  "table": "col_lineage"
+ },
+ "column_nullability_state": {
+  "cols": {
+   "column": "column_name",
+   "nullability_state": "is_nullable",
+   "recorded_at": "updated_at",
+   "value": "null_flag"
+  },
+  "table": "column_nullable_config"
+ },
+ "column_pair_object": {
+  "cols": {
+   "column": "ref_col_id",
+   "dimension_kind": "dim_category",
+   "label_text": "display_name",
+   "object_column": "target_obj_id"
+  },
+  "table": "col_obj_mapping"
+ },
+ "column_pair_subject": {
+  "cols": {
+   "column": "column_id",
+   "encoding": "encoding_type",
+   "subject_column": "subject_column_id",
+   "value": "description"
+  },
+  "table": "column_subject_map"
+ },
+ "column_property_subclass": {
+  "cols": {
+   "annotates_property_of": "property_id",
+   "column": "column_id",
+   "language": "lang_code",
+   "recorded_at": "created_at"
+  },
+  "table": "column_property"
+ },
+ "column_renamed_from": {
+  "cols": {
+   "column": "target_column",
+   "confidence": "confidence_score",
+   "renamed_from": "source_column",
+   "value": "description"
+  },
+  "table": "col_rename_map"
+ },
+ "column_tag_at_confidence": {
+  "cols": {
+   "column": "column_id",
+   "recorded_at": "recorded_at",
+   "tag_confidence": "tag_id",
+   "value": "confidence_score"
+  },
+  "table": "col_tag_confidence"
+ },
+ "column_tag_from_annotator": {
+  "cols": {
+   "by_annotator": "annotator_id",
+   "column": "column_id",
+   "recorded_at": "created_at",
+   "uncertainty": "confidence_score"
+  },
+  "table": "column_tag"
+ },
+ "column_tag_subclass": {
+  "cols": {
+   "annotates_column": "target_column",
+   "column": "tag_id",
+   "method": "method_code",
+   "uncertainty": "uncertainty_val"
+  },
+  "table": "column_tag_map"
+ },
+ "column_type_changed_from": {
+  "cols": {
+   "column": "column_id",
+   "confidence": "confidence_score",
+   "type_changed_from": "prev_type",
+   "uncertainty": "uncertainty_score"
+  },
+  "table": "column_type_change"
+ },
+ "column_value_distribution": {
+  "cols": {
+   "column": "field_name",
+   "unit": "unit_code",
+   "value": "observed_val",
+   "value_distribution": "dist_type"
+  },
+  "table": "col_value_dist"
+ },
+ "column_version_subclass": {
+  "cols": {
+   "column": "column_id",
+   "column_version": "version_id",
+   "language": "lang_code",
+   "method": "derive_method"
+  },
+  "table": "column_versions"
+ },
+ "conceptual_construction_process": {
+  "cols": {
+   "conceptual_construction_process": "id",
+   "generates_predicate": "predicate_id",
+   "transforms_subject": "subject_id"
+  },
+  "table": "concept_transform"
+ },
+ "conjunctive_combination": {
+  "cols": {
+   "conjunctive": "combined_id",
+   "conjunctively_combines": "component_id",
+   "dimension_kind": "dim_type",
+   "method": "combo_method"
+  },
+  "table": "combined_entity"
+ },
+ "constraint_basic": {
+  "cols": {
+   "constraint": "constraint_code",
+   "enforcement": "enforcement_level",
+   "label_text": "display_name"
+  },
+  "table": "constraint_rule"
+ },
+ "constraint_check_subclass": {
+  "cols": {
+   "checks": "target_id",
+   "constraint": "rule_id",
+   "mandatory": "is_required",
+   "priority": "priority_level"
+  },
+  "table": "validation_checks"
+ },
+ "constraint_evaluated_during": {
+  "cols": {
+   "constraint": "rule_id",
+   "encoding": "format",
+   "evaluated_during": "evaluation_period_id",
+   "mandatory": "is_required"
+  },
+  "table": "rule_evaluation"
+ },
+ "constraint_min_one_check": {
+  "cols": {
+   "checks": "min_checks",
+   "constraint": "rule_code",
+   "effective_date": "effective_from",
+   "scope": "applicable_scope"
+  },
+  "table": "rule_policy"
+ },
+ "constraint_only_constrains": {
+  "cols": {
+   "constrains": "target_id",
+   "constraint": "source_id",
+   "encoding": "encoding_type",
+   "language": "lang_code"
+  },
+  "table": "directed_constraint"
+ },
+ "constraint_subclass": {
+  "cols": {
+   "constrains": "target_id",
+   "constraint": "rule_id",
+   "priority": "priority_level",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "constraint_def"
+ },
+ "constraint_with_predicate": {
+  "cols": {
+   "constraint": "rule_id",
+   "label_text": "display_name",
+   "predicate": "target_property",
+   "priority": "priority_level"
+  },
+  "table": "constraint_rules"
+ },
+ "constraint_with_severity_classification": {
+  "cols": {
+   "constraint": "policy_id",
+   "language": "lang_code",
+   "priority": "priority_level",
+   "severity": "severity_level"
+  },
+  "table": "policy_rules"
+ },
+ "constraint_with_violation_consequence": {
+  "cols": {
+   "constrains": "target_resource",
+   "constraint": "directive_id",
+   "mandatory": "is_enforced",
+   "on_violation": "breach_response",
+   "scope": "coverage_area"
+  },
+  "table": "rule_definitions"
+ },
+ "control_addresses_risk": {
+  "cols": {
+   "addresses_risk": "risk_id",
+   "control": "control_id",
+   "label_text": "display_name",
+   "scope": "scope_code"
+  },
+  "table": "risk_control_map"
+ },
+ "control_at_severity": {
+  "cols": {
+   "at_severity": "severity_id",
+   "control": "control_id",
+   "encoding": "encoding_type",
+   "language": "language_code"
+  },
+  "table": "control_severity"
+ },
+ "control_basic": {
+  "cols": {
+   "control": "directive_code",
+   "effective_date": "effective_date",
+   "mandatory": "is_mandatory"
+  },
+  "table": "ctrl_directive"
+ },
+ "control_equiv_implements_with_owner": {
+  "cols": {
+   "control": "control_id",
+   "enforcement": "enforcement_type",
+   "implements": "implementation_id",
+   "language": "locale"
+  },
+  "table": "control_implementation"
+ },
+ "control_implements": {
+  "cols": {
+   "control": "policy_id",
+   "implements": "requirement_id",
+   "priority": "priority_level",
+   "scope": "scope_code"
+  },
+  "table": "directive_implementation"
+ },
+ "control_min_one_owner": {
+  "cols": {
+   "control": "control_id",
+   "effective_date": "valid_from",
+   "scope": "applicable_scope"
+  },
+  "table": "control_registry"
+ },
+ "control_observed_via": {
+  "cols": {
+   "control": "control_id",
+   "effective_date": "effective_date",
+   "language": "lang_code",
+   "observed_via": "observation_method_id"
+  },
+  "table": "control_observation"
+ },
+ "control_only_addresses_threat_class": {
+  "cols": {
+   "addresses_risk": "risk_category",
+   "control": "control_id",
+   "review_cycle_days": "review_interval_days",
+   "scope": "control_scope"
+  },
+  "table": "threat_controls"
+ },
+ "control_subclass": {
+  "cols": {
+   "control": "control_id",
+   "label_text": "display_name",
+   "mitigates": "risk_ref",
+   "scope": "scope_type"
+  },
+  "table": "control_category"
+ },
+ "control_under_framework": {
+  "cols": {
+   "control": "directive_id",
+   "priority": "priority_level",
+   "review_cycle_days": "review_interval_days",
+   "under_framework": "framework_id"
+  },
+  "table": "control_framework"
+ },
+ "control_with_classification_tier": {
+  "cols": {
+   "control": "control_id",
+   "effective_date": "effective_date",
+   "label_text": "tier_label"
+  },
+  "table": "control_classification"
+ },
+ "control_with_evidence_requirement": {
+  "cols": {
+   "control": "control_id",
+   "enforcement": "enforcement_level",
+   "language": "lang_code",
+   "requires_evidence": "evidence_type"
+  },
+  "table": "control_evidence_req"
+ },
+ "control_with_owner": {
+  "cols": {
+   "control": "control_id",
+   "language": "lang_code",
+   "mandatory": "is_mandatory"
+  },
+  "table": "control_policy"
+ },
+ "counter_metric_subclass": {
+  "cols": {
+   "counter": "counter_id",
+   "identifier": "id",
+   "metric_kind": "metric_type",
+   "name": "counter_name"
+  },
+  "table": "counter_metric_map"
+ },
+ "crop_parasitism_impact": {
+  "cols": {
+   "affects_cultivation_system": "cultivation_id",
+   "crop_parasitism_impact": "id",
+   "encoding": "code_type",
+   "impacts_target": "household_id",
+   "label_text": "display_name",
+   "parasitises_host": "parasitic_weed_id"
+  },
+  "table": "parasitism_impact"
+ },
+ "dataset_at_version": {
+  "cols": {
+   "at_dataset_version": "version_id",
+   "checksum": "digest",
+   "dataset": "dataset_id",
+   "name": "artifact_name"
+  },
+  "table": "dataset_versions"
+ },
+ "dataset_revision_of": {
+  "cols": {
+   "dataset": "dataset_id",
+   "mime_type": "content_type",
+   "owner": "owner_id",
+   "was_revision_of": "parent_dataset_id"
+  },
+  "table": "dataset_revision"
+ },
+ "dataset_snapshot_subclass": {
+  "cols": {
+   "checksum": "digest",
+   "dataset": "base_dataset_id",
+   "license": "license_type",
+   "snapshot_of": "parent_id"
+  },
+  "table": "dataset_snapshots"
+ },
+ "dataset_subclass": {
+  "cols": {
+   "column": "column_id",
+   "dataset": "dataset_id",
+   "location": "storage_path",
+   "name": "alias"
+  },
+  "table": "dataset_partition"
+ },
+ "dataset_under_audit": {
+  "cols": {
+   "dataset": "dataset_id",
+   "end_time": "audit_end_time",
+   "phase": "audit_stage"
+  },
+  "table": "dataset_audit"
+ },
+ "dataset_was_attributed_to": {
+  "cols": {
+   "dataset": "dataset_id",
+   "identifier": "attribution_id",
+   "location": "storage_loc",
+   "was_attributed_to": "agent_id"
+  },
+  "table": "dataset_attribution"
+ },
+ "dataset_was_derived_from": {
+  "cols": {
+   "dataset": "derived_dataset_id",
+   "tags": "tag_list",
+   "version": "derivation_version",
+   "was_derived_from": "origin_dataset_id"
+  },
+  "table": "dataset_derivation"
+ },
+ "dataset_was_generated_by": {
+  "cols": {
+   "dataset": "dataset_id",
+   "license": "license_id",
+   "version": "version",
+   "was_generated_by": "generator_id"
+  },
+  "table": "dataset_provenance"
+ },
+ "dataset_with_record_count": {
+  "cols": {
+   "dataset": "id",
+   "record": "record_count",
+   "size_bytes": "data_size",
+   "version": "version"
+  },
+  "table": "dataset_meta"
+ },
+ "dbpedia_label_alignment": {
+  "cols": {
+   "aligned_to_d_bpedia_label": "dbpedia_label",
+   "confidence": "confidence_score",
+   "dbpedia": "source_id",
+   "dimension_kind": "alignment_type"
+  },
+  "table": "entity_label_map"
+ },
+ "dempster_combinant_first": {
+  "cols": {
+   "dempster": "id",
+   "first_combinant": "source_1_ref",
+   "method": "algorithm",
+   "unit": "unit_code"
+  },
+  "table": "evidence_combination"
+ },
+ "dempster_combinant_second": {
+  "cols": {
+   "dempster": "primary_source",
+   "method": "fusion_method",
+   "second_combinant": "secondary_source",
+   "unit": "output_unit"
+  },
+  "table": "evidence_combination"
+ },
+ "dempster_combination_subclass": {
+  "cols": {
+   "combines_via_dempster": "combined_evidence_ref",
+   "confidence": "combined_confidence",
+   "dempster": "fusion_rule_id",
+   "unit": "confidence_unit"
+  },
+  "table": "belief_combination"
+ },
+ "dempster_combines_audit_evidences": {
+  "cols": {
+   "confidence": "confidence_score",
+   "dempster": "combination_rule",
+   "recorded_at": "fused_at"
+  },
+  "table": "audit_evidence_fusion"
+ },
+ "dempster_conflict_mass": {
+  "cols": {
+   "conflict_mass": "mass_value",
+   "dempster": "rule_id",
+   "label_text": "description",
+   "language": "lang_code"
+  },
+  "table": "conflict_mass"
+ },
+ "dengue_transmission_process": {
+  "cols": {
+   "dengue_transmission_process": "transmission_id",
+   "involves_host": "population_id",
+   "involves_vector": "vector_id"
+  },
+  "table": "dengue_transmission"
+ },
+ "descriptive_either_evidence_or_claim": {
+  "cols": {
+   "descriptive": "source_id",
+   "descriptive_2": "target_id",
+   "descriptive_3": "context_id",
+   "language": "lang_code",
+   "value": "content"
+  },
+  "table": "descriptive_relation"
+ },
+ "descriptive_not_retracted": {
+  "cols": {
+   "descriptive": "descriptor_id",
+   "descriptive_2": "target_id",
+   "encoding": "encoding_type",
+   "unit": "unit_code"
+  },
+  "table": "descriptor_mapping"
+ },
+ "descriptive_only_about_artifact": {
+  "cols": {
+   "about": "artifact_id",
+   "descriptive": "desc_id",
+   "language": "lang_code",
+   "recorded_at": "created_at"
+  },
+  "table": "artifact_desc"
+ },
+ "designative_for_specific_role": {
+  "cols": {
+   "code": "standard_code",
+   "designative": "role_label",
+   "encoding": "code_format",
+   "identifies": "role_id"
+  },
+  "table": "role_designation"
+ },
+ "designative_subclass_basic": {
+  "cols": {
+   "code": "code_id",
+   "designative": "label_text",
+   "language": "lang_code"
+  },
+  "table": "designation"
+ },
+ "designative_with_naming_authority": {
+  "cols": {
+   "assigned_by": "authority_id",
+   "checksum_algo": "hash_algorithm",
+   "code": "code_value",
+   "designative": "identifier"
+  },
+  "table": "naming_registry"
+ },
+ "digital_media_service": {
+  "cols": {
+   "digital_media_service": "id",
+   "encoding": "encoding_type",
+   "label_text": "display_name",
+   "provides_function": "function_id"
+  },
+  "table": "media_service"
+ },
+ "directive_authored_and_applies": {
+  "cols": {
+   "applies_to": "target_id",
+   "authored_by": "author_id",
+   "directive": "directive_id",
+   "encoding": "format_code",
+   "scope": "scope_code"
+  },
+  "table": "directive_applications"
+ },
+ "directive_not_obsolete": {
+  "cols": {
+   "directive": "directive_id",
+   "directive_2": "related_directive_id",
+   "effective_date": "effective_date",
+   "label_text": "directive_title"
+  },
+  "table": "active_directives"
+ },
+ "directive_not_superseded": {
+  "cols": {
+   "directive": "source_directive_id",
+   "directive_2": "target_directive_id",
+   "enforcement": "enforcement_status",
+   "scope": "applicable_scope"
+  },
+  "table": "directive_relation"
+ },
+ "directive_only_governs": {
+  "cols": {
+   "directive": "directive_id",
+   "effective_date": "effective_from",
+   "enforcement": "enforcement_type",
+   "related": "governed_entity_id"
+  },
+  "table": "directive_governance"
+ },
+ "directive_only_governs_artifact": {
+  "cols": {
+   "directive": "policy_id",
+   "governs": "target_id",
+   "label_text": "scope_title",
+   "mandatory": "is_required"
+  },
+  "table": "directive_scope"
+ },
+ "directive_supersedes_directive": {
+  "cols": {
+   "directive": "directive_id",
+   "mandatory": "mandatory_flag",
+   "scope": "scope_type"
+  },
+  "table": "directive_supersession"
+ },
+ "directive_traces_to_requirement": {
+  "cols": {
+   "directive": "directive_id",
+   "label_text": "directive_label",
+   "review_cycle_days": "review_period_days"
+  },
+  "table": "directive_req_trace"
+ },
+ "directive_union_constraint_or_policy": {
+  "cols": {
+   "directive": "primary_directive_id",
+   "directive_2": "secondary_directive_id",
+   "directive_3": "tertiary_directive_id",
+   "priority": "priority_level",
+   "scope": "scope_type"
+  },
+  "table": "directive_policy"
+ },
+ "directory_query_service": {
+  "cols": {
+   "directory_query_service": "query_id",
+   "generates_response": "response_id",
+   "targets_user": "target_user_id"
+  },
+  "table": "dir_query_log"
+ },
+ "disjunctive_combination": {
+  "cols": {
+   "disjunctive": "id",
+   "disjunctively_combines": "combined_ids",
+   "language": "lang_code",
+   "uncertainty": "confidence"
+  },
+  "table": "combo_config"
+ },
+ "division_assignment_record": {
+  "cols": {
+   "assigns_athlete": "athlete_id",
+   "assigns_division": "division_id",
+   "division_assignment_record": "assignment_id",
+   "encoding": "char_encoding",
+   "language": "lang_code"
+  },
+  "table": "division_assignment"
+ },
+ "division_eligibility_constraint": {
+  "cols": {
+   "cross_division_transfer": "cross_div_allowed",
+   "division_eligibility_constraint": "rule_id",
+   "encoding": "char_encoding",
+   "language": "lang_code",
+   "qualified_athlete_status": "athlete_status"
+  },
+  "table": "division_eligibility_rule"
+ },
+ "ebpf_event_at_hook": {
+  "cols": {
+   "at_hook": "attach_point",
+   "ebpf": "ebpf_prog_id",
+   "exit_code": "return_code",
+   "triggered_by": "process_id"
+  },
+  "table": "ebpf_hook_events"
+ },
+ "ebpf_event_basic": {
+  "cols": {
+   "ebpf": "ebpf_trace_id",
+   "exit_code": "return_code",
+   "host_name": "hostname"
+  },
+  "table": "ebpf_proc_events"
+ },
+ "ebpf_event_for_syscall": {
+  "cols": {
+   "ebpf": "event_id",
+   "end_time": "ended_at",
+   "for_syscall": "syscall_name",
+   "triggered_by": "process_id"
+  },
+  "table": "ebpf_syscall_events"
+ },
+ "ebpf_event_min_one_attribute": {
+  "cols": {
+   "ebpf": "ebpf_event_id",
+   "scheduled_at": "scheduled_at",
+   "status": "status_code"
+  },
+  "table": "ebpf_event_class"
+ },
+ "ebpf_event_observed_pid": {
+  "cols": {
+   "ebpf": "ebpf_hook",
+   "observes_pid": "monitored_pid",
+   "retry_count": "retry_count",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "ebpf_pid_monitor"
+ },
+ "ebpf_event_subclass": {
+  "cols": {
+   "captured_by": "probe_id",
+   "ebpf": "ebpf_event_type",
+   "log_level": "severity",
+   "phase": "trace_phase"
+  },
+  "table": "ebpf_event"
+ },
+ "ebpf_event_writes_to_map": {
+  "cols": {
+   "ebpf": "ebpf_prog_id",
+   "exit_code": "ret_code",
+   "host_name": "hostname",
+   "writes_to_map": "map_id"
+  },
+  "table": "ebpf_map_write_events"
+ },
+ "ebpf_program_governed_by_directive": {
+  "cols": {
+   "ebpf": "program_id",
+   "effective_date": "effective_from",
+   "mandatory": "is_mandatory"
+  },
+  "table": "ebpf_governance_rule"
+ },
+ "ebpfevent_at_kernel_hook_xref": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "ebpfevent": "event_id",
+   "host_name": "hostname"
+  },
+  "table": "proc_hook_xref"
+ },
+ "ebpfevent_observes_syscall_xref": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "ebpfevent": "ebpf_event_id",
+   "triggered_by": "trigger_ref"
+  },
+  "table": "ebpf_syscall_trace"
+ },
+ "ebpfevent_via_program_xref": {
+  "cols": {
+   "ebpfevent": "event_id",
+   "log_level": "severity_code",
+   "phase": "execution_phase"
+  },
+  "table": "event_program_xref"
+ },
+ "ebpfmap_basic": {
+  "cols": {
+   "ebpfmap": "map_id",
+   "license": "license_name",
+   "mime_type": "content_type"
+  },
+  "table": "ebpf_map"
+ },
+ "ebpfmap_equiv_kv_typed": {
+  "cols": {
+   "ebpfmap": "map_ref",
+   "identifier": "id",
+   "key_type": "key_dtype",
+   "mime_type": "type_code",
+   "value_type_map": "val_dtype"
+  },
+  "table": "ebpf_map_equiv"
+ },
+ "ebpfmap_exactly_one_type": {
+  "cols": {
+   "checksum": "checksum",
+   "ebpfmap": "map_id",
+   "map_type": "type_code",
+   "uri": "uri"
+  },
+  "table": "ebpf_map"
+ },
+ "ebpfmap_only_one_value_type": {
+  "cols": {
+   "ebpfmap": "map_id",
+   "name": "map_name",
+   "size_bytes": "val_size",
+   "value_type_map": "val_type"
+  },
+  "table": "ebpf_map_single"
+ },
+ "ebpfmap_pinned_at_path": {
+  "cols": {
+   "ebpfmap": "map_id",
+   "owner": "owner_ref",
+   "pinned_at_path": "pin_path",
+   "tags": "tag_list"
+  },
+  "table": "ebpf_map_pin"
+ },
+ "ebpfmap_subclass": {
+  "cols": {
+   "checksum": "digest",
+   "ebpfmap": "ebpf_map_id",
+   "map_type": "type_code",
+   "uri": "source_uri"
+  },
+  "table": "ebpf_map_type"
+ },
+ "ebpfmap_used_by_program": {
+  "cols": {
+   "created_date": "created_at",
+   "ebpfmap": "map_id",
+   "used_by_program": "program_id",
+   "version": "version_num"
+  },
+  "table": "ebpf_map_usage"
+ },
+ "ebpfmap_with_key_type": {
+  "cols": {
+   "ebpfmap": "map_id",
+   "key_type": "key_dtype",
+   "owner": "owner_ref",
+   "tags": "tag_list"
+  },
+  "table": "ebpf_map"
+ },
+ "ebpfmap_with_max_entries": {
+  "cols": {
+   "ebpfmap": "map_id",
+   "max_entries": "entry_limit",
+   "tags": "tag_list",
+   "uri": "artifact_uri"
+  },
+  "table": "ebpf_map_limits"
+ },
+ "ebpfmap_with_value_type": {
+  "cols": {
+   "ebpfmap": "map_id",
+   "mime_type": "data_format",
+   "name": "map_name",
+   "value_type_map": "value_type"
+  },
+  "table": "ebpf_map_value_types"
+ },
+ "ebpfprogram_attaches_kernelhook_xref": {
+  "cols": {
+   "ebpfprogram": "program_id",
+   "location": "hook_ref",
+   "mime_type": "content_type"
+  },
+  "table": "ebpf_program_hook_xref"
+ },
+ "ebpfprogram_basic": {
+  "cols": {
+   "ebpfprogram": "program_id",
+   "name": "program_name",
+   "owner": "owner_ref"
+  },
+  "table": "ebpf_program"
+ },
+ "ebpfprogram_equiv_typed_with_hook": {
+  "cols": {
+   "attaches_to_hook": "attach_point",
+   "ebpfprogram": "id",
+   "identifier": "prog_name",
+   "program_type": "prog_type",
+   "size_bytes": "size_bytes"
+  },
+  "table": "ebpf_prog_type"
+ },
+ "ebpfprogram_exactly_one_type": {
+  "cols": {
+   "ebpfprogram": "program_id",
+   "mime_type": "content_type",
+   "owner": "owner_id",
+   "program_type": "type_code"
+  },
+  "table": "ebpf_program"
+ },
+ "ebpfprogram_governed_by_security_policy": {
+  "cols": {
+   "created_date": "created_at",
+   "ebpfprogram": "ebpf_prog_id",
+   "size_bytes": "size_bytes"
+  },
+  "table": "ebpf_prog_policy"
+ },
+ "ebpfprogram_has_program_type": {
+  "cols": {
+   "ebpfprogram": "program_id",
+   "license": "license",
+   "name": "program_name",
+   "program_type": "type_code"
+  },
+  "table": "ebpf_program"
+ },
+ "ebpfprogram_loaded_in_kernel": {
+  "cols": {
+   "ebpfprogram": "ebpf_id",
+   "loaded_in": "kernel_id",
+   "owner": "owner_id",
+   "size_bytes": "size_bytes"
+  },
+  "table": "ebpf_kernel_load"
+ },
+ "ebpfprogram_min_one_hook": {
+  "cols": {
+   "attaches_to_hook": "hook_id",
+   "ebpfprogram": "id",
+   "mime_type": "bin_type",
+   "name": "prog_name"
+  },
+  "table": "ebpf_prog_hooks"
+ },
+ "ebpfprogram_not_unloaded": {
+  "cols": {
+   "ebpfprogram": "prog_id",
+   "ebpfprogram_2": "related_prog_id",
+   "location": "load_addr",
+   "uri": "source_path"
+  },
+  "table": "active_ebpf_programs"
+ },
+ "ebpfprogram_observes_syscall": {
+  "cols": {
+   "ebpfprogram": "program_id",
+   "mime_type": "content_type",
+   "name": "program_name",
+   "observes_syscall": "syscall_id"
+  },
+  "table": "ebpf_syscall_obs"
+ },
+ "ebpfprogram_only_attached_to_kprobe": {
+  "cols": {
+   "attaches_to_hook": "kprobe_hook_id",
+   "checksum": "prog_digest",
+   "ebpfprogram": "bpf_prog_id",
+   "identifier": "id"
+  },
+  "table": "ebpf_kprobe_attach"
+ },
+ "ebpfprogram_subclass": {
+  "cols": {
+   "attaches_to_hook": "hook_id",
+   "checksum": "prog_checksum",
+   "ebpfprogram": "program_id",
+   "tags": "prog_tags"
+  },
+  "table": "ebpf_program"
+ },
+ "ebpfprogram_union_kprobe_or_xdp": {
+  "cols": {
+   "ebpfprogram": "program_id",
+   "ebpfprogram_2": "program_type",
+   "ebpfprogram_3": "program_version",
+   "mime_type": "mime_type",
+   "size_bytes": "size_bytes"
+  },
+  "table": "ebpf_programs"
+ },
+ "ebpfprogram_verified_safe": {
+  "cols": {
+   "created_date": "created_at",
+   "ebpfprogram": "program_id",
+   "uri": "program_uri",
+   "verified_safe_by": "verifier_id"
+  },
+  "table": "ebpf_verification"
+ },
+ "ebpfprogram_with_license": {
+  "cols": {
+   "ebpfprogram": "ebpf_prog_id",
+   "identifier": "id",
+   "license": "license_id"
+  },
+  "table": "ebpf_prog_licenses"
+ },
+ "ebpfprogram_writes_to_map": {
+  "cols": {
+   "ebpfprogram": "program_id",
+   "size_bytes": "byte_count",
+   "tags": "tag_list",
+   "writes_to_map": "map_id"
+  },
+  "table": "ebpf_prog_map_write"
+ },
+ "ebpfprogram_writes_to_map_xref": {
+  "cols": {
+   "ebpfprogram": "program_id",
+   "name": "program_name",
+   "size_bytes": "map_size_bytes"
+  },
+  "table": "ebpf_prog_map_xref"
+ },
+ "electricity_usage_pattern_record": {
+  "cols": {
+   "corresponds_to_tariff": "tariff_id",
+   "encoding": "encoding",
+   "language": "language",
+   "records_service_category": "category_code",
+   "usage_pattern_record": "id"
+  },
+  "table": "usage_pattern"
+ },
+ "entity_match_link": {
+  "cols": {
+   "dimension_kind": "match_type",
+   "entity": "source_id",
+   "label_text": "match_label",
+   "matches_entity": "target_id"
+  },
+  "table": "entity_match"
+ },
+ "entity_type_belongs_to": {
+  "cols": {
+   "confidence": "confidence_score",
+   "entity": "entity_id",
+   "entity_type_belongs_to": "type_id",
+   "label_text": "type_label"
+  },
+  "table": "entity_type_map"
+ },
+ "entomological_surveillance_record": {
+  "cols": {
+   "associated_with": "site_id",
+   "entomological_surveillance_record": "surveillance_id",
+   "realizes": "vector_id"
+  },
+  "table": "vector_surveillance"
+ },
+ "equiv_intersect_anchored_artifact": {
+  "cols": {
+   "checksum": "match_hash",
+   "equiv": "source_artifact_id",
+   "equiv_2": "target_artifact_id",
+   "license": "license_type"
+  },
+  "table": "artifact_equiv_map"
+ },
+ "equiv_intersect_artifact_with_part": {
+  "cols": {
+   "checksum": "data_checksum",
+   "equiv": "artifact_id",
+   "has_part": "part_id",
+   "owner": "owner_id"
+  },
+  "table": "artifact_equiv_map"
+ },
+ "equiv_intersect_basic": {
+  "cols": {
+   "equiv": "entity_id",
+   "equiv_2": "ref_a_id",
+   "equiv_3": "ref_b_id"
+  },
+  "table": "concept_relation"
+ },
+ "equiv_intersect_three": {
+  "cols": {
+   "equiv": "ref_id_1",
+   "equiv_2": "ref_id_2",
+   "equiv_3": "ref_id_3",
+   "equiv_4": "ref_id_4"
+  },
+  "table": "concept_mapping"
+ },
+ "equiv_intersect_with_negation": {
+  "cols": {
+   "equiv": "concept_id",
+   "equiv_2": "component_a_id",
+   "equiv_3": "component_b_id"
+  },
+  "table": "concept_intersection"
+ },
+ "equiv_intersect_with_restriction": {
+  "cols": {
+   "equiv": "source_ref",
+   "equiv_2": "target_ref",
+   "related": "property_ref"
+  },
+  "table": "class_equiv_map"
+ },
+ "equiv_intersect_with_two_restrictions": {
+  "cols": {
+   "equiv": "target_id",
+   "equiv_2": "alias_id",
+   "related": "prop_1_ref",
+   "related_2": "prop_2_ref"
+  },
+  "table": "class_restriction_map"
+ },
+ "equiv_union_basic": {
+  "cols": {
+   "equiv": "source_id",
+   "equiv_2": "target_id_1",
+   "equiv_3": "target_id_2"
+  },
+  "table": "concept_equiv_map"
+ },
+ "equiv_union_ice_branches": {
+  "cols": {
+   "equiv": "equiv_id",
+   "label_text": "term_text",
+   "language": "lang_code"
+  },
+  "table": "ice_equiv_labels"
+ },
+ "equiv_union_three": {
+  "cols": {
+   "equiv": "concept_1",
+   "equiv_2": "concept_2",
+   "equiv_3": "concept_3",
+   "equiv_4": "concept_4"
+  },
+  "table": "concept_equiv"
+ },
+ "evidence_at_quality_tier": {
+  "cols": {
+   "at_quality_tier": "quality_tier_id",
+   "dimension_kind": "dimension_type",
+   "evidence": "evidence_id",
+   "value": "metric_value"
+  },
+  "table": "evidence_quality_tiers"
+ },
+ "evidence_basic": {
+  "cols": {
+   "dimension_kind": "dimension_type",
+   "encoding": "format_code",
+   "evidence": "evidence_id"
+  },
+  "table": "evidence_type"
+ },
+ "evidence_correlated_with": {
+  "cols": {
+   "confidence": "confidence_score",
+   "evidence": "evidence_id",
+   "evidence_correlated_with": "target_id",
+   "uncertainty": "uncertainty_value"
+  },
+  "table": "evidence_correlations"
+ },
+ "evidence_for_audit": {
+  "cols": {
+   "confidence": "certainty_level",
+   "evidence": "finding_text",
+   "value": "measured_value"
+  },
+  "table": "audit_evidence"
+ },
+ "evidence_independent_of": {
+  "cols": {
+   "evidence": "source_evidence_id",
+   "evidence_independent_of": "target_entity_id",
+   "method": "determination_method",
+   "uncertainty": "uncertainty_value"
+  },
+  "table": "independence_record"
+ },
+ "evidence_independent_or_correlated": {
+  "cols": {
+   "evidence": "primary_evidence_id",
+   "evidence_2": "correlated_evidence_id",
+   "evidence_3": "independent_evidence_id",
+   "method": "method_id",
+   "value": "result_value"
+  },
+  "table": "evidence_relation"
+ },
+ "evidence_observed_by_process": {
+  "cols": {
+   "evidence": "observation_text",
+   "language": "lang_code",
+   "value": "metric_value"
+  },
+  "table": "process_observations"
+ },
+ "evidence_refutes_claim": {
+  "cols": {
+   "evidence": "evidence_id",
+   "label_text": "refutation_label",
+   "method": "refutation_method",
+   "refutes_claim": "refuted_claim_id"
+  },
+  "table": "claim_refutation"
+ },
+ "evidence_subclass": {
+  "cols": {
+   "evidence": "source_ref",
+   "language": "lang_code",
+   "supports_claim": "claim_id",
+   "uncertainty": "confidence_score"
+  },
+  "table": "claim_evidence"
+ },
+ "evidence_with_mass_function": {
+  "cols": {
+   "dimension_kind": "dim_type",
+   "evidence": "evidence_id",
+   "mass_function": "mass_func_id",
+   "method": "method_type"
+  },
+  "table": "evidence_mass"
+ },
+ "evidence_with_source": {
+  "cols": {
+   "evidence": "evidence_id",
+   "evidence_source": "source_id",
+   "label_text": "description",
+   "language": "lang_code"
+  },
+  "table": "evidence_source"
+ },
+ "executive_leadership_role": {
+  "cols": {
+   "executive_leadership_role": "exec_role_id",
+   "member_of": "exec_team_id",
+   "reports_to": "ceo_id"
+  },
+  "table": "exec_roles"
+ },
+ "existential_anchored_to_artifact_via_part": {
+  "cols": {
+   "existential": "entity_id",
+   "location": "storage_loc",
+   "uri": "external_id"
+  },
+  "table": "artifact_part_ref"
+ },
+ "existential_generic": {
+  "cols": {
+   "existential": "subject_id",
+   "related": "object_id"
+  },
+  "table": "x_y_link"
+ },
+ "existential_two_clauses": {
+  "cols": {
+   "existential": "entity_id",
+   "related": "target_id",
+   "related_2": "secondary_target_id"
+  },
+  "table": "entity_relations"
+ },
+ "existential_with_has_part": {
+  "cols": {
+   "existential": "entity_id",
+   "has_part": "part_id"
+  },
+  "table": "entity_parts"
+ },
+ "existential_with_part_of": {
+  "cols": {
+   "existential": "part_id",
+   "part_of": "parent_id"
+  },
+  "table": "entity_parts"
+ },
+ "farmland_acquisition_process": {
+  "cols": {
+   "acquires_land": "parcel_id",
+   "farmland_acquisition_process": "acquisition_id",
+   "targets_investor": "investor_id"
+  },
+  "table": "farmland_acquisition"
+ },
+ "financial_strategy_oversight": {
+  "cols": {
+   "directs": "financial_activity_id",
+   "financial_strategy_oversight": "id",
+   "oversees": "risk_activity_id"
+  },
+  "table": "financial_oversight"
+ },
+ "flood_asset_vulnerability_assessment": {
+  "cols": {
+   "assesses_asset_condition": "condition_id",
+   "flood_asset_vulnerability_assessment": "id",
+   "identifies_vulnerability_state": "vuln_state_id",
+   "label_text": "description",
+   "language": "lang_code"
+  },
+  "table": "flood_asset_assessment"
+ },
+ "flood_defence_condition_characterisation": {
+  "cols": {
+   "employs_validation_process": "validation_id",
+   "flood_defence_condition_characterisation": "condition_id",
+   "involves_earth_observation_data": "observation_id"
+  },
+  "table": "flood_defence_condition"
+ },
+ "foreign_key_relation": {
+  "cols": {
+   "confidence": "match_score",
+   "foreign": "source_id",
+   "foreign_key_to": "target_id",
+   "value": "mapped_value"
+  },
+  "table": "ref_mapping"
+ },
+ "forward_compatible_with": {
+  "cols": {
+   "forward": "source_id",
+   "forward_compatible_with": "compatible_id",
+   "method": "compat_method",
+   "recorded_at": "created_at"
+  },
+  "table": "forward_compat"
+ },
+ "frame_coarsening": {
+  "cols": {
+   "coarsens_frame": "coarse_frame_id",
+   "frame": "fine_frame_id",
+   "recorded_at": "created_at",
+   "unit": "granularity_unit"
+  },
+  "table": "frame_coarsening"
+ },
+ "frame_refinement": {
+  "cols": {
+   "frame": "source_frame_id",
+   "method": "refinement_method",
+   "recorded_at": "created_at",
+   "refines_frame": "target_frame_id"
+  },
+  "table": "frame_refinement"
+ },
+ "frozen_artifact_governed_by": {
+  "cols": {
+   "encoding": "encoding_type",
+   "frozen": "artifact_id",
+   "scope": "directive_id"
+  },
+  "table": "governed_artifact"
+ },
+ "functional_dependency_lhs": {
+  "cols": {
+   "f_d_left_hand_side": "lhs_column_id",
+   "functional": "rule_type",
+   "uncertainty": "confidence_score",
+   "value": "column_name"
+  },
+  "table": "fd_lhs"
+ },
+ "functional_dependency_rhs": {
+  "cols": {
+   "confidence": "confidence_score",
+   "f_d_right_hand_side": "target_attr",
+   "functional": "source_attr",
+   "value": "threshold"
+  },
+  "table": "fd_target"
+ },
+ "ganglion_cyst_imaging_finding": {
+  "cols": {
+   "encoding": "data_format",
+   "ganglion_cyst_imaging_finding": "finding_id",
+   "language": "language_code",
+   "visualizes": "imaging_study_id"
+  },
+  "table": "ganglion_cyst_finding"
+ },
+ "ganglion_cyst_tissue_origin": {
+  "cols": {
+   "ganglion_cyst_tissue_origin": "origin_id",
+   "part_of": "parent_tissue_id"
+  },
+  "table": "cyst_tissue_origin"
+ },
+ "gauge_metric_subclass": {
+  "cols": {
+   "gauge": "artifact_id",
+   "identifier": "id",
+   "metric_kind": "metric_type",
+   "owner": "owner_id"
+  },
+  "table": "metric_subclass"
+ },
+ "gdpr_article_subclass": {
+  "cols": {
+   "gdpr": "regulation_ref",
+   "gdpr_article": "article_code",
+   "mandatory": "is_required",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "compliance_articles"
+ },
+ "gdpr_data_subject_right": {
+  "cols": {
+   "gdpr": "regulation_ref",
+   "grants_data_subject_right": "subject_right",
+   "label_text": "right_name",
+   "scope": "scope_type"
+  },
+  "table": "gdpr_subject_rights"
+ },
+ "gdpr_lawful_basis": {
+  "cols": {
+   "gdpr": "regulation_ref",
+   "lawful_basis": "legal_ground",
+   "mandatory": "is_required",
+   "scope": "applicability"
+  },
+  "table": "gdpr_basis"
+ },
+ "hipaa_safeguard_admin": {
+  "cols": {
+   "hipaa": "regulation_code",
+   "hipaa_safeguard": "safeguard_code",
+   "label_text": "display_name",
+   "scope": "applicable_scope"
+  },
+  "table": "hipaa_safeguard_cfg"
+ },
+ "hipaa_safeguard_physical": {
+  "cols": {
+   "hipaa": "regulation_id",
+   "hipaa_safeguard": "safeguard_id",
+   "label_text": "description",
+   "mandatory": "is_required"
+  },
+  "table": "hipaa_physical_safeguards"
+ },
+ "hipaa_safeguard_technical": {
+  "cols": {
+   "effective_date": "effective_date",
+   "hipaa": "compliance_framework",
+   "hipaa_safeguard": "control_name",
+   "scope": "applicable_scope"
+  },
+  "table": "hipaa_tech_safeguard"
+ },
+ "histogram_metric_subclass": {
+  "cols": {
+   "histogram": "histogram_id",
+   "metric_kind": "metric_type",
+   "mime_type": "content_type",
+   "name": "metric_label"
+  },
+  "table": "hist_metric_rel"
+ },
+ "home_electricity_reduction_program": {
+  "cols": {
+   "addresses_usage_metric": "metric_id",
+   "reduction_program": "program_id",
+   "targets_participant": "participant_id"
+  },
+  "table": "energy_savings_prog"
+ },
+ "host_connection_process": {
+  "cols": {
+   "has_participant": "participant_id",
+   "host_connection_process": "id"
+  },
+  "table": "host_conn_proc"
+ },
+ "human_rights_impact_report": {
+  "cols": {
+   "human_rights_impact_report": "report_id",
+   "label_text": "title",
+   "language": "lang_code",
+   "reports_on": "finding_id"
+  },
+  "table": "impact_report"
+ },
+ "ice_about_artifact": {
+  "cols": {
+   "encoding": "encoding_type",
+   "ice": "id",
+   "label_text": "text_content"
+  },
+  "table": "artifact_metadata"
+ },
+ "ice_exactly_one_subject": {
+  "cols": {
+   "encoding": "encoding_type",
+   "ice": "id",
+   "language": "language_code",
+   "related": "subject_id"
+  },
+  "table": "info_entity"
+ },
+ "ice_subclass_with_part": {
+  "cols": {
+   "encoding": "data_encoding",
+   "ice": "entity_id",
+   "label_text": "display_label"
+  },
+  "table": "info_entity_part_map"
+ },
+ "ice_with_existential": {
+  "cols": {
+   "encoding": "data_format",
+   "ice": "source_ice_id",
+   "label_text": "display_name",
+   "related": "target_entity_id"
+  },
+  "table": "ice_relation"
+ },
+ "identifier_subclass": {
+  "cols": {
+   "encoding": "format_type",
+   "identifier": "id_value",
+   "identifies": "target_id",
+   "issued_date": "assigned_at"
+  },
+  "table": "id_registry"
+ },
+ "identifier_unique": {
+  "cols": {
+   "checksum_algo": "algo",
+   "identifier": "id_value",
+   "identifies": "target_id",
+   "language": "lang_code"
+  },
+  "table": "unique_id"
+ },
+ "identifier_uniquely_identifies": {
+  "cols": {
+   "format": "format_code",
+   "identifier": "id",
+   "identifies": "target_id",
+   "issued_date": "issued_at"
+  },
+  "table": "id_registry"
+ },
+ "indoor_air_quality_action_plan": {
+  "cols": {
+   "indoor_air_quality_action_plan": "id",
+   "label_text": "plan_title",
+   "priority": "priority_level",
+   "targets_pollution": "target_pollutant",
+   "verified_by_metric": "verification_metric_id"
+  },
+  "table": "iaq_action_plan"
+ },
+ "indoor_environmental_monitoring_process": {
+  "cols": {
+   "indoor_environmental_monitoring_process": "id",
+   "monitors_indoor_environment": "location_id",
+   "uses_monitoring_protocol": "protocol_id"
+  },
+  "table": "indoor_monitoring_run"
+ },
+ "information_dissemination_event": {
+  "cols": {
+   "has_participant": "participant_id",
+   "information_dissemination_event": "event_id",
+   "reaches_audience": "audience_id",
+   "utilizes_channel": "channel_id"
+  },
+  "table": "dissemination_event"
+ },
+ "insertion_loss_specification": {
+  "cols": {
+   "insertion_loss_specification": "spec_id",
+   "unit": "unit_code",
+   "value": "loss_value"
+  },
+  "table": "insertion_loss_spec"
+ },
+ "institutional_vision_statement": {
+  "cols": {
+   "addresses_stakeholder": "stakeholder_id",
+   "institutional_vision_statement": "statement_text",
+   "mandatory": "is_mandatory",
+   "priority": "priority_level",
+   "targets_goal": "goal_id"
+  },
+  "table": "vision_statement"
+ },
+ "instrument_emits_signal": {
+  "cols": {
+   "emits_signal": "signal_id",
+   "instrument": "instrument_id",
+   "size_bytes": "size_bytes",
+   "uri": "resource_uri"
+  },
+  "table": "instrument_signal"
+ },
+ "instrument_only_emits_type": {
+  "cols": {
+   "created_date": "created_at",
+   "emits_signal": "signal_type",
+   "instrument": "instrument_id",
+   "size_bytes": "size_bytes"
+  },
+  "table": "instrument_signal_type"
+ },
+ "instrument_subclass": {
+  "cols": {
+   "created_date": "created_at",
+   "instrument": "instrument_id",
+   "produces_measurement": "measurement_type",
+   "tags": "label_set"
+  },
+  "table": "instrument_type"
+ },
+ "instrument_with_function": {
+  "cols": {
+   "checksum": "checksum",
+   "instrument": "instrument_id",
+   "realizes_function": "function_id",
+   "size_bytes": "size_bytes"
+  },
+  "table": "instrument_functions"
+ },
+ "intermediate_floor_assembly": {
+  "cols": {
+   "contains_component": "component_id",
+   "intermediate_floor_assembly": "id"
+  },
+  "table": "floor_assembly"
+ },
+ "internal_communication_requirement": {
+  "cols": {
+   "internal_communication_requirement": "comm_req_id",
+   "language": "lang_code",
+   "review_cycle_days": "review_interval_days",
+   "specifies_platform": "platform_id",
+   "targets_goal": "goal_id"
+  },
+  "table": "comm_req"
+ },
+ "iso27001_annexa_subclass": {
+  "cols": {
+   "effective_date": "effective_dt",
+   "encoding": "data_fmt",
+   "iso": "standard_ref",
+   "iso27001_annex_a": "control_cat"
+  },
+  "table": "iso27001_control_cats"
+ },
+ "iso27001_clause_subclass": {
+  "cols": {
+   "effective_date": "valid_from",
+   "iso": "standard_code",
+   "iso27001_clause": "clause_code",
+   "scope": "applicability"
+  },
+  "table": "iso_clause_registry"
+ },
+ "kernel_anomaly_supports_claim": {
+  "cols": {
+   "kernel": "artifact_id",
+   "recorded_at": "created_at",
+   "value": "claim_text"
+  },
+  "table": "anomaly_evidence"
+ },
+ "kernel_event_with_comm": {
+  "cols": {
+   "duration_seconds": "duration_s",
+   "exit_code": "exit_code",
+   "kernel": "kernel_ver",
+   "with_process_comm": "proc_cmd"
+  },
+  "table": "proc_comm_events"
+ },
+ "kernel_event_with_pid": {
+  "cols": {
+   "host_name": "hostname",
+   "kernel": "os_kernel",
+   "log_level": "severity",
+   "with_process_id": "process_id"
+  },
+  "table": "kernel_events"
+ },
+ "kernel_event_with_tid": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "kernel": "kernel_version",
+   "retry_count": "retry_cnt",
+   "with_thread_id": "thread_id"
+  },
+  "table": "kernel_event"
+ },
+ "kernelhook_basic": {
+  "cols": {
+   "kernelhook": "artifact_id",
+   "owner": "owner_ref",
+   "uri": "uri"
+  },
+  "table": "artifact"
+ },
+ "kernelhook_for_subsystem": {
+  "cols": {
+   "for_kernel_subsystem": "subsystem_id",
+   "kernelhook": "id",
+   "license": "license_type",
+   "name": "hook_name"
+  },
+  "table": "kernel_hooks"
+ },
+ "kernelhook_in_kernel_module": {
+  "cols": {
+   "in_kernel_module": "module_id",
+   "kernelhook": "hook_id",
+   "license": "license_type",
+   "location": "file_path"
+  },
+  "table": "hook_module_map"
+ },
+ "kernelhook_max_one_program_attached": {
+  "cols": {
+   "attached_program": "target_program_id",
+   "checksum": "artifact_hash",
+   "kernelhook": "hook_id",
+   "size_bytes": "size_bytes"
+  },
+  "table": "kernel_hook_prog"
+ },
+ "kernelhook_observes_event_class": {
+  "cols": {
+   "kernelhook": "hook_id",
+   "location": "site_id",
+   "name": "hook_name",
+   "observes_event": "event_class_id"
+  },
+  "table": "hook_event_mapping"
+ },
+ "kernelhook_observes_syscall_xref": {
+  "cols": {
+   "created_date": "created_at",
+   "kernelhook": "hook_id",
+   "owner": "owner_id"
+  },
+  "table": "kernelhook_syscall_xref"
+ },
+ "kernelhook_only_kprobe": {
+  "cols": {
+   "hook_kind": "probe_type",
+   "kernelhook": "hook_id",
+   "location": "target_func",
+   "version": "hook_version"
+  },
+  "table": "kprobe_hook"
+ },
+ "kernelhook_subclass": {
+  "cols": {
+   "at_kernel_function": "target_function",
+   "kernelhook": "hook_id",
+   "size_bytes": "artifact_size",
+   "uri": "artifact_uri"
+  },
+  "table": "kernel_hook_artifact"
+ },
+ "kernelhook_with_attached_program": {
+  "cols": {
+   "attached_program": "target_program_id",
+   "kernelhook": "hook_id",
+   "name": "hook_name",
+   "size_bytes": "artifact_size_bytes"
+  },
+  "table": "kernel_hooks"
+ },
+ "kernelhook_with_hook_kind": {
+  "cols": {
+   "hook_kind": "hook_type",
+   "identifier": "hook_code",
+   "kernelhook": "hook_id",
+   "version": "hook_version"
+  },
+  "table": "kernel_hook"
+ },
+ "knowledge_base_integration": {
+  "cols": {
+   "encoding": "data_encoding",
+   "incorporates_indigenous_knowledge": "indigenous_kb_ref",
+   "incorporates_scientific_knowledge": "scientific_kb_ref",
+   "knowledge_base_integration": "integration_id",
+   "label_text": "integration_label"
+  },
+  "table": "kb_integration"
+ },
+ "labrun_basic": {
+  "cols": {
+   "labrun": "id",
+   "retry_count": "retry_count",
+   "status": "status"
+  },
+  "table": "lab_run"
+ },
+ "labrun_has_operator": {
+  "cols": {
+   "end_time": "completed_at",
+   "labrun": "lab_run_id",
+   "operator": "operator_id",
+   "triggered_by": "initiated_by"
+  },
+  "table": "lab_run_ops"
+ },
+ "labrun_min_one_sample": {
+  "cols": {
+   "input_sample": "sample_id",
+   "labrun": "run_id",
+   "log_level": "severity",
+   "retry_count": "retry_count"
+  },
+  "table": "lab_run"
+ },
+ "labrun_observed_at_site": {
+  "cols": {
+   "labrun": "lab_run_id",
+   "occurs_in": "site_id",
+   "phase": "run_phase",
+   "scheduled_at": "scheduled_time"
+  },
+  "table": "lab_run_sites"
+ },
+ "labrun_produces_measurement": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "labrun": "id",
+   "scheduled_at": "scheduled_start"
+  },
+  "table": "lab_runs"
+ },
+ "labrun_subclass": {
+  "cols": {
+   "input_sample": "sample_id",
+   "labrun": "lab_run_id",
+   "scheduled_at": "scheduled_at",
+   "triggered_by": "initiated_by"
+  },
+  "table": "lab_run_inputs"
+ },
+ "labrun_uses_instrument": {
+  "cols": {
+   "labrun": "run_id",
+   "phase": "run_phase",
+   "start_time": "started_at",
+   "uses": "instrument_id"
+  },
+  "table": "lab_run_instrument"
+ },
+ "labrun_with_protocol": {
+  "cols": {
+   "end_time": "completed_at",
+   "follows_protocol": "protocol_id",
+   "labrun": "run_id",
+   "retry_count": "retry_count"
+  },
+  "table": "lab_run"
+ },
+ "lane_compliance_behavior": {
+  "cols": {
+   "involves_operator": "operator_id",
+   "lane_compliance_behavior": "id",
+   "occurs_on_street_type": "road_class"
+  },
+  "table": "lane_compliance"
+ },
+ "legal_advocate_role": {
+  "cols": {
+   "assists": "survivor_id",
+   "legal_advocate_role": "id",
+   "role_bearer": "person_id"
+  },
+  "table": "legal_advocate"
+ },
+ "lift_basic": {
+  "cols": {
+   "encoding": "char_encoding",
+   "language": "lang_code",
+   "lift": "file_ref"
+  },
+  "table": "language_assets"
+ },
+ "lift_subclass": {
+  "cols": {
+   "label_text": "description",
+   "language": "lang_code",
+   "lift": "class_id",
+   "of_attribute_set": "attr_set_id"
+  },
+  "table": "class_attr_rel"
+ },
+ "lift_with_baseline_rate": {
+  "cols": {
+   "baseline_rate": "reference_rate",
+   "lift": "enrichment_value",
+   "method": "analysis_method",
+   "uncertainty": "confidence_interval"
+  },
+  "table": "metric_lift_baseline"
+ },
+ "lift_with_support_count": {
+  "cols": {
+   "dimension_kind": "dim_type",
+   "lift": "lift_ratio",
+   "support_count": "support_cnt",
+   "value": "measure_val"
+  },
+  "table": "support_lift_stats"
+ },
+ "lineage_describes_transformation": {
+  "cols": {
+   "confidence": "confidence_score",
+   "lineage": "transform_id",
+   "recorded_at": "created_at"
+  },
+  "table": "transform_log"
+ },
+ "lineage_edge_at_run_time": {
+  "cols": {
+   "at_run_time": "active_at",
+   "lineage": "edge_id",
+   "uncertainty": "confidence",
+   "unit": "uom"
+  },
+  "table": "lineage_edge_runtime"
+ },
+ "lineage_edge_basic": {
+  "cols": {
+   "lineage": "lineage_id",
+   "unit": "unit_code",
+   "value": "data_value"
+  },
+  "table": "lineage_edges"
+ },
+ "lineage_edge_describes_column_flow": {
+  "cols": {
+   "describes_column_flow": "col_flow_id",
+   "encoding": "format_code",
+   "lineage": "lineage_id",
+   "unit": "uom"
+  },
+  "table": "col_lineage_edges"
+ },
+ "lineage_edge_max_one_target": {
+  "cols": {
+   "language": "lang_code",
+   "lineage": "source_id",
+   "to_target": "target_id",
+   "value": "rel_value"
+  },
+  "table": "rel_lineage"
+ },
+ "lineage_edge_subclass": {
+  "cols": {
+   "confidence": "confidence_score",
+   "from_source": "source_id",
+   "label_text": "edge_label",
+   "lineage": "edge_id"
+  },
+  "table": "lineage_edges"
+ },
+ "lineage_edge_to_target": {
+  "cols": {
+   "lineage": "edge_id",
+   "to_target": "target_id",
+   "unit": "unit_code",
+   "value": "data_value"
+  },
+  "table": "edge_target"
+ },
+ "lineage_edge_via_transformation": {
+  "cols": {
+   "confidence": "confidence_score",
+   "lineage": "source_id",
+   "uncertainty": "uncertainty_margin",
+   "via_transformation": "target_id"
+  },
+  "table": "lineage_transformation"
+ },
+ "lineage_edge_with_confidence": {
+  "cols": {
+   "confidence": "confidence_score",
+   "lineage": "edge_id",
+   "recorded_at": "created_at",
+   "unit": "confidence_unit"
+  },
+  "table": "lineage_edges"
+ },
+ "lineage_edge_with_provenance": {
+  "cols": {
+   "encoding": "encoding_type",
+   "label_text": "description",
+   "lineage": "source_id",
+   "with_provenance": "target_id"
+  },
+  "table": "provenance_link"
+ },
+ "lineage_edge_within_dataset_only": {
+  "cols": {
+   "label_text": "edge_label",
+   "lineage": "source_id",
+   "uncertainty": "confidence",
+   "within_dataset": "dataset_id"
+  },
+  "table": "dataset_lineage"
+ },
+ "lineage_governed_by_directive": {
+  "cols": {
+   "language": "lang_code",
+   "lineage": "governed_id",
+   "unit": "unit_code"
+  },
+  "table": "directive_governance"
+ },
+ "lineage_observed_by_event": {
+  "cols": {
+   "dimension_kind": "obs_type",
+   "language": "lang_code",
+   "lineage": "sample_id"
+  },
+  "table": "obs_event_log"
+ },
+ "log_record_subclass": {
+  "cols": {
+   "license": "license_code",
+   "log": "entry_id",
+   "log_severity": "severity",
+   "size_bytes": "size_bytes"
+  },
+  "table": "log_record"
+ },
+ "log_with_resource_attribute": {
+  "cols": {
+   "log": "log_id",
+   "mime_type": "mime_type",
+   "owner": "owner_id",
+   "resource_attribute": "attr_id"
+  },
+  "table": "log_resource_attrs"
+ },
+ "log_within_span_context": {
+  "cols": {
+   "license": "license_id",
+   "log": "log_id",
+   "size_bytes": "size_bytes",
+   "within_span_context": "span_id"
+  },
+  "table": "span_log"
+ },
+ "lru_hash_map_subclass": {
+  "cols": {
+   "l_r_u_hash_config": "hash_config_id",
+   "license": "license_code",
+   "lru": "artifact_id",
+   "version": "version_num"
+  },
+  "table": "lru_hash_mapping"
+ },
+ "marketing_director_role": {
+  "cols": {
+   "marketing_director_role": "id",
+   "realized_in_activity": "activity_id",
+   "role_holder": "person_id"
+  },
+  "table": "marketing_director_roles"
+ },
+ "mass_function_assigns_to_subset": {
+  "cols": {
+   "assigns_mass_to": "subset_id",
+   "language": "lang_code",
+   "mass": "mass_func_id",
+   "value": "mass_val"
+  },
+  "table": "mass_assignment"
+ },
+ "mass_function_basic": {
+  "cols": {
+   "encoding": "format_type",
+   "mass": "size_bytes",
+   "method": "creation_method"
+  },
+  "table": "info_content"
+ },
+ "mass_function_equiv_frame_and_assignment": {
+  "cols": {
+   "assigns_mass_to": "assigned_frame_id",
+   "confidence": "confidence_score",
+   "dimension_kind": "dim_type",
+   "mass": "mass_val",
+   "over_frame_of_discernment": "frame_scope"
+  },
+  "table": "frame_mass_equiv"
+ },
+ "mass_function_min_one_focal": {
+  "cols": {
+   "focal_element": "focal_id",
+   "language": "lang_code",
+   "mass": "mass_val",
+   "recorded_at": "created_at"
+  },
+  "table": "mass_assignment"
+ },
+ "mass_function_normalized_form": {
+  "cols": {
+   "label_text": "display_label",
+   "mass": "weight",
+   "normalized_form": "canonical_ref",
+   "value": "raw_measure"
+  },
+  "table": "mass_norm_form"
+ },
+ "mass_function_only_assigns_subsets": {
+  "cols": {
+   "assigns_mass_to": "target_id",
+   "mass": "mass_value",
+   "method": "method_code",
+   "unit": "unit_code"
+  },
+  "table": "mass_assignments"
+ },
+ "mass_function_subclass": {
+  "cols": {
+   "confidence": "confidence_score",
+   "mass": "mass_val",
+   "method": "method_code",
+   "over_frame_of_discernment": "frame_ref"
+  },
+  "table": "mass_func_type"
+ },
+ "mass_function_with_focal_element": {
+  "cols": {
+   "confidence": "confidence_score",
+   "focal_element": "target_element",
+   "mass": "mass_value",
+   "method": "derivation_method"
+  },
+  "table": "mass_focal_assignment"
+ },
+ "mass_function_with_normalization": {
+  "cols": {
+   "encoding": "encoding_type",
+   "mass": "mass_value",
+   "normalization_constant": "norm_factor",
+   "unit": "unit_code"
+  },
+  "table": "mass_function"
+ },
+ "material_density_specification": {
+  "cols": {
+   "confidence": "confidence_score",
+   "material_density_specification": "id",
+   "unit": "uom"
+  },
+  "table": "density_spec"
+ },
+ "measurement_aggregated_into": {
+  "cols": {
+   "aggregated_into": "aggregation_key",
+   "label_text": "group_name",
+   "measurement": "measurement_id",
+   "unit": "unit_code"
+  },
+  "table": "measurement_rollup"
+ },
+ "measurement_basic": {
+  "cols": {
+   "measurement": "measurement_id",
+   "uncertainty": "tolerance",
+   "value": "measured_val"
+  },
+  "table": "measurements"
+ },
+ "measurement_equiv_with_dim_unit": {
+  "cols": {
+   "dimension": "dim_id",
+   "label_text": "label",
+   "measurement": "measure_id",
+   "unit": "unit_id"
+  },
+  "table": "measure_equiv"
+ },
+ "measurement_max_one_value": {
+  "cols": {
+   "measurement": "measurement_id",
+   "numeric_value": "measured_value",
+   "uncertainty": "error_margin",
+   "unit": "unit_code"
+  },
+  "table": "measurements"
+ },
+ "measurement_observed_at": {
+  "cols": {
+   "encoding": "data_format",
+   "label_text": "display_name",
+   "measurement": "metric_id",
+   "observed_at": "captured_at"
+  },
+  "table": "measurement_events"
+ },
+ "measurement_of_artifact": {
+  "cols": {
+   "encoding": "encoding_type",
+   "measurement": "meas_value",
+   "method": "method_code"
+  },
+  "table": "artifact_measurement"
+ },
+ "measurement_produced_by_run": {
+  "cols": {
+   "label_text": "test_label",
+   "measurement": "result_value",
+   "recorded_at": "generated_at"
+  },
+  "table": "measurement_result"
+ },
+ "measurement_subclass": {
+  "cols": {
+   "dimension": "dim_code",
+   "encoding": "data_format",
+   "measurement": "meas_type",
+   "recorded_at": "created_at"
+  },
+  "table": "meas_param_type"
+ },
+ "measurement_subclass_only_one_unit": {
+  "cols": {
+   "language": "lang_code",
+   "measurement": "metric_name",
+   "unit": "unit_code",
+   "value": "measured_value"
+  },
+  "table": "measurement"
+ },
+ "measurement_with_method": {
+  "cols": {
+   "label_text": "parameter_name",
+   "measurement": "measured_value",
+   "unit": "unit_code",
+   "via_method": "method_id"
+  },
+  "table": "measurement_record"
+ },
+ "measurement_with_op_artifact": {
+  "cols": {
+   "about": "artifact_id",
+   "dimension_kind": "dimension_type",
+   "measurement": "measurement_id",
+   "value": "measured_value"
+  },
+  "table": "measurement_record"
+ },
+ "measurement_with_precision": {
+  "cols": {
+   "dimension_kind": "dimension_type",
+   "label_text": "display_name",
+   "measurement": "measured_val",
+   "precision": "tolerance"
+  },
+  "table": "measurement_specs"
+ },
+ "measurement_with_unit": {
+  "cols": {
+   "dimension_kind": "quantity_type",
+   "measurement": "measured_value",
+   "unit": "unit_code"
+  },
+  "table": "measurement_values"
+ },
+ "mental_health_education_program": {
+  "cols": {
+   "delivered_presentation": "session_id",
+   "mental_health_education_program": "program_id",
+   "targets_demographic": "target_group_id"
+  },
+  "table": "mh_education_program"
+ },
+ "metric_emission_subclass": {
+  "cols": {
+   "emits_metric": "source_process",
+   "metric": "metric_code",
+   "phase": "process_phase",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "metric_emission"
+ },
+ "metric_observed_by_event": {
+  "cols": {
+   "metric": "metric_name",
+   "unit": "unit_code",
+   "value": "measured_value"
+  },
+  "table": "metric_readings"
+ },
+ "metric_with_aggregation": {
+  "cols": {
+   "aggregation_temporality": "agg_type",
+   "metric": "metric_name",
+   "tags": "labels",
+   "version": "schema_version"
+  },
+  "table": "metric_agg"
+ },
+ "metric_with_unit": {
+  "cols": {
+   "license": "license_name",
+   "metric": "measure_name",
+   "metric_unit": "unit_name",
+   "owner": "owner_name"
+  },
+  "table": "metric_unit"
+ },
+ "myxoid_degeneration_process": {
+  "cols": {
+   "degrades": "affected_tissue_id",
+   "myxoid_degeneration_process": "id",
+   "results_in": "resulting_cyst_id"
+  },
+  "table": "myxoid_degeneration"
+ },
+ "national_dataset_augmentation_process": {
+  "cols": {
+   "augments_existing_dataset": "target_dataset_id",
+   "incorporates_observation_source": "source_id",
+   "national_dataset_augmentation_process": "id"
+  },
+  "table": "dataset_augmentation"
+ },
+ "nist80053_control_subclass": {
+  "cols": {
+   "encoding": "class_code",
+   "nist": "standard_id",
+   "nist80053_control": "parent_control_id",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "control_subclass"
+ },
+ "nist80053_high_impact": {
+  "cols": {
+   "at_n_i_s_t_impact_level": "impact_level",
+   "nist": "control_id",
+   "priority": "review_priority",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "nist_impact_mapping"
+ },
+ "nist80053_low_impact": {
+  "cols": {
+   "at_n_i_s_t_impact_level": "impact_level",
+   "encoding": "format_code",
+   "nist": "framework_ref",
+   "priority": "priority_level"
+  },
+  "table": "directive_nist_impact"
+ },
+ "nist80053_moderate_impact": {
+  "cols": {
+   "at_n_i_s_t_impact_level": "impact_level",
+   "label_text": "control_name",
+   "language": "lang_code",
+   "nist": "control_ref"
+  },
+  "table": "nist_moderate_controls"
+ },
+ "nonbreaking_change_subclass": {
+  "cols": {
+   "confidence": "confidence_score",
+   "method": "method_code",
+   "non_breaking_change_for": "target_id",
+   "nonbreaking": "change_id"
+  },
+  "table": "compat_change"
+ },
+ "observation_governed_by_policy": {
+  "cols": {
+   "end_time": "end_time",
+   "observation": "process_id",
+   "start_time": "start_time"
+  },
+  "table": "governed_observations"
+ },
+ "observation_precedes_other": {
+  "cols": {
+   "end_time": "completed_at",
+   "observation": "source_id",
+   "precedes": "target_id",
+   "retry_count": "retry_cnt"
+  },
+  "table": "obs_precedence"
+ },
+ "observation_records_state": {
+  "cols": {
+   "observation": "obs_id",
+   "records": "record_id",
+   "retry_count": "retry_cnt",
+   "status": "status_code"
+  },
+  "table": "obs_record_state"
+ },
+ "observation_with_participant": {
+  "cols": {
+   "observation": "obs_id",
+   "phase": "phase_code",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "obs_participants"
+ },
+ "ontology_class_match": {
+  "cols": {
+   "encoding": "encoding_type",
+   "matches_ontology_class": "target_class",
+   "ontology": "source_ontology",
+   "uncertainty": "confidence_score"
+  },
+  "table": "class_match"
+ },
+ "opentelemetry_span_subclass": {
+  "cols": {
+   "exit_code": "return_code",
+   "opentelemetry": "otel_sdk",
+   "span_context": "span_id",
+   "status": "status_code"
+  },
+  "table": "otel_span"
+ },
+ "outlier_claim_against_baseline": {
+  "cols": {
+   "against": "baseline_id",
+   "confidence": "confidence_score",
+   "label_text": "description",
+   "outlier": "target_id"
+  },
+  "table": "outlier_baseline"
+ },
+ "outlier_claim_basic": {
+  "cols": {
+   "encoding": "format_type",
+   "outlier": "claim_id",
+   "recorded_at": "created_at"
+  },
+  "table": "outlier_claims"
+ },
+ "outlier_claim_has_confidence": {
+  "cols": {
+   "confidence": "confidence_score",
+   "outlier": "outlier_id",
+   "uncertainty": "error_bound"
+  },
+  "table": "outlier_confidence"
+ },
+ "outlier_claim_min_one_attribute": {
+  "cols": {
+   "attribute_set": "attr_group_id",
+   "dimension_kind": "measure_type",
+   "outlier": "claim_id",
+   "value": "observed_val"
+  },
+  "table": "outlier_claims"
+ },
+ "outlier_claim_subclass": {
+  "cols": {
+   "confidence": "confidence_score",
+   "dimension_kind": "dimension_type",
+   "explains_anomaly_in": "target_anomaly_id",
+   "outlier": "outlier_id"
+  },
+  "table": "claim_subclass"
+ },
+ "outlier_claim_supported_by": {
+  "cols": {
+   "dimension_kind": "dim_type",
+   "label_text": "display_label",
+   "outlier": "claim_id",
+   "supported_by": "supported_id"
+  },
+  "table": "outlier_claim_support"
+ },
+ "outlier_claim_supported_by_lift": {
+  "cols": {
+   "attribute_set": "feature_set_id",
+   "encoding": "encoding_type",
+   "outlier": "flagged_id",
+   "supported_by": "support_id",
+   "uncertainty": "confidence_pct"
+  },
+  "table": "outlier_claim_evidence"
+ },
+ "outlier_claim_with_attribute_set": {
+  "cols": {
+   "attribute_set": "attr_set_id",
+   "encoding": "encoding_type",
+   "label_text": "description",
+   "outlier": "outlier_id"
+  },
+  "table": "outlier_claim_attrs"
+ },
+ "outlier_detection_basic": {
+  "cols": {
+   "host_name": "target_host",
+   "outlier": "detection_type",
+   "phase": "run_stage"
+  },
+  "table": "outlier_detect_job"
+ },
+ "outlier_detection_produces_claim": {
+  "cols": {
+   "log_level": "severity",
+   "outlier": "anomaly_id",
+   "phase": "process_phase",
+   "produces": "claim_id"
+  },
+  "table": "outlier_claim_events"
+ },
+ "outlier_detection_targets_dataset": {
+  "cols": {
+   "outlier": "target_id",
+   "scheduled_at": "job_scheduled_at",
+   "triggered_by": "initiated_by"
+  },
+  "table": "outlier_detection_jobs"
+ },
+ "outlier_detection_uses_explainer": {
+  "cols": {
+   "exit_code": "run_status_code",
+   "log_level": "log_severity",
+   "outlier": "detection_run_id",
+   "uses": "explainer_id"
+  },
+  "table": "outlier_explainer_run"
+ },
+ "outlier_detection_with_baseline": {
+  "cols": {
+   "against": "baseline_ref",
+   "host_name": "hostname",
+   "outlier": "detection_id",
+   "triggered_by": "rule_name"
+  },
+  "table": "anomaly_events"
+ },
+ "patient_insurance_record": {
+  "cols": {
+   "contains_data_element": "insurance_item_id",
+   "label_text": "plan_label",
+   "language": "lang_code",
+   "patient_insurance_record": "id"
+  },
+  "table": "patient_insurance"
+ },
+ "pci_dss_requirement": {
+  "cols": {
+   "pci": "standard_id",
+   "pci_dss_requirement": "req_code",
+   "review_cycle_days": "audit_interval_days",
+   "scope": "system_scope"
+  },
+  "table": "pci_dss_req"
+ },
+ "pdsa_improvement_model": {
+  "cols": {
+   "improves": "care_plan_id",
+   "optimizes": "outcome_metric_id",
+   "p_d_s_a_improvement_model": "id"
+  },
+  "table": "pdsa_cycle"
+ },
+ "perf_buffer_map_subclass": {
+  "cols": {
+   "created_date": "created_at",
+   "identifier": "id",
+   "perf": "perf_id",
+   "perf_buffer_config": "buffer_config_id"
+  },
+  "table": "perf_buffer_map"
+ },
+ "perf_event_subclass": {
+  "cols": {
+   "location": "target_location",
+   "perf": "event_id",
+   "perf_event_config": "config_id",
+   "version": "version"
+  },
+  "table": "event_config_map"
+ },
+ "performance_tuning_configuration": {
+  "cols": {
+   "confidence": "confidence_score",
+   "performance_tuning_configuration": "id",
+   "unit": "uom"
+  },
+  "table": "perf_tuning_config"
+ },
+ "pignistic_transformation": {
+  "cols": {
+   "language": "lang_code",
+   "pignistic": "source_id",
+   "pignistic_transform": "target_id",
+   "recorded_at": "recorded_at"
+  },
+  "table": "transform_mapping"
+ },
+ "plausibility_function_for": {
+  "cols": {
+   "encoding": "encoding_type",
+   "method": "method_code",
+   "plausibility": "score",
+   "plausibility_for_claim": "claim_id"
+  },
+  "table": "claim_plausibility"
+ },
+ "policy_applies_to": {
+  "cols": {
+   "applies_to": "target_id",
+   "effective_date": "effective_from",
+   "label_text": "description",
+   "policy": "policy_id"
+  },
+  "table": "policy_target"
+ },
+ "policy_attests_artifact": {
+  "cols": {
+   "effective_date": "effective_date",
+   "policy": "policy_id",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "artifact_policy"
+ },
+ "policy_authored_by": {
+  "cols": {
+   "authored_by": "author_id",
+   "encoding": "format_type",
+   "mandatory": "is_mandatory",
+   "policy": "policy_id"
+  },
+  "table": "policy_authors"
+ },
+ "policy_basic": {
+  "cols": {
+   "effective_date": "effective_dt",
+   "policy": "policy_code",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "policy_cfg"
+ },
+ "policy_classification_tier": {
+  "cols": {
+   "at_classification_tier": "tier_id",
+   "policy": "policy_id",
+   "priority": "priority_level",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "policy_classification_tier"
+ },
+ "policy_constrains_only_artifact": {
+  "cols": {
+   "enforcement": "enforcement_mode",
+   "policy": "policy_id",
+   "scope": "scope_type"
+  },
+  "table": "policy_artifact_constraints"
+ },
+ "policy_effective_period": {
+  "cols": {
+   "effective_during": "validity_range",
+   "language": "lang_code",
+   "policy": "policy_id",
+   "scope": "applicable_scope"
+  },
+  "table": "policy_period"
+ },
+ "policy_enforced_by": {
+  "cols": {
+   "enforced_by": "enforcer_id",
+   "enforcement": "action_id",
+   "language": "lang_code",
+   "policy": "policy_id"
+  },
+  "table": "policy_enforcement"
+ },
+ "policy_equiv_jurisdiction_and_scope": {
+  "cols": {
+   "governs_scope": "applicable_scope",
+   "jurisdiction": "jurisdiction_id",
+   "mandatory": "is_mandatory",
+   "policy": "policy_id",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "policy_jurisdiction_equiv"
+ },
+ "policy_min_one_enforcer": {
+  "cols": {
+   "enforced_by": "enforcer_id",
+   "mandatory": "is_required",
+   "policy": "policy_id",
+   "scope": "applicable_scope"
+  },
+  "table": "policy_mandate"
+ },
+ "policy_only_applies_to": {
+  "cols": {
+   "applies_to": "target_id",
+   "effective_date": "valid_from",
+   "policy": "policy_id",
+   "priority": "priority_rank"
+  },
+  "table": "policy_target"
+ },
+ "policy_only_for_high_impact": {
+  "cols": {
+   "at_n_i_s_t_impact_level": "impact_tier",
+   "language": "language_code",
+   "policy": "policy_id",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "policy_impact_scope"
+ },
+ "policy_only_governs_artifacts": {
+  "cols": {
+   "enforcement": "enforcement_mode",
+   "policy": "policy_id",
+   "priority": "priority_level"
+  },
+  "table": "artifact_policy"
+ },
+ "policy_subclass": {
+  "cols": {
+   "governs": "target_id",
+   "policy": "directive_id",
+   "priority": "priority_level",
+   "scope": "applicable_scope"
+  },
+  "table": "policy_subclass"
+ },
+ "policy_subclass_governs": {
+  "cols": {
+   "governs_scope": "scope_id",
+   "policy": "policy_id",
+   "priority": "priority_level",
+   "review_cycle_days": "review_period_days"
+  },
+  "table": "policy_governance"
+ },
+ "policy_supersedes": {
+  "cols": {
+   "language": "lang_code",
+   "policy": "policy_id",
+   "review_cycle_days": "review_interval_days",
+   "supersedes": "superseded_policy_id"
+  },
+  "table": "policy_override"
+ },
+ "policy_with_jurisdiction": {
+  "cols": {
+   "encoding": "content_encoding",
+   "jurisdiction": "jurisdiction_id",
+   "policy": "policy_id",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "policy_jurisdiction"
+ },
+ "policy_with_review_cycle": {
+  "cols": {
+   "language": "language_code",
+   "policy": "id",
+   "review_cycle": "review_cycle_id",
+   "scope": "scope_desc"
+  },
+  "table": "policies"
+ },
+ "port_isolation_measurement": {
+  "cols": {
+   "depends_on_impedance_termination": "termination_ref",
+   "encoding": "char_encoding",
+   "language": "lang_code",
+   "measures_port_isolation": "measured_isolation",
+   "port_isolation_measurement": "id"
+  },
+  "table": "port_iso_meas"
+ },
+ "primary_key_designation": {
+  "cols": {
+   "encoding": "format",
+   "primary": "is_primary",
+   "primary_key_of": "target_table",
+   "unit": "key_value"
+  },
+  "table": "pk_designation"
+ },
+ "process_either_started_or_completed": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "process": "id",
+   "process_2": "parent_process_id",
+   "process_3": "related_process_id",
+   "start_time": "started_at"
+  },
+  "table": "process_runs"
+ },
+ "process_max_one_operator": {
+  "cols": {
+   "operator": "operator_id",
+   "process": "process_id",
+   "retry_count": "retry_attempts",
+   "start_time": "started_at"
+  },
+  "table": "process_run"
+ },
+ "process_min_one_input": {
+  "cols": {
+   "duration_seconds": "elapsed_sec",
+   "input": "source_ref",
+   "log_level": "severity_code",
+   "process": "activity_id"
+  },
+  "table": "process_run"
+ },
+ "process_min_one_output": {
+  "cols": {
+   "end_time": "completed_at",
+   "output": "deliverable_id",
+   "process": "proc_id",
+   "triggered_by": "initiated_by"
+  },
+  "table": "process_output_xref"
+ },
+ "process_produces_ice": {
+  "cols": {
+   "exit_code": "exit_code",
+   "log_level": "log_level",
+   "process": "id"
+  },
+  "table": "job_run"
+ },
+ "process_uses_artifact": {
+  "cols": {
+   "process": "process_id",
+   "retry_count": "retry_cnt",
+   "scheduled_at": "scheduled_at"
+  },
+  "table": "process_artifact_usage"
+ },
+ "process_with_min_one_artifact": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "exit_code": "return_code",
+   "process": "process_code"
+  },
+  "table": "process_type"
+ },
+ "process_with_participant": {
+  "cols": {
+   "exit_code": "status_code",
+   "process": "process_id",
+   "related": "participant_id",
+   "triggered_by": "initiator_id"
+  },
+  "table": "process_participant"
+ },
+ "professional_experience": {
+  "cols": {
+   "encoding": "duration_years",
+   "holder": "person_id",
+   "language": "language_code",
+   "organization": "employer_id",
+   "professional_experience": "experience_id"
+  },
+  "table": "employment_record"
+ },
+ "professional_expertise_domain": {
+  "cols": {
+   "covers_sector": "sector_id",
+   "label_text": "display_name",
+   "professional_expertise_domain": "id",
+   "provides_service_type": "service_type_id",
+   "unit": "unit_code"
+  },
+  "table": "service_domain"
+ },
+ "profile_basic": {
+  "cols": {
+   "encoding": "data_format",
+   "profile": "profile_id",
+   "uncertainty": "confidence_pct"
+  },
+  "table": "profile_info"
+ },
+ "profile_has_cardinality": {
+  "cols": {
+   "cardinality": "cardinality_val",
+   "dimension_kind": "dim_type",
+   "label_text": "display_label",
+   "profile": "profile_id"
+  },
+  "table": "profile_cardinality"
+ },
+ "profile_has_distribution": {
+  "cols": {
+   "distribution": "distribution_id",
+   "profile": "profile_id",
+   "uncertainty": "uncertainty_val",
+   "unit": "unit_code"
+  },
+  "table": "profile_distribution"
+ },
+ "profile_has_null_rate": {
+  "cols": {
+   "encoding": "format_code",
+   "null_rate": "null_ratio",
+   "profile": "profile_id",
+   "value": "rate_val"
+  },
+  "table": "profile_null_rates"
+ },
+ "profile_of_column": {
+  "cols": {
+   "about": "col_id",
+   "encoding": "format_code",
+   "profile": "profile_id",
+   "uncertainty": "confidence_pct"
+  },
+  "table": "col_profile"
+ },
+ "profile_of_dataset": {
+  "cols": {
+   "confidence": "confidence_score",
+   "label_text": "annotation_text",
+   "profile": "profile_id"
+  },
+  "table": "dataset_profiles"
+ },
+ "profile_over_time_window": {
+  "cols": {
+   "dimension_kind": "dim_type",
+   "over_time_window": "period_id",
+   "profile": "metric_id",
+   "uncertainty": "error_margin"
+  },
+  "table": "profile_window"
+ },
+ "profiling_basic": {
+  "cols": {
+   "host_name": "target_host",
+   "phase": "phase_code",
+   "profiling": "profile_id"
+  },
+  "table": "profiling_runs"
+ },
+ "profiling_only_targets_datasets": {
+  "cols": {
+   "log_level": "log_severity",
+   "profiling": "run_id",
+   "start_time": "started_at"
+  },
+  "table": "profiling_runs"
+ },
+ "profiling_produces_profile": {
+  "cols": {
+   "log_level": "severity",
+   "phase": "stage",
+   "produces": "profile_id",
+   "profiling": "process_id"
+  },
+  "table": "process_profile"
+ },
+ "profiling_targets_dataset": {
+  "cols": {
+   "log_level": "log_level",
+   "profiling": "run_id",
+   "status": "status_code"
+  },
+  "table": "profiling_runs"
+ },
+ "profiling_with_method": {
+  "cols": {
+   "applies_method": "method_id",
+   "phase": "phase_code",
+   "profiling": "profiling_id",
+   "triggered_by": "initiated_by"
+  },
+  "table": "profiling_method"
+ },
+ "program_subclass": {
+  "cols": {
+   "input": "input_source",
+   "license": "license_type",
+   "location": "region",
+   "program": "program_id"
+  },
+  "table": "program_type"
+ },
+ "program_with_entry_exactly_one": {
+  "cols": {
+   "entry_point": "entry_path",
+   "identifier": "program_ref",
+   "program": "program_name",
+   "version": "version"
+  },
+  "table": "program_spec"
+ },
+ "provenance_agent_signs_audit": {
+  "cols": {
+   "log_level": "audit_level",
+   "provenance": "signer_id",
+   "triggered_by": "initiator_id"
+  },
+  "table": "audit_signing_log"
+ },
+ "provenance_agent_subclass": {
+  "cols": {
+   "mime_type": "content_type",
+   "name": "title",
+   "provenance": "artifact_id",
+   "responsibility": "custodian_id"
+  },
+  "table": "provenance_agents"
+ },
+ "qualification_process": {
+  "cols": {
+   "qualification_process": "id",
+   "requires_membership": "membership_id",
+   "yields_championship_entry": "entry_id"
+  },
+  "table": "qual_process"
+ },
+ "qualifications_framework": {
+  "cols": {
+   "articulates": "learning_outcome_id",
+   "encoding": "standard_code",
+   "label_text": "framework_name",
+   "qualifications": "framework_id",
+   "specifies": "qualification_level_id"
+  },
+  "table": "qualifications_framework"
+ },
+ "quality_assurance_initiative": {
+  "cols": {
+   "involves": "involved_staff_id",
+   "quality": "initiative_type",
+   "targets": "target_institution_id"
+  },
+  "table": "qa_initiative"
+ },
+ "quantum_computer": {
+  "cols": {
+   "part_of": "parent_id",
+   "quantum_computer": "id"
+  },
+  "table": "quantum_computer"
+ },
+ "quantum_cyber_security_field": {
+  "cols": {
+   "encoding": "enc_type",
+   "language": "lang_code",
+   "quantum_cyber_security_field": "field_id",
+   "studies_domain_aspect": "aspect_id"
+  },
+  "table": "quantum_sec_domains"
+ },
+ "radicalization_process": {
+  "cols": {
+   "has_participant": "org_id",
+   "radicalization_process": "process_id"
+  },
+  "table": "rad_process"
+ },
+ "reference_subclass": {
+  "cols": {
+   "issued_date": "issued_at",
+   "namespace": "ns_code",
+   "points_to": "target_id",
+   "reference": "source_id"
+  },
+  "table": "ref_mapping"
+ },
+ "reference_within_dataset": {
+  "cols": {
+   "checksum_algo": "hash_algo",
+   "namespace": "ns_id",
+   "part_of": "dataset_id",
+   "points_to": "target_id",
+   "reference": "id"
+  },
+  "table": "dataset_refs"
+ },
+ "regional_quality_benchmark": {
+  "cols": {
+   "label_text": "benchmark_name",
+   "regional": "region_id",
+   "unit": "unit_code"
+  },
+  "table": "region_quality_benchmarks"
+ },
+ "requirement_applies_to_system": {
+  "cols": {
+   "priority": "priority_level",
+   "requirement": "req_description",
+   "review_cycle_days": "review_interval_days"
+  },
+  "table": "system_requirement"
+ },
+ "requirement_basic": {
+  "cols": {
+   "effective_date": "effective_dt",
+   "label_text": "req_title",
+   "requirement": "req_text"
+  },
+  "table": "req_definition"
+ },
+ "requirement_equiv_specifies_target": {
+  "cols": {
+   "applies_to": "applies_to_ref",
+   "effective_date": "effective_from",
+   "mandatory": "is_mandatory",
+   "requirement": "source_req_id",
+   "specifies": "target_req_id"
+  },
+  "table": "req_equiv_map"
+ },
+ "requirement_has_priority": {
+  "cols": {
+   "encoding": "encoding_fmt",
+   "enforcement": "enforce_policy",
+   "priority": "priority_level",
+   "requirement": "req_id"
+  },
+  "table": "requirement_priority"
+ },
+ "requirement_min_one_verification": {
+  "cols": {
+   "mandatory": "is_required",
+   "requirement": "req_id",
+   "scope": "scope_type",
+   "verified_by": "verifier_id"
+  },
+  "table": "req_verification"
+ },
+ "requirement_only_satisfied_by": {
+  "cols": {
+   "enforcement": "enforce_level",
+   "language": "lang_code",
+   "requirement": "directive_id",
+   "satisfied_by": "satisfier_id"
+  },
+  "table": "req_satisfier"
+ },
+ "requirement_refines": {
+  "cols": {
+   "language": "lang_code",
+   "refines": "parent_req_id",
+   "requirement": "req_id",
+   "scope": "scope_id"
+  },
+  "table": "req_refinement"
+ },
+ "requirement_satisfies": {
+  "cols": {
+   "priority": "priority",
+   "requirement": "source_req_id",
+   "satisfies": "target_req_id",
+   "scope": "scope"
+  },
+  "table": "req_satisfies"
+ },
+ "requirement_subclass": {
+  "cols": {
+   "language": "lang_code",
+   "requirement": "id",
+   "scope": "applicable_scope",
+   "specifies": "target_ref"
+  },
+  "table": "requirements"
+ },
+ "requirement_traces_to": {
+  "cols": {
+   "enforcement": "enforcement_type",
+   "priority": "priority_level",
+   "requirement": "source_req_id",
+   "traces_to": "target_req_id"
+  },
+  "table": "req_trace"
+ },
+ "requirement_under_standard": {
+  "cols": {
+   "encoding": "encoding_type",
+   "priority": "priority_level",
+   "requirement": "req_id",
+   "under_standard": "standard_id"
+  },
+  "table": "std_requirement"
+ },
+ "requirement_verified_by": {
+  "cols": {
+   "language": "language_code",
+   "requirement": "requirement_id",
+   "scope": "verification_scope",
+   "verified_by": "verifier_id"
+  },
+  "table": "requirement_verification"
+ },
+ "responsive_optic_nerve_dysfunction": {
+  "cols": {
+   "leber_optic_atrophy": "leber_excl",
+   "optic_nerve_dysfunction": "optic_dysfunction_id",
+   "responsive": "resp_flag"
+  },
+  "table": "optic_dysfunction_type"
+ },
+ "ringbuf_map_subclass": {
+  "cols": {
+   "checksum": "data_checksum",
+   "identifier": "id",
+   "ring_buffer_config": "cfg_id",
+   "ringbuf": "artifact_id"
+  },
+  "table": "ringbuf_cfg_map"
+ },
+ "rollback_relation": {
+  "cols": {
+   "confidence": "confidence_score",
+   "rollback": "source_id",
+   "rolls_back_to": "target_id",
+   "uncertainty": "uncertainty_score"
+  },
+  "table": "entity_relation"
+ },
+ "safety_planning_process": {
+  "cols": {
+   "employs": "intervention_id",
+   "safety_planning_process": "id",
+   "targets": "survivor_id"
+  },
+  "table": "safety_planning"
+ },
+ "salary_requirement": {
+  "cols": {
+   "language": "lang_code",
+   "salary_requirement": "id",
+   "value": "salary_amount"
+  },
+  "table": "salary_requirement"
+ },
+ "sample_subclass": {
+  "cols": {
+   "collected_from": "collection_site_id",
+   "identifier": "id",
+   "location": "site_address",
+   "sample": "artifact_id"
+  },
+  "table": "sample_subclass"
+ },
+ "schema_evolution_under_directive": {
+  "cols": {
+   "encoding": "encoding_type",
+   "schema": "schema_id",
+   "uncertainty": "uncertainty_pct"
+  },
+  "table": "schema_governance"
+ },
+ "schema_migration_subclass": {
+  "cols": {
+   "end_time": "completed_at",
+   "migrates_schema_to": "target_schema",
+   "retry_count": "retry_count",
+   "schema": "source_schema"
+  },
+  "table": "schema_migration"
+ },
+ "schema_revision_of": {
+  "cols": {
+   "identifier": "id",
+   "schema": "schema_id",
+   "schema_revision_of": "parent_schema_id",
+   "version": "version"
+  },
+  "table": "schema_revisions"
+ },
+ "schema_version_subclass": {
+  "cols": {
+   "location": "storage_path",
+   "name": "artifact_name",
+   "schema": "schema_id",
+   "schema_version": "version_id"
+  },
+  "table": "schema_artifact_versions"
+ },
+ "schemaorg_creativework_author": {
+  "cols": {
+   "author": "creator_id",
+   "created_date": "created_at",
+   "license": "license_id",
+   "schemaorg": "id"
+  },
+  "table": "creative_work_authors"
+ },
+ "schemaorg_creativework_date": {
+  "cols": {
+   "date_published": "published_at",
+   "schemaorg": "work_id",
+   "tags": "keywords",
+   "version": "version_num"
+  },
+  "table": "creative_work_pub"
+ },
+ "schemaorg_creativework_publisher": {
+  "cols": {
+   "location": "content_url",
+   "publisher": "publisher_id",
+   "schemaorg": "work_id",
+   "size_bytes": "size_bytes"
+  },
+  "table": "work_publisher"
+ },
+ "schemaorg_event_endtime": {
+  "cols": {
+   "checksum": "data_hash",
+   "event_end_time": "ends_at",
+   "name": "artifact_name",
+   "schemaorg": "source_system"
+  },
+  "table": "artifact_event_ends"
+ },
+ "schemaorg_event_location": {
+  "cols": {
+   "created_date": "created_at",
+   "event_location": "location_id",
+   "identifier": "id",
+   "schemaorg": "source_schema"
+  },
+  "table": "evt_location"
+ },
+ "schemaorg_event_organizer": {
+  "cols": {
+   "created_date": "created_at",
+   "organizer": "host_id",
+   "owner": "owner_id",
+   "schemaorg": "event_id"
+  },
+  "table": "event_organizer_map"
+ },
+ "schemaorg_event_starttime": {
+  "cols": {
+   "event_start_time": "event_start_ts",
+   "location": "location_ref",
+   "mime_type": "content_type",
+   "schemaorg": "artifact_id"
+  },
+  "table": "artifact_event"
+ },
+ "schemaorg_label_alignment": {
+  "cols": {
+   "aligned_to_schema_org_label": "schema_org_label",
+   "label_text": "label_value",
+   "recorded_at": "aligned_at",
+   "schemaorg": "entity_id"
+  },
+  "table": "schema_org_mapping"
+ },
+ "schemaorg_org_country": {
+  "cols": {
+   "country": "country_code",
+   "license": "license_code",
+   "name": "org_name",
+   "schemaorg": "source_id"
+  },
+  "table": "org_country_ref"
+ },
+ "schemaorg_org_legalname": {
+  "cols": {
+   "legal_name": "registered_name",
+   "name": "display_name",
+   "schemaorg": "source_system",
+   "tags": "metadata_tags"
+  },
+  "table": "legal_entity_names"
+ },
+ "schemaorg_org_taxid": {
+  "cols": {
+   "owner": "owner_id",
+   "schemaorg": "id",
+   "tags": "tag_list",
+   "tax_i_d": "tax_id"
+  },
+  "table": "entity_taxid"
+ },
+ "schemaorg_person_affiliation": {
+  "cols": {
+   "affiliation": "org_id",
+   "license": "license_code",
+   "schemaorg": "source_system",
+   "uri": "person_uri"
+  },
+  "table": "person_affiliations"
+ },
+ "schemaorg_person_birthplace": {
+  "cols": {
+   "birthplace": "birth_location_id",
+   "schemaorg": "source_ref",
+   "size_bytes": "record_size",
+   "uri": "record_uri"
+  },
+  "table": "person_birthplace"
+ },
+ "schemaorg_person_email": {
+  "cols": {
+   "created_date": "created_at",
+   "email": "email_address",
+   "schemaorg": "source_ref",
+   "tags": "tags"
+  },
+  "table": "person_email"
+ },
+ "schemaorg_person_named": {
+  "cols": {
+   "full_name": "person_name",
+   "location": "geo_location",
+   "schemaorg": "source_type",
+   "uri": "external_id"
+  },
+  "table": "person"
+ },
+ "schemaorg_person_roleat": {
+  "cols": {
+   "identifier": "id",
+   "name": "person_name",
+   "role_at": "affiliation_org",
+   "schemaorg": "source_type"
+  },
+  "table": "person_role_affiliation"
+ },
+ "schemaorg_place_address": {
+  "cols": {
+   "mime_type": "mime_type",
+   "owner": "owner_id",
+   "postal_address": "address_id",
+   "schemaorg": "source_type"
+  },
+  "table": "place_address"
+ },
+ "schemaorg_place_geocoord": {
+  "cols": {
+   "created_date": "created_at",
+   "geo_coordinates": "coords",
+   "name": "place_name",
+   "schemaorg": "place_id"
+  },
+  "table": "place_geo"
+ },
+ "schemaorg_place_latitude": {
+  "cols": {
+   "created_date": "created_at",
+   "latitude": "geo_lat",
+   "owner": "owner_id",
+   "schemaorg": "entity_id"
+  },
+  "table": "place_lat"
+ },
+ "schemaorg_place_longitude": {
+  "cols": {
+   "longitude": "geo_longitude",
+   "schemaorg": "data_source",
+   "tags": "tag_list",
+   "version": "row_version"
+  },
+  "table": "place_longitude"
+ },
+ "schemaorg_product_brand": {
+  "cols": {
+   "brand": "brand_id",
+   "schemaorg": "product_id",
+   "tags": "labels",
+   "version": "record_version"
+  },
+  "table": "product_brand"
+ },
+ "schemaorg_product_price": {
+  "cols": {
+   "price": "price_value",
+   "schemaorg": "product_id",
+   "uri": "source_uri",
+   "version": "record_version"
+  },
+  "table": "product_price"
+ },
+ "schemaorg_product_sku": {
+  "cols": {
+   "s_k_u": "sku",
+   "schemaorg": "source_system",
+   "tags": "tag_list",
+   "version": "record_version"
+  },
+  "table": "product_sku"
+ },
+ "schemaorg_review_author": {
+  "cols": {
+   "identifier": "id",
+   "license": "license_code",
+   "review_author": "author_id",
+   "schemaorg": "schema_type"
+  },
+  "table": "review_contributor"
+ },
+ "schemaorg_review_rating": {
+  "cols": {
+   "name": "review_title",
+   "review_rating": "rating_score",
+   "schemaorg": "item_id",
+   "tags": "tag_list"
+  },
+  "table": "item_ratings"
+ },
+ "schemaorg_review_target": {
+  "cols": {
+   "mime_type": "content_type",
+   "reviews_item": "target_id",
+   "schemaorg": "source_registry",
+   "version": "rev_num"
+  },
+  "table": "review"
+ },
+ "school_security_policy": {
+  "cols": {
+   "must_satisfy": "constraint_id",
+   "priority": "priority_level",
+   "school_security_policy": "policy_id",
+   "scope": "applicable_scope",
+   "targets": "safety_objective_id"
+  },
+  "table": "school_security_policies"
+ },
+ "settlement_financing_activity": {
+  "cols": {
+   "benefits": "project_id",
+   "funds": "funded_inst_id",
+   "settlement_financing_activity": "id"
+  },
+  "table": "settlement_funding"
+ },
+ "shell_dimension_specification": {
+  "cols": {
+   "confidence": "confidence_score",
+   "shell_dimension_specification": "id",
+   "uncertainty": "uncertainty_val"
+  },
+  "table": "shell_measurement"
+ },
+ "soc2_availability_subclass": {
+  "cols": {
+   "for_s_o_c2_domain": "target_domain",
+   "language": "lang_code",
+   "priority": "priority_level",
+   "soc": "category_code"
+  },
+  "table": "avail_class"
+ },
+ "soc2_confidentiality_subclass": {
+  "cols": {
+   "encoding": "class_code",
+   "for_s_o_c2_domain": "applicable_domain",
+   "language": "lang_code",
+   "soc": "framework_type"
+  },
+  "table": "soc2_conf_class"
+ },
+ "soc2_privacy_subclass": {
+  "cols": {
+   "effective_date": "effective_from",
+   "enforcement": "enforcement_level",
+   "for_s_o_c2_domain": "applicable_domain",
+   "soc": "soc_type"
+  },
+  "table": "privacy_subcategory"
+ },
+ "soc2_processing_integrity": {
+  "cols": {
+   "effective_date": "effective_date",
+   "for_s_o_c2_domain": "trust_criterion",
+   "label_text": "directive_name",
+   "soc": "framework_type"
+  },
+  "table": "soc2_proc_int"
+ },
+ "soc2_security_subclass": {
+  "cols": {
+   "effective_date": "effective_date",
+   "enforcement": "enforcement_level",
+   "for_s_o_c2_domain": "domain_code",
+   "soc": "framework_id"
+  },
+  "table": "soc2_security_class"
+ },
+ "soc2_trust_criterion": {
+  "cols": {
+   "label_text": "criterion_label",
+   "scope": "assessment_scope",
+   "soc": "soc_framework",
+   "soc2_trust_criterion": "criterion_code"
+  },
+  "table": "soc2_trust_criteria"
+ },
+ "social_enterprise_annual_income": {
+  "cols": {
+   "confidence": "confidence_score",
+   "social_enterprise_annual_income": "income_id",
+   "value": "annual_amount"
+  },
+  "table": "annual_income"
+ },
+ "social_networking_service_usage": {
+  "cols": {
+   "involves_participant": "staff_id",
+   "social_networking_service_usage": "usage_id",
+   "utilizes_service": "service_id"
+  },
+  "table": "staff_social_usage"
+ },
+ "span_with_attribute": {
+  "cols": {
+   "exit_code": "return_code",
+   "log_level": "log_severity",
+   "span": "span_id",
+   "span_attribute": "tag_name"
+  },
+  "table": "span_attributes"
+ },
+ "span_with_parent": {
+  "cols": {
+   "log_level": "log_severity",
+   "parent_span": "parent_span_id",
+   "scheduled_at": "run_scheduled_at",
+   "span": "span_id"
+  },
+  "table": "span_parent_rel"
+ },
+ "span_with_status": {
+  "cols": {
+   "retry_count": "retry_count",
+   "span": "span_id",
+   "span_status": "span_status_code",
+   "status": "current_state"
+  },
+  "table": "process_span"
+ },
+ "span_with_trace_id": {
+  "cols": {
+   "end_time": "ended_at",
+   "span": "span_id",
+   "trace_id": "trace_id",
+   "triggered_by": "trigger_ref"
+  },
+  "table": "trace_spans"
+ },
+ "span_within_trace": {
+  "cols": {
+   "part_of": "trace_id",
+   "scheduled_at": "scheduled_at",
+   "span": "id",
+   "status": "status_code"
+  },
+  "table": "trace_spans"
+ },
+ "state_basic": {
+  "cols": {
+   "method": "method_code",
+   "recorded_at": "recorded_at",
+   "state": "state_code"
+  },
+  "table": "state_record"
+ },
+ "state_observed_at_time": {
+  "cols": {
+   "encoding": "charset",
+   "language": "lang_code",
+   "observed_at": "observation_ts",
+   "state": "state_code"
+  },
+  "table": "state_observation"
+ },
+ "state_of_system_block": {
+  "cols": {
+   "confidence": "confidence_level",
+   "method": "assessment_method",
+   "state": "status_code"
+  },
+  "table": "system_block_status"
+ },
+ "state_transitions_from": {
+  "cols": {
+   "state": "target_state",
+   "transitions_from": "source_state",
+   "uncertainty": "uncertainty_val",
+   "unit": "unit_code"
+  },
+  "table": "state_transition"
+ },
+ "state_transitions_to": {
+  "cols": {
+   "dimension_kind": "measure_type",
+   "state": "from_state",
+   "transitions_to": "to_state",
+   "value": "measure_value"
+  },
+  "table": "state_transitions"
+ },
+ "storage_structure_composition": {
+  "cols": {
+   "comprises": "container_id",
+   "storage_structure_composition": "id"
+  },
+  "table": "storage_composition"
+ },
+ "strategic_commitment": {
+  "cols": {
+   "effective_date": "effective_date",
+   "language": "lang_code",
+   "pursues_objective": "objective_id",
+   "strategic_commitment": "commitment_id",
+   "supports_stakeholder": "stakeholder_id"
+  },
+  "table": "commitment"
+ },
+ "strategic_planning_process": {
+  "cols": {
+   "produces_planning_artifact": "artifact_id",
+   "strategic_planning_process": "id",
+   "targets_business_division": "division_id"
+  },
+  "table": "strategic_planning"
+ },
+ "student_privacy_expectation": {
+  "cols": {
+   "applies_to": "location_id",
+   "confidence": "confidence_score",
+   "dimension_kind": "dimension_type",
+   "student_privacy_expectation": "expectation_id"
+  },
+  "table": "student_privacy_expectations"
+ },
+ "subclass_basic": {
+  "cols": {
+   "subject": "subclass_id",
+   "subject_2": "superclass_id"
+  },
+  "table": "subclass_rel"
+ },
+ "subclass_disjoint_from_artifact": {
+  "cols": {
+   "disjoint": "artifact_id"
+  },
+  "table": "artifact_subclasses"
+ },
+ "subclass_not_basic": {
+  "cols": {
+   "not": "child_id",
+   "not_2": "parent_id"
+  },
+  "table": "kind_relation"
+ },
+ "subclass_to_artifact": {
+  "cols": {
+   "artifact": "item_id",
+   "checksum": "digest",
+   "license": "license_type"
+  },
+  "table": "artifact_registry"
+ },
+ "subclass_to_descriptive_ice": {
+  "cols": {
+   "descriptive": "description",
+   "label_text": "label",
+   "language": "lang_code"
+  },
+  "table": "subclass_descriptions"
+ },
+ "subclass_to_designative_ice": {
+  "cols": {
+   "designative": "term_value",
+   "encoding": "charset",
+   "language": "lang_code"
+  },
+  "table": "vocab_registry"
+ },
+ "subclass_to_directive_ice": {
+  "cols": {
+   "directive": "directive_id",
+   "encoding": "encoding_type",
+   "label_text": "display_name"
+  },
+  "table": "directive_registry"
+ },
+ "subclass_to_independent_continuant": {
+  "cols": {
+   "independent": "parent_type_id",
+   "owner": "owner_id",
+   "tags": "metadata_tags"
+  },
+  "table": "entity_type_parent"
+ },
+ "subclass_to_information_content_entity": {
+  "cols": {
+   "information": "entity_ref",
+   "label_text": "display_name",
+   "language": "lang_code"
+  },
+  "table": "info_class_map"
+ },
+ "subclass_to_process": {
+  "cols": {
+   "phase": "phase_code",
+   "process": "proc_id",
+   "triggered_by": "trigger_ref"
+  },
+  "table": "proc_subclass_map"
+ },
+ "summary_metric_subclass": {
+  "cols": {
+   "identifier": "id",
+   "metric_kind": "metric_type",
+   "name": "type_label",
+   "summary": "artifact_id"
+  },
+  "table": "item_metric_map"
+ },
+ "survey_response_record": {
+  "cols": {
+   "captures_profile_attribute": "profile_id",
+   "encoding": "char_encoding",
+   "language": "lang_code",
+   "survey_response_record": "id"
+  },
+  "table": "survey_responses"
+ },
+ "synthetic_apriori_judgment": {
+  "cols": {
+   "exhibits_ampliation": "inference_ref",
+   "relies_on_intuition": "intuition_ref",
+   "synthetic_apriori_judgment": "id",
+   "uncertainty": "confidence_score",
+   "value": "finding"
+  },
+  "table": "assessment"
+ },
+ "sysblock_subclass": {
+  "cols": {
+   "has_part": "part_id",
+   "identifier": "mapping_id",
+   "size_bytes": "data_size",
+   "sysblock": "artifact_id"
+  },
+  "table": "artifact_part"
+ },
+ "syscall_at_security_tier": {
+  "cols": {
+   "at_security_tier": "tier_id",
+   "code": "tier_code",
+   "encoding": "encoding_type",
+   "syscall": "syscall_id"
+  },
+  "table": "syscall_security_tier"
+ },
+ "syscall_audited_by": {
+  "cols": {
+   "format": "record_format",
+   "language": "locale_code",
+   "syscall": "syscall_code"
+  },
+  "table": "audit_syscall_log"
+ },
+ "syscall_basic": {
+  "cols": {
+   "code": "code_val",
+   "label_text": "display_name",
+   "syscall": "call_id"
+  },
+  "table": "sys_call_ref"
+ },
+ "syscall_equiv_in_subsystem": {
+  "cols": {
+   "encoding": "encoding_type",
+   "in_syscall_subsystem": "subsystem_id",
+   "language": "lang_code",
+   "syscall": "syscall_id"
+  },
+  "table": "syscall_subsys_map"
+ },
+ "syscall_governed_by_directive": {
+  "cols": {
+   "language": "language_code",
+   "mandatory": "is_mandatory",
+   "syscall": "syscall_id"
+  },
+  "table": "syscall_directive_map"
+ },
+ "syscall_invoked_by_event": {
+  "cols": {
+   "checksum_algo": "hash_algorithm",
+   "encoding": "payload_encoding",
+   "invoked_by_event": "trigger_event_id",
+   "syscall": "syscall_name"
+  },
+  "table": "syscall_invocations"
+ },
+ "syscall_max_one_return": {
+  "cols": {
+   "checksum_algo": "hash_algo",
+   "namespace": "api_ns",
+   "return_type": "ret_type",
+   "syscall": "syscall_name"
+  },
+  "table": "syscall_def"
+ },
+ "syscall_only_in_kernel_subsystem": {
+  "cols": {
+   "code": "syscall_num",
+   "in_syscall_subsystem": "is_kernel_only",
+   "issued_date": "registered_at",
+   "syscall": "syscall_name"
+  },
+  "table": "kernel_syscall_defs"
+ },
+ "syscall_subclass": {
+  "cols": {
+   "checksum_algo": "hash_algo",
+   "encoding": "data_encoding",
+   "in_syscall_subsystem": "subsystem",
+   "syscall": "parent_syscall"
+  },
+  "table": "syscall_variant"
+ },
+ "syscall_traceable": {
+  "cols": {
+   "format": "data_format",
+   "label_text": "label",
+   "syscall": "syscall_name",
+   "traceable_by": "tracer_id"
+  },
+  "table": "syscall_trace"
+ },
+ "syscall_with_argument_count": {
+  "cols": {
+   "argument_count": "arg_count",
+   "label_text": "display_name",
+   "namespace": "sys_namespace",
+   "syscall": "syscall_name"
+  },
+  "table": "syscalls"
+ },
+ "syscall_with_return_type": {
+  "cols": {
+   "checksum_algo": "checksum_method",
+   "code": "syscall_num",
+   "return_type": "ret_type",
+   "syscall": "syscall_name"
+  },
+  "table": "syscall_return_map"
+ },
+ "table_provenance_source": {
+  "cols": {
+   "encoding": "encoding_type",
+   "sourced_from_table": "source_table_id",
+   "table": "target_table_id",
+   "value": "source_value"
+  },
+  "table": "table_provenance"
+ },
+ "table_topic_tag": {
+  "cols": {
+   "encoding": "encoding_format",
+   "method": "assignment_method",
+   "table": "table_id",
+   "table_topic": "topic_id"
+  },
+  "table": "table_topic_map"
+ },
+ "taper_tolerance_constraint": {
+  "cols": {
+   "recorded_at": "recorded_at",
+   "taper_tolerance_constraint": "id",
+   "uncertainty": "uncertainty"
+  },
+  "table": "taper_tol_specs"
+ },
+ "tc_classifier_subclass": {
+  "cols": {
+   "classifier": "classifier_id",
+   "created_date": "created_at",
+   "t_c_direction": "relation_type",
+   "tags": "tags"
+  },
+  "table": "classifier_relations"
+ },
+ "technology_promotion_initiative": {
+  "cols": {
+   "targets_sector": "target_sector_id",
+   "technology_promotion_initiative": "id",
+   "utilizes_channel": "channel_id"
+  },
+  "table": "tech_promo_initiative"
+ },
+ "telemetry_span_observes_syscall": {
+  "cols": {
+   "format": "data_format",
+   "namespace": "env",
+   "telemetry": "span_id"
+  },
+  "table": "syscall_span"
+ },
+ "third_party_data_sharing": {
+  "cols": {
+   "has_participant": "partner_ref",
+   "third_party_data_sharing": "id"
+  },
+  "table": "third_party_data_sharing"
+ },
+ "trace_basic": {
+  "cols": {
+   "duration_seconds": "elapsed_sec",
+   "end_time": "stop_at",
+   "observed_at": "event_ts",
+   "trace": "trace_id"
+  },
+  "table": "trace_log"
+ },
+ "trace_has_resource": {
+  "cols": {
+   "exit_code": "return_code",
+   "phase": "stage",
+   "resource": "asset_id",
+   "trace": "run_id"
+  },
+  "table": "process_resource"
+ },
+ "trace_in_service": {
+  "cols": {
+   "exit_code": "exit_code",
+   "host_name": "host_name",
+   "in_service": "service_id",
+   "trace": "trace_id"
+  },
+  "table": "trace_service"
+ },
+ "trace_min_one_span": {
+  "cols": {
+   "phase": "phase_code",
+   "spans": "span_id",
+   "start_time": "started_at",
+   "trace": "trace_id"
+  },
+  "table": "trace_span_log"
+ },
+ "trace_originates_from": {
+  "cols": {
+   "log_level": "severity",
+   "originates_from": "origin_id",
+   "phase": "phase_code",
+   "trace": "trace_id"
+  },
+  "table": "trace_origin"
+ },
+ "trace_subclass": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "spans": "target_id",
+   "status": "status_code",
+   "trace": "process_id"
+  },
+  "table": "trace_relation"
+ },
+ "trace_supports_claim": {
+  "cols": {
+   "dimension_kind": "dimension_type",
+   "trace": "trace_id",
+   "uncertainty": "uncertainty_val"
+  },
+  "table": "trace_claim"
+ },
+ "trace_with_attributes": {
+  "cols": {
+   "log_level": "log_level",
+   "retry_count": "retry_count",
+   "trace": "trace_id"
+  },
+  "table": "process_trace"
+ },
+ "trace_with_root_span": {
+  "cols": {
+   "checksum": "data_integrity_hash",
+   "root_span": "root_span_id",
+   "tags": "trace_attributes",
+   "trace": "trace_id"
+  },
+  "table": "trace_root_span"
+ },
+ "trace_with_service_name": {
+  "cols": {
+   "checksum": "hash_value",
+   "created_date": "created_at",
+   "service_name": "service_label",
+   "trace": "trace_id"
+  },
+  "table": "trace_service"
+ },
+ "training_partnership_development": {
+  "cols": {
+   "has_participant": "institution_id",
+   "training_partnership_development": "partnership_id"
+  },
+  "table": "training_partnerships"
+ },
+ "transformation_associated_with_agent": {
+  "cols": {
+   "exit_code": "exit_status",
+   "retry_count": "retry_attempts",
+   "transformation": "transformation_id",
+   "was_associated_with": "agent_id"
+  },
+  "table": "transformation_agent"
+ },
+ "transformation_basic": {
+  "cols": {
+   "exit_code": "return_code",
+   "retry_count": "retry_limit",
+   "transformation": "type_code"
+  },
+  "table": "transformation_type"
+ },
+ "transformation_ends_at": {
+  "cols": {
+   "ended_at_time": "completed_at",
+   "log_level": "severity",
+   "retry_count": "attempt_count",
+   "transformation": "job_id"
+  },
+  "table": "job_runs"
+ },
+ "transformation_equiv_io_intersection": {
+  "cols": {
+   "input_dataset": "source_id",
+   "output_dataset": "target_id",
+   "phase": "stage",
+   "status": "status_code",
+   "transformation": "transform_id"
+  },
+  "table": "transform_io_map"
+ },
+ "transformation_generates_entity": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "generates_entity": "output_id",
+   "phase": "stage",
+   "transformation": "process_id"
+  },
+  "table": "process_output"
+ },
+ "transformation_governed_by": {
+  "cols": {
+   "enforcement": "enforcement_level",
+   "review_cycle_days": "review_interval_days",
+   "transformation": "process_id"
+  },
+  "table": "process_governance"
+ },
+ "transformation_informed_by": {
+  "cols": {
+   "informed_by": "source_id",
+   "scheduled_at": "scheduled_at",
+   "status": "status_code",
+   "transformation": "transformation_id"
+  },
+  "table": "transformation_informed"
+ },
+ "transformation_min_one_input": {
+  "cols": {
+   "input_dataset": "input_ref",
+   "log_level": "severity_code",
+   "status": "job_status",
+   "transformation": "job_id"
+  },
+  "table": "transform_jobs"
+ },
+ "transformation_min_one_output": {
+  "cols": {
+   "output_dataset": "output_ref",
+   "retry_count": "retries",
+   "transformation": "job_id",
+   "triggered_by": "initiated_by"
+  },
+  "table": "transform_jobs"
+ },
+ "transformation_not_recoverable": {
+  "cols": {
+   "scheduled_at": "scheduled_at",
+   "transformation": "source_process_id",
+   "transformation_2": "target_process_id",
+   "triggered_by": "initiated_by"
+  },
+  "table": "irreversible_job"
+ },
+ "transformation_only_uses_datasets": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "start_time": "started_at",
+   "transformation": "transform_id",
+   "uses_entity": "dataset_id"
+  },
+  "table": "transform_jobs"
+ },
+ "transformation_starts_at": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "host_name": "server_host",
+   "started_at_time": "started_at",
+   "transformation": "job_id"
+  },
+  "table": "transformation_runs"
+ },
+ "transformation_subclass": {
+  "cols": {
+   "phase": "phase_code",
+   "status": "status_code",
+   "transformation": "id",
+   "uses_entity": "input_entity_id"
+  },
+  "table": "entity_transformation"
+ },
+ "transformation_with_input_dataset": {
+  "cols": {
+   "duration_seconds": "duration_sec",
+   "input_dataset": "source_id",
+   "retry_count": "retry_count",
+   "transformation": "job_id"
+  },
+  "table": "transform_jobs"
+ },
+ "transformation_with_output_dataset": {
+  "cols": {
+   "log_level": "log_severity",
+   "output_dataset": "result_dataset_id",
+   "transformation": "transform_id",
+   "triggered_by": "initiated_by"
+  },
+  "table": "transform_outputs"
+ },
+ "two_disjoint_artifacts": {
+  "cols": {
+   "checksum": "row_hash",
+   "license": "data_license",
+   "two": "source_artifact_id",
+   "two_2": "target_artifact_id"
+  },
+  "table": "artifact_type_link"
+ },
+ "universal_combined_with_existential": {
+  "cols": {
+   "related": "target_id",
+   "universal": "source_id"
+  },
+  "table": "relationship_map"
+ },
+ "universal_generic": {
+  "cols": {
+   "related": "target_id",
+   "universal": "source_id"
+  },
+  "table": "entity_relation"
+ },
+ "uretprobe_subclass": {
+  "cols": {
+   "attaches_to_return_hook": "hook_ref",
+   "name": "display_name",
+   "owner": "owner_id",
+   "uretprobe": "probe_id"
+  },
+  "table": "probe_catalog"
+ },
+ "vehicle_equipment_specification": {
+  "cols": {
+   "applies_to_vehicle_class": "vehicle_class_id",
+   "enforcement": "enforcement_type",
+   "mandates_component": "required_component_id",
+   "mandatory": "is_mandatory",
+   "vehicle_equipment_specification": "equip_spec_id"
+  },
+  "table": "vehicle_equip_specs"
+ },
+ "verification_basic": {
+  "cols": {
+   "phase": "phase_code",
+   "triggered_by": "trigger_type",
+   "verification": "id"
+  },
+  "table": "verification_type"
+ },
+ "verification_concludes_with": {
+  "cols": {
+   "concludes_with": "target_process_id",
+   "exit_code": "exit_code",
+   "host_name": "host_name",
+   "verification": "process_id"
+  },
+  "table": "process_transition"
+ },
+ "verification_min_one_evidence": {
+  "cols": {
+   "duration_seconds": "elapsed_sec",
+   "log_level": "severity_code",
+   "produces_evidence": "evidence_id",
+   "verification": "process_id"
+  },
+  "table": "verification_runs"
+ },
+ "verification_produces_evidence": {
+  "cols": {
+   "exit_code": "exit_code",
+   "produces_evidence": "evidence_id",
+   "status": "status_code",
+   "verification": "check_id"
+  },
+  "table": "verification_evidence"
+ },
+ "verification_subclass": {
+  "cols": {
+   "duration_seconds": "elapsed_sec",
+   "phase": "status_code",
+   "verification": "check_id"
+  },
+  "table": "verification"
+ },
+ "verification_targets_artifact": {
+  "cols": {
+   "log_level": "severity_code",
+   "targets_artifact": "target_id",
+   "triggered_by": "initiated_by",
+   "verification": "process_id"
+  },
+  "table": "verification_targets"
+ },
+ "verification_traces_requirement": {
+  "cols": {
+   "end_time": "ended_at",
+   "retry_count": "attempt_count",
+   "verification": "verify_id"
+  },
+  "table": "verify_events"
+ },
+ "verification_with_method": {
+  "cols": {
+   "end_time": "completed_at",
+   "exit_code": "status_code",
+   "verification": "verification_id",
+   "via_verification_method": "method_code"
+  },
+  "table": "verification_run"
+ },
+ "video_surveillance_activity": {
+  "cols": {
+   "employs_device": "camera_id",
+   "monitors": "site_id",
+   "video_surveillance_activity": "id"
+  },
+  "table": "surveillance_log"
+ },
+ "xdp_action_drop": {
+  "cols": {
+   "license": "license_type",
+   "mime_type": "content_type",
+   "x_d_p_action": "action_code",
+   "xdp": "artifact_id"
+  },
+  "table": "xdp_action"
+ },
+ "xdp_action_pass": {
+  "cols": {
+   "location": "storage_path",
+   "version": "version_num",
+   "x_d_p_action": "action_id",
+   "xdp": "artifact_id"
+  },
+  "table": "xdp_action_pass"
+ },
+ "xdp_action_redirect": {
+  "cols": {
+   "location": "redirect_url",
+   "mime_type": "content_type",
+   "x_d_p_action": "action_type",
+   "xdp": "artifact_id"
+  },
+  "table": "artifact_redirect_map"
+ },
+ "yager_combination": {
+  "cols": {
+   "language": "language_code",
+   "unit": "unit_code",
+   "yager": "combination_id",
+   "yager_combines": "component_id"
+  },
+  "table": "combination"
+ },
+ "young_adult_speaker_role": {
+  "cols": {
+   "delivers_presentation": "presentation_id",
+   "qualifying_individual": "person_id",
+   "young_adult_speaker_role": "id"
+  },
+  "table": "speaker_assignment"
+ }
+}
