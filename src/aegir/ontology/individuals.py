@@ -31,6 +31,14 @@ _GENERIC_VALUES = {"example", "value", "item", "test", "sample", "data", "entity
 # realistic register. Real UNIVERSALS (standards, protocols, units, kinds: HL7, ISO 17025, UTC) stay —
 # they are nomenclature, and domain realism needs them. This deterministic denylist is the fast
 # REGRESSION tier (the head of the brand distribution); the engine-screened audit is the judgment tier.
+#
+# INCREMENT-0 FLOOR — deliberately over-broad: this leg also rejects MENTION-position values
+# (source_system = "ClearQuest" predicates nothing about the real tool), banning both use and mention
+# while the published artifact gets clean. The final line is USE vs MENTION: assertion-position stays
+# fictional forever; a curated, pattern-bounded MENTION TIER (allowlisted historic referents —
+# IBM/Rational archetype — with `referent-mention` provenance) arrives as increment 1, negotiated with
+# Atelier, because referent RESOLUTION (ratl_ → IBM Rational) is only measurable against referents
+# whose history the resolver's priors actually contain — fictional particulars have none by construction.
 _BRANDS_CLEAR = re.compile(
     r"\b(microsoft|google|amazon|facebook|instagram|nvidia|intel|qualcomm|broadcom|samsung|huawei|"
     r"foxconn|tsmc|asml|cisco|lenovo|toshiba|hitachi|siemens|panasonic|ericsson|nokia|motorola|"
