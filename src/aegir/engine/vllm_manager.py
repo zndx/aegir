@@ -118,10 +118,16 @@ class VllmManager:
         body = {"model": capability, "messages": msgs,
                 "max_tokens": max_tokens, "temperature": temperature}
         if json_schema:
-            # vLLM guided decoding — structured output enforced AT the engine (Atelier convergence
-            # proposal 2026-07-03; federated Complete calls keep schema enforcement across engines)
+            # vLLM structured output enforced AT the engine (Atelier convergence proposal 2026-07-03).
+            # NB the top-level guided_json extra-body form is SILENTLY IGNORED by vLLM 0.19.0 (Atelier
+            # verified live: required fields came back missing) — the OpenAI-style response_format is
+            # the enforcing path on this exact venv. Their correction, adopted before first use.
             import json as _json
-            body["extra_body"] = {"guided_json": _json.loads(json_schema)}
+            body["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": "constrained", "schema": _json.loads(json_schema),
+                                "strict": True},
+            }
         t0 = time.time()
         r = httpx.post(
             f"http://127.0.0.1:{ep.port}/v1/chat/completions",
