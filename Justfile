@@ -800,3 +800,8 @@ build-flash-attn:
 # engine-screened audit rides the registry re-seed. Exit 1 on any hit (P5 release gate).
 scan-sensitive-nouns:
     uv run --no-sync python scripts/scan_sensitive_nouns.py --json-out build/sensitive_noun_baseline.json
+
+# Score Atelier's blind predictions against a release's held-back reference — hierarchical credit
+# honors calibrated coarseness (the rout_stop_address doctrine); results sliced by name-provenance.
+score-atelier predictions release="build/atelier_release_preview" out="build/atelier_score.json":
+    uv run --no-sync python scripts/score_atelier_predictions.py --predictions {{predictions}} --release {{release}} --out {{out}}

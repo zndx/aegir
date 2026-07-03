@@ -54,9 +54,16 @@ def entity_col_classes(template, family: str) -> "dict[str, str]":
 
 
 def seed_template(template, family: str, dp_meta: dict, *, rounds: int, capability: str,
-                  temperature: float, trace_fh) -> "tuple[dict, dict, dict]":
+                  temperature: float, trace_fh, col_classes: "dict | None" = None,
+                  label_index: "dict[str, str] | None" = None) -> "tuple[dict, dict, dict]":
     """The membrane loop for one template → (admitted {col: values}, final feedback {col: reason},
-    stats). Rejected columns are re-prompted WITH the membrane's reason each round."""
+    stats). Rejected columns are re-prompted WITH the membrane's reason each round.
+
+    ``label_index`` ({slug → class local-name}, registry-wide) arms the ADMIT-TIME COLLISION
+    membrane: an entity-column value whose slug already names an individual of a DIFFERENT class
+    is rejected with the reason — the same label under clashing classes becomes one multi-typed
+    individual the realize must withhold (measured: 82 conjunctions / 92 individuals withheld from
+    the founding artifact). Same-class reuse stays legal (one individual, one class, many tables)."""
     from aegir.engine.client import complete_detailed
     cols = seed_columns(template, family, dp_meta)
     if not cols:
@@ -86,10 +93,21 @@ def seed_template(template, family: str, dp_meta: dict, *, rounds: int, capabili
                 feedback[nm] = "no usable 'VALUES <col>:' line parsed — follow the output contract exactly"
                 continue
             ok, reason, kept = IND.check_column(nm, vals)
+            if ok and label_index is not None and (col_classes or {}).get(nm):
+                cls = col_classes[nm]
+                clashes = {v: label_index[IND._slug(v)] for v in kept
+                           if label_index.get(IND._slug(v)) not in (None, cls)}
+                if clashes:
+                    ex = "; ".join(f"'{v}' already names a {c}" for v, c in list(clashes.items())[:3])
+                    ok, reason = False, (f"label collision across classes: {ex} — coin DISTINCT "
+                                         f"names for these {cls} individuals")
             if ok:
                 admitted[nm] = kept
                 pending.remove(nm)
                 feedback.pop(nm, None)
+                if label_index is not None and (col_classes or {}).get(nm):
+                    for v in kept:
+                        label_index.setdefault(IND._slug(v), col_classes[nm])
             else:
                 feedback[nm] = reason
     return admitted, feedback, {"model": model, "n_cols": len(cols)}
@@ -101,6 +119,7 @@ def main() -> int:
     ap.add_argument("--rounds", type=int, default=3, help="max membrane feedback rounds per template")
     ap.add_argument("--limit", type=int, default=0, help="process only the first N uncovered templates")
     ap.add_argument("--refresh", action="store_true", help="re-seed templates already covered by the registry")
+    ap.add_argument("--only", default="", help="comma-separated template_ids to (re-)seed regardless of coverage")
     ap.add_argument("--capability", default="instruct")
     ap.add_argument("--temperature", type=float, default=0.7)
     args = ap.parse_args()
@@ -113,7 +132,9 @@ def main() -> int:
 
     todo = []
     for t in cat.templates:
-        if not args.refresh and (reg.get("templates", {}).get(t.template_id, {}).get("columns")):
+        if args.only and t.template_id not in {s.strip() for s in args.only.split(",") if s.strip()}:
+            continue
+        if not args.only and not args.refresh and (reg.get("templates", {}).get(t.template_id, {}).get("columns")):
             continue
         todo.append(t)
     if args.limit:
@@ -123,6 +144,13 @@ def main() -> int:
 
     _TRACES.parent.mkdir(parents=True, exist_ok=True)
     trace_fh = _TRACES.open("a")
+    # the ADMIT-TIME COLLISION index (slug → class): one label, one class, registry-wide. Seeded from
+    # the current registry; grows with this run's admissions so within-run collisions are caught too.
+    label_index: "dict[str, str]" = {}
+    for _rec in reg.get("templates", {}).values():
+        for _col, _cls in (_rec.get("entity_classes") or {}).items():
+            for _v in (_rec.get("columns") or {}).get(_col, []):
+                label_index.setdefault(IND._slug(_v), _cls)
     n_admitted = n_rejected = 0
     reject_reasons: Counter = Counter()
     for i, t in enumerate(todo):
@@ -131,7 +159,9 @@ def main() -> int:
         try:
             admitted, feedback, stats = seed_template(t, family, dp_meta, rounds=args.rounds,
                                                       capability=args.capability,
-                                                      temperature=args.temperature, trace_fh=trace_fh)
+                                                      temperature=args.temperature, trace_fh=trace_fh,
+                                                      col_classes=entity_col_classes(t, family),
+                                                      label_index=label_index)
         except Exception as e:  # noqa: BLE001 — engine error: report, keep going
             print(f"  [{t.template_id}] engine error: {type(e).__name__}: {str(e)[:80]}", file=sys.stderr)
             continue
