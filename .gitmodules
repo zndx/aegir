@@ -16,3 +16,6 @@
 [submodule "components/kvasir"]
 	path = components/kvasir
 	url = git@github.com:zndx/kvasir.git
+[submodule "components/signals-protocol"]
+	path = components/signals-protocol
+	url = git@github.com:zndx/signals-protocol.git
