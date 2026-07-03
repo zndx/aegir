@@ -307,9 +307,13 @@ def _realize_star(template: CatalogTemplate, family: str, rng, nat: "dict | None
     restrictions = parse_restrictions(template)
     if not measures and not restrictions:               # nothing to make a fact/dimension of
         return _realize_eav(template, family, rng, nat)
-    _base, concept, colnames, ncols = _naming(template, nat)
+    base, concept, colnames, ncols = _naming(template, nat)
     measures = [(ncols.get(n, n), t) for n, t in measures]
-    fact_name = f"fact_{concept}"
+    # base-prefixed like every other profile ({base}_attr, {base}__{rel}) — dim/fact names inherit the
+    # base table's GLOBAL uniqueness. Un-prefixed dim_{dname} collided across templates the moment two
+    # subjects shared a stem (dim_student ×2) — latent in the semantic register too; the spine collision
+    # gate caught it on the first full natural run.
+    fact_name = f"{base}__fact"
     fact_cols = [_pk()]
     fks: list[FKEdge] = []
     tables: list[SpineTable] = []
@@ -326,11 +330,11 @@ def _realize_star(template: CatalogTemplate, family: str, rng, nat: "dict | None
     dim_targets = [(_dim_name(r, i), r)
                    for i, r in enumerate(restrictions)] or [(concept, None)]
     for dname, _r in dim_targets:
-        dim_tbl = f"dim_{dname}"
+        dim_tbl = f"{base}__dim_{dname}"
         dcols = [_pk(), ColumnSpec(f"{dname}_label", "xsd:string", "data:label"),
                  ColumnSpec(f"{dname}_category", "xsd:string", "data:category")]
         if snowflake:                                   # normalize one level: dim → sub-dim hierarchy
-            sub = f"dim_{dname}_category"
+            sub = f"{base}__dim_{dname}_cat"
             tables.append(_mk(sub, template.template_id,
                               [_pk(), ColumnSpec("category_name", "xsd:string", "data:category")],
                               family=family, template=template, kind="dimension"))
