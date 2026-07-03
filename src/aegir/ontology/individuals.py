@@ -57,8 +57,12 @@ _BRANDS_CLEAR = re.compile(
 # "<Brand> Inc/Corp/…", "<Brand> <CapitalizedProduct>", or the bare TitleCase token alone.
 # NB the [A-Z] product requirement must stay case-SENSITIVE ('target material' is a noun phrase,
 # 'Apple RenderKit' is a brand) — the (?i:…) groups scope insensitivity to brand/suffix tokens only.
+# NB pruned of common domain nouns (target/delta/square/stripe — 'Target Platform Label' is a star-dim
+# filler under a target-platform dimension, not the retailer; measured 96 FPs on one spine): a brand
+# token must have a plausible leak vector in OUR domains to earn a detector slot. The engine-screened
+# audit tier owns the tail the denylist can't safely cover.
 _BRANDS_AMBIG = ("apple", "oracle", "amazon", "meta", "epic", "waters", "shell", "bp", "ge",
-                 "philips", "tesla", "ford", "delta", "target", "adobe", "stripe", "square",
+                 "philips", "tesla", "ford", "adobe",
                  "cadence", "palantir", "anthropic", "openai", "deepmind")
 _AMBIG_CTX = re.compile(
     r"(?i:\b(" + "|".join(_BRANDS_AMBIG) + r")\b)\s+(?:(?i:inc|corp|llc|ltd|plc|group|"
