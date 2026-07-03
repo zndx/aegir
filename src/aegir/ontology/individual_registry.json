@@ -58,19 +58,36 @@
      "BEng Robotics",
      "BS Health Informatics",
      "MA Urban Analytics",
-     "BArch Sustainable Design"
+     "BArch Sustainable Design",
+     "Biomaterials Engineering",
+     "Quantum Systems Design",
+     "Urban Ecology Track",
+     "Cognitive Robotics Minor",
+     "Marine Geophysics Major",
+     "Computational Linguistics",
+     "Sustainable Agriculture",
+     "Neuroinformatics Core",
+     "Applied Cryptography",
+     "Climate Data Science"
     ],
     "delivers": [
-     "Data Governance Framework",
-     "Telemetry Pipeline Design",
      "Lab Observation Protocols",
-     "Provenance Tracking Module",
      "Cross-Domain Integration",
      "Statistical Modeling Track",
      "Cloud Infrastructure Lab",
      "API Design Seminar",
      "Data Quality Audit",
-     "System Reliability Workshop"
+     "System Reliability Workshop",
+     "Engineering Faculty",
+     "Research Institute",
+     "Core Laboratory",
+     "Seminar Series",
+     "Teaching Consortium",
+     "Departmental Board",
+     "Interdisciplinary Hub",
+     "Academic Committee",
+     "Curriculum Office",
+     "Mentorship Group"
     ],
     "targets": [
      "Data Pipeline Engineering",
@@ -81,8 +98,18 @@
      "Technical Documentation",
      "Cross-Functional Collaboration",
      "Algorithm Optimization",
-     "Compliance Auditing",
-     "Open Source Maintenance"
+     "Open Source Maintenance",
+     "Quantitative Reasoning",
+     "Cross-Cultural Communication",
+     "Systems Thinking",
+     "Computational Modeling",
+     "Environmental Stewardship",
+     "Clinical Decision Making",
+     "Spatial Analysis",
+     "Data Literacy",
+     "Creative Synthesis",
+     "Adaptive Problem Solving",
+     "Policy Analysis"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -98,7 +125,7 @@
      "targets": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -198,21 +225,35 @@
      "Docket 881-AP",
      "Matter 2023-112",
      "Case 5590-L",
-     "Ref 7743-AD"
+     "Ref 7743-AD",
+     "CIV-2023-AD-4491",
+     "ADOPT-PROC-882X",
+     "CASE-REF-7712",
+     "DOCKET-2024-AD-003",
+     "PROC-ID-559A",
+     "FAM-AD-2023-112",
+     "ADULT-ADOPT-774",
+     "CASE-FILE-9021",
+     "JUD-REF-441B",
+     "ADMIN-ADOPT-338"
     ],
     "involves_participant": [
-     "Eleanor Vance",
-     "Marcus Thorne",
-     "Sarah Chen",
      "David Okafor",
      "Priya Mehta",
      "James Liu",
-     "Clara Nguyen",
      "Robert Hayes",
-     "Aisha Patel",
-     "Thomas Wright",
      "Elena Rossi",
-     "Mark Sullivan"
+     "Mark Sullivan",
+     "Filing_Petitioner_Thorne",
+     "Primary_Adopter_Cross",
+     "Filing_Petitioner_Reed",
+     "Primary_Adopter_Cole",
+     "Filing_Petitioner_Rostova",
+     "Primary_Adopter_Bellamy",
+     "Filing_Petitioner_Vance",
+     "Primary_Adopter_Hayes",
+     "Filing_Petitioner_Chen",
+     "Primary_Adopter_Shaw"
     ],
     "involves_participant_2": [
      "Julian Vance",
@@ -226,7 +267,17 @@
      "Zara Patel",
      "Noah Wright",
      "Sofia Rossi",
-     "Ethan Sullivan"
+     "Ethan Sullivan",
+     "Rowan Pike",
+     "Elara Moss",
+     "Caleb Vance",
+     "Sage Thorne",
+     "Finnley Cross",
+     "Juniper Holloway",
+     "Tobias Cole",
+     "Olive Ashford",
+     "Kieran Mercer",
+     "Beatrix Vance"
     ]
    },
    "domain": "Specimen Lifecycle Management",
@@ -242,7 +293,7 @@
      "involves_participant_2": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -486,10 +537,19 @@
      "Svalbard Survey",
      "Transpolar Drift",
      "Maud Expedition",
-     "Bering Strait Survey"
+     "Bering Strait Survey",
+     "Project Borealis Core",
+     "Campaign Frostbyte Traverse",
+     "Survey Meridian Grid",
+     "Mission CryoDrift Alpha",
+     "Log Aurora Shelf",
+     "Run Glacier Reach",
+     "Drive Permafrost Baseline",
+     "Campaign White Horizon",
+     "Survey Tundra Meridian",
+     "Operation Icepack Survey"
     ],
     "participant": [
-     "Dr. Elena Rostova",
      "Arctic Geology Team",
      "NOAA Field Crew",
      "Polar Biologists",
@@ -500,7 +560,17 @@
      "Glaciology Division",
      "Expedition Commander",
      "Logistics Coordinator",
-     "Satellite Telemetry Team"
+     "Satellite Telemetry Team",
+     "Lead Glaciologist",
+     "Icebreaker Captain",
+     "Field Data Technician",
+     "Meteorological Observer",
+     "Cryo-geologist",
+     "Drone Navigation Specialist",
+     "Expedition Medic",
+     "Base Camp Engineer",
+     "Satellite Comms Operator",
+     "Survival Logistics Coordinator"
     ],
     "spatially_constrained_to": [
      "Svalbard Archipelago",
@@ -514,7 +584,17 @@
      "Resolute Bay",
      "Alert Nunavut",
      "Laptev Sea",
-     "Kara Sea"
+     "Kara Sea",
+     "Kaelen Fjord Basin",
+     "Nordmark Tundra Plateau",
+     "Sylvaris Ice Corridor",
+     "Fenris Sea Margin",
+     "Ostrov Glacier Zone",
+     "Borealis Basin Sector",
+     "Tundra Meridian Outpost",
+     "Cryo-9 Coastal Shelf",
+     "Polaris Drift Zone",
+     "Aethelgard Ice Shelf"
     ],
     "uses_equipment": [
      "Icebreaker Yamal",
@@ -527,7 +607,16 @@
      "Sonar Mapping Unit",
      "Snow Penetrometer",
      "Cryo-Camera Rig",
-     "Multi-Parameter Probe"
+     "Multi-Parameter Probe",
+     "Katabatic Weather Station",
+     "Rotary Ice Coring Drill",
+     "Satellite Telemetry Node",
+     "Cryo-Storage Container",
+     "Lidar Ice Mapper",
+     "Multi-sonar Profiler",
+     "Polarized Camera Rig",
+     "Autonomous Surface Vehicle",
+     "Cold-weather Survival Kit"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -545,7 +634,7 @@
      "uses_equipment": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -561,7 +650,15 @@
      "Risk Heat Map Analysis",
      "Performance Benchmark Suite",
      "Document Verification Protocol",
-     "Monte Carlo Simulation"
+     "Spectroscopic Analysis",
+     "Finite Element Modeling",
+     "Cross-Sectional Sampling",
+     "Time-Series Regression",
+     "Infrared Thermography",
+     "Strain Gauge Deployment",
+     "Mass Spectrometry Run",
+     "Network Packet Inspection",
+     "Ultrasonic Pulse Echo"
     ],
     "assessment_standard": [
      "ISO 27001 Audit",
@@ -573,7 +670,17 @@
      "FAIR Data Maturity",
      "COBIT 5 Control Review",
      "ASTM D638 Evaluation",
-     "MITRE ATT&CK Mapping"
+     "MITRE ATT&CK Mapping",
+     "Structural Integrity Audit",
+     "Thermal Runaway Threshold",
+     "Firmware Compliance Matrix",
+     "Acoustic Emission Baseline",
+     "Vibration Spectral Limit",
+     "Chemical Purity Index",
+     "Network Latency Protocol",
+     "Optical Fidelity Scale",
+     "Cryogenic Seal Verification",
+     "Electromagnetic Interference Gauge"
     ]
    },
    "domain": "Quality, Compliance and Traceability",
@@ -587,7 +694,7 @@
      "assessment_standard": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -603,7 +710,17 @@
      "RosterLogisticsCoordinator",
      "YouthAthleticsChaperone",
      "RehabilitationAssessor",
-     "CompetitionReadinessMonitor"
+     "CompetitionReadinessMonitor",
+     "PitchSideMedicalLead",
+     "BenchSafetyCoordinator",
+     "StadiumPerimeterObserver",
+     "IndoorArenaCrewMember",
+     "YouthClinicMonitor",
+     "TrackFirstResponder",
+     "GymLoadCoordinator",
+     "CourtEquipmentHandler",
+     "ArenaCrewSupervisor",
+     "FieldSafetyWatcher"
     ],
     "realizes": [
      "VitalSignsTracking",
@@ -615,19 +732,34 @@
      "SleepCycleLogging",
      "NeuromuscularFatigueCheck",
      "VO2MaxTesting",
-     "PostGameConditioningReview"
+     "PostGameConditioningReview",
+     "PitchSideVitalsCheck",
+     "BenchHydrationMonitor",
+     "StadiumCrowdSafetyScan",
+     "IndoorArenaAirQualityLog",
+     "YouthClinicInjuryAssessment",
+     "TrackMeetRecoveryTracking",
+     "GymnasiumEquipmentInspection",
+     "CourtSurfaceMoistureCheck",
+     "ArenaCrewPositionRotation",
+     "FieldEdgeWeatherAlert"
     ],
     "role_bearer": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Sarah Vance",
      "David Okoro",
      "Priya Mehta",
-     "Thomas Wright",
      "Ana Flores",
      "James Holloway",
-     "Liam O'Sullivan",
-     "Yuki Tanaka"
+     "LeadAthleticTrainer",
+     "SeniorFirstResponder",
+     "MedicalSupportCoordinator",
+     "FieldSafetyOfficer",
+     "EquipmentLogisticsLead",
+     "ClinicOperationsSupervisor",
+     "ArenaStaffCoordinator",
+     "PerimeterSafetyLead",
+     "BenchMedicalAttendant",
+     "TrackSupportCoordinator"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -643,7 +775,7 @@
      "role_bearer": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -771,19 +903,30 @@
      "Meridian Corp",
      "Atlas Logistics",
      "Pinnacle Energy",
-     "Solstice Tech"
+     "Solstice Tech",
+     "Meridian Holdings Group",
+     "Aegis Manufacturing Corp",
+     "Vanguard Logistics Network",
+     "Solstice Energy Partners",
+     "Crestview Biotech Labs",
+     "Oakridge Financial Services",
+     "Pinnacle Aerospace Systems",
+     "Horizon Data Infrastructure"
     ],
     "rel_0000052": [
-     "Data Steward",
      "Process Owner",
      "System Integrator",
-     "Quality Manager",
-     "Security Analyst",
-     "Operations Lead",
      "Governance Board",
      "Infrastructure Manager",
-     "Compliance Auditor",
-     "Telemetry Analyst"
+     "Telemetry Analyst",
+     "Compliance Oversight Board",
+     "Primary Audit Division",
+     "Regulatory Reporting Unit",
+     "Subsidiary Operations Group",
+     "Governance Steering Committee",
+     "Certification Review Panel",
+     "Operational Management Desk",
+     "Enterprise Risk Committee"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -797,7 +940,7 @@
      "rel_0000052": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -860,8 +1003,6 @@
   "beneficiary_designation": {
    "columns": {
     "beneficiary_designation": [
-     "Eleanor Vance",
-     "Marcus Chen",
      "St. Jude Trust",
      "Rivera Family Trust",
      "James OConnell",
@@ -869,7 +1010,17 @@
      "Michael Torres",
      "Sarah Lin",
      "David Walsh",
-     "Emily Foster"
+     "Emily Foster",
+     "RetPlan-Alpha",
+     "TrustEst-Seven",
+     "SurvivorAlloc-Nine",
+     "SpousePrimary-Ref",
+     "CharitableGrant-Twelve",
+     "EstateTrust-Ref80",
+     "MinorDepend-Five",
+     "CorporateEntity-Three",
+     "PerStirAlloc-Two",
+     "ContingentDesign-Seven"
     ]
    },
    "domain": "Specimen Lifecycle Management",
@@ -881,7 +1032,7 @@
      "beneficiary_designation": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1003,37 +1154,35 @@
      "Q4 Financial Review",
      "CEO Succession Plan",
      "Cybersecurity Audit",
-     "Executive Compensation",
      "Merger Proposal",
-     "Committee Charter",
      "Strategy Alignment",
      "Risk Framework",
-     "ESG Compliance",
      "Capital Expenditure"
     ],
     "executed_by": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Sarah Lin",
-     "David Okonkwo",
      "James Thorne",
      "Priya Mehta",
-     "Robert Vance",
-     "Aisha Khan",
-     "Thomas Wright",
      "Natalie Cruz"
     ],
     "targets_subject": [
      "Fiscal Budget Approval",
-     "Executive Compensation",
      "Merger Acquisition",
      "Cybersecurity Protocol",
-     "Committee Charter",
      "Annual Strategy",
-     "Risk Assessment",
-     "ESG Compliance",
      "Capital Allocation",
-     "Audit Findings"
+     "Audit Findings",
+     "Q3 Revenue Projections",
+     "Board Succession Planning",
+     "Environmental Impact Report",
+     "Executive Bonus Structure",
+     "Intellectual Property Portfolio",
+     "Market Expansion Strategy",
+     "Vendor Contract Renewal",
+     "Data Retention Policy",
+     "Shareholder Dividend Plan",
+     "Organizational Restructuring",
+     "Compliance Training Mandate"
     ]
    },
    "domain": "Quality, Compliance and Traceability",
@@ -1044,19 +1193,18 @@
    },
    "provenance": {
     "membrane": {
-     "board_meeting_agenda_item": "ok",
-     "executed_by": "ok",
+     "board_meeting_agenda_item": "label collision across classes: 'Quarterly Financial Review' already names a AgendaSubject; 'Capital Allocation Framework' already names a AgendaSubject; 'Regulatory Compliance Update' already names a AgendaSubject \u2014 coin DISTINCT names for these BoardMeetingAgendaItem individuals",
+     "executed_by": "label collision across classes: 'Marcus Thorne' already names a Person; 'Julian Hayes' already names a IndependentContinuant; 'Clara Lin' already names a Person \u2014 coin DISTINCT names for these BoardMember individuals",
      "targets_subject": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "board_member_role": {
    "columns": {
     "board_member_role": [
-     "Data Governance Board",
      "Telemetry Review Panel",
      "Clinical Observation Committee",
      "Provenance Tracking Council",
@@ -1065,10 +1213,18 @@
      "Strategic Planning Group",
      "Quality Assurance Board",
      "Financial Oversight Committee",
-     "Technical Standards Board"
+     "Technical Standards Board",
+     "Data Integrity Board",
+     "Lab Quality Council",
+     "Provenance Audit Assembly",
+     "Clinical Oversight Group",
+     "Safety Compliance Board",
+     "Standards Verification Council",
+     "Risk Management Panel",
+     "Technical Governance Group",
+     "Regulatory Assessment Board"
     ],
     "borne_agent": [
-     "Data Steward",
      "Lead Research Scientist",
      "Senior Compliance Officer",
      "Observatory Director",
@@ -1089,7 +1245,17 @@
      "Grant Proposal Review",
      "Safety Inspection Meeting",
      "Policy Revision Session",
-     "Vendor Accreditation Review"
+     "Vendor Accreditation Review",
+     "Assessors Meeting Cycle",
+     "Clinical Review Session",
+     "Telemetry Validation Phase",
+     "Provenance Audit Round",
+     "Safety Verification Check",
+     "Data Governance Forum",
+     "Standards Compliance Review",
+     "Risk Assessment Workshop",
+     "Technical Oversight Meeting",
+     "Regulatory Evaluation Cycle"
     ]
    },
    "domain": "Quality, Compliance and Traceability",
@@ -1101,11 +1267,11 @@
    "provenance": {
     "membrane": {
      "board_member_role": "ok",
-     "borne_agent": "ok",
+     "borne_agent": "label collision across classes: 'Elara Vance' already names a ServiceManagementProcess \u2014 coin DISTINCT names for these IndependentContinuant individuals",
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1121,19 +1287,37 @@
      "Latin Control Board",
      "Middle East Review Panel",
      "Africa Oversight Committee",
-     "Oceania Audit Directorate"
+     "Oceania Audit Directorate",
+     "Statutory Audit Panel",
+     "Internal Audit Committee",
+     "Financial Oversight Board",
+     "Compliance Review Group",
+     "External Audit Council",
+     "Risk Audit Directorate",
+     "Governance Taskforce",
+     "Financial Reporting Panel",
+     "Corporate Audit Directorate",
+     "Independent Review Council"
     ],
     "rel_0000052": [
      "Financial Reporting Process",
      "Risk Assessment Cycle",
-     "Compliance Verification",
-     "Internal Control Review",
      "Regulatory Filing Workflow",
      "Audit Trail Maintenance",
      "Governance Oversight Procedure",
      "Variance Analysis Loop",
      "Control Self-Assessment",
-     "External Audit Coordination"
+     "External Audit Coordination",
+     "Crestview Compliance Group",
+     "Oakridge Audit Partners",
+     "Sterling Governance LLC",
+     "Pinecrest Oversight Inc",
+     "Vantage Regulatory Services",
+     "Cobalt Board Advisory",
+     "Apex Corporate Trustees",
+     "Horizon Fiduciary Corp",
+     "Summit Audit Collective",
+     "Beacon Corporate Oversight"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -1147,7 +1331,7 @@
      "rel_0000052": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1205,19 +1389,34 @@
      "Meridian Health",
      "Cobalt Systems",
      "Pulse Data",
-     "Terraform Labs"
+     "Terraform Labs",
+     "Aether Logistics LLC",
+     "Cobalt Mining Co",
+     "Nimbus Energy",
+     "Orion Retail Group",
+     "Vanguard Manufacturing",
+     "Silica Networks",
+     "Kestrel Biotech",
+     "Meridian Agriculture",
+     "Pinnacle Shipping"
     ],
     "describes": [
      "Market Expansion Phase",
      "Cloud Migration Initiative",
      "Supply Chain Optimization",
-     "Product Launch Cycle",
      "AI Integration Pilot",
      "Merger Acquisition Target",
      "Regulatory Compliance Audit",
      "Customer Retention Strategy",
      "Global Distribution Network",
-     "Workforce Restructuring Plan"
+     "Workforce Restructuring Plan",
+     "Revenue Growth Projection",
+     "Operational Scaling Plan",
+     "Technology Migration Path",
+     "Customer Acquisition Model",
+     "Risk Mitigation Framework",
+     "Capital Allocation Strategy",
+     "Regulatory Compliance Roadmap"
     ],
     "targets": [
      "Seed Capital Round",
@@ -1229,7 +1428,15 @@
      "Corporate Venture Capital",
      "Convertible Note Offering",
      "Strategic Partnership Deal",
-     "IPO Preparation Phase"
+     "IPO Preparation Phase",
+     "Series A Equity Round",
+     "Seed Capital Allocation",
+     "Private Placement Tranche",
+     "Angel Investor Pool",
+     "Corporate Venture Fund",
+     "Crowdfunding Campaign",
+     "Mezzanine Financing",
+     "Strategic Partnership Capital"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -1245,7 +1452,7 @@
      "targets": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1481,23 +1688,35 @@
      "VP Regulatory Affairs",
      "Chief Compliance Officer",
      "Head of Ethics",
-     "Compliance Lead",
      "Regulatory Oversight Officer",
      "Chief Ethics Officer",
      "Oversight Director",
-     "Compliance Governance Lead"
+     "Compliance Governance Lead",
+     "Lead Regulatory Affairs Director",
+     "Senior Ethics Manager",
+     "VP Institutional Oversight",
+     "Head of Policy Standards",
+     "Chief Governance Officer",
+     "Senior Risk Lead",
+     "Principal Affairs Manager",
+     "Chief Compliance Strategist",
+     "Director Regulatory Operations"
     ],
     "inheres_in": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Sarah Patel",
-     "David Okonkwo",
      "Maria Torres",
      "James Vance",
-     "Priya Sharma",
      "Robert Hayes",
      "Anna Lindqvist",
-     "Thomas Cruz"
+     "Thomas Cruz",
+     "Priya Nair",
+     "Samuel Holt",
+     "Clara Mendez",
+     "Owen Griffith",
+     "Leila Farouk",
+     "Daniel Cruz",
+     "Maya Lin",
+     "Arthur Pendelton"
     ],
     "realizes": [
      "University of Michigan",
@@ -1509,7 +1728,17 @@
      "Columbia Regents",
      "Duke Academic Council",
      "Northwestern Administration",
-     "Vanderbilt Chancellorship"
+     "Vanderbilt Chancellorship",
+     "Oakridge University Board",
+     "Sterling College Council",
+     "Meridian Institute Oversight",
+     "Crestwood Executive Office",
+     "Ashford Compliance Directorate",
+     "Pinevale Administration Office",
+     "Crestfall Governance Board",
+     "Oakhaven University Office",
+     "Silverpine College Council",
+     "Northridge Institute Division"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -1525,26 +1754,27 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "chief_financial_officer_role": {
    "columns": {
     "bears_agent": [
-     "Sarah Chen",
-     "Marcus Thorne",
-     "Elena Rostova",
-     "David Kim",
-     "Priya Sharma",
-     "James O'Connell",
-     "Aisha Al-Fayed",
-     "Robert Vance",
      "Lin Wei",
-     "Thomas Berg"
+     "Thomas Berg",
+     "ServiceAccountCFO",
+     "IdentityPrincipal",
+     "ProxyFiscalUnit",
+     "AgentRecordAlpha",
+     "IdentityStaffSeven",
+     "ProxySystemThree",
+     "AgentRecordBeta",
+     "IdentityStaffTwelve",
+     "ProxySystemNine",
+     "AgentRecordGamma"
     ],
     "chief_financial_officer_role": [
-     "Chief Financial Officer",
      "VP Finance",
      "Head of Corporate Finance",
      "Director of Financial Planning",
@@ -1553,7 +1783,17 @@
      "Chief Accounting Officer",
      "Finance Director",
      "Global CFO",
-     "Regional CFO"
+     "Regional CFO",
+     "CFO-NorthSector",
+     "LeadFiscalOfficer",
+     "PrincipalFinanceRole",
+     "TreasuryGovernanceChair",
+     "CapitalStrategyLead",
+     "EnterpriseBudgetDirector",
+     "FinancialComplianceOfficer",
+     "RevenueStewardRole",
+     "FiscalControlPrincipal",
+     "ChiefWealthArchitect"
     ],
     "realizes": [
      "Annual Budgeting",
@@ -1561,11 +1801,20 @@
      "Tax Compliance Filing",
      "Capital Allocation Review",
      "Risk Assessment Framework",
-     "Treasury Operations",
      "Audit Coordination",
      "Financial Consolidation",
      "Investor Relations Reporting",
-     "Cash Flow Forecasting"
+     "Cash Flow Forecasting",
+     "CapitalAllocationProc",
+     "BudgetApprovalWorkflow",
+     "FiscalAuditProcedure",
+     "TreasuryManagementProc",
+     "ExpenseReconciliationWf",
+     "RiskAssessmentProc",
+     "RevenueOptimizationWf",
+     "ComplianceReportingProc",
+     "CashFlowForecastWf",
+     "AssetDepreciationProc"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -1581,7 +1830,7 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1594,7 +1843,17 @@
      "Project CleanSweep",
      "Mitigation Job Alpha",
      "Traffic Reroute 2024Q3",
-     "DDoS Mitigation Wave"
+     "DDoS Mitigation Wave",
+     "BGP Reroute Operation",
+     "DDoS Mitigation Campaign",
+     "Traffic Purge Event",
+     "Packet Cleanse Cycle",
+     "Inbound Scrub Sequence",
+     "Route Optimization Run",
+     "Filter Sweep Cycle",
+     "Clean Pipe Activation",
+     "Traffic Divert Protocol",
+     "Anomaly Reroute Exercise"
     ],
     "delivers_to": [
      "AS64512 FinCorp",
@@ -1602,10 +1861,17 @@
      "Spotify US-East VPC",
      "Unity Technologies AS",
      "Shopify Merchant Net",
-     "Adobe Creative Cloud AS",
-     "Salesforce Prod VPC",
-     "Microsoft Azure Tenant",
-     "Disney Streaming AS"
+     "Disney Streaming AS",
+     "Vesper Virtual Exchange",
+     "Kestrel Tenant Ring",
+     "Solstice Data Corridor",
+     "Prism Cloud Fabric",
+     "Oakridge Peering Zone",
+     "Meridian Network Slice",
+     "Cobalt Edge Gateway",
+     "Tundra Tenant Cluster",
+     "Zenith Routing Domain",
+     "Helix Virtual Fabric"
     ],
     "has_participant": [
      "TCP SYN Flood Filter",
@@ -1617,7 +1883,17 @@
      "TLS Handshake Inspection",
      "GeoIP Blacklist Match",
      "Behavioral Anomaly Detect",
-     "Packet Replay Defense"
+     "Packet Replay Defense",
+     "TCP Handshake Validation",
+     "SYN Flood Mitigation",
+     "HTTP Header Sanitization",
+     "DNS Cache Poisoning Defense",
+     "ICMP Rate Limiting",
+     "BGP Path Validation",
+     "TLS Certificate Inspection",
+     "Jumbo Frame Filtering",
+     "VLAN Tag Stripping",
+     "Payload Deep Inspection"
     ],
     "originates_from": [
      "AWS us-east-1 Scrubber",
@@ -1625,11 +1901,17 @@
      "Akamai Frankfurt DC",
      "Azure Central US Hub",
      "Fastly Paris Edge",
-     "Google Cloud Tokyo Facility",
-     "Oracle Sydney Center",
-     "IBM Dallas Hub",
-     "Verizon Atlanta Node",
-     "NTT Tokyo Facility"
+     "NTT Tokyo Facility",
+     "Aegis Scrubbing Hub",
+     "Cobalt Traffic Center",
+     "Meridian Filter Plant",
+     "Obsidian Reroute Facility",
+     "Quartz BGP Exchange",
+     "Sapphire Cleanroom",
+     "Titanium Hub Node",
+     "Uranium Scrubbing Point",
+     "Vermilion Traffic Center",
+     "Zenith Scrubbing Nexus"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -1647,7 +1929,7 @@
      "originates_from": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1710,16 +1992,24 @@
   "clinical_documentation_activity": {
    "columns": {
     "clinical_documentation_activity": [
-     "Discharge Summary",
      "Admission Note",
      "Progress Note",
      "Consultation Report",
      "Operative Record",
      "Transfer Note",
      "Referral Letter",
-     "Medication Reconciliation",
      "Prenatal Assessment",
-     "Postoperative Review"
+     "Postoperative Review",
+     "Initial intake assessment",
+     "Discharge summary drafting",
+     "Operative report transcription",
+     "Medication reconciliation review",
+     "Nursing shift handoff log",
+     "Consent form verification",
+     "Referral request drafting",
+     "Allergy profile update",
+     "Post-consultation progress note",
+     "Telehealth encounter summary"
     ],
     "records_patient_encounter": [
      "ER Visit",
@@ -1731,19 +2021,34 @@
      "Labor Delivery",
      "Dialysis Session",
      "Vaccination Drive",
-     "Well Child Exam"
+     "Well Child Exam",
+     "Routine wellness visit",
+     "Emergency department triage",
+     "Inpatient surgical admission",
+     "Outpatient specialist consultation",
+     "Pediatric immunization session",
+     "Maternity antenatal check",
+     "Chronic disease management follow-up",
+     "Urgent care referral",
+     "Postoperative recovery visit",
+     "Mental health intake interview"
     ],
     "utilizes_information_system": [
-     "Epic EHR",
-     "Cerner Millennium",
-     "Allscripts Sunrise",
-     "Meditech Expanse",
-     "AthenaHealth",
      "NextGen Practice",
      "Veradigm Healthix",
      "OpenEMR",
      "DrChrono",
-     "eCW Platform"
+     "eCW Platform",
+     "Aegis Clinical Repository",
+     "Meridian Charting Engine",
+     "Veridian LIMS Module",
+     "Helix Documentation Hub",
+     "CoreSync EHR Platform",
+     "Nexus Clinical Gateway",
+     "Atlas Patient Record System",
+     "Prism Note Architect",
+     "Solace Care Interface",
+     "Orion Documentation Suite"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -1759,7 +2064,7 @@
      "utilizes_information_system": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1773,17 +2078,25 @@
      "Site Activation Rate",
      "Data Quality Index",
      "CRF Completion Rate",
-     "System Uptime Percentage",
      "Audit Trail Coverage",
      "Metric Accuracy Score",
      "Reporting Turnaround Time",
-     "Integration Throughput"
+     "Integration Throughput",
+     "Time to Therapeutic Threshold",
+     "Adverse Event Rate",
+     "Biomarker Clearance Velocity",
+     "Dose Response Ratio",
+     "Clinical Response Index",
+     "Patient Reported Outcome",
+     "Pharmacokinetic Exposure AUC",
+     "Therapeutic Window Occupancy",
+     "Efficacy Signal Strength",
+     "Recovery Time Baseline"
     ],
     "clinical_efficacy_monitoring_system": [
      "OnCore",
      "REDCap Platform",
      "Medidata Rave",
-     "Oracle Clinical",
      "OpenClinica",
      "Veeva Vault CTMS",
      "ClinPhone",
@@ -1791,7 +2104,17 @@
      "BioClinica",
      "ClinTrak",
      "eCRF-Net",
-     "TrialVault"
+     "TrialVault",
+     "Veridian Pulse Array",
+     "Aethelgard Efficacy Node",
+     "Oakridge Telemetry Hub",
+     "Meridian Clinical Scanner",
+     "Solace BioMonitor Array",
+     "Kestrel Efficacy Cluster",
+     "Lumina Trial Tracker",
+     "Novaris Assessment Core",
+     "Caelum Vital Grid",
+     "Stratum Clinical Mesh"
     ],
     "realizes_monitoring_protocol": [
      "AE Reporting Protocol",
@@ -1805,7 +2128,16 @@
      "Safety Data Capture SOP",
      "Efficacy Endpoint Registry",
      "Toxicity Grading Guide",
-     "Pharmacokinetic Protocol"
+     "Pharmacokinetic Protocol",
+     "ICH E6 R2 GCP",
+     "FDA 21 CFR 11",
+     "HL7 FHIR R4 ClinicalObservation",
+     "CAP Accreditation Standard",
+     "CDISC SDTM 3.4",
+     "WHO STEPwise Framework",
+     "STARD 2015 Guidelines",
+     "NIST SP 800-53",
+     "EMA Risk Evaluation Protocol"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -1821,7 +2153,7 @@
      "realizes_monitoring_protocol": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1837,7 +2169,17 @@
      "Tempus xT",
      "Exact Sciences Cologuard",
      "Broad Institute Ga4gh",
-     "Mayo Genome Center"
+     "Mayo Genome Center",
+     "Germline Cancer Panel",
+     "Somatic Variant Screening",
+     "Pharmacogenomic Dosing Protocol",
+     "Hereditary Cardiac Risk Assessment",
+     "Rare Disease Exome Sequencing",
+     "Tumor Mutational Burden Profiling",
+     "Inherited Metabolic Disorder Panel",
+     "Neonatal Genomic Screening Initiative",
+     "Polygenic Risk Score Evaluation",
+     "Congenital Anomaly Mapping"
     ],
     "employs_analytical_model": [
      "Random forest classifier",
@@ -1849,7 +2191,17 @@
      "AlphaFold structure predictor",
      "XGBoost tumor mutational",
      "CNN sequence aligner",
-     "LSTM phenotype mapper"
+     "LSTM phenotype mapper",
+     "Gradient Boosted Variant Caller",
+     "Convolutional Somatic Classifier",
+     "Transformer Allele Predictor",
+     "Random Forest Dosage Estimator",
+     "Bayesian Haplotype Imputer",
+     "Neural Pathogenicity Scorer",
+     "Ensemble Phenotype Mapper",
+     "Deep Learning Variant Detector",
+     "Logistic Risk Predictor",
+     "Graph Variant Interaction Model"
     ],
     "integrates_health_profile": [
      "EHR longitudinal record",
@@ -1857,11 +2209,20 @@
      "ICD-10 diagnosis set",
      "HPO phenotype list",
      "Problem list snapshot",
-     "Medication reconciliation",
      "Family history pedigree",
      "Social determinants index",
      "Laboratory results archive",
-     "Immunization registry"
+     "Immunization registry",
+     "EHR Clinical Summary",
+     "Phenotypic Trait Registry",
+     "Family History Ledger",
+     "Diagnostic Code Stream",
+     "Longitudinal Health Record",
+     "Laboratory Result Archive",
+     "Clinical Notes Repository",
+     "Patient Symptom Tracker",
+     "Immunization Status File",
+     "Vital Sign Trend Log"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -1877,7 +2238,7 @@
      "integrates_health_profile": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -1989,7 +2350,6 @@
    "columns": {
     "clinical_quality_improvement_program": [
      "Sepsis Protocol Redesign",
-     "Hand Hygiene Compliance",
      "Surgical Site Infection Reduction",
      "Falls Prevention Framework",
      "Medication Reconciliation Optimization",
@@ -1997,7 +2357,15 @@
      "CLABSI Elimination Drive",
      "VTE Prophylaxis Protocol",
      "Post Op Pain Management",
-     "Antibiotic Stewardship Cycle"
+     "Antibiotic Stewardship Cycle",
+     "Sepsis Mortality Reduction",
+     "Maternal Safety Roundtable",
+     "Postop Pain Audit",
+     "Antibiotic Stewardship",
+     "CLABSI Prevention Drive",
+     "Transfusion Reaction Review",
+     "Fall Risk Mitigation",
+     "Medication Error Tracking"
     ],
     "evaluates_performance_data": [
      "Mortality Rate Index",
@@ -2009,7 +2377,15 @@
      "Vaccination Coverage Percent",
      "Emergency Department Wait Time",
      "Surgical Site Infection Rate",
-     "Medication Error Frequency"
+     "Medication Error Frequency",
+     "Readmission Frequency",
+     "Length of Stay Duration",
+     "Infection Incidence Count",
+     "Medication Error Log",
+     "Hand Hygiene Adherence Rate",
+     "VTE Prophylaxis Adherence",
+     "Transfusion Reaction Frequency",
+     "Fall Incident Count"
     ],
     "utilizes_analytic_tool": [
      "Run Chart Analyzer",
@@ -2021,7 +2397,17 @@
      "Lean Six Sigma Calculator",
      "Bayesian Network Inference",
      "Monte Carlo Simulation Engine",
-     "Regression Trend Detector"
+     "Regression Trend Detector",
+     "Bayesian Inference Engine",
+     "Monte Carlo Simulation Runs",
+     "Process Mining Workflows",
+     "Logistic Regression Models",
+     "Markov Chain Simulations",
+     "Neural Network Classifiers",
+     "Quantile Regression Models",
+     "Poisson Distribution Fitting",
+     "Data Envelopment Analysis",
+     "Time Series Decomposition"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -2037,7 +2423,7 @@
      "utilizes_analytic_tool": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -2115,7 +2501,17 @@
      "Pediatric Subspecialty Conference",
      "Surgical Innovation Summit",
      "Radiology Imaging Workshop",
-     "Internal Medicine Grand Rounds"
+     "Internal Medicine Grand Rounds",
+     "ACLS Clinical Update",
+     "Telehealth Compliance Bootcamp",
+     "Opioid Safety Summit",
+     "Pediatric Triage Course",
+     "Lab QA Workshop",
+     "Rural Practice Integration",
+     "Coding Certification",
+     "Infection Control Update",
+     "Patient Safety Seminar",
+     "Regulatory Compliance Course"
     ],
     "has_educational_goal": [
      "Board Certification Renewal",
@@ -2127,7 +2523,17 @@
      "Diagnostic Accuracy Improvement",
      "Research Methodology Training",
      "Mentorship Program Participation",
-     "Continuing Education Credits"
+     "Continuing Education Credits",
+     "Enhance Diagnostic Accuracy",
+     "Reduce Medication Errors",
+     "Improve Patient Communication",
+     "Master Coding Standards",
+     "Optimize Clinical Workflow",
+     "Strengthen Emergency Response",
+     "Update Pharmacology Knowledge",
+     "Implement Quality Metrics",
+     "Develop Leadership Skills",
+     "Navigate Insurance Requirements"
     ],
     "has_topic_focus": [
      "Revenue Cycle Management",
@@ -2138,8 +2544,16 @@
      "Patient Flow Efficiency",
      "Credentialing Procedures",
      "Telehealth Deployment",
-     "Supply Chain Logistics",
-     "Quality Improvement Metrics"
+     "Quality Improvement Metrics",
+     "Revenue Cycle Optimization",
+     "HIPAA Privacy Updates",
+     "Staff Retention Strategies",
+     "Malpractice Risk Reduction",
+     "EHR Workflow Design",
+     "Supply Chain Management",
+     "Scheduling Efficiency",
+     "Documentation Standards",
+     "Audit Preparation"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -2155,7 +2569,7 @@
      "has_topic_focus": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -2173,10 +2587,19 @@
      "TU Delft",
      "University of Melbourne",
      "Georgia Tech",
-     "University of British Columbia"
+     "University of British Columbia",
+     "Oakridge University",
+     "Crestview College",
+     "Meridian Institute",
+     "Willow Creek Academy",
+     "Ashford State",
+     "Pinecrest University",
+     "Sterling College",
+     "Brookhaven University",
+     "Crestwood University",
+     "Eldridge University"
     ],
     "inheres_in": [
-     "Dr. Elena Rostova",
      "J. M. Chen",
      "Sarah K. Miller",
      "Prof. David Okoro",
@@ -2186,7 +2609,6 @@
      "Dr. Lin Wei",
      "C. A. Ndiaye",
      "Thomas E. Wright",
-     "Priya Sharma",
      "Mark D. Sullivan"
     ],
     "realizes": [
@@ -2201,7 +2623,19 @@
      "Dean of Engineering",
      "Vice President Alumni",
      "Chancellor Office",
-     "Director of Athletics"
+     "Director of Athletics",
+     "Academic Affairs",
+     "Student Success Office",
+     "Financial Operations",
+     "Registrar Services",
+     "Dean of Faculty",
+     "Faculty Governance",
+     "Admissions Processing",
+     "Bursar Services",
+     "Research Compliance",
+     "Alumni Engagement",
+     "Campus Safety",
+     "Institutional Planning"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -2213,11 +2647,11 @@
    "provenance": {
     "membrane": {
      "college_official_role": "ok",
-     "inheres_in": "ok",
+     "inheres_in": "label collision across classes: 'Aris Thorne' already names a ExpeditionParticipant \u2014 coin DISTINCT names for these Person individuals",
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -2284,12 +2718,19 @@
      "Sarah-Jane Miller",
      "Dr. A. Okafor",
      "Team Lead Clarke",
-     "Marcus Chen",
      "R. K. Patel",
      "Elena Vasquez",
-     "James Whitfield",
-     "Priya Sharma",
-     "Thomas Eriksen"
+     "Thomas Eriksen",
+     "Northgate District Nurse",
+     "Oakridge Learning Support",
+     "Meridian Community Practitioner",
+     "Westborough Specialist RN",
+     "Cedarvale Disability Advisor",
+     "Southpoint Clinical Lead",
+     "Ashwood Community Team",
+     "Riverdale Health Visitor",
+     "Pinecrest Specialist Nurse",
+     "Lakeside Learning Support"
     ],
     "fulfills_professional_role": [
      "Registered Nurse",
@@ -2301,7 +2742,17 @@
      "Community Psychiatric Nurse",
      "Practice Supervisor",
      "RNLD Specialist",
-     "Health Visitor"
+     "Health Visitor",
+     "HCPC Registered Nurse",
+     "Specialist Learning Disability Nurse",
+     "Registered General Practitioner",
+     "Clinical Psychologist",
+     "Occupational Therapist",
+     "Speech and Language Therapist",
+     "Community Matron",
+     "Mental Health Practitioner",
+     "Learning Disability Consultant",
+     "Primary Care Physician"
     ],
     "realizes_role": [
      "Community Health Practitioner",
@@ -2313,7 +2764,17 @@
      "Home Visit Practitioner",
      "Community Care Lead",
      "Local Authority Liaison",
-     "Care Navigator"
+     "Care Navigator",
+     "District Nursing Clinic",
+     "Community Health Hub",
+     "Outpatient Assessment Centre",
+     "Family Support Centre",
+     "Integrated Care Facility",
+     "Public Health Station",
+     "Residential Care Unit",
+     "Mobile Health Van",
+     "Primary Care Network",
+     "Community Wellness Centre"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -2329,7 +2790,7 @@
      "realizes_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -2556,10 +3017,21 @@
      "Northline Power Survey",
      "Coastal Gen Assessment",
      "Mill Creek Boiler Inspection",
-     "Delta Ridge Emission Review",
      "Harbor Point Audit",
      "Summit Plant Validation",
-     "Ironwood Stack Certification"
+     "Ironwood Stack Certification",
+     "Q3-Stack-Validation",
+     "Annual-CEM-Compliance-Audit",
+     "Stack-4-Performance-Review",
+     "Quarterly-Calibration-Check",
+     "Post-Maintenance-Verification",
+     "Regulatory-Integrity-Inspection",
+     "Multi-Parameter-System-Test",
+     "Flue-Gas-Analyzer-Certification",
+     "Compliance-Reliability-Assessment",
+     "Stack-Output-Validation-Run",
+     "Ambient-Method-Comparison",
+     "Certification-Log-882"
     ],
     "employs_method": [
      "Iodometric Titration",
@@ -2571,7 +3043,19 @@
      "Acid-Base Neutralization",
      "Liquid Extraction",
      "Membrane Filtration Wash",
-     "Ion Selective Electrode"
+     "Ion Selective Electrode",
+     "Acid-Neutralization-Titration",
+     "Ion-Exchange-Chromatography",
+     "Colorimetric-Indicator-Test",
+     "Potentiometric-Ph-Measurement",
+     "Gravimetric-Sulfate-Analysis",
+     "Redox-Titration-For-COD",
+     "Spectrophotometric-Nitrate-Test",
+     "Volatile-Fatty-Acid-Extraction",
+     "Copper-Complexation-Assay",
+     "Bromination-Back-Titration",
+     "Alkalinity-Granular-Buffer",
+     "Dissolved-Oxygen-Winkler-Test"
     ],
     "evaluates": [
      "Stack 4 SO2 Monitor",
@@ -2583,7 +3067,19 @@
      "Chimney 1 CO Monitor",
      "Reactor Vent CEMS",
      "Sulfur Recovery Line 2",
-     "Cooling Tower Exhaust Sensor"
+     "Cooling Tower Exhaust Sensor",
+     "Boiler-1-SO2-Monitor",
+     "Turbine-Stack-NOx-CEMS",
+     "Incinerator-Flue-Analyzer",
+     "Blast-Furnace-Particulate-Track",
+     "Waste-Heat-CO-Logger",
+     "Chemical-Reactors-VOC-Sensor",
+     "Power-Plant-Stack-CO-Monitor",
+     "Refinery-Flare-Gas-CEM",
+     "Sinter-Plant-SOx-Tracker",
+     "Furnace-3-DEMS-Unit",
+     "Stack-7-Continuous-Logger",
+     "Combustor-NOx-Relay"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -2599,7 +3095,7 @@
      "evaluates": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -2617,21 +3113,34 @@
      "BaFin Agency",
      "CFTC Division",
      "IRS Service",
-     "DTI Corporate"
+     "DTI Corporate",
+     "Federal Securities Commission",
+     "Global Audit Oversight Board",
+     "National Compliance Registry",
+     "International Exchange Authority",
+     "Cross-Border Disclosure Council",
+     "Public Market Integrity Office",
+     "Corporate Transparency Directorate",
+     "Financial Standards Commission",
+     "Regulatory Filing Authority",
+     "Securities Enforcement Bureau"
     ],
     "corporate_information_disclosure_process": [
-     "Apple Inc",
-     "Microsoft Corp",
-     "Tesla Inc",
-     "Amazon.com",
      "Netflix Inc",
-     "Meta Platforms",
      "Johnson & Johnson",
      "Procter & Gamble",
      "Berkshire Hathaway",
      "JPMorgan Chase",
-     "ExxonMobil",
-     "Pfizer Inc"
+     "Aethelgard Holdings",
+     "Northpoint Capital Group",
+     "Crescent Meridian Corp",
+     "Vanguard Steelworks Ltd",
+     "Oakhaven Energy Partners",
+     "Silica Ridge Mining",
+     "Terraform Logistics Inc",
+     "Meridian BioSystems",
+     "Cobalt Peak Ventures",
+     "Ironwood Manufacturing"
     ],
     "produces_document": [
      "Annual Report",
@@ -2639,13 +3148,24 @@
      "10-K Filing",
      "10-Q Statement",
      "8-K Notice",
-     "Proxy Statement",
      "Balance Sheet",
      "Income Statement",
      "Cash Flow Report",
      "Auditor Opinion",
      "Management Discussion",
-     "MD&A Section"
+     "MD&A Section",
+     "FY2024 Annual Statement",
+     "Q3 Interim Earnings Summary",
+     "Material Event Disclosure Memo",
+     "Proxy Statement Draft Alpha",
+     "Fiscal Cash Flow Ledger",
+     "Shareholder Equity Summary",
+     "Compliance Audit Trail Record",
+     "Tax Liability Schedule Draft",
+     "Investor Relations Briefing Pack",
+     "Interim Balance Sheet Revision",
+     "Governance Compliance Dossier",
+     "Regulatory Filing Bundle Sigma"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -2661,23 +3181,26 @@
      "produces_document": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "corporate_reputation_influence_situation": {
    "columns": {
     "corporate_reputation_influence_situation": [
-     "Tesla Inc",
-     "Amazon.com",
-     "Microsoft Corp",
-     "Apple Inc",
      "Alphabet LLC",
-     "Meta Platforms",
      "Netflix Inc",
-     "Samsung Electronics",
-     "Toyota Motor",
-     "Unilever NV"
+     "Unilever NV",
+     "Meridian ESG Disclosure",
+     "Aegis Compliance Audit",
+     "Orion Brand Refresh",
+     "Vantage Stakeholder Review",
+     "Crestview Outreach Initiative",
+     "Lumina Supply Chain Log",
+     "Apex Governance Brief",
+     "Solstice Community Report",
+     "Helix Risk Assessment",
+     "Driftwood Transparency Statement"
     ],
     "influences": [
      "Series B Funding",
@@ -2689,7 +3212,17 @@
      "Mutual Fund Rebalance",
      "Retail Investor Flow",
      "Strategic Partnership",
-     "Debt Financing Round"
+     "Debt Financing Round",
+     "Series B Equity Allocation",
+     "Green Bond Issuance",
+     "Stellaris Division Acquisition",
+     "Regional Expansion Fund",
+     "Renewable Energy Portfolio",
+     "Strategic Minority Stake",
+     "Infrastructure Debt Placement",
+     "Venture Capital Tranche",
+     "Municipal Revenue Note",
+     "Private Equity Distribution"
     ],
     "supports": [
      "Fortune 500 Rank",
@@ -2701,7 +3234,17 @@
      "DJSI Index",
      "Edelman Trust",
      "Interbrand Ranking",
-     "Kantar BrandValue"
+     "Kantar BrandValue",
+     "ESG Compliance Score",
+     "Brand Sentiment Index",
+     "Supply Chain Transparency Rating",
+     "Customer Retention Ratio",
+     "Carbon Footprint Index",
+     "Employee Satisfaction Quotient",
+     "Regulatory Violation Rate",
+     "Market Trust Coefficient",
+     "Product Safety Audit Pass Rate",
+     "Community Investment Index"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -2717,7 +3260,7 @@
      "supports": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3004,12 +3547,21 @@
      "Mortgage Payment Default",
      "Council Tax Arrears",
      "Housing Benefit Overclaim",
-     "Eviction Prevention",
      "Subsidy Gap Deficit",
      "Property Tax Lien",
      "Social Rent Shortfall",
      "Tenant Debt Review",
-     "Utility Payment Arrears"
+     "Utility Payment Arrears",
+     "RentArrears-6mo",
+     "UtilityOverdue-23",
+     "CouncilTaxDefault",
+     "LoanDefault-Active",
+     "ServiceChargeGap",
+     "LeaseFeeUnpaid",
+     "HousingBenefitLag",
+     "PropertyTaxLien",
+     "InsurancePremiumDue",
+     "MaintenanceOwed"
     ],
     "debt_casework_process": [
      "Rent Arrears Recovery",
@@ -3021,7 +3573,17 @@
      "Property Tax Lien Clearance",
      "Social Rent Deficit Audit",
      "Tenant Debt Mediation",
-     "Utility Arrears Resolution"
+     "Utility Arrears Resolution",
+     "HDC-Arrears-4491",
+     "RentDefault-Case-77B",
+     "MortgageDelinq-Phase2",
+     "SubsidyGap-Review-44",
+     "EvictionPrev-09",
+     "UtilityArrears-Int",
+     "TenancyDebt-Settle03",
+     "CouncilTax-Overpay11",
+     "HousingBenefit-Claim09",
+     "LeaseDefault-Proc05"
     ],
     "targets_client": [
      "Smith Household",
@@ -3033,7 +3595,17 @@
      "Lee Student Tenant",
      "Martinez Migrant Household",
      "Taylor Disabled Client",
-     "Brown Longterm Renter"
+     "Brown Longterm Renter",
+     "HOU-4491",
+     "TEN-7721",
+     "ACC-8842B",
+     "OWN-903",
+     "UNT-12",
+     "APP-556",
+     "CLI-229",
+     "TEN-881",
+     "ACC-4472",
+     "CAS-119"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -3049,34 +3621,48 @@
      "targets_client": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "decision_maker_role": {
    "columns": {
     "bears": [
-     "Maria Chen",
      "DevOps Team Alpha",
      "Regional HQ",
-     "Sarah Jenkins",
      "Cluster Node 7",
      "Compliance Board",
      "Dr Aris Thorne",
      "System Monitor 9",
-     "Audit Committee"
+     "Audit Committee",
+     "Senior Platform Architect",
+     "Data Stewardship Director",
+     "System Integrity Principal",
+     "Governance Oversight Lead",
+     "Technical Authority Chair",
+     "Compliance Validation Director",
+     "Release Management Principal",
+     "Quality Assurance Lead",
+     "Security Clearance Director",
+     "Data Lifecycle Principal"
     ],
     "decision_maker_role": [
      "Chief Data Officer",
      "Lead Scientist",
      "Network Operator",
-     "Compliance Auditor",
      "System Architect",
      "Incident Commander",
-     "Quality Manager",
-     "Data Steward",
      "Platform Engineer",
-     "Security Analyst"
+     "Chief Data Steward",
+     "Lead Instrumentation Auditor",
+     "Shift Control Supervisor",
+     "Calibration Authority",
+     "Batch Release Officer",
+     "Telemetry Validation Engineer",
+     "Environmental Compliance Lead",
+     "Provenance Reviewer",
+     "Quality Oversight Coordinator",
+     "System Access Arbiter"
     ],
     "realizes": [
      "Capacity Allocation",
@@ -3085,10 +3671,19 @@
      "Model Validation",
      "Access Approval",
      "Schema Migration",
-     "Risk Assessment",
      "Release Signoff",
      "Compliance Audit",
-     "Budget Reconciliation"
+     "Budget Reconciliation",
+     "Architecture Sign-off Procedure",
+     "Release Authority Workflow",
+     "Compliance Validation Cycle",
+     "System Integrity Review",
+     "Data Stewardship Audit",
+     "Governance Authorization Step",
+     "Technical Approval Sequence",
+     "Quality Control Decision Path",
+     "Security Clearance Verification",
+     "Data Lifecycle Transition Protocol"
     ]
    },
    "domain": "Requirements, Constraints and Analysis",
@@ -3104,7 +3699,7 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3122,7 +3717,17 @@
      "Pipeline Owner",
      "Technical Lead",
      "Platform Architect",
-     "Verification Engineer"
+     "Verification Engineer",
+     "Lead Process Engineer",
+     "Technical Release Authority",
+     "Batch Manufacturing Lead",
+     "Quality Engineering Coordinator",
+     "Site Technical Director",
+     "Validation Program Owner",
+     "Release Authorization Lead",
+     "Development Operations Manager",
+     "Technical Specification Lead",
+     "Final Inspection Coordinator"
     ],
     "realizes": [
      "Final Assembly Inspection",
@@ -3136,21 +3741,34 @@
      "Environmental Stress Test",
      "Supply Chain Verification",
      "Software Bill of Materials",
-     "Calibration Certification"
+     "Calibration Certification",
+     "Final Visual Audit",
+     "Thermal Stress Verification",
+     "Dimensional Tolerance Check",
+     "EMC Compliance Review",
+     "Material Fatigue Validation",
+     "Surface Coating Assessment",
+     "Pressure Vessel Certification",
+     "PCB Continuity Test",
+     "Fluid Dynamics Calibration",
+     "Structural Load Simulation"
     ],
     "role_bearer": [
-     "Elena Rostova",
-     "Marcus Chen",
-     "Priya Sharma",
-     "David Okonkwo",
      "Core Platform Team",
-     "Sarah Jenkins",
      "Michael Torres",
      "Lin Wei",
      "James McAllister",
      "Security Ops Unit",
-     "Aisha Patel",
-     "Thomas Wright"
+     "AGT-8F2A",
+     "AGT-1C9D",
+     "AGT-4E7B",
+     "AGT-9A3F",
+     "AGT-2D8C",
+     "AGT-6B1E",
+     "AGT-5H4K",
+     "AGT-0J7M",
+     "AGT-3N9P",
+     "AGT-8Q2R"
     ]
    },
    "domain": "Quality, Compliance and Traceability",
@@ -3166,7 +3784,7 @@
      "role_bearer": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3282,7 +3900,17 @@
      "IoT Device Forensics",
      "Server Log Correlation",
      "Endpoint Telemetry Review",
-     "Mobile Device Extraction"
+     "Mobile Device Extraction",
+     "Server A Disk Imaging",
+     "Endpoint Laptop RAM Dump",
+     "Cloud Bucket Access Audit",
+     "IoT Router Firmware Extract",
+     "Financial Database Query Trace",
+     "Malware Payload Reverse Engineering",
+     "Network Switch Port Mirroring",
+     "Email Server Log Parsing",
+     "Mobile Device File System Recovery",
+     "Container Image Layer Analysis"
     ],
     "has_participant": [
      "Lead Forensic Analyst",
@@ -3291,12 +3919,20 @@
      "Chain Custody Officer",
      "Threat Intelligence Analyst",
      "Digital Evidence Custodian",
-     "Compliance Auditor",
      "Network Traffic Analyst",
      "Cloud Security Engineer",
      "Legal E-Discovery Specialist",
      "Hardware Forensics Technician",
-     "Endpoint Detection Analyst"
+     "Endpoint Detection Analyst",
+     "Chain of Custody Officer",
+     "Bit-Stream Imager",
+     "Memory Acquisition Agent",
+     "Packet Sniffer Service",
+     "Evidence Locker System",
+     "Cryptographic Hash Module",
+     "Timeline Reconstruction Script",
+     "Mobile Forensic Extractor",
+     "Network Traffic Reassembler"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -3310,7 +3946,7 @@
      "has_participant": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3377,12 +4013,20 @@
      "TLD Phishing Sweep",
      "Registry Compliance Review",
      "Domain Sinkhole Audit",
-     "Spamhaus Threat Intel",
      "ICANN gTLD Review",
      "Cloudflare Abuse Report",
      "Proofpoint Campaign Trace",
      "Domain Typosquat Scan",
-     "Registrar Compliance Check"
+     "Registrar Compliance Check",
+     "Botnet C2 Tracking",
+     "Domain Lockdown Audit",
+     "IDN Homograph Review",
+     "SSL Pinning Assessment",
+     "Ransomware Redirect Scan",
+     "Typosquatting Survey",
+     "Credential Harvesting Audit",
+     "Malvertising Domain Review",
+     "Suspicious Registrar Audit"
     ],
     "evaluates_program": [
      "ICANN New gTLD Program",
@@ -3394,7 +4038,17 @@
      "New gTLD Phase 1",
      "gTLD Security Assessment",
      "TLD Quality Review",
-     "gTLD Sunset Policy"
+     "gTLD Sunset Policy",
+     "gTLD Expansion Phase",
+     "Registry Security Framework",
+     "Domain Privacy Standard",
+     "Abuse Reporting Protocol",
+     "Trust Anchor Verification",
+     "DNSSEC Enforcement Initiative",
+     "Registry Lock Compliance",
+     "WHOIS Redaction Policy",
+     "Domain Dispute Framework",
+     "TLD Qualitative Review"
     ],
     "targets_abuse_event": [
      "Phishing Campaign",
@@ -3406,7 +4060,17 @@
      "Cryptomining Redirect",
      "Ransomware C2 Channel",
      "Domain Squatting Incident",
-     "Fake Certificate Issuance"
+     "Fake Certificate Issuance",
+     "Domain Hijack Incident",
+     "Phishing Campaign Surge",
+     "Malware Distribution Spike",
+     "Ransomware Redirect Event",
+     "Typosquatting Wave",
+     "Credential Harvesting Burst",
+     "Botnet C2 Activation",
+     "Domain Lockdown Breach",
+     "IDN Spoofing Incident",
+     "Registrar Suspension Trigger"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -3422,7 +4086,7 @@
      "targets_abuse_event": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3438,7 +4102,17 @@
      "Scholarship-Grant-12",
      "Emergency-Relief-09",
      "Corporate-Match-05",
-     "Legacy-Bequest-11"
+     "Legacy-Bequest-11",
+     "TXN-8842-A1",
+     "Q3-Campus-Stream",
+     "Annual-Gala-Pledge",
+     "Emergency-Relief-Grant",
+     "Scholarship-Transfer",
+     "Charity-Walk-2024",
+     "Micro-Donation-Stream",
+     "Legacy-Bequest-Entry",
+     "Crowd-Alpha-Init",
+     "Direct-Debit-Setup"
     ],
     "gift_amount": [
      "$1,250.00",
@@ -3450,7 +4124,17 @@
      "CHF 1,200",
      "CAD 850.00",
      "AUD 3,400",
-     "$25,000"
+     "$25,000",
+     "250.00 USD",
+     "1200.50 EUR",
+     "50.00 GBP",
+     "5000.00 USD",
+     "10000 JPY",
+     "75.25 USD",
+     "500.00 EUR",
+     "10000.00 USD",
+     "250.75 GBP",
+     "1500.00 CHF"
     ],
     "involves_donor": [
      "Jane-Doe",
@@ -3458,11 +4142,20 @@
      "Smith-Family-Trust",
      "Global-Health-Foundation",
      "TechVentures-LLC",
-     "Maria-Gonzalez",
      "Red-Cross-Chapter",
      "Anonymous-Donor",
      "University-Alumni",
-     "John-Smith-Estate"
+     "John-Smith-Estate",
+     "Veridian-Giving-Trust",
+     "North-Point-Collective",
+     "Aegis-Community-Fund",
+     "Cedar-Ridge-Board",
+     "Polaris-Research-Group",
+     "Harbor-View-Alliance",
+     "Summit-Charitable-Trust",
+     "Delta-Medical-Initiative",
+     "Orion-Student-Union",
+     "Terra-Firma-Grounds"
     ]
    },
    "domain": "Specimen Lifecycle Management",
@@ -3478,7 +4171,7 @@
      "involves_donor": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3494,7 +4187,17 @@
      "Research Fellowship",
      "Housing Support Block",
      "Food Security Drive",
-     "Infrastructure Renewal"
+     "Infrastructure Renewal",
+     "Emergency-Relief-Fund",
+     "Capital-Expansion-Phase-2",
+     "Research-Endowment-Block",
+     "Operational-Reserve-Quarterly",
+     "Scholarship-Target-Pool",
+     "Infrastructure-Upgrade-Grant",
+     "Community-Outreach-Initiative",
+     "Medical-Equipment-Procurement",
+     "Digital-Transformation-Grant",
+     "Conservation-Preserve-Trust"
     ],
     "donation_transaction_record": [
      "TXN-8842-F",
@@ -3506,19 +4209,37 @@
      "DON-8812-A",
      "TXN-5539-C",
      "REF-D-4421",
-     "PMT-2023-1105"
+     "PMT-2023-1105",
+     "TXN-8842-FG",
+     "Q4-2023-CAPITAL",
+     "GRANT-LOCK-77B",
+     "ENDOWMENT-TRUST-4A",
+     "RECURRING-SEPT-09",
+     "MATCHING-POOL-X9",
+     "DIRECT-GIFT-112",
+     "BEQUEST-PROBATE-3C",
+     "SPONTANEOUS-ONLINE-5",
+     "ANNUAL-FUND-DRIVE-22"
     ],
     "involves_donor": [
      "Smith Family Foundation",
      "J. Doe Trust",
      "GlobalHealth Inc",
-     "A. Chen",
      "Meridian Charity Group",
-     "R. Patel",
      "TechForward Alliance",
      "L. Garcia",
      "Community Aid Network",
-     "B. Williams"
+     "B. Williams",
+     "Vance-Estate-Trust",
+     "Rostova-Kaelen-Individual",
+     "Aegis-Capital-Group",
+     "Solis-Mira-Family",
+     "Oakridge-Collective-LLC",
+     "Chen-Darius-Private",
+     "Novara-Charitable-Trust",
+     "Frost-Linnea-Individual",
+     "Caelum-Circle-Entity",
+     "Okafor-Talia-Foundation"
     ]
    },
    "domain": "Specimen Lifecycle Management",
@@ -3534,7 +4255,7 @@
      "involves_donor": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3585,14 +4306,23 @@
     "document": [
      "patient-cohort-v2",
      "quarterly-audit",
-     "sensor-calibration",
      "source-dictionary",
      "telemetry-archive",
      "regulatory-filing",
      "experiment-logs",
      "inventory-manual",
      "network-topology",
-     "clinical-trial-data"
+     "clinical-trial-data",
+     "Protocol Draft",
+     "Assay Results",
+     "Calibration Log",
+     "Safety Report",
+     "Batch Record",
+     "Method Sheet",
+     "Audit Trail",
+     "Reference Standard",
+     "Quality Certificate",
+     "Test Specification"
     ],
     "duplicating_request": [
      "Q3-Backup-Mirror",
@@ -3604,11 +4334,20 @@
      "Research-Data-Copy",
      "Dev-Env-Mirror",
      "Compliance-Log-Dup",
-     "Archive-Migration"
+     "Archive-Migration",
+     "REQ-8842-DUP",
+     "COPY-991-ALT",
+     "REF-4401-PRM",
+     "ALT-7723-SEC",
+     "PRM-0056-GEN",
+     "SEC-3318-CLN",
+     "GEN-5509-OBS",
+     "CLN-2247-LAB",
+     "OBS-6630-DOC",
+     "LAB-1192-REQ"
     ],
     "requester": [
      "ops-engineer",
-     "data-governance",
      "research-team",
      "backup-service",
      "audit-compliance",
@@ -3616,7 +4355,17 @@
      "lab-coordinator",
      "sys-admin",
      "migration-tool",
-     "compliance-officer"
+     "compliance-officer",
+     "FieldOpsCoordinator",
+     "ArchiveCustodianLead",
+     "ComplianceAuditorUnit",
+     "DataCustodianLead",
+     "ProtocolReviewBoard",
+     "QualityAssuranceUnit",
+     "TelemetrySupervisor",
+     "MetadataCuratorLead",
+     "NetworkAdminLead",
+     "SampleLogisticsLead"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -3632,7 +4381,7 @@
      "requester": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3702,7 +4451,17 @@
      "State Science Standard",
      "ACT Math Benchmark",
      "Cambridge Biology",
-     "Next Gen History"
+     "Next Gen History",
+     "Level 4 Credit Framework",
+     "Module Proficiency Rubric",
+     "Competency Block Assessment",
+     "Proficiency Threshold Matrix",
+     "Learning Outcome Map",
+     "Credential Benchmark Index",
+     "Academic Credit Equivalency",
+     "Skill Validation Rubric",
+     "Course Mastery Scale",
+     "Proficiency Band Alignment"
     ],
     "educational_course": [
      "AP Calculus BC",
@@ -3717,7 +4476,6 @@
      "Creative Writing Workshop"
     ],
     "participant": [
-     "Maria Chen",
      "David Rodriguez",
      "Sarah Patel",
      "James Vance",
@@ -3726,7 +4484,17 @@
      "Emma Davies",
      "Kenji Tanaka",
      "Marcus Brooks",
-     "Priya Gupta"
+     "Priya Gupta",
+     "Graduate Research Fellow",
+     "Undergraduate Scholar",
+     "Professional Trainee",
+     "Continuing Education Attendee",
+     "Visiting Academic Fellow",
+     "Industry Practitioner",
+     "Postdoctoral Candidate",
+     "Executive Workshop Attendee",
+     "Certificate Track Learner",
+     "Apprenticeship Student"
     ]
    },
    "domain": "Quality, Compliance and Traceability",
@@ -3738,11 +4506,11 @@
    "provenance": {
     "membrane": {
      "course_standard": "ok",
-     "educational_course": "ok",
+     "educational_course": "label collision across classes: 'Computational Linguistics' already names a AcademicCurriculumProgram \u2014 coin DISTINCT names for these EducationalCourse individuals",
      "participant": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3751,14 +4519,23 @@
     "affects_student": [
      "STU-44921",
      "J. Martinez",
-     "A. Chen",
      "R. Okonkwo",
      "M. Petrov",
      "K. Al-Farsi",
      "L. Dubois",
      "T. Nakamura",
      "S. Williams",
-     "E. Rossi"
+     "E. Rossi",
+     "Junior Transfer Cohort",
+     "First Year Resident",
+     "Graduate Fellow",
+     "Adult Learner Group",
+     "Dual Enrollment Applicant",
+     "Special Needs Recipient",
+     "Exchange Program Candidate",
+     "Remedial Track Student",
+     "Advanced Scholar Applicant",
+     "Vocational Trainee"
     ],
     "educational_placement_process": [
      "Spring 2024 Math Placement",
@@ -3770,7 +4547,16 @@
      "College Prep Evaluation",
      "Vocational Track Assignment",
      "Dual Enrollment Review",
-     "Remedial Math Placement"
+     "Remedial Math Placement",
+     "IEP Review Cycle",
+     "Transition Planning Meeting",
+     "Diagnostic Assessment Phase",
+     "Course Leveling Audit",
+     "Learning Support Intake",
+     "Language Proficiency Screening",
+     "Credit Transfer Evaluation",
+     "Special Ed Eligibility Review",
+     "Advanced Placement Placement"
     ],
     "produces_curriculum": [
      "MATH-101 Remedial",
@@ -3782,7 +4568,17 @@
      "ART-PortfolioReview",
      "CHEM-AdvancedLab",
      "HIST-WorldCivil",
-     "SOC-Foundations"
+     "SOC-Foundations",
+     "Core Math Sequence",
+     "Introductory Physics Module",
+     "Advanced Placement Track",
+     "Vocational Welding Cert",
+     "Language Immersion Stream",
+     "Remedial Reading Program",
+     "STEM Research Pathway",
+     "College Prep Syllabus",
+     "Digital Literacy Bootcamp",
+     "Clinical Observation Cycle"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -3798,7 +4594,7 @@
      "produces_curriculum": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -3926,19 +4722,29 @@
      "grievance backlog",
      "training completion",
      "satisfaction delta",
-     "retention cohort"
+     "retention cohort",
+     "Psychological safety index",
+     "Leadership trust score",
+     "Burnout risk level",
+     "Work-life balance rating",
+     "Career progression perception",
+     "Team cohesion index",
+     "Communication clarity metric",
+     "Inclusion sentiment score",
+     "Resource adequacy rating",
+     "Change readiness index"
     ],
     "employee_feedback_survey": [
-     "Elena Rostova",
-     "Marcus Chen",
-     "Priya Sharma",
-     "David Okonkwo",
-     "Sarah Jenkins",
-     "Liam O'Sullivan",
-     "Ana Gutierrez",
-     "Thomas Wright",
-     "Yuki Tanaka",
-     "Carlos Mendez"
+     "EMP-8842",
+     "STF-3319",
+     "USR-7704",
+     "ID-9921",
+     "PRF-4456",
+     "RCD-1183",
+     "TGT-6670",
+     "REF-2295",
+     "LOG-5548",
+     "DAT-0037"
     ],
     "measures_dimension": [
      "psychological safety",
@@ -3950,7 +4756,17 @@
      "conflict resolution",
      "mentorship availability",
      "diversity inclusion",
-     "accountability standards"
+     "accountability standards",
+     "Psychological Safety",
+     "Communication Clarity",
+     "Role Alignment",
+     "Team Cohesion",
+     "Leadership Trust",
+     "Innovation Capacity",
+     "Work-Life Balance",
+     "Recognition Fairness",
+     "Career Growth",
+     "Conflict Resolution"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -3966,7 +4782,7 @@
      "measures_dimension": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4019,14 +4835,20 @@
   "entrepreneur_role": {
    "columns": {
     "entrepreneur_role": [
-     "Elena Rostova",
-     "Marcus Chen",
-     "Aisha Patel",
-     "David Okonkwo",
      "Sofia Lindgren",
      "Tariq Al-Fayed",
      "Clara Wu",
-     "Jonas Bergstr\u00f6m"
+     "Jonas Bergstr\u00f6m",
+     "LeadVentureArchitect",
+     "ChiefCommercialOperator",
+     "EnterprisePioneer",
+     "MarketInitiator",
+     "StartupOperator",
+     "TradeScalor",
+     "InnovationDriver",
+     "BusinessArchitect",
+     "VentureLead",
+     "CommercialFounder"
     ],
     "inheres_in": [
      "Apex Dynamics LLC",
@@ -4036,17 +4858,36 @@
      "Horizon Innovations",
      "Pinnacle Solutions Ltd",
      "Atlas Manufacturing Co",
-     "Vanguard Systems Corp"
+     "Vanguard Systems Corp",
+     "Crescent Capital Group",
+     "Aegis Manufacturing LLC",
+     "Vanguard Tech Holdings",
+     "Meridian Logistics Inc",
+     "Solstice Retail Co",
+     "Terraform Energy Corp",
+     "Apex Biopharma Ltd",
+     "NovaStream Analytics",
+     "Ironclad Security Inc",
+     "Pinnacle Ventures Group"
     ],
     "realizes": [
      "Seed Funding Round",
      "Market Entry Strategy",
-     "Product Launch Cycle",
      "Supply Chain Overhaul",
      "Series A Expansion",
      "Go-to-Market Initiative",
      "Venture Scaling Phase",
-     "Commercialization Drive"
+     "Commercialization Drive",
+     "MarketEntryLaunch",
+     "ProductCommercialization",
+     "CapitalRaisingCycle",
+     "SupplyChainIntegration",
+     "TechnologyTransfer",
+     "VentureScalingPhase",
+     "RegulatoryComplianceAudit",
+     "StrategicPartnershipDeal",
+     "RevenueModelDeployment",
+     "IPCommercialization"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -4062,7 +4903,7 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4078,7 +4919,17 @@
      "Green Hydrogen Venture",
      "EdTech Mobile App",
      "Supply Chain Automation",
-     "Carbon Credit Marketplace"
+     "Carbon Credit Marketplace",
+     "MarketEntryInitiative",
+     "SupplyChainPivot",
+     "ProductLaunchCycle",
+     "VentureScalingProtocol",
+     "CommercializationPipeline",
+     "RevenueModelIteration",
+     "ServiceDeploymentPhase",
+     "CrossMarketExpansion",
+     "InnovationSprint",
+     "FranchiseRollout"
     ],
     "produces": [
      "Cloud Infrastructure",
@@ -4090,7 +4941,17 @@
      "Clean Energy",
      "Learning Modules",
      "Warehouse Robots",
-     "Carbon Offsets"
+     "Carbon Offsets",
+     "CustomSoftwareModule",
+     "LogisticsNetwork",
+     "RenewableEnergyGrid",
+     "DigitalPaymentPlatform",
+     "AgriculturalYield",
+     "HealthcareConsulting",
+     "IndustrialRobotics",
+     "DataAnalyticsSuite",
+     "ManufacturingOutput",
+     "CloudInfrastructure"
     ],
     "targets": [
      "Remote Work Tools",
@@ -4102,7 +4963,16 @@
      "Energy Transition",
      "Digital Literacy",
      "Operational Efficiency",
-     "Regulatory Compliance"
+     "UrbanConsumerBase",
+     "IndustrialProcurement",
+     "CoastalTradeRoute",
+     "EmergingTechSector",
+     "RemoteWorkforce",
+     "GovernmentContracting",
+     "AgriculturalSupplyChain",
+     "CrossBorderLogistics",
+     "HealthcareProviders",
+     "FinancialInstitutions"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -4118,7 +4988,7 @@
      "targets": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4297,7 +5167,6 @@
   "executive_director_role": {
    "columns": {
     "executive_director_role": [
-     "Chief Financial Officer",
      "Director of Operations",
      "VP of Engineering",
      "Executive Director of Research",
@@ -4306,19 +5175,38 @@
      "Chief Technology Officer",
      "Director of Compliance",
      "VP of Product Strategy",
-     "Executive Director of Operations"
+     "Executive Director of Operations",
+     "Chief Telemetry Director",
+     "Lead Process Governance Officer",
+     "Executive Data Steward",
+     "Director of Analytical Operations",
+     "Senior Lab Oversight Director",
+     "Head of Provenance Control",
+     "Director of Compliance Workflows",
+     "Executive Systems Director",
+     "Lead Quality Assurance Director",
+     "Director of Instrument Operations"
     ],
     "rel_0000052": [
      "Data Pipeline Governance",
      "Cloud Infrastructure Provisioning",
      "Regulatory Compliance Audit",
      "Machine Learning Model Lifecycle",
-     "Supply Chain Logistics",
      "Financial Reporting Cycle",
      "Network Security Operations",
      "Research Data Curation",
      "Customer Onboarding Workflow",
-     "IT Service Management"
+     "IT Service Management",
+     "Steward Corin",
+     "Lead Vex",
+     "Coordinator Jory",
+     "Principal Maren",
+     "Operator Sable",
+     "Manager Tams",
+     "Steward Oren",
+     "Supervisor Kael",
+     "Architect Ryn",
+     "Director Elara"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -4332,7 +5220,7 @@
      "rel_0000052": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4343,7 +5231,6 @@
      "Managing Director",
      "President",
      "Head of Engineering",
-     "VP Operations",
      "Director of Strategy",
      "Executive Director",
      "COO",
@@ -4351,28 +5238,38 @@
      "Principal Executive"
     ],
     "rel_0000052": [
-     "Sarah Chen",
-     "Marcus Thorne",
      "Elena Rodriguez",
      "David Park",
-     "Priya Sharma",
-     "James Whitfield",
-     "Aisha Khan",
-     "Robert Vance",
      "Lin Wei",
-     "Thomas Berg"
+     "Thomas Berg",
+     "Telemetry Pipeline Cluster",
+     "ISO 17025 Framework",
+     "Data Lake Tier Two",
+     "Governance Policy Alpha",
+     "Core Instrumentation Array",
+     "Provenance Ledger Node",
+     "Quality Assurance Matrix",
+     "Regulatory Submission Queue",
+     "Central Monitoring Dashboard",
+     "Laboratory Information System"
     ],
     "rel_0000054": [
      "Financial Oversight",
      "Technology Strategy",
      "Operational Compliance",
      "Revenue Growth",
-     "Regulatory Reporting",
      "Human Capital Management",
-     "Data Governance",
-     "Risk Mitigation",
      "Corporate Strategy",
-     "Market Expansion"
+     "Execution Function Alpha",
+     "Telemetry Validation Protocol",
+     "Provenance Audit Trail",
+     "Quality Control Standard",
+     "Data Retention Schedule",
+     "Incident Response Matrix",
+     "Compliance Reporting Cycle",
+     "Instrument Calibration Log",
+     "Governance Review Cycle",
+     "Operational Threshold Limit"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -4383,28 +5280,31 @@
    },
    "provenance": {
     "membrane": {
-     "executive_officer_role": "ok",
+     "executive_officer_role": "values are mechanical variants sharing the stem 'officer' \u2014 vary the surface forms (real instances differ in kind, not just in one word)",
      "rel_0000052": "ok",
      "rel_0000054": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "executive_team_roster": {
    "columns": {
     "executive_team_roster": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Priya Mehta",
-     "David Okonkwo",
      "Sarah Lin",
      "James Vance",
-     "Aisha Patel",
-     "Robert Kim",
-     "Maria Santos",
-     "Thomas Wright"
+     "Mira Vance",
+     "Kaelen Moss",
+     "Soren Patel",
+     "Elara Quinn",
+     "Darian Holt",
+     "Tobias Reed",
+     "Lyra Chen",
+     "Felix Grant",
+     "Imogen Shaw",
+     "Nadia Rhee"
     ],
     "rel_0000052": [
      "team_assignment",
@@ -4427,10 +5327,10 @@
    "provenance": {
     "membrane": {
      "executive_team_roster": "ok",
-     "rel_0000052": "ok"
+     "rel_0000052": "label collision across classes: 'Chief Data Officer' already names a DataControllerRole; 'System Architect' already names a DecisionMakerRole; 'Process Owner' already names a BusinessEntity \u2014 coin DISTINCT names for these ExecutiveTeam individuals"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4438,31 +5338,35 @@
    "columns": {
     "academic_role": [
      "Principal Investigator",
-     "Department Chair",
      "Senior Lecturer",
      "Lab Director",
      "Adjunct Professor",
      "Research Fellow",
      "Assistant Dean",
      "Program Coordinator",
-     "Visiting Scholar",
-     "Tenured Professor"
+     "Associate Professor",
+     "Tenured Lecturer",
+     "Adjunct Instructor",
+     "Postdoctoral Lead",
+     "Graduate Mentor",
+     "Senior Academic",
+     "Clinical Professor"
     ],
     "bears_role": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Priya Patel",
-     "David Okonkwo",
-     "Sarah Jenkins",
      "Thomas Weber",
-     "Aisha Al-Fayed",
      "James Liu",
-     "Maria Gonzalez",
-     "Robert Singh"
+     "Robert Singh",
+     "Priya Nair",
+     "Clara Lin",
+     "Samuel Okafor",
+     "Adrian Cross",
+     "Mei Chen",
+     "Diego Morales",
+     "Leo Bergstr\u00f6m"
     ],
     "realizes": [
      "Curriculum Development",
-     "Grant Administration",
      "Peer Review",
      "Student Mentoring",
      "Laboratory Oversight",
@@ -4470,7 +5374,12 @@
      "Field Research",
      "Data Curation",
      "Thesis Supervision",
-     "Conference Organization"
+     "Conference Organization",
+     "Undergraduate Teaching",
+     "Peer Review Coordination",
+     "Academic Advising",
+     "Departmental Service",
+     "Research Publication"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -4486,7 +5395,7 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4553,12 +5462,21 @@
      "Cybersecurity Overhaul",
      "Executive Compensation Plan",
      "Market Expansion Strategy",
-     "Supply Chain Resilience",
      "Board Governance Reform",
      "Capital Allocation Framework",
      "Sustainability Reporting",
      "Merger Integration Status",
-     "Regulatory Compliance Update"
+     "Regulatory Compliance Update",
+     "Q3 Financial Reconciliation",
+     "Cybersecurity Audit Results",
+     "Executive Compensation Review",
+     "Supply Chain Resilience Plan",
+     "Renewable Energy Transition",
+     "Board Governance Amendments",
+     "Merger Integration Timeline",
+     "Customer Data Privacy Compliance",
+     "Capital Expenditure Forecast",
+     "Operational Risk Mitigation"
     ]
    },
    "domain": "",
@@ -4570,7 +5488,7 @@
      "agenda_subject": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4611,10 +5529,19 @@
      "Stress Testing",
      "Heuristic Review",
      "Calibration Check",
-     "Root Cause Analysis",
      "Benchmark Suite",
      "Fault Injection",
-     "Statistical Sampling"
+     "Statistical Sampling",
+     "Spectral calibration check",
+     "Baseline variance mapping",
+     "Metadata lineage tracing",
+     "Signal integrity sweep",
+     "Protocol conformance scoring",
+     "Reference sample benchmarking",
+     "Temporal sync verification",
+     "Cross-platform validation run",
+     "Threshold deviation analysis",
+     "Traceability chain verification"
     ]
    },
    "domain": "",
@@ -4626,7 +5553,7 @@
      "assessment_method": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4695,10 +5622,18 @@
      "Change management review",
      "Network security evaluation",
      "Reconciliation accuracy check",
-     "Vendor risk assessment",
      "Recovery readiness testing",
      "Data retention compliance",
-     "Patch management verification"
+     "Patch management verification",
+     "Access control compliance",
+     "Calibration traceability review",
+     "Retention policy enforcement",
+     "Latency threshold compliance",
+     "Backup recovery validation",
+     "Schema compatibility assessment",
+     "Masking rule compliance",
+     "Calibration drift monitoring",
+     "Key rotation compliance"
     ]
    },
    "domain": "",
@@ -4710,7 +5645,7 @@
      "audit_objective": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4724,9 +5659,18 @@
      "qa-automation-svc",
      "compliance-officer",
      "etl-svc-account",
-     "data-governance-board",
      "sensor-admin-ops",
-     "provenance-writer"
+     "provenance-writer",
+     "Lead Analyst",
+     "Site Coordinator",
+     "Batch Supervisor",
+     "Access Custodian",
+     "Protocol Signatory",
+     "Verification Lead",
+     "Secure Operator",
+     "Release Authorizer",
+     "Credential Holder",
+     "Audit Steward"
     ]
    },
    "domain": "",
@@ -4738,7 +5682,7 @@
      "authorized_entity": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -4829,16 +5773,22 @@
   "filler_boardmember": {
    "columns": {
     "board_member": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Dr. Sarah Jenkins",
      "James Okafor",
      "Priya Mehta",
      "Thomas Vance",
-     "Li Wei",
-     "Anika Patel",
      "Robert Sterling",
-     "Fatima Al-Farsi"
+     "Fatima Al-Farsi",
+     "Primary Nominee",
+     "Lead Audit Delegate",
+     "Senior Compliance Rep",
+     "Executive Council Seat",
+     "Independent Director",
+     "Voting Trust Nominee",
+     "Board Chair Proxy",
+     "Regulatory Liaison",
+     "Strategic Oversight Rep",
+     "Governance Trustee"
     ]
    },
    "domain": "",
@@ -4850,7 +5800,7 @@
      "board_member": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -5033,12 +5983,20 @@
      "Legacy System Decommission",
      "Unified Customer Profile",
      "Telemetry Pipeline Modernization",
-     "Vendor Risk Assessment",
      "API Gateway Standardization",
      "Zero Trust Security Rollout",
      "Master Data Harmonization",
      "Supply Chain Visibility",
-     "Analytics Platform Upgrade"
+     "Analytics Platform Upgrade",
+     "Core Data Consolidation",
+     "Lab Automation Rollout",
+     "Provenance Registry Expansion",
+     "Sensor Mesh Deployment",
+     "Compliance Framework Implementation",
+     "Archive Tier Migration",
+     "Calibration Protocol Upgrade",
+     "Access Policy Refactoring",
+     "Metadata Catalog Synchronization"
     ]
    },
    "domain": "",
@@ -5050,7 +6008,7 @@
      "business_initiative": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -5315,16 +6273,23 @@
     "client": [
      "Patricia Chen",
      "Sterling Holdings LLC",
-     "Eleanor Vance",
      "Oakridge Family Trust",
-     "Marcus Thorne",
      "Aurora Capital Group",
      "Diana Reyes",
      "Hartwell & Sons Ltd",
      "Julian Cross",
      "Silverline Advisory Partners",
-     "Clara Nguyen",
-     "Bridgewater Estate Trust"
+     "Bridgewater Estate Trust",
+     "Aegis Wealth Partners",
+     "Coral Ridge Holdings",
+     "Meridian Trust Group",
+     "Oakwood Advisory LLC",
+     "Pinnacle Client Fund",
+     "Silverline Investment Club",
+     "Terra Nova Family Office",
+     "Vantage Point Retirees",
+     "Willow Creek Beneficiaries",
+     "Yarrow Capital Group"
     ]
    },
    "domain": "",
@@ -5336,7 +6301,7 @@
      "client": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -5377,10 +6342,19 @@
      "STMI door-to-balloon",
      "Hospital mortality index",
      "Vaccination coverage rate",
-     "Hand hygiene compliance",
      "Sepsis bundle adherence",
      "Postoperative infection rate",
-     "HCAHPS satisfaction score"
+     "HCAHPS satisfaction score",
+     "Readmission Tracking Rate",
+     "Surgical Infection Ratio",
+     "Patient Satisfaction Score",
+     "Antibiotic Stewardship Compliance",
+     "Average Length of Stay",
+     "Preventable Adverse Event Count",
+     "Immunization Uptake Percentage",
+     "Diagnostic Turnaround Time",
+     "Care Transition Completion Rate",
+     "Fall Prevention Compliance Index"
     ]
    },
    "domain": "",
@@ -5392,7 +6366,7 @@
      "clinical_performance_data": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -5400,17 +6374,23 @@
    "columns": {
     "clinical_system": [
      "EpicCare Network",
-     "Cerner Millennium",
-     "Meditech Expanse",
-     "Philips IntelliSuite",
-     "GE Centricity EMR",
      "Mayo Clinic Connect",
      "Kaiser Permanente Care",
      "Ascension HealthLink",
      "Tenet Clinical Hub",
      "Sutter Health Portal",
      "Providence CareSync",
-     "Johns Hopkins CTSI"
+     "Johns Hopkins CTSI",
+     "Oakhaven Clinical Systems",
+     "Cobalt Care Network",
+     "Lumen Health Systems",
+     "Vesper Medical Network",
+     "Aegis Clinical Systems",
+     "Crestline Care Network",
+     "Solace Health Systems",
+     "Rook Medical Network",
+     "Ember Clinical Systems",
+     "Frostline Care Network"
     ]
    },
    "domain": "",
@@ -5422,7 +6402,7 @@
      "clinical_system": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -5546,16 +6526,21 @@
   "filler_collegeofficial": {
    "columns": {
     "college_official": [
-     "Eleanor Vance",
-     "James Whitfield",
-     "Marcus Chen",
-     "Sarah Jenkins",
      "Alan Torres",
      "Rachel Kim",
      "David Okafor",
-     "Maria Gonzalez",
      "Thomas Reed",
-     "Lisa Chen"
+     "Lisa Chen",
+     "Dean Aris Thorne",
+     "Provost Lena Vance",
+     "Director Silas Reed",
+     "Chair Maren Cross",
+     "Registrar Owen Hale",
+     "Dean of Studies Tara Bell",
+     "Vice Chancellor Elias Frost",
+     "Academic Director Nora Quinn",
+     "Department Head Felix Ward",
+     "Dean of Research Clara Vale"
     ]
    },
    "domain": "",
@@ -5567,7 +6552,7 @@
      "college_official": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -5686,8 +6671,6 @@
   "filler_corporateauditfunction": {
    "columns": {
     "corporate_audit_function": [
-     "Risk Assessment",
-     "Internal Control Review",
      "Financial Statement Audit",
      "Tax Compliance Check",
      "SOX Compliance Review",
@@ -5697,7 +6680,17 @@
      "Procurement Audit",
      "Inventory Valuation Review",
      "Payroll Compliance Check",
-     "Regulatory Reporting Audit"
+     "Regulatory Reporting Audit",
+     "control effectiveness scoring",
+     "exception threshold monitoring",
+     "audit trail integrity check",
+     "segregation of duties validation",
+     "materiality threshold assessment",
+     "sampling frame generation",
+     "deviation trend analysis",
+     "control remediation tracking",
+     "evidence chain verification",
+     "regulatory mapping alignment"
     ]
    },
    "domain": "",
@@ -5709,7 +6702,7 @@
      "corporate_audit_function": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -5919,15 +6912,22 @@
    "columns": {
     "curriculum": [
      "Data Engineering Track",
-     "Telemetry Pipeline Design",
      "Lab Safety Certification",
-     "Data Governance Framework",
-     "Provenance Tracking Module",
      "Cloud Architecture Program",
      "Machine Learning Operations",
      "Cybersecurity Incident Response",
      "Database Administration Course",
-     "AI Model Deployment"
+     "AI Model Deployment",
+     "Advanced Telemetry Systems",
+     "Quantum Lab Safety",
+     "Bioinformatics Pipeline",
+     "Network Defense Operations",
+     "Environmental Monitoring",
+     "Clinical Data Standards",
+     "Machine Learning Foundations",
+     "Cybersecurity Compliance",
+     "Signal Processing Core",
+     "Research Ethics Protocol"
     ]
    },
    "domain": "",
@@ -5939,7 +6939,7 @@
      "curriculum": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -6065,13 +7065,22 @@
      "Risk Assessment Protocol",
      "Incident Response Workflow",
      "Data Lineage Review",
-     "Change Advisory Board",
      "Model Validation Cycle",
      "Telemetry Threshold Approval",
      "Compliance Audit Trail",
      "Vendor Selection Framework",
      "Data Retention Review",
-     "Pipeline Deployment Gate"
+     "Pipeline Deployment Gate",
+     "phase two validation",
+     "quarterly compliance review",
+     "incident triage protocol",
+     "data quality gate",
+     "risk assessment checkpoint",
+     "calibration decision step",
+     "threshold escalation procedure",
+     "sample rejection protocol",
+     "version release gate",
+     "audit trail review cycle"
     ]
    },
    "domain": "",
@@ -6083,7 +7092,7 @@
      "decision_making_process": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -6119,15 +7128,23 @@
    "columns": {
     "departing_employee": [
      "EMP-448291",
-     "SARAH.JENKINS",
      "MARK.TORRES",
      "LISA.CHEN",
      "DAVIN.PATEL",
      "EMMA.WILSON",
      "JONATHAN.REED",
-     "PRIYA.SHARMA",
      "MICHAEL.CHANG",
-     "ANNA.KOWALSKI"
+     "ANNA.KOWALSKI",
+     "EXIT-PR-4492",
+     "SEPAR-8812",
+     "OFFB-2024-77",
+     "TERMIN-99A",
+     "DIVL-3341",
+     "RESG-6602",
+     "RELV-118F",
+     "DEPT-5503",
+     "EXIT-AC-9921",
+     "SEPR-447B"
     ]
    },
    "domain": "",
@@ -6139,7 +7156,7 @@
      "departing_employee": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -6174,16 +7191,20 @@
   "filler_districtemployee": {
    "columns": {
     "district_employee": [
-     "Elena Rostova",
-     "Marcus Thorne",
      "David Okoro",
-     "Sarah Jenkins",
      "Raj Patel",
-     "Maria Gonzalez",
-     "Thomas Wright",
-     "Priya Sharma",
      "James Liu",
-     "Chloe Bennett"
+     "Chloe Bennett",
+     "Senior District Clerk",
+     "Deputy Planning Director",
+     "Chief Zoning Inspector",
+     "Municipal Fiscal Analyst",
+     "Community Outreach Coordinator",
+     "Environmental Compliance Officer",
+     "Housing Development Specialist",
+     "Emergency Response Planner",
+     "Records Archivist Lead",
+     "Infrastructure Audit Manager"
     ]
    },
    "domain": "",
@@ -6195,7 +7216,7 @@
      "district_employee": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -6488,17 +7509,22 @@
    "columns": {
     "executive_execution_function": [
      "Strategic Deployment",
-     "Operational Execution",
      "KPI Tracking",
-     "Resource Allocation",
-     "Cross-Functional Alignment",
-     "Performance Monitoring",
      "Initiative Rollout",
      "Decision Implementation",
      "Strategy Execution",
-     "Governance Oversight",
      "Change Management",
-     "Executive Steering"
+     "Executive Steering",
+     "Strategic deployment cycle",
+     "Cross-functional rollout mandate",
+     "Executive action sequence",
+     "Operational implementation track",
+     "Leadership execution directive",
+     "Strategic initiative rollout",
+     "Corporate deployment protocol",
+     "Executive implementation framework",
+     "Tactical execution mandate",
+     "Strategic alignment deployment"
     ]
    },
    "domain": "",
@@ -6510,7 +7536,7 @@
      "executive_execution_function": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -6606,13 +7632,21 @@
      "Aris Thorne",
      "Lena Voss",
      "Marcus Hale",
-     "Yuki Tanaka",
      "Elias Frost",
      "Silas Reed",
      "Nadia Kovic",
      "Finn O'Malley",
      "Clara Vance",
-     "Henrik Solberg"
+     "Henrik Solberg",
+     "Torin Halvard",
+     "Elara Vane",
+     "Silas Rourke",
+     "Maren Solberg",
+     "Jace Pendelton",
+     "Cora Linnea",
+     "Darius Thorne",
+     "Wren Alder",
+     "Niamh Calloway"
     ]
    },
    "domain": "",
@@ -6624,7 +7658,7 @@
      "expedition_participant": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -6832,11 +7866,20 @@
      "Treasury Oversight",
      "Financial Planning Cycle",
      "Risk Governance Framework",
-     "Performance Monitoring",
      "Liquidity Management",
      "Audit Coordination",
      "Investment Strategy Review",
-     "Capital Expenditure Approval"
+     "Capital Expenditure Approval",
+     "Strategic Capital Allocation",
+     "Fiscal Oversight Committee",
+     "Treasury Governance Protocol",
+     "Revenue Strategy Alignment",
+     "Budgetary Control Framework",
+     "Capital Expenditure Review",
+     "Liquidity Management Cycle",
+     "Financial Compliance Audit",
+     "Funding Allocation Matrix",
+     "Strategic Reserve Planning"
     ]
    },
    "domain": "",
@@ -6848,7 +7891,7 @@
      "financial_management_process": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -7081,7 +8124,6 @@
   "filler_healthcaresummary": {
    "columns": {
     "health_care_summary": [
-     "Discharge Summary",
      "Care Plan Overview",
      "Transition of Care Report",
      "Annual Wellness Review",
@@ -7090,7 +8132,17 @@
      "Pediatric Growth Report",
      "Oncology Progress Note",
      "Geriatric Care Summary",
-     "Mental Health Overview"
+     "Mental Health Overview",
+     "ADM-2024-892",
+     "ONCOLOGY-RPT-4451",
+     "CHRONIC-CARE-772",
+     "DISCHARGE-TRANS-3",
+     "PEDIATRIC-INIT-881",
+     "GERIATRIC-REV-224",
+     "OUTPATIENT-DIS-119",
+     "ANTENATAL-CARE-12",
+     "POSTOPERATIVE-45",
+     "ACUTE-EXACERB-301"
     ]
    },
    "domain": "",
@@ -7102,7 +8154,7 @@
      "health_care_summary": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -7222,16 +8274,24 @@
   "filler_housingclient": {
    "columns": {
     "housing_client": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Oakwood Holdings",
-     "Priya Sharma",
      "David Nguyen",
      "Sierra Apartments LLC",
      "Jamal Wright",
-     "Anika Patel",
      "Thomas Berg",
-     "Clara Mendoza"
+     "Clara Mendoza",
+     "Vance Household",
+     "Carruthers Family",
+     "Darrow Tenants",
+     "Ellery Group",
+     "Fenn Leaseholders",
+     "Gable Occupancy",
+     "Huxley Cooperative",
+     "Ives Unit Group",
+     "Jett Household",
+     "Lorne Family Trust",
+     "Mace Tenants LLC",
+     "Rook Residents"
     ]
    },
    "domain": "",
@@ -7243,7 +8303,7 @@
      "housing_client": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -7364,15 +8424,18 @@
   "filler_imagingequipment": {
    "columns": {
     "imaging_equipment": [
-     "Siemens MAGNETOM AERA",
-     "GE Discovery MR750",
-     "Philips Ingenia Elition",
      "Canon Aquilion ONE",
      "Philips iE33",
-     "GE Voluson E10",
-     "Siemens Somatom Force",
-     "Hitachi Aprio",
-     "GE Optima CT660"
+     "Axiom Core 7T",
+     "Veridian Luxe CT",
+     "Novus Spectra MR",
+     "Pinnacle Ultra X",
+     "Helios Flux PET",
+     "Zenith Echo US",
+     "Orion DigiScan",
+     "Meridian Flex CT",
+     "Solis Pro Mamm",
+     "Astra Vector Fluoro"
     ]
    },
    "domain": "",
@@ -7384,7 +8447,7 @@
      "imaging_equipment": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -7534,15 +8597,23 @@
    "columns": {
     "information_system": [
      "EpicCare",
-     "Cerner Millennium",
-     "Meditech Expanse",
      "athenaClinicals",
      "InterSystems HealthShare",
      "OpenMRS",
      "Nuance DAX",
      "Veradigm Exchange",
      "CarePort Connect",
-     "SMART FHIR Server"
+     "SMART FHIR Server",
+     "Aegis Clinical Hub",
+     "Veridian DocStream",
+     "Nexus Health Archive",
+     "Clarity Care Registry",
+     "Spectra Document Core",
+     "Orion MedRecord",
+     "PulseDoc Exchange",
+     "Vantage Chart Manager",
+     "Lumina Health Vault",
+     "Axiom Clinical Gateway"
     ]
    },
    "domain": "",
@@ -7554,7 +8625,7 @@
      "information_system": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -7934,13 +9005,17 @@
      "Alicia Vance",
      "Robert Chen",
      "Fatima Al-Hassan",
-     "David Okonkwo",
-     "Maria Gonzalez",
-     "Thomas Wright",
      "Priya Patel",
      "Liam O'Connor",
-     "Elena Rostova",
-     "Marcus Thorne"
+     "Aris Thorne Esq.",
+     "Elena Vance Barrister",
+     "Marcus Hale Counsel",
+     "Silas Reed Attorney",
+     "Cora Lin Solicitor",
+     "Julian Cross Advocate",
+     "Maeve O'Connell Jurist",
+     "Elias Vance Counsel-at-Law",
+     "Tessa Rook Attorney-at-Law"
     ]
    },
    "domain": "",
@@ -7952,7 +9027,7 @@
      "legal_professional": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -8015,16 +9090,20 @@
   "filler_lifeguardstaff": {
    "columns": {
     "lifeguard_staff": [
-     "Marcus Chen",
-     "Elena Rostova",
-     "James O'Connell",
-     "Priya Sharma",
      "David Torres",
-     "Sarah Jenkins",
      "Michael Vance",
-     "Aisha Patel",
      "Ryan Cooper",
-     "Naomi Fujimoto"
+     "Naomi Fujimoto",
+     "LGR-8842",
+     "AQU-7721",
+     "BAS-9903",
+     "POOL-4412",
+     "TND-5508",
+     "LIF-3327",
+     "SWP-2216",
+     "DRK-1105",
+     "WAV-6639",
+     "RIF-4428"
     ]
    },
    "domain": "",
@@ -8036,7 +9115,7 @@
      "lifeguard_staff": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -8247,11 +9326,20 @@
      "Regional Alpha Rollout",
      "Product Line Optimization",
      "CrossChannel Retargeting",
-     "B2B Lead Generation",
      "Mobile App Onboarding",
      "Sustainability Initiative",
      "Trade Show Circuit",
-     "Influencer Partnership Pilot"
+     "Influencer Partnership Pilot",
+     "Coastal Retail Expansion",
+     "Aurora Health Outreach",
+     "Zenith Product Refresh",
+     "Meridian Seasonal Drive",
+     "Terraform Global Push",
+     "Vanguard Tier Upgrade",
+     "Solaris Loyalty Loop",
+     "Nimbus Digital Sweep",
+     "Echo Valley Launch",
+     "Crestline Brand Revival"
     ]
    },
    "domain": "",
@@ -8263,7 +9351,7 @@
      "marketing_plan": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -8420,12 +9508,21 @@
      "Mia Chen",
      "Liam O'Connor",
      "Sophia Patel",
-     "Noah Kim",
      "Olivia Rossi",
      "Lucas Silva",
      "Emma Weber",
      "Aiden Gupta",
-     "Isabella Torres"
+     "Isabella Torres",
+     "MINOR-REG-8842",
+     "YOUTH-CASE-119B",
+     "JUV-FILE-044",
+     "SUBJ-114B",
+     "PUPIL-REC-992",
+     "GUARD-REF-22A",
+     "MINOR-PROF-77",
+     "YOUTH-ID-334",
+     "SUB-221A",
+     "MINOR-LOG-203"
     ]
    },
    "domain": "",
@@ -8437,7 +9534,7 @@
      "minor_person": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -8554,16 +9651,22 @@
   "filler_networkprovider": {
    "columns": {
     "network_provider": [
-     "Comcast",
-     "AT&T",
-     "Verizon",
      "CenturyLink",
      "Lumen Technologies",
      "Spectrum",
      "Frontier Communications",
      "Cox Communications",
      "Charter Communications",
-     "Google Fiber"
+     "Aetherlink Networks",
+     "CoreMesh Communications",
+     "NexusGrid Systems",
+     "OrionPath Telecom",
+     "Stratovault Networks",
+     "HelixFlow Infrastructure",
+     "VantageNet Services",
+     "PrismLink Solutions",
+     "TerraStream Connectivity",
+     "LuminaCore Networks"
     ]
    },
    "domain": "",
@@ -8575,7 +9678,7 @@
      "network_provider": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -8983,15 +10086,21 @@
      "General Management",
      "Operations Oversight",
      "Executive Administration",
-     "Strategic Planning",
-     "Resource Allocation",
      "Compliance Governance",
-     "Performance Monitoring",
-     "Risk Management",
      "Stakeholder Coordination",
      "Administrative Control",
      "Business Continuity",
-     "Decision Authority"
+     "Decision Authority",
+     "Executive Oversight Unit",
+     "Administrative Coordination Desk",
+     "Strategic Operations Division",
+     "Governance Execution Cell",
+     "Managerial Resource Office",
+     "Executive Command Directorate",
+     "Administrative Compliance Unit",
+     "Operational Leadership Section",
+     "Executive Affairs Coordination",
+     "Management Oversight Division"
     ]
    },
    "domain": "",
@@ -9003,7 +10112,7 @@
      "organizational_function": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9045,9 +10154,20 @@
      "Chief Technology Officer",
      "Program Manager",
      "Lead Data Architect",
-     "Chief Financial Officer",
      "Director of Quality",
-     "VP of Strategy"
+     "VP of Strategy",
+     "Lead Governance Architect",
+     "Principal Systems Steward",
+     "Chief Data Trustee",
+     "Executive Platform Director",
+     "Lead Research Governor",
+     "Principal Operations Overseer",
+     "Chief Compliance Architect",
+     "Executive Lab Director",
+     "Lead Network Steward",
+     "Principal Provenance Officer",
+     "Executive Quality Governor",
+     "Lead Telemetry Director"
     ]
    },
    "domain": "",
@@ -9059,7 +10179,7 @@
      "organizational_leadership_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9070,12 +10190,23 @@
      "svc-telemetry-agent",
      "Dr. L. Vasquez",
      "J. M. Al-Fayed",
-     "R. Patel",
      "A. Mensah",
      "K. Okafor",
      "M. Fischer",
      "E. Rossi",
-     "T. Nkosi"
+     "T. Nkosi",
+     "USR-7742-A",
+     "ENG-OPS-LEAD",
+     "DATA-GOV-LEAD",
+     "SYS-ADMIN-ALPHA",
+     "RESEARCH-COORD-V",
+     "TECH-LEAD-MARIN",
+     "AUDIT-SPEC-IV",
+     "PROV-ENG-DELTA",
+     "SEC-OPS-LEAD",
+     "LAB-MGR-VALE",
+     "DATA-ARCH-PRIME",
+     "COMPLIANCE-REP-II"
     ]
    },
    "domain": "",
@@ -9087,7 +10218,7 @@
      "organization_member": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9124,16 +10255,22 @@
   "filler_patient": {
    "columns": {
     "patient": [
-     "Eleanor Vance",
-     "Marcus Chen",
      "Sofia Reyes",
      "David Okoye",
-     "Clara Nguyen",
-     "James Whitfield",
      "Amina Diallo",
      "Thomas Mercer",
      "Lena Petrova",
-     "Samuel Ortiz"
+     "Samuel Ortiz",
+     "MRN-849201",
+     "HCN-00492",
+     "PID-7734",
+     "ENC-9921",
+     "PAT-0092",
+     "MRN-22184",
+     "HCN-44910",
+     "PID-3387",
+     "ENC-1102",
+     "ID-5561"
     ]
    },
    "domain": "",
@@ -9145,7 +10282,7 @@
      "patient": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9239,13 +10376,21 @@
      "billing compliance",
      "staff scheduling",
      "patient retention",
-     "risk mitigation",
      "credentialing workflows",
      "inventory control",
      "quality assurance",
      "contract negotiation",
-     "regulatory compliance",
-     "revenue cycle management"
+     "revenue cycle management",
+     "Revenue cycle optimization",
+     "Clinical compliance auditing",
+     "Staff credentialing workflows",
+     "Malpractice risk mitigation",
+     "Electronic health record governance",
+     "Patient billing arbitration",
+     "Inventory procurement standards",
+     "Confidentiality protocol enforcement",
+     "Facility safety inspections",
+     "Regulatory reporting deadlines"
     ]
    },
    "domain": "",
@@ -9257,7 +10402,7 @@
      "practice_management_topic": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9408,16 +10553,19 @@
   "filler_publicinformationofficer": {
    "columns": {
     "public_information_officer": [
-     "Dr. Elena Rostova",
-     "Marcus Chen",
      "Sarah Whitfield",
-     "James O'Connell",
-     "Maria Gonzalez",
      "David Park",
-     "Aisha Khan",
-     "Robert Vance",
      "Lisa Tran",
-     "Thomas Wright"
+     "Chief Communications Director",
+     "Media Relations Coordinator",
+     "Public Affairs Specialist",
+     "Information Dissemination Lead",
+     "Press Secretary",
+     "Community Outreach Manager",
+     "Strategic Communications Officer",
+     "Public Liaison Officer",
+     "External Affairs Coordinator",
+     "Public Information Manager"
     ]
    },
    "domain": "",
@@ -9429,7 +10577,7 @@
      "public_information_officer": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9552,16 +10700,21 @@
   "filler_receivingfacilitystaff": {
    "columns": {
     "receiving_facility_staff": [
-     "Maria Chen",
      "Dr. Alan Pierce",
-     "Sarah Jenkins",
-     "Robert Vance",
      "Elena Torres",
-     "David Kim",
      "Patricia Moore",
      "James Carter",
      "Linda Nguyen",
-     "Thomas Wright"
+     "M. Chen",
+     "Dr. J. Vance",
+     "R. Singh",
+     "T. Al-Fayed",
+     "S. Petrova",
+     "C. Varga",
+     "J. Mercer",
+     "S. Al-Rashid",
+     "P. Johansson",
+     "D. Wu"
     ]
    },
    "domain": "",
@@ -9573,7 +10726,7 @@
      "receiving_facility_staff": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9699,11 +10852,19 @@
      "OctaneRender X",
      "Blender Cycles",
      "Unreal Engine 5",
-     "NVIDIA Iray",
      "Katana 4.0",
      "Houdini Mantra",
-     "Apple RenderKit",
-     "Three.js WebGL"
+     "Three.js WebGL",
+     "FluxRender Core",
+     "AetherFrame Pipeline",
+     "PrismStream Engine",
+     "VertexWave Render",
+     "ChronoMesh Compiler",
+     "LuminaGraph Runtime",
+     "SynthAxis Composer",
+     "NeonThread Renderer",
+     "EchoGrid Engine",
+     "VectorHalo Pipeline"
     ]
    },
    "domain": "",
@@ -9715,7 +10876,7 @@
      "rendering_engine": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9730,8 +10891,19 @@
      "Pixar Render Farm",
      "Weta Digital Studio",
      "Houdini Simulation Bay",
-     "NVIDIA A100 Cluster",
-     "CineRender Facility"
+     "CineRender Facility",
+     "Climate-Controlled Render Bay",
+     "Sublevel Compute Vault",
+     "Acoustic Isolation Suite",
+     "Thermal Dampened Studio",
+     "Faraday Shielded Lab",
+     "Low-Latency Array Room",
+     "Dust-Free Animation Nook",
+     "Silent-Grav Compute Hall",
+     "HVAC-Zero Studio",
+     "Stable-Phase Chamber",
+     "Isolated Processing Bay",
+     "Controlled-Atmosphere Hall"
     ]
    },
    "domain": "",
@@ -9743,7 +10915,7 @@
      "rendering_environment": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -9865,13 +11037,23 @@
      "spectral analysis",
      "field sampling",
      "data ingestion",
-     "sensor calibration",
      "protocol validation",
-     "hypothesis testing",
      "metadata tagging",
      "anomaly detection",
      "prototype iteration",
-     "literature synthesis"
+     "literature synthesis",
+     "longitudinal cohort tracking",
+     "mass spectrometry calibration",
+     "RNA sequencing library prep",
+     "environmental sensor deployment",
+     "clinical trial phase II monitoring",
+     "geospatial mapping survey",
+     "microplastic filtration analysis",
+     "neural network hyperparameter tuning",
+     "water quality titration",
+     "genomic variant annotation",
+     "soil core stratigraphy logging",
+     "polymer stress fracture testing"
     ]
    },
    "domain": "",
@@ -9883,7 +11065,7 @@
      "research_activity": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -10060,7 +11242,6 @@
   "filler_simulationsoftware": {
    "columns": {
     "simulation_software": [
-     "ANSYS Fluent",
      "COMSOL Multiphysics",
      "OpenFOAM",
      "Abaqus Standard",
@@ -10069,7 +11250,17 @@
      "MATLAB Simulink",
      "Gazebo Simulator",
      "STK Analyzer",
-     "Modelica Dymola"
+     "Modelica Dymola",
+     "AetherSim",
+     "FluxCore",
+     "DynaMesh",
+     "SolsticeSolver",
+     "VectorGrid",
+     "ParagonSim",
+     "NovaField",
+     "ChronosEngine",
+     "TesseractLab",
+     "HeliosSim"
     ]
    },
    "domain": "",
@@ -10081,7 +11272,7 @@
      "simulation_software": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -10146,16 +11337,24 @@
   "filler_socialnetworkingservicetype": {
    "columns": {
     "social_networking_service_type": [
-     "Facebook",
      "Twitter",
-     "Instagram",
      "LinkedIn",
      "TikTok",
      "Reddit",
      "Discord",
      "Snapchat",
      "WhatsApp",
-     "Mastodon"
+     "Mastodon",
+     "Microblogging Platform",
+     "Media Sharing Network",
+     "Professional Social Hub",
+     "Interest-Based Forum",
+     "Decentralized Mesh Network",
+     "Video-First Social Feed",
+     "Enterprise Community Portal",
+     "Peer-to-Peer Chat Grid",
+     "Topic-Driven Discussion Board",
+     "Real-Time Collaboration Space"
     ]
    },
    "domain": "",
@@ -10167,7 +11366,7 @@
      "social_networking_service_type": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -10615,12 +11814,21 @@
      "Strategic_Capital_Review",
      "Merger_Finance_Alignment",
      "Annual_Tax_Planning",
-     "Liquidity_Stress_Test",
      "Dividend_Policy_Review",
      "Pension_Fund_Rebalancing",
      "Research_Budget_Approval",
      "Working_Capital_Optimization",
-     "Treasury_Risk_Assessment"
+     "Treasury_Risk_Assessment",
+     "Q3 capital reallocation review",
+     "Series B funding round",
+     "Fiscal 2024 liquidity forecast",
+     "Asset-liability matching exercise",
+     "Treasury derivatives calibration",
+     "Municipal bond issuance drive",
+     "Venture portfolio rebalancing",
+     "Supply chain financing audit",
+     "Executive compensation benchmarking",
+     "Green bond sustainability review"
     ],
     "objective": [
      "Cost_Reduction_Target",
@@ -10632,7 +11840,17 @@
      "Tax_Optimization_Framework",
      "Working_Capital_Stabilization",
      "Liquidity_Enhancement",
-     "Dividend_Sustainability"
+     "Dividend_Sustainability",
+     "Capital Preservation Strategy",
+     "Revenue Growth Trajectory",
+     "Debt Service Optimization",
+     "Portfolio Diversification Framework",
+     "Fiscal Sustainability Target",
+     "Liquidity Reserve Accumulation",
+     "Yield Maximization Protocol",
+     "Risk Exposure Reduction Plan",
+     "Asset Revaluation Schedule",
+     "Dividend Distribution Policy"
     ],
     "participant": [
      "CFO_Office",
@@ -10640,11 +11858,22 @@
      "Treasury_Department",
      "Audit_Committee",
      "External_Auditors",
-     "Risk_Management",
      "Board_Finance_Subcommittee",
      "Investment_Advisors",
      "Procurement_Leads",
-     "Controller_Department"
+     "Controller_Department",
+     "Treasury compliance unit",
+     "Capital markets desk",
+     "Risk governance committee",
+     "Procurement finance squad",
+     "Investor relations desk",
+     "Actuarial analysis group",
+     "Debt issuance syndicate",
+     "Corporate finance council",
+     "M&A integration team",
+     "Tax strategy advisory board",
+     "Liquidity management unit",
+     "Pension fund trustees"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -10660,7 +11889,7 @@
      "participant": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -10676,19 +11905,38 @@
      "Portfolio Rebalancing Review",
      "Mortgage Refinance Consultation",
      "Education Funding Strategy",
-     "Business Succession Advisory"
+     "Business Succession Advisory",
+     "ADV-7742-SEC",
+     "Q3_Retirement_Review",
+     "Portfolio_Allocation_Review",
+     "Client_Onboarding_Advisory",
+     "Tax_Loss_Harvesting_Strategy",
+     "Superannuation_Retirement_Plan",
+     "Estate_Planning_Consultation",
+     "Debt_Restructuring_Advisory",
+     "ESG_Investment_Strategy",
+     "Mortgage_Refinance_Advisory"
     ],
     "serves": [
      "J. Morrison",
      "A. Chen Family Trust",
-     "R. Patel",
      "S. Williams Pty Ltd",
      "D. & M. Thompson",
      "K. Nguyen",
      "L. Garcia Estate",
      "P. Singh",
      "M. O'Brien",
-     "C. Lee Trust"
+     "C. Lee Trust",
+     "Individual_Account_Prime",
+     "Joint_Married_Couple",
+     "Small_Business_Entity",
+     "Trust_Fund_Beneficiary",
+     "Retiree_Demographic_Group",
+     "Corporate_Pension_Scheme",
+     "High_Net_Worth_Client",
+     "Nonprofit_Organization",
+     "Freelance_Contractor",
+     "Estate_Trust_Account"
     ],
     "targets": [
      "Term Deposit 24M",
@@ -10700,7 +11948,17 @@
      "Government Bond Series",
      "Private Credit Facility",
      "Annuity Contract",
-     "Unit Trust Class"
+     "Unit Trust Class",
+     "Defined_Benefit_Pension",
+     "Tax_Favored_Savings_Account",
+     "Global_Equity_Mutual_Fund",
+     "Variable_Life_Insurance",
+     "Real_Estate_Investment_Trust",
+     "High_Yield_Bond_Portfolio",
+     "Robo_Advisor_Allocation",
+     "Fixed_Income_Annuity",
+     "Cryptocurrency_Futures_Fund",
+     "Private_Equity_Feed"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -10716,7 +11974,7 @@
      "targets": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -10732,7 +11990,16 @@
      "Working Capital Shortfall",
      "Equity Dilution",
      "Credit Rating Downgrade",
-     "Tax Liability Exposure"
+     "Tax Liability Exposure",
+     "Quarterly Earnings Baseline",
+     "Cash Flow Stability Index",
+     "Solvency Margin Threshold",
+     "Liquidity Coverage Ratio",
+     "Debt Servicing Capacity",
+     "Working Capital Position",
+     "Equity Valuation Snapshot",
+     "Revenue Run Rate",
+     "Operating Margin Trajectory"
     ],
     "financial_report_artifact": [
      "Q3 FY2023 Earnings",
@@ -10744,7 +12011,17 @@
      "Treasury Liquidity Report",
      "FY2022 Sustainability Addendum",
      "M&A Due Diligence",
-     "Q2 Segment Breakdown"
+     "Q2 Segment Breakdown",
+     "FRA-2024-Q3-Alpha",
+     "Meridian Ledger Extract",
+     "Q3 Fiscal Reconciliation",
+     "Aurora Balance Sheet",
+     "Hephaestus Debt Registry",
+     "Solstice Cash Flow",
+     "Vanguard Tax Deduction",
+     "Orion Reserve Allocation",
+     "Cobalt Liquidity Snapshot",
+     "Titan Capital Log"
     ],
     "supports": [
      "Capital Optimization Plan",
@@ -10754,9 +12031,18 @@
      "Working Capital Reduction",
      "ESG Investment Framework",
      "Cost Transformation Drive",
-     "M&A Integration Plan",
      "Treasury Hedging Policy",
-     "Portfolio Rebalancing Strategy"
+     "Portfolio Rebalancing Strategy",
+     "STR-ALPHA-2024",
+     "Meridian Growth Plan",
+     "Fiscal 2025 Expansion",
+     "Debt Restructuring Route",
+     "Equity Divestment Path",
+     "Working Capital Opt",
+     "Greenfield Investment Plan",
+     "Acquisition Financing Route",
+     "Tax Efficiency Protocol",
+     "Liquidity Buffer Plan"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -10772,7 +12058,7 @@
      "supports": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -10781,14 +12067,23 @@
     "financial_strategy_and_planning_process": [
      "FY24 Capital Allocation",
      "Q3 Revenue Forecast",
-     "M&A Integration Plan",
      "Long Term Growth Strategy",
      "Debt Restructuring Initiative",
      "Dividend Policy Review",
      "Treasury Optimization Plan",
      "Budget Consolidation Cycle",
      "Risk Appetite Framework",
-     "Strategic Cost Reduction"
+     "Strategic Cost Reduction",
+     "Annual Capital Allocation",
+     "Quarterly Liquidity Review",
+     "Long Term Asset Deployment",
+     "Fiscal Year Budget Cycle",
+     "Strategic Reserve Reallocation",
+     "Multi Year Investment Roadmap",
+     "Dividend Policy Formulation",
+     "Risk Tolerance Calibration",
+     "Mergers Acquisition Framework",
+     "Capital Structure Optimization"
     ],
     "involves_participant": [
      "CFO Office",
@@ -10800,7 +12095,15 @@
      "Investment Committee",
      "Budget Oversight Panel",
      "Financial Planning Lead",
-     "Executive Finance Team"
+     "Executive Finance Team",
+     "Treasury Management Lead",
+     "Risk Oversight Committee",
+     "Capital Markets Analyst",
+     "Internal Audit Director",
+     "Strategic Planning Council",
+     "Budget Allocation Board",
+     "Finance Transformation Lead",
+     "Executive Steering Group"
     ],
     "output": [
      "Annual Capital Plan",
@@ -10809,10 +12112,19 @@
      "Cash Flow Forecast",
      "Budget Variance Analysis",
      "Strategic Investment Memo",
-     "Liquidity Stress Test",
      "Cost Savings Tracker",
      "Revenue Model Update",
-     "Portfolio Risk Assessment"
+     "Portfolio Risk Assessment",
+     "Quarterly Earnings Summary",
+     "Five Year Cashflow Projection",
+     "Capital Expenditure Ledger",
+     "Debt Service Schedule",
+     "Profitability Analysis Matrix",
+     "Tax Liability Forecast",
+     "Dividend Distribution Plan",
+     "Liquidity Stress Test Report",
+     "Executive Financial Brief",
+     "Asset Allocation Summary"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -10828,7 +12140,7 @@
      "output": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -10902,17 +12214,35 @@
      "Revetment Structure",
      "Tide Gate",
      "Sluice Gate",
-     "Flood Gate"
+     "Flood Gate",
+     "concrete levee",
+     "submerged pump station",
+     "drainage culvert",
+     "storm channel",
+     "retention basin",
+     "floodgate",
+     "earthen embankment",
+     "overflow weir",
+     "sluice gate",
+     "gabion basket"
     ],
     "flood_asset_condition_assessment": [
-     "Mississippi Delta Surge",
      "Thames Barrier Assessment",
      "Elbe River Inundation",
-     "Yangtze Delta Flood",
      "Seine Basin Surge",
      "Colorado River Event",
      "Sundarbans Tidal",
-     "Rhine Flood Crisis"
+     "Rhine Flood Crisis",
+     "Rivercrest_Inundation",
+     "BasinCreek_Flood",
+     "DeltaBreach_September",
+     "CedarValley_Surge",
+     "HarborLowland_Rise",
+     "TributaryCreek_Overflow",
+     "CoastalSlough_Event",
+     "MeadowCreek_Inundation",
+     "ValleyCreek_Rise",
+     "HarborSlough_Flood"
     ],
     "utilizes": [
      "Sentinel 1 SAR",
@@ -10926,7 +12256,17 @@
      "Radar Backscatter",
      "Spectral Index Map",
      "Synthetic Aperture",
-     "Aerial Photogrammetry"
+     "Aerial Photogrammetry",
+     "SAR imagery",
+     "LiDAR point cloud",
+     "InSAR coherence",
+     "multispectral band",
+     "thermal infrared",
+     "optical reflectance",
+     "microwave radar",
+     "hyperspectral scan",
+     "UAV photogrammetry",
+     "georeferenced orthomosaic"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -10942,29 +12282,24 @@
      "utilizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "general_manager_role": {
    "columns": {
     "bears_role": [
-     "Sarah Chen",
-     "Marcus Thorne",
-     "Aisha Patel",
-     "David Okonkwo",
-     "Elena Rostova",
-     "James Whitfield",
-     "Yuki Tanaka",
-     "Carlos Mendez",
      "Fatima Al-Sayed",
-     "Robert Vance",
-     "Priya Sharma",
-     "Liam OConnor"
+     "Liam OConnor",
+     "Agent Kaelen Vance",
+     "Officer Rhea Solis",
+     "Staff Member Joren Pike",
+     "Agent Mira Chen",
+     "Officer Tariq Moss",
+     "Agent Linnea Frost"
     ],
     "general_manager_role": [
      "Site Director",
-     "Operations Lead",
      "Regional Executive",
      "Plant Director",
      "Division Head",
@@ -10972,21 +12307,37 @@
      "Business Unit Lead",
      "Corporate Director",
      "Area Supervisor",
-     "District Administrator"
+     "District Administrator",
+     "North Region GM",
+     "Clinical Services Lead",
+     "Manufacturing Plant Head",
+     "Logistics Command Lead",
+     "Digital Strategy Oversight",
+     "Departmental Coordination Lead",
+     "Research Facility Director",
+     "Supply Chain Command",
+     "Customer Experience Lead",
+     "Strategic Planning Head"
     ],
     "realizes": [
      "Strategic Oversight",
-     "Operational Execution",
      "Financial Management",
      "Team Leadership",
      "Budget Allocation",
-     "Risk Mitigation",
      "Stakeholder Alignment",
      "Process Optimization",
-     "Market Expansion",
      "Compliance Governance",
      "Resource Planning",
-     "Performance Monitoring"
+     "Telemetry Pipeline Oversight",
+     "Laboratory Quality Management",
+     "Data Provenance Verification",
+     "Instrument Calibration Coordination",
+     "Protocol Compliance Enforcement",
+     "System Reliability Planning",
+     "Access Control Governance",
+     "Incident Response Coordination",
+     "Metric Standardization",
+     "Resource Distribution Management"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11002,7 +12353,7 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -11018,7 +12369,16 @@
      "Noninvasive Prenatal Test",
      "Mitochondrial Sequencing",
      "Tumor Profiling Assay",
-     "Rare Disease Exome"
+     "Rare Disease Exome",
+     "Targeted Exome Panel",
+     "Germline Mutation Assay",
+     "Somatic Variant Screen",
+     "Pharmacogenomic Profiling",
+     "HLA Typing Panel",
+     "Liquid Biopsy Assay",
+     "Structural Variant Detection",
+     "Non-Invasive Prenatal Screen",
+     "Mitochondrial Genome Assay"
     ],
     "targets_specimen": [
      "Peripheral Blood Sample",
@@ -11030,7 +12390,15 @@
      "Dried Blood Spot",
      "Cord Blood",
      "Hair Follicle",
-     "Bone Marrow Aspirate"
+     "Bone Marrow Aspirate",
+     "Buccal Swab Extract",
+     "Formalin Fixed Paraffin Block",
+     "Plasma Cell Free DNA",
+     "Amniotic Fluid Culture",
+     "Saliva Collection Kit",
+     "Tissue Microarray Slide",
+     "Dried Blood Spot Card",
+     "Hair Follicle Root"
     ],
     "utilizes_platform": [
      "Oxford Nanopore PromethION",
@@ -11038,10 +12406,16 @@
      "Ion Torrent PGM",
      "10x Genomics Chromium",
      "MGI DNBSEQ-T7",
-     "Roche 454 FLX",
      "Helicos hCS",
      "Sanger Sequencer",
-     "Illumina MiSeq"
+     "AxiomSeq N100",
+     "BasePulse X9",
+     "GeneStream Pro",
+     "SeqCore Atlas",
+     "NucleoScan V7",
+     "StrandWeave Mini",
+     "HelioMapper Elite",
+     "BaseCorder Ultra"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11057,7 +12431,7 @@
      "utilizes_platform": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -11180,14 +12554,25 @@
      "Rental Market Stability",
      "Homeownership Access",
      "Discrimination Prevention",
-     "Eviction Prevention",
      "Gentrification Mitigation",
      "Code Enforcement",
      "Fair Housing Compliance",
      "Neighborhood Revitalization",
      "Housing Finance Reform",
      "Tenant Rights",
-     "Emergency Shelter"
+     "Emergency Shelter",
+     "Affordability Metrics",
+     "Zoning Compliance",
+     "Tenant Eviction Rates",
+     "Construction Permits",
+     "Fair Housing Audits",
+     "Property Tax Assessments",
+     "Mortgage Default Tracking",
+     "Urban Renewal Planning",
+     "Subsidy Allocation",
+     "Building Code Enforcement",
+     "Homelessness Intervention",
+     "Rental Market Analysis"
     ],
     "housing_policy_information": [
      "Housing Choice Vouchers",
@@ -11201,7 +12586,17 @@
      "First Time Buyer Grant",
      "Tax Abatement Plan",
      "Land Trust Framework",
-     "Property Tax Freeze"
+     "Property Tax Freeze",
+     "Rent Control Ordinance",
+     "Inclusionary Zoning Rule",
+     "Eviction Moratorium Directive",
+     "Affordable Housing Mandate",
+     "Public Housing Upgrade Plan",
+     "First Buyer Credit Program",
+     "Density Bonus Framework",
+     "Land Trust Charter",
+     "Rental Registration Statute",
+     "Voucher Allocation Rule"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11215,7 +12610,7 @@
      "housing_policy_information": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -11342,7 +12737,19 @@
      "Covert data export",
      "Unapproved protocol deviation",
      "Stolen lab equipment",
-     "Unauthorized citation use"
+     "Unauthorized citation use",
+     "academic-fraud-inquiry",
+     "plagiarism-allegation",
+     "lab-safety-breach",
+     "grade-manipulation-filing",
+     "research-data-fabrication",
+     "conflict-of-interest-disclosure",
+     "harassment-report",
+     "misuse-grant-funds",
+     "academic-integrity-hearing",
+     "ethical-review-violation",
+     "data-privacy-lapse",
+     "procurement-compliance-filing"
     ],
     "misuses": [
      "High performance cluster",
@@ -11354,19 +12761,36 @@
      "Restricted fieldwork data",
      "Campus network switch",
      "Sponsored project budget",
-     "Secure vault terminal"
+     "Secure vault terminal",
+     "grant-funds-2022",
+     "patient-cohort-data",
+     "server-access-keys",
+     "conference-travel-budget",
+     "archival-manuscripts",
+     "centrifuge-serial-44",
+     "peer-review-drafts",
+     "field-sample-collections",
+     "simulation-license-keys",
+     "lab-coat-inventory"
     ],
     "performed_by": [
-     "Graduate researcher",
-     "Postdoctoral fellow",
-     "Tenured professor",
      "Lab technician",
      "Undergraduate TA",
-     "Department chair",
-     "Visiting scholar",
      "Research assistant",
      "IT administrator",
-     "Faculty advisor"
+     "Faculty advisor",
+     "prof-elena-ross",
+     "grad-student-liam-chen",
+     "adjunct-instructor-sara-voss",
+     "lab-technician-mark-davis",
+     "dept-chair-omar-jamil",
+     "research-fellow-nina-petrov",
+     "academic-advisor-tom-wells",
+     "postdoc-researcher-jessica-lee",
+     "tenured-prof-anika-mueller",
+     "grad-assistant-derek-park",
+     "visiting-scholar-fatima-alhassan",
+     "clinical-instructor-ryan-cooper"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11382,7 +12806,7 @@
      "performed_by": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -11398,7 +12822,16 @@
      "Automated Compliance Checks",
      "Container Orchestration",
      "Feature Store Integration",
-     "Distributed Tracing"
+     "Distributed Tracing",
+     "ISO 17025 track",
+     "Seed grant pool",
+     "Machine learning pipeline",
+     "Reagent procurement workflow",
+     "Mentorship cohort lead",
+     "Hardware provisioning queue",
+     "Cross-lab sharing agreement",
+     "Quality assurance checklist",
+     "Firmware update schedule"
     ],
     "has_participant": [
      "Data Engineering Squad",
@@ -11408,9 +12841,18 @@
      "ML Research Group",
      "Cloud Infrastructure Dept",
      "DevOps Pipeline Crew",
-     "Data Governance Board",
      "Network Telemetry Unit",
-     "Container Runtime Squad"
+     "Container Runtime Squad",
+     "Spectrophotometer array",
+     "Culture medium reserve",
+     "Lead microbiologist",
+     "Automated pipetting arm",
+     "Sterile biosafety cabinet",
+     "Temperature probe cluster",
+     "Growth substrate tray",
+     "Calibration standard vial",
+     "Waste containment unit",
+     "Data logger terminal"
     ],
     "incubation_program": [
      "AlphaStream Accelerator",
@@ -11422,7 +12864,17 @@
      "AI Governance Sandbox",
      "MeshOps Incubation",
      "SignalPath Pilot",
-     "Terraform Forge"
+     "Terraform Forge",
+     "Autumn microbial culture",
+     "Nano-fabrication boot",
+     "Bio-reactor initialization",
+     "Cell line expansion",
+     "Thermal stabilization trial",
+     "Plasma etching prep",
+     "Enzyme activation sequence",
+     "Viral vector propagation",
+     "Cryo-preservation startup",
+     "Media conditioning phase"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11438,16 +12890,14 @@
      "incubation_program": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "independent_committee_investigation": {
    "columns": {
     "employs_analytical_method": [
-     "Root Cause Analysis",
      "Bayesian Inference",
-     "Monte Carlo Simulation",
      "Regression Discontinuity",
      "Network Topology Mapping",
      "Anomaly Detection Scoring",
@@ -11456,11 +12906,20 @@
      "Fault Tree Assessment",
      "Sentiment Polarity Scoring",
      "Markov Chain Transition",
-     "Causal Inference Graph"
+     "Causal Inference Graph",
+     "Root Cause Triangulation",
+     "Control Flow Mapping",
+     "Evidence Chain Weighing",
+     "Statistical Sampling Protocol",
+     "Variance Threshold Testing",
+     "Provenance Graph Tracing",
+     "Anomaly Baseline Comparison",
+     "Temporal Alignment Analysis",
+     "Cross-Reference Validation",
+     "Metric Convergence Audit"
     ],
     "independent_committee_investigation": [
      "FDA Safety Review",
-     "Boeing 737 Max Inquiry",
      "NASA Challenger Commission",
      "SEC Enron Probe",
      "WHO Pandemic Review",
@@ -11470,7 +12929,17 @@
      "FDA Post-Market Surveillance",
      "IEEE Ethics Review",
      "CFTC Derivatives Probe",
-     "HHS Clinical Trial Oversight"
+     "HHS Clinical Trial Oversight",
+     "Aegis Component Review",
+     "Meridian Fault Probe",
+     "Helios Calibration Audit",
+     "Vertex Process Inquiry",
+     "Cobalt Telemetry Trace",
+     "Sentinel Incident Review",
+     "Orion Material Audit",
+     "Vanguard Protocol Probe",
+     "Atlas Structural Check",
+     "Nexus Data Integrity Review"
     ],
     "utilizes_data_collection": [
      "Structured Survey",
@@ -11484,7 +12953,17 @@
      "Patient Cohort Screening",
      "Vendor Contract Audit",
      "Real-time Event Streaming",
-     "Manual Interview Transcription"
+     "Manual Interview Transcription",
+     "Continuous Sensor Logging",
+     "Batch Sample Extraction",
+     "Telemetry Stream Capture",
+     "Automated API Polling",
+     "Environmental Probe Array",
+     "Sequential Sample Queue",
+     "Real-time Packet Sniffing",
+     "Historical Archive Pull",
+     "Multi-point Thermocouple Readings",
+     "Distributed Log Aggregation"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11500,7 +12979,7 @@
      "utilizes_data_collection": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -11772,14 +13251,22 @@
      "Q3 Vendor Risk",
      "Annual IT Compliance",
      "CrossFunctional Verification",
-     "Regulatory Reporting",
      "Data Governance Audit",
      "Supply Chain Integrity",
      "Fraud Prevention Sweep",
      "Cloud Security Check",
      "Access Control Review",
      "Operational Continuity",
-     "ESG Disclosure Verification"
+     "ESG Disclosure Verification",
+     "Fiscal Q3 Review",
+     "Supply Chain Compliance",
+     "Data Privacy Alignment",
+     "Financial Controls Overhaul",
+     "Lab Safety Protocol",
+     "Network Access Audit",
+     "Cloud Infra Review",
+     "Procurement Cycle Check",
+     "Access Revocation Audit"
     ],
     "specifies_methodology": [
      "Risk-Based Sampling",
@@ -11787,16 +13274,24 @@
      "Stratified Random Sampling",
      "Control Self-Assessment",
      "Process Mapping",
-     "Root Cause Analysis",
      "Cross-Functional Benchmarking",
      "Scenario Testing",
      "Traceability Matrix",
      "Data Analytics Review",
      "Manual Walkthrough",
-     "Automated Control Testing"
+     "Automated Control Testing",
+     "Structured Sampling Protocol",
+     "Continuous Monitoring Loop",
+     "Cross-Functional Review Cycle",
+     "Documented Verification Path",
+     "Systematic Evidence Gathering",
+     "Iterative Control Validation",
+     "Traceability Matrix Analysis",
+     "Automated Exception Drift",
+     "Sequential Control Mapping",
+     "Parallel Process Benchmarking"
     ],
     "targets_objective": [
-     "Regulatory Compliance",
      "Financial Accuracy",
      "Data Integrity",
      "Access Control",
@@ -11807,7 +13302,17 @@
      "Process Efficiency",
      "Asset Safeguarding",
      "Policy Adherence",
-     "System Availability"
+     "System Availability",
+     "Data Integrity Assurance",
+     "Regulatory Compliance Alignment",
+     "Risk Mitigation Threshold",
+     "Audit Trail Completeness",
+     "Control Environment Maturity",
+     "Evidence Preservation Standard",
+     "Process Transparency Metric",
+     "Variance Tolerance Limit",
+     "System Reliability Benchmark",
+     "Governance Framework Adoption"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11823,7 +13328,7 @@
      "targets_objective": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -11839,19 +13344,34 @@
      "CIA-6672",
      "CIA-1105",
      "CIA-4407",
-     "CIA-8856"
+     "CIA-8856",
+     "CertifiedAuditor-Alpha",
+     "LeadIA-77B",
+     "CompAudit-09X",
+     "RiskIA-44Z",
+     "AuditLead-22F",
+     "CertOps-88C",
+     "IASpecialist-11",
+     "CertAudit-55D",
+     "InternalIA-33G",
+     "ComplianceIA-66H"
     ],
     "function": [
-     "Risk Assessment",
      "Control Testing",
-     "Compliance Verification",
      "Fraud Detection",
      "Process Optimization",
-     "Regulatory Reporting",
-     "Policy Enforcement",
      "Audit Planning",
      "Remediation Tracking",
-     "Governance Oversight"
+     "RiskEvaluation",
+     "ControlsTesting",
+     "ComplianceVerification",
+     "ProcessOptimization",
+     "FraudDetection",
+     "RegulatoryReporting",
+     "PolicyReview",
+     "DataIntegrityAudit",
+     "FinancialReconciliation",
+     "SecurityAssessment"
     ],
     "internal_auditing_division": [
      "Global Audit Operations",
@@ -11863,7 +13383,17 @@
      "Internal Governance Office",
      "Regulatory Compliance Branch",
      "Fraud Investigation Unit",
-     "Audit Management Center"
+     "Audit Management Center",
+     "ComplianceAuditUnit",
+     "RiskAssessmentTeam",
+     "GovernanceReviewGroup",
+     "FinancialControlsDivision",
+     "OperationalAuditBranch",
+     "RegulatoryComplianceSection",
+     "InternalControlsOffice",
+     "AuditStrategyCell",
+     "ProcessVerificationUnit",
+     "IntegrityReviewPanel"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11879,7 +13409,7 @@
      "internal_auditing_division": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -11895,7 +13425,17 @@
      "Digital First Outreach",
      "Premium Brand Positioning",
      "Subsidized Entry Pricing",
-     "Cross-Border E-Commerce"
+     "Cross-Border E-Commerce",
+     "Product Penetration Play",
+     "Brand Awareness Campaign",
+     "Channel Diversification Framework",
+     "Value Proposition Redesign",
+     "Customer Acquisition Funnel",
+     "Loyalty Retention Matrix",
+     "Digital Transformation Roadmap",
+     "Partnership Ecosystem Model",
+     "Price Elasticity Optimization",
+     "Omnichannel Distribution Plan"
     ],
     "international_growth_initiative": [
      "Baltic Market Entry",
@@ -11906,10 +13446,19 @@
      "African Infrastructure Fund",
      "Pacific Trade Corridor",
      "Eastern Europe Franchise Drive",
-     "Caribbean Tourism Boost"
+     "Caribbean Tourism Boost",
+     "Aurora Expansion",
+     "Meridian CrossBorder",
+     "Horizon Pacific Drive",
+     "Vector Alpha Growth",
+     "Pinnacle Southeast Push",
+     "Crestfall Market Penetration",
+     "Apex Global Reach",
+     "Solstice Venture Rollout",
+     "Vanguard Trade Corridor",
+     "Nebula Sector Launch"
     ],
     "targets_market": [
-     "Mekong Delta Region",
      "Greater Mexico",
      "Benelux Region",
      "Korea Peninsula",
@@ -11918,7 +13467,17 @@
      "Maghreb Zone",
      "Oceania Markets",
      "Baltic States",
-     "Iberian Peninsula"
+     "Iberian Peninsula",
+     "Eastern Corridor",
+     "Northern Basin",
+     "Pacific Rim Sector",
+     "Southern Archipelago",
+     "Central Plateau",
+     "Western Crescent",
+     "Atlantic Fringe",
+     "Boreal Expanse",
+     "Tropical Equatorial Belt",
+     "Saharan Transition Zone"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11934,23 +13493,25 @@
      "targets_market": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "investor_relations_director_role": {
    "columns": {
     "investor_relations_director_role": [
-     "Sarah Chen",
-     "Marcus Wright",
-     "Elena Rostova",
-     "David Kim",
-     "Priya Sharma",
-     "James O'Connor",
-     "Aisha Al-Fayed",
      "Thomas Mueller",
      "Linda Zhang",
-     "Robert Vance"
+     "Aethelgard Trust",
+     "Vespera Capital",
+     "Oakhaven Stewards",
+     "Crestline Equity",
+     "Meridian Partners",
+     "Kestrel Holdings",
+     "Nexus Venture Fund",
+     "Solstice Capital Group",
+     "Terra Firma Investors",
+     "Aurora Wealth Trust"
     ],
     "rel_0000052": [
      "CFO Office",
@@ -11960,21 +13521,38 @@
      "Legal Department",
      "Compliance Division",
      "Investor Communications",
-     "Strategic Planning",
      "Risk Oversight",
-     "Treasury Operations"
+     "ISO-37001",
+     "Sarbanes-Oxley",
+     "Basel-III",
+     "GRI-Sustainability",
+     "SFDR-Article-8",
+     "OECD-MNE-Guidelines",
+     "EU-Taxonomy",
+     "UNGP-Reporting",
+     "WFE-Listing-Rules",
+     "ICSA-Governance"
     ],
     "rel_0000054": [
      "Q3 Earnings Call",
      "Annual Shareholder Meeting",
      "Institutional Roadshow",
      "Fact Sheet Release",
-     "Proxy Statement",
      "Dividend Announcement",
      "SEC Filing Review",
      "Pitch Deck",
      "Media Press Release",
-     "ESG Report Distribution"
+     "ESG Report Distribution",
+     "Active",
+     "Suspended",
+     "UnderReview",
+     "Compliant",
+     "NonConforming",
+     "PendingAudit",
+     "Verified",
+     "Certified",
+     "Escrowed",
+     "Liquidated"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -11990,7 +13568,7 @@
      "rel_0000054": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -11998,18 +13576,25 @@
    "columns": {
     "i_t_governance_process": [
      "Enterprise Architecture Review",
-     "Cloud Cost Optimization",
      "Data Privacy Compliance",
-     "Vendor Risk Assessment",
      "IT Budget Allocation",
      "Security Posture Review",
-     "Change Advisory Board",
      "Infrastructure Lifecycle Management",
      "Software Licensing Audit",
-     "Disaster Recovery Drills"
+     "Disaster Recovery Drills",
+     "Annual Capital Review",
+     "Server Lifecycle Audit",
+     "Software License Optimization",
+     "Hardware Deprecation Schedule",
+     "Vendor Compliance Review",
+     "Data Residency Alignment",
+     "Storage Capacity Cycle",
+     "Legacy Debt Management",
+     "Application Portfolio Governance",
+     "Infrastructure Alignment Review",
+     "Workflow Efficiency Audit"
     ],
     "improves_metric": [
-     "System Uptime Percentage",
      "Mean Time to Recovery",
      "Application Deployment Frequency",
      "Security Incident Rate",
@@ -12018,7 +13603,14 @@
      "Compliance Audit Score",
      "User Access Revocation Time",
      "Technical Debt Ratio",
-     "Incident Resolution SLA"
+     "Incident Resolution SLA",
+     "Mean Time To Recovery",
+     "Compliance Violation Rate",
+     "Incident Resolution Time",
+     "Budget Variance Score",
+     "License Waste Percentage",
+     "Deployment Frequency",
+     "Security Patch Coverage"
     ],
     "manages_resource": [
      "Infrastructure CapEx Budget",
@@ -12030,7 +13622,15 @@
      "Software License Inventory",
      "Network Bandwidth Quota",
      "Backup Storage Credits",
-     "DevOps Tooling Budget"
+     "DevOps Tooling Budget",
+     "Server Infrastructure Budget",
+     "Cloud Subscription Pool",
+     "Network Bandwidth Allocation",
+     "Data Center Power Capacity",
+     "IT Staff Headcount",
+     "Backup Storage Quota",
+     "Compliance Training Budget",
+     "Emergency Response Fund"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -12046,15 +13646,13 @@
      "manages_resource": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "joint_board_chair_role": {
    "columns": {
     "designates": [
-     "Dr. Elena Rostova",
-     "Marcus Chen",
      "Sarah J. Okonkwo",
      "James P. Vance",
      "Aisha M. Patel",
@@ -12062,7 +13660,17 @@
      "Lena K. Johansson",
      "David R. Kim",
      "Fatima N. Al-Rashid",
-     "Robert T. Hayes"
+     "Robert T. Hayes",
+     "Chair Elara Vance",
+     "Lead Monitor Silas Reed",
+     "Oversight Agent Kaelen Moss",
+     "Board Delegate Linnea Cruz",
+     "Principal Steward Toren Vale",
+     "Lead Arbiter Juno Park",
+     "Senior Warden Elias Croft",
+     "Principal Auditor Mara Lin",
+     "Senior Delegate Taron Voss",
+     "Oversight Lead Cora Bell"
     ],
     "joint_board_chair_role": [
      "NHS Trust Joint Chair",
@@ -12073,7 +13681,17 @@
      "Corporate Ethics Chair",
      "University Senate Co-Chair",
      "Health Authority Joint Chair",
-     "Energy Sector Board Co-Chair"
+     "Energy Sector Board Co-Chair",
+     "Joint Chair Alpha Panel",
+     "Co-Chair Strategic Seat",
+     "Dual Director Appointment",
+     "Tandem Governance Post",
+     "Shared Stewardship Role",
+     "Cross Entity Lead Seat",
+     "Unified Board Prime",
+     "Concurrent Director Post",
+     "Paired Executive Appointment",
+     "Merged Governance Point"
     ],
     "realizes": [
      "Regulatory Compliance Oversight",
@@ -12084,8 +13702,17 @@
      "Stakeholder Representation",
      "Budget Approval Authority",
      "Ethics Committee Supervision",
-     "Regulatory Reporting",
-     "Board Appointment Oversight"
+     "Board Appointment Oversight",
+     "Protocol Compliance",
+     "Data Integrity Oversight",
+     "Audit Trail Verification",
+     "Regulatory Alignment",
+     "Risk Mitigation Strategy",
+     "Standard Operating Review",
+     "Compliance Framework Execution",
+     "Quality Assurance Mandate",
+     "Governance Policy Enforcement",
+     "Telemetry Validation"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -12101,7 +13728,7 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -12509,11 +14136,16 @@
      "Priya Patel",
      "Elias Vance",
      "Sofia Rossi",
-     "Marcus Thorne",
-     "Aisha Khan",
      "Leo Nguyen",
      "Chloe Dubois",
-     "Noah Fitzpatrick"
+     "Noah Fitzpatrick",
+     "Jonas Rivera",
+     "Leo Torres",
+     "Nora Kim",
+     "Finn OCallaghan",
+     "Suki Tanaka",
+     "Mateo Silva",
+     "Clara Dubois"
     ],
     "library_student_assistant_role": [
      "Circulation Desk Lead",
@@ -12525,7 +14157,16 @@
      "Archives Processing Assistant",
      "Reference Desk Support",
      "Bookmobile Attendant",
-     "Special Collections Handler"
+     "Special Collections Handler",
+     "Circulation Desk Monitor",
+     "Reference Aide",
+     "Periodicals Sorter",
+     "Study Room Coordinator",
+     "Cataloging Trainee",
+     "Digital Archives Assistant",
+     "Interlibrary Courier",
+     "Tech Support Liaison",
+     "Quiet Zone Monitor"
     ],
     "realizes": [
      "Book Returns Processing",
@@ -12537,7 +14178,17 @@
      "Patron Registration",
      "Archive Digitization",
      "Journal Binding",
-     "Interlibrary Request Routing"
+     "Interlibrary Request Routing",
+     "Shelving operations",
+     "Circulation coverage",
+     "Reference assistance",
+     "Collection maintenance",
+     "Interlibrary loan fulfillment",
+     "Document digitization",
+     "Study area monitoring",
+     "Course reserve stocking",
+     "Journal binding",
+     "Tech lending support"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -12553,7 +14204,7 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -12681,7 +14332,17 @@
      "Product Roadmap Alignment",
      "Supply Chain Optimization Review",
      "Leadership Onboarding Cycle",
-     "Capital Allocation Forum"
+     "Capital Allocation Forum",
+     "Q3 Strategy Alignment",
+     "Board Governance Session",
+     "Executive Budget Review",
+     "Regional Ops Sync",
+     "Leadership Risk Assessment",
+     "Annual Calibration Summit",
+     "Merger Integration Briefing",
+     "Supply Chain Coordination",
+     "Product Roadmap Planning",
+     "Compliance Audit Debrief"
     ],
     "output": [
      "Q4 Revenue Forecast",
@@ -12693,19 +14354,36 @@
      "Risk Mitigation Protocol",
      "Executive Summary Brief",
      "Policy Revision Draft",
-     "Merger Feasibility Study"
+     "Merger Feasibility Study",
+     "Dec_Capex_Thorne",
+     "Res_Audit_Mercer",
+     "Ord_Merger_Vance",
+     "Stat_Policy_Larsson",
+     "Fin_Budget_Osei",
+     "Comp_Compliance_Castro",
+     "Exp_Expansion_Dubois",
+     "Aud_Cert_Mukhtar",
+     "Rsk_Risk_Yamada",
+     "Stk_Stock_Fernandez"
     ],
     "participant": [
-     "Chief Financial Officer",
-     "VP Operations",
      "Regional Director",
-     "Compliance Lead",
      "Strategy Architect",
      "Procurement Manager",
      "Engineering Principal",
      "Legal Counsel",
      "Sales Executive",
-     "Board Secretary"
+     "Board Secretary",
+     "Agent_C_Thorne",
+     "VP_B_Mercer",
+     "Dir_A_Vance",
+     "Mgr_K_Larsson",
+     "Lead_J_Osei",
+     "Sec_P_Castro",
+     "Adv_R_Dubois",
+     "Coord_T_Mukhtar",
+     "Rep_W_Yamada",
+     "Anal_X_Fernandez"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -12721,7 +14399,7 @@
      "participant": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -12831,11 +14509,20 @@
      "Bayesian Probability",
      "Matrix Multiplication",
      "Prime Factorization",
-     "Hypothesis Testing",
      "Euclidean Geometry",
      "Polynomial Division",
      "Graph Theory",
-     "Integral Calculus"
+     "Integral Calculus",
+     "Quadratic factorization",
+     "Euler characteristic",
+     "Bayesian inference",
+     "Fourier transformation",
+     "Galois group",
+     "Riemann integral",
+     "Markov chain",
+     "Tensor product",
+     "Manifold curvature",
+     "Stochastic process"
     ],
     "mathematical_learning_process": [
      "Quadratic Formula Workshop",
@@ -12847,19 +14534,37 @@
      "Geometry Proofs Course",
      "Algebra II Remediation",
      "Discrete Math Seminar",
-     "Calculus II Review"
+     "Calculus II Review",
+     "Algebraic substitution drill",
+     "Calculus limit assessment",
+     "Geometric proof workshop",
+     "Probability distribution lab",
+     "Number theory certification",
+     "Linear algebra simulation",
+     "Topological mapping exercise",
+     "Statistical regression practicum",
+     "Combinatorics challenge",
+     "Differential equations tutorial"
     ],
     "targets_student": [
      "Alex Chen",
      "Maria Rossi",
      "James Okafor",
-     "Yuki Tanaka",
-     "Priya Sharma",
      "Liam Murphy",
      "Sofia Gomez",
      "Wei Zhang",
      "Fatima Al-Hassan",
-     "Noah Williams"
+     "Noah Williams",
+     "Novice learner Alpha",
+     "Advanced student Beta",
+     "Remedial trainee Gamma",
+     "Graduate scholar Delta",
+     "Peer tutor candidate",
+     "Early career mathematician",
+     "Secondary student Epsilon",
+     "Postgraduate assistant Zeta",
+     "Independent scholar Eta",
+     "Cohort enrollee Theta"
     ]
    },
    "domain": "Geometric and Constructive Solid Geometry Design",
@@ -12875,7 +14580,7 @@
      "targets_student": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -13304,26 +15009,41 @@
     "inheres_in": [
      "John Miller",
      "Lisa Park",
-     "Carlos Mendez",
      "Anna Schmidt",
      "Kevin O'Brien",
      "Fatima Al-Hassan",
      "Benjamin Lee",
      "Rachel Green",
      "Derek Thompson",
-     "Sofia Rossi"
+     "Sofia Rossi",
+     "K-8842",
+     "Vance R.",
+     "7721-P",
+     "Chen M.",
+     "049-B",
+     "Nguyen T.",
+     "Aris J.",
+     "Mercer L.",
+     "Wolff C.",
+     "3319-M"
     ],
     "municipal_swimming_pool_assistant_manager": [
-     "Maria Chen",
      "David Okoro",
      "Sarah Lin",
      "James Rodriguez",
-     "Aisha Patel",
-     "Thomas Wright",
      "Elena Kovac",
      "Marcus Johnson",
-     "Yuki Tanaka",
-     "Robert Hayes"
+     "Robert Hayes",
+     "Aquatics Deputy Lead",
+     "Facility Ops Assistant",
+     "Pool Safety Coordinator",
+     "Municipal Pool Supervisor",
+     "Recreation Dept Asst",
+     "Water Quality Assistant",
+     "Aquatic Center Deputy",
+     "Municipal Aquatics Lead",
+     "Facility Operations Asst",
+     "Pool Management Deputy"
     ],
     "realizes": [
      "Chlorine Dosing",
@@ -13335,7 +15055,16 @@
      "Capacity Monitoring",
      "Chemical Inventory",
      "Safety Drill Execution",
-     "UV Sanitization"
+     "UV Sanitization",
+     "Daily Water Testing",
+     "Chemical Balance Log",
+     "Lane Line Inspection",
+     "Deck Safety Sweep",
+     "Filter Backwash Cycle",
+     "Pool Opening Protocol",
+     "Emergency Drill Coord",
+     "pH Adjustment Schedule",
+     "UV Sanitation Check"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -13351,7 +15080,7 @@
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -13635,7 +15364,17 @@
      "Amoxicillin Antibiotic Guide",
      "Prednisone Steroid Course",
      "Clopidogrel Platelet Therapy",
-     "Levothyroxine Thyroid Dosing"
+     "Levothyroxine Thyroid Dosing",
+     "Metformin 500mg Sheet",
+     "Lisinopril 10mg Guide",
+     "Atorvastatin 20mg Info",
+     "Warfarin 5mg Leaflet",
+     "Levothyroxine 75mcg Doc",
+     "Insulin Glargine Brief",
+     "Albuterol Inhaler Card",
+     "Omeprazole 20mg Note",
+     "Amlodipine 5mg Pamphlet",
+     "Sertraline 50mg Outline"
     ],
     "patient_educational_content_package": [
      "MRN-8842910",
@@ -13649,7 +15388,16 @@
      "MRN-7749201",
      "PAT-1123D5",
      "MRN-6658392",
-     "PT-883471"
+     "PT-883471",
+     "MRN-8842109",
+     "SUBJ-00492",
+     "ID-9921X",
+     "ENC-4410",
+     "PT-772104",
+     "MRN-3390182",
+     "PAT-5510C",
+     "ID-8821K",
+     "SUBJ-7702"
     ],
     "purpose": [
      "Dosage Instruction",
@@ -13657,13 +15405,18 @@
      "Adherence Support",
      "Preoperative Preparation",
      "Chronic Disease Management",
-     "Medication Reconciliation",
      "Discharge Planning",
      "Allergy Education",
      "Drug Interaction Warning",
      "Lifestyle Modification",
      "Postoperative Recovery",
-     "Pediatric Dosing Guidance"
+     "Pediatric Dosing Guidance",
+     "Medication Adherence",
+     "Dosing Instructions",
+     "Side Effect Monitoring",
+     "Allergy Awareness",
+     "Pregnancy Safety",
+     "Geriatric Dosing"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -13679,7 +15432,7 @@
      "purpose": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -14080,16 +15833,9 @@
   "petitioner_role": {
    "columns": {
     "bearer": [
-     "Elena Rostova",
-     "Marcus Chen",
-     "Sarah Jenkins",
      "David Okoro",
-     "Priya Sharma",
-     "Thomas Wright",
-     "Ana Gutierrez",
      "James Miller",
-     "Lena Kowalski",
-     "Carlos Mendez"
+     "Lena Kowalski"
     ],
     "petitioner_role": [
      "PET-ADOPT-7741",
@@ -14101,7 +15847,19 @@
      "PET-ADOPT-6683",
      "PET-ADOPT-1105",
      "PET-ADOPT-4478",
-     "PET-ADOPT-8830"
+     "PET-ADOPT-8830",
+     "Adoptive Parent Record",
+     "Court Representative File",
+     "Statutory Guardian Entry",
+     "Legal Next Of Kin File",
+     "Foster Transition Record",
+     "Independent Facilitator File",
+     "Municipal Welfare Entry",
+     "Emancipation Record",
+     "Private Adoption File",
+     "State Court Appointment",
+     "Family Law Record",
+     "Juvenile Transition File"
     ],
     "realizes_role": [
      "CASE-ADOPT-4492",
@@ -14113,7 +15871,19 @@
      "CASE-ADOPT-9921",
      "CASE-ADOPT-3348",
      "CASE-ADOPT-6677",
-     "CASE-ADOPT-8810"
+     "CASE-ADOPT-8810",
+     "Adult Adoption Workflow",
+     "Guardianship Transfer Procedure",
+     "Court Petition Sequence",
+     "Legal Consent Chain",
+     "Adoption Finalization Protocol",
+     "Statutory Review Cycle",
+     "Placement Approval Process",
+     "Habitat Assessment Workflow",
+     "Home Study Execution",
+     "Post Placement Monitoring",
+     "Legal Decree Issuance",
+     "Custody Transition Protocol"
     ]
    },
    "domain": "Specimen Lifecycle Management",
@@ -14124,12 +15894,12 @@
    },
    "provenance": {
     "membrane": {
-     "bearer": "ok",
+     "bearer": "label collision across classes: 'Aris Thorne' already names a ExpeditionParticipant \u2014 coin DISTINCT names for these Person individuals",
      "petitioner_role": "ok",
      "realizes_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -14231,16 +16001,17 @@
   "preclinical_imaging_core": {
    "columns": {
     "part_of": [
-     "Bruker 7T MRI",
-     "Siemens Inveon PET",
-     "GE NanoScan CT",
-     "PerkinElmer Cyclotron",
-     "Agilent HighRes Detector",
      "Varian RF Coil",
-     "Shimadzu Microscope",
-     "Hitachi Ultrasound",
-     "Bruker Gradient Amplifier",
-     "Siemens Gantry Module"
+     "High-Field MRI Unit",
+     "Small-Animal PET System",
+     "Micro-CT Imager",
+     "Optical Tomography Bench",
+     "Confocal Microscope Array",
+     "In Vivo Imaging Chamber",
+     "Benchtop NMR Scanner",
+     "Photoacoustic Imaging Rig",
+     "Dual-Energy X-ray Platform",
+     "SPECT Gamma Detector"
     ],
     "preclinical_imaging_core": [
      "Rodent Imaging Facility",
@@ -14252,7 +16023,17 @@
      "Multi-modal Imaging Lab",
      "Biophotonics Core Facility",
      "In Vivo Imaging Center",
-     "Quantitative Imaging Unit"
+     "Quantitative Imaging Unit",
+     "Oakridge Bioimaging Hub",
+     "Meridian Preclinical Suite",
+     "Crestview Molecular Center",
+     "Pinehaven Scan Facility",
+     "Silverlake Imaging Lab",
+     "Northpoint VetScan Core",
+     "Ashwood Research Imager",
+     "Cedarcrest Diagnostics Core",
+     "Brookline Preclinical Hub",
+     "Willowbrook Scan Station"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -14266,7 +16047,7 @@
      "preclinical_imaging_core": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -14380,7 +16161,17 @@
      "3040 Westfield Blvd",
      "95 Harbor View Lane",
      "412 Pine Ridge Trail",
-     "2200 Tech Center Way"
+     "2200 Tech Center Way",
+     "Parcel 44B-9",
+     "Lot 12 Oakridge",
+     "Section 7-14N",
+     "Block 33 Westgate",
+     "Tract 09A-Elm",
+     "Unit 402 Harborview",
+     "Farm 118 Millcreek",
+     "Site 22B Riverside",
+     "Plot 5C Ashwood",
+     "Parcel 77D Northpoint"
     ],
     "submitted_for_approval": [
      "City Assessor Office",
@@ -14390,9 +16181,18 @@
      "Planning Commission",
      "Zoning Board",
      "Assessment Appeals Panel",
-     "Department of Revenue",
      "Municipal Council",
-     "Tax Review Committee"
+     "Tax Review Committee",
+     "District Valuation Board",
+     "Municipal Review Committee",
+     "County Appraisal Tribunal",
+     "Property Standards Office",
+     "Tax Assessment Directorate",
+     "Valuation Review Commission",
+     "Assessment Appeal Tribunal",
+     "Municipal Property Board",
+     "Assessment Compliance Office",
+     "Property Valuation Council"
     ]
    },
    "domain": "Quality, Compliance and Traceability",
@@ -14406,7 +16206,7 @@
      "submitted_for_approval": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -14422,7 +16222,15 @@
      "Internal Audit Division",
      "Ombuds Office",
      "Data Protection Officer",
-     "Faculty Senate Committee"
+     "Faculty Senate Committee",
+     "Secure Ethics Hotline",
+     "Confidential Inquiry Desk",
+     "Dedicated Case Tracker",
+     "Compliance Mailbox",
+     "Anonymous Reporting Line",
+     "Integrity Review Portal",
+     "Designated Reporting Agent",
+     "Secure Drop Box Network"
     ],
     "protected_disclosure_process": [
      "Research Misconduct Inquiry 23-A",
@@ -14431,19 +16239,35 @@
      "Workplace Harassment Claim 77B",
      "IRB Ethics Violation Case",
      "Financial Irregularity Audit",
-     "Staff Retaliation Complaint"
+     "Staff Retaliation Complaint",
+     "Research Misconduct Review",
+     "Fraud Prevention Panel",
+     "Ethics Compliance Case",
+     "Data Privacy Assessment",
+     "Harassment Investigation Beta",
+     "Procurement Review Gamma",
+     "Academic Integrity Case",
+     "Financial Oversight Audit"
     ],
     "reported_by": [
      "Dr. Alan Mercer",
-     "Maria Gonzalez",
-     "James O'Connor",
      "Dr. Priya Patel",
-     "Robert Kim",
-     "Sarah Jenkins",
      "David Chen",
      "Emily Watson",
      "Michael Torres",
-     "Lisa Anderson"
+     "Lisa Anderson",
+     "Dean Elena Rostova",
+     "Provost Arthur Pendelton",
+     "Chair Marcus Thorne",
+     "Registrar Linnea Kovic",
+     "Compliance Director Tariq Al-Fayed",
+     "Faculty Senate President Dr. Yumi Sato",
+     "Ombudsperson Julian Varga",
+     "VP Student Affairs Maria Santos",
+     "Director of Integrity Dr. Kwame Asante",
+     "Chancellor Dr. Beatrice Holloway",
+     "Department Chair Wei Zhang",
+     "Vice President Finance Dr. Raj Patel"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -14459,7 +16283,7 @@
      "reported_by": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -14587,7 +16411,19 @@
      "Postoperative Nausea",
      "Blood Transfusion Reactions",
      "Ventilator-Associated Pneumonia",
-     "Sepsis Mortality Rates"
+     "Sepsis Mortality Rates",
+     "Postoperative nausea",
+     "Type 2 diabetes remission",
+     "Venous thromboembolism risk",
+     "Neonatal hyperbilirubinemia",
+     "Multidrug-resistant infections",
+     "Chronic neuropathic pain",
+     "Sarcopenia progression",
+     "Pediatric asthma exacerbations",
+     "Geriatric medication interactions",
+     "Postpartum hemorrhage events",
+     "Diabetic ketoacidosis episodes",
+     "Hospital-acquired pressure injuries"
     ],
     "formulates_situation": [
      "Plan-Do-Study-Act Cycles",
@@ -14595,11 +16431,19 @@
      "IHI Triple Aim Model",
      "A3 Problem Solving",
      "FMEA Risk Assessment",
-     "Root Cause Analysis",
      "Donabedian Structure Process",
      "CDC Infection Control Model",
      "Model for Improvement",
-     "PDCA Continuous Loop"
+     "PDCA Continuous Loop",
+     "PDSA Cycle",
+     "Lean Six Sigma",
+     "FMEA Protocol",
+     "Donabedian Framework",
+     "IHI Improvement Model",
+     "Rapid Cycle Change",
+     "Baldrige Excellence",
+     "Clinical Pathway Design",
+     "Total Quality Management"
     ],
     "quality_improvement_presentation": [
      "Reducing SSI Rates",
@@ -14611,7 +16455,16 @@
      "VTE Prophylaxis Review",
      "Postoperative Pain Management",
      "Hand Hygiene Compliance Drive",
-     "Antibiotic Stewardship Report"
+     "Antibiotic Stewardship Report",
+     "Handoff Protocol Optimization",
+     "Antibiotic Stewardship Review",
+     "ED Throughput Streamlining",
+     "Postop Pain Management",
+     "Sepsis Screening Standardization",
+     "Med Rec Accuracy Project",
+     "SSI Prevention Campaign",
+     "Discharge Workflow Acceleration",
+     "Lab Order Rationalization"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -14627,7 +16480,7 @@
      "quality_improvement_presentation": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -14845,7 +16698,6 @@
    "columns": {
     "inheres_in_person": [
      "EMP-7741",
-     "Dr. Elena Rostova",
      "MK-9923",
      "J. Sato",
      "L. Chen",
@@ -14853,7 +16705,17 @@
      "T. Kowalski",
      "S. Dubois",
      "A. Singh",
-     "C. Vance"
+     "C. Vance",
+     "MARA_TORRES",
+     "JULIAN_KAE",
+     "ELARA_VANCE",
+     "SAMIR_HASSAN",
+     "NIA_BROOKS",
+     "LEO_FENG",
+     "TARA_MCELROY",
+     "ELIAS_PARK",
+     "ZOE_KELLER",
+     "FINN_ABDUL"
     ],
     "realizes_service_management": [
      "ISO 27001 Compliance",
@@ -14861,11 +16723,20 @@
      "HACCP Monitoring",
      "Regulatory Audit Framework",
      "SLA Tracking System",
-     "Change Advisory Board",
      "Incident Response Protocol",
      "Asset Lifecycle Tracking",
      "Vendor Performance Review",
-     "Quality Control Matrix"
+     "Quality Control Matrix",
+     "Arlo Finch",
+     "Sable Mercer",
+     "Dorian Kade",
+     "Lira Voss",
+     "Tomasen Rhee",
+     "Cleo Baines",
+     "Havelock Pryce",
+     "Niamh Oakes",
+     "Felix Dune",
+     "Wren Callow"
     ],
     "registered_manager_role": [
      "Lead Safety Officer",
@@ -14877,7 +16748,17 @@
      "Lab Compliance Officer",
      "Emergency Response Coordinator",
      "Facility Maintenance Supervisor",
-     "Production Line Manager"
+     "Production Line Manager",
+     "SITE_SUPERVISOR_DELTA",
+     "LAB_DIRECTOR_NORTH",
+     "QA_COMPLIANCE_PRIME",
+     "TELEMETRY_OPS_CHIEF",
+     "DATA_PIPELINE_OWNER",
+     "FACILITY_CHIEF_ENGINEER",
+     "RESEARCH_PROTOCOL_ADMIN",
+     "INCIDENT_COORD_LEAD",
+     "CLOUD_INFRASTRUCTURE_PM",
+     "ANALYTICS_STEWARD_PRIME"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -14893,7 +16774,7 @@
      "registered_manager_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -14964,10 +16845,19 @@
      "West Campus Annex",
      "Engineering Hub 4",
      "Oceanography Deck B",
-     "Particle Lab 9"
+     "Particle Lab 9",
+     "2024-Q3-Alpha",
+     "UTC-14:30:00",
+     "Phase-III-Checkpoint",
+     "LogOffset-8842",
+     "Version-2.4.1",
+     "TemporalAnchor-11",
+     "GeoRef-42N8W3",
+     "ProcessNode-7B",
+     "Timestamp-20241105",
+     "MilestoneRef-09"
     ],
     "involves_academic_agent": [
-     "Dr Elena Rostova",
      "Prof Marcus Chen",
      "Postdoc Sarah Lin",
      "Lab Manager David Kim",
@@ -14976,7 +16866,19 @@
      "Dept Chair Alan Grant",
      "Data Steward Maria Lopez",
      "Ethics Reviewer James Wu",
-     "Grant Administrator Lisa Park"
+     "Grant Administrator Lisa Park",
+     "Dr. Elias Vance",
+     "Prof. Miriam Chen",
+     "Fellow S. Al-Jaber",
+     "PI Thomas Kowalski",
+     "Postdoc Lena Rostova",
+     "Adjunct Marcus Webb",
+     "Scholar I. Tanaka",
+     "Prof. A. Desai",
+     "Principal J. Morrow",
+     "Researcher R. Okonkwo",
+     "Fellow David Lin",
+     "Prof. C. Moreau"
     ],
     "research_management_activity": [
      "Q3 Grant Submission",
@@ -14988,7 +16890,17 @@
      "Budget Reconciliation",
      "Peer Review Panel",
      "Compliance Audit Cycle",
-     "Grant Renewal Filing"
+     "Grant Renewal Filing",
+     "Annual Grant Application Review",
+     "Protocol Amendment Approval Cycle",
+     "Ethics Committee Submission",
+     "Milestone Assessment Report",
+     "Budget Reconciliation Run",
+     "IRB Renewal Processing",
+     "Data Sharing Agreement Signoff",
+     "Peer Review Coordination Phase",
+     "Compliance Audit Scheduling",
+     "Publication Authorization Request"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -15004,7 +16916,7 @@
      "research_management_activity": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -15185,8 +17097,7 @@
      "Chief Merchandising Officer",
      "VP Supply Chain",
      "Director Visual Merch",
-     "Head Customer Exp",
-     "Chief Financial Officer"
+     "Head Customer Exp"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -15216,7 +17127,17 @@
      "Deploy Prod Auth",
      "Legacy Migration Permit",
      "Admin Override Protocol",
-     "Cross Region Access"
+     "Cross Region Access",
+     "Cross-Dept Token",
+     "Data Migration Clearance",
+     "Handoff Protocol Key",
+     "Secure Transfer Permit",
+     "Role Transition License",
+     "Access Waiver Code",
+     "Pipeline Sync Authority",
+     "Credential Reassignment Key",
+     "Boundary Pass Grant",
+     "Configuration Sync Permit"
     ],
     "realizes_role_in": [
      "Data Engineering Division",
@@ -15227,8 +17148,7 @@
      "Data Governance Office",
      "ML Production Systems",
      "Enterprise Architecture Board",
-     "Data Quality Assurance",
-     "Cloud Cost Optimization"
+     "Data Quality Assurance"
     ],
     "retaining_employee_role": [
      "Senior Data Architect",
@@ -15240,7 +17160,17 @@
      "Senior Systems Architect",
      "Principal Research Scientist",
      "VP Engineering Operations",
-     "Director of Data Strategy"
+     "Director of Data Strategy",
+     "Archival Systems Custodian",
+     "Metadata Retention Officer",
+     "Data Lineage Keeper",
+     "Persistent Record Steward",
+     "Audit Trail Maintainer",
+     "Continuity Protocol Lead",
+     "Longitudinal Data Guardian",
+     "Historical Telemetry Keeper",
+     "Record Retention Specialist",
+     "Provenance Archivist"
     ]
    },
    "domain": "Specimen Lifecycle Management",
@@ -15252,11 +17182,11 @@
    "provenance": {
     "membrane": {
      "grants_transfer_permission": "ok",
-     "realizes_role_in": "ok",
+     "realizes_role_in": "label collision across classes: 'Marcus Chen' already names a Person; 'Silas Reed' already names a ExpeditionParticipant; 'Julian Hayes' already names a IndependentContinuant \u2014 coin DISTINCT names for these DepartingEmployee individuals",
      "retaining_employee_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -15422,10 +17352,19 @@
      "META-ROLE-DEF",
      "TEL-OWNER-ID",
      "INC-RESP-PROTO",
-     "SCHEMA-MAINT-ID"
+     "SCHEMA-MAINT-ID",
+     "Duty Code Alpha",
+     "Position Index Beta",
+     "Skill Matrix Gamma",
+     "Role Classification Delta",
+     "Competency Grid Epsilon",
+     "Functional Code Zeta",
+     "Duty Schema Eta",
+     "Position Profile Theta",
+     "Role Index Iota",
+     "Skill Classification Kappa"
     ],
     "role_perception": [
-     "Data Steward",
      "Pipeline Operator",
      "Schema Validator",
      "Incident Commander",
@@ -15436,7 +17375,17 @@
      "Telemetry Analyst",
      "Access Auditor",
      "Metadata Curator",
-     "Service Reliability Engineer"
+     "Service Reliability Engineer",
+     "Primary Telemetry Analyst",
+     "Central Sensor Operator",
+     "Provenance Trace Auditor",
+     "Field Observation Lead",
+     "Data Lineage Tracker",
+     "Incident Response Architect",
+     "Quality Assurance Facilitator",
+     "Calibration Protocol Lead",
+     "Sensor Fusion Operator",
+     "Instrumentation Supervisor"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -15450,7 +17399,7 @@
      "role_perception": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -15637,7 +17586,6 @@
   "secretary_role": {
    "columns": {
     "organizational_affiliation": [
-     "Department of Revenue",
      "Bureau of Motor Vehicles",
      "Attorney General Office",
      "State Ethics Commission",
@@ -15646,7 +17594,17 @@
      "Regional Transit Authority",
      "Board of Education",
      "Environmental Quality Commission",
-     "Labor Standards Division"
+     "Labor Standards Division",
+     "Environmental Compliance Dept",
+     "Fiscal Operations Bureau",
+     "Legislative Affairs Office",
+     "Public Works Division",
+     "Regulatory Standards Commission",
+     "Administrative Support Office",
+     "Emergency Management Bureau",
+     "Transportation Planning Dept",
+     "Data Management Office",
+     "Veterans Services Commission"
     ],
     "realizes_function": [
      "Policy Implementation",
@@ -15657,8 +17615,18 @@
      "Records Management",
      "Staff Coordination",
      "Compliance Monitoring",
-     "Grant Administration",
-     "Strategic Planning"
+     "Legislative Drafting",
+     "Statutory Record Keeping",
+     "Committee Agenda Management",
+     "Executive Correspondence Routing",
+     "Document Certification",
+     "Policy Tracking",
+     "Meeting Protocol Administration",
+     "Statute Amendment Logging",
+     "Interdepartmental Liaison",
+     "Session Documentation",
+     "Quorum Verification",
+     "Regulatory Compliance Monitoring"
     ],
     "secretary_role": [
      "Cabinet Secretary",
@@ -15670,7 +17638,17 @@
      "Office Director",
      "Division Director",
      "Assistant Director",
-     "Executive Administrator"
+     "Executive Administrator",
+     "Secretary Environmental Quality",
+     "Deputy Secretary Procurement",
+     "Executive Secretary Cabinet",
+     "State Secretary Public Safety",
+     "Secretary Veterans Affairs",
+     "Secretary Administrative Services",
+     "Deputy Secretary Data Governance",
+     "Secretary Infrastructure Planning",
+     "Chief Secretary Regulatory Affairs",
+     "Secretary Community Development"
     ]
    },
    "domain": "Result Capture and Interpretation",
@@ -15686,7 +17664,7 @@
      "secretary_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -15741,14 +17719,22 @@
     "rel_0000052": [
      "Animal Control Management",
      "Shelter Operations",
-     "Compliance Auditing",
      "Public Safety Liaison",
      "Kennel Management",
      "Enforcement Coordination",
      "Vaccination Programs",
      "Intake Processing",
      "Euthanasia Oversight",
-     "Adoption Services"
+     "Adoption Services",
+     "Stray Capture",
+     "Rabies Surveillance",
+     "Trap-Neuter-Return",
+     "Shelter Intake",
+     "Quarantine Protocol",
+     "Public Education",
+     "Field Enforcement",
+     "Disease Outbreak Response",
+     "Foster Network Coordination"
     ],
     "rel_0000054": [
      "Welfare Inspections",
@@ -15760,7 +17746,17 @@
      "Adoption Screening",
      "Animal Transport",
      "Public Education Outreach",
-     "Impound Processing"
+     "Impound Processing",
+     "Ashford County",
+     "Briarwood District",
+     "Crestline Zone",
+     "Pine Ridge Sector",
+     "Silverlake Facility",
+     "North Quadrant",
+     "Coastal Region",
+     "Ironwood Corridor",
+     "Maple District",
+     "Stormwatch Zone"
     ],
     "senior_animal_services_officer_role": [
      "Chief Animal Control Officer",
@@ -15772,7 +17768,16 @@
      "Feral Cat Program Lead",
      "Shelter Operations Chief",
      "Municipal Animal Control Director",
-     "Canine Unit Commander"
+     "Canine Unit Commander",
+     "Director Municipal Canines",
+     "Senior Wildlife Relocation Lead",
+     "Head Shelter Operations",
+     "Chief Veterinary Liaison",
+     "Director Feral Management",
+     "Senior Compliance Inspector",
+     "Chief K9 Program Lead",
+     "Director Stray Intake",
+     "Senior Welfare Auditor"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -15788,7 +17793,7 @@
      "senior_animal_services_officer_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -15798,13 +17803,21 @@
      "Mean Genome Coverage",
      "Median Read Depth",
      "Exome Capture Depth",
-     "Target Region Coverage",
      "Minimum Depth Threshold",
      "Biallelic Coverage",
      "Effective Coverage",
      "Uniformity Metric",
-     "On Target Percent",
-     "Coverage Variance"
+     "Coverage Variance",
+     "Whole Genome 30x",
+     "Exon Panel Depth",
+     "Mitochondrial Coverage",
+     "Targeted Region Beta",
+     "Library Prep Coverage",
+     "Chromosome 17 Depth",
+     "Single Cell 50x",
+     "Viral Panel Coverage",
+     "RNA Transcript Depth",
+     "Plasmid Region Gamma"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -15816,7 +17829,7 @@
      "sequencing_coverage_parameter": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -16062,7 +18075,19 @@
      "ssh_deploy_key",
      "api_rate_token",
      "saml_metadata",
-     "pw_hash_bcrypt"
+     "pw_hash_bcrypt",
+     "OAuth2 Client Creds",
+     "SAML Assertion Ref",
+     "JWT Session Token",
+     "LDAP Directory Entry",
+     "PAM Service Account",
+     "MFA TOTP Seed",
+     "X.509 Certificate",
+     "API Private Key",
+     "SSO Principal ID",
+     "HMAC SHA256 Hash",
+     "Kerberos TGT",
+     "PKCS12 Keystore"
     ],
     "social_media_account_registration": [
      "REG-TW-2291",
@@ -16074,19 +18099,37 @@
      "REG-RE-8821",
      "REG-TU-2290",
      "REG-SL-6621",
-     "REG-DI-5510"
+     "REG-DI-5510",
+     "REG-NWS-8842",
+     "REG-VDC-3391",
+     "REG-OAK-5509",
+     "REG-CBL-1147",
+     "REG-MRN-9903",
+     "REG-SLV-6628",
+     "REG-TRN-4415",
+     "REG-ZPH-2280",
+     "REG-PNL-7756",
+     "REG-AEL-9014",
+     "REG-KRT-3328",
+     "REG-VXR-8812"
     ],
     "targets": [
-     "Sarah Chen",
-     "Marcus Wright",
      "Elena Rodriguez",
      "David Park",
-     "Aisha Patel",
-     "James O'Connor",
-     "Maria Santos",
-     "Robert Kim",
      "Lisa Thompson",
-     "Michael Davis"
+     "Michael Davis",
+     "Chief Communications Officer",
+     "Director External Affairs",
+     "Press Relations Supervisor",
+     "Media Outreach Coordinator",
+     "Corporate Transparency Lead",
+     "Public Trust Administrator",
+     "Strategic Comms Director",
+     "Brand Integrity Manager",
+     "Stakeholder Engagement Officer",
+     "Information Release Coordinator",
+     "Community Feedback Manager",
+     "Regulatory Comms Advisor"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -16102,7 +18145,7 @@
      "targets": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -16118,11 +18161,21 @@
      "Ephemeral Content",
      "Live Broadcasting",
      "Content Curation",
-     "Group Messaging"
+     "Group Messaging",
+     "professional_network",
+     "visual_media_feed",
+     "microblog_stream",
+     "community_forum",
+     "interest_cluster",
+     "real_time_chat",
+     "anonymous_discussion",
+     "creator_network",
+     "dating_service",
+     "video_shortform",
+     "academic_collab",
+     "local_community"
     ],
     "social_networking_service_platform": [
-     "Facebook",
-     "Instagram",
      "Twitter",
      "LinkedIn",
      "TikTok",
@@ -16130,7 +18183,17 @@
      "Discord",
      "Snapchat",
      "Threads",
-     "Bluesky"
+     "Bluesky",
+     "AetherConnect",
+     "NexusGrid",
+     "PrismStream",
+     "VertexHub",
+     "SolaraNet",
+     "EchoSphere",
+     "LuminaBridge",
+     "CortexCircle",
+     "ZenithFeed",
+     "OrbitalSync"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -16144,7 +18207,7 @@
      "social_networking_service_platform": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -16278,7 +18341,17 @@
      "Legal-Group",
      "Finance-Branch",
      "IT-Services",
-     "HR-Operations"
+     "HR-Operations",
+     "Kaelen Voss",
+     "Linnea Drake",
+     "Tariq Almas",
+     "Mira Sato",
+     "Juno Pierce",
+     "Vance Rourke",
+     "Kira Mendel",
+     "Jett Corwin",
+     "Sloane Pike",
+     "Niamh Vance"
     ],
     "role_realizes": [
      "SM-Admin-Proc",
@@ -16290,19 +18363,33 @@
      "Backup-Mgmt-Task",
      "Comp-Log-Run",
      "Access-Rev-Script",
-     "Vendor-Int-Link"
+     "Vendor-Int-Link",
+     "Content Publishing Cycle",
+     "Community Moderation Shift",
+     "Crisis Response Protocol",
+     "Analytics Reporting Routine",
+     "Campaign Launch Workflow",
+     "Audience Growth Strategy",
+     "Brand Compliance Audit",
+     "Platform Access Rotation",
+     "Data Export Schedule",
+     "Access Credential Renewal"
     ],
     "staff_social_media_account_administrator_role": [
-     "Dr. Elena Rostova",
-     "Marcus Chen",
-     "Priya Sharma",
      "James Okafor",
      "Sarah Lin",
      "David Torres",
-     "Anika Patel",
-     "Robert Vance",
      "Mei-Lin Zhao",
-     "Thomas Wright"
+     "Lead Platform Moderator",
+     "Digital Communications Specialist",
+     "Social Outreach Coordinator",
+     "Community Engagement Officer",
+     "Content Strategy Manager",
+     "Public Affairs Liaison",
+     "Digital Operations Supervisor",
+     "Brand Ambassador Lead",
+     "Audience Growth Analyst",
+     "Platform Governance Officer"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -16318,7 +18405,7 @@
      "staff_social_media_account_administrator_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -16469,16 +18556,22 @@
   "student_conduct_administrator_role": {
    "columns": {
     "administrative_role": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Priya Patel",
      "James Okafor",
      "Sofia Bianchi",
      "Liam Foster",
-     "Aisha Khan",
      "Nathan Brooks",
      "Yuna Park",
-     "David Kim"
+     "STU-4491",
+     "STU-7702",
+     "STU-3389",
+     "STU-6615",
+     "STU-9927",
+     "STU-1143",
+     "STU-8856",
+     "STU-2270",
+     "STU-5538",
+     "STU-0094"
     ],
     "bears_role": [
      "Student Conduct Officer",
@@ -16494,15 +18587,18 @@
     ],
     "realizes": [
      "Hearing Adjudication",
-     "Policy Enforcement",
      "Code Review",
      "Violation Assessment",
      "Sanction Implementation",
      "Appeal Processing",
      "Report Documentation",
      "Investigation Coordination",
-     "Compliance Verification",
-     "Record Archiving"
+     "Record Archiving",
+     "Sanction Imposition",
+     "Investigation Logging",
+     "Compliance Tracking",
+     "Disciplinary Recording",
+     "Case Documentation"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -16514,27 +18610,31 @@
    "provenance": {
     "membrane": {
      "administrative_role": "ok",
-     "bears_role": "ok",
+     "bears_role": "label collision across classes: 'Julian Cross' already names a Client \u2014 coin DISTINCT names for these Person individuals",
      "realizes": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
   "student_entrepreneur_role": {
    "columns": {
     "inheres_in": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Priya Patel",
-     "David Okonkwo",
      "Sofia Alvarez",
-     "Liam O'Sullivan",
-     "Aisha Khan",
-     "Noah Kim",
      "Clara Jensen",
-     "Tariq Al-Farsi"
+     "Tariq Al-Farsi",
+     "REC-ACAD-8842",
+     "REC-ACAD-9910",
+     "REC-ACAD-7702",
+     "REC-ACAD-2234",
+     "REC-ACAD-5567",
+     "REC-ACAD-8890",
+     "REC-ACAD-1123",
+     "REC-ACAD-3345",
+     "REC-ACAD-6678",
+     "REC-ACAD-9900"
     ],
     "realizes_in": [
      "GreenLeaf Ventures",
@@ -16546,19 +18646,33 @@
      "FinBot Alpha",
      "EcoPack Systems",
      "MedSync Startup",
-     "StreamLine Analytics"
+     "StreamLine Analytics",
+     "VNT-SOLARIS",
+     "ITR-ECOBASE",
+     "STP-GREENLOOP",
+     "VNT-NEUROPULSE",
+     "STP-DATAFORGE",
+     "ITR-CLOUDWEAVE",
+     "VNT-BIOSYNC",
+     "STP-WATERGRID",
+     "ITR-AUTOROUTE",
+     "STP-FINLEAP"
     ],
     "student_entrepreneur_role": [
-     "Elena Rostova",
-     "Marcus Chen",
      "Priya Patel",
-     "David Okonkwo",
      "Sofia Alvarez",
-     "Liam O'Sullivan",
-     "Aisha Khan",
-     "Noah Kim",
      "Clara Jensen",
-     "Tariq Al-Farsi"
+     "Tariq Al-Farsi",
+     "STU-8842-K",
+     "STU-9910-L",
+     "STU-7702-R",
+     "STU-2234-M",
+     "STU-5567-V",
+     "STU-8890-T",
+     "STU-1123-J",
+     "STU-3345-L",
+     "STU-6678-N",
+     "STU-9900-S"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -16574,7 +18688,7 @@
      "student_entrepreneur_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -16652,19 +18766,34 @@
      "Apex Robotics",
      "Blue Ridge Paper",
      "Summit Ceramics",
-     "Vanguard Alloys"
+     "Vanguard Alloys",
+     "tier_one_manufacturers",
+     "raw_material_distributors",
+     "logistics_providers",
+     "calibration_labs",
+     "packaging_facilities",
+     "semiconductor_foundries",
+     "textile_mills",
+     "pharmaceutical_contractors"
     ],
     "documents": [
      "Semiconductor Shortage",
      "Renewable Energy Adoption",
      "Nearshoring Shift",
      "AI Chip Demand",
-     "Supply Chain Resilience",
      "Raw Material Inflation",
      "E-commerce Fulfillment Growth",
      "Cross-border Tariff Changes",
      "Labor Cost Escalation",
-     "Green Certification Mandates"
+     "Green Certification Mandates",
+     "semiconductor_shortage_trend",
+     "renewable_energy_adoption",
+     "nearshoring_shift",
+     "autonomous_truck_deployment",
+     "biodegradable_packaging_growth",
+     "quantum_computing_supply",
+     "circular_economy_initiatives",
+     "digital_twin_integration"
     ],
     "supplier_landscape_survey": [
      "Acme Manufacturing",
@@ -16676,7 +18805,15 @@
      "Nova Chemicals",
      "Vanguard Metals",
      "Pacific Shipping Co",
-     "Atlas Industrial"
+     "Atlas Industrial",
+     "Northridge Materials",
+     "Apex Composites",
+     "Veridian Chemicals",
+     "Sterling Alloys",
+     "Cobalt Ridge Mining",
+     "Pacific Polymer Solutions",
+     "Ironwood Precision Parts",
+     "Oakhaven Biologics"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -16692,7 +18829,7 @@
      "supplier_landscape_survey": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -17025,12 +19162,20 @@
      "Kwame Asante",
      "Tenzin Dorje",
      "Amara Okafor",
-     "Li Wei",
      "Joseph Mbeki",
      "Fatima Al-Hassan",
-     "David Okonkwo",
      "Elena Rios",
-     "Kwesi Mensah"
+     "Kwesi Mensah",
+     "HAG-4491",
+     "T. Rostova",
+     "M. Kaelen",
+     "J. Ashford",
+     "L. Mirren",
+     "D. Vane",
+     "S. Cross",
+     "A. Penhaligon",
+     "N. Blackwood",
+     "C. Frost"
     ],
     "realizes": [
      "Spiritual Cleansing",
@@ -17042,7 +19187,17 @@
      "Chant Therapy",
      "Smoke Purification",
      "Bone Reading",
-     "Prayer Healing"
+     "Prayer Healing",
+     "ancestral communion rite",
+     "herbal remedy preparation",
+     "spirit possession channeling",
+     "sacred water purification",
+     "dream interpretation protocol",
+     "ritual bone alignment",
+     "community blessing ceremony",
+     "moon phase healing sequence",
+     "fire cleansing rite",
+     "spirit possession mediation"
     ],
     "traditional_religious_healer_role": [
      "Curandero",
@@ -17054,7 +19209,17 @@
      "Spirit Medium",
      "Bone Doctor",
      "Obeah Man",
-     "Faith Healer"
+     "Faith Healer",
+     "village shrine keeper",
+     "ancestral spirit medium",
+     "herbal rite conductor",
+     "temple purification specialist",
+     "dream interpretation elder",
+     "sacred water channeler",
+     "ritual bone setter",
+     "community blessing leader",
+     "moon phase healer",
+     "fire ceremony guide"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -17070,7 +19235,7 @@
      "traditional_religious_healer_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -17369,7 +19534,17 @@
      "Fire Exit Clearance",
      "Power Grid Load",
      "Water Quality Test",
-     "Emergency Broadcast Trigger"
+     "Emergency Broadcast Trigger",
+     "Thermal Load Balancing",
+     "HVAC Filter Replacement",
+     "Electrical Load Testing",
+     "Structural Stress Calibration",
+     "Water Quality Sampling",
+     "Airflow Velocity Mapping",
+     "Fire Alarm Loop Check",
+     "Elevator Safety Inspection",
+     "Backup Power Transfer",
+     "Waste Disposal Logging"
     ],
     "oversees_infrastructure": [
      "HVAC Main Trunk",
@@ -17381,19 +19556,37 @@
      "Elevator Carriage System",
      "Roof Truss Assembly",
      "Access Control Gate",
-     "Data Center Rack"
+     "Data Center Rack",
+     "Primary HVAC Zone Alpha",
+     "Main Electrical Substation",
+     "Structural Steel Frame B",
+     "Central Water Treatment Plant",
+     "Fiber Optic Backbone Core",
+     "Automatic Fire Suppression Grid",
+     "Heavy Loading Dock Array",
+     "Vertical Transport Shaft 4",
+     "Rooftop Solar Array West",
+     "Industrial Cooling Tower 2"
     ],
     "venue_operations_oversight": [
      "Grand Rapids Convention Center",
      "O2 Arena Tokyo",
-     "Madison Square Garden",
      "Melbourne Cricket Ground",
      "Stade de France",
      "Tokyo Dome",
-     "AT&T Stadium",
      "Mercedes-Benz Arena",
      "Royal Albert Hall",
-     "Wembley Stadium"
+     "Wembley Stadium",
+     "Northpoint Transit Hub",
+     "Cedar Ridge Research Park",
+     "Oakhaven Logistics Depot",
+     "Meridian Conference Center",
+     "Silverline Distribution Complex",
+     "Harborview Training Facility",
+     "Apex Innovation Campus",
+     "Riverton Event Arena",
+     "Summit Medical Center",
+     "Crossroads Testing Grounds"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -17409,7 +19602,7 @@
      "venue_operations_oversight": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -17503,7 +19696,6 @@
     "describes": [
      "Q3-Telemarketing-Campaign",
      "Outbound-Call-Drive",
-     "B2B-Lead-Generation",
      "Holiday-Tele-Promo",
      "Enterprise-SaaS-Updates",
      "Renewal-Reminder-Calls",
@@ -17512,7 +19704,17 @@
      "Customer-Onboarding-Calls",
      "Product-Launch-Tele-Blitz",
      "Retention-Call-Campaign",
-     "Cold-Call-Outreach"
+     "Cold-Call-Outreach",
+     "CAMPAIGN-FALL-LEAD",
+     "OUTREACH-NORTH-09",
+     "TELE-DRIVE-Q4",
+     "PROMO-BUNDLE-22",
+     "SUPPORT-RENEWAL",
+     "UPSELL-CROSS-07",
+     "INBOUND-INQ-11",
+     "COLD-CALL-PROJ",
+     "RETAIL-OUTREACH",
+     "B2B-ACQUISITION"
     ],
     "period_type": [
      "Standard-Calendar-Week",
@@ -17526,7 +19728,17 @@
      "Holiday-Adjusted-Week",
      "Leap-Week-Format",
      "Trailing-30-Day",
-     "Seasonal-Block"
+     "Seasonal-Block",
+     "FISCAL-WEEK",
+     "CALENDAR-WK",
+     "BIZ-UNIT",
+     "ROLLING-7D",
+     "ISO-WEEK",
+     "FISCAL-QUARTER",
+     "CUSTOM-BATCH",
+     "SHIFT-WEEK",
+     "MARKETING-WK",
+     "OPERATIONAL-7"
     ],
     "situated_in": [
      "FY2023-W42",
@@ -17540,7 +19752,17 @@
      "Q1-2024-Window",
      "Summer-2023-Phase",
      "December-Week-01",
-     "Q3-2022-Period"
+     "Q3-2022-Period",
+     "2024-W11",
+     "NOV-WK03",
+     "FISC-Q4-2024",
+     "OCT-27-NOV-02",
+     "CYCLE-11A-24",
+     "WEEK-44-2024",
+     "MONTH-NOV-24",
+     "TRIM-NOV-2024",
+     "BATCH-11-WK04",
+     "PERIOD-2024-45"
     ],
     "weekly_sales_report": [
      "WS-2023-W42",
@@ -17554,7 +19776,17 @@
      "Q3-Tele-Sales-12",
      "Retail-Tele-Week05",
      "Q4-Tele-Weekly-01",
-     "Sales-Log-20231015"
+     "Sales-Log-20231015",
+     "RPT-WKLY-11A",
+     "SNAP-NOV-W03",
+     "DASH-TELE-Q4",
+     "FILE-SALES-1147",
+     "METRIC-CAR-W11",
+     "EXPORT-11W04",
+     "SUMMARY-NOV-07",
+     "BATCH-WKLY-22",
+     "RECORD-TELE-11",
+     "AUDIT-LOG-1152"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -17572,7 +19804,7 @@
      "weekly_sales_report": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -17637,14 +19869,22 @@
     "categorizes_attribute": [
      "psychological safety",
      "innovation velocity",
-     "cross-functional alignment",
      "leadership transparency",
      "employee autonomy",
      "conflict resolution",
      "knowledge sharing",
      "performance accountability",
      "diversity inclusion",
-     "decision latency"
+     "decision latency",
+     "Role Clarity",
+     "Feedback Frequency",
+     "Decision Autonomy",
+     "Conflict Tolerance",
+     "Innovation Pace",
+     "Recognition Cadence",
+     "Mentorship Depth",
+     "Change Adaptability",
+     "Communication Transparency"
     ],
     "workplace_culture_dimension": [
      "North America HQ",
@@ -17656,7 +19896,17 @@
      "London Finance Division",
      "Singapore Operations Base",
      "Chicago Marketing Wing",
-     "Seattle Product Group"
+     "Seattle Product Group",
+     "Building 42 West",
+     "Cedar Ridge Facility",
+     "Aegis Operations Center",
+     "Meridian Field Office",
+     "Terraform Base Camp",
+     "Obsidian Research Wing",
+     "Sylph Manufacturing Plant",
+     "Kestrel Data Hub",
+     "Vanguard Training Grounds",
+     "Horizon Logistics Depot"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -17670,7 +19920,7 @@
      "workplace_culture_dimension": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },
@@ -17768,7 +20018,6 @@
    "columns": {
     "bears_role": [
      "Dr. Aris Thorne",
-     "Elena Rostova",
      "Chen Wei",
      "Maya Patel",
      "Samir Al-Fayed",
@@ -17776,7 +20025,17 @@
      "Julian Hayes",
      "Dr. Priya Mehta",
      "Thomas Kowalski",
-     "Dr. Yuna Park"
+     "Dr. Yuna Park",
+     "RES-7742",
+     "DIR-8810",
+     "FAC-2293",
+     "PST-5501",
+     "TRA-9934",
+     "SCI-1167",
+     "JUN-4482",
+     "VIS-6605",
+     "GRD-3329",
+     "ELC-7718"
     ],
     "realizes": [
      "Genomic Sequencing Run",
@@ -17788,19 +20047,37 @@
      "Codebase Validation Suite",
      "Patient Cohort Analysis",
      "Sensor Array Calibration",
-     "Material Stress Testing"
+     "Material Stress Testing",
+     "GenomeSequencingRun",
+     "ClimateModelSimulation",
+     "MaterialStressTest",
+     "ClinicalTrialPhase2",
+     "FieldEcologySurvey",
+     "QuantumQubitCalibration",
+     "SoilMicrobiomeAnalysis",
+     "NetworkLatencyBenchmark",
+     "DrugToxicityScreen",
+     "AsteroidOrbitTracking"
     ],
     "young_researcher_role": [
      "Early-Career Scientist",
-     "Postdoctoral Fellow",
-     "Graduate Researcher",
      "Junior Lab Analyst",
      "Research Associate",
      "PhD Candidate",
      "Junior Data Scientist",
      "Field Researcher",
      "Junior Instrument Operator",
-     "Trainee Investigator"
+     "Trainee Investigator",
+     "EarlyCareerInvestigator",
+     "PostdocFellowship",
+     "GradResearchAssistant",
+     "JuniorPrincipalInvestigator",
+     "UndergradResearchIntern",
+     "VisitingResearchScholar",
+     "PostdoctoralTrainee",
+     "JuniorFacultyAppointment",
+     "ResearchFellowship",
+     "EarlyStageResearcher"
     ]
    },
    "domain": "Laboratory Information Management",
@@ -17816,7 +20093,7 @@
      "young_researcher_role": "ok"
     },
     "model": "Qwen/Qwen3.6-35B-A3B-FP8",
-    "run": "2026-07-02",
+    "run": "2026-07-03",
     "source": "seed_individuals"
    }
   },

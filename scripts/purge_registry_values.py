@@ -58,6 +58,26 @@ def main() -> int:
             print(f"  {tid}.{col}: dropped {len(drop)} ({', '.join(why)}) → {len(rec['columns'][col])} kept")
 
     IND.save_registry(reg)
+
+    # the frozen legacy pool (entity_value_pools.json — 0 live consumers, kept for provenance) gets
+    # the same real-particular purge so the standing scan gate covers every committed value source
+    pool_path = REPO / "src/aegir/ontology/entity_value_pools.json"
+    n_pool = 0
+    if pool_path.exists():
+        pools = json.loads(pool_path.read_text())
+        for tid, cols in pools.items():
+            if not isinstance(cols, dict):
+                continue
+            for col, vals in list(cols.items()):
+                if isinstance(vals, list):
+                    flagged = {v for v, _b in real_entity_hits([str(x) for x in vals])}
+                    if flagged:
+                        n_pool += len(flagged)
+                        cols[col] = [v for v in vals if v not in flagged]
+        pool_path.write_text(json.dumps(pools, indent=1, sort_keys=True) + "\n")
+        if n_pool:
+            print(f"legacy pool: purged {n_pool} real-particular value(s)")
+
     TARGETS_OUT.write_text(json.dumps(sorted(targets), indent=1) + "\n")
     print(f"\npurged: {n_real} real-particular value(s) + {n_clash} collision value(s) "
           f"across {len(targets)} template(s)")

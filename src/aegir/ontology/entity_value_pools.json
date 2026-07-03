@@ -2207,7 +2207,6 @@
    "Nepal-Afforestation"
   ],
   "transferred_to": [
-   "Microsoft-Carbon",
    "Maersk-Offsetting",
    "Orsted-NetZero",
    "Unilever-Climate",
@@ -2215,8 +2214,7 @@
    "Shell-Transition",
    "BlackRock-ESG",
    "Vancouver-City",
-   "Norway-Wealth",
-   "Toyota-Environmental"
+   "Norway-Wealth"
   ]
  },
  "cardinality_exactly_one_generic": {
@@ -4138,7 +4136,6 @@
    "OpenTelemetry Working Group",
    "CERN Data Management",
    "USGS Earth Resources",
-   "Pfizer Clinical Ops",
    "Apache Software Foundation",
    "National Weather Service",
    "Broad Institute Genomics",
@@ -4236,7 +4233,6 @@
    "Homo sapiens",
    "Great Barrier Reef",
    "United Kingdom",
-   "Apple Inc.",
    "Mount Fuji",
    "Pacific Ocean",
    "European Union"
@@ -4249,7 +4245,6 @@
    "Homo sapiens",
    "Great Barrier Reef",
    "United Kingdom",
-   "Apple Inc",
    "Mount Fuji",
    "Pacific Ocean",
    "European Union"
@@ -4559,8 +4554,6 @@
    "Spotify",
    "YouTube",
    "Twitch",
-   "Amazon Prime Video",
-   "Apple Music",
    "Disney Plus",
    "HBO Max",
    "Hulu",
@@ -6058,7 +6051,6 @@
   "associated_with": [
    "NILE-DELTA-PLT",
    "KILOMBOER-VALLEY-STN",
-   "AMAZON-RIPARIAN-PLT",
    "SAVANNA-LAKE-GRID",
    "URBAN-PERIDOMESTIC-BLK",
    "WETLAND-MARSH-NODE",
@@ -7988,7 +7980,6 @@
    "Thermal Imager FLIR T640",
    "Particle Counter PC-3000",
    "pH Meter SevenEasy",
-   "X-Ray Diffractometer Bruker D8",
    "Flow Cytometer BD FACSCanto",
    "Seismometer CMG-3ESP"
   ],
@@ -8007,15 +7998,11 @@
  },
  "instrument_with_function": {
   "instrument": [
-   "Agilent 5975C",
-   "Keysight DSOX3024T",
    "Leica DM6M",
    "Thermo Q Exactive",
-   "Tektronix MSO4",
    "Fluke 8846A",
    "Hamamatsu C12880",
    "Zygo NewView",
-   "Bruker Alpha",
    "Oxford XL30"
   ],
   "realizes_function": [
@@ -8074,7 +8061,6 @@
   ],
   "specifies_platform": [
    "Slack Enterprise Grid",
-   "Microsoft Teams",
    "Yammer",
    "Chatter",
    "Mattermost",
@@ -8705,13 +8691,7 @@
   ],
   "uses": [
    "ThermoFisher Q-Exactive",
-   "Agilent 7890B",
    "Leica TCS SP8",
-   "Bruker Avance III",
-   "Waters Xevo TQ-S",
-   "Shimadzu GCMS-TQ8050",
-   "PerkinElmer IV",
-   "Hitachi S-4800",
    "Olympus BX63"
   ]
  },
@@ -11111,8 +11091,7 @@
    "ISO Audit Board",
    "Internal Compliance Team",
    "Kubernetes Admission Controller",
-   "Veracode Scanner",
-   "ServiceNow GRC"
+   "Veracode Scanner"
   ],
   "policy": [
    "GDPR Data Handling",
@@ -12213,17 +12192,14 @@
    "Secure Quantum Vault"
   ],
   "quantum_computer": [
-   "IBM Quantum Heron",
    "Rigetti Aspen-M-3",
    "IonQ Forte",
-   "Google Sycamore",
    "Quantinuum H2",
    "D-Wave Advantage",
    "IQM Oulu",
    "Pasqal Atom",
    "Xanadu Borealis",
    "QuEra Aquila",
-   "Honeywell Q-16",
    "Alibaba Zuchongzhi"
   ]
  },
@@ -13062,14 +13038,12 @@
   "organizer": [
    "Linux Foundation",
    "Open Source Alliance",
-   "DataBricks Inc",
    "CNCF Events",
    "IEEE Computer Society",
    "Gartner Events",
    "Red Hat Events",
    "AWS Events",
-   "MongoDB Events",
-   "Snowflake Events"
+   "MongoDB Events"
   ],
   "schemaorg": [
    "Data Engineering Summit",
@@ -13149,26 +13123,15 @@
    "India"
   ],
   "name": [
-   "Google LLC",
-   "Microsoft Corporation",
-   "Amazon Web Services",
-   "Tesla Inc",
-   "Apple Inc",
    "Netflix Inc",
-   "Spotify AB",
-   "Salesforce Inc",
-   "Adobe Systems",
-   "Oracle Corp"
+   "Spotify AB"
   ],
   "schemaorg": [
-   "google-llc",
-   "microsoft-corp",
    "aws-services",
    "tesla-inc",
    "apple-inc",
    "netflix-inc",
    "spotify-ab",
-   "salesforce-inc",
    "adobe-systems",
    "oracle-corp"
   ]
@@ -13213,7 +13176,6 @@
  },
  "schemaorg_org_taxid": {
   "schemaorg": [
-   "Google LLC",
    "NASA Goddard",
    "MIT CSAIL",
    "WHO Geneva",
@@ -13386,7 +13348,6 @@
    "42 Rue de la Paix",
    "1000 Independence Ave",
    "500 Fifth Ave",
-   "1 Microsoft Way",
    "201 Mission St",
    "350 Fifth Ave",
    "1 Infinite Loop",
@@ -13422,7 +13383,6 @@
   ],
   "name": [
    "Pacific Viewpoint",
-   "River Delta Junction",
    "Mountain Pass Road",
    "Harbor Entrance Channel",
    "Valley Floor Station",
@@ -13503,14 +13463,9 @@
  },
  "schemaorg_product_brand": {
   "brand": [
-   "Apple",
-   "Samsung",
-   "Lenovo",
-   "Microsoft",
    "Sony",
    "Canon",
    "Dyson",
-   "Tesla",
    "Bose",
    "Logitech"
   ],
@@ -13523,8 +13478,7 @@
    "Xbox Series X",
    "Canon EOS R5",
    "Sony WH-1000XM5",
-   "Dyson V15 Detect",
-   "Tesla Model Y"
+   "Dyson V15 Detect"
   ]
  },
  "schemaorg_product_price": {
@@ -13543,12 +13497,10 @@
   "schemaorg": [
    "iPhone 15 Pro Max",
    "Sony WH-1000XM5",
-   "Samsung Galaxy S24",
    "Logitech MX Master 3",
    "Kindle Paperwhite",
    "Bose QC Ultra",
-   "Dyson V15",
-   "Apple AirPods Pro"
+   "Dyson V15"
   ]
  },
  "schemaorg_product_sku": {
@@ -13635,15 +13587,11 @@
   "schemaorg": [
    "iPhone 15 Pro",
    "The Great Gatsby",
-   "Tesla Model 3",
    "Star Wars Episode IV",
    "Canon EOS R5",
-   "Adobe Photoshop",
    "Marriott International",
    "Ubuntu Linux",
    "Honda Civic",
-   "Microsoft Word",
-   "Samsung Galaxy S24",
    "The Godfather"
   ]
  },
@@ -15866,11 +15814,9 @@
   ],
   "vehicle_equipment_specification": [
    "Ford F-150",
-   "Tesla Model Y",
    "Volvo FH16",
    "CAT 320 Excavator",
    "Mercedes Sprinter",
-   "Toyota Hilux",
    "Daf XF105",
    "Scania R500",
    "Isuzu NPR",
