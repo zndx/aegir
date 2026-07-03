@@ -220,6 +220,90 @@ def _render_reason(kfs: str, verdict: dict) -> str:
     return "; ".join(axs[:6]) + (" …" if len(axs) > 6 else "")
 
 
+def exist_cycle_lint(kfs_text: str) -> "list[list[str]]":
+    """∃-cycle lint (P0 adjunct) — the tableau-grind early-warning.
+
+    The JointInformationEnvironment incident: activating one ∃-axiom phase-changed HermiT's TBox
+    pass 478s → >52min (AnywhereBlocking under expandExistentials). The hazard shape is a CYCLE in
+    the ∃-obligation graph: following told subsumption (c ⊑ d inherits d's obligations) and
+    existential fillers (c ⊑ ∃r.d obliges a d-successor), a class that can reach itself forces
+    unbounded model-building that only blocking terminates — exactly where tableau cost explodes.
+    Returns the non-trivial SCCs that contain at least one ∃-edge, each as a sorted class list.
+    A lint, not a gate: cycles are legal OWL — the signal is "budget accordingly / consider
+    re-authoring", surfaced BEFORE the pass instead of discovered by a jstack 40 minutes in."""
+    sub_edges: dict[str, set[str]] = {}
+    ex_edges: dict[str, set[str]] = {}
+    for line in kfs_text.splitlines():
+        toks = line.split()
+        if not toks:
+            continue
+        strip = lambda s: s.strip("<>")  # noqa: E731
+        if toks[0] == "SubClassOf" and len(toks) == 3:
+            sub_edges.setdefault(strip(toks[1]), set()).add(strip(toks[2]))
+        elif toks[0] == "EquivalentToIntersection" and len(toks) >= 3:
+            sub_edges.setdefault(strip(toks[1]), set()).update(strip(t) for t in toks[2:])
+        elif toks[0] == "SubClassOfExistential" and len(toks) == 4:
+            ex_edges.setdefault(strip(toks[1]), set()).add(strip(toks[3]))
+    graph: dict[str, set[str]] = {}
+    for src, dsts in list(sub_edges.items()) + list(ex_edges.items()):
+        graph.setdefault(src, set()).update(dsts)
+        for d in dsts:
+            graph.setdefault(d, set())
+    # iterative Tarjan SCC
+    index: dict[str, int] = {}
+    low: dict[str, int] = {}
+    on_stack: set[str] = set()
+    stack: list[str] = []
+    sccs: list[list[str]] = []
+    counter = [0]
+    for root in graph:
+        if root in index:
+            continue
+        work = [(root, iter(sorted(graph[root])))]
+        index[root] = low[root] = counter[0]
+        counter[0] += 1
+        stack.append(root)
+        on_stack.add(root)
+        while work:
+            v, it = work[-1]
+            advanced = False
+            for w in it:
+                if w not in index:
+                    index[w] = low[w] = counter[0]
+                    counter[0] += 1
+                    stack.append(w)
+                    on_stack.add(w)
+                    work.append((w, iter(sorted(graph[w]))))
+                    advanced = True
+                    break
+                if w in on_stack:
+                    low[v] = min(low[v], index[w])
+            if advanced:
+                continue
+            work.pop()
+            if work:
+                parent = work[-1][0]
+                low[parent] = min(low[parent], low[v])
+            if low[v] == index[v]:
+                comp = []
+                while True:
+                    w = stack.pop()
+                    on_stack.discard(w)
+                    comp.append(w)
+                    if w == v:
+                        break
+                if len(comp) > 1 or v in graph.get(v, set()):
+                    sccs.append(sorted(comp))
+    # keep only SCCs threaded by at least one ∃-edge (pure told-subsumption cycles are a different,
+    # cheaper defect the metrology's cycle proxy already covers)
+    out = []
+    for comp in sccs:
+        cs = set(comp)
+        if any(d in cs for c in comp for d in ex_edges.get(c, ())):
+            out.append(comp)
+    return out
+
+
 def differential_record(source: str, kvasir_verdict: str, hermit_consistent: "bool | None",
                         **extra) -> None:
     """Record a (kvasir, HermiT) verdict pair — the trust bridge is measured, never assumed.

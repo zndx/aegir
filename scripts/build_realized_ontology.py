@@ -364,9 +364,33 @@ def consistency_check(templates) -> "tuple[bool, list[str]]":
     doc, _ = drop_degenerate(doc)
     doc = import_cco_bridge_fhir(doc)  # always aligns cco: NS; self-gates the CCO import
     doc, _ = RG.declare_used_properties(doc)
+    # kvasir fast-refute pre-pass (P0, [[greenfield_reasoner_direction]]): a kernel-checked
+    # refutation short-circuits the HermiT round in milliseconds, and its minimal justification IS
+    # the reason the agent re-authors against. Any other verdict (no-clash / out-of-fragment /
+    # unavailable) falls through to HermiT unchanged — kvasir changes HOW FAST, never WHAT is
+    # verified; HermiT keeps sole certificate authority. Each no-clash-then-HermiT pair accretes
+    # to the differential record (trust is measured, never assumed).
+    fr = None
+    try:
+        from aegir.ontology.kvasir_bridge import differential_record, fast_refute
+        fr = fast_refute(doc, source="consistency_check")
+        if fr["verdict"] == "refuted":
+            k_unsat = [u for u in fr.get("unsat_classes", []) if SDG_NS in u]
+            if k_unsat:
+                print(f"  ⚡ kvasir refuted in {fr['ms']}ms — {len(k_unsat)} unsat, HermiT round "
+                      f"short-circuited: {fr.get('reason', '')[:200]}", flush=True)
+                return False, k_unsat
+    except Exception as e:  # noqa: BLE001 — the pre-pass must never block the oracle
+        print(f"  (kvasir pre-pass unavailable: {e})", file=sys.stderr)
     ensure_jvm()
     _onto, path, consistent, _n, unsat, _why = _reason(doc)
     Path(path).unlink(missing_ok=True)
+    if fr is not None and fr.get("verdict") in ("no-clash", "refuted"):
+        try:
+            differential_record("consistency_check", fr["verdict"], consistent,
+                                n_axioms=fr.get("n_axioms"), kvasir_ms=fr.get("ms"))
+        except Exception:  # noqa: BLE001
+            pass
     return consistent, unsat
 
 
@@ -408,6 +432,7 @@ def main() -> int:
     # it. "Least-trusted layer" also means ENTERS LAST — one certification pass against the clean theory.
     abox_block, n_inds = "", 0
     probe_sets: "dict[str, frozenset]" = {}
+    kvasir_probe_unsat: "set[str]" = set()
     if not args.no_individuals:
         from aegir.ontology import individuals as IND
         _reg = IND.load_registry()
@@ -433,6 +458,42 @@ def main() -> int:
             print(f"   instantiation queued: {n_inds} individuals · {len(probe_sets)} conjunction probes "
                   f"folded into the main pass (multi-typed sets; singletons ride unsat=∅); "
                   f"budget {REASON_BUDGET_S}s/pass", flush=True)
+            # kvasir probe PRE-SCREEN (P0, [[greenfield_reasoner_direction]]): refute what is
+            # refutable in milliseconds BEFORE the budgeted HermiT pass — pre-refuted conjunctions
+            # withhold through the SAME signal path (kvasir refutations are kernel-checked and
+            # definitive), their probe classes leave the doc (a smaller pass), and the operator
+            # sees the clash census at second 0 instead of minute 40. HermiT remains the oracle
+            # for everything kvasir cannot decide.
+            try:
+                from aegir.ontology.kvasir_bridge import fast_refute as _kv_refute
+                _fr = _kv_refute(base_doc, source="probe-prescreen")
+                if _fr["verdict"] == "refuted":
+                    kvasir_probe_unsat = {u.rsplit("#", 1)[-1] for u in _fr.get("unsat_classes", [])
+                                          if "__conjprobe_" in u}
+                    if kvasir_probe_unsat:
+                        base_doc = drop_classes(base_doc, [SDG_NS + n for n in kvasir_probe_unsat])
+                        print(f"   ⚡ kvasir pre-screen ({_fr['ms']}ms): {len(kvasir_probe_unsat)} "
+                              f"conjunction probe(s) pre-refuted → withheld via the standard path, "
+                              f"dropped from the HermiT doc; e.g. {_fr.get('reason', '')[:160]}",
+                              flush=True)
+                    _dom = [u.split('#')[-1] for u in _fr.get("unsat_classes", [])
+                            if "__conjprobe_" not in u and SDG_NS in u]
+                    if _dom:
+                        print(f"   ⚡ kvasir pre-screen also refutes {len(_dom)} domain class(es) — "
+                              f"the narrowing loop confirms via HermiT: {_dom[:5]}", flush=True)
+                else:
+                    print(f"   ⚡ kvasir pre-screen ({_fr['ms']}ms): "
+                          f"{_fr['verdict']} over {_fr.get('n_axioms', '?')} lowered axioms", flush=True)
+                # ∃-cycle lint — the tableau-grind early-warning (the JIE incident's shape),
+                # surfaced BEFORE the pass instead of discovered by a jstack 40 minutes in
+                from aegir.ontology.kvasir_bridge import exist_cycle_lint, lower_manchester
+                _cycles = exist_cycle_lint(lower_manchester(base_doc)[0])
+                if _cycles:
+                    print(f"   ⚠ ∃-cycle lint: {len(_cycles)} existential cycle(s) — budget the pass "
+                          f"accordingly (largest: {[c.split('#')[-1] for c in _cycles[0][:5]]})",
+                          flush=True)
+            except Exception as _e:  # noqa: BLE001 — the pre-screen must never block the oracle
+                print(f"   (kvasir pre-screen unavailable: {_e})", file=sys.stderr)
 
     def build(ground: bool, exclude: "frozenset[str]" = frozenset()) -> "tuple[str, int, int, int]":
         d, nf, na, nd = base_doc, 0, 0, 0
@@ -476,7 +537,7 @@ def main() -> int:
         probes = {u.rsplit("#", 1)[-1] for u in us if "__conjprobe_" in u}
         return real, probes
 
-    probe_unsat: "set[str]" = set()
+    probe_unsat: "set[str]" = set(kvasir_probe_unsat)  # kvasir pre-refuted conjunctions withhold too
     unsat, pu = _split_probes(unsat)
     probe_unsat |= pu
     # --strict-grounding: greedily drop ONLY the filler-grounding edges that introduce unsatisfiability,
