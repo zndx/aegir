@@ -30,6 +30,7 @@ from dataclasses import dataclass, field
 from aegir.ontology.ddl import (CheckNote, SpineTable, ViewSpec, _dataprop_ranges, _prop_col,
                                 anchor_attributes, col_name, parse_restrictions, semantic_col_names,
                                 table_name)
+from aegir.ontology.natural_naming import stem
 from aegir.ontology.schema import CatalogTemplate
 from aegir.ontology.type_check import ColumnSpec, FKEdge, TableSpec
 
@@ -85,6 +86,22 @@ def _concept(template: CatalogTemplate) -> str:
     return (toks[0].lower() if toks else "entity")
 
 
+def _naming(template: CatalogTemplate, nat: "dict | None"):
+    """``(base_table, concept, slot→column map, semantic→natural column map)`` — the natural register
+    when a seeded ``natural_names`` record is provided (Convert 1c), else the semantic register.
+
+    Names enter at CONSTRUCTION: every sub-table/FK-column/view name below composes off these four, so a
+    junction becomes ``auth_grants__assigns__admin`` with ``auth_grant_id``/``admin_id`` columns rather
+    than a post-hoc rename that can't reach realizer-composed names or regenerate multi-table view SQL.
+    ``ColumnSpec.slot_ref`` stays semantic throughout — the canonical natural↔semantic↔Data-Element
+    lineage is untouched by the register choice."""
+    sem = semantic_col_names(template)
+    if not nat or not nat.get("table"):
+        return table_name(template.template_id), _concept(template), sem, {}
+    ncols = nat.get("cols") or {}
+    return nat["table"], stem(nat["table"]), {slot: ncols.get(c, c) for slot, c in sem.items()}, ncols
+
+
 def _pk() -> ColumnSpec:
     return ColumnSpec(name="id", slot_type="Class", slot_ref="__pk__")
 
@@ -97,9 +114,10 @@ def _mk(name: str, ref: str, cols: list[ColumnSpec], *, family: str, template: C
                       notes=notes or [], not_null=not_null or set(), kind=kind, realize_meta=meta or {})
 
 
-def _entity_columns(template: CatalogTemplate) -> list[ColumnSpec]:
-    """id + the Class/Individual (subject + relation-target) slot columns — NOT the DataProperties."""
-    names = semantic_col_names(template)
+def _entity_columns(template: CatalogTemplate, names: "dict | None" = None) -> list[ColumnSpec]:
+    """id + the Class/Individual (subject + relation-target) slot columns — NOT the DataProperties.
+    ``names`` (slot → column name) overrides the semantic register (see ``_naming``)."""
+    names = names or semantic_col_names(template)
     cols = [_pk()]
     for slot, owl in template.slot_types.items():
         if owl in ("Class", "Individual", "NamedIndividual"):
@@ -145,21 +163,29 @@ def _complexity(rs_tables, rs_fks, rs_views, *, eav: int = 0, junctions: int = 0
 
 
 # ── profile: normalized (baseline) ────────────────────────────────────────────
-def _realize_normalized(template: CatalogTemplate, family: str, rng) -> RealizedSchema:
+def _realize_normalized(template: CatalogTemplate, family: str, rng, nat: "dict | None" = None
+                        ) -> RealizedSchema:
     from aegir.ontology.ddl import template_to_table
     st = template_to_table(template, family)
+    if nat and nat.get("table"):
+        ncols = nat.get("cols") or {}
+        st.table.name = nat["table"]
+        for c in st.table.columns:     # rows empty, no views yet — the flat rename is construction-time
+            c.name = ncols.get(c.name, c.name)
     return RealizedSchema(template, family, "normalized", [st], [], [],
                           _complexity([st], [], [], attrs=len(_attributes(template))))
 
 
 # ── profile: EAV (Fowler) ─────────────────────────────────────────────────────
-def _realize_eav(template: CatalogTemplate, family: str, rng) -> RealizedSchema:
+def _realize_eav(template: CatalogTemplate, family: str, rng, nat: "dict | None" = None) -> RealizedSchema:
     attrs = _attributes(template)
     if len(attrs) < 2:                                  # not enough attributes to be worth EAV
-        return _realize_normalized(template, family, rng)
-    base = table_name(template.template_id)
-    concept = _concept(template)
-    entity = _mk(base, template.template_id, _entity_columns(template),
+        return _realize_normalized(template, family, rng, nat)
+    base, concept, slot_names, ncols = _naming(template, nat)
+    # attr display names (EAV registry ROWS, not identifiers) route through the natural aliases where
+    # the seeder covered them; anchor-pool extras keep their (column-name-shaped) tokens
+    attrs = [(ncols.get(n, n), t) for n, t in attrs]
+    entity = _mk(base, template.template_id, _entity_columns(template, slot_names),
                  family=family, template=template, kind="entity")
     reg_name = f"{base}_attr"
     registry = _mk(reg_name, template.template_id, [
@@ -209,13 +235,12 @@ def _eav_long_view(base, reg_name, value_tables, entity, registry, concept) -> V
 
 
 # ── profile: junction / association-class (Codd/Chen) ─────────────────────────
-def _realize_junction(template: CatalogTemplate, family: str, rng) -> RealizedSchema:
+def _realize_junction(template: CatalogTemplate, family: str, rng, nat: "dict | None" = None
+                      ) -> RealizedSchema:
     restrictions = parse_restrictions(template)
     if not restrictions:
-        return _realize_eav(template, family, rng)
-    base = table_name(template.template_id)
-    concept = _concept(template)
-    colnames = semantic_col_names(template)
+        return _realize_eav(template, family, rng, nat)
+    base, concept, colnames, _ncols = _naming(template, nat)
     # subject entity table (id + subject slot only; relations become junctions)
     subj_cols = [_pk()]
     for slot, owl in template.slot_types.items():
@@ -228,32 +253,35 @@ def _realize_junction(template: CatalogTemplate, family: str, rng) -> RealizedSc
     fks: list[FKEdge] = []
     views: list[ViewSpec] = []
     n_junctions = 0
-    # a small ontology-grounded association-attribute pool (the relation itself carries data)
-    _assoc_attrs = [("role", "xsd:string"), ("cardinality_note", "xsd:string"), ("since", "xsd:date")]
+    # a small ontology-grounded association-attribute pool (the relation itself carries data);
+    # register-invariant structural tokens, so keep them DBA-real (they ship un-masked in the release)
+    _assoc_attrs = [("role", "xsd:string"), ("notes", "xsd:string"), ("since", "xsd:date")]
     for i, r in enumerate(restrictions):
-        # the relation (coined property) is the meaningful name; the target slot's SEMANTIC column name
-        # (not its bare slot letter X/Y) names the related entity — so no 't_..._x_y' leaks into the corpus.
+        # the relation (coined property) is the meaningful name; the target slot's column name — natural
+        # register when seeded — names the related entity. As a NAME SEGMENT the target alias is stemmed
+        # (admin_id → admin), so composition yields auth_grants_admin / admin_id, never admin_id_id.
         rel = _prop_col(str(r.prop)) or f"rel{i}"
         tgt_name = (colnames.get(r.target_slot) or _prop_col(str(r.prop))
                     or re.sub(r"\W+", "_", r.target_slot).strip("_").lower() or f"target{i}")
-        tgt_tbl = f"{base}_{tgt_name}"
+        tgt_seg = stem(tgt_name) if nat else tgt_name
+        tgt_tbl = f"{base}_{tgt_seg}"
         # the related entity gets its own table
         tables.append(_mk(tgt_tbl, template.template_id,
                           [_pk(), ColumnSpec(tgt_name, "Class", r.target_slot)],
                           family=family, template=template, kind="entity"))
         # association-class junction (M:N), named by its relation (Codd/Chen), with its own attributes
-        jt = f"{base}__{rel}" if tgt_name == rel else f"{base}__{rel}__{tgt_name}"
+        jt = f"{base}__{rel}" if tgt_seg == rel else f"{base}__{rel}__{tgt_seg}"
         aa = _assoc_attrs[: 1 + (i % 3)]
         jcols = [_pk(), ColumnSpec(f"{concept}_id", "Class", "fk:subject"),
-                 ColumnSpec(f"{tgt_name}_id", "Class", "fk:target")]
+                 ColumnSpec(f"{tgt_seg}_id", "Class", "fk:target")]
         jcols += [ColumnSpec(n, t, f"data:{n}") for n, t in aa]
         tables.append(_mk(jt, template.template_id, jcols, family=family, template=template,
-                          kind="junction", not_null={f"{concept}_id", f"{tgt_name}_id"},
+                          kind="junction", not_null={f"{concept}_id", f"{tgt_seg}_id"},
                           meta={"left_table": base, "right_table": tgt_tbl, "relation": rel, "dense": True}))
         fks.append(FKEdge(jt, f"{concept}_id", base, "id", rel))
-        fks.append(FKEdge(jt, f"{tgt_name}_id", tgt_tbl, "id", rel))
+        fks.append(FKEdge(jt, f"{tgt_seg}_id", tgt_tbl, "id", rel))
         n_junctions += 1
-        views.append(_junction_view(jt, base, tgt_tbl, concept, tgt_name, rel))
+        views.append(_junction_view(jt, base, tgt_tbl, concept, tgt_seg, rel))
     return RealizedSchema(template, family, "junction", tables, fks, views,
                           _complexity(tables, fks, views, junctions=n_junctions,
                                       attrs=len(_attributes(template))))
@@ -272,15 +300,15 @@ def _junction_view(jt, left, right, concept, tgt_name, rel) -> ViewSpec:
 
 
 # ── profile: star / snowflake (Kimball) ───────────────────────────────────────
-def _realize_star(template: CatalogTemplate, family: str, rng, *, snowflake: bool = False) -> RealizedSchema:
+def _realize_star(template: CatalogTemplate, family: str, rng, nat: "dict | None" = None,
+                  *, snowflake: bool = False) -> RealizedSchema:
     attrs = _attributes(template)
     measures = [(n, t) for n, t in attrs if t in _NUMERIC_XSD]
     restrictions = parse_restrictions(template)
     if not measures and not restrictions:               # nothing to make a fact/dimension of
-        return _realize_eav(template, family, rng)
-    base = table_name(template.template_id)
-    concept = _concept(template)
-    colnames = semantic_col_names(template)
+        return _realize_eav(template, family, rng, nat)
+    _base, concept, colnames, ncols = _naming(template, nat)
+    measures = [(ncols.get(n, n), t) for n, t in measures]
     fact_name = f"fact_{concept}"
     fact_cols = [_pk()]
     fks: list[FKEdge] = []
@@ -292,8 +320,9 @@ def _realize_star(template: CatalogTemplate, family: str, rng, *, snowflake: boo
     # the junction/normalized profiles, never the raw slot letter (X/Y/Z → dim_y/y_key). colnames is
     # already collision-disambiguated, so the dim names stay unique.
     def _dim_name(r, i: int) -> str:
-        return (colnames.get(r.target_slot) or _prop_col(str(r.prop))
-                or re.sub(r"\W+", "_", r.target_slot).strip("_").lower() or f"dim{i}")
+        n = (colnames.get(r.target_slot) or _prop_col(str(r.prop))
+             or re.sub(r"\W+", "_", r.target_slot).strip("_").lower() or f"dim{i}")
+        return stem(n) if nat else n     # dim_admin / admin_key, never dim_admin_id / admin_id_key
     dim_targets = [(_dim_name(r, i), r)
                    for i, r in enumerate(restrictions)] or [(concept, None)]
     for dname, _r in dim_targets:
@@ -339,7 +368,7 @@ def _star_view(fact, dims, concept, fk_cols) -> ViewSpec:
 # ── dispatcher ────────────────────────────────────────────────────────────────
 _GENERATORS = {
     "normalized": _realize_normalized, "eav": _realize_eav, "junction": _realize_junction,
-    "star": _realize_star, "snowflake": lambda t, f, r: _realize_star(t, f, r, snowflake=True),
+    "star": _realize_star, "snowflake": lambda t, f, r, n=None: _realize_star(t, f, r, n, snowflake=True),
 }
 
 
@@ -357,11 +386,15 @@ def choose_profile(template: CatalogTemplate, family: str, rng=None) -> "tuple[s
 
 
 def realize_schema(template: CatalogTemplate, family: str, *, profile: str | None = None,
-                   rng=None) -> RealizedSchema:
+                   rng=None, natural: "dict | None" = None) -> RealizedSchema:
     """Realize a template into a schema subgraph under a structural ``profile`` (deterministic from the
     template's declared DDL grounding if not given — see ``choose_profile``). Falls back gracefully when a
     profile's preconditions aren't met. ``rs.complexity['profile_source']`` records the provenance of the
-    choice (grounds_ddl / default-minimal / explicit) — the authenticity audit travels with the artifact."""
+    choice (grounds_ddl / default-minimal / explicit) — the authenticity audit travels with the artifact.
+
+    ``natural`` is the template's ``natural_names`` record ({table, cols[, provenance]}, Convert 1c): when
+    given, the WHOLE subgraph — base tables, junction/EAV/star sub-tables, FK columns, views, SQL — is
+    constructed in the natural (DBA) register from birth; ``slot_ref`` stays semantic (the lineage edge)."""
     import random
     rng = rng or random.Random(0)
     if profile is None:
@@ -369,6 +402,6 @@ def realize_schema(template: CatalogTemplate, family: str, *, profile: str | Non
     else:
         profile_source = "explicit"
     gen = _GENERATORS.get(profile, _realize_normalized)
-    rs = gen(template, family, rng)
+    rs = gen(template, family, rng, natural)
     rs.complexity["profile_source"] = profile_source
     return rs

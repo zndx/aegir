@@ -134,6 +134,18 @@ reauthor-unsat rounds="4":
 seed-individuals limit="0" rounds="3":
     uv run --no-sync python scripts/seed_individuals.py --limit {{limit}} --rounds {{rounds}}
 
+# Convert 1c — in-loop natural naming: the engine coins DBA-register table/column names per template;
+# the membrane disposes with a REASON (echo / reserved id / coverage / dupes) and rejects re-prompt with
+# it; admissions accrete to natural_names.json with provenance. build_ddl_spine --naming natural threads
+# the map into schema REALIZATION so sub-tables/FK-cols/views are constructed natural from birth.
+seed-natural-names limit="0" rounds="4":
+    uv run --no-sync python scripts/seed_natural_names.py --limit {{limit}} --rounds {{rounds}} --write-resource
+
+# The Atelier-facing blind release (natural register + provenance stamps + generation manifest) cut from
+# a DDL-spine run dir. Preview releases land under build/ — the committed release rides P5.
+atelier-release spine out="build/atelier_release_preview":
+    uv run --no-sync python scripts/build_atelier_release.py --from-spine {{spine}} --out {{out}}
+
 # Meta-harness inc-2b: run the H₀ single-file harness over gap topics (frozen Grok
 # + ContractGate/HermiT) via the candidate filesystem. Needs the JVM libs
 # (DeepOnto/HermiT) + cuda driver libs. coverage-run defaults to the canonical v1 ground.

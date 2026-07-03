@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import copy
 import json
+import re
 from dataclasses import replace
 from pathlib import Path
 from typing import Sequence
@@ -32,6 +33,92 @@ from aegir.ontology.ddl import SpineTable, table_name
 from aegir.ontology.type_check import FKEdge
 
 _RESOURCE = Path(__file__).resolve().parent / "natural_names.json"
+
+_IDENT = re.compile(r"^[a-z][a-z0-9_]{1,38}$")
+# suffixes a DBA appends to a stem; stripped when a column alias is reused as a NAME SEGMENT
+# (junction/dim composition) so `admin_id` composes to `auth_grants_admin`, not `..._admin_id_id`
+_SEG_SUFFIX = re.compile(r"_(id|ids|ref|code|cd|key|no|num|nm|txt|dt|ts)$")
+
+
+def stem(name: str) -> str:
+    """A natural name reduced to a composable segment: conventional suffix stripped, crude de-plural."""
+    s = _SEG_SUFFIX.sub("", name)
+    if len(s) > 4 and s.endswith("s") and not s.endswith("ss"):
+        s = s[:-1]
+    return s or name
+
+
+def _toks(name: str) -> "set[str]":
+    return {t for t in name.lower().split("_") if t}
+
+
+def _echo_toks(name: str) -> "set[str]":
+    """Token set for de-echo comparison: the ``t_`` physical prefix dropped (it is register plumbing,
+    not concept content — leaving it lets a verbatim concept copy pass containment) and each token
+    crudely de-pluralized (``lecture_sessions`` must not escape as a rename of ``lecture_session``)."""
+    toks = [t for t in name.lower().split("_") if t]
+    if toks and toks[0] == "t":
+        toks = toks[1:]
+    out = set()
+    for t in toks:
+        if len(t) > 4 and t.endswith("s") and not t.endswith("ss"):
+            t = t[:-1]
+        out.add(t)
+    return out
+
+
+# ── the membrane (returns its REASON — the agent's feedback channel, Convert 1c) ─
+def check_names(semantic_table: str, semantic_cols: "list[str]", proposal: "dict | None"
+                ) -> "tuple[bool, str, dict | None]":
+    """Dispose one template's proposed natural names → (ok, reason, cleaned). The natural register's
+    JOB is breaking concept-from-header, so echo of the ontology-derived surface is a defect the
+    membrane catches — not a style nit ([[agent_mediated_feedback_loop]]: every rejection carries the
+    reason the proposer re-authors against). Checks: parse/shape, identifier validity, distinctness,
+    FULL column coverage (a half-named table is a mixed-register surface — worse than either register),
+    table-name de-echo (identity/containment of the semantic tokens), and an aggregate column echo rate."""
+    if not proposal or not proposal.get("table"):
+        return False, "no NAT_TABLE line parsed — re-emit the full NAT_TABLE + NAT_COL contract", None
+    table = proposal["table"].lower()
+    cols: dict[str, str] = {k: v.lower() for k, v in (proposal.get("cols") or {}).items()}
+    if not _IDENT.match(table):
+        return False, f"table name '{table}' is not a valid snake_case SQL identifier", None
+    bad = [n for n in cols.values() if not _IDENT.match(n)]
+    if bad:
+        return False, f"invalid column identifier(s): {', '.join(sorted(bad)[:4])}", None
+    missing = [c for c in semantic_cols if c not in cols]
+    if missing:
+        return False, (f"missing natural names for column(s): {', '.join(missing[:6])} — every column "
+                       "needs one (a partially-renamed table leaks the ontology register)"), None
+    if "id" in cols.values():
+        clash = [s for s, n in cols.items() if n == "id"]
+        return False, (f"'id' is the reserved surrogate-key name — rename column(s) {', '.join(clash[:3])} "
+                       "(e.g. a '<stem>_id' business key)"), None
+    if len(set(cols.values())) != len(cols):
+        dupes = sorted({v for v in cols.values() if list(cols.values()).count(v) > 1})
+        return False, f"duplicate natural column name(s): {', '.join(dupes[:4])}", None
+    # table-level de-echo: identity or wholesale containment of the semantic tokens (t_-prefix dropped,
+    # plural-normalized) = the concept copied through, which defeats the register's purpose
+    st_toks, nt_toks = _echo_toks(semantic_table), _echo_toks(table)
+    if nt_toks == st_toks or (st_toks and st_toks <= nt_toks):
+        return False, (f"table name '{table}' echoes the ontology name '{semantic_table}' — coin a "
+                       "DBA-register name decoupled from the concept label (abbreviate or rephrase, "
+                       "not just re-inflect)"), None
+    ident_cols = [s for s, n in cols.items() if n.replace("_", "") == s.replace("_", "")]
+    if ident_cols:
+        return False, (f"column(s) named identically to the ontology name: {', '.join(ident_cols[:4])} "
+                       "— every natural name must differ from its ontology-derived source"), None
+    echo = sum(1 for s, n in cols.items() if _toks(s) & _toks(n))
+    if len(cols) >= 3 and echo / len(cols) > 0.8:
+        return False, (f"{echo}/{len(cols)} column names share exact tokens with their ontology names — "
+                       "too literal overall; abbreviate/rephrase (e.g. 'administrator' → 'admin_id')"), None
+    return True, "", {"table": table, "cols": cols}
+
+
+def provenance_of(rec: dict) -> str:
+    """The name_provenance tag for a natural_names record: engine-derived-under-membrane vs the
+    pre-membrane static resource (legacy records carry no provenance key)."""
+    src = (rec.get("provenance") or {}).get("source")
+    return src or "static-legacy"
 
 
 def load_natural_names(path: "str | Path | None" = None) -> dict:

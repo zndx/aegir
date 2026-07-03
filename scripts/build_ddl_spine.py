@@ -66,6 +66,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--realize-seed", type=lambda x: int(x, 0), default=0x5EED,
                    help="retained for compatibility; profiles are deterministic (provenance.grounds_ddl), "
                         "the seed no longer selects structure")
+    p.add_argument("--naming", choices=["natural", "semantic"], default="natural",
+                   help="physical-name register (Convert 1c). 'natural' (default, the CANONICAL "
+                        "deliverable) threads natural_names.json into schema realization so the whole "
+                        "subgraph — sub-tables, FK columns, views, SQL — is constructed in the DBA "
+                        "register from birth; 'semantic' keeps ontology-native names (Atlas/lineage "
+                        "reference). Either way naming_map.parquet records the per-column "
+                        "semantic↔natural pairing + name_provenance")
     p.add_argument("--output-dir",
                    default="/raid/checkpoints/aegir-artifacts/ddl_spine_v0/")
     return p.parse_args()
@@ -83,19 +90,27 @@ def compute_run_id(args: argparse.Namespace, files: list[Path]) -> str:
     h.update(f"row_seed:{args.row_seed}\n".encode())
     h.update(f"materialize:{not args.no_materialize_rows}\n".encode())
     h.update(f"realize:{args.realize}:{args.realize_seed}\n".encode())
+    if args.naming != "semantic":  # register + the map content shape the run (legacy ids unchanged)
+        from aegir.ontology.natural_naming import _RESOURCE as _NN
+        nn_hash = hashlib.sha256(_NN.read_bytes()).hexdigest()[:16] if _NN.exists() else "absent"
+        h.update(f"naming:{args.naming}:{nn_hash}\n".encode())
     for p in sorted(files):
         h.update(f"{p.name}:{hashlib.sha256(p.read_bytes()).hexdigest()[:16]}\n".encode())
     return h.hexdigest()[:16]
 
 
 def load_spine(files: list[Path], per_family: int | None, *, realize: bool = False,
-               realize_seed: int = 0x5EED):
+               realize_seed: int = 0x5EED, natural_names: dict | None = None):
     """Lower templates to the spine. With ``realize``, each template becomes a stochastic schema
     SUBGRAPH (realize.realize_schema) — returns (tables, intra-subgraph FKs, reconstruction views,
-    per-template complexity rows). Flat mode returns one table/template (empty fk/view/cx lists)."""
+    per-template complexity rows). Flat mode returns one table/template (empty fk/view/cx lists).
+    ``natural_names`` (Convert 1c) threads each template's natural record into construction so the
+    subgraph is born in the DBA register (flat mode renames post-hoc via natural_naming — base-only,
+    the proven path)."""
     import hashlib
     import random
 
+    nn = natural_names or {}
     spine: list[D.SpineTable] = []
     rfks: list = []
     rviews: list = []
@@ -113,7 +128,7 @@ def load_spine(files: list[Path], per_family: int | None, *, realize: bool = Fal
             if realize:
                 seed = int.from_bytes(
                     hashlib.blake2b(f"{realize_seed}:{t.template_id}".encode(), digest_size=8).digest(), "big")
-                rs = rz.realize_schema(t, family, rng=random.Random(seed))
+                rs = rz.realize_schema(t, family, rng=random.Random(seed), natural=nn.get(t.template_id))
                 spine.extend(rs.tables)
                 rfks.extend(rs.fks)
                 rviews.extend(rs.views)
@@ -121,6 +136,9 @@ def load_spine(files: list[Path], per_family: int | None, *, realize: bool = Fal
                            **rs.complexity})
             else:
                 spine.append(D.template_to_table(t, family))
+    if not realize and nn:
+        from aegir.ontology.natural_naming import natural_rename
+        spine, _ = natural_rename(spine, [], nn)
     return spine, rfks, rviews, cx, n_templates
 
 
@@ -140,10 +158,65 @@ def main() -> int:
     logger.info("run_id=%s  output=%s  dialects=%s  validate=%s",
                 run_id, out, args.dialects, not args.no_validate)
 
+    natural_names: dict = {}
+    if args.naming == "natural":
+        from aegir.ontology.natural_naming import load_natural_names
+        natural_names = load_natural_names()   # globally disambiguated (collisions → _2, _3 …)
+        if not natural_names:
+            logger.warning("--naming natural but natural_names.json is absent/empty — "
+                           "falling back to the semantic register (run seed_natural_names.py)")
     spine, realized_fks, realized_views, complexity_rows, n_templates = load_spine(
-        files, args.per_family, realize=args.realize, realize_seed=args.realize_seed)
-    logger.info("lowered %d templates → %d tables (%s) across %d families", n_templates, len(spine),
-                "realized subgraphs" if args.realize else "flat", len(files))
+        files, args.per_family, realize=args.realize, realize_seed=args.realize_seed,
+        natural_names=natural_names)
+    logger.info("lowered %d templates → %d tables (%s, %s register) across %d families",
+                n_templates, len(spine), "realized subgraphs" if args.realize else "flat",
+                args.naming if natural_names or args.naming == "semantic" else "semantic(fallback)",
+                len(files))
+    # spine-wide physical-name uniqueness (natural table names are globally disambiguated at load;
+    # sub-table names inherit uniqueness from their base prefix — this asserts the invariant)
+    _names_seen: dict[str, str] = {}
+    for st in spine:
+        prev = _names_seen.setdefault(st.table.name, st.template.template_id)
+        if prev != st.template.template_id:
+            logger.error("TABLE NAME COLLISION: %s (templates %s / %s)", st.table.name, prev,
+                         st.template.template_id)
+            return 1
+
+    # ── naming map (Convert 1c): the per-column semantic↔natural lineage edge + name provenance ────
+    # Built by realizing the SEMANTIC twin and zipping positionally (construction is deterministic, so
+    # the twin has identical structure — which this also asserts: a register must never change shape).
+    naming_rows: list[dict] = []
+    if natural_names:
+        sem_spine = load_spine(files, args.per_family, realize=args.realize,
+                               realize_seed=args.realize_seed)[0]
+    else:
+        sem_spine = spine
+    if len(sem_spine) != len(spine):
+        logger.error("register-twin mismatch: %d semantic vs %d %s tables", len(sem_spine), len(spine),
+                     args.naming)
+        return 1
+    from aegir.ontology.natural_naming import provenance_of
+    for sst, nst in zip(sem_spine, spine):
+        if (sst.template.template_id != nst.template.template_id
+                or len(sst.table.columns) != len(nst.table.columns)):
+            logger.error("register-twin structural divergence at %s / %s", sst.table.name, nst.table.name)
+            return 1
+        rec = natural_names.get(nst.template.template_id) or {}
+        rec_prov = provenance_of(rec) if rec else "semantic"
+        rec_cols = set((rec.get("cols") or {}).values())
+        for sc, nc in zip(sst.table.columns, nst.table.columns):
+            prov = ("semantic-passthrough" if nc.name == sc.name
+                    else rec_prov if nc.name in rec_cols else "composed")
+            naming_rows.append({
+                "template_id": nst.template.template_id, "kind": nst.kind,
+                "table_name": nst.table.name, "semantic_table": sst.table.name,
+                "col_name": nc.name, "semantic_col": sc.name, "slot_ref": nc.slot_ref,
+                "register": args.naming if natural_names else "semantic",
+                "name_provenance": prov})
+    if naming_rows:
+        from collections import Counter as _CP
+        logger.info("naming map: %d columns, provenance %s", len(naming_rows),
+                    dict(_CP(r["name_provenance"] for r in naming_rows)))
 
     # None since the family-complex retirement (co-occurrence is measured, never a pre-wired gate);
     # cross_family_fks treats None as no-sanction and still audits the candidates.
@@ -183,8 +256,10 @@ def main() -> int:
         from aegir.ontology.chapter_tables import (build_views, definitions_for_spine,
                                                     entity_pool_sources, entity_pools_for_spine)
         from aegir.ontology.rows import assert_referential_integrity, materialize_rows
+        # pools are keyed by SEMANTIC column names — the natural map translates them onto the
+        # constructed register (Convert 1c; without this every pooled value regresses to a placeholder)
         materialize_rows(spine, fk_edges, seed=args.row_seed, definitions=definitions_for_spine(spine),
-                         entity_pools=entity_pools_for_spine(spine))
+                         entity_pools=entity_pools_for_spine(spine, natural_names))
         # the value-provenance audit (Convert 1b): which source fed each pooled template's entity cells —
         # registry (in-loop derived individuals, membrane-gated) vs legacy (frozen pool) vs unpooled
         # (curated/type generators). The static fraction should shrink toward 0 as the registry accretes.
@@ -335,6 +410,16 @@ def main() -> int:
             "n_rows": pa.int32(), "rows_json": pa.string(), "valid": pa.bool_(),
             "run_id": pa.string(), "created_at": pa.timestamp("us", tz="UTC"),
         })
+    if naming_rows:
+        for r in naming_rows:
+            r["run_id"] = run_id
+            r["created_at"] = created_at
+        _write(out / "naming_map.parquet", naming_rows, {
+            "template_id": pa.string(), "kind": pa.string(), "table_name": pa.string(),
+            "semantic_table": pa.string(), "col_name": pa.string(), "semantic_col": pa.string(),
+            "slot_ref": pa.string(), "register": pa.string(), "name_provenance": pa.string(),
+            "run_id": pa.string(), "created_at": pa.timestamp("us", tz="UTC"),
+        })
 
     realize_summary: dict = {}
     if complexity_rows:
@@ -365,10 +450,14 @@ def main() -> int:
         }
         logger.info("realize complexity: %s", realize_summary)
 
+    from collections import Counter as _CM
     manifest = {
         "run_id": run_id, "created_at": created_at.isoformat(),
         "catalog_files": [p.name for p in files], "n_templates": n_templates,
         "n_tables": len(spine),
+        "naming": args.naming if natural_names or args.naming == "semantic" else "semantic(fallback)",
+        "n_naturalized_templates": len(natural_names),
+        "name_provenance_distribution": dict(_CM(r["name_provenance"] for r in naming_rows)),
         "dialects": list(dialects), "per_family": args.per_family,
         "validated": not args.no_validate,
         "cross_family_fks_emitted": n_emitted,

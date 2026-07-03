@@ -105,17 +105,25 @@ def entity_pool_sources() -> "dict[str, str]":
     return dict(_ENTITY_POOL_SOURCE)
 
 
-def entity_pools_for_spine(spine: Sequence[SpineTable]) -> dict[str, dict[str, list[str]]]:
+def entity_pools_for_spine(spine: Sequence[SpineTable], natural_names: "dict | None" = None
+                           ) -> dict[str, dict[str, list[str]]]:
     """``{table → {col → [domain values]}}`` from the committed entity_value_pools.json — concept-specific
     instance values for the entity/name columns that would otherwise be ``"<Concept> NN"`` placeholders
-    (Comp 4). Keyed to table_name (via template_id) for :func:`rows.materialize_rows`; non-FK only."""
+    (Comp 4). Keyed to table_name (via template_id) for :func:`rows.materialize_rows`; non-FK only.
+
+    ``natural_names`` (Convert 1c): pool records are keyed by SEMANTIC column names (the register the
+    values were seeded against); a natural-register spine needs its aliases applied here or every pooled
+    value silently regresses to a placeholder — the severed-signal failure mode, at the value boundary."""
     pools = _entity_value_pools()
+    nn = natural_names or {}
     out: dict[str, dict[str, list[str]]] = {}
     for st in spine:
         rec = pools.get(st.template.template_id)
         if rec:
+            alias = (nn.get(st.template.template_id) or {}).get("cols") or {}
             cols = {c.name for c in st.table.columns}
-            keep = {col: vals for col, vals in rec.items() if col in cols and vals}
+            keep = {alias.get(col, col): vals for col, vals in rec.items() if vals}
+            keep = {col: vals for col, vals in keep.items() if col in cols}
             if keep:
                 out[st.table.name] = keep
     return out
