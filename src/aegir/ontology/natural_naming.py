@@ -70,12 +70,18 @@ def _echo_toks(name: str) -> "set[str]":
 # ── the membrane (returns its REASON — the agent's feedback channel, Convert 1c) ─
 def check_names(semantic_table: str, semantic_cols: "list[str]", proposal: "dict | None"
                 ) -> "tuple[bool, str, dict | None]":
-    """Dispose one template's proposed natural names → (ok, reason, cleaned). The natural register's
-    JOB is breaking concept-from-header, so echo of the ontology-derived surface is a defect the
-    membrane catches — not a style nit ([[agent_mediated_feedback_loop]]: every rejection carries the
-    reason the proposer re-authors against). Checks: parse/shape, identifier validity, distinctness,
-    FULL column coverage (a half-named table is a mixed-register surface — worse than either register),
-    table-name de-echo (identity/containment of the semantic tokens), and an aggregate column echo rate."""
+    """Dispose one template's proposed natural names → (ok, reason, cleaned).
+
+    The design rule is COOPERATIVE SIGNAL, INDEPENDENT AUTHORSHIP: a DBA names to facilitate usage, so
+    natural names should be as informative as helpful naming makes them — the membrane does NOT enforce
+    weakness. What it enforces is the authorship separation reality has by construction (schema author ≠
+    taxonomy author): our semantic names and our vocabulary labels share an author, so a verbatim/
+    containment echo of the ontology surface is the shared-author circularity leaking through — the one
+    thing a downstream tagging benchmark must not contain. Echo rejection ≠ obfuscation (machine-generated
+    opaque naming is a different population entirely). Every rejection carries the reason the proposer
+    re-authors against ([[agent_mediated_feedback_loop]]). Checks: parse/shape, identifier validity,
+    distinctness, FULL column coverage (a half-named table is a mixed-register surface — worse than either
+    register), table-name de-echo (identity/containment of the semantic tokens), aggregate column echo rate."""
     if not proposal or not proposal.get("table"):
         return False, "no NAT_TABLE line parsed — re-emit the full NAT_TABLE + NAT_COL contract", None
     table = proposal["table"].lower()
