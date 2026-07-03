@@ -24,6 +24,56 @@ REGISTRY_PATH = Path(__file__).resolve().parent / "individual_registry.json"
 # entity-column values that are vacuous filler, not domain instances
 _GENERIC_VALUES = {"example", "value", "item", "test", "sample", "data", "entity", "thing",
                    "placeholder", "unknown", "n/a", "tbd", "none", "foo", "bar", "misc", "other"}
+
+# ── REAL UNIVERSALS, FICTIONAL PARTICULARS (RH 2026-07-03: sensitive nouns escape the training
+# arena — 'Apple Inc' typed into the published ABox). The corpus asserts nothing about real-world
+# PARTICULARS: organizations, brands, commercial products, people, named facilities are invented in a
+# realistic register. Real UNIVERSALS (standards, protocols, units, kinds: HL7, ISO 17025, UTC) stay —
+# they are nomenclature, and domain realism needs them. This deterministic denylist is the fast
+# REGRESSION tier (the head of the brand distribution); the engine-screened audit is the judgment tier.
+_BRANDS_CLEAR = re.compile(
+    r"\b(microsoft|google|amazon|facebook|instagram|nvidia|intel|qualcomm|broadcom|samsung|huawei|"
+    r"foxconn|tsmc|asml|cisco|lenovo|toshiba|hitachi|siemens|panasonic|ericsson|nokia|motorola|"
+    r"ibm|sap|salesforce|workday|servicenow|databricks|snowflake|cloudera|teradata|informatica|"
+    r"cerner|meditech|allscripts|athenahealth|epic\s+systems|medtronic|stryker|baxter|danaher|"
+    r"agilent|shimadzu|perkinelmer|perkin\s+elmer|bruker|sartorius|mettler[- ]toledo|labware|"
+    r"labvantage|starlims|thermo\s+fisher|beckman|biorad|bio-rad|illumina|qiagen|pfizer|novartis|"
+    r"astrazeneca|glaxo|gsk|sanofi|bayer|roche|genentech|moderna|biontech|boeing|airbus|lockheed|"
+    r"northrop|raytheon|toyota|volkswagen|daimler|nissan|hyundai|ferrari|porsche|autodesk|"
+    r"solidworks|dassault|ansys|synopsys|altium|keysight|tektronix|rohde\s*&\s*schwarz|"
+    r"halliburton|schlumberger|baker\s+hughes|exxon|exxonmobil|chevron|conocophillips|petrobras|"
+    r"gazprom|aramco|verizon|vodafone|t-mobile|comcast|starlink|spacex|at&t|panduit|corning|"
+    r"belden|commscope|schneider\s+electric|rockwell\s+automation|honeywell|emerson|yokogawa|abb)\b",
+    re.I)
+# ambiguous tokens (common words / fruit / mythology) — flagged only in brand-context shapes:
+# "<Brand> Inc/Corp/…", "<Brand> <CapitalizedProduct>", or the bare TitleCase token alone.
+# NB the [A-Z] product requirement must stay case-SENSITIVE ('target material' is a noun phrase,
+# 'Apple RenderKit' is a brand) — the (?i:…) groups scope insensitivity to brand/suffix tokens only.
+_BRANDS_AMBIG = ("apple", "oracle", "amazon", "meta", "epic", "waters", "shell", "bp", "ge",
+                 "philips", "tesla", "ford", "delta", "target", "adobe", "stripe", "square",
+                 "cadence", "palantir", "anthropic", "openai", "deepmind")
+_AMBIG_CTX = re.compile(
+    r"(?i:\b(" + "|".join(_BRANDS_AMBIG) + r")\b)\s+(?:(?i:inc|corp|llc|ltd|plc|group|"
+    r"systems|health(?:care)?|cloud|labs?)\b|[A-Z][A-Za-z0-9]+)")
+
+
+def real_entity_hits(values: "list[str]") -> "list[tuple[str, str]]":
+    """[(value, matched_brand)] — the deterministic real-particular screen (see policy note above).
+    Ambiguous tokens require brand context ('Apple Inc', 'Apple RenderKit') or an exact bare
+    TitleCase token ('Apple') — lowercase 'apple' in an orchard column is a fruit and passes."""
+    out = []
+    for v in values:
+        m = _BRANDS_CLEAR.search(v)
+        if m:
+            out.append((v, m.group(1)))
+            continue
+        m = _AMBIG_CTX.search(v)
+        if m:
+            out.append((v, m.group(1).lower()))
+            continue
+        if v.strip() in {b.title() for b in _BRANDS_AMBIG}:
+            out.append((v, v.strip().lower()))
+    return out
 # id-like columns legitimately hold mechanical serials (AUTH-8842 …) — exempt from the stem check
 _IDLIKE = re.compile(r"(?:^|_)(id|ids|code|codes|number|no|ref|reference|identifier|key|serial|uuid|urn)(?:_|$)")
 _SLUG = re.compile(r"[^a-z0-9]+")
@@ -56,6 +106,12 @@ def check_column(col: str, values: "list[str]") -> "tuple[bool, str, list[str]]"
     proposer re-authors against ([[agent_mediated_feedback_loop]]); an empty reason means admitted."""
     kept = [v for v in values if v.strip().lower() not in _GENERIC_VALUES]
     n_generic = len(values) - len(kept)
+    real = real_entity_hits(kept)
+    if real:
+        named = ", ".join(sorted({f"'{v}'" for v, _ in real})[:4])
+        return False, (f"real-world particular(s) named: {named} — the corpus asserts only FICTIONAL "
+                       "organizations/products/people (invent plausible counterparts in the same "
+                       "register; real standards/protocols/units are fine)"), kept
     if len(kept) < 5:
         why = f"only {len(kept)} usable values (need ≥5)"
         if n_generic:

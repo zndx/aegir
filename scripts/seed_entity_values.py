@@ -61,10 +61,14 @@ _SYSTEM = (
     "you produce a pipe-separated list of distinct, concrete, domain-plausible cell values — the kind a "
     "real database would hold, NOT placeholders like 'Item 01'. Hard rules: (1) values are short (1-4 "
     "words / a realistic identifier), concrete, and specific to the column's meaning and the table's "
-    "concept; (2) no numbering like 'X 01', no 'example', no 'value', no ontology jargon; (3) OUTPUT "
-    "CONTRACT: emit exactly one line per requested column, beginning with the literal tag 'VALUES "
-    "<column>: ' followed by 8-12 values separated by ' | '. Put any thinking on OTHER lines; a line "
-    "without the tag is ignored."
+    "concept; (2) no numbering like 'X 01', no 'example', no 'value', no ontology jargon; (3) REAL "
+    "UNIVERSALS, FICTIONAL PARTICULARS: real standards, protocols, units, and kinds are welcome (HL7 "
+    "FHIR, ISO 17025, UTC, stainless steel) but NEVER name a real-world organization, company, brand, "
+    "commercial product, person, or named facility — invent plausible fictional counterparts in the "
+    "same register (a fictional 'Veridian Diagnostics LIMS', not a real vendor's product); "
+    "(4) OUTPUT CONTRACT: emit exactly one line per requested column, beginning with the literal tag "
+    "'VALUES <column>: ' followed by 8-12 values separated by ' | '. Put any thinking on OTHER lines; "
+    "a line without the tag is ignored."
 )
 
 

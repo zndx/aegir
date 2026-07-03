@@ -794,3 +794,9 @@ cuda-deps:
 # Override: ``MAX_JOBS=8 just build-flash-attn`` etc.
 build-flash-attn:
     bash bin/build-flash-attn-aggressive.sh
+
+# Sensitive-noun regression gate — REAL UNIVERSALS, FICTIONAL PARTICULARS: the corpus asserts nothing
+# about real-world organizations/products/people. Deterministic denylist tier (head brands); the
+# engine-screened audit rides the registry re-seed. Exit 1 on any hit (P5 release gate).
+scan-sensitive-nouns:
+    uv run --no-sync python scripts/scan_sensitive_nouns.py --json-out build/sensitive_noun_baseline.json
