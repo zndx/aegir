@@ -57,6 +57,156 @@ def load_code_map() -> "tuple[dict, int]":
     return {r["abbrev"].lower(): r["code"] for r in recs if r["parent_code"]}, len(recs)
 
 
+def build_reference_resolver(vocab_recs: list, code_map: dict, naming: dict, index: dict):
+    """R1 (spec 225241, ACCEPTED 2026-07-03): per-column reference derivation. The RESOLUTION CHAIN,
+    each rung stamped in ``ref_basis`` so coarseness stays auditable (coarse-by-design vs
+    coarse-by-lineage-gap must never blur — the gate would soften silently):
+
+      1. direct class→code (measured: 154/468 distinct entity classes) ............ ``leaf``
+      2. realized-ontology ancestor walk (told Sub pairs from the certified omn via the kvasir
+         lowering) to the first coded ancestor .......................... ``hypernym:lineage-gap``
+      3. the template head's code (433/433 — the reliable anchor) ....... ``hypernym:lineage-gap``
+
+    data-attribute columns key at hypernyms by construction (``hypernym:underdetermined`` — the
+    rout_stop_address doctrine applied to KEY DERIVATION, not just scoring). fk columns resolve
+    THROUGH their target table's entity class. Returns ``resolve(tname, cname, nm, fk_tgt) ->
+    (code, basis)`` plus ``head_code(tname)`` for join-key/view inheritance."""
+    import re as _re
+
+    def norm(s: str) -> str:
+        return _re.sub(r"[^a-z0-9]", "", (s or "").lower())
+
+    lut: dict = {}
+    for r in vocab_recs:
+        if r.get("parent_code"):
+            for k in (r.get("label"), r.get("abbrev"), r.get("notation")):
+                if k:
+                    lut.setdefault(norm(str(k)), r["code"])
+
+    # told ancestors from the CERTIFIED artifact (the same lowering kvasir consumes)
+    ancestors: dict = {}
+    try:
+        from aegir.ontology.kvasir_bridge import lower_manchester
+        omn = (REPO / "corpora/ontology/sdg-ontology.omn").read_text()
+        for line in lower_manchester(omn)[0].splitlines():
+            toks = line.split()
+            local = lambda x: x.strip("<>").rsplit("#", 1)[-1]  # noqa: E731
+            if toks and toks[0] in ("SubClassOf", "EquivalentToIntersection") and len(toks) >= 3:
+                ancestors.setdefault(local(toks[1]), []).extend(local(x) for x in toks[2:])
+    except Exception as e:  # noqa: BLE001 — resolver degrades to rungs 1+3, loudly
+        print(f"  (ancestor walk unavailable — {e}; resolving with rungs 1+3 only)", file=sys.stderr)
+
+    def coded_ancestor(cls: str) -> "str | None":
+        seen, frontier = set(), [cls]
+        while frontier:
+            nxt = []
+            for c in frontier:
+                for a in ancestors.get(c, []):
+                    if a in seen:
+                        continue
+                    seen.add(a)
+                    hit = lut.get(norm(a))
+                    if hit:
+                        return hit
+                    nxt.append(a)
+            frontier = nxt
+        return None
+
+    # BFO-anchor → vocabulary bridge: the GENERIC (class) and DOM (semantic-type) subtrees never
+    # meet in the current taxonomy (GENERIC→SDG.GENERIC, DOM→SDG.ICE — measured 2026-07-03), so
+    # cross-frame hierarchical credit is structurally impossible on single-coded refs. Until the P5
+    # vocabulary regen connects the tree, entity references ship SET-VALUED ('leaf|bridge'): the
+    # ontology-class leaf AND the deployment-frame hypernym its BFO grounding names. Both frames
+    # earn credit; the scorer already takes max over '|'-sets.
+    _BFO_BRIDGE = {
+        "bfo:0000023": "SDG.DOM.AGENT_ROLE",      # role
+        "bfo:0000015": "SDG.PROCESS",             # process
+        "bfo:0000040": "SDG.ARTIFACT",            # material entity
+        "bfo:0000030": "SDG.ARTIFACT",            # object
+        "bfo:0000031": "SDG.ICE",                 # generically dependent continuant (ICE-ish)
+    }
+
+    def bridge_for(cls: str) -> "str | None":
+        seen, frontier = set(), [cls]
+        while frontier:
+            nxt = []
+            for c in frontier:
+                for a in ancestors.get(c, []):
+                    if a in seen:
+                        continue
+                    seen.add(a)
+                    if a in _BFO_BRIDGE:
+                        return _BFO_BRIDGE[a]
+                    nxt.append(a)
+            frontier = nxt
+        return None
+
+    def class_code(cls: str) -> "tuple[str, str]":
+        direct = lut.get(norm(cls))
+        bridge = bridge_for(cls)
+        if direct and bridge and bridge != direct:
+            return f"{direct}|{bridge}", "set"
+        if direct:
+            return direct, "leaf"
+        via = coded_ancestor(cls)
+        if via and bridge and bridge != via:
+            return f"{via}|{bridge}", "set"
+        if via or bridge:
+            return (via or bridge or ""), "hypernym:lineage-gap"
+        return "", "hypernym:lineage-gap"
+
+    # per-table entity class (for fk resolution): the entity table's class-typed slot_ref, else head
+    tbl_entity_cls: dict = {}
+    for (tname, _c), nmrow in naming.items():
+        sr = nmrow.get("slot_ref", "")
+        if (nmrow.get("kind") == "entity" and sr and sr != "__pk__" and sr != "subject"
+                and not sr.startswith(("data:", "fk:"))):
+            tbl_entity_cls.setdefault(tname, sr)
+
+    def head_code(tname: str) -> "tuple[str, str]":
+        tid = (index.get(tname) or {}).get("template_id", "")
+        return code_map.get(tid.lower(), ""), "leaf"  # the head class IS the table's own kind
+
+    # the measured data-attributes: explicit deployment-frame mapping for the dominant realizer
+    # attrs, lut where it matches, the descriptive-ICE hypernym elsewhere
+    _DESC = "SDG.ICE.DESCRIPTIVE"
+    _ATTR_MAP = {"role": "SDG.DOM.AGENT_ROLE", "event_count": "SDG.DOM.MEASUREMENT"}
+
+    def data_code(attr: str) -> "tuple[str, str]":
+        hit = _ATTR_MAP.get(attr) or lut.get(norm(attr))
+        return (hit or _DESC), "hypernym:underdetermined"
+
+    def resolve(tname: str, cname: str, nm: dict, fk_tgt: "str | None") -> "tuple[str, str]":
+        sr = nm.get("slot_ref", "") or ""
+        if sr.startswith("data:"):
+            return data_code(sr[5:])
+        if sr == "subject" or sr == "fk:subject":
+            # the subject / its junction FK is an instance of the table's own class
+            base = fk_tgt if (sr == "fk:subject" and fk_tgt) else tname
+            return head_code(base)
+        if sr.startswith("fk:"):
+            # resolve THROUGH the target table's entity class; dim/star targets — and classes whose
+            # ancestor chains exit into un-coded BFO/CCO — fall to the target's HEAD anchor (rung 3)
+            if fk_tgt and tbl_entity_cls.get(fk_tgt):
+                code, basis = class_code(tbl_entity_cls[fk_tgt])
+                if code:
+                    return code, basis
+            if fk_tgt:
+                c, _ = head_code(fk_tgt)
+                return c, "hypernym:lineage-gap"
+            c, _ = head_code(tname)
+            return c, "hypernym:lineage-gap"
+        if sr and sr != "__pk__":
+            code, basis = class_code(sr)
+            if code:
+                return code, basis
+            c, _ = head_code(tname)   # rung 3: the reliable anchor, stamped as the gap it is
+            return c, "hypernym:lineage-gap"
+        return head_code(tname)
+
+    return resolve, head_code
+
+
 def generation_manifest(spine_dir: Path, spine_manifest: dict, n_vocab: int) -> dict:
     """The version-skew guard (task #136.2): one place recording which generation of each Data Product
     this release was cut against, so a consumer can fail fast on cross-generation mixes."""
@@ -115,6 +265,7 @@ def main() -> int:
 
     # group cells: (table, col) → ordered distinct values; (table) → n_rows, fk targets, col order
     cells: dict[tuple, list[str]] = {}
+    pk_cells: dict[str, list[str]] = {}   # table → pk values (join_key view columns project these)
     col_pos: dict[str, list[str]] = {}
     fk_target: dict[tuple, str] = {}
     pk_cols: set[tuple] = set()
@@ -122,6 +273,8 @@ def main() -> int:
         key = (r["table_name"], r["col_name"])
         if r["is_pk"]:
             pk_cols.add(key)
+            if r["value"] not in (None, ""):
+                pk_cells.setdefault(r["table_name"], []).append(str(r["value"]))
             continue
         if r["col_name"] not in col_pos.setdefault(r["table_name"], []):
             col_pos[r["table_name"]].append(r["col_name"])
@@ -134,8 +287,13 @@ def main() -> int:
     col_rows: list[dict] = []
     ref_rows: list[dict] = []
     prov_counts: Counter = Counter()
+    basis_counts: Counter = Counter()
     code_hits = code_misses = 0
     covered: set[str] = set()
+    resolve_ref, head_code = build_reference_resolver(
+        pq.read_table(REPO / "corpora/vocabulary/annotations.parquet").to_pylist(),
+        code_map, naming, index)
+    base_ref: dict = {}   # (table_name, base_col) → (code, basis) — view-lineage inheritance (R4)
 
     for tname, cols in sorted(col_pos.items()):
         idx = index.get(tname) or {}
@@ -177,19 +335,83 @@ def main() -> int:
             prov_counts[prov] += 1
             distinct = list(dict.fromkeys(vals))
             col_id = f"{table_id}_c{pos}"
+            ref_code, basis = resolve_ref(tname, cname, nm, fk_target.get((tname, cname)))
+            basis_counts[basis if ref_code else "unresolved"] += 1
+            base_ref[(tname, cname)] = (ref_code, basis)
             col_rows.append({  # PUBLIC release: no table_name / template / semantic register
                 "table_id": table_id, "column_id": col_id, "column_name": public_name,
                 "register": register, "name_provenance": prov,
+                "construct": "base", "derivation": "",
                 "n_rows": len(vals), "sample_values": distinct[:args.max_values],
                 "fk_to_table_id": tbl_ids.get(fk_target.get((tname, cname), ""), None),
             })
-            ref_rows.append({  # HELD-BACK key: de-anonymisation + answer + elucidation register
-                "table_id": table_id, "column_id": col_id, "reference_code": code,
+            ref_rows.append({  # HELD-BACK key: PER-COLUMN answer (R1) + auditable basis + CTA aux
+                "table_id": table_id, "column_id": col_id, "reference_code": ref_code,
+                "ref_basis": basis, "table_class_code": code,
                 "template_id": tid, "source_table": tname, "column_name": public_name,
                 "semantic_table": nm.get("semantic_table", ""), "semantic_col": nm.get("semantic_col", ""),
                 "slot_ref": nm.get("slot_ref", ""), "kind": nm.get("kind", idx.get("family", "")),
+                "construct": "base", "derivation": "",
             })
+        base_ref[(tname, "id")] = head_code(tname)   # pk identity — join_key views inherit it
         _ = t_nm  # (table-level row retained for future table_label emission)
+
+    # ── R4: views as a first-class scored stratum (spec 225241) ───────────────────
+    # view columns join the blind surface (construct/derivation describe shape, not answers);
+    # references derive THROUGH columns_json lineage (deterministic in the realize layer);
+    # verbalizations ship as the DOCS CHANNEL only (they are the model's training-pair text —
+    # never part of the names+values blind surface).
+    views_path = spine_dir / "views.parquet"
+    n_view_cols = 0
+    docs_rows: list[dict] = []
+    if views_path.exists() and not args.values_only:
+        views = pq.read_table(views_path).to_pylist()
+        for v in sorted(views, key=lambda x: x["view_name"]):
+            vcols = json.loads(v["columns_json"])
+            vrows = json.loads(v.get("rows_json") or "[]")
+            if not vcols:
+                continue
+            table_id = tbl_ids.setdefault(v["view_name"], f"tbl_{len(tbl_ids):06d}")
+            docs_rows.append({"table_id": table_id, "description": v.get("verbalization") or ""})
+            bases = json.loads(v.get("base_tables_json") or "[]")
+            for pos, c in enumerate(vcols):
+                vc, bt, bc = c["view_col"], c["base_table"], c["base_col"]
+                vals = [str(row[pos]) for row in vrows
+                        if isinstance(row, list) and len(row) > pos and row[pos] not in (None, "")]
+                if not vals:
+                    # realizer views ship rows_json=[] (only flat-mode views materialize) — PROJECT
+                    # the column's values through its lineage instead: a view column's value
+                    # population IS its base column's (identity/rename) or the base pk (join_key);
+                    # per-column sampling needs no joined-row alignment
+                    vals = pk_cells.get(bt, []) if bc == "id" else \
+                        list(cells.get((bt, bc)) or [])
+                if not vals:
+                    continue
+                if bc == "id":
+                    derivation = "join_key"
+                elif vc == bc:
+                    derivation = "identity"
+                else:
+                    derivation = "rename"
+                ref_code, basis = base_ref.get((bt, bc)) or head_code(bt)
+                basis_counts[basis if ref_code else "unresolved"] += 1
+                col_id = f"{table_id}_c{pos}"
+                distinct = list(dict.fromkeys(vals))
+                col_rows.append({
+                    "table_id": table_id, "column_id": col_id, "column_name": vc,
+                    "register": "natural", "name_provenance": "composed",
+                    "construct": "view", "derivation": derivation,
+                    "n_rows": len(vals), "sample_values": distinct[:args.max_values],
+                    "fk_to_table_id": tbl_ids.get(bases[0]) if bases else None,
+                })
+                ref_rows.append({
+                    "table_id": table_id, "column_id": col_id, "reference_code": ref_code,
+                    "ref_basis": basis, "table_class_code": "",
+                    "template_id": "", "source_table": v["view_name"], "column_name": vc,
+                    "semantic_table": bt, "semantic_col": bc,
+                    "slot_ref": "", "kind": "view", "construct": "view", "derivation": derivation,
+                })
+                n_view_cols += 1
 
     pq.write_table(pa.Table.from_pylist(col_rows), out / "corpus_columns.parquet")
     # KEY SEPARATION (Atelier ask, 2026-07-03): the reference lives in a SIBLING dir, never beside
@@ -199,9 +421,16 @@ def main() -> int:
     key_dir = out.parent / (out.name + ".key")
     key_dir.mkdir(parents=True, exist_ok=True)
     pq.write_table(pa.Table.from_pylist(ref_rows), key_dir / "reference.parquet")
+    if docs_rows:
+        docs_dir = out / "docs"
+        docs_dir.mkdir(parents=True, exist_ok=True)
+        pq.write_table(pa.Table.from_pylist(docs_rows), docs_dir / "view_descriptions.parquet")
     stats = {
-        "release_version": "v2-natural-register",
+        "release_version": "v3-per-column-frame",
         "n_tables": len(col_pos),
+        "n_view_tables": len(docs_rows),
+        "n_view_columns": n_view_cols,
+        "ref_basis": dict(basis_counts),
         "n_columns": len(col_rows),
         "n_cells": sum(r["n_rows"] for r in col_rows),
         "template_coverage": len(covered),
