@@ -25,7 +25,8 @@ class AegirEngineServicer(pbg.AegirEngineServicer):
         cap = request.capability or "instruct"
         try:
             out = self.mgr.complete(cap, request.prompt, request.system_prompt or "",
-                                    request.max_tokens or 512, request.temperature or 0.7)
+                                    request.max_tokens or 512, request.temperature or 0.7,
+                                    json_schema=getattr(request, "json_schema", "") or "")
             return pb.CompleteResponse(
                 text=out["text"], model=out["model"], prompt_tokens=out["prompt_tokens"],
                 completion_tokens=out["completion_tokens"], latency_ms=out["latency_ms"],

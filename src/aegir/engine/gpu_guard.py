@@ -48,9 +48,14 @@ from filelock import FileLock, Timeout
 # residual CUDA context from a dead process should not block; an active vLLM holds many GiB. 512 MiB splits
 # those cleanly. Override with AEGIR_ENGINE_GPU_MIN_MIB.
 _DEFAULT_MIN_MIB = int(os.environ.get("AEGIR_ENGINE_GPU_MIN_MIB", "512"))
-_LOCK_DIR = Path(os.environ.get("AEGIR_ENGINE_LOCK_DIR",
-                                os.environ.get("AEGIR_ENGINE_LOG_DIR", "/tmp/aegir-engine")))
+# SHARED cross-project lease dir (federation prep, adopted from Atelier's proposal 2026-07-03): all
+# zndx engines (aegir :50151, atelier :50251, gaius :50051) drop their per-GPU-set advisory locks in
+# ONE dir, so the cooperative layer is mutual across projects — previously each engine's locks lived
+# in a per-project dir and only the nvidia-smi probe protected co-tenancy. Lock filenames are
+# engine-agnostic (gpu-<set>.lock); the owner payload names the project. Effective at next restart.
+_LOCK_DIR = Path(os.environ.get("AEGIR_ENGINE_LOCK_DIR", "/tmp/zndx-gpu-leases"))
 _WORKTREE_ROLE = os.environ.get("AEGIR_WORKTREE_ROLE", "primary")
+_PROJECT = "aegir"
 
 
 class GpuClaimError(RuntimeError):
@@ -218,8 +223,8 @@ def claim_gpus(target: list[int], *, min_mib: int = _DEFAULT_MIN_MIB,
 
 
 def _write_owner(path: Path, target: list[int], role: str) -> None:
-    payload = {"pid": os.getpid(), "role": role, "gpus": target, "ts": time.time(),
-               "host": os.uname().nodename}
+    payload = {"pid": os.getpid(), "project": _PROJECT, "role": role, "gpus": target,
+               "ts": time.time(), "host": os.uname().nodename}
     with contextlib.suppress(Exception):
         path.write_text(json.dumps(payload))
 
@@ -228,8 +233,8 @@ def _read_owner(path: Path) -> str:
     try:
         d = json.loads(path.read_text())
         age = max(0, int(time.time() - d.get("ts", 0)))
-        return (f"pid {d.get('pid')} (role={d.get('role')}, host={d.get('host')}, "
-                f"gpus={d.get('gpus')}, {age}s ago)")
+        return (f"pid {d.get('pid')} (project={d.get('project', '?')}, role={d.get('role')}, "
+                f"host={d.get('host')}, gpus={d.get('gpus')}, {age}s ago)")
     except Exception:  # noqa: BLE001
         return "an unknown process"
 

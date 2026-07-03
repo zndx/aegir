@@ -71,7 +71,13 @@ def generation_manifest(spine_dir: Path, spine_manifest: dict, n_vocab: int) -> 
         "ddl_run_id": spine_manifest.get("run_id") or spine_dir.name,
         "corpus_run_id": None,  # set when a release is cut against a generated text corpus
         "naming": spine_manifest.get("naming"),
-        "name_provenance_distribution": spine_manifest.get("name_provenance_distribution"),
+        # spine-wide (naming_map) distribution — release-visible columns differ (see
+        # column_name_provenance in release_stats); renamed for clarity at Atelier's request
+        "spine_name_provenance_distribution": spine_manifest.get("name_provenance_distribution"),
+        # corpora-level train/eval split (Atelier §5.1, the RWKV-ensemble eval-design ask): releases
+        # meant for post-model-integration efficacy gates must be cut from held-out chapters/topics
+        # never present in the training mix. P4 defines the partition; previews are unsplit.
+        "holdout_partition": "preview-unsplit",
     }
 
 
@@ -186,7 +192,13 @@ def main() -> int:
         _ = t_nm  # (table-level row retained for future table_label emission)
 
     pq.write_table(pa.Table.from_pylist(col_rows), out / "corpus_columns.parquet")
-    pq.write_table(pa.Table.from_pylist(ref_rows), out / "reference.parquet")
+    # KEY SEPARATION (Atelier ask, 2026-07-03): the reference lives in a SIBLING dir, never beside
+    # the blind surface — with filesystem-capable agent-mediated classification on their side, the
+    # blind-integrity audit becomes structural (point the agent at <release>/ only) instead of
+    # procedural. P5 sealed runs ship no key at all.
+    key_dir = out.parent / (out.name + ".key")
+    key_dir.mkdir(parents=True, exist_ok=True)
+    pq.write_table(pa.Table.from_pylist(ref_rows), key_dir / "reference.parquet")
     stats = {
         "release_version": "v2-natural-register",
         "n_tables": len(col_pos),
@@ -202,7 +214,8 @@ def main() -> int:
     print(f"Atelier release → {out}")
     for k, v in stats.items():
         print(f"  {k}: {v}")
-    print("  corpus_columns.parquet (release) + reference.parquet (HELD BACK) + release_stats.json")
+    print(f"  corpus_columns.parquet (release) + release_stats.json → {out}")
+    print(f"  reference.parquet (HELD BACK) → {key_dir}  [never beside the blind surface]")
     # loud contract checks (never silent): uniqueness within table + non-null snake_case names
     by_tbl: dict[str, set] = {}
     for r in col_rows:

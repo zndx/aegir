@@ -16,14 +16,20 @@ def _target() -> str:
 
 
 def complete_detailed(prompt: str, *, capability: str = "instruct", system_prompt: str = "",
-                      max_tokens: int = 4096, temperature: float = 0.7, timeout: float = 1200.0) -> dict:
+                      max_tokens: int = 4096, temperature: float = 0.7, timeout: float = 1200.0,
+                      json_schema: str = "") -> dict:
     """Like `complete`, but returns the full response — including the retained `reasoning_content`
     (the thinking trace, a corpus value-add) and `finish_reason` ('length' ⇒ raise max_tokens). The
-    generous default max_tokens lets verbose reasoning traces finish; the workload accepts the wait."""
+    generous default max_tokens lets verbose reasoning traces finish; the workload accepts the wait.
+    ``json_schema`` (a JSON Schema string) requests engine-enforced structured output (vLLM
+    guided-json) — the cross-engine convergence field; empty = unconstrained."""
     with grpc.insecure_channel(_target()) as ch:
-        r = pbg.AegirEngineStub(ch).Complete(pb.CompleteRequest(
+        req = pb.CompleteRequest(
             capability=capability, prompt=prompt, system_prompt=system_prompt,
-            max_tokens=max_tokens, temperature=temperature), timeout=timeout)
+            max_tokens=max_tokens, temperature=temperature)
+        if json_schema:
+            req.json_schema = json_schema
+        r = pbg.AegirEngineStub(ch).Complete(req, timeout=timeout)
         return {"text": r.text, "reasoning_content": r.reasoning_content, "finish_reason": r.finish_reason,
                 "model": r.model, "prompt_tokens": r.prompt_tokens, "completion_tokens": r.completion_tokens,
                 "latency_ms": r.latency_ms}

@@ -77,8 +77,13 @@ def main() -> int:
     rel = Path(a.release)
 
     parent = load_hierarchy()
+    # the key lives in the sibling <release>.key/ dir (key separation, 2026-07-03); legacy
+    # releases with the reference beside the blind surface still score
+    key = rel.parent / (rel.name + ".key") / "reference.parquet"
+    if not key.exists():
+        key = rel / "reference.parquet"
     ref = {(r["table_id"], r["column_id"]): r["reference_code"]
-           for r in pq.read_table(rel / "reference.parquet").to_pylist()}
+           for r in pq.read_table(key).to_pylist()}
     prov = {(r["table_id"], r["column_id"]): r.get("name_provenance", "?")
             for r in pq.read_table(rel / "corpus_columns.parquet").to_pylist()}
     preds = pq.read_table(a.predictions).to_pylist()

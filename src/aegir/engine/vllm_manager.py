@@ -110,15 +110,22 @@ class VllmManager:
         return "\n".join(path.read_text(errors="ignore").splitlines()[-n:])
 
     def complete(self, capability: str, prompt: str, system_prompt: str = "",
-                 max_tokens: int = 512, temperature: float = 0.7) -> dict:
+                 max_tokens: int = 512, temperature: float = 0.7,
+                 json_schema: str = "") -> dict:
         ep = self.ensure(capability)
         msgs = ([{"role": "system", "content": system_prompt}] if system_prompt else [])
         msgs.append({"role": "user", "content": prompt})
+        body = {"model": capability, "messages": msgs,
+                "max_tokens": max_tokens, "temperature": temperature}
+        if json_schema:
+            # vLLM guided decoding — structured output enforced AT the engine (Atelier convergence
+            # proposal 2026-07-03; federated Complete calls keep schema enforcement across engines)
+            import json as _json
+            body["extra_body"] = {"guided_json": _json.loads(json_schema)}
         t0 = time.time()
         r = httpx.post(
             f"http://127.0.0.1:{ep.port}/v1/chat/completions",
-            json={"model": capability, "messages": msgs,
-                  "max_tokens": max_tokens, "temperature": temperature},
+            json=body,
             # RETAIN thinking: Qwen3.x reasons verbosely and the trace is a corpus value-add (Cerebras-style
             # reasoning retention), so we do NOT pass enable_thinking=False. Generous read timeout — long
             # traces are expected and acceptable (the workload waits). reasoning_content is populated when

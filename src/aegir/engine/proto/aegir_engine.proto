@@ -18,6 +18,10 @@ message CompleteRequest {
   string system_prompt = 3;
   int32 max_tokens = 4;
   float temperature = 5;
+  // Optional JSON Schema for structured output (vLLM guided-json). Wire-compatible proto3 addition —
+  // adopted from Atelier's engine-convergence proposal 2026-07-03 so federated Complete calls keep
+  // schema enforcement across engines. Empty = unconstrained (existing behavior).
+  string json_schema = 6;
 }
 
 message CompleteResponse {

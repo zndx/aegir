@@ -3,9 +3,9 @@
 import grpc
 import warnings
 
-from aegir.engine.proto import aegir_engine_pb2 as aegir_dot_engine_dot_proto_dot_aegir__engine__pb2
+from aegir.engine.proto import aegir_engine_pb2 as aegir__engine__pb2
 
-GRPC_GENERATED_VERSION = '1.80.0'
+GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -18,14 +18,14 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + ' but the generated code in aegir/engine/proto/aegir_engine_pb2_grpc.py depends on'
+        + ' but the generated code in aegir_engine_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class AegirEngineStub(object):
+class AegirEngineStub:
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -36,22 +36,22 @@ class AegirEngineStub(object):
         """
         self.Complete = channel.unary_unary(
                 '/aegir.engine.AegirEngine/Complete',
-                request_serializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.CompleteRequest.SerializeToString,
-                response_deserializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.CompleteResponse.FromString,
+                request_serializer=aegir__engine__pb2.CompleteRequest.SerializeToString,
+                response_deserializer=aegir__engine__pb2.CompleteResponse.FromString,
                 _registered_method=True)
         self.EnsureEndpoint = channel.unary_unary(
                 '/aegir.engine.AegirEngine/EnsureEndpoint',
-                request_serializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EnsureEndpointRequest.SerializeToString,
-                response_deserializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EndpointStatus.FromString,
+                request_serializer=aegir__engine__pb2.EnsureEndpointRequest.SerializeToString,
+                response_deserializer=aegir__engine__pb2.EndpointStatus.FromString,
                 _registered_method=True)
         self.EngineStatus = channel.unary_unary(
                 '/aegir.engine.AegirEngine/EngineStatus',
-                request_serializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EngineStatusRequest.SerializeToString,
-                response_deserializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EngineStatusResponse.FromString,
+                request_serializer=aegir__engine__pb2.EngineStatusRequest.SerializeToString,
+                response_deserializer=aegir__engine__pb2.EngineStatusResponse.FromString,
                 _registered_method=True)
 
 
-class AegirEngineServicer(object):
+class AegirEngineServicer:
     """Missing associated documentation comment in .proto file."""
 
     def Complete(self, request, context):
@@ -80,18 +80,18 @@ def add_AegirEngineServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Complete': grpc.unary_unary_rpc_method_handler(
                     servicer.Complete,
-                    request_deserializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.CompleteRequest.FromString,
-                    response_serializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.CompleteResponse.SerializeToString,
+                    request_deserializer=aegir__engine__pb2.CompleteRequest.FromString,
+                    response_serializer=aegir__engine__pb2.CompleteResponse.SerializeToString,
             ),
             'EnsureEndpoint': grpc.unary_unary_rpc_method_handler(
                     servicer.EnsureEndpoint,
-                    request_deserializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EnsureEndpointRequest.FromString,
-                    response_serializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EndpointStatus.SerializeToString,
+                    request_deserializer=aegir__engine__pb2.EnsureEndpointRequest.FromString,
+                    response_serializer=aegir__engine__pb2.EndpointStatus.SerializeToString,
             ),
             'EngineStatus': grpc.unary_unary_rpc_method_handler(
                     servicer.EngineStatus,
-                    request_deserializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EngineStatusRequest.FromString,
-                    response_serializer=aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EngineStatusResponse.SerializeToString,
+                    request_deserializer=aegir__engine__pb2.EngineStatusRequest.FromString,
+                    response_serializer=aegir__engine__pb2.EngineStatusResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -101,7 +101,7 @@ def add_AegirEngineServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class AegirEngine(object):
+class AegirEngine:
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -119,8 +119,8 @@ class AegirEngine(object):
             request,
             target,
             '/aegir.engine.AegirEngine/Complete',
-            aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.CompleteRequest.SerializeToString,
-            aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.CompleteResponse.FromString,
+            aegir__engine__pb2.CompleteRequest.SerializeToString,
+            aegir__engine__pb2.CompleteResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -146,8 +146,8 @@ class AegirEngine(object):
             request,
             target,
             '/aegir.engine.AegirEngine/EnsureEndpoint',
-            aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EnsureEndpointRequest.SerializeToString,
-            aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EndpointStatus.FromString,
+            aegir__engine__pb2.EnsureEndpointRequest.SerializeToString,
+            aegir__engine__pb2.EndpointStatus.FromString,
             options,
             channel_credentials,
             insecure,
@@ -173,8 +173,8 @@ class AegirEngine(object):
             request,
             target,
             '/aegir.engine.AegirEngine/EngineStatus',
-            aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EngineStatusRequest.SerializeToString,
-            aegir_dot_engine_dot_proto_dot_aegir__engine__pb2.EngineStatusResponse.FromString,
+            aegir__engine__pb2.EngineStatusRequest.SerializeToString,
+            aegir__engine__pb2.EngineStatusResponse.FromString,
             options,
             channel_credentials,
             insecure,
