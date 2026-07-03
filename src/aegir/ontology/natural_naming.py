@@ -121,6 +121,31 @@ def provenance_of(rec: dict) -> str:
     return src or "static-legacy"
 
 
+_VOWELS = set("aeiou")
+
+
+def degrade_name(name: str, *, max_tok: int = 5) -> str:
+    """Deterministic cryptic-DBA abbreviation — the DEPLOYMENT-REALISTIC degraded form of a name.
+
+    Real warehouses never present nameless columns; the degraded form of a name is a cryptic one
+    (``accnt_athrz_rcrd``), not ``col3``. Used when no natural-register record exists for a column
+    (pre-1c footprints, unresolved templates): keeps the surface name-shaped and the evidence channel
+    live while damping exact-token vocabulary matching (``accnt`` ≠ ``account``). Deterministic —
+    no dice-roll; the information loss is the honest signal of the missing derivation, stamped
+    ``degraded-mechanical`` in name_provenance so consumers can slice by grade."""
+    toks = [t for t in name.lower().split("_") if t]
+    if toks and toks[0] == "t" and len(toks) > 1:
+        toks = toks[1:]
+    out = []
+    for t in toks:
+        if len(t) <= 4:
+            out.append(t)
+            continue
+        body = t[0] + "".join(c for c in t[1:] if c not in _VOWELS)
+        out.append(body[:max_tok])
+    return "_".join(out) or name
+
+
 def load_natural_names(path: "str | Path | None" = None) -> dict:
     """``{template_id: {"table": str, "cols": {semantic_col: natural_col}}}`` — {} if absent.
 

@@ -9,12 +9,19 @@ names are the *deliberately weak* name evidence (Atelier's ``name_match`` channe
 the very vocabulary we emit, so a semantic name would BE the answer key; natural names make the
 benchmark measure value-driven comprehension). Emits:
 
-  - corpus_columns.parquet : RELEASE — opaque table_id/column_id, NATURAL column_name + register +
+  - corpus_columns.parquet : RELEASE — opaque table_id/column_id, column_name + register +
                              name_provenance stamps, sample values, FK topology by opaque id.
-                             Names never in the semantic register: columns of templates without a
-                             membrane-admitted natural record are MASKED to ``col<pos>`` (a generic
-                             Atelier's ``_is_generic_name`` guard catches → values-only classification),
-                             stamped ``masked-semantic`` — visible, never silent.
+                             ALWAYS-NAMED surface (deployment realism: real warehouses present names
+                             everywhere — SchemaPile-scale data + a wiki is the downstream reality;
+                             ``col3`` is a regime no user will hand Atelier). The name-provenance
+                             LADDER grades trust instead of hiding names: engine-derived > composed >
+                             static-legacy > degraded-mechanical (deterministic cryptic-DBA
+                             abbreviation of a name with no natural record — damps exact vocabulary-
+                             label matching while keeping the evidence channel live). Only the
+                             verbatim answer-key channel is structurally excluded: ontology-native
+                             names never ship un-degraded. Leakage is MEASURED (provenance-sliced
+                             ablation), not eliminated. ``--values-only`` masks to ``col<pos>`` as an
+                             explicit diagnostic arm — never the default surface.
   - reference.parquet      : HELD-BACK key — column → SKOS code, plus the semantic register
                              (elucidation channel), template identity, and slot_ref lineage.
   - release_stats.json     : scale stats + the GENERATION MANIFEST {ontology_sha, vocab_generation,
@@ -37,8 +44,11 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
 
-# name_provenance values an authentic-natural benchmark surface may consume (the Atelier-side filter)
-AUTHENTIC_PROVENANCE = {"engine-derived", "composed"}
+# the name-provenance ladder: membrane-grade > pre-membrane natural > mechanical degradation.
+# NAMED = a table carries natural naming at all (its unchanged columns are register-invariant
+# structural tokens); MEMBRANE_GRADE = what a leakage-minimal analysis slice filters to.
+MEMBRANE_GRADE = {"engine-derived", "composed"}
+NAMED_PROVENANCE = MEMBRANE_GRADE | {"static-legacy"}
 
 
 def load_code_map() -> "tuple[dict, int]":
@@ -75,9 +85,13 @@ def main() -> int:
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-values", type=int, default=50,
                     help="sample values kept per column (Atelier reads 5 for embedding, ≤50 all_values)")
-    ap.add_argument("--no-mask", action="store_true",
-                    help="ship semantic-passthrough concept names instead of masking to col<pos> "
-                         "(diagnostic only — the masked form is the blind release)")
+    ap.add_argument("--values-only", action="store_true",
+                    help="DIAGNOSTIC ARM: mask every name to col<pos> (Atelier's generic-name guard "
+                         "→ values-only classification). Never the default — deployment reality is "
+                         "always-named")
+    ap.add_argument("--no-degrade", action="store_true",
+                    help="ship un-degraded semantic names for columns lacking a natural record "
+                         "(diagnostic only — leaks the vocabulary-label channel)")
     args = ap.parse_args()
     spine_dir = Path(args.from_spine)
     out = Path(args.out)
@@ -129,6 +143,7 @@ def main() -> int:
         table_id = tbl_ids[tname]
         # table-level register/provenance from any column's naming row (uniform per table)
         t_nm = next((naming.get((tname, c)) for c in cols if naming.get((tname, c))), None)
+        used_names: set[str] = set()
         for pos, cname in enumerate(cols):
             vals = cells.get((tname, cname)) or []
             if not vals:
@@ -137,15 +152,22 @@ def main() -> int:
             prov = nm.get("name_provenance", "unmapped")
             register = nm.get("register", "semantic")
             public_name = cname
-            # BLINDNESS: a concept-bearing semantic name never ships. Masked names are the values-only
-            # arm — Atelier's generic-name guard catches col<pos> and classifies on values alone.
-            if not args.no_mask and prov in ("semantic-passthrough", "unmapped", "semantic"):
+            if args.values_only:
+                public_name = f"col{pos}"
+                prov = "values-only"
+            elif prov in ("semantic-passthrough", "unmapped", "semantic") and not args.no_degrade:
                 # structural DBA tokens (attr_name, entity_id, value …) are register-invariant: they
-                # appear when the table's OTHER columns carry authentic natural provenance
+                # appear as passthrough when the table's OTHER columns carry natural naming. A concept-
+                # bearing name with NO natural record ships DEGRADED (cryptic-DBA abbreviation) — the
+                # deployment-realistic form: named, evidence-live, vocabulary-label matching damped.
                 row_provs = {(naming.get((tname, c)) or {}).get("name_provenance") for c in cols}
-                if not (row_provs & AUTHENTIC_PROVENANCE):
-                    public_name = f"col{pos}"
-                    prov = "masked-semantic"
+                if not (row_provs & NAMED_PROVENANCE):
+                    from aegir.ontology.natural_naming import degrade_name
+                    public_name = degrade_name(cname)
+                    prov = "degraded-mechanical"
+            if public_name in used_names:   # degradation can collide distinct names; the join is
+                public_name = f"{public_name}_{pos}"  # name-keyed within table — dedupe, never fail
+            used_names.add(public_name)
             prov_counts[prov] += 1
             distinct = list(dict.fromkeys(vals))
             col_id = f"{table_id}_c{pos}"
