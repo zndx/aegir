@@ -107,18 +107,13 @@ def load_spine(files: list[Path], per_family: int | None, *, realize: bool = Fal
     ``natural_names`` (Convert 1c) threads each template's natural record into construction so the
     subgraph is born in the DBA register (flat mode renames post-hoc via natural_naming — base-only,
     the proven path)."""
-    import hashlib
-    import random
-
     nn = natural_names or {}
     spine: list[D.SpineTable] = []
     rfks: list = []
     rviews: list = []
     cx: list[dict] = []
     n_templates = 0
-    rz = None
-    if realize:
-        from aegir.ontology import realize as rz  # noqa: F811
+    all_ft: list = []
     for path in files:
         family = path.stem
         cat = load_catalog(path)
@@ -126,17 +121,18 @@ def load_spine(files: list[Path], per_family: int | None, *, realize: bool = Fal
         for t in templates:
             n_templates += 1
             if realize:
-                seed = int.from_bytes(
-                    hashlib.blake2b(f"{realize_seed}:{t.template_id}".encode(), digest_size=8).digest(), "big")
-                rs = rz.realize_schema(t, family, rng=random.Random(seed), natural=nn.get(t.template_id))
-                spine.extend(rs.tables)
-                rfks.extend(rs.fks)
-                rviews.extend(rs.views)
-                cx.append({"template_id": t.template_id, "family": family, "profile": rs.profile,
-                           **rs.complexity})
+                all_ft.append((family, t))
             else:
                 spine.append(D.template_to_table(t, family))
-    if not realize and nn:
+    if realize:
+        # C2.5 multi-template composition (aegir.ontology.compose): a domain-grouped 3NF core
+        # (subgraphs + enum lookups) + a denorm layer of wide composite workbench tables. The
+        # naming-map twin is built by re-calling this with natural_names={} — identical structure.
+        from aegir.ontology import compose as cz
+        from aegir.ontology.chapter_tables import definitions_for_spine
+        spine, rfks, rviews, cx = cz.build_realized_spine(
+            all_ft, natural_names=nn, realize_seed=realize_seed, definitions_fn=definitions_for_spine)
+    elif nn:
         from aegir.ontology.natural_naming import natural_rename
         spine, _ = natural_rename(spine, [], nn)
     return spine, rfks, rviews, cx, n_templates
@@ -204,15 +200,22 @@ def main() -> int:
         rec = natural_names.get(nst.template.template_id) or {}
         rec_prov = provenance_of(rec) if rec else "semantic"
         rec_cols = set((rec.get("cols") or {}).values())
-        for sc, nc in zip(sst.table.columns, nst.table.columns):
+        # per-column SOURCE-template attribution: composite (denorm) tables union columns from many
+        # templates, so a single per-table template_id can't attribute a column — realize_meta.col_source
+        # carries the origin per position. Non-composite tables attribute every column to their template.
+        col_source = nst.realize_meta.get("col_source") or []
+        layer = nst.realize_meta.get("layer", "core")
+        for ci, (sc, nc) in enumerate(zip(sst.table.columns, nst.table.columns)):
             prov = ("semantic-passthrough" if nc.name == sc.name
                     else rec_prov if nc.name in rec_cols else "composed")
+            src_tid = (col_source[ci] if ci < len(col_source) and col_source[ci] != "__pk__"
+                       else nst.template.template_id)
             naming_rows.append({
                 "template_id": nst.template.template_id, "kind": nst.kind,
                 "table_name": nst.table.name, "semantic_table": sst.table.name,
                 "col_name": nc.name, "semantic_col": sc.name, "slot_ref": nc.slot_ref,
                 "register": args.naming if natural_names else "semantic",
-                "name_provenance": prov})
+                "name_provenance": prov, "source_template_id": src_tid, "layer": layer})
     if naming_rows:
         from collections import Counter as _CP
         logger.info("naming map: %d columns, provenance %s", len(naming_rows),
@@ -418,6 +421,7 @@ def main() -> int:
             "template_id": pa.string(), "kind": pa.string(), "table_name": pa.string(),
             "semantic_table": pa.string(), "col_name": pa.string(), "semantic_col": pa.string(),
             "slot_ref": pa.string(), "register": pa.string(), "name_provenance": pa.string(),
+            "source_template_id": pa.string(), "layer": pa.string(),
             "run_id": pa.string(), "created_at": pa.timestamp("us", tz="UTC"),
         })
 
@@ -429,22 +433,28 @@ def main() -> int:
             r["created_at"] = created_at
         _write(out / "structural_complexity.parquet", complexity_rows, {
             "template_id": pa.string(), "family": pa.string(), "profile": pa.string(),
-            "profile_source": pa.string(),
+            "profile_source": pa.string(), "layer": pa.string(), "n_composed": pa.int32(),
             "n_tables": pa.int32(), "n_views": pa.int32(), "n_fks": pa.int32(),
             "eav_tables": pa.int32(), "junction_tables": pa.int32(), "attr_count": pa.int32(),
             "eav_ratio": pa.float64(), "m2n_density": pa.float64(), "fk_depth": pa.int32(),
             "dim_tables": pa.int32(), "run_id": pa.string(), "created_at": pa.timestamp("us", tz="UTC"),
         })
         tt = sum(r["n_tables"] for r in complexity_rows)
+        n_denorm = sum(1 for r in complexity_rows if r.get("layer") == "denorm")
         realize_summary = {
             "profile_distribution": dict(_C(r["profile"] for r in complexity_rows)),
             # the authenticity audit: how each profile was CHOSEN (grounds_ddl:* = lowering-by-theorem;
             # default-minimal = no grounding signal, the work-queue; there is no sampled path)
             "profile_source_distribution": dict(_C(r.get("profile_source", "?") for r in complexity_rows)),
+            # C2.5 composition strata: denorm composite workbench tables vs the 3NF core (subgraphs+lookups)
+            "layer_distribution": dict(_C(r.get("layer", "?") for r in complexity_rows)),
+            "denorm_composites": n_denorm,
+            "denorm_members_composed": sum(r.get("n_composed", 0) or 0 for r in complexity_rows),
+            "mean_composition_size": (round(sum(r.get("n_composed", 0) or 0 for r in complexity_rows) / n_denorm, 2)
+                                      if n_denorm else 0.0),
             # and which source fed entity-cell values (registry = in-loop individuals; legacy = frozen pool)
             "value_pool_sources": dict(pool_src) if not args.no_materialize_rows else {},
             "total_tables": tt, "total_views": sum(r["n_views"] for r in complexity_rows),
-            "tables_per_template": round(tt / len(complexity_rows), 2),
             "mean_eav_ratio": round(sum(r["eav_ratio"] for r in complexity_rows) / len(complexity_rows), 3),
             "max_fk_depth": max(r["fk_depth"] for r in complexity_rows),
         }
