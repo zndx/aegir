@@ -55,7 +55,9 @@ class CatalogTemplate:
         broader: Parent term ids (``rdfs:subClassOf`` / ``skos:broader`` semantics) —
             the subsumption hierarchy over terms, promoted from ``mediate_hierarchy``'s
             autonomous, HermiT-verified mediation (the SoT record of the hierarchy).
-        provenance: Author / date / gate-version metadata for review.
+        provenance: Author / date / gate-version metadata for review. Carries NESTED
+            records (``domain`` is a ``{code, label, …}`` dict; ``grounds_ddl`` a list),
+            hence the loose ``dict`` type.
     """
 
     template_id: str
@@ -67,7 +69,7 @@ class CatalogTemplate:
     mean_verbal_length: float = 0.0
     bfo_anchor_path: list[str] = field(default_factory=list)
     broader: list[str] = field(default_factory=list)
-    provenance: dict[str, str] = field(default_factory=dict)
+    provenance: dict = field(default_factory=dict)
 
     def frames(self) -> list[str]:
         """The verbalization surface forms to sample from: the diverse ``verbal_templates`` set when
