@@ -37,12 +37,15 @@ class AgentSpec:
 
 @dataclass
 class MCPServer:
-    """A stdio MCP server exposing tools to the agent — where the refinement gates plug in."""
+    """An MCP server exposing tools to the agent — where the refinement gates plug in.
+    Stdio form (command/args) for agents that spawn servers (vibe-acp); HTTP form (url) for
+    agents whose ACP supports only http/sse MCP (grok). Exactly one of command/url."""
     name: str
-    command: str
+    command: str = ""
     args: list[str] = field(default_factory=list)
     env: dict | None = None
     cwd: str | None = None
+    url: str = ""
 
 
 @dataclass
@@ -190,8 +193,12 @@ class BaseACPClient:
                 if isinstance(env, dict):
                     return [EnvVariable(name=str(k), value=str(v)) for k, v in env.items()]
                 return env
-            servers = [McpServerStdio(name=s.name, command=s.command, args=s.args,
-                                      cwd=s.cwd, env=_env_vars(s.env)) for s in self.mcp_servers]
+            from acp.schema import HttpMcpServer
+            servers = [
+                HttpMcpServer(type="http", name=s.name, url=s.url, headers=[]) if s.url else
+                McpServerStdio(name=s.name, command=s.command, args=s.args,
+                               cwd=s.cwd, env=_env_vars(s.env))
+                for s in self.mcp_servers]
             session = await self._conn.new_session(
                 cwd=self.agent.cwd or os.getcwd(), mcp_servers=servers)
             self._session = session.session_id

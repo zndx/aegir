@@ -69,6 +69,47 @@ def kvasir_mcp_server() -> MCPServer:
                      cwd=str(REPO), env=dict(os.environ))
 
 
+class kvasir_http_server:
+    """The same kvasir toolbox served over streamable-http, for agents whose ACP supports only
+    http/sse MCP (grok — ``mcpCapabilities: {http, sse}``, no stdio). Context manager: spawns
+    ``mcp_kvasir.py --http <port>`` on a free port, yields the HTTP :class:`MCPServer` entry,
+    reaps on exit. We host the server; the agent connects — the membrane stays ours."""
+
+    def __init__(self) -> None:
+        import socket
+        with socket.socket() as s:
+            s.bind(("127.0.0.1", 0))
+            self.port = s.getsockname()[1]
+        self._proc = None
+
+    def __enter__(self) -> MCPServer:
+        import subprocess
+        import time
+        import urllib.request
+        py = _VENV_PY if Path(_VENV_PY).exists() else "python"
+        self._proc = subprocess.Popen(
+            [py, str(REPO / "scripts/mcp_kvasir.py"), "--http", str(self.port)],
+            cwd=str(REPO), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        url = f"http://127.0.0.1:{self.port}/mcp"
+        for _ in range(60):  # wait for the uvicorn listener (imports take ~1-2s)
+            try:
+                urllib.request.urlopen(url, timeout=1)
+                break
+            except Exception as e:  # noqa: BLE001 — an HTTP status means it's UP
+                if hasattr(e, "code"):
+                    break
+                time.sleep(0.25)
+        return MCPServer(name="kvasir", url=url)
+
+    def __exit__(self, *exc) -> None:
+        if self._proc:
+            self._proc.terminate()
+            try:
+                self._proc.wait(timeout=5)
+            except Exception:  # noqa: BLE001
+                self._proc.kill()
+
+
 # ── register loadouts: which tools each register-harness gets ────────────────────
 # The semantic harness reasons against the kvasir MCP tools — PROVEN end-to-end (agent calls
 # kvasir_check_consistency over MCP, gets the real verdict, states it in prose). Default ON;
@@ -133,18 +174,23 @@ class ProseResult:
 
 
 async def run_item(item: WorkItem, *, timeout: float = 600.0) -> ProseResult:
-    """Run ONE register-specialized, tool-equipped ACP harness for a construct."""
+    """Run ONE register-specialized, tool-equipped ACP harness for a construct. Tool transport
+    is backend-aware: stdio for agents that spawn servers (vibe-acp/local), streamable-http for
+    agents whose ACP is http/sse-only (grok) — we host, the agent connects."""
+    import contextlib
     home = tempfile.mkdtemp(prefix=f"harness_{item.register}_")
     try:
         spec, cfg_toml, model_id, provider = backend_spec(item.backend, home)
         if cfg_toml:
             Path(home, "config.toml").write_text(cfg_toml)
         tooled = item.tools and item.register in TOOLED_REGISTERS
-        mcp = [kvasir_mcp_server()] if tooled else []
-        prompt = _augment_prompt(_prompt(item.construct, "prose", item.register, {}),
-                                 item.register, item.construct, tooled)
-        async with BaseACPClient(spec, fs_root=home, mcp_servers=mcp) as c:
-            r = await c.prompt(prompt, timeout=timeout)
+        needs_http = item.backend.lower() in ("grok", "grok-build")
+        with (kvasir_http_server() if tooled and needs_http else contextlib.nullcontext()) as http_srv:
+            mcp = ([http_srv] if http_srv else [kvasir_mcp_server()]) if tooled else []
+            prompt = _augment_prompt(_prompt(item.construct, "prose", item.register, {}),
+                                     item.register, item.construct, tooled)
+            async with BaseACPClient(spec, fs_root=home, mcp_servers=mcp) as c:
+                r = await c.prompt(prompt, timeout=timeout)
         return ProseResult(
             construct_id=item.construct_id, register=item.register, backend=item.backend,
             provider=provider, prose=_strip_reasoning(r.text),

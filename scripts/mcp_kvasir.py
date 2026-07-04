@@ -17,12 +17,15 @@ Tools:
 Membrane doctrine (client.py): the agent REQUESTS these; the CLIENT owns them — the agent can check
 its schema against ground truth but cannot fake or bypass the check.
 
-Run (stdio): uv run --no-sync python scripts/mcp_kvasir.py
+Run (stdio, for vibe-acp/local): uv run --no-sync python scripts/mcp_kvasir.py
+Run (HTTP, for grok — its ACP advertises http/sse MCP only, no stdio):
+    .devenv/state/venv/bin/python scripts/mcp_kvasir.py --http 8765   # streamable-http at /mcp
 """
 from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -31,7 +34,8 @@ from mcp.server.fastmcp import FastMCP
 REPO = Path(__file__).resolve().parents[1]
 KVASIR = REPO / "components/kvasir/target/release/kvasir"
 
-mcp = FastMCP("kvasir")
+_HTTP_PORT = int(sys.argv[sys.argv.index("--http") + 1]) if "--http" in sys.argv else None
+mcp = FastMCP("kvasir", host="127.0.0.1", port=_HTTP_PORT or 8765)
 
 
 def _tmp(omn: str) -> str:
@@ -93,4 +97,4 @@ def check_consistency(ontology_omn: str) -> str:
 
 
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(transport="streamable-http" if _HTTP_PORT else "stdio")
