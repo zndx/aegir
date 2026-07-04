@@ -204,6 +204,61 @@ def clean_iri(tok: str, default: str = "cco:Artifact") -> str:
     return m.group(1) if m else default
 
 
+def _prefix(name: str) -> str:
+    """A short uppercase key prefix from a class name (``LandParcel`` → ``LAND``)."""
+    caps = re.findall(r"[A-Z]", camel(name))
+    return ("".join(caps[:4]) or camel(name)[:4]).upper()
+
+
+def _cell(a: "DataAttr", i: int) -> str:
+    """A domain-plausible sample value for attribute ``a`` at row ``i`` (RI-true rows for prose)."""
+    if a.enum:
+        return a.enum[i % len(a.enum)]
+    x = a.xsd
+    stem = re.sub(r"(?<!^)(?=[A-Z])", " ", prop_name(a.name)).lower().replace("has ", "")
+    if x in ("integer", "int", "long"):
+        return str((i + 1) * 7 + hash(a.name) % 40)
+    if x in ("decimal", "double", "float"):
+        return f"{((i + 1) * 3.5 + hash(a.name) % 20):.2f}"
+    if x == "boolean":
+        return "true" if (i + hash(a.name)) % 2 else "false"
+    if x == "date":
+        return f"2025-{(i % 12) + 1:02d}-{(i * 7 % 27) + 1:02d}"
+    if x == "dateTime":
+        return f"2025-{(i % 12) + 1:02d}-{(i * 5 % 27) + 1:02d}T{(i * 3 % 24):02d}:00:00"
+    return f"{stem.split()[0][:6]}-{i + 1:03d}"
+
+
+def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str = "") -> dict:
+    """Bridge entities → the prose-harness ``construct`` dict (tables + RI-true sample rows +
+    concepts), the shape ``refine/_propose._render_tables`` consumes. Single-cardinality
+    relations become FK columns whose cells reference a real target-entity id (RI holds);
+    many-to-many relations are omitted from the flat construct (they belong to junction views)."""
+    ids = {e.iri(): [f"{_prefix(e.name)}-{i + 1:04d}" for i in range(n_rows)] for e in entities}
+    tables = []
+    for e in entities:
+        cols = [{"name": "id", "concept": camel(e.name),
+                 "cells": [{"value": v} for v in ids[e.iri()]]}]
+        for a in e.attributes:
+            cols.append({"name": prop_name(a.name), "concept": prop_name(a.name),
+                         "cells": [{"value": _cell(a, i)} for i in range(n_rows)]})
+        fks = []
+        for r in e.relations:
+            if r.card.startswith("min") or (r.card.startswith("max") and r.card != "max 1"):
+                continue  # many-to-many → junction view, not a flat FK column
+            tgt_ids = ids.get(r.target_iri())
+            if not tgt_ids:
+                continue
+            col = prop_name(r.prop)
+            cols.append({"name": col, "concept": prop_name(r.prop),
+                         "cells": [{"value": tgt_ids[i % len(tgt_ids)]} for i in range(n_rows)]})
+            fks.append({"col": col})
+        tables.append({"name": "t_" + re.sub(r"(?<!^)(?=[A-Z])", "_", camel(e.name)).lower(),
+                       "pk": "id", "fks": fks, "columns": cols})
+    return {"tables": tables, "style_anchor": style_anchor,
+            "entities": [e.iri() for e in entities]}
+
+
 def from_json(obj: dict) -> list[Entity]:
     """Parse the engine's json_schema output into :class:`Entity` records (defensive)."""
     out: list[Entity] = []

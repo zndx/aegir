@@ -23,6 +23,12 @@ CCO-anchored OWL ontology, from a source passage. Model the ENTITIES the passage
 describes as a working database would — richly, the way a real arXiv preprint's data section
 or a production LIMS schema reads. NOT abstract taxonomy.
 
+CRITICAL — model the SUBJECT MATTER, never the document. If the passage is a spatial-planning
+paper, model land parcels, zoning districts, transit corridors, temperature readings, policy
+instruments — the things the RESEARCH studies and records. Do NOT model the publication itself:
+NO AcademicArticle / Journal / Author / Researcher / Citation / DOI / Institution classes. The
+bibliographic wrapper is noise; the domain phenomena the text is ABOUT are the schema.
+
 For each entity (a real named class):
 - give a CamelCase `name` and a plain-English `label`;
 - anchor it to a `genus` — a real BFO/CCO IRI: cco:Artifact (a made thing / record / sample),
