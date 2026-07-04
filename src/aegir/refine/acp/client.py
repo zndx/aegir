@@ -128,14 +128,19 @@ class BaseACPClient:
                 — the root cause of the tools-attached empty-prose failures. Approval policy:
                 the client already owns WHICH tools exist (the MCP loadout is the membrane);
                 a tool the agent can request is a tool it may run. Prefer allow_once."""
-                from acp.schema import (RequestPermissionResponse, SelectedPermissionOutcome)
+                from acp.schema import AllowedOutcome, RequestPermissionResponse
                 pick = next((o for o in options if getattr(o, "kind", "") == "allow_once"),
                             options[0] if options else None)
                 name = getattr(tool_call, "title", None) or "tool"
                 outer.tools_approved.append(name)
                 await outer._emit("tool", f"approved:{name}")
+                # AllowedOutcome, NOT SelectedPermissionOutcome: the response union is
+                # discriminated on the `outcome` field ('selected'|'cancelled'), which
+                # SelectedPermissionOutcome doesn't carry — the agent-side parse fails
+                # union_tag_not_found and the session hangs to timeout (measured).
                 return RequestPermissionResponse(
-                    outcome=SelectedPermissionOutcome(
+                    outcome=AllowedOutcome(
+                        outcome="selected",
                         option_id=pick.option_id if pick else "allow_once"))
 
             async def session_update(self, session_id, update, **kw):  # noqa: ANN001

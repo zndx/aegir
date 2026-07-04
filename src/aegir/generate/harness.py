@@ -70,18 +70,17 @@ def kvasir_mcp_server() -> MCPServer:
 
 
 # ── register loadouts: which tools each register-harness gets ────────────────────
-# The semantic harness reasons against the kvasir MCP tools. The MCP SERVER works (clean
-# initialize), but the vibe-acp+Qwen tool-CALLING path currently returns empty when servers are
-# attached — a separate integration fix. Gated behind AEGIR_HARNESS_TOOLS=1 until debugged; the
-# two-register architecture stands without it (the tools are an enhancement, not the register).
-TOOLED_REGISTERS = {"semantic"} if os.environ.get("AEGIR_HARNESS_TOOLS") == "1" else set()
+# The semantic harness reasons against the kvasir MCP tools — PROVEN end-to-end (agent calls
+# kvasir_check_consistency over MCP, gets the real verdict, states it in prose). Default ON;
+# AEGIR_HARNESS_TOOLS=0 opts out (e.g. to isolate generation-latency measurements).
+TOOLED_REGISTERS = set() if os.environ.get("AEGIR_HARNESS_TOOLS") == "0" else {"semantic"}
 
 
 def kvasir_facts(ontology_omn: str) -> str:
     """Run the kvasir tools DETERMINISTICALLY (the pipeline owns them; the agent can't fake) and
-    return a verified-schema-facts block to GROUND the semantic register. The reliable form of
-    'the harness leverages kvasir' — the in-agent MCP tool-CALLING is a separate follow-on (the
-    server works; the ACP-agent MCP-call path is bugged for both backends)."""
+    return a verified-schema-facts block to GROUND the semantic register up front. Complements the
+    live MCP tools (also working): facts push the baseline truth into the prompt; the tools let
+    the agent re-verify specific claims mid-generation."""
     try:
         from scripts.mcp_kvasir import check_consistency, ddl_profile
         import json as _json
