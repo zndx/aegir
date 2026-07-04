@@ -33,6 +33,8 @@ from mcp.server.fastmcp import FastMCP
 
 REPO = Path(__file__).resolve().parents[1]
 KVASIR = REPO / "components/kvasir/target/release/kvasir"
+if str(REPO) not in sys.path:  # `scripts.` imports when exec'd as a file (sys.path[0] = scripts/)
+    sys.path.insert(0, str(REPO))
 
 _HTTP_PORT = int(sys.argv[sys.argv.index("--http") + 1]) if "--http" in sys.argv else None
 mcp = FastMCP("kvasir", host="127.0.0.1", port=_HTTP_PORT or 8765)

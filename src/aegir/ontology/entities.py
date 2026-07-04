@@ -109,7 +109,26 @@ def to_manchester(entities: list[Entity]) -> str:
     <rel> <card> <Target>``. Enumerated attributes attach a ``skos:definition`` on the
     DataProperty so the kvasir front-end lowers a lookup table.
     """
-    lines: list[str] = [PREFIXES, ""]
+    # The Ontology: declaration is REQUIRED for OWLAPI's Manchester loader, and every property
+    # (object/data/annotation) MUST be declared before use — without them the doc "loads" as
+    # zero frames → a VACUOUS HermiT certificate (kvasir tolerates both omissions; measured).
+    lines: list[str] = [
+        PREFIXES, "", "Ontology: <https://signals.zndx.org/sdg/greenfield>", "",
+        "AnnotationProperty: rdfs:label", "AnnotationProperty: iao:0000115",
+        "AnnotationProperty: skos:definition", "",
+    ]
+    for op in sorted({r.iri() for e in entities for r in e.relations}):
+        lines.append(f"ObjectProperty: {op}")
+    lines.append("")
+    # Declarations BEFORE use (the OWLAPI Manchester parse is effectively single-pass):
+    # data properties referenced in restrictions, and external genera (cco:/bfo:/…) that no
+    # Class frame in this doc otherwise declares.
+    for dp in sorted({a.iri() for e in entities for a in e.attributes}):
+        lines.append(f"DataProperty: {dp}")
+    local = {e.iri() for e in entities}
+    for ext in sorted({e.genus for e in entities if e.genus} - local):
+        lines.append(f"Class: {ext}")
+    lines.append("")
     dataprops: dict[str, DataAttr] = {}
 
     for e in entities:

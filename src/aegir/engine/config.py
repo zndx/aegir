@@ -53,12 +53,12 @@ CAPABILITY_MODELS: dict[str, ModelSpec] = {
         # default that OOM'd). The native 262144 ctx would demand a huge KV cache; 16384 holds long traces.
         # Raise AEGIR_MAX_MODEL_LEN for even longer readouts (lower AEGIR_MAX_NUM_SEQS in step to hold KV).
         # Tool-calling MUST be enabled or agentic clients (vibe-acp etc.) that send tool_choice="auto" get a
-        # vLLM 400 ("auto tool choice requires --enable-auto-tool-choice and --tool-call-parser"). Qwen3.x
-        # emits Hermes-style tool calls → the `hermes` parser (override via AEGIR_TOOL_PARSER). Surfaced by
-        # dogfooding the engine through the refinement-loop proposer.
+        # vLLM 400 ("auto tool choice requires --enable-auto-tool-choice and --tool-call-parser"). Qwen3.6
+        # emits the XML tool format → `qwen3_xml` (measured 2026-07-04: `hermes` silently EATS the calls —
+        # the model plans the call in content, tool_calls=[]). Override via AEGIR_TOOL_PARSER.
         extra_args=["--max-model-len", os.environ.get("AEGIR_MAX_MODEL_LEN", "16384"),
                     "--max-num-seqs", os.environ.get("AEGIR_MAX_NUM_SEQS", "8"),
                     "--enable-auto-tool-choice",
-                    "--tool-call-parser", os.environ.get("AEGIR_TOOL_PARSER", "hermes")],
+                    "--tool-call-parser", os.environ.get("AEGIR_TOOL_PARSER", "qwen3_xml")],
     ),
 }

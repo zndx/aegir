@@ -98,10 +98,12 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--spine", default=None, help="optional spine run dir (scans base_rows.parquet)")
     ap.add_argument("--json-out", default=None, help="write the full hit list as JSON")
+    ap.add_argument("--root", default=None,
+                    help="scan THIS chapters tree only (flow-run candidates), not the committed corpora")
     a = ap.parse_args()
 
-    ch_ours, ch_quoted = scan_chapters(REPO / "corpora/corpus/collections")
-    sections = {
+    ch_ours, ch_quoted = scan_chapters(Path(a.root) if a.root else REPO / "corpora/corpus/collections")
+    sections = {"chapters": ch_ours} if a.root else {
         "individual_registry": scan_registry(REPO / "src/aegir/ontology/individual_registry.json"),
         "entity_value_pools": scan_pools(REPO / "src/aegir/ontology/entity_value_pools.json"),
         "corpora omn labels": scan_omn(REPO / "corpora/ontology/sdg-ontology.omn"),

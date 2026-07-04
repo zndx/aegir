@@ -169,6 +169,14 @@ metaflow *ARGS:
     OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4327 \
     uv run --no-sync python -m aegir.flows.semantic_corpus_flow run {{ARGS}}
 
+# The GREENFIELD sdg-corpora iteration: metrology-informed derive (agent iterates vs the SchemaPile
+# signal) → HermiT-certified merged ontology → kvasir DDL/SHACL → parallel two-register ACP prose
+# (natural ∥ semantic, semantic kvasir-tool-equipped over MCP) → gated release tree.
+# Long run: `AEGIR_METAFLOW_MODE=local just sdg-corpora --n-passages 48 --pool 2`
+sdg-corpora *ARGS:
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4327 \
+    uv run --no-sync python -m aegir.flows.sdg_corpora_flow run {{ARGS}}
+
 # Path A: continue-pretrain RWKV-7 ± augmentation across α-arms, eval general+relational, write the ledger
 # (the data-value-isolation experiment as one CI-gated command). Arms train one-per-GPU; pass `--max-workers
 # N` to parallelize. e.g. `AEGIR_METAFLOW_MODE=local just train-path-a --alphas 0,0.02 --max-workers 2`.
