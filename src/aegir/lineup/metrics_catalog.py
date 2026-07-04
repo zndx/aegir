@@ -162,6 +162,24 @@ METRICS: list[dict] = [
          {"slug": "r1-ci-low", "name": "r1_ci_low", "formula": "domain-grounding R1 CI lower bound",
           "gate": "binding v0.4 constraint", "role": "the generator must clear domain-grounding, CI-honest", "src": "G-cov R1"}]},
 
+    {"slug": "relational-shape", "title": "Relational shape — SchemaPile-anchored structural realism",
+     "blurb": "Table-width + archetype distributions of the DDL spine vs the mined SchemaPile norms (the "
+              "frequentist ground on shape occurrence, task #139) — the structural counterpart of the value "
+              "naturalness panel. Acceptance = distribution distance, sliced by stratum (3NF core vs "
+              "denorm/view layer), not point thresholds. Live values stamped from the newest spine census; "
+              "magnitude of distributional change is visible across spine generations.",
+     "metrics": [
+         {"slug": "cols-median", "name": "classifiable cols/table (median)", "formula": "median of per-table non-pk column counts, base+view strata",
+          "gate": "R2 ≥5 (225241)", "role": "sibling-context signal exists at all — the deployment-realism floor", "src": "lineup/sources.relational_shape"},
+         {"slug": "cols-p90", "name": "cols/table p90", "formula": "90th pct of per-table column counts",
+          "gate": "R2 ≥15", "role": "wide-table stress (prompt batching, retrieval interference) present in the mix", "src": "lineup/sources.relational_shape"},
+         {"slug": "cols-p99", "name": "cols/table p99", "formula": "99th pct of per-table column counts",
+          "gate": "R2 ≥50", "role": "the clickstream-class tail exists (GitTables p99=174)", "src": "lineup/sources.relational_shape"},
+         {"slug": "wide-rate", "name": "wide-table rate (≥20 cols)", "formula": "tables ≥20 cols / tables",
+          "gate": "—", "role": "deliberate wide stratum (SchemaPile 3.1%, GitTables 24.6%)", "src": "lineup/sources.relational_shape"},
+         {"slug": "shape-emd", "name": "col-count EMD vs SchemaPile", "formula": "1-Wasserstein distance, generated col-count histogram vs mined schemapile_shape_norms",
+          "gate": "P4/P5 acceptance (falling)", "role": "the MAGNITUDE of distributional change — point targets can be gamed, a distance cannot", "src": "scripts/mine_schemapile_shapes.py (#139)"},
+     ]},
     {"slug": "ontology-rigor", "title": "Ontology rigor — IOF/BFO metrology + OQuaRE",
      "blurb": "The IOF-derived rigor dimensions + the OQuaRE 1-5 quality gate on the realized, FinePDFs-derived "
               "ontology (corpora/ontology/sdg-ontology.owl). Live values stamped from ontology_metrology.compute "

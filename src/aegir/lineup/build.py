@@ -735,6 +735,17 @@ def project_metrics() -> list[N.Note]:
             m_lines.append(f"- {N.wl(mid, m['name'])}{g}")
         cat_fm: dict = {}
         live_block = ""
+        if cslug == "relational-shape":
+            live_rs = S.relational_shape()
+            if live_rs:
+                cat_fm = {"relational_shape": live_rs}
+                emd = live_rs.get("shape_emd")
+                live_block = (f"\n\n**LIVE** (spine `{live_rs['spine_run']}`, {live_rs['n_tables']} tables: "
+                              f"{live_rs['strata']['base']} base + {live_rs['strata']['view']} view): "
+                              f"median **{live_rs['cols_median']}** · p90 {live_rs['cols_p90']} · "
+                              f"p99 {live_rs['cols_p99']} · max {live_rs['cols_max']} · "
+                              f"wide(≥20) {live_rs['wide_rate']:.1%} · "
+                              f"EMD vs SchemaPile: {emd if emd is not None else 'pending #139 norms'}\n")
         if cslug == "ontology-rigor":
             live = S.ontology_metrology()
             if live:

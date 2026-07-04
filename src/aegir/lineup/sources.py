@@ -145,6 +145,68 @@ def term_hierarchy() -> tuple[dict[str, list[str]], dict[str, list[str]]]:
     return broader, narrower
 
 
+def relational_shape() -> dict | None:
+    """The newest DDL spine's shape census vs the SchemaPile norms (graceful None when no spine).
+    Cheap: base_table_index.n_cols (minus the surrogate pk) + views.parquet widths — no cell scan.
+    EMD vs build/schemapile_shape_norms.json when the #139 instrument has run; None-field otherwise."""
+    import json as _json
+    manifests = sorted(REPO.glob("build/spine_*/*/manifest.json"),
+                       key=lambda p: p.stat().st_mtime, reverse=True)
+    if not manifests:
+        return None
+    run_dir = manifests[0].parent
+    try:
+        import pyarrow.parquet as _pq
+        widths = [max(0, r["n_cols"] - 1)
+                  for r in _pq.read_table(run_dir / "base_table_index.parquet").to_pylist()]
+        vp = run_dir / "views.parquet"
+        view_widths = []
+        if vp.exists():
+            view_widths = [len(_json.loads(r["columns_json"]))
+                           for r in _pq.read_table(vp, columns=["columns_json"]).to_pylist()]
+    except Exception:
+        return None
+    allw = sorted(widths + view_widths)
+    if not allw:
+        return None
+    n = len(allw)
+    pct = lambda q: allw[min(n - 1, int(q * n))]  # noqa: E731
+    out = {
+        "spine_run": run_dir.name,
+        "n_tables": n,
+        "cols_median": allw[n // 2],
+        "cols_p90": pct(0.90),
+        "cols_p99": pct(0.99),
+        "cols_max": allw[-1],
+        "wide_rate": round(sum(1 for x in allw if x >= 20) / n, 4),
+        "strata": {"base": len(widths), "view": len(view_widths)},
+    }
+    norms_path = REPO / "build" / "schemapile_shape_norms.json"
+    out["shape_emd"] = None
+    if norms_path.exists():
+        try:
+            norms = _json.loads(norms_path.read_text())
+            ref = norms.get("col_count_histogram") or {}
+            if ref:
+                # discrete 1-Wasserstein over the col-count distributions
+                hi = max(max(allw), max(int(k) for k in ref))
+                ours = [0.0] * (hi + 1)
+                for x in allw:
+                    ours[min(x, hi)] += 1 / n
+                tot = sum(ref.values())
+                theirs = [0.0] * (hi + 1)
+                for k, v in ref.items():
+                    theirs[min(int(k), hi)] += v / tot
+                cum = emd = 0.0
+                for a, b in zip(ours, theirs):
+                    cum += a - b
+                    emd += abs(cum)
+                out["shape_emd"] = round(emd, 3)
+        except Exception:
+            pass
+    return out
+
+
 def ontology_metrology() -> dict | None:
     """The realized ontology's IOF/OQuaRE quality profile — ``ontology_metrology.compute`` (the rigor +
     field-standard metrics) + ``ontology_oquare.oquare`` (the 1-5 quality model + the publish-gate verdict),
