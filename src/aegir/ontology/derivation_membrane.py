@@ -246,16 +246,46 @@ def content_membrane(template: CatalogTemplate, *, source_span: str = "", jvm: b
     g["faithful"] = fa["ok"]
     g["faithful_overlap"] = fa["overlap"]
 
+    # STRUCTURAL leg (#141): the kvasir DDL-relevance signal — does this extension lower to
+    # well-formed DDL and drive toward SchemaPile structure parity? REPORT-ONLY for admission
+    # (HermiT/OntoClean own logical admission; structural is a forcing function measured across
+    # the run, ratcheted into a hard gate later per the EVIDENCE discipline), but it re-weights
+    # utility so relationally-rich extensions rank higher, and its reason is surfaced to the
+    # agent for the closed re-propose loop (inc-2).
+    struct = _structural(m)
+    g["structural_verdict"] = struct.get("verdict")
+    g["structural_reason"] = struct.get("reason")
+    g["structural_well_formed"] = struct.get("well_formed")
+    g["structural_yield"] = struct.get("ddl_yield")
+    g["structural_parity"] = struct.get("parity")
+
     # G1 admits on the pure guard AND (DeepOnto parse if the JVM ran)
     g1 = wf_ok and (dp_ok is not False)
     g3 = vd["ok"] if vd["ok"] is not None else wf_ok  # if JVM off, G3 deferred → don't block on it
     g["admit"] = bool(g1 and cx["is_complex_class"] and g3 and g["clean_room"] and av_ok and fa["ok"])
 
-    # richness utility (ranking only): complexity, verbalization diversity, faithfulness
+    # richness utility (ranking only): complexity, verbalization diversity, faithfulness,
+    # AND the structural verdict (rich > thin > inert) — prefer relationally-yielding primitives
     cx_norm = min(1.0, cx["score"] / 6.0)
     vd_norm = min(1.0, (vd.get("n_distinct") or 0) / 5.0)
-    g["utility"] = round(cx_norm * (0.5 + 0.5 * vd_norm) * (0.5 + 0.5 * min(1.0, fa["overlap"] / 0.3)), 3)
+    struct_factor = {"rich": 1.0, "thin": 0.7, "inert": 0.4,
+                     "malformed": 0.1}.get(struct.get("verdict") or "", 0.7)  # unavailable → neutral
+    g["utility"] = round(
+        cx_norm * (0.5 + 0.5 * vd_norm) * (0.5 + 0.5 * min(1.0, fa["overlap"] / 0.3)) * struct_factor,
+        3)
     return g
+
+
+def _structural(manchester: str) -> dict:
+    """The kvasir DDL-relevance signal for one primitive; degrades gracefully (a neutral
+    ``unavailable`` verdict) if the kvasir binary is absent, so the membrane never hard-fails
+    on the structural leg."""
+    try:
+        from aegir.ontology import ddl_membrane
+        return ddl_membrane.signal_for_manchester(manchester)
+    except Exception as e:  # pragma: no cover — never let the structural leg break the membrane
+        return {"verdict": "unavailable", "reason": f"structural signal error: {e}",
+                "well_formed": None}
 
 
 # ── batch gate: "multiple complex asserted classes" + canonical merge ───────────

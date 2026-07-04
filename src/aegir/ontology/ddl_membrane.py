@@ -45,6 +45,39 @@ def _norms() -> dict:
     return {}
 
 
+# Standard prefix header so an instantiated primitive axiom (which uses sdg:/bfo:/cco:/xsd:
+# prefixed forms) canonicalizes correctly under kvasir's own-prefix expansion.
+_PREFIXES = (
+    "Prefix: sdg: <https://signals.zndx.org/sdg#>\n"
+    "Prefix: bfo: <http://purl.obolibrary.org/obo/BFO_>\n"
+    "Prefix: cco: <https://www.commoncoreontologies.org/>\n"
+    "Prefix: fhir: <http://hl7.org/fhir/>\n"
+    "Prefix: obi: <http://purl.obolibrary.org/obo/OBI_>\n"
+    "Prefix: xsd: <http://www.w3.org/2001/XMLSchema#>\n"
+    "Prefix: rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+    "Prefix: skos: <http://www.w3.org/2004/02/skos/core#>\n"
+)
+
+
+import re as _re
+
+# ``{Name:Type}`` slot markers → ``sdg:Name`` concrete IRIs. The slot's concept name IS the
+# class name, so this measures the SAME DDL yield whether the axiom is still template-form
+# (catalog storage) or already instantiated (the live derive loop, where no markers remain) —
+# a no-op on instantiated axioms.
+_SLOT = _re.compile(r"\{(\w+):\w+(?::\w+)?\}")
+
+
+def signal_for_manchester(manchester: str) -> dict:
+    """Score a single Manchester axiom (a primitive's ``manchester_template``, template-form
+    or instantiated) for DDL yield — canonicalizes ``{Name:Type}`` slots to ``sdg:Name``,
+    wraps it with prefix declarations (JVM-free, deterministic), and calls
+    :func:`structural_signal`. The membrane-facing entry point for the derive loop."""
+    concrete = _SLOT.sub(r"sdg:\1", manchester.strip())
+    doc = _PREFIXES + "\n" + concrete + "\n"
+    return structural_signal(doc)
+
+
 def census_of(manchester_doc: str, *, timeout_s: int = 60) -> "dict | None":
     """Run ``kvasir census`` on a Manchester document; None if the binary is absent or errors.
     The census is diagnostic (never refuses), so it is safe on a derive-stage fragment."""
