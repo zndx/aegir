@@ -166,7 +166,7 @@ kb-build:
 # plane (service+UI+MinIO on RKE2) comes up via `devenv up`; this just runs the flow, traced to the
 # OTel collector (→ NiFi). One command. e.g. `just metaflow --n-docs 8`.
 metaflow *ARGS:
-    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4327 \
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
     uv run --no-sync python -m aegir.flows.semantic_corpus_flow run {{ARGS}}
 
 # The GREENFIELD sdg-corpora iteration: metrology-informed derive (agent iterates vs the SchemaPile
@@ -174,14 +174,14 @@ metaflow *ARGS:
 # (natural ∥ semantic, semantic kvasir-tool-equipped over MCP) → gated release tree.
 # Long run: `AEGIR_METAFLOW_MODE=local just sdg-corpora --n-passages 48 --pool 2`
 sdg-corpora *ARGS:
-    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4327 \
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
     uv run --no-sync python -m aegir.flows.sdg_corpora_flow run {{ARGS}}
 
 # Path A: continue-pretrain RWKV-7 ± augmentation across α-arms, eval general+relational, write the ledger
 # (the data-value-isolation experiment as one CI-gated command). Arms train one-per-GPU; pass `--max-workers
 # N` to parallelize. e.g. `AEGIR_METAFLOW_MODE=local just train-path-a --alphas 0,0.02 --max-workers 2`.
 train-path-a *ARGS:
-    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4327 \
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
     uv run --no-sync python -m aegir.flows.path_a_training_flow run {{ARGS}}
 
 # Manually (re)deploy the Metaflow service plane to RKE2 (idempotent; normally devenv does this on `up`).
