@@ -89,6 +89,7 @@ class BaseACPClient:
         self.connect_timeout = connect_timeout
         self.buffer_limit = buffer_limit
         self._cm = self._conn = self._proc = self._session = self._client = None
+        self.tools_approved: list[str] = []
 
     # ── fs policy + streaming ────────────────────────────────────────────────
     def _in_root(self, p: Path) -> bool:
@@ -121,6 +122,22 @@ class BaseACPClient:
 
             # fs (read_text_file/write_text_file) + terminal use the lib's base defaults for now; the
             # membrane fs-scoping (confine writes to fs_root) lands with the gate-tools in inc-2.
+            async def request_permission(self, options, session_id, tool_call, **kw):  # noqa: ANN001
+                """Auto-approve tool use. Without this the agent's tool call dies on the
+                base class's unimplemented handler and the TURN RETURNS EMPTY with no error
+                — the root cause of the tools-attached empty-prose failures. Approval policy:
+                the client already owns WHICH tools exist (the MCP loadout is the membrane);
+                a tool the agent can request is a tool it may run. Prefer allow_once."""
+                from acp.schema import (RequestPermissionResponse, SelectedPermissionOutcome)
+                pick = next((o for o in options if getattr(o, "kind", "") == "allow_once"),
+                            options[0] if options else None)
+                name = getattr(tool_call, "title", None) or "tool"
+                outer.tools_approved.append(name)
+                await outer._emit("tool", f"approved:{name}")
+                return RequestPermissionResponse(
+                    outcome=SelectedPermissionOutcome(
+                        option_id=pick.option_id if pick else "allow_once"))
+
             async def session_update(self, session_id, update, **kw):  # noqa: ANN001
                 if isinstance(update, AgentMessageChunk) and isinstance(update.content, TextContentBlock):
                     if update.content.text:
