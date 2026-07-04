@@ -109,6 +109,16 @@ def to_manchester(entities: list[Entity]) -> str:
     <rel> <card> <Target>``. Enumerated attributes attach a ``skos:definition`` on the
     DataProperty so the kvasir front-end lowers a lookup table.
     """
+    # PUNNING RESOLUTION (measured at 48-passage merge scale): the same prop name modeled as a
+    # data attribute in one entity and an object relation in another → illegal OWL punning →
+    # OWLAPI drops the redeclarations and the whole doc parses to ZERO frames (vacuous
+    # certificate). Deterministic rule: the OBJECT side wins the name; colliding attributes
+    # render as `<name>Detail`.
+    rel_iris = {r.iri() for e in entities for r in e.relations}
+    def _attr_iri(a: "DataAttr") -> str:
+        iri = a.iri()
+        return iri + "Detail" if iri in rel_iris else iri
+
     # The Ontology: declaration is REQUIRED for OWLAPI's Manchester loader, and every property
     # (object/data/annotation) MUST be declared before use — without them the doc "loads" as
     # zero frames → a VACUOUS HermiT certificate (kvasir tolerates both omissions; measured).
@@ -123,7 +133,7 @@ def to_manchester(entities: list[Entity]) -> str:
     # Declarations BEFORE use (the OWLAPI Manchester parse is effectively single-pass):
     # data properties referenced in restrictions, and external genera (cco:/bfo:/…) that no
     # Class frame in this doc otherwise declares.
-    for dp in sorted({a.iri() for e in entities for a in e.attributes}):
+    for dp in sorted({_attr_iri(a) for e in entities for a in e.attributes}):
         lines.append(f"DataProperty: {dp}")
     local = {e.iri() for e in entities}
     for ext in sorted({e.genus for e in entities if e.genus} - local):
@@ -144,8 +154,8 @@ def to_manchester(entities: list[Entity]) -> str:
         conj: list[str] = [e.genus] if e.genus else []
         for a in e.attributes:
             xsd = a.xsd if a.xsd in _XSD else "string"
-            conj.append(f"{a.iri()} some xsd:{xsd}")
-            dataprops.setdefault(a.iri(), a)
+            conj.append(f"{_attr_iri(a)} some xsd:{xsd}")
+            dataprops.setdefault(_attr_iri(a), a)
         for r in e.relations:
             card = r.card if _CARD.match(r.card) else "some"
             conj.append(f"{r.iri()} {card} {r.target_iri()}")

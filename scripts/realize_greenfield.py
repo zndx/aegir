@@ -51,6 +51,13 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False) 
         ensure_jvm()  # MUST precede any deeponto import (click.prompt hangs non-interactively)
         from scripts.build_realized_ontology import _reason
         _onto, _tmp, consistent, n_classes, unsat, why = _reason(omn, explain=bool(0))
+        if int(n_classes) == 0 and merged:
+            # VACUOUS-PARSE TRIPWIRE: OWLAPI silently loaded zero frames (missing declarations,
+            # illegal punning, …) — "consistent" would certify an EMPTY doc. Fail loud.
+            raise RuntimeError(
+                f"vacuous HermiT parse: {len(merged)} merged classes but OWLAPI loaded 0 — "
+                "the certificate would be meaningless; inspect the omn for punning/declaration "
+                "issues (OWLAPI warnings name the entities)")
         cert.update({"isConsistent": bool(consistent), "n_classes": int(n_classes),
                      "unsat": list(unsat or [])})
         print(f"HermiT: consistent={consistent} classes={n_classes} unsat={len(unsat or [])}")
