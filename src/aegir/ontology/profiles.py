@@ -319,6 +319,67 @@ def load_profiles(path: "str | Path") -> "dict[str, ClassProfile]":
     return out
 
 
+# ── annotation-tier lowering (KFS @-forms; kvasir-ddl map §3) ──────────────────
+def _bounds(kind: str) -> "tuple[int, str] | None":
+    """Cardinality bounds worth annotating — only when TIGHTER than the reasoning tier's
+    ``some`` (which already carries min-1/NOT-NULL via the existential axiom)."""
+    if kind.startswith("exactly "):
+        n = int(kind.split()[1])
+        return (n, str(n))
+    if kind.startswith("min "):
+        n = int(kind.split()[1])
+        return (n, "*") if n > 1 else None
+    if kind.startswith("max "):
+        return (0, kind.split()[1])
+    return None
+
+
+def lower_profiles(profiles: "dict[str, ClassProfile]",
+                   expansions: "dict[str, str]") -> "tuple[str, dict]":
+    """Lower profiles to annotation-tier KFS (``@Attribute``/``@Cardinality``/``@Enum``/
+    ``@Label``). Tokens canonicalize to FULL IRIs through the SAME prefix expansions the
+    reasoning lowering uses (:func:`aegir.ontology.kvasir_bridge.prefix_expansions`) — one
+    class, one name, across both tiers. Unquotable text (embedded ``\"`` or ``#``, which the
+    KFS comment rule would truncate) is skipped-with-count, never sanitized silently.
+    Returns ``(kfs_text, skip_counts)``."""
+    from aegir.ontology.kvasir_bridge import expand_token
+
+    def X(tok: str) -> str:
+        return expand_token(tok, expansions)
+
+    def quotable(s: str) -> bool:
+        return '"' not in s and "#" not in s
+
+    lines: "list[str]" = []
+    skipped: "dict[str, int]" = {}
+    enums: "dict[str, list[str]]" = {}
+    for _, p in sorted(profiles.items()):
+        c = X(p.iri)
+        if p.label:
+            if quotable(p.label):
+                lines.append(f'@Label <{c}> "{p.label}"')
+            else:
+                skipped["label:unquotable"] = skipped.get("label:unquotable", 0) + 1
+        for a in sorted(p.attributes, key=lambda a: a.prop):
+            lines.append(f"@Attribute <{c}> <{X(a.prop)}> <{X(a.xsd)}>")
+            if a.enum:
+                vals = [v for v in a.enum if quotable(v)]
+                if len(vals) != len(a.enum):
+                    skipped["enum:unquotable"] = (skipped.get("enum:unquotable", 0)
+                                                  + len(a.enum) - len(vals))
+                if vals:
+                    prev = enums.setdefault(X(a.prop), vals)
+                    if prev != vals:
+                        skipped["enum:conflict"] = skipped.get("enum:conflict", 0) + 1
+        for r in sorted(p.relations, key=lambda r: (r.prop, r.target)):
+            b = _bounds(r.kind)
+            if b:
+                lines.append(f"@Cardinality <{c}> <{X(r.prop)}> {b[0]} {b[1]}")
+    for prop, vals in sorted(enums.items()):
+        lines.append(f"@Enum <{prop}> " + " ".join(f'"{v}"' for v in vals))
+    return "\n".join(lines) + "\n", skipped
+
+
 # ── the width-potential instrument ─────────────────────────────────────────────
 def census(profiles: "dict[str, ClassProfile]") -> dict:
     """What class_to_table could emit today, per class — the phase-B / R1 target metric.

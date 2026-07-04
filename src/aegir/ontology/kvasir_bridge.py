@@ -43,6 +43,27 @@ _MIN1 = re.compile(r"^\(?\s*(\S+)\s+(?:exactly|min)\s+([1-9]\d*)\s+([^()\s]+)\s*
 _ATOM = re.compile(r"^[^\s()]+$")
 
 
+_PREFIX_DECL = re.compile(r"^Prefix:\s*(\w+):\s*<([^>]+)>", re.M)
+
+
+def prefix_expansions(doc: str) -> "dict[str, str]":
+    """``{prefix: → namespace-uri}`` from the document's own Prefix declarations."""
+    return {m.group(1) + ":": m.group(2) for m in _PREFIX_DECL.finditer(doc)}
+
+
+def expand_token(tok: str, ns: "dict[str, str]") -> str:
+    """Canonicalize an entity token to its FULL IRI via the doc's declared prefixes. The omn
+    mixes prefixed and full-IRI forms for the SAME class (``sdg:X`` frame heads vs
+    ``<https://…#X>`` fillers); verbatim tokens gave the engine SPLIT names — sound (splits
+    only miss clashes) but wrong for name identity, and fatal for the annotation-tier join
+    and kvasir-ddl's class graph. Prefix declarations are document semantics: expansion is a
+    correctness merge, not an approximation."""
+    for p, uri in ns.items():
+        if tok.startswith(p):
+            return uri + tok[len(p):]
+    return tok
+
+
 def _clean(tok: str) -> str:
     return tok.strip().rstrip(",").strip("<>")
 
@@ -84,23 +105,25 @@ def _split_items(rhs: str) -> "list[str]":
     return [p.strip() for p in parts if p.strip()]
 
 
-def _lower_expr(subject: str, expr: str, out: "list[str]", skipped: Counter) -> None:
+def _lower_expr(subject: str, expr: str, out: "list[str]", skipped: Counter,
+                ns: "dict[str, str] | None" = None) -> None:
     """Lower one superclass-position expression for ``subject``. Emits only entailed axioms."""
+    C = (lambda t: expand_token(_clean(t), ns)) if ns else _clean
     expr = expr.strip().rstrip(",")
     if not expr:
         return
     if _ATOM.match(expr) and " some " not in expr:
-        out.append(f"SubClassOf <{_clean(subject)}> <{_clean(expr)}>")
+        out.append(f"SubClassOf <{C(subject)}> <{C(expr)}>")
         return
     m = _SOME.match(expr)
     if m:
-        out.append(f"SubClassOfExistential <{_clean(subject)}> <{_clean(m.group(1))}> "
-                   f"<{_clean(m.group(2))}>")
+        out.append(f"SubClassOfExistential <{C(subject)}> <{C(m.group(1))}> "
+                   f"<{C(m.group(2))}>")
         return
     m = _MIN1.match(expr)
     if m:  # exactly/min n≥1 ⊨ some — the entailed weakening
-        out.append(f"SubClassOfExistential <{_clean(subject)}> <{_clean(m.group(1))}> "
-                   f"<{_clean(m.group(3))}>")
+        out.append(f"SubClassOfExistential <{C(subject)}> <{C(m.group(1))}> "
+                   f"<{C(m.group(3))}>")
         return
     key = ("only" if " only " in expr else
            "value" if " value " in expr else
@@ -110,20 +133,24 @@ def _lower_expr(subject: str, expr: str, out: "list[str]", skipped: Counter) -> 
 
 
 def lower_manchester(doc: str) -> "tuple[str, dict]":
-    """Lower a Manchester document to KFS text (sound for refutation). Returns (kfs, skip_counts)."""
+    """Lower a Manchester document to KFS text (sound for refutation). Returns (kfs, skip_counts).
+    Entity tokens are canonicalized to FULL IRIs via the doc's Prefix declarations
+    (:func:`expand_token`) so one class carries ONE name across the tiers."""
+    ns = prefix_expansions(doc)
+    C = lambda t: expand_token(_clean(t), ns)  # noqa: E731
     out: list[str] = []
     skipped: Counter = Counter()
     # top-level DisjointClasses: a, b, … axioms (the BFO skeleton's form — not inside any frame);
     # n-ary lowers to all pairs (entailed)
     for m in re.finditer(r"^DisjointClasses:\s*(.+)$", doc, re.M):
-        atoms = [_clean(t) for t in m.group(1).split(",")]
+        atoms = [C(t) for t in m.group(1).split(",")]
         atoms = [a for a in atoms if a and _ATOM.match(a)]
         for i, a in enumerate(atoms):
             for b in atoms[i + 1:]:
                 out.append(f"DisjointClasses <{a}> <{b}>")
     frames = list(_FRAME.finditer(doc))
     for i, fm in enumerate(frames):
-        kind, name = fm.group(1), _clean(fm.group(2))
+        kind, name = fm.group(1), C(fm.group(2))
         body = doc[fm.end(): frames[i + 1].start() if i + 1 < len(frames) else len(doc)]
         if kind in ("Datatype", "DataProperty", "AnnotationProperty"):
             skipped[f"frame:{kind}"] += 1
@@ -142,29 +169,29 @@ def lower_manchester(doc: str) -> "tuple[str, dict]":
                 # entailed as a superclass of the subject (≡ entails ⊑ per conjunct)
                 for item in _split_items(rhs):
                     for conj in _split_conjuncts(item):
-                        _lower_expr(name, conj, out, skipped)
+                        _lower_expr(name, conj, out, skipped, ns)
             elif kind == "Class" and section == "DisjointWith":
                 for other in rhs.split(","):
-                    other = _clean(other)
+                    other = C(other)
                     if other and _ATOM.match(other):
                         out.append(f"DisjointClasses <{name}> <{other}>")
                     elif other:
                         skipped["disjoint:non-atomic"] += 1
             elif kind == "ObjectProperty" and section == "Domain":
-                d = _clean(rhs)
+                d = C(rhs)
                 if _ATOM.match(d):
                     out.append(f"PropertyDomain <{name}> <{d}>")
                 else:
                     skipped["domain:non-atomic"] += 1
             elif kind == "ObjectProperty" and section == "Range":
-                r = _clean(rhs)
+                r = C(rhs)
                 if _ATOM.match(r):
                     out.append(f"PropertyRange <{name}> <{r}>")
                 else:
                     skipped["range:non-atomic"] += 1
             elif kind == "Individual" and section == "Types":
                 for t in rhs.split(","):
-                    t = _clean(t)
+                    t = C(t)
                     if t and _ATOM.match(t):
                         out.append(f"ClassAssertion <{t}> <{name}>")
                     elif t:
