@@ -63,6 +63,27 @@ def _split_conjuncts(expr: str) -> "list[str]":
     return [p.strip() for p in parts if p.strip()]
 
 
+def _split_items(rhs: str) -> "list[str]":
+    """Split a frame-section rhs on TOP-LEVEL commas (paren-aware). A Manchester section list
+    (``SubClassOf: bfo:0000023, p exactly 1 B, q some C``) is SEPARATE AXIOMS, not one class
+    expression — treating the whole rhs as one expression silently skipped every comma-form
+    frame in the certified artifact (84 ``expr:other`` lines, incl. all role frames and every
+    ``exactly 1``; caught 2026-07-04 by the smoke-the-real-artifact rule)."""
+    parts, depth, cur = [], 0, []
+    for ch in rhs:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        if ch == "," and depth == 0:
+            parts.append("".join(cur))
+            cur = []
+        else:
+            cur.append(ch)
+    parts.append("".join(cur))
+    return [p.strip() for p in parts if p.strip()]
+
+
 def _lower_expr(subject: str, expr: str, out: "list[str]", skipped: Counter) -> None:
     """Lower one superclass-position expression for ``subject``. Emits only entailed axioms."""
     expr = expr.strip().rstrip(",")
@@ -117,9 +138,11 @@ def lower_manchester(doc: str) -> "tuple[str, dict]":
                 sections.append((sm.group(1), sm.group(2)))
         for section, rhs in sections:
             if kind == "Class" and section in ("SubClassOf", "EquivalentTo"):
-                # each top-level conjunct is entailed as a superclass of the subject
-                for conj in _split_conjuncts(rhs):
-                    _lower_expr(name, conj, out, skipped)
+                # comma items are separate axioms; each item's top-level conjunct is then
+                # entailed as a superclass of the subject (≡ entails ⊑ per conjunct)
+                for item in _split_items(rhs):
+                    for conj in _split_conjuncts(item):
+                        _lower_expr(name, conj, out, skipped)
             elif kind == "Class" and section == "DisjointWith":
                 for other in rhs.split(","):
                     other = _clean(other)
