@@ -194,6 +194,16 @@ ENTITY_SCHEMA = {
 }
 
 
+_IRI = re.compile(r"([A-Za-z][\w-]*:[\w-]+)")
+
+
+def clean_iri(tok: str, default: str = "cco:Artifact") -> str:
+    """Extract a prefixed IRI from a token the agent may have decorated (``bfo:0000040
+    (Person)`` → ``bfo:0000040``); default if none is present."""
+    m = _IRI.search(tok or "")
+    return m.group(1) if m else default
+
+
 def from_json(obj: dict) -> list[Entity]:
     """Parse the engine's json_schema output into :class:`Entity` records (defensive)."""
     out: list[Entity] = []
@@ -203,7 +213,7 @@ def from_json(obj: dict) -> list[Entity]:
         out.append(Entity(
             name=str(e["name"]),
             label=str(e.get("label", "")),
-            genus=str(e.get("genus") or "cco:Artifact"),
+            genus=clean_iri(str(e.get("genus") or "cco:Artifact")),
             definition=str(e.get("definition", "")),
             attributes=[DataAttr(name=str(a["name"]), xsd=str(a.get("xsd", "string")),
                                  enum=[str(v) for v in (a.get("enum") or [])])
