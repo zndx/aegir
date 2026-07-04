@@ -55,10 +55,18 @@ def backend_spec(backend: str, home: str):
     return vibe_acp_spec(FORK, home), _LOCAL_TOML, "instruct", "engine"
 
 
+# The devenv venv python directly — NOT `uv run` (whose 2-3s env-resolve latency races the fork's
+# MCP handshake and yields an empty response; the direct interpreter starts instantly).
+_VENV_PY = str(REPO / ".devenv/state/venv/bin/python")
+
+
 def kvasir_mcp_server() -> MCPServer:
-    """The kvasir DDL/consistency/SHACL toolbox as a stdio MCP server (``scripts/mcp_kvasir.py``)."""
-    return MCPServer(name="kvasir", command="uv",
-                     args=["run", "--no-sync", "python", "scripts/mcp_kvasir.py"], cwd=str(REPO))
+    """The kvasir DDL/consistency/SHACL toolbox as a stdio MCP server (``scripts/mcp_kvasir.py``).
+    Forwards the parent environment so the agent-spawned subprocess resolves its interpreter +
+    imports (an empty env hangs the handshake — the agent-spawn env-stripping bug)."""
+    py = _VENV_PY if Path(_VENV_PY).exists() else "python"
+    return MCPServer(name="kvasir", command=py, args=[str(REPO / "scripts/mcp_kvasir.py")],
+                     cwd=str(REPO), env=dict(os.environ))
 
 
 # ── register loadouts: which tools each register-harness gets ────────────────────
@@ -69,12 +77,38 @@ def kvasir_mcp_server() -> MCPServer:
 TOOLED_REGISTERS = {"semantic"} if os.environ.get("AEGIR_HARNESS_TOOLS") == "1" else set()
 
 
-def _augment_prompt(prompt: str, register: str, tooled: bool) -> str:
-    if tooled and register == "semantic":
-        return (prompt + "\n\nYou have MCP tools available: `ddl_profile`, `shacl_shapes`, and "
-                "`check_consistency` over an OWL Manchester ontology. When you make a structural "
-                "claim about the schema (a foreign key, a cardinality, a constraint), you MAY call "
-                "a tool to verify it against the real generated DDL before asserting it.")
+def kvasir_facts(ontology_omn: str) -> str:
+    """Run the kvasir tools DETERMINISTICALLY (the pipeline owns them; the agent can't fake) and
+    return a verified-schema-facts block to GROUND the semantic register. The reliable form of
+    'the harness leverages kvasir' — the in-agent MCP tool-CALLING is a separate follow-on (the
+    server works; the ACP-agent MCP-call path is bugged for both backends)."""
+    try:
+        from scripts.mcp_kvasir import check_consistency, ddl_profile
+        import json as _json
+        # FastMCP @tool leaves the plain function callable directly (no .fn accessor)
+        prof = _json.loads(ddl_profile(ontology_omn))
+        cons = _json.loads(check_consistency(ontology_omn))
+        if "error" in prof:
+            return ""
+        return (f"- generated schema: {prof['n_elected']} entity tables, {prof['total_fks']} "
+                f"foreign keys, {prof['n_junctions']} many-to-many junction tables, "
+                f"{prof['n_lookups']} lookup tables; median table width {prof['width_median']} "
+                f"columns\n- logical consistency (kvasir): {cons['verdict']}"
+                + (f" — unsatisfiable: {cons['unsat_classes']}" if cons.get('unsat_classes') else ""))
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _augment_prompt(prompt: str, register: str, construct: dict, tooled: bool) -> str:
+    if register == "semantic":
+        facts = construct.get("kvasir_facts")
+        if facts:
+            prompt += ("\n\nVERIFIED SCHEMA FACTS — the kvasir DDL toolchain generated and checked "
+                       "this schema from the ontology; ground your structural claims in these "
+                       "(they are checked truth, not assumptions):\n" + facts)
+        if tooled:
+            prompt += ("\n\nMCP tools are also available (`ddl_profile`, `shacl_shapes`, "
+                       "`check_consistency`) to re-verify any structural claim against the real DDL.")
     return prompt
 
 
@@ -109,7 +143,7 @@ async def run_item(item: WorkItem, *, timeout: float = 600.0) -> ProseResult:
         tooled = item.tools and item.register in TOOLED_REGISTERS
         mcp = [kvasir_mcp_server()] if tooled else []
         prompt = _augment_prompt(_prompt(item.construct, "prose", item.register, {}),
-                                 item.register, tooled)
+                                 item.register, item.construct, tooled)
         async with BaseACPClient(spec, fs_root=home, mcp_servers=mcp) as c:
             r = await c.prompt(prompt, timeout=timeout)
         return ProseResult(

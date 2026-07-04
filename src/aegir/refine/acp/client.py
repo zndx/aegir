@@ -157,8 +157,19 @@ class BaseACPClient:
             await self._conn.initialize(
                 protocol_version=PROTOCOL_VERSION,
                 client_info=Implementation(name="aegir-refine", version="0.1.0"))
+            from acp.schema import EnvVariable
+
+            def _env_vars(env):
+                # McpServerStdio.env is List[EnvVariable]; forward a dict (or the parent's whole
+                # environment) so the agent-spawned MCP subprocess inherits PATH/VIRTUAL_ENV/
+                # PYTHONPATH — an EMPTY env strips the interpreter's world and hangs the handshake.
+                if not env:
+                    return []
+                if isinstance(env, dict):
+                    return [EnvVariable(name=str(k), value=str(v)) for k, v in env.items()]
+                return env
             servers = [McpServerStdio(name=s.name, command=s.command, args=s.args,
-                                      cwd=s.cwd, env=s.env or []) for s in self.mcp_servers]
+                                      cwd=s.cwd, env=_env_vars(s.env)) for s in self.mcp_servers]
             session = await self._conn.new_session(
                 cwd=self.agent.cwd or os.getcwd(), mcp_servers=servers)
             self._session = session.session_id

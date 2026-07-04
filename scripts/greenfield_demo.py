@@ -45,6 +45,12 @@ def main() -> int:
 
     style = ""  # no same-domain anchor: the semantic register writes ontology-discourse about the DATA
     construct = to_construct(entities, n_rows=4, style_anchor=style)
+    # ground the semantic register in kvasir-VERIFIED schema facts (deterministic; the pipeline
+    # owns the tools, the agent can't fake them — reliable form of "the harness leverages kvasir")
+    from aegir.generate.harness import kvasir_facts
+    construct["kvasir_facts"] = kvasir_facts(omn)
+    print(f"      kvasir-verified facts grounding the semantic register:\n        "
+          + construct["kvasir_facts"].replace("\n", "\n        "))
 
     print("[3/4] generating BOTH registers on local Qwen (parallel ACP harnesses) …")
     results = generate({"demo": construct},
