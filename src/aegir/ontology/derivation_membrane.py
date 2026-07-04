@@ -269,7 +269,7 @@ def content_membrane(template: CatalogTemplate, *, source_span: str = "", jvm: b
     cx_norm = min(1.0, cx["score"] / 6.0)
     vd_norm = min(1.0, (vd.get("n_distinct") or 0) / 5.0)
     struct_factor = {"rich": 1.0, "thin": 0.7, "inert": 0.4,
-                     "malformed": 0.1}.get(struct.get("verdict") or "", 0.7)  # unavailable → neutral
+                     "malformed": 0.1}.get(str(struct.get("verdict") or ""), 0.7)  # unavailable → neutral
     g["utility"] = round(
         cx_norm * (0.5 + 0.5 * vd_norm) * (0.5 + 0.5 * min(1.0, fa["overlap"] / 0.3)) * struct_factor,
         3)
@@ -281,7 +281,7 @@ def _structural(manchester: str) -> dict:
     ``unavailable`` verdict) if the kvasir binary is absent, so the membrane never hard-fails
     on the structural leg."""
     try:
-        from aegir.ontology import ddl_membrane
+        import aegir.ontology.ddl_membrane as ddl_membrane
         return ddl_membrane.signal_for_manchester(manchester)
     except Exception as e:  # pragma: no cover — never let the structural leg break the membrane
         return {"verdict": "unavailable", "reason": f"structural signal error: {e}",
