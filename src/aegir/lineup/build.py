@@ -882,6 +882,26 @@ def run(args=None) -> int:
     notes += mt
     print(f"  training: 3 viz panels + metrics catalog ({len(mt)} notes)")
 
+    st = S.strategy_state()
+    if st:
+        man, pillars = st["manifest"], st["manifest"]["pillars"]
+        pl_lines = []
+        for pil, comps in pillars.items():
+            pl_lines.append(f"\n**{pil}**")
+            pl_lines += [f"- `{c}` — `{man['components'][c][:16]}`" for c in comps]
+        notes.append(N.Note(
+            id=f"strategy/{man['strategy_id']}", title=f"strategy {man['strategy_id']}",
+            kind="strategy", data_product="strategy",
+            frontmatter={"strategy_id": man["strategy_id"], "commit": st["commit"],
+                         "n_components": len(man["components"])},
+            body=(f"**Strategy `{man['strategy_id']}`** @ sdg-strategy `{st['commit']}` — the "
+                  f"run's externalized determinants, content-addressed (identity = the root "
+                  f"hash; verifiable by rehash from any signals project). Four pillars, "
+                  f"{len(man['components'])} components, VERBATIM:\n"
+                  + "\n".join(pl_lines))))
+        print(f"  strategy: {man['strategy_id']} @ {st['commit']} "
+              f"({len(man['components'])} components)", flush=True)
+
     sc = S.sdg_constructs()
     if sc:
         tbls, vws = sc["tables"], sc["views"]

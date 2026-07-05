@@ -303,3 +303,15 @@ def sdg_constructs() -> "dict | None":
     if not tables:
         return None
     return {"tables": tables, "views": views, "n_constructs": len(list(cdir.glob("*.json")))}
+
+
+def strategy_state() -> "dict | None":
+    """The declared strategy (the sdg-strategy submodule's CURRENT manifest) + drift-lite."""
+    try:
+        from aegir.strategy.manifest import declared, submodule_commit
+        man = declared()
+        if not man:
+            return None
+        return {"manifest": man, "commit": submodule_commit()}
+    except Exception:  # noqa: BLE001
+        return None

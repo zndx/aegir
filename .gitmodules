@@ -22,3 +22,6 @@
 [submodule "components/nifi-minifi-cpp"]
 	path = components/nifi-minifi-cpp
 	url = git@github.com:weathership/oss-minifi-cpp.git
+[submodule "strategy"]
+	path = strategy
+	url = git@github.com:zndx/sdg-strategy.git

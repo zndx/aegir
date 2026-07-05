@@ -127,6 +127,22 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                                          "backends": self.backends, "manifest": manifest.exists()})
         print(f"SdgCorporaFlow {current.run_id}: {len(self.passages)} passages → {self.run_out}",
               flush=True)
+        try:
+            from aegir.strategy.manifest import declared, drift
+            man = declared()
+            if man:
+                d = drift(man)
+                if d:
+                    msg = f"STRATEGY DRIFT vs {man['strategy_id']}: {', '.join(d[:6])}"
+                    if os.environ.get("AEGIR_STRATEGY_ENFORCE") == "1":
+                        raise RuntimeError(msg + " (AEGIR_STRATEGY_ENFORCE=1)")
+                    print(f"  WARNING {msg} — re-seed or commit the strategy", flush=True)
+                else:
+                    print(f"  strategy {man['strategy_id']} CLEAN (drift-checked)", flush=True)
+        except RuntimeError:
+            raise
+        except Exception as e:  # noqa: BLE001 — accountability must not sink the run
+            print(f"  strategy check skipped ({str(e)[:100]})", flush=True)
         self.next(self.harvest)
 
     @traced_step

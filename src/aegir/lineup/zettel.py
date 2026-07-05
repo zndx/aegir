@@ -41,6 +41,18 @@ def write_run_zettel(corpus_dir: Path, *, run_id: str, derive_stats: dict,
         dv = deriver_version()
     except Exception:  # noqa: BLE001
         dv = ""
+    strategy = {}
+    try:
+        from aegir.strategy import lineage as _lin
+        from aegir.strategy.manifest import declared, submodule_commit
+        man = declared()
+        if man:
+            strategy = {"strategy_id": man["strategy_id"],
+                        "strategy_commit": submodule_commit(),
+                        "stage_keys": {st: _lin.stage_key(st, man)
+                                       for st in _lin.STAGE_INPUTS}}
+    except Exception:  # noqa: BLE001
+        pass
     cursor = {}
     cur_p = Path(__file__).resolve().parents[3] / "build/domain_harvest/cursor.json"
     if cur_p.exists():
@@ -58,7 +70,7 @@ def write_run_zettel(corpus_dir: Path, *, run_id: str, derive_stats: dict,
                    "passages_cached": derive_stats.get("cached", 0),
                    "passages_fresh": sum(v for k, v in derive_stats.items()
                                          if k in ("rich", "thin", "inert", "malformed"))},
-        "versions": {"deriver": dv, "commit": commit},
+        "versions": {"deriver": dv, "commit": commit, **strategy},
         "state": {
             "n_chapters": metrics.get("n_chapters"),
             "structure": metrics.get("structure"),

@@ -1,0 +1,223 @@
+"""sdg-strategy manifest — the run's externalized determinants as a content-addressed tree (#148).
+
+A STRATEGY is the complete answer to "why did the pipeline do that?": everything outcome-shaping
+that is neither the input window nor the code commit, in four pillars —
+
+- **lens**    — the qdrant aperture (collection snapshot: ids, labels, vector hashes)
+- **voices**  — every agent-facing surface (prompts, schemas, feedback templates, tool
+                docstrings, the vendored vibe profile, backend config)
+- **knobs**   — the flow's tunable defaults (HOCON)
+- **targets** — what it aims at (mined norms by content hash + source identity, gate floors)
+
+Dual-key identity, Merkle-shaped: ``strategy_id = sha256(sorted component hashes)[:12]`` is the
+IDENTITY (verifiable by rehash from any signals project); release tags / zettel ids are NAMES.
+The tree lives in the ``strategy/`` submodule (git@github.com:zndx/sdg-strategy.git, branch
+``trunk``): shadows are BRANCHES (promotion = cherry-pick/merge; only main lineage takes release
+tags); the submodule pointer tracks main; shadow manifests resolve BY SHA from the object store
+(`load_by_ref`) — pinned by construction, never the working tree.
+
+RH rulings encoded: verbatim pass-through (components are the artifacts themselves); truth flows
+repo → runtime (the live collection is materialized FROM the snapshot, never exported back except
+by an explicit re-seed).
+"""
+from __future__ import annotations
+
+import ast
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parents[3]
+SUB = REPO / "strategy"
+
+
+def _sha(b: bytes) -> str:
+    return hashlib.sha256(b).hexdigest()
+
+
+def _canon(obj) -> bytes:
+    return json.dumps(obj, sort_keys=True, ensure_ascii=False, default=str).encode()
+
+
+# ── collectors: the LIVE state of each pillar, verbatim ──────────────────────────────
+
+def collect_lens() -> "dict[str, bytes]":
+    """The qdrant aperture snapshot: (id, label, vector sha) per concept, sorted."""
+    from aegir.ontology.domain_index import DEFAULT_COLLECTION, _client  # type: ignore
+    try:
+        cl = _client()
+        rows, off = [], None
+        while True:
+            pts, off = cl.scroll(DEFAULT_COLLECTION, limit=512, offset=off,
+                                 with_payload=True, with_vectors=True)
+            for p in pts:
+                vec = p.vector if not isinstance(p.vector, dict) else next(iter(p.vector.values()))
+                import numpy as _np
+                vs = _sha(_np.asarray(vec, dtype="float32").tobytes()) if vec is not None else ""
+                pl = p.payload or {}
+                rows.append({"id": str(p.id),
+                             "label": pl.get("pref_label") or pl.get("label") or "",
+                             "path": pl.get("path") or "",
+                             "vector_sha": vs[:16]})
+            if off is None:
+                break
+        rows.sort(key=lambda r: r["id"])
+        snap = {"collection": DEFAULT_COLLECTION, "n": len(rows), "points": rows}
+        return {"lens/aperture.snapshot.json": _canon(snap)}
+    except Exception as e:  # noqa: BLE001 — qdrant down: the pillar is explicitly UNCAPTURED
+        return {"lens/aperture.UNAVAILABLE": f"qdrant unreachable: {e}".encode()}
+
+
+def _tool_docs(path: Path) -> dict:
+    """MCP tool names + docstrings via ast (tool descriptions ARE agent-visible prompts)."""
+    out = {}
+    try:
+        tree = ast.parse(path.read_text())
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                for d in node.decorator_list:
+                    s = ast.unparse(d)
+                    if "tool" in s:
+                        out[node.name] = ast.get_docstring(node) or ""
+    except Exception:  # noqa: BLE001
+        pass
+    return out
+
+
+def collect_voices() -> "dict[str, bytes]":
+    from aegir.generate import agent_stage, harness
+    from aegir.ontology import derive_harness, derive_loop, entities
+    comp: "dict[str, bytes]" = {
+        "voices/derive.system.md": derive_harness._SYSTEM.encode(),
+        "voices/derive.schema.json": _canon(entities.ENTITY_SCHEMA),
+        "voices/derive.feedback.py": __import__("inspect").getsource(derive_loop._feedback).encode()
+                                     + __import__("inspect").getsource(derive_loop._dormant_brief).encode(),
+        "voices/derive.dormant_hints.json": _canon(getattr(derive_loop, "_DORMANT_HINTS", {})),
+        "voices/register_voice.json": _canon(getattr(harness, "_REGISTER_VOICE", {})),
+        "voices/turn_protocol.md": getattr(agent_stage, "_TURN_PROTOCOL", "").encode(),
+        "voices/backend.local.toml": getattr(harness, "_LOCAL_TOML", "").encode(),
+        "voices/mcp_kvasir.tools.json": _canon(_tool_docs(REPO / "scripts/mcp_kvasir.py")),
+    }
+    vibe = REPO / "components/oss-mistral-cli/vibe/core/prompts/aegir_writer.md"
+    if vibe.exists():  # vendored: the profile is a strategy component, not a fork detail
+        comp["voices/aegir_writer.md"] = vibe.read_bytes()
+    return comp
+
+
+def collect_knobs() -> "dict[str, bytes]":
+    """Flow Parameter defaults, read programmatically (no drift-prone literals)."""
+    knobs = {}
+    try:
+        from metaflow import Parameter
+        from aegir.flows.sdg_corpora_flow import SdgCorporaFlow
+        for name in dir(SdgCorporaFlow):
+            attr = getattr(SdgCorporaFlow, name, None)
+            if isinstance(attr, Parameter):
+                knobs[attr.name] = attr.kwargs.get("default")
+    except Exception as e:  # noqa: BLE001
+        knobs["_error"] = str(e)[:120]
+    return {"knobs/flow_defaults.json": _canon(knobs)}
+
+
+def collect_targets() -> "dict[str, bytes]":
+    comp: "dict[str, bytes]" = {}
+    for f in ("schemapile_shape_norms.json", "schemapile_key_norms.json"):
+        p = REPO / "build" / f
+        if p.exists():
+            comp[f"targets/{f}"] = p.read_bytes()
+    try:
+        from aegir.ontology import individuals
+        comp["targets/brand_lexicon.json"] = _canon({
+            "clear": getattr(individuals, "_BRANDS_CLEAR", None) and individuals._BRANDS_CLEAR.pattern,
+            "ambiguous": sorted(getattr(individuals, "_BRANDS_AMBIG", ())),
+        })
+    except Exception:  # noqa: BLE001
+        pass
+    comp["targets/floors.json"] = _canon({
+        "payload_min_chars": 6000,
+        "verdict_accept": "rich",
+        "congruence_top_k": 5,
+        "note": "gate floors gathered at capture; unify into strategy.conf at increment 2",
+    })
+    return comp
+
+
+# ── manifest: hash, write, load, drift ───────────────────────────────────────────────
+
+def collect() -> "tuple[dict[str, bytes], dict]":
+    comp: "dict[str, bytes]" = {}
+    for c in (collect_lens(), collect_voices(), collect_knobs(), collect_targets()):
+        comp.update(c)
+    hashes = {path: _sha(data) for path, data in sorted(comp.items())}
+    root = _sha(_canon(hashes))[:12]
+    manifest = {"strategy_id": root, "components": hashes,
+                "pillars": {p: [k for k in hashes if k.startswith(p + "/")]
+                            for p in ("lens", "voices", "knobs", "targets")}}
+    return comp, manifest
+
+
+def write_to_submodule(comp: "dict[str, bytes]", manifest: dict) -> str:
+    sid = manifest["strategy_id"]
+    for rel, data in comp.items():
+        p = SUB / "components" / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(data)
+    (SUB / "manifests").mkdir(exist_ok=True)
+    (SUB / "manifests" / f"{sid}.json").write_text(json.dumps(manifest, indent=1))
+    (SUB / "CURRENT").write_text(sid + "\n")
+    return sid
+
+
+def declared() -> "dict | None":
+    """The manifest the submodule's checked-out CURRENT declares (main's strategy)."""
+    cur = SUB / "CURRENT"
+    if not cur.exists():
+        return None
+    sid = cur.read_text().strip()
+    p = SUB / "manifests" / f"{sid}.json"
+    return json.loads(p.read_text()) if p.exists() else None
+
+
+def load_by_ref(ref: str) -> dict:
+    """A manifest pinned BY SHA/branch from the submodule object store (shadows resolve here —
+    never the working tree)."""
+    sid = subprocess.run(["git", "show", f"{ref}:CURRENT"], cwd=SUB,
+                         capture_output=True, text=True, check=True).stdout.strip()
+    raw = subprocess.run(["git", "show", f"{ref}:manifests/{sid}.json"], cwd=SUB,
+                         capture_output=True, text=True, check=True).stdout
+    return json.loads(raw)
+
+
+def submodule_commit() -> str:
+    return subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=SUB,
+                          capture_output=True, text=True).stdout.strip()
+
+
+def drift(manifest: "dict | None" = None) -> "list[str]":
+    """Live state vs the declared manifest — the idempotence-honesty check. Returns the
+    changed component paths ('' = clean)."""
+    manifest = manifest or declared()
+    if not manifest:
+        return ["<no declared manifest — run `python -m aegir.strategy.manifest seed`>"]
+    comp, live = collect()
+    want, have = manifest["components"], live["components"]
+    out = [f"~{k}" for k in want if k in have and want[k] != have[k]]
+    out += [f"-{k}" for k in want if k not in have]
+    out += [f"+{k}" for k in have if k not in want]
+    return out
+
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "seed":
+        comp, man = collect()
+        sid = write_to_submodule(comp, man)
+        print(f"seeded strategy {sid}: {len(comp)} components "
+              f"({', '.join(f'{p}:{len(v)}' for p, v in man['pillars'].items())})")
+    elif len(sys.argv) > 1 and sys.argv[1] == "drift":
+        d = drift()
+        print("CLEAN" if not d else "\n".join(d))
+        sys.exit(1 if d else 0)
+    else:
+        print("usage: python -m aegir.strategy.manifest {seed|drift}")

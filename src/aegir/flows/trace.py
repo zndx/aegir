@@ -58,6 +58,17 @@ def traced_step(func):
             rid = getattr(getattr(self, "_graph", None), "run_id", None) or os.environ.get("METAFLOW_RUN_ID", "")
             if rid:
                 span.set_attribute("metaflow.run_id", str(rid))
+            try:
+                # one declaration, three consumers (#148): the stage's strategy-component
+                # inputs ride the span as OpenLineage-shaped facets; the same declaration
+                # yields the stage cache key and the zettel/audit refs.
+                from aegir.strategy.lineage import STAGE_INPUTS, span_facets
+                stage = "prose" if step.startswith("prose") else step
+                if stage in STAGE_INPUTS:
+                    for k, v in span_facets(stage).items():
+                        span.set_attribute(k, v)
+            except Exception:  # noqa: BLE001 — lineage facets must never sink a step
+                pass
             return func(self, *args, **kwargs)
     return wrapper
 
