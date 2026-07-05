@@ -880,7 +880,7 @@ def run(args=None) -> int:
     notes += mt
     print(f"  training: 3 viz panels + metrics catalog ({len(mt)} notes)")
 
-    gc = S.greenfield_corpus()
+    gc = S.sdg_corpus()
     if gc:
         m = gc.get("metrics") or {}
         st = gc.get("structure") or m.get("structure") or {}
@@ -893,12 +893,12 @@ def run(args=None) -> int:
                        f"{nat.get('mean_profile_congruence', '—')} · semantic "
                        f"{sem.get('top1_recovery_rate', '—')} / {sem.get('mean_profile_congruence', '—')}")
         notes.append(N.Note(
-            id="corpus/greenfield", title="Greenfield corpus (live)", kind="corpus",
+            id="corpus/sdg", title="SDG corpus (live)", kind="corpus",
             data_product="corpus",
             frontmatter={"live": True, "passages": gc["passages_derived"],
                          "chapters": gc["chapters_natural"] + gc["chapters_semantic"],
                          "shape_emd": st.get("shape_emd")},
-            body=(f"**The accreting greenfield corpus** — `just metaflow` tops this up per input "
+            body=(f"**The accreting SDG corpus** — `just metaflow` tops this up per input "
                   f"window (idempotent; content-hash passages + deriver-version stamps).\n\n"
                   f"- **{gc['passages_derived']} passages derived** → "
                   f"{gc['chapters_natural']} natural + {gc['chapters_semantic']} semantic chapters\n"
@@ -909,8 +909,30 @@ def run(args=None) -> int:
                   f"{(m.get('payload') or {}).get('views_embedded', '—')} views embedded"
                   + cg_line +
                   f"\n\nSource: `{gc['root']}` (metrics.json · congruence.json · concept_graph.json)")))
-        print(f"  corpus: greenfield live note ({gc['passages_derived']} passages, "
+        print(f"  corpus: sdg live note ({gc['passages_derived']} passages, "
               f"{gc['chapters_natural'] + gc['chapters_semantic']} chapters)")
+        from aegir.lineup.zettel import run_zettels
+        zs = run_zettels(Path(gc["root"]))
+        for z in zs:
+            w, st = z.get("window") or {}, z.get("state") or {}
+            notes.append(N.Note(
+                id=f"corpus/runs/{z['id']}", title=z["id"], kind="corpus-run",
+                data_product="corpus",
+                frontmatter={"prev": z.get("prev"), "at": z.get("at"),
+                             "deriver": (z.get("versions") or {}).get("deriver"),
+                             "commit": (z.get("versions") or {}).get("commit")},
+                links=[f"corpus/runs/{z['prev']}"] if z.get("prev") else [],
+                body=(f"**Run-zettel {z['id']}** (metaflow {z.get('metaflow_run_id', '?')})\n\n"
+                      f"- window: cursor {w.get('harvest_cursor')} · "
+                      f"{w.get('passages_fresh', 0)} fresh + {w.get('passages_cached', 0)} cached\n"
+                      f"- versions: deriver `{(z.get('versions') or {}).get('deriver')}` @ "
+                      f"`{(z.get('versions') or {}).get('commit')}`\n"
+                      f"- state: {st.get('n_chapters')} chapters · "
+                      f"EMD {(st.get('structure') or {}).get('shape_emd')} · "
+                      f"congruence {json.dumps(st.get('congruence'), default=str)[:120]}\n"
+                      + (f"- prev: {N.wl('corpus/runs/' + z['prev'], z['prev'])}" if z.get("prev") else "- chain origin"))))
+        if zs:
+            print(f"  corpus: {len(zs)} run-zettels (chain head {zs[-1]['id']})")
 
     for n in notes:
         N.write_note(kb, n)

@@ -241,8 +241,8 @@ def ontology_metrology() -> dict | None:
     }
 
 
-def greenfield_corpus() -> "dict | None":
-    """LIVE state of the greenfield corpus dir (`just metaflow` accretes it): counts +
+def sdg_corpus() -> "dict | None":
+    """LIVE state of the sdg corpus dir (`just metaflow` accretes it): counts +
     the flow's metrics/congruence when present. Graceful None when the corpus is absent —
     the lineup stays in sync with the pipeline AS IT RUNS (kb-build re-projects)."""
     import json as _json

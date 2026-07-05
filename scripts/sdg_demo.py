@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Greenfield end-to-end demo (#141): FinePDFs passage → domain ontology → DDL/views →
+"""SDG end-to-end demo (#141): FinePDFs passage → domain ontology → DDL/views →
 two-register prose SIDE BY SIDE via parallel local-Qwen ACP harnesses.
 
   FinePDFs passage
@@ -10,7 +10,7 @@ two-register prose SIDE BY SIDE via parallel local-Qwen ACP harnesses.
     → generate.harness.run_queue  ((natural,local) + (semantic,local); semantic tool-equipped)
     → two prose outputs side by side
 
-Run (engine + :8100 vLLM must be up): uv run --no-sync python scripts/greenfield_demo.py <passage.txt>
+Run (engine + :8100 vLLM must be up): uv run --no-sync python scripts/sdg_demo.py <passage.txt>
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def main() -> int:
         sorted(Path("build/domain_harvest/docs").glob("*.txt"))[1])
     out_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(
         "/tmp/claude-1001/-home-rch-local-src-zndx-aegir/"
-        "c1a82f70-af52-44be-8741-a01509b778d2/scratchpad/greenfield_demo")
+        "c1a82f70-af52-44be-8741-a01509b778d2/scratchpad/sdg_demo")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     passage = passage_path.read_text()[:6000]

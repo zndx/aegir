@@ -1,4 +1,4 @@
-"""Entity-centric ontology model — the greenfield derive's core representation (#141).
+"""Entity-centric ontology model — the sdg derive's core representation (#141).
 
 RH ruling (2026-07-04): retire the axiom-template-with-`{X:Y:Z}`-slots artifact; the
 objective is real ontology → real DDL structure parity with SchemaPile (the Shape EMD).
@@ -153,7 +153,7 @@ def to_manchester(entities: list[Entity]) -> str:
     # (object/data/annotation) MUST be declared before use — without them the doc "loads" as
     # zero frames → a VACUOUS HermiT certificate (kvasir tolerates both omissions; measured).
     lines: list[str] = [
-        PREFIXES, "", "Ontology: <https://signals.zndx.org/sdg/greenfield>", "",
+        PREFIXES, "", "Ontology: <https://signals.zndx.org/sdg>", "",
         "AnnotationProperty: rdfs:label", "AnnotationProperty: iao:0000115",
         "AnnotationProperty: skos:definition", "",
     ]
