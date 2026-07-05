@@ -27,7 +27,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
-from aegir.ontology.individuals import real_entity_hits  # noqa: E402
+from aegir.ontology.individuals import _AMBIG_CTX, _BRANDS_AMBIG, real_entity_hits  # noqa: E402
 
 
 def scan_registry(path: Path) -> "list[tuple[str, str, str]]":
@@ -72,9 +72,37 @@ def scan_chapters(root: Path) -> "tuple[list, list]":
         return [], []
     ours, quoted = [], []
     for md in root.rglob("*.md"):
+        text = md.read_text(errors="replace")
+        low = text.lower()
+
+        def _domain_initialism(brand: str) -> bool:
+            """A 2-5-letter all-caps hit is DOMAIN USAGE (not the company) when the document
+            itself contains a phrase whose initials spell it — e.g. 'satisfactory academic
+            progress' → SAP is the chapter's own acronym (the measured false-positive: a
+            financial-aid corpus flagged for the software company)."""
+            b = brand.strip()
+            if not (2 <= len(b) <= 5 and b.isupper() and b.isalpha()):
+                return False
+            words = re.findall(r"[a-z]+", low)
+            init = "".join(w[0] for w in words)
+            return b.lower() in init and any(
+                "".join(w[0] for w in words[i:i + len(b)]) == b.lower()
+                and sum(len(w) for w in words[i:i + len(b)]) >= len(b) * 3
+                for i in range(len(words) - len(b) + 1))
+
+        allowed: "set[str]" = set()
         # scan line-wise so the hit report carries usable context
-        for line in md.read_text(errors="replace").splitlines():
+        for line in text.splitlines():
             for v, brand in real_entity_hits([line.strip()[:120]]):
+                if brand in allowed or _domain_initialism(brand):
+                    allowed.add(brand)
+                    continue
+                # heading case: every word capitalized ⇒ TitleCase carries no brand signal
+                # ('### Valve Placement and Shell Region…' is exchanger anatomy, not the oil
+                # major). Ambiguous-tier brands in headings need explicit context words.
+                if line.lstrip().startswith("#") and brand in _BRANDS_AMBIG \
+                        and not _AMBIG_CTX.search(line):
+                    continue
                 (quoted if "FinePDFs" in line else ours).append(
                     (str(md.relative_to(root)), v, brand))
     return ours, quoted
