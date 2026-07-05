@@ -239,3 +239,29 @@ def ontology_metrology() -> dict | None:
         "taxonomic_cleanliness": m["taxonomic_cleanliness"], "ontoclean_violations": m["ontoclean_violations"],
         "subsumption_cycles": m["subsumption_cycles"], "sibling_disjointness": m["sibling_disjointness"],
     }
+
+
+def greenfield_corpus() -> "dict | None":
+    """LIVE state of the greenfield corpus dir (`just metaflow` accretes it): counts +
+    the flow's metrics/congruence when present. Graceful None when the corpus is absent —
+    the lineup stays in sync with the pipeline AS IT RUNS (kb-build re-projects)."""
+    import json as _json
+    root = Path("/raid/checkpoints/aegir-artifacts/sdg-corpora/corpus")
+    if not root.exists():
+        return None
+    out: dict = {
+        "root": str(root),
+        "passages_derived": len(list((root / "entities").glob("*.json"))),
+        "chapters_natural": len(list((root / "chapters").rglob("natural.md"))),
+        "chapters_semantic": len(list((root / "chapters").rglob("semantic.md"))),
+    }
+    for f, key in (("metrics.json", "metrics"), ("congruence.json", "congruence"),
+                   ("ontology/structure.json", "structure")):
+        fp = root / f
+        if fp.exists():
+            try:
+                d = _json.loads(fp.read_text())
+                out[key] = d.get("per_register", d) if key == "congruence" else d
+            except Exception:  # noqa: BLE001
+                pass
+    return out

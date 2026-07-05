@@ -880,6 +880,38 @@ def run(args=None) -> int:
     notes += mt
     print(f"  training: 3 viz panels + metrics catalog ({len(mt)} notes)")
 
+    gc = S.greenfield_corpus()
+    if gc:
+        m = gc.get("metrics") or {}
+        st = gc.get("structure") or m.get("structure") or {}
+        cg = gc.get("congruence") or {}
+        cg_line = ""
+        if cg:
+            nat, sem = cg.get("natural") or {}, cg.get("semantic") or {}
+            cg_line = (f"\n- **Concept congruence** (input window → chapters): natural "
+                       f"recovery {nat.get('top1_recovery_rate', '—')} / profile "
+                       f"{nat.get('mean_profile_congruence', '—')} · semantic "
+                       f"{sem.get('top1_recovery_rate', '—')} / {sem.get('mean_profile_congruence', '—')}")
+        notes.append(N.Note(
+            id="corpus/greenfield", title="Greenfield corpus (live)", kind="corpus",
+            data_product="corpus",
+            frontmatter={"live": True, "passages": gc["passages_derived"],
+                         "chapters": gc["chapters_natural"] + gc["chapters_semantic"],
+                         "shape_emd": st.get("shape_emd")},
+            body=(f"**The accreting greenfield corpus** — `just metaflow` tops this up per input "
+                  f"window (idempotent; content-hash passages + deriver-version stamps).\n\n"
+                  f"- **{gc['passages_derived']} passages derived** → "
+                  f"{gc['chapters_natural']} natural + {gc['chapters_semantic']} semantic chapters\n"
+                  f"- Merged ontology: {st.get('n_elected', '—')} tables · "
+                  f"{st.get('total_fks', '—')} FKs · {st.get('n_junctions', '—')} junctions · "
+                  f"{st.get('n_lookups', '—')} lookups · **shape EMD {st.get('shape_emd', '—')}**\n"
+                  f"- Payload: {(m.get('payload') or {}).get('tables_embedded', '—')} tables + "
+                  f"{(m.get('payload') or {}).get('views_embedded', '—')} views embedded"
+                  + cg_line +
+                  f"\n\nSource: `{gc['root']}` (metrics.json · congruence.json · concept_graph.json)")))
+        print(f"  corpus: greenfield live note ({gc['passages_derived']} passages, "
+              f"{gc['chapters_natural'] + gc['chapters_semantic']} chapters)")
+
     for n in notes:
         N.write_note(kb, n)
     entries = (N.scan_notes(kb, "current") + N.scan_notes(kb, "scratch") + N.scan_notes(kb, "archive"))
