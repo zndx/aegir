@@ -119,6 +119,23 @@ def to_manchester(entities: list[Entity]) -> str:
         iri = a.iri()
         return iri + "Detail" if iri in rel_iris else iri
 
+    # KEY SEMANTICS IN THE ONTOLOGY (RH 2026-07-05): the SAME deterministic key plan that
+    # realizes construct tables also emits OWL 2 key axioms here — natural keys become
+    # `HasKey:` (HermiT-checkable; kvasir elects them as PKs), single-valued attributes
+    # become Functional DataProperties, and uniformly to-one relations become Functional
+    # ObjectProperties. One plan, two projections — the ontology is the source of truth
+    # and the distributions are verifiable by counting axioms in the shipped document.
+    kp = plan_keys(entities)
+    natural_keys = {e.iri(): next((a.iri() for a in e.attributes
+                                   if a.name == kp["plans"][e.iri()]["pk_attr"]), None)
+                    for e in entities if kp["plans"][e.iri()]["kind"] == "natural"}
+    card_by_prop: dict = {}
+    for e in entities:
+        for r in e.relations:
+            card_by_prop.setdefault(r.iri(), set()).add(r.card)
+    functional_ops = {op for op, cards in card_by_prop.items()
+                      if cards <= {"exactly 1", "max 1"}}
+
     # The Ontology: declaration is REQUIRED for OWLAPI's Manchester loader, and every property
     # (object/data/annotation) MUST be declared before use — without them the doc "loads" as
     # zero frames → a VACUOUS HermiT certificate (kvasir tolerates both omissions; measured).
@@ -129,6 +146,8 @@ def to_manchester(entities: list[Entity]) -> str:
     ]
     for op in sorted({r.iri() for e in entities for r in e.relations}):
         lines.append(f"ObjectProperty: {op}")
+        if op in functional_ops:
+            lines.append("    Characteristics: Functional")
     lines.append("")
     # Declarations BEFORE use (the OWLAPI Manchester parse is effectively single-pass):
     # data properties referenced in restrictions, and external genera (cco:/bfo:/…) that no
@@ -161,10 +180,14 @@ def to_manchester(entities: list[Entity]) -> str:
             conj.append(f"{r.iri()} {card} {r.target_iri()}")
         if conj:
             lines.append("    SubClassOf: " + ", ".join(conj))
+        nk = natural_keys.get(e.iri())
+        if nk:
+            lines.append(f"    HasKey: {nk}")
         lines.append("")
 
     for iri, a in sorted(dataprops.items()):
         lines.append(f"DataProperty: {iri}")
+        lines.append("    Characteristics: Functional")
         d = a.definition
         if a.enum:
             vals = " / ".join(v for v in a.enum if _quotable(v))

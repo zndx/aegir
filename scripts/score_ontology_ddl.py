@@ -76,6 +76,19 @@ def score(omn: Path) -> dict:
     )
     hist = Counter(widths)
 
+    pk_shapes = Counter()
+    for t in tables:
+        pks = [c["name"] for c in t["columns"] if c.get("pk")]
+        if not pks:
+            pk_shapes["none"] += 1
+        elif len(pks) > 1:
+            pk_shapes["composite"] += 1
+        elif pks[0] == "id":
+            pk_shapes["bare_id"] += 1
+        else:
+            pk_shapes["natural_or_named"] += 1
+    _npk = sum(pk_shapes.values()) or 1
+
     norms = json.loads(NORMS.read_text()) if NORMS.exists() else {}
     sp = norms.get("width") or {}
     ref_hist = norms.get("col_count_histogram") or {}
@@ -97,6 +110,7 @@ def score(omn: Path) -> dict:
         "attr_zero_ratio": round(n_attr_zero / max(1, len(elected)), 4),
         "col_count_histogram": {str(k): v for k, v in sorted(hist.items())},
         "schemapile": {"median": sp.get("median"), "p90": sp.get("p90"), "p99": sp.get("p99")},
+        "pk_shapes": {k: round(v / _npk, 4) for k, v in pk_shapes.most_common()},
         "shape_emd": _emd(widths, ref_hist),
     }
 
