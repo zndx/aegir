@@ -624,6 +624,19 @@ def render_payload_blocks(construct: dict) -> "dict[str, str]":
     return blocks
 
 
+def _scrub_enum(values: "list[str]") -> "list[str]":
+    """REAL UNIVERSALS, FICTIONAL PARTICULARS: drop enum values naming real orgs/brands/
+    products (the deriver sometimes proposes 'Microsoft Word'-style members; they would flow
+    verbatim into the omn AND the embedded table cells). <2 survivors → no enum at all."""
+    try:
+        from aegir.ontology.individuals import real_entity_hits
+        bad = {v for v, _brand in real_entity_hits(values)}
+    except Exception:  # noqa: BLE001
+        bad = set()
+    kept = [v for v in values if v not in bad]
+    return kept if len(kept) >= 2 else []
+
+
 def from_json(obj: dict) -> list[Entity]:
     """Parse the engine's json_schema output into :class:`Entity` records (defensive)."""
     out: list[Entity] = []
@@ -636,7 +649,7 @@ def from_json(obj: dict) -> list[Entity]:
             genus=clean_iri(str(e.get("genus") or "cco:Artifact")),
             definition=str(e.get("definition", "")),
             attributes=[DataAttr(name=str(a["name"]), xsd=str(a.get("xsd", "string")),
-                                 enum=[str(v) for v in (a.get("enum") or [])])
+                                 enum=_scrub_enum([str(v) for v in (a.get("enum") or [])]))
                         for a in e.get("attributes", []) if isinstance(a, dict) and a.get("name")],
             relations=[Relation(prop=str(r["prop"]), target=str(r["target"]),
                                 card=str(r.get("card", "some")),
