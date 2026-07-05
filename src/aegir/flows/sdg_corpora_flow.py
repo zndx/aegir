@@ -218,6 +218,9 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         if r.returncode == 2:
             raise RuntimeError("HermiT refused the merged ontology (inconsistent) — see "
                                f"{self.run_out}/ontology/certificate.json")
+        if r.returncode == 3:
+            raise RuntimeError("HermiT found UNSATISFIABLE classes in the merge — the TBox is "
+                               f"sick; see {self.run_out}/ontology/certificate.json (unsat list)")
         if r.returncode != 0:
             raise RuntimeError(f"realize failed (exit {r.returncode})")
         self.structure = json.loads(Path(self.run_out, "ontology/structure.json").read_text())

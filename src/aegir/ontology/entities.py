@@ -643,6 +643,22 @@ def render_payload_blocks(construct: dict) -> "dict[str, str]":
     return blocks
 
 
+_XSD_CANON = {"integer": "integer", "int": "integer", "long": "integer",
+              "decimal": "decimal", "double": "decimal", "float": "decimal",
+              "number": "decimal", "boolean": "boolean", "bool": "boolean",
+              "date": "date", "datetime": "dateTime", "string": "string",
+              "text": "string", "enum": "string"}
+
+
+def _norm_xsd(x: str) -> str:
+    """Canonicalize the deriver's xsd emissions: strip the prefix ('xsd:integer'), fold
+    aliases ('enum', 'text', 'number'), unknown → string. The 431-passage merge produced
+    1,489 UNSAT classes because 'integer' vs 'xsd:integer' silently diverged into
+    integer-vs-string restrictions on Functional properties (⊥ conjunctions)."""
+    t = (x or "string").strip().removeprefix("xsd:").lower()
+    return _XSD_CANON.get(t, "string")
+
+
 def _scrub_enum(values: "list[str]") -> "list[str]":
     """REAL UNIVERSALS, FICTIONAL PARTICULARS: drop enum values naming real orgs/brands/
     products (the deriver sometimes proposes 'Microsoft Word'-style members; they would flow
@@ -667,7 +683,7 @@ def from_json(obj: dict) -> list[Entity]:
             label=str(e.get("label", "")),
             genus=clean_iri(str(e.get("genus") or "cco:Artifact")),
             definition=str(e.get("definition", "")),
-            attributes=[DataAttr(name=str(a["name"]), xsd=str(a.get("xsd", "string")),
+            attributes=[DataAttr(name=str(a["name"]), xsd=_norm_xsd(str(a.get("xsd", "string"))),
                                  enum=_scrub_enum([str(v) for v in (a.get("enum") or [])]))
                         for a in e.get("attributes", []) if isinstance(a, dict) and a.get("name")],
             relations=[Relation(prop=str(r["prop"]), target=str(r["target"]),

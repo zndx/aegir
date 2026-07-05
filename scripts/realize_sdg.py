@@ -63,6 +63,11 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False) 
         print(f"HermiT: consistent={consistent} classes={n_classes} unsat={len(unsat or [])}")
         if unsat:
             cert["why"] = why or {}
+            (output_dir / "certificate.json").write_text(json.dumps(cert, indent=2))
+            names = [u.rsplit('#', 1)[-1] for u in list(unsat)[:5]]
+            raise SystemExit(
+                f"REFUSED: {len(unsat)} unsatisfiable classes (first: {names}) — a sick TBox "
+                "is not scored or shipped; certificate.json carries the full list (exit 3)")
     (output_dir / "certificate.json").write_text(json.dumps(cert, indent=2))
 
     for sub, out in (("ddl", "ddl.sql"), ("shapes", "shapes.ttl")):
@@ -96,6 +101,10 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    rc = main()
+    try:
+        rc = main()
+    except SystemExit as e:
+        print(e, file=sys.stderr)
+        rc = 3
     from aegir.utils.clean_exit import clean_exit
     clean_exit(rc)
