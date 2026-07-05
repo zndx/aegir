@@ -607,3 +607,17 @@ DERIVING Domain/Range axioms from the templates' `{p} some {Y}` restrictions so 
 → inferred IRIs → `label_idx` over the 540 templates → `eval_ontology_cpa.py` selectivity (micro-AUC/mAP)
 vs the matched-token non-grounded control, CI-clean vs the held-out reference. Scoping note:
 `docs/scratch/2026-06-16/051833_inc2d_realization_cpa_scoping.md`.
+
+## SH — shadow-strategy experiment 1: aperture extension (pre-reg 2026-07-05)
+
+| id | claim | gates | status |
+|---|---|---|---|
+| SH-1 | An aperture extended with LIMS/SysML/CSG domain concepts (shadow branch of sdg-strategy) harvests a materially different in-domain passage set from the SAME FinePDFs window and yields a corpus whose relational+textual quality is ≥ main on strategy-neutral judges | clearinghouse (judges.lock v1): fixed-reference EMD (norms hash-pinned), naming norms, cross-congruence (symmetrized), rubric battery; promotion decision per judge report, never reflexive congruence | PRE-REGISTERED |
+
+Arms: main (trunk strategy, corpus/) vs shadow (`shadow/aperture-r1` branch, corpus-<sid>/),
+same harvest cursor window. Promotion criterion: shadow ≥ main on ≥3 of 4 mechanical judges
+AND no rubric regression → entry-level promotion (cherry-pick the aiming SKOS delta into
+trunk). Judge liveness: completed==declared or the comparison is void (PROJECT_001).
+The shadow's SKOS content is #73's work; the branch skeleton + judges are live as of this
+pre-registration. Downstream eval (#126) joins the panel when it lands and supersedes
+mechanical judges as the arbiter.

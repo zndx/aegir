@@ -73,11 +73,19 @@ def collect_lens() -> "dict[str, bytes]":
         cl = _client()
         out: "dict[str, bytes]" = {
             "lens/vocab.snapshot.json": _canon(_scroll_snapshot(cl, DEFAULT_COLLECTION)),
+        }
+        from aegir.ontology.domain_index import DEFAULT_OVERLAY, DEFAULT_VOCAB
+        for src, dst in ((DEFAULT_VOCAB, "lens/vocab.skos.ttl"),
+                         (DEFAULT_OVERLAY, "lens/aiming.skos.ttl")):
+            sp = Path(src)
+            if sp.exists():
+                out[dst] = sp.read_bytes()
+        out.update({
             "lens/binding.json": _canon({"vocab_collection": DEFAULT_COLLECTION,
                                          "aiming_collection": DEFAULT_APERTURE,
                                          "qdrant_url": DEFAULT_QDRANT_URL,
                                          "materialized_from": "live"}),
-        }
+        })
         try:
             out["lens/aiming.snapshot.json"] = _canon(_scroll_snapshot(cl, DEFAULT_APERTURE))
         except Exception as e:  # noqa: BLE001 — aiming collection absent: captured explicitly
@@ -188,7 +196,15 @@ def write_to_submodule(comp: "dict[str, bytes]", manifest: dict) -> str:
 
 
 def declared() -> "dict | None":
-    """The manifest the submodule's checked-out CURRENT declares (main's strategy)."""
+    """The manifest in force: the ref named by AEGIR_STRATEGY_REF (shadow runs — resolved
+    BY SHA from the object store) or the submodule's checked-out CURRENT (main)."""
+    import os as _os
+    ref = _os.environ.get("AEGIR_STRATEGY_REF")
+    if ref:
+        try:
+            return load_by_ref(ref)
+        except Exception:  # noqa: BLE001
+            return None
     cur = SUB / "CURRENT"
     if not cur.exists():
         return None
@@ -219,8 +235,10 @@ def read_component(path: str, ref: "str | None" = None) -> bytes:
 
 def lens_binding(ref: "str | None" = None) -> dict:
     """The DECLARED runtime targets: {vocab_collection, aiming_collection, qdrant_url}.
-    Resolved FROM the strategy (truth flows repo → runtime); code defaults only when no
-    strategy is declared."""
+    Resolved FROM the strategy (truth flows repo → runtime); AEGIR_STRATEGY_REF routes
+    shadow runs; code defaults only when no strategy is declared."""
+    import os as _os
+    ref = ref or _os.environ.get("AEGIR_STRATEGY_REF") or None
     try:
         return json.loads(read_component("lens/binding.json", ref))
     except Exception:  # noqa: BLE001

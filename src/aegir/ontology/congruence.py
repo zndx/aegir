@@ -36,16 +36,17 @@ def prose_of(chapter_md: str) -> str:
     return re.sub(r"\s+", " ", t)
 
 
-def profile(text: str, *, top_k: int = 5) -> "list[dict]":
+def profile(text: str, *, top_k: int = 5, collection: "str | None" = None) -> "list[dict]":
     """The concept-association profile: top-k (code, label, score) via ColBERT MaxSim."""
     from aegir.ontology.domain_index import classify_hierarchical
-    try:
-        from aegir.strategy.manifest import lens_binding
-        _coll = lens_binding().get("vocab_collection")
-    except Exception:  # noqa: BLE001
-        _coll = None
+    if collection is None:
+        try:
+            from aegir.strategy.manifest import lens_binding
+            collection = lens_binding().get("vocab_collection")
+        except Exception:  # noqa: BLE001
+            collection = None
     h = classify_hierarchical(text[:4000], top_k=top_k,
-                              **({"collection": _coll} if _coll else {}))
+                              **({"collection": collection} if collection else {}))
     return [{"code": x.get("code"), "label": x.get("pref_label"), "score": round(x.get("score", 0), 4)}
             for x in (h.get("hits") or [])]
 
@@ -116,3 +117,28 @@ def congruence_report(run_dir: Path, *, harvest_docs: Path | None = None,
     (run_dir / "congruence.json").write_text(json.dumps(report, indent=1))
     (run_dir / "concept_graph.json").write_text(json.dumps(graph, indent=1))
     return report
+
+
+def cross_congruence(dir_a: "Path", dir_b: "Path", *, main_ref: str = "",
+                     shadow_ref: str = "", sample: int = 60) -> dict:
+    """The clearinghouse's symmetrized judge: score A's chapters against B's vocab
+    collection and vice versa. Reflexive congruence is self-grading; the CROSS cells are
+    the comparison. Collections resolve from each side's strategy ref."""
+    from aegir.strategy.manifest import lens_binding
+    coll_a = lens_binding(main_ref or None).get("vocab_collection")
+    coll_b = lens_binding(shadow_ref or None).get("vocab_collection")
+    out = {"collections": {"main": coll_a, "shadow": coll_b}}
+    for arm, d, coll in (("main_vs_shadow_lens", Path(dir_a), coll_b),
+                         ("shadow_vs_main_lens", Path(dir_b), coll_a)):
+        scores = []
+        mds = sorted((d / "chapters").rglob("natural.md"))[:sample]
+        for md in mds:
+            try:
+                pr = profile(prose_of(md.read_text()), collection=coll)
+                if pr:
+                    scores.append(pr[0]["score"])
+            except Exception:  # noqa: BLE001
+                continue
+        out[arm] = {"n": len(scores),
+                    "mean_top1": round(sum(scores) / len(scores), 4) if scores else None}
+    return out

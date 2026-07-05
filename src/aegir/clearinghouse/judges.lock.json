@@ -1,0 +1,44 @@
+{
+ "version": 1,
+ "doctrine": [
+  "judges pinned outside all strategies",
+  "liveness = ok-flag + completed/declared counts (PROJECT_001)",
+  "cross-congruence symmetrized; reflexive congruence never compares"
+ ],
+ "judges": {
+  "structure_emd": {
+   "kind": "fixed_reference",
+   "norms": {
+    "schemapile_shape_norms.json": "4000c3fc9f8c32ea87bcc754c84be6f2f9f46760a9b966c1a6ed7e6ed20f7113",
+    "schemapile_key_norms.json": "92f5dc4889af89ab3f4f24ddf382797355141e3e23dae686d82cbab9f531ba74"
+   },
+   "note": "arms must have been scored against THESE norms (hash-checked); a mismatch flags the arm, never silently rescales"
+  },
+  "naming_norms": {
+   "kind": "mechanical",
+   "measures": [
+    "table_style distribution vs lock norms",
+    "leading-token (prefix) concentration",
+    "pk kind distribution"
+   ]
+  },
+  "cross_congruence": {
+   "kind": "cross",
+   "spec": "score each arm's chapters against the OTHER arm's vocab collection; report the 2x2 (self is CONTEXT, cross is the comparison)"
+  },
+  "rubric": {
+   "kind": "qualitative_mechanized",
+   "entries": {
+    "stem_echo": "\\| ([a-z]{4,6})-(\\d{3}) \\|",
+    "adjacent_dup_cells": "\\| (\\S{4,}) \\| \\1 \\|",
+    "bare_id_alongside_surrogate": "\\|[^|\\n]*_id \\| id \\|",
+    "arithmetic_dates": "diff-test on date columns (parser, not regex)",
+    "scaffold_monoculture": "block-sequence fingerprint (instrument PENDING \u2014 heading grep measured insufficient 2026-07-05)"
+   }
+  },
+  "downstream_eval": {
+   "kind": "deferred",
+   "note": "the real arbiter (comprehension meta-objective); wire when #126 lands"
+  }
+ }
+}

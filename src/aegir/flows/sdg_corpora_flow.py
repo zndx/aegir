@@ -103,6 +103,10 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                             help="skip the HermiT certificate (fast shakedowns only — NOT releases)")
     entities_from = Parameter("entities-from", default="",
                               help="reuse a prior run's entities/ dir (skips the derive stage)")
+    strategy_ref = Parameter("strategy", default="",
+                             help="run under a strategy REF (branch/sha in the sdg-strategy "
+                                  "submodule) — SHADOW runs: own corpus dir, collections from "
+                                  "the ref's binding, manifests resolved by sha; '' = main")
     harvest_target = Parameter("harvest-target", default=0, type=int,
                                help="ADVANCE THE INPUT WINDOW: stream FinePDFs until this many "
                                     "new in-domain docs land (0 = use the harvest as-is)")
@@ -113,8 +117,11 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     @traced_step
     @step
     def start(self):
+        if self.strategy_ref:
+            os.environ["AEGIR_STRATEGY_REF"] = self.strategy_ref  # one seam: all resolvers follow
         self.run_out = self.output_dir or (
-            str(ART / "sdg-corpora" / "corpus") if self.corpus_mode
+            str(ART / "sdg-corpora" /
+                (self._shadow_dir() if self.strategy_ref else "corpus")) if self.corpus_mode
             else str(ART / "sdg-corpora" / current.run_id))
         Path(self.run_out, "entities").mkdir(parents=True, exist_ok=True)
         manifest = REPO / "build/domain_harvest/manifest.jsonl"
@@ -129,7 +136,17 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
               flush=True)
         try:
             from aegir.strategy.manifest import declared, drift
-            man = declared()
+            man = declared()  # follows AEGIR_STRATEGY_REF (shadow) or CURRENT (main)
+            if self.strategy_ref and man:
+                from aegir.strategy.materialize import materialize
+                mat = materialize(self.strategy_ref)
+                bad = {k: v for k, v in mat.items() if "NO SOURCE" in v or "MISMATCH" in v}
+                if bad:
+                    raise RuntimeError(f"shadow lens not materializable: {bad} — "
+                                       "run `python -m aegir.strategy.materialize "
+                                       f"{self.strategy_ref}` and inspect")
+                print(f"  shadow {man['strategy_id']} @ {self.strategy_ref}: lens {mat}",
+                      flush=True)
             if man:
                 d = drift(man)
                 if d:
@@ -145,11 +162,22 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             print(f"  strategy check skipped ({str(e)[:100]})", flush=True)
         self.next(self.harvest)
 
+    def _shadow_dir(self) -> str:
+        from aegir.strategy.manifest import load_by_ref
+        man = load_by_ref(self.strategy_ref)
+        return f"corpus-{man['strategy_id']}"
+
+    def _arm_strategy_env(self):
+        """Steps run as separate processes — re-arm the ref seam in each."""
+        if self.strategy_ref:
+            os.environ["AEGIR_STRATEGY_REF"] = self.strategy_ref
+
     @traced_step
     @step
     def harvest(self):
         """ADVANCE THE INPUT WINDOW (idempotent by construction: content-hash doc filenames,
         persistent stream cursor, append-only manifest). --harvest-target 0 = no-op."""
+        self._arm_strategy_env()
         if self.harvest_target > 0:
             import subprocess as sp
             args = ["uv", "run", "--no-sync", "python", "scripts/harvest_domain_docs.py",
@@ -188,22 +216,36 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             print(f"  reused {self.derive_stats['n']} derived passages from {src}", flush=True)
             self.next(self.realize)
             return
+        self._arm_strategy_env()
         self.engine_owned = _engine_up()
         from aegir.ontology.derive_harness import deriver_version
         from aegir.ontology.derive_loop import derive_with_metrology
         from aegir.ontology.entities import to_manchester
         dv = deriver_version()
+        try:
+            from aegir.strategy.lineage import stage_key
+            skey = stage_key("derive") or ""
+        except Exception:  # noqa: BLE001
+            skey = ""
         ent_dir = Path(self.run_out, "entities")
-        stats = {"rich": 0, "thin": 0, "inert": 0, "malformed": 0, "cached": 0}
+        stats = {"rich": 0, "thin": 0, "inert": 0, "malformed": 0, "cached": 0,
+                 "cached_legacy": 0}
         self.derive_reports = {}
         for i, ppath in enumerate(self.passages):
             pid = Path(ppath).stem[:16]
             ej = ent_dir / f"{pid}.json"
             if ej.exists():
                 try:
-                    if json.loads(ej.read_text()).get("deriver_version") == dv:
+                    st = json.loads(ej.read_text())
+                    # lineage-entailed key (lens + derive voices + schema); grandfather:
+                    # pre-lineage entries validate on deriver_version alone and re-stamp
+                    # naturally at the next real change (the #150 schema bump re-derives all).
+                    if skey and st.get("stage_key") == skey:
                         stats["cached"] += 1
-                        continue  # idempotence: (passage_hash, deriver_version) already done
+                        continue
+                    if st.get("deriver_version") == dv and "stage_key" not in st:
+                        stats["cached_legacy"] += 1
+                        continue
                 except Exception:  # noqa: BLE001 — unreadable stamp → re-derive
                     pass
             passage = Path(ppath).read_text()[: self.passage_chars]
@@ -212,6 +254,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             (ent_dir / f"{pid}.json").write_text(json.dumps({
                 "passage": ppath,
                 "deriver_version": dv,
+                "stage_key": skey,
                 "entities": [{"name": e.name, "label": e.label, "genus": e.genus,
                               "definition": e.definition,
                               "attributes": [{"name": a.name, "xsd": a.xsd, "enum": a.enum}
@@ -255,6 +298,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     def build_constructs(self):
         """Per-passage RI-true constructs + materialized VIEWS (the embedded payload the
         chapter prose supports) + kvasir-verified facts (the semantic grounding)."""
+        self._arm_strategy_env()
         from aegir.generate.harness import kvasir_facts
         from aegir.ontology.entities import (add_views, from_json, render_payload_blocks,
                                              to_construct, to_manchester)
@@ -264,17 +308,26 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         n_views = 0
         from collections import Counter
         pk_kinds, tstyles = Counter(), Counter()
+        try:
+            from aegir.strategy.lineage import stage_key as _sk
+            ckey = _sk("build_constructs") or ""
+        except Exception:  # noqa: BLE001
+            ckey = ""
         for p in sorted(Path(self.run_out, "entities").glob("*.json")):
             cj = cons_dir / f"{p.stem}.json"
             if cj.exists() and cj.stat().st_mtime >= p.stat().st_mtime:
                 con_cached = json.loads(cj.read_text())
-                n_views += len(con_cached.get("views", []))
-                kp = con_cached.get("key_plan") or {}
-                tstyles[kp.get("table_style", "?")] += 1
-                for pl in (kp.get("plans") or {}).values():
-                    pk_kinds[pl.get("kind", "?")] += 1
-                self.construct_ids.append(p.stem)
-                continue  # idempotence: construct newer than its entities
+                stored = con_cached.get("stage_key")
+                if ckey and stored is not None and stored != ckey:
+                    pass  # targets changed under the strategy → rebuild below
+                else:
+                    n_views += len(con_cached.get("views", []))
+                    kp = con_cached.get("key_plan") or {}
+                    tstyles[kp.get("table_style", "?")] += 1
+                    for pl in (kp.get("plans") or {}).values():
+                        pk_kinds[pl.get("kind", "?")] += 1
+                    self.construct_ids.append(p.stem)
+                    continue  # idempotence: newer than entities + same targets key
             ents = from_json(json.loads(p.read_text()))
             if not ents:
                 continue
@@ -287,6 +340,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             con["payload_preview"] = "\n\n".join(list(blocks.values())[:6])[:6000]
             con["ontology_omn"] = omn
             con["kvasir_facts"] = kvasir_facts(omn)
+            con["stage_key"] = ckey
             n_views += len(con.get("views", []))
             kp = con.get("key_plan") or {}
             tstyles[kp.get("table_style", "?")] += 1
@@ -306,6 +360,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         """Drive the work queue for ONE register across all constructs × backends.
         STREAM-WRITES each chapter as it completes (a crash at item N never loses N-1)
         and SKIPS chapters already present (top-up semantics with --output-dir)."""
+        self._arm_strategy_env()
         import asyncio
         from aegir.generate.harness import build_queue, run_queue
         cons_dir = Path(self.run_out, "constructs")
@@ -313,9 +368,19 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         backends = [b.strip() for b in self.backends.split(",") if b.strip()]
         rows = []
         todo_ids = []
+        try:
+            from aegir.strategy.lineage import stage_key as _sk
+            pkey = _sk("prose") or ""
+        except Exception:  # noqa: BLE001
+            pkey = ""
         for cid in self.construct_ids:
-            if (out_dir / cid / f"{register}.md").exists():
-                t = (out_dir / cid / f"{register}.md").read_text()
+            md = out_dir / cid / f"{register}.md"
+            kf = out_dir / cid / f".{register}.prose_key"
+            stored = kf.read_text().strip() if kf.exists() else None
+            if md.exists() and (not pkey or stored is None or stored == pkey):
+                # grandfather: pre-lineage chapters (no sidecar) stay valid until the prose
+                # voices actually change under a keyed regime
+                t = md.read_text()
                 rows.append({"construct": cid, "register": register, "backend": "cached",
                              "provider": "cached", "chars": len(t), "tool_calls": [],
                              "embed": {}, "error": ""})
@@ -333,6 +398,8 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                 d.mkdir(parents=True, exist_ok=True)
                 if r.prose:
                     (d / f"{r.register}.md").write_text(r.prose)
+                    if pkey:
+                        (d / f".{r.register}.prose_key").write_text(pkey)
                     (d / f"{r.register}.exchange.json").write_text(
                         json.dumps(r.exchange, indent=1))  # thinking traces RETAINED
                 done["n"] += 1
@@ -427,6 +494,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         <-(congruence maxsim)- output chapters. Quantifies how well the corpus preserves the
         input window's concept associations (the BERTopic-era R_D reborn over the ColBERT
         late-interaction index). Report-only; the graph is lineup/Atlas-ready."""
+        self._arm_strategy_env()
         try:
             from aegir.ontology.congruence import congruence_report
             rep = congruence_report(Path(self.run_out))
