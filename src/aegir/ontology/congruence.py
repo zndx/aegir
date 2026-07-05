@@ -39,7 +39,13 @@ def prose_of(chapter_md: str) -> str:
 def profile(text: str, *, top_k: int = 5) -> "list[dict]":
     """The concept-association profile: top-k (code, label, score) via ColBERT MaxSim."""
     from aegir.ontology.domain_index import classify_hierarchical
-    h = classify_hierarchical(text[:4000], top_k=top_k)
+    try:
+        from aegir.strategy.manifest import lens_binding
+        _coll = lens_binding().get("vocab_collection")
+    except Exception:  # noqa: BLE001
+        _coll = None
+    h = classify_hierarchical(text[:4000], top_k=top_k,
+                              **({"collection": _coll} if _coll else {}))
     return [{"code": x.get("code"), "label": x.get("pref_label"), "score": round(x.get("score", 0), 4)}
             for x in (h.get("hits") or [])]
 

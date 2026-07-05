@@ -152,10 +152,17 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         persistent stream cursor, append-only manifest). --harvest-target 0 = no-op."""
         if self.harvest_target > 0:
             import subprocess as sp
-            r = sp.run(["uv", "run", "--no-sync", "python", "scripts/harvest_domain_docs.py",
-                        "--target", str(self.harvest_target),
-                        "--max-stream", str(self.harvest_target * 40)],
-                       cwd=str(REPO))
+            args = ["uv", "run", "--no-sync", "python", "scripts/harvest_domain_docs.py",
+                    "--target", str(self.harvest_target),
+                    "--max-stream", str(self.harvest_target * 40)]
+            try:
+                from aegir.strategy.manifest import lens_binding
+                aim = lens_binding().get("aiming_collection")
+                if aim:
+                    args += ["--domain-collection", aim]  # the strategy picks the lens
+            except Exception:  # noqa: BLE001
+                pass
+            r = sp.run(args, cwd=str(REPO))
             if r.returncode != 0:
                 raise RuntimeError(f"harvest failed (exit {r.returncode})")
             docs = sorted((REPO / "build/domain_harvest/docs").glob("*.txt"))

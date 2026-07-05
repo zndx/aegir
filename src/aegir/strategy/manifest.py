@@ -42,29 +42,47 @@ def _canon(obj) -> bytes:
 
 # ── collectors: the LIVE state of each pillar, verbatim ──────────────────────────────
 
+def _scroll_snapshot(cl, collection: str) -> dict:
+    import numpy as _np
+    rows, off = [], None
+    while True:
+        pts, off = cl.scroll(collection, limit=512, offset=off,
+                             with_payload=True, with_vectors=True)
+        for p in pts:
+            vec = p.vector if not isinstance(p.vector, dict) else next(iter(p.vector.values()))
+            vs = _sha(_np.asarray(vec, dtype="float32").tobytes()) if vec is not None else ""
+            pl = p.payload or {}
+            rows.append({"id": str(p.id),
+                         "label": pl.get("pref_label") or pl.get("label") or "",
+                         "path": pl.get("path") or "",
+                         "vector_sha": vs[:16]})
+        if off is None:
+            break
+    rows.sort(key=lambda r: r["id"])
+    return {"collection": collection, "n": len(rows), "points": rows}
+
+
 def collect_lens() -> "dict[str, bytes]":
-    """The qdrant aperture snapshot: (id, label, vector sha) per concept, sorted."""
-    from aegir.ontology.domain_index import DEFAULT_COLLECTION, _client  # type: ignore
+    """The lens is TWO collections: the AIMING collection (harvest selection over the raw
+    stream — the idempotence-critical filter) and the full-vocab collection (classification
+    + congruence scoring). Both snapshotted; lens/binding.json DECLARES the runtime targets
+    (truth flows repo → runtime — the code follows the strategy, not vice versa)."""
+    from aegir.ontology.domain_index import (DEFAULT_APERTURE, DEFAULT_COLLECTION,
+                                             DEFAULT_QDRANT_URL, _client)
     try:
         cl = _client()
-        rows, off = [], None
-        while True:
-            pts, off = cl.scroll(DEFAULT_COLLECTION, limit=512, offset=off,
-                                 with_payload=True, with_vectors=True)
-            for p in pts:
-                vec = p.vector if not isinstance(p.vector, dict) else next(iter(p.vector.values()))
-                import numpy as _np
-                vs = _sha(_np.asarray(vec, dtype="float32").tobytes()) if vec is not None else ""
-                pl = p.payload or {}
-                rows.append({"id": str(p.id),
-                             "label": pl.get("pref_label") or pl.get("label") or "",
-                             "path": pl.get("path") or "",
-                             "vector_sha": vs[:16]})
-            if off is None:
-                break
-        rows.sort(key=lambda r: r["id"])
-        snap = {"collection": DEFAULT_COLLECTION, "n": len(rows), "points": rows}
-        return {"lens/aperture.snapshot.json": _canon(snap)}
+        out: "dict[str, bytes]" = {
+            "lens/vocab.snapshot.json": _canon(_scroll_snapshot(cl, DEFAULT_COLLECTION)),
+            "lens/binding.json": _canon({"vocab_collection": DEFAULT_COLLECTION,
+                                         "aiming_collection": DEFAULT_APERTURE,
+                                         "qdrant_url": DEFAULT_QDRANT_URL,
+                                         "materialized_from": "live"}),
+        }
+        try:
+            out["lens/aiming.snapshot.json"] = _canon(_scroll_snapshot(cl, DEFAULT_APERTURE))
+        except Exception as e:  # noqa: BLE001 — aiming collection absent: captured explicitly
+            out["lens/aiming.UNAVAILABLE"] = str(e)[:200].encode()
+        return out
     except Exception as e:  # noqa: BLE001 — qdrant down: the pillar is explicitly UNCAPTURED
         return {"lens/aperture.UNAVAILABLE": f"qdrant unreachable: {e}".encode()}
 
@@ -187,6 +205,27 @@ def load_by_ref(ref: str) -> dict:
     raw = subprocess.run(["git", "show", f"{ref}:manifests/{sid}.json"], cwd=SUB,
                          capture_output=True, text=True, check=True).stdout
     return json.loads(raw)
+
+
+def read_component(path: str, ref: "str | None" = None) -> bytes:
+    """A component's BYTES — the working tree for main, `git show ref:...` for shadows
+    (pinned by construction)."""
+    if ref:
+        r = subprocess.run(["git", "show", f"{ref}:components/{path}"], cwd=SUB,
+                           capture_output=True, check=True)
+        return r.stdout
+    return (SUB / "components" / path).read_bytes()
+
+
+def lens_binding(ref: "str | None" = None) -> dict:
+    """The DECLARED runtime targets: {vocab_collection, aiming_collection, qdrant_url}.
+    Resolved FROM the strategy (truth flows repo → runtime); code defaults only when no
+    strategy is declared."""
+    try:
+        return json.loads(read_component("lens/binding.json", ref))
+    except Exception:  # noqa: BLE001
+        from aegir.ontology.domain_index import DEFAULT_APERTURE, DEFAULT_COLLECTION
+        return {"vocab_collection": DEFAULT_COLLECTION, "aiming_collection": DEFAULT_APERTURE}
 
 
 def submodule_commit() -> str:
