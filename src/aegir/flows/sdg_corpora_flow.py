@@ -78,6 +78,8 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                               help="chars of each passage fed to the deriver")
     skip_hermit = Parameter("skip-hermit", default=False, type=bool,
                             help="skip the HermiT certificate (fast shakedowns only — NOT releases)")
+    entities_from = Parameter("entities-from", default="",
+                              help="reuse a prior run's entities/ dir (skips the derive stage)")
 
     @traced_step
     @step
@@ -101,6 +103,18 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     def derive(self):
         """Metrology-informed derivation: the agent proposes; kvasir profiles the DDL against
         SchemaPile; below `rich` the structural reason re-prompts the agent (bounded rounds)."""
+        if self.entities_from:
+            import shutil
+            src = Path(self.entities_from)
+            for f in src.glob("*"):
+                shutil.copy2(f, Path(self.run_out, "entities", f.name))
+            self.engine_owned = _engine_up()  # prose still needs the engine
+            self.derive_stats = {"reused_from": str(src),
+                                 "n": len(list(src.glob('*.json')))}
+            self.derive_reports = {}
+            print(f"  reused {self.derive_stats['n']} derived passages from {src}", flush=True)
+            self.next(self.realize)
+            return
         self.engine_owned = _engine_up()
         from aegir.ontology.derive_loop import derive_with_metrology
         from aegir.ontology.entities import to_manchester
@@ -152,23 +166,32 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     @traced_step
     @step
     def build_constructs(self):
-        """Per-passage RI-true constructs + kvasir-verified facts (the semantic grounding)."""
+        """Per-passage RI-true constructs + materialized VIEWS (the embedded payload the
+        chapter prose supports) + kvasir-verified facts (the semantic grounding)."""
         from aegir.generate.harness import kvasir_facts
-        from aegir.ontology.entities import from_json, to_construct, to_manchester
+        from aegir.ontology.entities import (add_views, from_json, render_payload_blocks,
+                                             to_construct, to_manchester)
         cons_dir = Path(self.run_out, "constructs")
         cons_dir.mkdir(exist_ok=True)
         self.construct_ids = []
+        n_views = 0
         for p in sorted(Path(self.run_out, "entities").glob("*.json")):
             ents = from_json(json.loads(p.read_text()))
             if not ents:
                 continue
             omn = to_manchester(ents)
             con = to_construct(ents, n_rows=4)
+            con = add_views(con, ents)
+            blocks = render_payload_blocks(con)
+            con["payload_blocks"] = blocks
+            con["payload_markers"] = list(blocks)
+            con["payload_preview"] = "\n\n".join(list(blocks.values())[:6])[:6000]
             con["ontology_omn"] = omn
             con["kvasir_facts"] = kvasir_facts(omn)
+            n_views += len(con.get("views", []))
             (cons_dir / f"{p.stem}.json").write_text(json.dumps(con, indent=1))
             self.construct_ids.append(p.stem)
-        print(f"  {len(self.construct_ids)} constructs", flush=True)
+        print(f"  {len(self.construct_ids)} constructs · {n_views} views materialized", flush=True)
         self.next(self.prose_natural, self.prose_semantic)
 
     def _run_register(self, register: str) -> list:
@@ -194,7 +217,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             rows.append({"construct": r.construct_id, "register": r.register,
                          "backend": r.backend, "provider": r.provider,
                          "chars": len(r.prose), "tool_calls": r.exchange.get("tool_calls", []),
-                         "error": r.error})
+                         "embed": r.exchange.get("embed", {}), "error": r.error})
         ok = sum(1 for x in rows if x["chars"])
         print(f"  {register}: {ok}/{len(rows)} chapters", flush=True)
         return rows
@@ -231,6 +254,21 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         self.sensitive_ok = scan.returncode == 0
         if not self.sensitive_ok:
             print(f"  SENSITIVE-NOUN GATE: attention needed\n{scan.stdout[-600:]}", flush=True)
+        # Gate 2 — EMBEDDED PAYLOAD: every chapter must carry its tables AND views
+        # (the chapters ARE textbooks-with-embedded-views; prose-only is a regression).
+        n_tables_embedded = n_views_embedded = payload_bad = 0
+        for md in Path(self.run_out, "chapters").rglob("*.md"):
+            txt = md.read_text()
+            t, v = txt.count("**Table `"), txt.count("**View `")
+            n_tables_embedded += t
+            n_views_embedded += v
+            if t == 0 or (v == 0 and "v_" in json.dumps(self.construct_ids)):
+                pass  # per-chapter view expectation checked below via constructs
+            if t == 0:
+                payload_bad += 1
+        self.payload_gate = {"tables_embedded": n_tables_embedded,
+                             "views_embedded": n_views_embedded,
+                             "chapters_missing_payload": payload_bad}
         # Gate 2 — cell success + structure metrics.
         by = {}
         for r in rows:
@@ -244,6 +282,8 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             "structure": {k: self.structure.get(k) for k in
                           ("n_elected", "total_fks", "n_junctions", "n_lookups", "shape_emd")},
             "sensitive_ok": self.sensitive_ok,
+            "payload": self.payload_gate,
+            "prose_chars_median": sorted(r["chars"] for r in rows)[len(rows) // 2] if rows else 0,
             "n_chapters": sum(1 for r in rows if r["chars"]),
         }
         Path(self.run_out, "metrics.json").write_text(json.dumps(self.metrics, indent=2, default=str))

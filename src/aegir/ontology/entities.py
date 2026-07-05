@@ -288,6 +288,111 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
             "entities": [e.iri() for e in entities]}
 
 
+def _md_table(columns: "list[str]", rows: "list[list[str]]") -> str:
+    """Render a fixed markdown table (the payload blocks embedded verbatim in chapters)."""
+    head = "| " + " | ".join(columns) + " |"
+    sep = "|" + "|".join("---" for _ in columns) + "|"
+    body = ["| " + " | ".join(str(c) for c in r) + " |" for r in rows]
+    return "\n".join([head, sep, *body])
+
+
+def add_views(construct: dict, entities: "list[Entity]", *, n_rows: int = 4) -> dict:
+    """Materialize the VIEWS the chapter embeds — the join semantics the prose supports.
+
+    Two strata, both with real RI-true result rows computed over the construct's base tables:
+    - FK join views: one per to-one relation (A JOIN B ON a.fk = b.id).
+    - Junction views: one per many-to-many relation (min/max > 1) — synthesizes the RI-true
+      junction table (pairs referencing existing ids) AND the 3-way join view over it.
+    Each view carries {name, sql, columns, rows}; junction base tables append to `tables`.
+    """
+    byname = {t["name"]: t for t in construct["tables"]}
+
+    def _tbl(e: "Entity") -> str:
+        return "t_" + re.sub(r"(?<!^)(?=[A-Z])", "_", camel(e.name)).lower()
+
+    def _cells(t: dict) -> "dict[str, list[str]]":
+        return {c["name"]: [x["value"] for x in c["cells"]] for c in t["columns"]}
+
+    ents = {e.iri(): e for e in entities}
+    views = []
+    for e in entities:
+        a = byname.get(_tbl(e))
+        if a is None:
+            continue
+        acols = _cells(a)
+        for r in e.relations:
+            tgt = ents.get(r.target_iri())
+            b = byname.get(_tbl(tgt)) if tgt else None
+            if b is None:
+                continue
+            bcols = _cells(b)
+            fk = prop_name(r.prop)
+            m2m = r.card.startswith("min") or (r.card.startswith("max") and r.card != "max 1")
+            a_show = [c["name"] for c in a["columns"] if c["name"] != fk][:4]
+            b_show = [c["name"] for c in b["columns"]][:3]
+            if not m2m and fk in acols:
+                name = f"v_{a['name'][2:]}_{b['name'][2:]}"
+                sql = (f"CREATE VIEW {name} AS\nSELECT " +
+                       ", ".join([f"a.{c}" for c in a_show] + [f"b.{c} AS {b['name'][2:]}_{c}" for c in b_show]) +
+                       f"\nFROM {a['name']} a JOIN {b['name']} b ON a.{fk} = b.id;")
+                bidx = {v: i for i, v in enumerate(bcols["id"])}
+                rows = []
+                for i in range(len(acols["id"])):
+                    j = bidx.get(acols[fk][i])
+                    if j is None:
+                        continue
+                    rows.append([acols[c][i] for c in a_show] + [bcols[c][j] for c in b_show])
+                views.append({"name": name, "kind": "fk_join", "sql": sql,
+                              "columns": a_show + [f"{b['name'][2:]}_{c}" for c in b_show],
+                              "rows": rows})
+            elif m2m:
+                jt = f"{a['name']}_{re.sub(r'(?<!^)(?=[A-Z])', '_', fk).lower()}"
+                jrows = []
+                bn = len(bcols["id"])
+                for i, aid in enumerate(acols["id"]):
+                    for k in range(2):  # 2 pairs per row — dense-enough m2m, RI-true by construction
+                        jrows.append([aid, bcols["id"][(i + k) % bn]])
+                if jt not in byname:
+                    tbl = {"name": jt, "pk": None, "fks": [{"col": "a_id"}, {"col": "b_id"}],
+                           "columns": [
+                               {"name": "a_id", "concept": a["name"],
+                                "cells": [{"value": r[0]} for r in jrows]},
+                               {"name": "b_id", "concept": b["name"],
+                                "cells": [{"value": r[1]} for r in jrows]}]}
+                    construct["tables"].append(tbl)
+                    byname[jt] = tbl
+                name = f"v_{jt[2:]}_detail"
+                sql = (f"CREATE VIEW {name} AS\nSELECT " +
+                       ", ".join([f"a.{c}" for c in a_show[:3]] + [f"b.{c} AS {b['name'][2:]}_{c}" for c in b_show]) +
+                       f"\nFROM {a['name']} a\n  JOIN {jt} j ON j.a_id = a.id\n"
+                       f"  JOIN {b['name']} b ON b.id = j.b_id;")
+                aidx = {v: i for i, v in enumerate(acols["id"])}
+                bidx = {v: i for i, v in enumerate(bcols["id"])}
+                rows = [[acols[c][aidx[ja]] for c in a_show[:3]] + [bcols[c][bidx[jb]] for c in b_show]
+                        for ja, jb in jrows if ja in aidx and jb in bidx]
+                views.append({"name": name, "kind": "junction_join", "sql": sql,
+                              "columns": a_show[:3] + [f"{b['name'][2:]}_{c}" for c in b_show],
+                              "rows": rows})
+    construct["views"] = views
+    return construct
+
+
+def render_payload_blocks(construct: dict) -> "dict[str, str]":
+    """The FIXED chapter payload: ``{marker: markdown_block}``. Chapters embed these verbatim
+    (deterministic injection — the agent never re-types a row; the Track A lesson)."""
+    blocks: "dict[str, str]" = {}
+    for t in construct.get("tables", []):
+        cols = [c["name"] for c in t["columns"]]
+        rows = [[c["cells"][i]["value"] for c in t["columns"]]
+                for i in range(len(t["columns"][0]["cells"]))]
+        blocks[f"TABLE:{t['name']}"] = f"**Table `{t['name']}`**\n\n" + _md_table(cols, rows)
+    for v in construct.get("views", []):
+        blocks[f"VIEW:{v['name']}"] = (
+            f"**View `{v['name']}`**\n\n```sql\n{v['sql']}\n```\n\n" +
+            _md_table(v["columns"], v["rows"]))
+    return blocks
+
+
 def from_json(obj: dict) -> list[Entity]:
     """Parse the engine's json_schema output into :class:`Entity` records (defensive)."""
     out: list[Entity] = []

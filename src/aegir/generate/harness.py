@@ -152,6 +152,73 @@ def _augment_prompt(prompt: str, register: str, construct: dict, tooled: bool) -
     return prompt
 
 
+# ── chapter assembly: prose AROUND fixed payload (tables + views embedded verbatim) ─────
+_REGISTER_VOICE = {
+    "natural": (
+        "a professional technical reference chapter for practitioners of the domain. Teach the "
+        "DOMAIN itself — its entities, processes, measurements, and operational relationships — "
+        "the way a well-edited handbook chapter reads. NEVER use the words ontology, axiom, OWL, "
+        "schema design, or class; the data tables are simply the domain's records."),
+    "semantic": (
+        "an ontology-grounded technical reference chapter explaining how this domain is MODELLED "
+        "and how the model materializes as a relational schema. Teach the CONCEPTS: which entity "
+        "types exist, how their attributes and cardinality-bounded relationships become columns, "
+        "foreign keys, junction tables — and how each view's join reconstructs a domain fact from "
+        "the normalized tables. Quote table/column/view names in backticks."),
+}
+
+
+def chapter_prompt(construct: dict, register: str) -> str:
+    """The chapter-scale prompt: sectioned textbook prose written AROUND placement markers;
+    the payload blocks are injected verbatim afterwards (`embed_payload`)."""
+    blocks = construct.get("payload_markers") or []
+    inventory = "\n".join(f"- {{{{{m}}}}}" for m in blocks)
+    tables = ", ".join(t["name"] for t in construct.get("tables", []))
+    views = ", ".join(v["name"] for v in construct.get("views", []))
+    return (
+        f"Write {_REGISTER_VOICE[register]}\n\n"
+        "STRUCTURE — a full textbook chapter (aim for 1500-2500 words of prose):\n"
+        "1. An untitled opening that frames the domain scenario.\n"
+        "2. `##` sections teaching the material; weave the record identifiers and values from "
+        "the data into the prose naturally.\n"
+        "3. EMBED every payload block by writing its marker ALONE on its own line where the "
+        "block belongs — e.g. {{TABLE:t_pump}} — then continue the prose AFTER it, referring "
+        "to specific rows/values. Do NOT re-type or reformat any table yourself; the marker is "
+        "replaced verbatim with the real table.\n"
+        "4. Every view gets a section that INTERPRETS its joined result — what question the "
+        "join answers, reading 2-3 concrete rows as evidence.\n"
+        "5. A short closing synthesis.\n\n"
+        f"PAYLOAD BLOCKS (every one MUST appear exactly once):\n{inventory}\n\n"
+        f"Base tables: {tables}\nViews: {views}\n\n"
+        "DATA (for reference when writing about values — the markers inject the real thing):\n"
+        + construct.get("payload_preview", "") +
+        "\n\nAll organizations, people, and products in the data are fictional; keep them so. "
+        "Output ONLY the chapter markdown."
+    )
+
+
+def embed_payload(prose: str, blocks: "dict[str, str]") -> "tuple[str, dict]":
+    """Substitute each ``{{MARKER}}`` with its fixed block (verbatim). Markers the agent
+    dropped are appended under a Data Appendix — every block ships in every chapter,
+    deterministically. Returns (chapter_md, stats)."""
+    import re as _re
+    placed, missing = 0, []
+    for marker, block in blocks.items():
+        pat = _re.compile(r"^[ \t]*\{\{" + _re.escape(marker) + r"\}\}[ \t]*$", _re.M)
+        if pat.search(prose):
+            prose = pat.sub(lambda _m, b=block: b, prose, count=1)
+            prose = pat.sub("", prose)  # duplicates collapse
+            placed += 1
+        else:
+            missing.append(marker)
+    if missing:
+        prose += "\n\n## Data appendix\n"
+        for m in missing:
+            prose += "\n" + blocks[m] + "\n"
+    prose = _re.sub(r"\{\{[A-Z]+:[^}]+\}\}", "", prose)  # stray malformed markers
+    return prose, {"placed": placed, "appendix": len(missing)}
+
+
 @dataclass
 class WorkItem:
     """One unit of the generation work queue."""
@@ -185,30 +252,38 @@ async def run_item(item: WorkItem, *, timeout: float = 600.0) -> ProseResult:
             Path(home, "config.toml").write_text(cfg_toml)
         tooled = item.tools and item.register in TOOLED_REGISTERS
         needs_http = item.backend.lower() in ("grok", "grok-build")
+        payload = item.construct.get("payload_blocks") or {}
         with (kvasir_http_server() if tooled and needs_http else contextlib.nullcontext()) as http_srv:
             mcp = ([http_srv] if http_srv else [kvasir_mcp_server()]) if tooled else []
-            prompt = _augment_prompt(_prompt(item.construct, "prose", item.register, {}),
-                                     item.register, item.construct, tooled)
+            base = (chapter_prompt(item.construct, item.register) if payload
+                    else _prompt(item.construct, "prose", item.register, {}))
+            prompt = _augment_prompt(base, item.register, item.construct, tooled)
             async with BaseACPClient(spec, fs_root=home, mcp_servers=mcp) as c:
                 r = await c.prompt(prompt, timeout=timeout)
+        prose = _strip_reasoning(r.text)
+        embed_stats: dict = {}
+        if payload and prose:
+            prose, embed_stats = embed_payload(prose, payload)
         return ProseResult(
             construct_id=item.construct_id, register=item.register, backend=item.backend,
-            provider=provider, prose=_strip_reasoning(r.text),
+            provider=provider, prose=prose,
             exchange={"prompt": prompt, "response": r.text, "reasoning": r.thoughts,
-                      "model": model_id, "tool_calls": r.tool_calls})
+                      "model": model_id, "tool_calls": r.tool_calls, "embed": embed_stats})
     except Exception as e:  # noqa: BLE001 — one failed cell must not sink the queue
         return ProseResult(item.construct_id, item.register, item.backend, error=str(e))
 
 
-async def run_queue(items: list[WorkItem], pools: dict[str, int]) -> list[ProseResult]:
+async def run_queue(items: list[WorkItem], pools: dict[str, int], *,
+                    timeout: float = 900.0) -> list[ProseResult]:
     """Push the work queue through fixed per-backend pools (``asyncio.Semaphore`` per backend).
-    ``pools`` = ``{backend: max_concurrent}`` (default 1 for any unnamed backend)."""
+    ``pools`` = ``{backend: max_concurrent}`` (default 1 for any unnamed backend). ``timeout``
+    is per item — full chapters with embedded payload run long under pool contention."""
     sems = {b: asyncio.Semaphore(n) for b, n in pools.items()}
 
     async def _guarded(it: WorkItem) -> ProseResult:
         sem = sems.setdefault(it.backend, asyncio.Semaphore(pools.get(it.backend, 1)))
         async with sem:
-            return await run_item(it)
+            return await run_item(it, timeout=timeout)
 
     return await asyncio.gather(*(_guarded(it) for it in items))
 
