@@ -17,6 +17,7 @@ the build computes CROSS-REFERENCES so a Term shows what exercises it —
 """
 from __future__ import annotations
 
+import json
 import re
 import shutil
 from pathlib import Path
