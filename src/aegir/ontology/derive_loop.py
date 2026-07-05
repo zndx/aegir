@@ -31,7 +31,7 @@ class DeriveReport:
                 "accepted_round": self.accepted_round}
 
 
-def _feedback(signal: dict) -> str:
+def _feedback(signal: dict) -> str:  # noqa: D103 — see _dormant_brief below
     """The membrane's reason, framed as re-prompt context for the next proposal round."""
     y = signal.get("ddl_yield") or {}
     return (
@@ -44,7 +44,32 @@ def _feedback(signal: dict) -> str:
         "per entity (dates, quantities, codes, booleans), closed value sets (enum) where the "
         "passage implies categories, and cardinality-bounded relations between entities. "
         "Model the passage's OWN domain; do not invent unrelated entities."
+        + _dormant_brief(signal)
     )
+
+
+_DORMANT_HINTS = {
+    "k2_inverse_functional": "an IDENTITY-bearing relation (a badge/license/account that "
+                             "uniquely identifies its bearer — mark it identifying)",
+    "k4_oneof_enum": "a CLOSED enumeration the domain fixes (statuses, grades, phases) — "
+                     "as an attribute with an enum value set",
+    "oneof_class": "a closed category kind",
+    "junction_tables": "a genuine many-to-many association (min/max cardinality > 1)",
+    "lookup_tables": "closed value sets (enum attributes)",
+    "pk_natural": "a domain identifier attribute (accession number, code, serial)",
+    "composite_key_deferred": "a weak entity identified by its parent plus a local ordinal",
+    "cardinality_many": "bounded multiplicity (min 2 / max N) where the domain implies it",
+}
+
+
+def _dormant_brief(signal: dict) -> str:
+    dormant = [d for d in (signal.get("dormant_paths") or []) if d in _DORMANT_HINTS]
+    if not dormant:
+        return ""
+    wants = "; ".join(_DORMANT_HINTS[d] for d in dormant[:4])
+    return (" Structural coverage note: this draft exercises none of the following real-world "
+            f"schema patterns — {wants}. If the domain PLAUSIBLY carries any of them, model "
+            "them; interesting structure is welcome where the subject matter supports it.")
 
 
 def derive_with_metrology(passage: str, *, max_rounds: int = 2, temperature: float = 0.3,

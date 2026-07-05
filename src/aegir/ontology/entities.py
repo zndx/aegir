@@ -69,10 +69,12 @@ class DataAttr:
 @dataclass
 class Relation:
     """A cardinality-bounded object relation → an FK (some/exactly 1/max 1) or a
-    junction (min/max > 1). The lever the current ontology has zero of."""
+    junction (min/max > 1). ``identifying`` marks an identity-bearing relation (a badge/
+    license/account that uniquely identifies its bearer) → InverseFunctional → UNIQUE."""
     prop: str
     target: str  # a class concept name (→ sdg:Target) or a prefixed IRI
     card: str = "some"  # some | only | exactly N | min N | max N
+    identifying: bool = False
 
     def iri(self) -> str:
         return "sdg:" + prop_name(self.prop)
@@ -127,6 +129,16 @@ def to_manchester(entities: list[Entity]) -> str:
     # ObjectProperties. One plan, two projections — the ontology is the source of truth
     # and the distributions are verifiable by counting axioms in the shipped document.
     kp = plan_keys(entities)
+    import random as _random
+    _oneof_rng = _random.Random(kp["seed"] ^ 0x0EE0F)
+    oneof_attrs: dict = {}
+    for e in entities:
+        for a in e.attributes:
+            if a.enum and len(a.enum) >= 2 and all(_quotable(v) and re.match(r"^[A-Za-z][\w-]*$", v)
+                                                   for v in a.enum):
+                if _oneof_rng.random() < 0.4 and _attr_iri(a) not in oneof_attrs:
+                    kind = camel(a.name) + "Kind"
+                    oneof_attrs[_attr_iri(a)] = (f"sdg:{kind}", list(a.enum))
     natural_keys = {e.iri(): next((_attr_iri(a) for a in e.attributes
                                    if a.name == kp["plans"][e.iri()]["pk_attr"]), None)
                     for e in entities if kp["plans"][e.iri()]["kind"] == "natural"}
@@ -145,20 +157,38 @@ def to_manchester(entities: list[Entity]) -> str:
         "AnnotationProperty: rdfs:label", "AnnotationProperty: iao:0000115",
         "AnnotationProperty: skos:definition", "",
     ]
-    for op in sorted({r.iri() for e in entities for r in e.relations}):
+    ifp_ops = {r.iri() for e in entities for r in e.relations if r.identifying}
+    for op in sorted({r.iri() for e in entities for r in e.relations} | set(oneof_attrs)):
         lines.append(f"ObjectProperty: {op}")
-        if op in functional_ops:
-            lines.append("    Characteristics: Functional")
+        chars = (["Functional"] if op in functional_ops else []) + \
+                (["InverseFunctional"] if op in ifp_ops else [])
+        if chars:
+            lines.append("    Characteristics: " + ", ".join(chars))
     lines.append("")
     # Declarations BEFORE use (the OWLAPI Manchester parse is effectively single-pass):
     # data properties referenced in restrictions, and external genera (cco:/bfo:/…) that no
     # Class frame in this doc otherwise declares.
     for dp in sorted({_attr_iri(a) for e in entities for a in e.attributes}):
+        if dp in oneof_attrs:
+            continue
         lines.append(f"DataProperty: {dp}")
     local = {e.iri() for e in entities}
     for ext in sorted({e.genus for e in entities if e.genus} - local):
         lines.append(f"Class: {ext}")
     lines.append("")
+    # the WILD enum idiom: a seeded share of enum attributes become enumeration CLASSES
+    # (EquivalentTo: { … }) with an object property, exercising the K4 lowering path —
+    # the same closed value set in its naturally occurring OWL form
+    _seen_inds: set = set()
+    for _iri, (kind_iri, vals) in sorted(oneof_attrs.items()):
+        names = [f"sdg:{re.sub(r'[^A-Za-z0-9_]', '_', v)}" for v in vals]
+        for ind in names:  # OWLAPI requires Individual declarations for oneOf members
+            if ind not in _seen_inds:
+                _seen_inds.add(ind)
+                lines.append(f"Individual: {ind}")
+        lines.append(f"Class: {kind_iri}")
+        lines.append(f"    EquivalentTo: {{ {', '.join(names)} }}")
+        lines.append("")
     dataprops: dict[str, DataAttr] = {}
 
     for e in entities:
@@ -173,9 +203,13 @@ def to_manchester(entities: list[Entity]) -> str:
             lines.append("    Annotations: " + ", ".join(anns))
         conj: list[str] = [e.genus] if e.genus else []
         for a in e.attributes:
+            ai = _attr_iri(a)
+            if ai in oneof_attrs:
+                conj.append(f"{ai} some {oneof_attrs[ai][0]}")
+                continue  # the Kind class carries the closed set; no DataProperty frame
             xsd = a.xsd if a.xsd in _XSD else "string"
-            conj.append(f"{_attr_iri(a)} some xsd:{xsd}")
-            dataprops.setdefault(_attr_iri(a), a)
+            conj.append(f"{ai} some xsd:{xsd}")
+            dataprops.setdefault(ai, a)
         for r in e.relations:
             card = r.card if _CARD.match(r.card) else "some"
             conj.append(f"{r.iri()} {card} {r.target_iri()}")
@@ -247,6 +281,7 @@ ENTITY_SCHEMA = {
                                 "prop": {"type": "string"},
                                 "target": {"type": "string"},
                                 "card": {"type": "string"},
+                                "identifying": {"type": "boolean"},
                             },
                             "required": ["prop", "target", "card"],
                         },
@@ -604,7 +639,8 @@ def from_json(obj: dict) -> list[Entity]:
                                  enum=[str(v) for v in (a.get("enum") or [])])
                         for a in e.get("attributes", []) if isinstance(a, dict) and a.get("name")],
             relations=[Relation(prop=str(r["prop"]), target=str(r["target"]),
-                                card=str(r.get("card", "some")))
+                                card=str(r.get("card", "some")),
+                                identifying=bool(r.get("identifying", False)))
                        for r in e.get("relations", []) if isinstance(r, dict) and r.get("prop")],
         ))
     return out

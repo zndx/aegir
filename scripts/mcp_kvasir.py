@@ -46,6 +46,21 @@ def _tmp(omn: str) -> str:
         return f.name
 
 
+def _dormant(omn: str) -> list:
+    """kvasir --stats coverage: the DDL paths this ontology does NOT exercise — the
+    agent's complexity brief (model junctions/enums/identity idioms where plausible)."""
+    p = _tmp(omn)
+    try:
+        r = subprocess.run([str(KVASIR), "ddl", p, "--stats"],
+                           capture_output=True, text=True, timeout=120)
+        return (json.loads(r.stdout).get("coverage") or {}).get("paths_dormant", []) \
+            if r.returncode == 0 else []
+    except Exception:  # noqa: BLE001
+        return []
+    finally:
+        Path(p).unlink(missing_ok=True)
+
+
 @mcp.tool()
 def ddl_profile(ontology_omn: str) -> str:
     """Generate the relational DDL for an OWL Manchester ontology and profile its structure
@@ -67,6 +82,7 @@ def ddl_profile(ontology_omn: str) -> str:
             "shape_emd_vs_schemapile": prof["shape_emd"],
             "hint": "shape_emd toward 0 = realistic; add DataProperties / cardinality-bounded "
                     "relations / enums to enrich",
+            "dormant_ddl_paths": _dormant(ontology_omn),
         }, indent=2)
     except Exception as e:  # noqa: BLE001
         return json.dumps({"error": str(e)})

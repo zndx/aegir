@@ -98,6 +98,23 @@ def census_of(manchester_doc: str, *, timeout_s: int = 60) -> "dict | None":
         Path(path).unlink(missing_ok=True)
 
 
+def coverage_stats(manchester_doc: str) -> dict:
+    """kvasir --stats: which DDL code paths this ontology exercises; the DORMANT complement
+    is the derive agent's complexity brief (RH 2026-07-05 — coverage-guided conceptualization)."""
+    import tempfile
+    with tempfile.NamedTemporaryFile("w", suffix=".omn", delete=False) as f:
+        f.write(manchester_doc)
+        path = f.name
+    try:
+        r = subprocess.run([str(KVASIR), "ddl", path, "--stats"],
+                           capture_output=True, text=True, timeout=120)
+        return json.loads(r.stdout) if r.returncode == 0 else {}
+    except Exception:  # noqa: BLE001
+        return {}
+    finally:
+        Path(path).unlink(missing_ok=True)
+
+
 def structural_signal(manchester_doc: str) -> dict:
     """Score a proposed ontology extension by its DDL yield + SchemaPile-parity direction.
 
