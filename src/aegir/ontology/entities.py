@@ -258,34 +258,179 @@ def _cell(a: "DataAttr", i: int) -> str:
     return f"{stem.split()[0][:6]}-{i + 1:03d}"
 
 
+
+# ── SchemaPile key-shape norms (mined 2026-07-05, 198,756 tables; mine_schemapile_keys.py) ──
+# Embedded fallback = the mined values; build/schemapile_key_norms.json overrides when present.
+_KEY_NORMS_DEFAULT = {
+    "pk_naming_single": {"bare_id": 0.5227, "natural": 0.2027, "table_id": 0.1457,
+                         "other_id": 0.1289},
+    "table_naming": {"snake": 0.8335, "camel_or_pascal": 0.1480, "prefixed": 0.0185},
+    "audit_column_rate": 0.1489,
+}
+
+
+def load_key_norms() -> dict:
+    import json as _json
+    from pathlib import Path as _P
+    p = _P(__file__).resolve().parents[3] / "build/schemapile_key_norms.json"
+    try:
+        d = _json.loads(p.read_text())
+        return {k: d.get(k, v) for k, v in _KEY_NORMS_DEFAULT.items()}
+    except Exception:  # noqa: BLE001
+        return dict(_KEY_NORMS_DEFAULT)
+
+
+def _snake(s: str) -> str:
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", s).lower()
+
+
+def _plural(s: str) -> str:
+    if s.endswith("y") and s[-2:-1] not in "aeiou":
+        return s[:-1] + "ies"
+    if s.endswith(("s", "x", "z", "ch", "sh")):
+        return s + "es"
+    return s + "s"
+
+
+_NATURAL_KEY_RX = re.compile(r"(id|code|number|serial|sku|barcode|key|ref|no)$", re.I)
+
+
+def plan_keys(entities: "list[Entity]") -> dict:
+    """Sample per-CONSTRUCT conventions + per-ENTITY key shapes against the mined SchemaPile
+    distributions — deterministic (seeded by the sorted entity names) so reruns are stable.
+    One convention per chapter, varied across the corpus: exactly how real repos differ."""
+    import hashlib
+    import random
+    norms = load_key_norms()
+    seed = int(hashlib.md5("|".join(sorted(e.name for e in entities)).encode()).hexdigest()[:8], 16)
+    rng = random.Random(seed)
+
+    def pick(dist: dict) -> str:
+        r, acc = rng.random(), 0.0
+        for k, v in dist.items():
+            acc += v
+            if r <= acc:
+                return k
+        return next(iter(dist))
+
+    tstyle = pick(norms["table_naming"])
+    col_style = "snake" if tstyle != "camel_or_pascal" else "camel"
+    view_prefix = rng.choice(["v_", "v_", "vw_", ""])  # view naming is unmined; sensible split
+
+    def col(name: str) -> str:
+        return _snake(prop_name(name)) if col_style == "snake" else prop_name(name)
+
+    plans: dict = {}
+    for e in entities:
+        stem = _snake(camel(e.name))
+        table = {"snake": _plural(stem), "camel_or_pascal": camel(e.name),
+                 "prefixed": "t_" + stem}[tstyle]
+        kind = pick(norms["pk_naming_single"])
+        nat = next((a for a in e.attributes if _NATURAL_KEY_RX.search(a.name)), None)
+        if kind == "natural" and nat is None:
+            kind = "table_id"
+        if kind == "bare_id":
+            pk, pk_attr = "id", None
+        elif kind in ("table_id", "other_id"):
+            pk, pk_attr = f"{stem}_id" if col_style == "snake" else f"{stem.split('_')[-1]}Id", None
+            kind = "table_id"
+        else:
+            pk, pk_attr = col(nat.name), nat.name
+        plans[e.iri()] = {"table": table, "pk": pk, "kind": kind, "pk_attr": pk_attr,
+                          "stem": stem}
+    return {"table_style": tstyle, "col_style": col_style, "view_prefix": view_prefix,
+            "audit_rate": float(norms["audit_column_rate"]), "seed": seed, "plans": plans}
+
+
+def _fk_col_name(prop: str, tgt_plan: dict, own: "set[str]", col_style: str) -> str:
+    """The FK column referencing ``tgt_plan``'s PK, per real conventions: bare-id targets get
+    ``<stem>_id``; named/natural PKs join same-name; collisions role-disambiguate via the prop."""
+    stem = tgt_plan["stem"].split("_")[-1]
+    if tgt_plan["kind"] == "bare_id":
+        base = f"{tgt_plan['stem']}_id" if col_style == "snake" else f"{stem}Id"
+    elif tgt_plan["kind"] == "table_id":
+        base = tgt_plan["pk"]
+    else:
+        pk = tgt_plan["pk"]
+        base = pk if stem in pk else (f"{tgt_plan['stem']}_{pk}" if col_style == "snake"
+                                      else stem + pk[:1].upper() + pk[1:])
+    if base in own:
+        role = _snake(prop_name(prop)) if col_style == "snake" else prop_name(prop)
+        base = f"{role}_{base}" if col_style == "snake" else role + base[:1].upper() + base[1:]
+    return base
+
+
 def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str = "") -> dict:
-    """Bridge entities → the prose-harness ``construct`` dict (tables + RI-true sample rows +
-    concepts), the shape ``refine/_propose._render_tables`` consumes. Single-cardinality
-    relations become FK columns whose cells reference a real target-entity id (RI holds);
-    many-to-many relations are omitted from the flat construct (they belong to junction views)."""
-    ids = {e.iri(): [f"{_prefix(e.name)}-{i + 1:04d}" for i in range(n_rows)] for e in entities}
+    """Bridge entities → the prose-harness ``construct`` dict: tables with REAL-WORLD KEY
+    SHAPES (per the mined SchemaPile distributions — bare ``id`` / ``<table>_id`` / natural
+    keys; integer surrogates; per-chapter naming conventions; audit-column idioms), RI-true
+    rows, and FK columns referencing the target's ACTUAL pk values. Many-to-many relations
+    are left to ``add_views`` (junction tables with composite keys)."""
+    import random
+    kp = plan_keys(entities)
+    rng = random.Random(kp["seed"] ^ 0x5EED)
+    plans, col_style = kp["plans"], kp["col_style"]
+
+    def col(name: str) -> str:
+        return _snake(prop_name(name)) if col_style == "snake" else prop_name(name)
+
+    # pk values per entity: integer surrogates for id-kinds (real dumps count 1,2,3…),
+    # the attribute's own cells for natural keys
+    pk_vals: dict[str, list[str]] = {}
+    for e in entities:
+        plan = plans[e.iri()]
+        if plan["kind"] == "natural":
+            attr = next(a for a in e.attributes if a.name == plan["pk_attr"])
+            pk_vals[e.iri()] = [_cell(attr, i) for i in range(n_rows)]
+        else:
+            base = rng.choice([1, 1, 1, 100, 1000])
+            pk_vals[e.iri()] = [str(base + i) for i in range(n_rows)]
+
     tables = []
     for e in entities:
-        cols = [{"name": "id", "concept": camel(e.name),
-                 "cells": [{"value": v} for v in ids[e.iri()]]}]
+        plan = plans[e.iri()]
+        own: "set[str]" = set()
+        cols = []
+        if plan["kind"] != "natural":
+            cols.append({"name": plan["pk"], "concept": camel(e.name),
+                         "cells": [{"value": v} for v in pk_vals[e.iri()]]})
+            own.add(plan["pk"])
         for a in e.attributes:
-            cols.append({"name": prop_name(a.name), "concept": prop_name(a.name),
-                         "cells": [{"value": _cell(a, i)} for i in range(n_rows)]})
+            cname = col(a.name)
+            if cname in own:
+                continue
+            cols.append({"name": cname, "concept": prop_name(a.name),
+                         "cells": [{"value": pk_vals[e.iri()][i] if a.name == plan["pk_attr"]
+                                    else _cell(a, i)} for i in range(n_rows)]})
+            own.add(cname)
         fks = []
         for r in e.relations:
             if r.card.startswith("min") or (r.card.startswith("max") and r.card != "max 1"):
-                continue  # many-to-many → junction view, not a flat FK column
-            tgt_ids = ids.get(r.target_iri())
-            if not tgt_ids:
+                continue  # many-to-many → junction (add_views)
+            tgt = r.target_iri()
+            if tgt not in plans or tgt not in pk_vals:
                 continue
-            col = prop_name(r.prop)
-            cols.append({"name": col, "concept": prop_name(r.prop),
-                         "cells": [{"value": tgt_ids[i % len(tgt_ids)]} for i in range(n_rows)]})
-            fks.append({"col": col})
-        tables.append({"name": "t_" + re.sub(r"(?<!^)(?=[A-Z])", "_", camel(e.name)).lower(),
-                       "pk": "id", "fks": fks, "columns": cols})
+            fk = _fk_col_name(r.prop, plans[tgt], own, col_style)
+            cols.append({"name": fk, "concept": prop_name(r.prop),
+                         "cells": [{"value": pk_vals[tgt][i % len(pk_vals[tgt])]}
+                                   for i in range(n_rows)]})
+            fks.append({"col": fk, "ref_table": plans[tgt]["table"],
+                        "ref_col": plans[tgt]["pk"]})
+            own.add(fk)
+        # audit idiom at the mined rate (deterministic via the construct rng)
+        if rng.random() < kp["audit_rate"]:
+            ts = "created_at" if col_style == "snake" else "createdAt"
+            cols.append({"name": ts, "concept": "created",
+                         "cells": [{"value": f"2025-{(i % 12) + 1:02d}-{(i * 5 % 27) + 1:02d} "
+                                             f"{(i * 3 % 24):02d}:14:00"} for i in range(n_rows)]})
+            if rng.random() < 0.6:
+                us = "updated_at" if col_style == "snake" else "updatedAt"
+                cols.append({"name": us, "concept": "updated",
+                             "cells": [{"value": f"2025-{(i % 12) + 1:02d}-{(i * 7 % 27) + 2:02d} "
+                                                 f"{(i * 5 % 24):02d}:41:00"} for i in range(n_rows)]})
+        tables.append({"name": plan["table"], "pk": plan["pk"], "fks": fks, "columns": cols})
     return {"tables": tables, "style_anchor": style_anchor,
-            "entities": [e.iri() for e in entities]}
+            "entities": [e.iri() for e in entities], "key_plan": kp}
 
 
 def _md_table(columns: "list[str]", rows: "list[list[str]]") -> str:
@@ -297,81 +442,95 @@ def _md_table(columns: "list[str]", rows: "list[list[str]]") -> str:
 
 
 def add_views(construct: dict, entities: "list[Entity]", *, n_rows: int = 4) -> dict:
-    """Materialize the VIEWS the chapter embeds — the join semantics the prose supports.
+    """Materialize the VIEWS the chapter embeds — join semantics over the REAL key shapes.
 
-    Two strata, both with real RI-true result rows computed over the construct's base tables:
-    - FK join views: one per to-one relation (A JOIN B ON a.fk = b.id).
-    - Junction views: one per many-to-many relation (min/max > 1) — synthesizes the RI-true
-      junction table (pairs referencing existing ids) AND the 3-way join view over it.
-    Each view carries {name, sql, columns, rows}; junction base tables append to `tables`.
-    """
+    FK join views join on the actual key columns (``ON o.station_id = s.id`` /
+    ``ON b.station_code = s.station_code``); junction views synthesize an RI-true junction
+    table with a COMPOSITE key (the SchemaPile-real shape for m2m) and 3-way join over it.
+    Each view carries {name, kind, sql, columns, rows}."""
+    kp = construct.get("key_plan") or plan_keys(entities)
+    plans, col_style, vpx = kp["plans"], kp["col_style"], kp["view_prefix"]
     byname = {t["name"]: t for t in construct["tables"]}
-
-    def _tbl(e: "Entity") -> str:
-        return "t_" + re.sub(r"(?<!^)(?=[A-Z])", "_", camel(e.name)).lower()
 
     def _cells(t: dict) -> "dict[str, list[str]]":
         return {c["name"]: [x["value"] for x in c["cells"]] for c in t["columns"]}
 
+    def vname(a_stem: str, b_stem: str, suffix: str = "") -> str:
+        base = f"{a_stem}_{b_stem}{suffix}"
+        return f"{vpx}{base}" if vpx else f"{base}_view"
+
     ents = {e.iri(): e for e in entities}
     views = []
     for e in entities:
-        a = byname.get(_tbl(e))
+        plan = plans.get(e.iri())
+        a = byname.get(plan["table"]) if plan else None
         if a is None:
             continue
         acols = _cells(a)
+        apk = plan["pk"]
         for r in e.relations:
             tgt = ents.get(r.target_iri())
-            b = byname.get(_tbl(tgt)) if tgt else None
+            tplan = plans.get(r.target_iri()) if tgt else None
+            b = byname.get(tplan["table"]) if tplan else None
             if b is None:
                 continue
             bcols = _cells(b)
-            fk = prop_name(r.prop)
+            bpk = tplan["pk"]
             m2m = r.card.startswith("min") or (r.card.startswith("max") and r.card != "max 1")
+            fk = next((f["col"] for f in a.get("fks", []) if f.get("ref_table") == tplan["table"]),
+                      None)
             a_show = [c["name"] for c in a["columns"] if c["name"] != fk][:4]
             b_show = [c["name"] for c in b["columns"]][:3]
-            if not m2m and fk in acols:
-                name = f"v_{a['name'][2:]}_{b['name'][2:]}"
+            bstem = tplan["stem"].split("_")[-1]
+            if not m2m and fk and fk in acols:
+                name = vname(plan["stem"], tplan["stem"])
                 sql = (f"CREATE VIEW {name} AS\nSELECT " +
-                       ", ".join([f"a.{c}" for c in a_show] + [f"b.{c} AS {b['name'][2:]}_{c}" for c in b_show]) +
-                       f"\nFROM {a['name']} a JOIN {b['name']} b ON a.{fk} = b.id;")
-                bidx = {v: i for i, v in enumerate(bcols["id"])}
+                       ", ".join([f"a.{c}" for c in a_show] +
+                                 [f"b.{c} AS {bstem}_{c}" for c in b_show]) +
+                       f"\nFROM {a['name']} a JOIN {b['name']} b ON a.{fk} = b.{bpk};")
+                bidx = {v: i for i, v in enumerate(bcols[bpk])}
                 rows = []
-                for i in range(len(acols["id"])):
+                for i in range(len(next(iter(acols.values())))):
                     j = bidx.get(acols[fk][i])
                     if j is None:
                         continue
                     rows.append([acols[c][i] for c in a_show] + [bcols[c][j] for c in b_show])
                 views.append({"name": name, "kind": "fk_join", "sql": sql,
-                              "columns": a_show + [f"{b['name'][2:]}_{c}" for c in b_show],
+                              "columns": a_show + [f"{bstem}_{c}" for c in b_show],
                               "rows": rows})
             elif m2m:
-                jt = f"{a['name']}_{re.sub(r'(?<!^)(?=[A-Z])', '_', fk).lower()}"
-                jrows = []
-                bn = len(bcols["id"])
-                for i, aid in enumerate(acols["id"]):
-                    for k in range(2):  # 2 pairs per row — dense-enough m2m, RI-true by construction
-                        jrows.append([aid, bcols["id"][(i + k) % bn]])
+                # junction table: composite PK of the two reference columns (the real shape)
+                own: "set[str]" = set()
+                ja = _fk_col_name("", plan, own, col_style); own.add(ja)
+                jb = _fk_col_name(r.prop, tplan, own, col_style)
+                jt = f"{_plural(plan['stem'].split('_')[-1])}_{_plural(tplan['stem'].split('_')[-1])}" \
+                    if kp["table_style"] == "snake" else plan["table"] + camel(tplan["stem"])
+                apk_vals, bpk_vals = acols[apk], bcols[bpk]
+                jrows = [[apk_vals[i], bpk_vals[(i + k) % len(bpk_vals)]]
+                         for i in range(len(apk_vals)) for k in range(2)]
                 if jt not in byname:
-                    tbl = {"name": jt, "pk": None, "fks": [{"col": "a_id"}, {"col": "b_id"}],
+                    tbl = {"name": jt, "pk": [ja, jb], "fks": [
+                               {"col": ja, "ref_table": a["name"], "ref_col": apk},
+                               {"col": jb, "ref_table": b["name"], "ref_col": bpk}],
                            "columns": [
-                               {"name": "a_id", "concept": a["name"],
-                                "cells": [{"value": r[0]} for r in jrows]},
-                               {"name": "b_id", "concept": b["name"],
-                                "cells": [{"value": r[1]} for r in jrows]}]}
+                               {"name": ja, "concept": a["name"],
+                                "cells": [{"value": r0} for r0, _ in jrows]},
+                               {"name": jb, "concept": b["name"],
+                                "cells": [{"value": r1} for _, r1 in jrows]}]}
                     construct["tables"].append(tbl)
                     byname[jt] = tbl
-                name = f"v_{jt[2:]}_detail"
+                name = vname(plan["stem"], tplan["stem"], "_detail")
                 sql = (f"CREATE VIEW {name} AS\nSELECT " +
-                       ", ".join([f"a.{c}" for c in a_show[:3]] + [f"b.{c} AS {b['name'][2:]}_{c}" for c in b_show]) +
-                       f"\nFROM {a['name']} a\n  JOIN {jt} j ON j.a_id = a.id\n"
-                       f"  JOIN {b['name']} b ON b.id = j.b_id;")
-                aidx = {v: i for i, v in enumerate(acols["id"])}
-                bidx = {v: i for i, v in enumerate(bcols["id"])}
-                rows = [[acols[c][aidx[ja]] for c in a_show[:3]] + [bcols[c][bidx[jb]] for c in b_show]
-                        for ja, jb in jrows if ja in aidx and jb in bidx]
+                       ", ".join([f"a.{c}" for c in a_show[:3]] +
+                                 [f"b.{c} AS {bstem}_{c}" for c in b_show]) +
+                       f"\nFROM {a['name']} a\n  JOIN {jt} j ON j.{ja} = a.{apk}\n"
+                       f"  JOIN {b['name']} b ON b.{bpk} = j.{jb};")
+                aidx = {v: i for i, v in enumerate(apk_vals)}
+                bidx = {v: i for i, v in enumerate(bpk_vals)}
+                rows = [[acols[c][aidx[x]] for c in a_show[:3]] + [bcols[c][bidx[y]] for c in b_show]
+                        for x, y in jrows if x in aidx and y in bidx]
                 views.append({"name": name, "kind": "junction_join", "sql": sql,
-                              "columns": a_show[:3] + [f"{b['name'][2:]}_{c}" for c in b_show],
+                              "columns": a_show[:3] + [f"{bstem}_{c}" for c in b_show],
                               "rows": rows})
     construct["views"] = views
     return construct

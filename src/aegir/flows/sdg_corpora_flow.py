@@ -175,6 +175,8 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         cons_dir.mkdir(exist_ok=True)
         self.construct_ids = []
         n_views = 0
+        from collections import Counter
+        pk_kinds, tstyles = Counter(), Counter()
         for p in sorted(Path(self.run_out, "entities").glob("*.json")):
             ents = from_json(json.loads(p.read_text()))
             if not ents:
@@ -189,9 +191,18 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             con["ontology_omn"] = omn
             con["kvasir_facts"] = kvasir_facts(omn)
             n_views += len(con.get("views", []))
+            kp = con.get("key_plan") or {}
+            tstyles[kp.get("table_style", "?")] += 1
+            for pl in (kp.get("plans") or {}).values():
+                pk_kinds[pl.get("kind", "?")] += 1
             (cons_dir / f"{p.stem}.json").write_text(json.dumps(con, indent=1))
             self.construct_ids.append(p.stem)
-        print(f"  {len(self.construct_ids)} constructs · {n_views} views materialized", flush=True)
+        npk = sum(pk_kinds.values()) or 1
+        self.key_shape_report = {
+            "pk_kinds": {k: round(v / npk, 3) for k, v in pk_kinds.most_common()},
+            "table_styles": dict(tstyles)}
+        print(f"  {len(self.construct_ids)} constructs · {n_views} views · "
+              f"pk kinds {self.key_shape_report['pk_kinds']}", flush=True)
         self.next(self.prose_natural, self.prose_semantic)
 
     def _run_register(self, register: str) -> list:
@@ -282,6 +293,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             "structure": {k: self.structure.get(k) for k in
                           ("n_elected", "total_fks", "n_junctions", "n_lookups", "shape_emd")},
             "sensitive_ok": self.sensitive_ok,
+            "key_shapes": getattr(self, "key_shape_report", {}),
             "payload": self.payload_gate,
             "prose_chars_median": sorted(r["chars"] for r in rows)[len(rows) // 2] if rows else 0,
             "n_chapters": sum(1 for r in rows if r["chars"]),
