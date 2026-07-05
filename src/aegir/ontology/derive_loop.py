@@ -109,22 +109,57 @@ def merge_entities(entity_sets: "list[list[Entity]]") -> "list[Entity]":
     by name, relations by (prop, target)); first-seen genus/definition wins. Cross-passage
     relations whose target class exists anywhere in the union survive — the cross-domain
     edges emerge from the union rather than being injected."""
+    # Dedup by NORMALIZED identity (iri/target_iri), never raw strings: 'menu item' and
+    # 'MenuItem' render to the same IRI, so raw-key dedup lets normalized-equal relations
+    # with DIFFERENT cardinalities coexist on one class — min 2 ∧ max 1 = ⊥, and the ∃-⊥
+    # cascade poisoned 1,489 classes at 431-passage scale (HermiT justification: SideDish
+    # servedWith max-1 AND min-2). Card conflicts resolve to 'some' (weakest, always
+    # satisfiable; DDL renders a NOT-NULL FK). Same-iri attribute dupes keep first.
     merged: "dict[str, Entity]" = {}
     for ents in entity_sets:
         for e in ents:
             key = e.iri()
             if key not in merged:
-                merged[key] = Entity(name=e.name, label=e.label, genus=e.genus,
-                                     definition=e.definition,
-                                     attributes=list(e.attributes), relations=list(e.relations))
-                continue
-            m = merged[key]
-            have_a = {a.name for a in m.attributes}
-            m.attributes.extend(a for a in e.attributes if a.name not in have_a)
-            have_r = {(r.prop, r.target) for r in m.relations}
-            m.relations.extend(r for r in e.relations if (r.prop, r.target) not in have_r)
+                m = Entity(name=e.name, label=e.label, genus=e.genus,
+                           definition=e.definition)
+                merged[key] = m
+            else:
+                m = merged[key]
+            have_a = {a.iri() for a in m.attributes}
+            for a in e.attributes:
+                if a.iri() not in have_a:
+                    m.attributes.append(a)
+                    have_a.add(a.iri())
+            have_r = {(r.iri(), r.target_iri()): r for r in m.relations}
+            for r in e.relations:
+                rk = (r.iri(), r.target_iri())
+                prev = have_r.get(rk)
+                if prev is None:
+                    m.relations.append(r)
+                    have_r[rk] = r
+                elif prev.card != r.card:
+                    prev.card = "some"  # conflicting bounds → weakest
     out = list(merged.values())
     known = {e.iri() for e in out}
     for e in out:  # drop dangling relations (target never defined anywhere)
         e.relations = [r for r in e.relations if r.target_iri() in known]
+    # ONE RANGE PER PROPERTY corpus-wide: cross-passage xsd disagreements (startDate date vs
+    # dateTime, identifier integer vs string) put ⊥ conjunctions on Functional properties —
+    # the 1,489-unsat mode at 431-passage scale. Majority wins; ties WIDEN (dateTime > date,
+    # decimal > integer, string > all).
+    from collections import Counter
+    _WIDTH = {"string": 4, "dateTime": 3, "decimal": 3, "date": 2, "integer": 2, "boolean": 1}
+    by_iri: "dict[str, Counter]" = {}
+    for e in out:
+        for a in e.attributes:
+            by_iri.setdefault(a.iri(), Counter())[a.xsd] += 1
+    canon = {}
+    for iri, cnt in by_iri.items():
+        if len(cnt) > 1:
+            best = max(cnt.items(), key=lambda kv: (kv[1], _WIDTH.get(kv[0], 0)))[0]
+            canon[iri] = best
+    for e in out:
+        for a in e.attributes:
+            if a.iri() in canon:
+                a.xsd = canon[a.iri()]
     return out
