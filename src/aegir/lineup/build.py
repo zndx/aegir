@@ -378,6 +378,7 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
         )
         out.append(N.Note(
             id=rid, title=st.table.name, kind="relational-table", data_product="relational",
+            root="archive",
             body=body, frontmatter={
                 "category": cat, "realizes": t.template_id, "table_name": st.table.name,
                 "columns": [{"name": c.name, "type": c.slot_type, "slot": c.slot_ref} for c in cols],
@@ -880,6 +881,42 @@ def run(args=None) -> int:
     mt = project_metrics()
     notes += mt
     print(f"  training: 3 viz panels + metrics catalog ({len(mt)} notes)")
+
+    sc = S.sdg_constructs()
+    if sc:
+        tbls, vws = sc["tables"], sc["views"]
+        known = set(tbls)
+        t_lines = [f"- {N.wl('relational/table/' + n, n)} — {len(e['columns'])} cols · "
+                   f"{len(e['fks'])} FKs · pk {e.get('pk_kind') or e.get('pk') or '—'}"
+                   for n, e in sorted(tbls.items())]
+        notes.append(N.Note(
+            id="relational/sdg-schema", title="SDG schema (generated)", kind="relational",
+            data_product="relational",
+            body=(f"**The generated relational product, verbatim** — {len(tbls)} unique tables "
+                  f"+ {len(vws)} views across {sc['n_constructs']} constructs (`just metaflow` "
+                  f"corpus). Table and column names are the artifacts themselves — no wrappers.\n\n"
+                  + "\n".join(t_lines))))
+        for n, e in tbls.items():
+            fk_lines = [f"- `{fk.get('col')}` → " +
+                        (N.wl("relational/table/" + fk.get("ref_table", ""), fk.get("ref_table", ""))
+                         if fk.get("ref_table") in known else f"`{fk.get('ref_table')}`") +
+                        f" · `{fk.get('ref_col')}`"
+                        for fk in e["fks"]]
+            prov = ", ".join(e["constructs"][:4]) + ("…" if len(e["constructs"]) > 4 else "")
+            notes.append(N.Note(
+                id=f"relational/table/{n}", title=n, kind="relational-table",
+                data_product="relational",
+                frontmatter={"pk": e.get("pk"), "pk_kind": e.get("pk_kind"),
+                             "n_columns": len(e["columns"]), "constructs": len(e["constructs"])},
+                links=[f"relational/table/{fk.get('ref_table')}" for fk in e["fks"]
+                       if fk.get("ref_table") in known],
+                body=(f"**`{n}`** — generated table (verbatim; pk kind "
+                      f"**{e.get('pk_kind') or '—'}**, pk `{e.get('pk') or '—'}`).\n\n"
+                      f"Columns: " + " · ".join(f"`{c}`" for c in e["columns"]) + "\n\n"
+                      + ("**Foreign keys**\n" + "\n".join(fk_lines) + "\n\n" if fk_lines else "")
+                      + f"_Constructs: {prov}_")))
+        print(f"  relational(sdg): {len(tbls)} tables + {len(vws)} views VERBATIM "
+              f"from {sc['n_constructs']} constructs", flush=True)
 
     gc = S.sdg_corpus()
     if gc:

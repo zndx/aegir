@@ -265,3 +265,41 @@ def sdg_corpus() -> "dict | None":
             except Exception:  # noqa: BLE001
                 pass
     return out
+
+
+def sdg_constructs() -> "dict | None":
+    """The generated relational product, VERBATIM (RH ruling: the lineup audits what
+    `just metaflow` offers up — wrapping names is obfuscation). One entry per unique table
+    name across all constructs; FK targets by real name; provenance = construct pids."""
+    import json as _json
+    root = Path("/raid/checkpoints/aegir-artifacts/sdg-corpora/corpus")
+    cdir = root / "constructs"
+    if not cdir.exists():
+        return None
+    tables: dict = {}
+    views: dict = {}
+    for cj in sorted(cdir.glob("*.json")):
+        try:
+            d = _json.loads(cj.read_text())
+        except Exception:  # noqa: BLE001
+            continue
+        pid = cj.stem
+        plans = (d.get("key_plan") or {}).get("plans") or {}
+        pk_kind = {v.get("table"): v.get("kind") for v in plans.values() if isinstance(v, dict)}
+        for t in d.get("tables") or []:
+            name = t.get("name")
+            if not name:
+                continue
+            e = tables.setdefault(name, {"columns": [], "pk": t.get("pk"), "fks": [],
+                                         "constructs": [], "pk_kind": pk_kind.get(name)})
+            if not e["columns"]:
+                e["columns"] = [c.get("name") for c in t.get("columns") or []]
+                e["fks"] = t.get("fks") or []
+            e["constructs"].append(pid)
+        for v in d.get("views") or []:
+            vn = v.get("name") if isinstance(v, dict) else None
+            if vn:
+                views.setdefault(vn, {"sql": (v.get("sql") or "")[:400], "construct": pid})
+    if not tables:
+        return None
+    return {"tables": tables, "views": views, "n_constructs": len(list(cdir.glob("*.json")))}
