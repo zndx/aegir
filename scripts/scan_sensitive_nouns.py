@@ -97,11 +97,13 @@ def scan_chapters(root: Path) -> "tuple[list, list]":
                 if brand in allowed or _domain_initialism(brand):
                     allowed.add(brand)
                     continue
-                # heading case: every word capitalized ⇒ TitleCase carries no brand signal
-                # ('### Valve Placement and Shell Region…' is exchanger anatomy, not the oil
-                # major). Ambiguous-tier brands in headings need explicit context words.
-                if line.lstrip().startswith("#") and brand in _BRANDS_AMBIG \
-                        and not _AMBIG_CTX.search(line):
+                # heading case: every word capitalized ⇒ neither TitleCase NOR the
+                # brand+CapitalizedWord context branch carries signal ('### … Shell Region …'
+                # is exchanger anatomy, not the oil major). In headings, ambiguous-tier
+                # brands count only with an explicit corporate suffix.
+                if line.lstrip().startswith("#") and brand in _BRANDS_AMBIG and not re.search(
+                        rf"(?i)\b{re.escape(brand)}\b\s+(?:inc|corp|llc|ltd|plc|group|"
+                        rf"systems|health(?:care)?|cloud|labs?)\b", line):
                     continue
                 (quoted if "FinePDFs" in line else ours).append(
                     (str(md.relative_to(root)), v, brand))
