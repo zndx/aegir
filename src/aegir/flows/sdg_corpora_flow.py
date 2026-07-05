@@ -1,4 +1,4 @@
-"""SdgCorporaFlow — the greenfield sdg-corpora iteration as one Metaflow flow.
+"""SdgCorporaFlow — the sdg sdg-corpora iteration as one Metaflow flow.
 
 The long-run deliverable (RH 2026-07-04): FinePDFs passages → **metrology-informed** entity
 derivation (the agent iterates against the SchemaPile structural signal, ``derive_loop``) →
@@ -208,7 +208,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     @step
     def realize(self):
         """Merge → HermiT certificate → kvasir DDL + SHACL shapes → SchemaPile structure score."""
-        args = ["uv", "run", "--no-sync", "python", "scripts/realize_greenfield.py",
+        args = ["uv", "run", "--no-sync", "python", "scripts/realize_sdg.py",
                 "--entities-dir", f"{self.run_out}/entities",
                 "--output-dir", f"{self.run_out}/ontology"]
         if self.skip_hermit:
@@ -419,15 +419,36 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         gate) + the P5 riders (#136: DST belief module, generation manifest, predictions
         schema, mirror cleanup) — do NOT auto-push corpora from a flow."""
         (Path(self.run_out) / "RELEASE.md").write_text(
-            f"# sdg-corpora greenfield candidate — run {current.run_id}\n\n"
-            f"- ontology/sdg-greenfield.omn (+ certificate.json — HermiT)\n"
+            f"# sdg-corpora sdg candidate — run {current.run_id}\n\n"
+            f"- ontology/sdg-sdg.omn (+ certificate.json — HermiT)\n"
             f"- ontology/ddl.sql, ontology/shapes.ttl (kvasir, proof-carrying)\n"
             f"- ontology/structure.json (shape EMD vs SchemaPile: "
             f"{self.structure.get('shape_emd')})\n"
             f"- chapters/<passage>/{{natural,semantic}}.md (+ .exchange.json traces)\n"
             f"- manifest.jsonl, metrics.json, sensitive_scan.json\n\n"
             f"Publish path: corpora sync (OQuaRE gate) + P5 riders (#136). Not automated here.\n")
+        from aegir.lineup.zettel import write_run_zettel
+        try:
+            zp = write_run_zettel(Path(self.run_out), run_id=current.run_id,
+                                  derive_stats=self.derive_stats, metrics=self.metrics)
+            print(f"  run-zettel: {zp.name}", flush=True)
+        except Exception as e:  # noqa: BLE001
+            print(f"  run-zettel skipped ({str(e)[:80]})", flush=True)
         self.emit_event("flow.completed", {"n_chapters": self.metrics.get("n_chapters", 0)})
+        self.next(self.project)
+
+    @traced_step
+    @step
+    def project(self):
+        """Lineup KB projection — the corpus/sdg live note + all surfaces re-project
+        so the /lineup panel reflects this run's accretion. Failure-tolerant tail."""
+        try:
+            r = subprocess.run(["uv", "run", "--no-sync", "python", "-m", "aegir.lineup", "build"],
+                               cwd=str(REPO), capture_output=True, text=True, timeout=600)
+            line = next((l for l in r.stdout.splitlines() if "sdg" in l), "")
+            print(f"  lineup: {line.strip() or 'projected'}", flush=True)
+        except Exception as e:  # noqa: BLE001 — projection is the tail; never lose the corpus to it
+            print(f"  lineup projection skipped ({str(e)[:100]})", flush=True)
         self.next(self.end)
 
     @traced_step

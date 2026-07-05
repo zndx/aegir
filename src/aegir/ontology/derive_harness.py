@@ -58,7 +58,7 @@ def deriver_version() -> str:
 
 
 def propose(passage: str, *, capability: str = "instruct", temperature: float = 0.4,
-            max_tokens: int = 4000, context: str = "") -> "tuple[list[Entity], dict]":
+            max_tokens: int = 6000, context: str = "") -> "tuple[list[Entity], dict]":
     """One engine call → entity records from a passage. Returns ``(entities, meta)`` where
     ``meta`` carries the raw output + reasoning for tracing. json_schema-enforced."""
     from aegir.engine.client import complete_detailed
@@ -75,10 +75,16 @@ def propose(passage: str, *, capability: str = "instruct", temperature: float = 
     try:
         obj = json.loads(text)
     except json.JSONDecodeError:
-        # tolerate a fenced block if the engine wrapped it
+        # tolerate a fenced block if the engine wrapped it — and NEVER let one malformed
+        # output kill a multi-hundred-passage stage (FMEA: max_tokens truncation mid-JSON
+        # took down the 431-passage run at passage 209). Unparseable → zero entities →
+        # the metrology loop records verdict=malformed for THIS passage and continues.
         import re
         m = re.search(r"\{.*\}", text, re.S)
-        obj = json.loads(m.group(0)) if m else {"entities": []}
+        try:
+            obj = json.loads(m.group(0)) if m else {"entities": []}
+        except json.JSONDecodeError:
+            obj = {"entities": []}
     entities = from_json(obj)
     meta = {"n_entities": len(entities),
             "reasoning": out.get("reasoning_content", "") if isinstance(out, dict) else "",
