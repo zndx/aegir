@@ -27,6 +27,7 @@ PREFIXES = (
     "Prefix: rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
     "Prefix: skos: <http://www.w3.org/2004/02/skos/core#>\n"
     "Prefix: iao: <http://purl.obolibrary.org/obo/IAO_>\n"
+    "Prefix: dcterms: <http://purl.org/dc/terms/>\n"
 )
 
 _XSD = {"string", "integer", "int", "decimal", "double", "float", "boolean",
@@ -126,7 +127,7 @@ def to_manchester(entities: list[Entity]) -> str:
     # ObjectProperties. One plan, two projections — the ontology is the source of truth
     # and the distributions are verifiable by counting axioms in the shipped document.
     kp = plan_keys(entities)
-    natural_keys = {e.iri(): next((a.iri() for a in e.attributes
+    natural_keys = {e.iri(): next((_attr_iri(a) for a in e.attributes
                                    if a.name == kp["plans"][e.iri()]["pk_attr"]), None)
                     for e in entities if kp["plans"][e.iri()]["kind"] == "natural"}
     card_by_prop: dict = {}
@@ -185,9 +186,22 @@ def to_manchester(entities: list[Entity]) -> str:
             lines.append(f"    HasKey: {nk}")
         lines.append("")
 
+    prop_users: dict = {}
+    for e in entities:
+        for a in e.attributes:
+            prop_users.setdefault(_attr_iri(a), set()).add(e.iri())
+    nk_iris = {natural_keys[k] for k in natural_keys
+               if natural_keys[k] and len(prop_users.get(natural_keys[k], ())) == 1}
+    if nk_iris:
+        lines.append("DataProperty: dcterms:identifier")
+        lines.append("")
     for iri, a in sorted(dataprops.items()):
         lines.append(f"DataProperty: {iri}")
         lines.append("    Characteristics: Functional")
+        if iri in nk_iris:
+            # the WILD identifier idiom alongside HasKey — real toolchains (and our own
+            # K3 election) recognize dcterms:identifier subproperties as declared keys
+            lines.append("    SubPropertyOf: dcterms:identifier")
         d = a.definition
         if a.enum:
             vals = " / ".join(v for v in a.enum if _quotable(v))
