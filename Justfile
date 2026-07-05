@@ -173,7 +173,11 @@ metaflow *ARGS:
 # signal) → HermiT-certified merged ontology → kvasir DDL/SHACL → parallel two-register ACP prose
 # (natural ∥ semantic, semantic kvasir-tool-equipped over MCP) → gated release tree.
 # Long run: `AEGIR_METAFLOW_MODE=local just sdg-corpora --n-passages 48 --pool 2`
+# THE entry point: `just sdg-corpora` runs the COMPLETE pipeline at full scale (all harvested
+# passages; ~6h for 431x2 chapters on the local pools). Scale down with --n-passages N; top up a
+# prior run with --output-dir <run_dir>. Local metadata mode by default (override AEGIR_METAFLOW_MODE).
 sdg-corpora *ARGS:
+    AEGIR_METAFLOW_MODE=${AEGIR_METAFLOW_MODE:-local} \
     OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
     uv run --no-sync python -m aegir.flows.sdg_corpora_flow run {{ARGS}}
 

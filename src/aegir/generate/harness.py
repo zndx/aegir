@@ -273,17 +273,78 @@ async def run_item(item: WorkItem, *, timeout: float = 600.0) -> ProseResult:
         return ProseResult(item.construct_id, item.register, item.backend, error=str(e))
 
 
+_OVERFLOW_MARKS = ("context too long", "context_length", "maximum context", "context window")
+
+
+async def run_item_never_choke(item: WorkItem, *, timeout: float = 900.0) -> ProseResult:
+    """run_item with the NEVER-CHOKE guarantee (#145): a context-overflow failure routes the
+    item through the Agent-Refined Stage — the deliverable becomes a workspace file built
+    across turns, so context never bounds it. Other failures return as errors normally."""
+    r = await run_item(item, timeout=timeout)
+    if r.prose or not any(m in (r.error or "").lower() for m in _OVERFLOW_MARKS):
+        return r
+    import shutil
+    from aegir.generate.agent_stage import StageSpec, refine_to_satisfaction
+    con = item.construct
+    markers = con.get("payload_markers") or []
+    ws = Path(tempfile.mkdtemp(prefix=f"stage_{item.register}_"))
+    (ws / "payload").mkdir()
+    for m, block in (con.get("payload_blocks") or {}).items():
+        (ws / "payload" / (m.replace(":", "_") + ".md")).write_text(block)
+    brief = (f"Deliverable: deliverable.md — a {item.register.upper()}-register textbook chapter "
+             f"({_REGISTER_VOICE[item.register]}) of 1500+ words of prose. EMBED every payload "
+             "block by writing its marker alone on its own line where it belongs (e.g. "
+             "{{TABLE:x}}); the real block is substituted later — never re-type tables. Blocks "
+             "to place (each EXACTLY once): " + ", ".join("{{%s}}" % m for m in markers) +
+             ". The blocks are in payload/ for reference. All data is fictional; keep it so.")
+
+    def gate_markers(w: Path):
+        t = (w / "deliverable.md").read_text() if (w / "deliverable.md").exists() else ""
+        missing = [m for m in markers if ("{{%s}}" % m) not in t]
+        return (not missing, f"markers missing: {missing[:4]} — place every payload block")
+
+    def gate_length(w: Path):
+        n = (w / "deliverable.md").stat().st_size if (w / "deliverable.md").exists() else 0
+        return (n > 6000, f"chapter too short ({n} chars) — expand the teaching prose")
+
+    def factory():
+        home = tempfile.mkdtemp(prefix="stage_agent_")
+        a, cfg, _, _ = backend_spec(item.backend, home)
+        return a, cfg
+
+    spec = StageSpec(workspace=ws, brief=brief, gates=[gate_markers, gate_length],
+                     max_turns=10, turn_timeout=timeout)
+    sres = await refine_to_satisfaction(spec, agent_spec_factory=factory)
+    if sres.ok:
+        raw = (ws / "deliverable.md").read_text()
+        prose, stats = embed_payload(raw, con.get("payload_blocks") or {})
+        out = ProseResult(construct_id=item.construct_id, register=item.register,
+                          backend=item.backend, provider="engine/agent-stage", prose=prose,
+                          exchange={"agent_stage": {"turns": sres.turns, "sessions": sres.sessions,
+                                                    "handoff": sres.handoff}, "embed": stats,
+                                    "tool_calls": []})
+    else:
+        out = ProseResult(item.construct_id, item.register, item.backend,
+                          error=f"agent-stage fallback failed: {sres.error}")
+    shutil.rmtree(ws, ignore_errors=True)
+    return out
+
+
 async def run_queue(items: list[WorkItem], pools: dict[str, int], *,
-                    timeout: float = 900.0) -> list[ProseResult]:
+                    timeout: float = 900.0, on_result=None) -> list[ProseResult]:
     """Push the work queue through fixed per-backend pools (``asyncio.Semaphore`` per backend).
-    ``pools`` = ``{backend: max_concurrent}`` (default 1 for any unnamed backend). ``timeout``
-    is per item — full chapters with embedded payload run long under pool contention."""
+    ``pools`` = ``{backend: max_concurrent}``. ``timeout`` is per item. ``on_result`` (sync
+    callable) fires as EACH item completes — stream-write chapters so a crash at item N of M
+    never loses the first N-1 (the at-scale resumability requirement)."""
     sems = {b: asyncio.Semaphore(n) for b, n in pools.items()}
 
     async def _guarded(it: WorkItem) -> ProseResult:
         sem = sems.setdefault(it.backend, asyncio.Semaphore(pools.get(it.backend, 1)))
         async with sem:
-            return await run_item(it, timeout=timeout)
+            r = await run_item_never_choke(it, timeout=timeout)
+        if on_result is not None:
+            on_result(r)
+        return r
 
     return await asyncio.gather(*(_guarded(it) for it in items))
 

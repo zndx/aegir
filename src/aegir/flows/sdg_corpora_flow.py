@@ -41,13 +41,34 @@ CUDA = f"{REPO}/build/cuda-driver-libs"
 ART = Path("/raid/checkpoints/aegir-artifacts")
 
 
-def _engine_up() -> bool:
-    """Ensure the engine serves (qwen3_xml tool parser is the config default now).
+def _probe_ctx() -> "int | None":
+    """The live vLLM's max_model_len (None if not serving yet — lazy spawn)."""
+    import json as _json
+    import urllib.request
+    try:
+        with urllib.request.urlopen("http://127.0.0.1:8100/v1/models", timeout=3) as r:
+            d = _json.load(r)
+        return int(d["data"][0].get("max_model_len") or 0) or None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _engine_up(min_ctx: int = 32768) -> bool:
+    """Ensure the engine serves WITH the complete-trace config (ctx >= min_ctx). The flow
+    OWNS this env — ambient engines with a smaller context caused the overflow class.
     Returns True if THIS flow launched it (and should tear it down at end)."""
     if subprocess.run(["pgrep", "-f", "aegir.engine.server"], capture_output=True).returncode == 0:
-        print("  engine already up", flush=True)
+        ctx = _probe_ctx()
+        if ctx is not None and ctx < min_ctx:
+            print(f"  WARN: engine already up with ctx {ctx} < {min_ctx} — big chapters will "
+                  "route through the agent-stage fallback (never-choke), but a restart with "
+                  f"AEGIR_MAX_MODEL_LEN={min_ctx} is faster", flush=True)
+        else:
+            print(f"  engine already up (ctx {ctx or 'lazy'})", flush=True)
         return False
-    env = dict(os.environ, LD_LIBRARY_PATH=CUDA)
+    env = dict(os.environ, LD_LIBRARY_PATH=CUDA,
+               AEGIR_MAX_MODEL_LEN=os.environ.get("AEGIR_MAX_MODEL_LEN", str(min_ctx)),
+               AEGIR_MAX_NUM_SEQS=os.environ.get("AEGIR_MAX_NUM_SEQS", "4"))
     log = (REPO / "build" / "engine_flow.log").open("w")
     subprocess.Popen(["uv", "run", "--no-sync", "python", "-m", "aegir.engine.server"],
                      cwd=str(REPO), env=env, stdout=log, stderr=subprocess.STDOUT,
@@ -66,8 +87,10 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     """Greenfield sdg-corpora: metrology-informed derive → HermiT-certified ontology →
     kvasir DDL/shapes → parallel two-register ACP prose → gated release tree."""
 
-    n_passages = Parameter("n-passages", default=6, type=int,
-                           help="FinePDFs passages to derive + write chapters from")
+    n_passages = Parameter("n-passages", default=0, type=int,
+                           help="FinePDFs passages to derive + write chapters from (0 = ALL harvested)")
+    output_dir = Parameter("output-dir", default="",
+                           help="override the run dir (top-up semantics: existing chapters are kept)")
     rounds = Parameter("rounds", default=2, type=int,
                        help="max metrology-feedback rounds per passage derivation")
     backends = Parameter("backends", default="local",
@@ -84,14 +107,14 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     @traced_step
     @step
     def start(self):
-        self.run_out = str(ART / "sdg-corpora" / current.run_id)
+        self.run_out = self.output_dir or str(ART / "sdg-corpora" / current.run_id)
         Path(self.run_out, "entities").mkdir(parents=True, exist_ok=True)
         manifest = REPO / "build/domain_harvest/manifest.jsonl"
         docs = sorted((REPO / "build/domain_harvest/docs").glob("*.txt"))
         if not docs:
             raise RuntimeError("no harvested passages — run SemanticCorpusFlow harvest or "
                                "scripts/harvest_domain_docs.py first")
-        self.passages = [str(p) for p in docs[: self.n_passages]]
+        self.passages = [str(p) for p in (docs if self.n_passages == 0 else docs[: self.n_passages])]
         self.emit_event("flow.started", {"n_passages": len(self.passages),
                                          "backends": self.backends, "manifest": manifest.exists()})
         print(f"SdgCorporaFlow {current.run_id}: {len(self.passages)} passages → {self.run_out}",
@@ -206,31 +229,52 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         self.next(self.prose_natural, self.prose_semantic)
 
     def _run_register(self, register: str) -> list:
-        """Drive the work queue for ONE register across all constructs × backends."""
+        """Drive the work queue for ONE register across all constructs × backends.
+        STREAM-WRITES each chapter as it completes (a crash at item N never loses N-1)
+        and SKIPS chapters already present (top-up semantics with --output-dir)."""
         import asyncio
         from aegir.generate.harness import build_queue, run_queue
         cons_dir = Path(self.run_out, "constructs")
-        constructs = {cid: json.loads((cons_dir / f"{cid}.json").read_text())
-                      for cid in self.construct_ids}
-        backends = [b.strip() for b in self.backends.split(",") if b.strip()]
-        combos = [(register, be) for be in backends]
-        pools = {be: self.pool for be in backends}
-        results = asyncio.run(run_queue(build_queue(constructs, combos), pools))
         out_dir = Path(self.run_out, "chapters")
+        backends = [b.strip() for b in self.backends.split(",") if b.strip()]
         rows = []
-        for r in results:
-            d = out_dir / r.construct_id
-            d.mkdir(parents=True, exist_ok=True)
-            if r.prose:
-                (d / f"{r.register}.md").write_text(r.prose)
-                (d / f"{r.register}.exchange.json").write_text(
-                    json.dumps(r.exchange, indent=1))  # thinking traces RETAINED
-            rows.append({"construct": r.construct_id, "register": r.register,
-                         "backend": r.backend, "provider": r.provider,
-                         "chars": len(r.prose), "tool_calls": r.exchange.get("tool_calls", []),
-                         "embed": r.exchange.get("embed", {}), "error": r.error})
+        todo_ids = []
+        for cid in self.construct_ids:
+            if (out_dir / cid / f"{register}.md").exists():
+                t = (out_dir / cid / f"{register}.md").read_text()
+                rows.append({"construct": cid, "register": register, "backend": "cached",
+                             "provider": "cached", "chars": len(t), "tool_calls": [],
+                             "embed": {}, "error": ""})
+            else:
+                todo_ids.append(cid)
+        if todo_ids:
+            constructs = {cid: json.loads((cons_dir / f"{cid}.json").read_text())
+                          for cid in todo_ids}
+            combos = [(register, be) for be in backends]
+            pools = {be: self.pool for be in backends}
+            done = {"n": 0}
+
+            def _sink(r):
+                d = out_dir / r.construct_id
+                d.mkdir(parents=True, exist_ok=True)
+                if r.prose:
+                    (d / f"{r.register}.md").write_text(r.prose)
+                    (d / f"{r.register}.exchange.json").write_text(
+                        json.dumps(r.exchange, indent=1))  # thinking traces RETAINED
+                done["n"] += 1
+                if done["n"] % 25 == 0:
+                    print(f"  {register}: {done['n']}/{len(todo_ids)}", flush=True)
+
+            results = asyncio.run(run_queue(build_queue(constructs, combos), pools,
+                                            on_result=_sink))
+            for r in results:
+                rows.append({"construct": r.construct_id, "register": r.register,
+                             "backend": r.backend, "provider": r.provider,
+                             "chars": len(r.prose), "tool_calls": r.exchange.get("tool_calls", []),
+                             "embed": r.exchange.get("embed", {}), "error": r.error})
         ok = sum(1 for x in rows if x["chars"])
-        print(f"  {register}: {ok}/{len(rows)} chapters", flush=True)
+        print(f"  {register}: {ok}/{len(rows)} chapters "
+              f"({len(rows) - len(todo_ids)} cached)", flush=True)
         return rows
 
     @traced_step
