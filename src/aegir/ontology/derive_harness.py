@@ -48,6 +48,15 @@ Define 4-8 interrelated entities that share foreign keys, so the schema is a con
 not islands. Prefer real domain vocabulary over generic names. Return ONLY the JSON object."""
 
 
+def deriver_version() -> str:
+    """The derive-stage staleness key: entities cached on disk are REUSED only when stamped
+    with the current version (system prompt + output schema). A prompt change re-derives —
+    idempotence keyed on (passage_hash, deriver_version)."""
+    import hashlib
+    from aegir.ontology.entities import ENTITY_SCHEMA
+    return hashlib.sha256((_SYSTEM + json.dumps(ENTITY_SCHEMA, sort_keys=True)).encode()).hexdigest()[:12]
+
+
 def propose(passage: str, *, capability: str = "instruct", temperature: float = 0.4,
             max_tokens: int = 4000, context: str = "") -> "tuple[list[Entity], dict]":
     """One engine call → entity records from a passage. Returns ``(entities, meta)`` where

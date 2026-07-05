@@ -103,11 +103,19 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                             help="skip the HermiT certificate (fast shakedowns only — NOT releases)")
     entities_from = Parameter("entities-from", default="",
                               help="reuse a prior run's entities/ dir (skips the derive stage)")
+    harvest_target = Parameter("harvest-target", default=0, type=int,
+                               help="ADVANCE THE INPUT WINDOW: stream FinePDFs until this many "
+                                    "new in-domain docs land (0 = use the harvest as-is)")
+    corpus_mode = Parameter("corpus", default=True, type=bool,
+                            help="accrete into the persistent corpus dir (idempotent top-up per "
+                                 "input window) instead of a fresh per-run dir")
 
     @traced_step
     @step
     def start(self):
-        self.run_out = self.output_dir or str(ART / "sdg-corpora" / current.run_id)
+        self.run_out = self.output_dir or (
+            str(ART / "sdg-corpora" / "corpus") if self.corpus_mode
+            else str(ART / "sdg-corpora" / current.run_id))
         Path(self.run_out, "entities").mkdir(parents=True, exist_ok=True)
         manifest = REPO / "build/domain_harvest/manifest.jsonl"
         docs = sorted((REPO / "build/domain_harvest/docs").glob("*.txt"))
@@ -119,6 +127,25 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                                          "backends": self.backends, "manifest": manifest.exists()})
         print(f"SdgCorporaFlow {current.run_id}: {len(self.passages)} passages → {self.run_out}",
               flush=True)
+        self.next(self.harvest)
+
+    @traced_step
+    @step
+    def harvest(self):
+        """ADVANCE THE INPUT WINDOW (idempotent by construction: content-hash doc filenames,
+        persistent stream cursor, append-only manifest). --harvest-target 0 = no-op."""
+        if self.harvest_target > 0:
+            import subprocess as sp
+            r = sp.run(["uv", "run", "--no-sync", "python", "scripts/harvest_domain_docs.py",
+                        "--target", str(self.harvest_target),
+                        "--max-stream", str(self.harvest_target * 40)],
+                       cwd=str(REPO))
+            if r.returncode != 0:
+                raise RuntimeError(f"harvest failed (exit {r.returncode})")
+            docs = sorted((REPO / "build/domain_harvest/docs").glob("*.txt"))
+            self.passages = [str(p) for p in (docs if self.n_passages == 0
+                                              else docs[: self.n_passages])]
+            print(f"  window advanced → {len(self.passages)} passages total", flush=True)
         self.next(self.derive)
 
     @traced_step
@@ -139,18 +166,29 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             self.next(self.realize)
             return
         self.engine_owned = _engine_up()
+        from aegir.ontology.derive_harness import deriver_version
         from aegir.ontology.derive_loop import derive_with_metrology
         from aegir.ontology.entities import to_manchester
+        dv = deriver_version()
         ent_dir = Path(self.run_out, "entities")
-        stats = {"rich": 0, "thin": 0, "inert": 0, "malformed": 0}
+        stats = {"rich": 0, "thin": 0, "inert": 0, "malformed": 0, "cached": 0}
         self.derive_reports = {}
         for i, ppath in enumerate(self.passages):
             pid = Path(ppath).stem[:16]
+            ej = ent_dir / f"{pid}.json"
+            if ej.exists():
+                try:
+                    if json.loads(ej.read_text()).get("deriver_version") == dv:
+                        stats["cached"] += 1
+                        continue  # idempotence: (passage_hash, deriver_version) already done
+                except Exception:  # noqa: BLE001 — unreadable stamp → re-derive
+                    pass
             passage = Path(ppath).read_text()[: self.passage_chars]
             entities, report = derive_with_metrology(passage, max_rounds=self.rounds)
             stats[report.final_verdict or "malformed"] = stats.get(report.final_verdict, 0) + 1
             (ent_dir / f"{pid}.json").write_text(json.dumps({
                 "passage": ppath,
+                "deriver_version": dv,
                 "entities": [{"name": e.name, "label": e.label, "genus": e.genus,
                               "definition": e.definition,
                               "attributes": [{"name": a.name, "xsd": a.xsd, "enum": a.enum}
@@ -201,6 +239,16 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         from collections import Counter
         pk_kinds, tstyles = Counter(), Counter()
         for p in sorted(Path(self.run_out, "entities").glob("*.json")):
+            cj = cons_dir / f"{p.stem}.json"
+            if cj.exists() and cj.stat().st_mtime >= p.stat().st_mtime:
+                con_cached = json.loads(cj.read_text())
+                n_views += len(con_cached.get("views", []))
+                kp = con_cached.get("key_plan") or {}
+                tstyles[kp.get("table_style", "?")] += 1
+                for pl in (kp.get("plans") or {}).values():
+                    pk_kinds[pl.get("kind", "?")] += 1
+                self.construct_ids.append(p.stem)
+                continue  # idempotence: construct newer than its entities
             ents = from_json(json.loads(p.read_text()))
             if not ents:
                 continue
@@ -344,6 +392,24 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         }
         Path(self.run_out, "metrics.json").write_text(json.dumps(self.metrics, indent=2, default=str))
         print(json.dumps(self.metrics, indent=2, default=str), flush=True)
+        self.next(self.congruence)
+
+    @traced_step
+    @step
+    def congruence(self):
+        """The tripartite lineage graph: input passages -(harvest maxsim)-> concept entries
+        <-(congruence maxsim)- output chapters. Quantifies how well the corpus preserves the
+        input window's concept associations (the BERTopic-era R_D reborn over the ColBERT
+        late-interaction index). Report-only; the graph is lineup/Atlas-ready."""
+        try:
+            from aegir.ontology.congruence import congruence_report
+            rep = congruence_report(Path(self.run_out))
+            self.metrics["congruence"] = rep["per_register"]
+            Path(self.run_out, "metrics.json").write_text(
+                json.dumps(self.metrics, indent=2, default=str))
+            print(f"  congruence: {json.dumps(rep['per_register'], default=str)}", flush=True)
+        except Exception as e:  # noqa: BLE001 — report-only: qdrant down must not sink the corpus
+            print(f"  congruence skipped ({str(e)[:120]})", flush=True)
         self.next(self.assemble)
 
     @traced_step

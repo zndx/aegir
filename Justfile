@@ -165,7 +165,19 @@ kb-build:
 # promote → realized DDL → content-first chapters → verify → lineup → Atlas). The Metaflow service
 # plane (service+UI+MinIO on RKE2) comes up via `devenv up`; this just runs the flow, traced to the
 # OTel collector (→ NiFi). One command. e.g. `just metaflow --n-docs 8`.
+# THE complete pipeline: FinePDFs window -> qdrant-maxsim harvest -> metrology-informed derive
+# -> HermiT-certified ontology -> kvasir DDL/shapes -> parallel two-register chapters -> gated
+# release tree. IDEMPOTENT per input window: content-hash passages, cursor-advanced harvest,
+# per-stage skip keys — rerunning with the same window is a no-op top-up.
+#   just metaflow                          # top-up the corpus from the current harvest
+#   just metaflow --harvest-target 50      # advance the input window by ~50 in-domain docs
 metaflow *ARGS:
+    AEGIR_METAFLOW_MODE=${AEGIR_METAFLOW_MODE:-local} \
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
+    uv run --no-sync python -m aegir.flows.sdg_corpora_flow run {{ARGS}}
+
+# the v0.4 template-era pipeline (superseded by the greenfield flow above)
+metaflow-legacy *ARGS:
     OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
     uv run --no-sync python -m aegir.flows.semantic_corpus_flow run {{ARGS}}
 
