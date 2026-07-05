@@ -311,23 +311,42 @@ def _prefix(name: str) -> str:
     return ("".join(caps[:4]) or camel(name)[:4]).upper()
 
 
+_NAMEY = re.compile(r"(name|title|label|description)$", re.I)
+_CODEY = re.compile(r"(id|code|number|serial|sku|barcode|key|ref|no|identifier)$", re.I)
+# domain-neutral word pools for NAMEY columns — varied, title-cased, never stem-echoes
+# (the 'paradi-001 everywhere' cell smell; fictional-particulars-safe by construction)
+_ADJ = ["Integrated", "Adaptive", "Regional", "Baseline", "Compact", "Extended", "Primary",
+        "Seasonal", "Distributed", "Legacy", "Pilot", "Composite"]
+_HEAD = ["Framework", "Assessment", "Initiative", "Protocol", "Survey", "Model", "Programme",
+         "Corridor", "Cluster", "Standard", "Series", "Review"]
+
+
 def _cell(a: "DataAttr", i: int) -> str:
-    """A domain-plausible sample value for attribute ``a`` at row ``i`` (RI-true rows for prose)."""
+    """A domain-plausible sample value for attribute ``a`` at row ``i`` (RI-true rows for
+    prose). Value REALISM is a pipeline lever (naturalness_norms): namey columns draw from
+    varied title-case pools; codey columns get prefixed codes; dates jitter (no arithmetic
+    series); nothing echoes the column stem into every row."""
     if a.enum:
         return a.enum[i % len(a.enum)]
     x = a.xsd
-    stem = re.sub(r"(?<!^)(?=[A-Z])", " ", prop_name(a.name)).lower().replace("has ", "")
+    h = hash(a.name)
     if x in ("integer", "int", "long"):
-        return str((i + 1) * 7 + hash(a.name) % 40)
+        return str((i + 1) * (3 + h % 9) + h % 40)
     if x in ("decimal", "double", "float"):
-        return f"{((i + 1) * 3.5 + hash(a.name) % 20):.2f}"
+        return f"{((i + 1) * (1.7 + (h % 13) / 4) + h % 20):.2f}"
     if x == "boolean":
-        return "true" if (i + hash(a.name)) % 2 else "false"
+        return "true" if (i + h) % 2 else "false"
     if x == "date":
-        return f"2025-{(i % 12) + 1:02d}-{(i * 7 % 27) + 1:02d}"
+        return f"20{22 + (h + i) % 4}-{((h + i * 5) % 12) + 1:02d}-{((h // 3 + i * 11) % 27) + 1:02d}"
     if x == "dateTime":
-        return f"2025-{(i % 12) + 1:02d}-{(i * 5 % 27) + 1:02d}T{(i * 3 % 24):02d}:00:00"
-    return f"{stem.split()[0][:6]}-{i + 1:03d}"
+        return (f"20{22 + (h + i) % 4}-{((h + i * 5) % 12) + 1:02d}-"
+                f"{((h // 3 + i * 11) % 27) + 1:02d}T{(h + i * 7) % 24:02d}:{(h * 3 + i * 17) % 60:02d}:00")
+    if _NAMEY.search(a.name):
+        return f"{_ADJ[(h + i * 5) % len(_ADJ)]} {_HEAD[(h // 7 + i * 3) % len(_HEAD)]}"                + (f" {chr(65 + (h + i) % 6)}" if (h + i) % 3 == 0 else "")
+    stem = re.sub(r"(?<!^)(?=[A-Z])", " ", prop_name(a.name)).lower().replace("has ", "")
+    if _CODEY.search(a.name):
+        return f"{stem.split()[0][:3].upper()}-{2000 + h % 800 + i * (1 + h % 7)}"
+    return f"{_ADJ[(h + i * 7) % len(_ADJ)].lower()}-{stem.split()[0][:8]}-{(h % 90) + i + 10}"
 
 
 
