@@ -123,8 +123,32 @@ class BaseACPClient:
                 self.thoughts: list[str] = []
                 self.tools: list[str] = []
 
-            # fs (read_text_file/write_text_file) + terminal use the lib's base defaults for now; the
-            # membrane fs-scoping (confine writes to fs_root) lands with the gate-tools in inc-2.
+            # fs surface — the WORKSPACE the Agent-Refined Stage pattern rests on: the
+            # deliverable is a FILE the agent edits across turns (never bounded by context),
+            # scoped to fs_root by the membrane policy (_in_root).
+            async def read_text_file(self, path, session_id, limit=None, line=None, **kw):  # noqa: ANN001
+                from acp.schema import ReadTextFileResponse
+                p = Path(path)
+                if not outer._in_root(p):
+                    raise PermissionError(f"read outside workspace: {path}")
+                text = p.read_text() if p.exists() else ""
+                if line is not None or limit is not None:
+                    rows = text.splitlines()
+                    start = (line - 1) if line else 0
+                    end = start + limit if limit else len(rows)
+                    text = "\n".join(rows[start:end])
+                return ReadTextFileResponse(content=text)
+
+            async def write_text_file(self, content, path, session_id, **kw):  # noqa: ANN001
+                from acp.schema import WriteTextFileResponse
+                p = Path(path)
+                if not (outer.allow_write and outer._in_root(p)):
+                    raise PermissionError(f"write outside workspace: {path}")
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(content)
+                await outer._emit("status", f"wrote {p.name} ({len(content)} chars)")
+                return WriteTextFileResponse()
+
             async def request_permission(self, options, session_id, tool_call, **kw):  # noqa: ANN001
                 """Auto-approve tool use. Without this the agent's tool call dies on the
                 base class's unimplemented handler and the TURN RETURNS EMPTY with no error
@@ -179,8 +203,11 @@ class BaseACPClient:
                 self._client, self.agent.command, *self.agent.args,
                 env=env, cwd=self.agent.cwd, transport_kwargs={"limit": self.buffer_limit})
             self._conn, self._proc = await self._cm.__aenter__()
+            from acp.schema import ClientCapabilities, FileSystemCapabilities
             await self._conn.initialize(
                 protocol_version=PROTOCOL_VERSION,
+                client_capabilities=ClientCapabilities(
+                    fs=FileSystemCapabilities(read_text_file=True, write_text_file=True)),
                 client_info=Implementation(name="aegir-refine", version="0.1.0"))
             from acp.schema import EnvVariable
 
@@ -199,8 +226,12 @@ class BaseACPClient:
                 McpServerStdio(name=s.name, command=s.command, args=s.args,
                                cwd=s.cwd, env=_env_vars(s.env))
                 for s in self.mcp_servers]
+            # SESSION cwd = the WORKSPACE (fs_root) when set — the agent process chdirs
+            # there (vibe's new_session), so its file tools land deliverables in the
+            # workspace, not the spawn dir (the fork). Spawn cwd stays agent.cwd.
             session = await self._conn.new_session(
-                cwd=self.agent.cwd or os.getcwd(), mcp_servers=servers)
+                cwd=str(self.fs_root) if self.fs_root else (self.agent.cwd or os.getcwd()),
+                mcp_servers=servers)
             self._session = session.session_id
         return self
 
