@@ -407,6 +407,12 @@ def plan_keys(entities: "list[Entity]") -> dict:
     tstyle = pick(norms["table_naming"])
     col_style = "snake" if tstyle != "camel_or_pascal" else "camel"
     view_prefix = rng.choice(["v_", "v_", "vw_", ""])  # view naming is unmined; sensible split
+    # a prefixed schema uses ITS OWN app prefix, not a universal tic: derive it from the
+    # construct's domain vocabulary (first entity's stem, abbreviated), the way real schemas
+    # carry wp_/shop_/lims_ prefixes. Uniform t_ across the corpus was the formulaic tell
+    # RH's release gate caught (109 t_* tables — one author's habit, not a world).
+    _stem0 = _snake(camel(entities[0].name)).split("_")[0] if entities else "app"
+    app_prefix = (_stem0[:4] if len(_stem0) > 4 else _stem0) + "_"
 
     def col(name: str) -> str:
         return _snake(prop_name(name)) if col_style == "snake" else prop_name(name)
@@ -415,7 +421,7 @@ def plan_keys(entities: "list[Entity]") -> dict:
     for e in entities:
         stem = _snake(camel(e.name))
         table = {"snake": _plural(stem), "camel_or_pascal": camel(e.name),
-                 "prefixed": "t_" + stem}[tstyle]
+                 "prefixed": app_prefix + _plural(stem)}[tstyle]
         kind = pick(norms["pk_naming_single"])
         nat = next((a for a in e.attributes if _NATURAL_KEY_RX.search(a.name)), None)
         if kind == "natural" and nat is None:

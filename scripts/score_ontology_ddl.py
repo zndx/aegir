@@ -56,6 +56,32 @@ def _emd(ours: list[int], ref_hist: dict[str, float]) -> float:
     return round(emd, 3)
 
 
+def naming_concentration(tables: "list[str]") -> dict:
+    """Formulaic-naming tells over table names (RH gate before release): leading-token and
+    trailing-token concentration + classic-prefix rate, vs SchemaPile norms (prefixed ~.0185).
+    A generated corpus whose names all share a stem reads as one author's tic, not a world."""
+    from collections import Counter
+    lead, trail = Counter(), Counter()
+    classic = 0
+    for t in tables:
+        parts = t.split("_")
+        if len(parts) > 1:
+            lead[parts[0]] += 1
+            trail[parts[-1]] += 1
+            if parts[0] in ("tbl", "t", "rel", "tb", "data", "dim", "fact", "stg", "raw"):
+                classic += 1
+    n = max(1, len(tables))
+    top_lead = lead.most_common(5)
+    top_trail = trail.most_common(5)
+    return {
+        "n_tables": len(tables),
+        "classic_prefix_rate": round(classic / n, 4),
+        "top_leading_tokens": [{"token": k, "share": round(v / n, 4)} for k, v in top_lead],
+        "top_trailing_tokens": [{"token": k, "share": round(v / n, 4)} for k, v in top_trail],
+        "lead_top1_share": round(top_lead[0][1] / n, 4) if top_lead else 0.0,
+    }
+
+
 def score(omn: Path) -> dict:
     """Run the realized ontology through `kvasir ddl` and profile the generated DDL."""
     p = subprocess.run([str(KVASIR), "ddl", str(omn), "--json"],
@@ -111,6 +137,7 @@ def score(omn: Path) -> dict:
         "col_count_histogram": {str(k): v for k, v in sorted(hist.items())},
         "schemapile": {"median": sp.get("median"), "p90": sp.get("p90"), "p99": sp.get("p99")},
         "pk_shapes": {k: round(v / _npk, 4) for k, v in pk_shapes.most_common()},
+        "naming": naming_concentration([t.get("name", "") for t in tables]),
         "shape_emd": _emd(widths, ref_hist),
     }
 
