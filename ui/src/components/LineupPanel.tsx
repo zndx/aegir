@@ -25,6 +25,8 @@ export interface KBNote {
   viz_app?: string;
   // Provenance notes carry the AGE node id their ego-graph centers on (null = seed anchor).
   ego_focal?: number | null;
+  // Lens notes may opt out of the live chord embed (trunk lenses — the chords are release-era).
+  chord?: boolean;
 }
 
 // Flag accent per Data Product — the FedWiki "flag" reinterpreted as a lens color.
@@ -225,7 +227,8 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
         <CloseOutlined onClick={onClose} style={{ cursor: "pointer", color: "#bbb", fontSize: 12 }} />
       </div>
       <div style={{ padding: "8px 16px 16px", fontSize: 13.5, color: "#222" }}>
-        {note?.kind === "lens" && (
+        {/* live embeds render for current/scratch only — archive kastens are frozen */}
+        {note?.kind === "lens" && note.chord !== false && note.root !== "archive" && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
             <PanelView app="lineup_app" params={{ lens: note.name ?? note.id }} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
@@ -233,7 +236,7 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
             </Text>
           </div>
         )}
-        {note?.kind === "training" && note.viz_app && (
+        {note?.kind === "training" && note.viz_app && note.root !== "archive" && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
             <PanelView app={note.viz_app} height={460} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>

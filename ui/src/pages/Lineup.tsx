@@ -25,6 +25,10 @@ const TRAINING = [
   { key: "provenance", label: "Provenance", seed: "training/provenance", hint: "lineage DAG" },
   { key: "metrics", label: "Metrics", seed: "training/metrics", hint: "gates & measures" },
 ];
+// Roots are refs (RH 2026-07-06, git-style): current = the latest sdg-corpora release kasten ·
+// scratch = TRUNK (the live projection — incremental work lands here) · archive = past releases
+// + snapshots + tombstones. The SAME sidebar layout serves every root; entries appear where the
+// root's kasten has them, and note fetches resolve ids within the active root.
 const ROOTS = ["archive", "current", "scratch"];
 
 function tab(active: boolean): React.CSSProperties {
@@ -35,18 +39,30 @@ function tab(active: boolean): React.CSSProperties {
   };
 }
 
-// Persist the panel trail per-seed in sessionStorage so it survives a re-render/remount (e.g. on window
-// blur→focus / alt-tab). Without this, `trail` re-initializes to [seed] and the user loses their place.
-const trailKey = (s: string) => `lineup:trail:${s}`;
-function loadTrail(seed: string): string[] {
+// Persist the panel trail per layer+seed in sessionStorage so it survives a re-render/remount
+// (e.g. on window blur→focus / alt-tab) and per-layer trails don't bleed into each other.
+// The layer is the root, plus the selected archived kasten when browsing archive.
+const trailKey = (layer: string, seed: string) => `lineup:trail:${layer}:${seed}`;
+function loadTrail(layer: string, seed: string): string[] | null {
   try {
-    const v = sessionStorage.getItem(trailKey(seed));
+    const v = sessionStorage.getItem(trailKey(layer, seed));
     if (v) { const a = JSON.parse(v); if (Array.isArray(a) && a.length) return a as string[]; }
   } catch { /* sessionStorage unavailable */ }
-  return [seed];
+  return null;
 }
-function saveTrail(seed: string, trail: string[]): void {
-  try { sessionStorage.setItem(trailKey(seed), JSON.stringify(trail)); } catch { /* ignore */ }
+function saveTrail(layer: string, seed: string, trail: string[]): void {
+  try { if (trail.length) sessionStorage.setItem(trailKey(layer, seed), JSON.stringify(trail)); } catch { /* ignore */ }
+}
+
+function Group({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <>
+      <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5, display: "block", marginTop: 16 }}>
+        {title}
+      </Text>
+      <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>{children}</div>
+    </>
+  );
 }
 
 function Lineup() {
@@ -57,30 +73,61 @@ function Lineup() {
 
   const [root, setRoot] = useState("current");
   const [index, setIndex] = useState<KBIndex | null>(null);
-  const [trail, setTrail] = useState<string[]>(() => loadTrail(seed));
+  const [trail, setTrail] = useState<string[]>([]);
   const [cache, setCache] = useState<Record<string, KBNote | null>>({});
   const requested = useRef<Set<string>>(new Set());
+  const ck = useCallback((id: string) => `${root}:${id}`, [root]);
+
+  // Archived kastens — the namespaced, self-contained freezes of past current/ projections
+  // (kb-snapshot; release freezes land the same way). Each was "the lineup when it was
+  // current", so it carries the same lens/corpus/training surfaces under its key prefix.
+  // The archive side-nav browses the NEWEST kasten only (older freezes are retained on disk
+  // and stay reachable by id, just not via the side-nav).
+  const kastens = Array.from(new Set((index?.notes || [])
+    .filter((n) => n.root === "archive" && n.id.endsWith("/lens/terms"))
+    .map((n) => n.id.slice(0, -"/lens/terms".length)))).sort().reverse();
+  const K = root === "archive" ? kastens[0] ?? null : null;
+  const prefix = K ? `${K}/` : "";
+  const layer = K ? `${root}:${K}` : root;
 
   useEffect(() => {
     fetch("/api/kb/index").then((r) => (r.ok ? r.json() : null)).then(setIndex).catch(() => setIndex(null));
   }, []);
 
   const fetchNote = useCallback((id: string) => {
-    if (requested.current.has(id)) return;
-    requested.current.add(id);
-    fetch(`/api/kb/note/${id}`)
+    const k = `${root}:${id}`;
+    if (requested.current.has(k)) return;
+    requested.current.add(k);
+    fetch(`/api/kb/note/${id}?root=${root}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((n: KBNote | null) => setCache((c) => ({ ...c, [id]: n })))
-      .catch(() => setCache((c) => ({ ...c, [id]: null })));
-  }, []);
+      .then((n: KBNote | null) => setCache((c) => ({ ...c, [k]: n })))
+      .catch(() => setCache((c) => ({ ...c, [k]: null })));
+  }, [root]);
 
-  useEffect(() => { trail.forEach((id) => { if (!(id in cache)) fetchNote(id); }); }, [trail, cache, fetchNote]);
-  // Restore (not reset) the trail when the seed changes or the component remounts — survives alt-tab.
-  useEffect(() => { setTrail(loadTrail(seed)); }, [seed]);
-  useEffect(() => { saveTrail(seed, trail); }, [trail, seed]);
+  useEffect(() => { trail.forEach((id) => { if (!(ck(id) in cache)) fetchNote(id); }); }, [trail, cache, fetchNote, ck]);
+  // Restore (not reset) the trail per layer+seed; else start at the (kasten-prefixed) seed if
+  // the layer has it, else the layer's first natural trailhead (lens → release → snapshot).
+  useEffect(() => {
+    const saved = loadTrail(layer, seed);
+    if (saved) { setTrail(saved); return; }
+    const inRoot = (id: string) => (index?.notes || []).some((n) => n.root === root && n.id === id);
+    if (inRoot(prefix + seed)) { setTrail([prefix + seed]); return; }
+    if (inRoot(prefix + "lens/terms")) { setTrail([prefix + "lens/terms"]); return; }
+    const first = (index?.notes || []).find((n) => n.root === root &&
+      (n.kind === "lens" || n.kind === "release-note" || n.kind === "corpus"));
+    setTrail(first ? [first.id] : []);
+  }, [seed, root, index, layer, prefix]);
+  useEffect(() => { saveTrail(layer, seed, trail); }, [trail, seed, layer]);
 
   const openFrom = (fromIdx: number) => (targetId: string) =>
     setTrail((t) => [...t.slice(0, fromIdx + 1), targetId]);
+
+  // The SAME group structure for every root (LENS / TRAINING); entries resolve through the
+  // layer's prefix (empty for current/scratch; the newest kasten key for archive). Corpus
+  // surfaces are reached through the content/schema lenses, not a sidebar group.
+  const rootNotes = (index?.notes || []).filter((n) => n.root === root);
+  const lenses = LENSES.filter((l) => rootNotes.some((n) => n.id === prefix + l.seed));
+  const training = TRAINING.filter((t) => rootNotes.some((n) => n.id === prefix + t.seed));
 
   return (
     <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
@@ -89,50 +136,34 @@ function Lineup() {
         <Select
           value={root}
           size="small"
-          style={{ width: "100%", margin: "6px 0 18px" }}
-          onChange={(v) => { setRoot(v); setTrail(v === "current" ? [seed] : []); }}
+          style={{ width: "100%", margin: "6px 0 2px" }}
+          onChange={setRoot}
           options={ROOTS.map((r) => ({ value: r, label: r.charAt(0).toUpperCase() + r.slice(1) }))}
         />
-        {root === "current" ? (
-          <>
-            <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>LENS</Text>
-            <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
-              {LENSES.map((l) => (
-                <a key={l.key} onClick={() => setTrail([l.seed])} style={tab(trail[0] === l.seed)} title={l.hint}>
-                  {l.label}
-                  <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{l.hint}</span>
-                </a>
-              ))}
-            </div>
-            <Text type="secondary" style={{ fontSize: 11, display: "block", marginTop: 4 }}>
-              collections × lens — the live projection (what we know)
-            </Text>
-            <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5, display: "block", marginTop: 16 }}>TRAINING</Text>
-            <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
-              {TRAINING.map((t) => (
-                <a key={t.key} onClick={() => setTrail([t.seed])} style={tab(trail[0] === t.seed)} title={t.hint}>
-                  {t.label}
-                  <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{t.hint}</span>
-                </a>
-              ))}
-            </div>
-          </>
-        ) : (
-          <>
-            <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>{root.toUpperCase()}</Text>
-            <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>
-              {(() => {
-                // Archive: show entry points (snapshot registry + authored notes), NOT the
-                // thousands of namespaced notes inside a frozen snapshot (reachable by drilling in).
-                const entries = (index?.notes || []).filter(
-                  (n) => n.root === root &&
-                    (root !== "archive" || n.kind === "archive-snapshot" || n.kind.endsWith("-note")));
-                return entries.length ? entries.map((n) => (
-                  <a key={n.id} onClick={() => setTrail([n.id])} style={tab(trail[0] === n.id)} title={n.id}>{n.title}</a>
-                )) : <Text type="secondary" style={{ fontSize: 12 }}>empty — populates via the lifecycle</Text>;
-              })()}
-            </div>
-          </>
+        {lenses.length > 0 && (
+          <Group title="LENS">
+            {lenses.map((l) => (
+              <a key={l.key} onClick={() => setTrail([prefix + l.seed])} style={tab(trail[0] === prefix + l.seed)} title={l.hint}>
+                {l.label}
+                <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{l.hint}</span>
+              </a>
+            ))}
+          </Group>
+        )}
+        {training.length > 0 && (
+          <Group title="TRAINING">
+            {training.map((t) => (
+              <a key={t.key} onClick={() => setTrail([prefix + t.seed])} style={tab(trail[0] === prefix + t.seed)} title={t.hint}>
+                {t.label}
+                <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{t.hint}</span>
+              </a>
+            ))}
+          </Group>
+        )}
+        {!lenses.length && !training.length && (
+          <Text type="secondary" style={{ fontSize: 12, display: "block", marginTop: 16 }}>
+            empty — populates via the release lifecycle
+          </Text>
         )}
         {index && (
           <div style={{ marginTop: 18, fontSize: 11, color: "#aaa" }}>
@@ -145,9 +176,9 @@ function Lineup() {
       <div style={{ flex: 1, display: "flex", overflowX: "auto", padding: 14, background: "#ececef" }}>
         {trail.map((id, i) => (
           <LineupPanel
-            key={`${id}-${i}`}
-            note={cache[id] ?? null}
-            loading={!(id in cache)}
+            key={`${root}-${id}-${i}`}
+            note={cache[ck(id)] ?? null}
+            loading={!(ck(id) in cache)}
             onLink={openFrom(i)}
             onClose={() => setTrail((t) => (t.length > 1 ? t.slice(0, Math.max(1, i)) : t))}
           />
