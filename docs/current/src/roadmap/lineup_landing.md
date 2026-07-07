@@ -122,10 +122,44 @@ Affordances the pivot grants for free: **transpose** (read either direction), **
 
 ## Tri-root: a layer dropdown, not a browse axis
 
-Pull `archive / current / scratch` into a compact **top dropdown, `current` default**. It selects the
-*layer*, not the browse axis, so it shouldn't eat left-nav space. Each lands consistently:
-`current` → the launchpad (the KNOW projection) · `scratch` → authored notes + recents (resume /
-curation) · `archive` → snapshots + aged.
+Pull `archive / current / scratch` into a compact **top dropdown, `current` default** (plain
+labels — Archive / Current / Scratch). It selects the *layer*, not the browse axis, so it
+shouldn't eat left-nav space.
+
+**Root semantics (RH 2026-07-06 — supersedes both the original "snapshots + aged" reading and
+the interim "unreleased-chain-only scratch"): the roots are REFS, git-style. Each root is a
+kasten with the SAME surface shapes (`lens/terms`, `lens/schema`, `lens/content`, corpus
+surfaces); note resolution is root-scoped (`/api/kb/note/<id>?root=` prefers the active root's
+instance, falls back cross-root so trails always resolve).**
+
+- `current` — the **latest sdg-corpora release**, navigable as a complete kasten: the released
+  corpus (chapters · topics · collections), the release-era lexicon (the catalog generation
+  that corpus cites), the released DDL spine (`corpora/ddl`), and the release card.
+- `scratch` — **trunk**: the full live projection, where incremental advancements land as
+  they happen — the derived catalog and its deterministic spine, the accreting `just metaflow`
+  corpus (constructs web + run-zettel chain + strategy), plus hand-authored working notes
+  (`scratch/<iso-date>/…`). Work toward the *next* release proceeds here, permanently.
+- `archive` — **past releases** (their cards; full kastens once frozen), quarterly
+  `kb-snapshot` zettelkastens, aged authored notes, and tombstones (recovered catalog ids
+  cited by nothing current).
+
+**Promotion runbook** (when the next release is cut): freeze `current/` into a namespaced
+archive kasten (`just kb-snapshot --key <release>` — the machinery below), project the new
+release into `current`, and leave `scratch` untouched — trunk keeps rolling. The sdg-corpora
+dataset CARDs (`corpora/corpus/CARD_v*.md`) are the release records the projector reads;
+`zettel.chain_roots` stands ready to compute run-zettel citizenship from `kind: "release"`
+cut points in the chain.
+
+The same sidebar layout (LENS / TRAINING groups — no corpus group; corpus surfaces are
+reached through the content/schema lenses) serves every root. TRAINING appears on `scratch`
+too: the procedures run against the in-progress corpora as trunk iterates toward the next
+release (the training/metrics notes are twinned current+scratch). In `archive`, the groups
+browse the **newest frozen kasten** (each snapshot was "the lineup when it was current", so
+it carries the same surfaces under its key prefix — full navigation parity with `current`).
+Older freezes are retained on disk and stay reachable by id, just not via the side-nav.
+Kastens are discovered by their `<key>/lens/terms` surfaces, not registry notes (the registry
+pointer notes were removed — RH 2026-07-06); live embeds (lens chords, training viz) are
+suppressed inside frozen kastens.
 
 ## Loading
 
@@ -154,9 +188,10 @@ source of the landing's graph.
 Before a regen (or any version cut), `just kb-snapshot --key <key>` freezes `current/` into a
 **namespaced, self-contained** zettelkasten under `archive/<key>/`: every note id and `[[wikilink]]`
 is prefixed `<key>/`, so the snapshot coexists with the regenerated `current` (no id collision) and is
-internally navigable (clicking inside stays inside). A registry note (kind `archive-snapshot`) is the
-Archive-dropdown entry point; a `_manifest.json` pins the corpus/coverage/catalog it was projected
-from (reproducible). The snapshot survives `kb-build` (which rebuilds `current` only).
+internally navigable (clicking inside stays inside). The Archive sidebar's SNAPSHOT selector
+discovers a kasten by its `<key>/lens/terms` surface (registry notes are no longer used for
+navigation); a `_manifest.json` pins the corpus/coverage/catalog it was projected from
+(reproducible). The snapshot survives `kb-build` (which rebuilds `current` only).
 
 **2026Q2 — pre-regen snapshot** (taken 2026-06-18, calendar quarter): 3,397 notes · corpus
 `sdg_corpus_v0_3/d7646714…` · catalog `ae7dbee`. Regenerate with
