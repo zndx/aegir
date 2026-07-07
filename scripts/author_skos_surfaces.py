@@ -39,16 +39,20 @@ name, its OWL axiom (Manchester), its current one-line verbalization, the vocabu
 references, and the NEAREST SIBLING surfaces it must be distinguished from.
 
 Return, per term: alt_labels (2-6 alternative surface forms, 1-5 words each — how practitioners
-would actually name this in documents), scope_note (1-2 sentences: WHEN this term applies and
-when it does NOT — contrast with the siblings), definition (2-3 sentences of practitioner prose
+would actually name this in documents), scope_note (1-2 sentences describing the concrete
+setting in which this term applies), definition (2-3 sentences of practitioner prose
 elaborating the verbalization with concrete, domain-real detail).
 
 HARD RULES (a deterministic membrane rejects violations, with reasons you must fix):
+- POSITIVE VOICE ONLY. An embedding filter has no negation operator — every word you write
+  ATTRACTS what it names. NEVER define by negation or contrast: no 'do not use for', 'excludes',
+  'rather than', 'distinct from', 'unlike', 'as opposed to'. Do not mention sibling terms or
+  their vocabulary AT ALL. Discriminate by adding the specific positive detail (participants,
+  artifacts, settings, instruments) that only THIS term involves.
 - NO ontological claims: no 'is a kind/type/subclass of', no axiom syntax, no ontology IRIs or
   curies beyond those the axiom already references. Annotations describe usage, never assert
   taxonomy.
-- Stay grounded in the term's own vocabulary and domain; no proprietary terminology codes.
-- Differentiate: your text must make THIS term retrievable against its siblings."""
+- Stay grounded in the term's own vocabulary and domain; no proprietary terminology codes."""
 
 PROPOSAL_SCHEMA = {
     "type": "object",
@@ -153,7 +157,8 @@ def _propose(batch, cat_by_id, glosses, feedback) -> "list[Proposal]":
         b = (f"TERM: {tid}\nAXIOM: {t.manchester_template}\n"
              f"CURRENT VERBAL: {t.verbal_template}\n"
              f"AXIOM VOCABULARY: {TL._axiom_vocabulary(t.manchester_template or '', glosses)}\n"
-             f"DISTINGUISH FROM: {'; '.join(sibs) or '—'}")
+             f"SIBLINGS (context only — NEVER mention them or their vocabulary; instead add "
+             f"the positive detail they lack): {'; '.join(sibs) or '—'}")
         if tid in feedback:
             b += f"\nPRIOR ATTEMPT REJECTED — {feedback[tid]}  → fix and re-emit."
         blocks.append(b)

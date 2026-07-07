@@ -25,6 +25,15 @@ _NUMCODE = re.compile(r"(?<![:_a-z0-9])\d{6,}\b")
 _AXIOM_SYNTAX = re.compile(r"\b(SubClassOf|EquivalentTo|DisjointWith)\b|\b(some|only|exactly|min|max)\s+\d*\s*[A-Z{]")
 # M3(ii): taxonomic claims must live in the axiom, not the annotation
 _TAXONOMIC = re.compile(r"\bis a (kind|type|subclass) of\b|\bsubsumes\b|\bbroader than\b|\bparent class\b", re.I)
+# M8: NEGATIVE-VOICE / definition-by-negation (RH 2026-07-07). An embedding-similarity
+# filter has no negation operator — "do not use for general travel acts" INJECTS
+# 'general travel acts' as attractor mass, and "distinct from <sibling>" injects the
+# sibling's vocabulary into THIS anchor (basin explosion + margin compression, both
+# measured). Discrimination must come from SPECIFIC POSITIVE vocabulary.
+_NEGATIVE_VOICE = re.compile(
+    r"\b(do(es)? not|don'?t|not (use|for|to be)|never|unlike|rather than|instead of|"
+    r"as opposed to|excluding|exclude[sd]?|differentiate[sd]? from|distinct from|"
+    r"not applicable|does not (apply|cover|include))\b", re.I)
 # M3(iii)/M4: curie-shaped tokens
 _CURIE = re.compile(r"(?:cco|bfo|fhir|sysml|witsml|sdg):[A-Za-z0-9_]+")
 
@@ -80,6 +89,14 @@ def validate_annotation(template, prop: Proposal, *,
     for cu in _CURIE.findall(text_all):
         if cu not in declared:
             return False, f"M3: curie `{cu}` not declared by this term's axiom — no new references via prose"
+
+    # M8 — positive voice: no definition-by-negation (anti-tokens attract what they
+    # name; sibling contrast injects the sibling's vocabulary into this anchor)
+    m = _NEGATIVE_VOICE.search(text_all)
+    if m:
+        return False, (f"M8: negative-voice construction `{m.group(0)}` — an embedding filter "
+                       f"has no negation; every token attracts. State what this term IS with "
+                       f"positive specificity instead of what it is not")
 
     # M4 — vocabulary grounding (τ-style: most content words must be reachable)
     words = [w for w in re.findall(r"[a-z]{4,}", text_all.lower())]
