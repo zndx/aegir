@@ -130,7 +130,7 @@ def parse_args() -> argparse.Namespace:
                         "(topic-first sampler). Required unless --from-harvest is given.")
     p.add_argument("--from-harvest", nargs="?", const="build/domain_harvest", default=None,
                    help="CONTENT-FIRST: write one chapter per harvested in-domain doc (the "
-                        "content-addressed harvest cache), grounded in the DERIVED ontology (08_derived) — "
+                        "content-addressed harvest cache), grounded in the DERIVED ontology (catalog.json) — "
                         "prose + schema co-derived from the same source. Replaces the audit topic sampler. "
                         "Optional path (default build/domain_harvest).")
     p.add_argument("--output", default="/raid/checkpoints/aegir-artifacts/chapters_v0/")
@@ -216,9 +216,8 @@ def load_all_templates(catalog_dir: Path,
     `restrict_families` (optional) filters templates to a given allowlist.
     """
     all_templates: dict[str, dict] = {}
-    for p in sorted(catalog_dir.glob("0*.json")):
-        if "candidate" in p.name:
-            continue
+    from aegir.ontology.schema import catalog_files
+    for p in catalog_files(catalog_dir):
         family = p.stem
         if restrict_families is not None and family not in restrict_families:
             continue
@@ -1027,7 +1026,7 @@ def main() -> int:
             store = REPO / store
         audit_run = store                       # stand-in: row/HX record `audit_run.name` = the harvest store
         harvest_docs = load_harvest_docs(store)
-        derived_pool = [t for t in all_templates.values() if t["_family"] == "08_derived"] \
+        derived_pool = [t for t in all_templates.values() if t["_family"] == "catalog"] \
             or list(all_templates.values())
         if not harvest_docs:
             raise SystemExit(f"no harvested docs in {store} — run harvest_domain_docs first")

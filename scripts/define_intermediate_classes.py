@@ -117,8 +117,8 @@ def _propose(chunk: list, contexts: dict, feedback: dict, retriever: "Retriever"
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/08_derived.json"))
-    ap.add_argument("--out", default=str(REPO / "src/aegir/ontology/catalog/08_derived.json"))
+    ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/catalog.json"))
+    ap.add_argument("--out", default=str(REPO / "src/aegir/ontology/catalog/catalog.json"))
     ap.add_argument("--batch", type=int, default=14)
     ap.add_argument("--rounds", type=int, default=3, help="max feedback rounds per filler")
     ap.add_argument("--limit", type=int, default=0)

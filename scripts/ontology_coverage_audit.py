@@ -262,8 +262,8 @@ def sample_finepdfs(args: argparse.Namespace) -> tuple[list[str], list[str], int
 
 def load_all_catalogs(catalog_dir: Path) -> tuple[list, list[Path]]:
     """Read every canonical NN_*.json (skip *.candidate.json + combined.json)."""
-    files = sorted(p for p in catalog_dir.glob("0*.json")
-                   if "candidate" not in p.name)
+    from aegir.ontology.schema import catalog_files
+    files = catalog_files(catalog_dir)
     templates = []
     for p in files:
         with open(p) as f:

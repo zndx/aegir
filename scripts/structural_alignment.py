@@ -86,9 +86,8 @@ SOTAB_CTA_SCHEMAORG = {
 def load_ontology_slot_vocab(catalog_dir: Path) -> set[str]:
     """Extract slot-type vocabulary across all canonical catalog files."""
     vocab: set[str] = set()
-    for p in sorted(catalog_dir.glob("0*.json")):
-        if "candidate" in p.name:
-            continue
+    from aegir.ontology.schema import catalog_files
+    for p in catalog_files(catalog_dir):
         data = json.loads(p.read_text())
         for t in data.get("templates", []):
             for slot_type in (t.get("slot_types") or {}).values():

@@ -385,7 +385,7 @@ SQLite table where each row is a *template* and contains:
 5. Commit *C* as a versioned artifact. *(As built, the catalog is the
    seven family JSON files in `src/aegir/ontology/catalog/`
    (`01_foundation` … `07_long_tail`) plus the FinePDFs-derived
-   `08_derived.json`, not the single `C-v0.1.{json,sqlite}` file this
+   `catalog.json`, not the single `C-v0.1.{json,sqlite}` file this
    brief originally proposed; the null statistics live in
    `null_stats_canonical.json` and the frozen topic model in
    `T_I_canonical.pkl`.)*

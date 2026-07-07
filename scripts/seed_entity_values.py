@@ -173,7 +173,8 @@ def main() -> int:
     args = ap.parse_args()
 
     cat_dir = REPO / args.catalog_dir if not Path(args.catalog_dir).is_absolute() else Path(args.catalog_dir)
-    files = sorted(p for p in cat_dir.glob("0*.json") if ".candidate" not in p.name and "combined" not in p.name)
+    from aegir.ontology.schema import catalog_files
+    files = catalog_files(cat_dir)
     dp_meta = D.dataprop_meta()
 
     templates: list[tuple] = []

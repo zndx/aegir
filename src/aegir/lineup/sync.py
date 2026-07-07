@@ -85,13 +85,14 @@ def _mirror_ontology() -> None:
     (dst / "catalog").mkdir(parents=True, exist_ok=True)
     n = 0
     live = set()
-    for f in sorted((SRC_ONTO / "catalog").glob("0[1-8]_*.json")):
-        if ".candidate." in f.name:        # staging copies — never shared
-            continue
+    from aegir.ontology.schema import catalog_files
+    for f in catalog_files(SRC_ONTO / "catalog"):
         shutil.copy2(f, dst / "catalog" / f.name)
         live.add(f.name)
         n += 1
-    for stale in sorted((dst / "catalog").glob("0[1-8]_*.json")):  # a retired family leaves the mirror too
+    # retired/renamed catalog files leave the mirror too (incl. the 0*-era family names)
+    for stale in sorted(list((dst / "catalog").glob("0[1-8]_*.json"))
+                        + list((dst / "catalog").glob("catalog.json"))):
         if stale.name not in live:
             stale.unlink()
             print(f"   mirror: dropped retired catalog {stale.name}")

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 """Promote derived ontology candidates into the live catalog — close the loop at the system boundary.
 
-The content-first deriver stages admitted primitives in ``08_derived.candidate.json``, but EVERY downstream
+The content-first deriver stages admitted primitives in ``catalog.candidate.json``, but EVERY downstream
 consumer (``generate_chapter``, ``build_ddl_spine``, ``build_verbalization_frames``) skips ``.candidate``
 files and nothing assembled ``combined.json`` — so "grow the ontology" was append-to-a-file-nobody-loads
 (derivation audit 2026-06-20, the Phase-0 must-fix). This promotes candidates through the deep gate into a
 clean family file consumers actually read, and rebuilds ``combined.json``:
 
   candidate → re-gate (DeepOnto parse, G1) → HermiT consistency (BFO/CCO ∪ primitive; the inc-2a oracle)
-            → strip ``_``-prefixed staging fields → clean ``08_derived.json`` (valid CatalogTemplates)
+            → strip ``_``-prefixed staging fields → clean ``catalog.json`` (valid CatalogTemplates)
             → rebuild ``combined.json`` (glob ``0*.json`` minus candidate/combined, merge null_stats).
 
 After promotion, ``build_ddl_spine`` / ``generate_chapter`` (which glob ``0*.json``) see the derived family
@@ -56,8 +56,8 @@ def _to_template(d: dict) -> CatalogTemplate:
 def build_combined() -> dict:
     """Assemble ``combined.json`` from all family files (``0*.json`` minus candidate/combined), merging
     null_stats. This is the assembler the pipeline was missing."""
-    fams = sorted(p for p in _CATALOG_DIR.glob("0*.json")
-                  if ".candidate" not in p.name and "combined" not in p.name)
+    from aegir.ontology.schema import catalog_files
+    fams = catalog_files(_CATALOG_DIR)
     templates: list[CatalogTemplate] = []
     null_stats: dict = {}
     version = "0.3.0"
@@ -74,8 +74,8 @@ def build_combined() -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--candidate", default="08_derived.candidate.json")
-    ap.add_argument("--out", default="08_derived.json")
+    ap.add_argument("--candidate", default="catalog.candidate.json")
+    ap.add_argument("--out", default="catalog.json")
     ap.add_argument("--no-hermit", dest="hermit", action="store_false", help="skip HermiT consistency (CPU gates only)")
     ap.add_argument("--no-jvm", dest="jvm", action="store_false", help="skip the DeepOnto re-gate (G1 parse)")
     ap.add_argument("--align-min", type=float, default=0.35,

@@ -128,6 +128,28 @@ class Catalog:
         ]
 
 
+CATALOG_DIR = Path(__file__).resolve().parent / "catalog"
+CATALOG_FILE = CATALOG_DIR / "catalog.json"
+CANDIDATE_FILE = CATALOG_DIR / "catalog.candidate.json"
+
+
+def catalog_files(catalog_dir: "str | Path | None" = None) -> "list[Path]":
+    """The live catalog file(s) — the single content-first derived catalog.
+
+    The numbered-family era (01-07 seed files + the ``08_derived`` name) is history:
+    EVERYTHING is derived now (RH 2026-07-07), so the catalog is just ``catalog.json``
+    (staging: ``catalog.candidate.json``). Returns a list because call sites
+    historically iterated family files; falls back to the legacy ``0*.json`` glob so a
+    pre-rename checkout still resolves.
+    """
+    d = Path(catalog_dir) if catalog_dir else CATALOG_DIR
+    live = d / "catalog.json"
+    if live.exists():
+        return [live]
+    return sorted(p for p in d.glob("0*.json")
+                  if "candidate" not in p.name and "combined" not in p.name)
+
+
 def load_catalog(path: str | Path) -> Catalog:
     """Load a catalog from JSON.
 

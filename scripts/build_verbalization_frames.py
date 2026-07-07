@@ -51,8 +51,8 @@ def compute_map(k: int) -> dict[str, list[str]]:
 
 
 def catalog_files() -> list[Path]:
-    fams = [Path(f) for f in sorted(glob.glob(str(CATALOG_DIR / "0*.json")))
-            if "candidate" not in f and "combined" not in f]
+    from aegir.ontology.schema import catalog_files as _cf
+    fams = _cf(CATALOG_DIR)
     return fams + [COMBINED]
 
 

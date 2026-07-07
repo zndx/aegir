@@ -70,8 +70,8 @@ def _iri(code: str) -> str:
 
 
 def build_records() -> list[dict]:
-    files = [f for f in sorted(glob.glob(str(REPO / "src/aegir/ontology/catalog/0*.json")))
-             if "candidate" not in f and "combined" not in f]
+    from aegir.ontology.schema import catalog_files
+    files = [str(p) for p in catalog_files()]
     records: list[dict] = []
 
     # 1) upper concepts (anchors + generic)

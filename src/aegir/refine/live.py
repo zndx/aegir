@@ -61,9 +61,8 @@ def _grounding() -> tuple[dict, dict]:
 def _load_templates(catalog_dir: str = CATALOG_DIR) -> dict:
     """Replicates generate_chapter.load_all_templates (family file stem → `_family`), without its heavy deps."""
     out: dict = {}
-    for p in sorted(Path(catalog_dir).glob("0*.json")):
-        if "candidate" in p.name:
-            continue
+    from aegir.ontology.schema import catalog_files
+    for p in catalog_files(catalog_dir):
         for t in json.loads(p.read_text()).get("templates", []):
             t = dict(t)
             t["_family"] = p.stem

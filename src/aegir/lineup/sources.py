@@ -17,7 +17,6 @@ from pathlib import Path
 from aegir.ontology.schema import CatalogTemplate
 
 REPO = Path(__file__).resolve().parents[3]
-CATALOG_GLOB = "src/aegir/ontology/catalog/0*.json"  # 0* (incl. 08_derived); candidate/combined filtered below
 
 
 def kb_dir() -> Path:
@@ -48,20 +47,18 @@ def relational_category(t: CatalogTemplate) -> str:
 
 
 def load_ontology() -> list[tuple[str, CatalogTemplate]]:
-    """``[(category, CatalogTemplate)]`` from the surviving derived catalog(s).
+    """``[(category, CatalogTemplate)]`` from the live catalog.
 
     The category is the template's provenance pattern (``template_category``), NOT the
-    catalog filename — the file-stem "family" axis died with the 01-07 retirement
-    (every stem is ``08_derived`` now, which collapsed the category panels to one bucket).
+    catalog filename — the file-stem "family" axis died with the 01-07 retirement, and
+    the catalog is a single file now (everything is derived — RH 2026-07-07).
 
     TODO(sync): overlay the canonical published ontology from the ``corpora`` submodule
     (zndx/sdg-corpora) when checked out — the SHARE layer atop this KNOW layer.
     """
-    from aegir.ontology.schema import load_catalog
+    from aegir.ontology.schema import catalog_files, load_catalog
     out: list[tuple[str, CatalogTemplate]] = []
-    for f in sorted(glob.glob(str(REPO / CATALOG_GLOB))):
-        if "candidate" in f or "combined" in f:
-            continue
+    for f in catalog_files():
         for t in load_catalog(f).templates:
             out.append((template_category(t), t))
     return out
@@ -114,13 +111,17 @@ def load_retired_ontology() -> list[tuple[str, CatalogTemplate]]:
                 continue
     # 2) Every superseded generation of the derived catalog (newest-first, so the most
     #    recent superseded definition of an id wins). The corpus was generated across
-    #    several 08_derived promotions; ids replaced within its history are cited too.
-    p08 = "src/aegir/ontology/catalog/08_derived.json"
-    for h in _git("log", "--format=%H", "--", p08).split():
-        try:
-            _collect("08_derived", _json.loads(_git("show", f"{h}:{p08}")))
-        except Exception:  # noqa: BLE001
-            continue
+    #    several promotions; ids replaced within the file's history are cited too.
+    #    Sweep BOTH names: the live catalog.json and its pre-rename 08_derived.json era
+    #    (the "08_derived" label is kept for the historical generations — it's what
+    #    those files were called when the corpus cited them).
+    for p in ("src/aegir/ontology/catalog/catalog.json",
+              "src/aegir/ontology/catalog/08_derived.json"):
+        for h in _git("log", "--format=%H", "--", p).split():
+            try:
+                _collect("08_derived", _json.loads(_git("show", f"{h}:{p}")))
+            except Exception:  # noqa: BLE001
+                continue
     return out
 
 

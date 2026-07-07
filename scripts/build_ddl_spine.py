@@ -79,8 +79,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def catalog_files(catalog_dir: Path) -> list[Path]:
-    return sorted(p for p in catalog_dir.glob("0*.json")
-                  if ".candidate" not in p.name and "combined" not in p.name)
+    from aegir.ontology.schema import catalog_files as _cf
+    return _cf(catalog_dir)
 
 
 def compute_run_id(args: argparse.Namespace, files: list[Path]) -> str:

@@ -72,7 +72,7 @@ see [Authors Guide § 5](./authors_guide.md#5-the-disposal-membranes-what-reject
 ## Design constraints that follow
 
 1. **The ontology lives in source, not in a database.** The seven
-   family catalogs and `08_derived.json` are text files in version
+   family catalogs and `catalog.json` are text files in version
    control; mutations are PRs with diffs. The realized `.omn`/`.owl`
    is build output. If a UI ever writes to a DB, the export pipeline
    reconciles into the catalog, not the other way around.

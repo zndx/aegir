@@ -30,7 +30,7 @@ HermiT-validated OWL artifact** at
 certificate at `corpora/ontology/HERMIT_CERTIFICATE.md`. The seven
 family catalogs (`src/aegir/ontology/catalog/01…07`) are a **seed and
 regression baseline**; FinePDFs-derived intermediate classes accrete
-in `08_derived.json`, and the live driver is the content-first
+in `catalog.json`, and the live driver is the content-first
 derivation pipeline (`scripts/derive_ontology.py`,
 `scripts/define_intermediate_classes.py`), not a fixed template count.
 

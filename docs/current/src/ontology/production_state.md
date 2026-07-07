@@ -168,7 +168,7 @@ ColBERT/Qdrant MaxSim domain filter over a SKOS index
 (`scripts/derive_ontology.py::_apply_domain_filter`). The seven family
 catalogs under `src/aegir/ontology/catalog/` (`01_foundation` …
 `07_long_tail`) are a **seed and regression baseline**; FinePDFs-derived
-intermediate classes accrete in `08_derived.json`. The live driver is
+intermediate classes accrete in `catalog.json`. The live driver is
 the content-first pipeline — text → engine derives candidate classes →
 grounding-anchor retrieval supplies a real genus → the disposal
 membranes admit or reject — not a fixed template count. Classes are

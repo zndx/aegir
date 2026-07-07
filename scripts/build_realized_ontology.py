@@ -3,7 +3,7 @@
 domain ontology, and emit it (+ a consistency certificate) into ``corpora/ontology/``.
 
 The catalog ships *templates* (Manchester skeletons with the `{slot:Type}` DSL). This MATERIALIZES the
-FinePDFs-derived templates (``08_derived``) into concrete OWL axioms over global ``sdg:`` domain IRIs
+FinePDFs-derived templates (``catalog.json``) into concrete OWL axioms over global ``sdg:`` domain IRIs
 (so a class shared by two templates is ONE class), assembles them with the BFO/CCO grounding, applies the
 **Phase-A rigor lifts** (filler BFO-grounding, definition annotations, typed DataProperties — realizer-side,
 no re-derivation; see EVIDENCE.md OQ-Structure), validates with HermiT, and emits the loadable artifact:
@@ -408,7 +408,7 @@ def main() -> int:
               "refusing to realize against a vacuous, CCO-less theory", file=sys.stderr)
         return 2
 
-    derived = load_catalog(REPO / "src/aegir/ontology/catalog/08_derived.json").templates
+    derived = load_catalog(REPO / "src/aegir/ontology/catalog/catalog.json").templates
     doc, head_iri = RG.render_batch(derived)
     if not head_iri:
         print("no renderable candidates", file=sys.stderr)
@@ -673,7 +673,7 @@ def main() -> int:
             f"- **unsatisfiable classes**: {len(unsat)}\n"
             + (f"- **domain-narrowed**: {len(signals)} class(es) shed as unsatisfiable vs the theory — "
                f"justifications recorded in `build/realize_signals.json` (the re-authoring signal)\n" if signals else "")
-            + f"- **realized from**: the {len(derived)} FinePDFs-derived templates (`08_derived`)\n"
+            + f"- **realized from**: the {len(derived)} FinePDFs-derived templates (`catalog.json`)\n"
             f"- **rigor (Phase A)**: {nf} filler classes BFO-grounded · {na} classes carry NL definitions "
             f"(iao:0000115) · {nd} typed DataProperty assertions\n"
             + (f"- **individuals**: {n_inds} membrane-admitted (ABox included) — instance-level consistency "

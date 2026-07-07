@@ -59,7 +59,7 @@ bearer-of · `bfo:0000054` realized-in.
 Classes are authored as **catalog templates** — a Manchester-syntax skeleton with typed slots — that
 the realizer renders, grounds, and validates into the OWL artifact. The seven family JSON files live
 in `src/aegir/ontology/catalog/`; FinePDFs-derived intermediate classes accrete in
-`08_derived.json`. **Edit the family `.json` files, never `combined.json`** (regenerated).
+`catalog.json`. **Edit `catalog.json`, never `combined.json`** (regenerated).
 
 ### The slot DSL
 
@@ -268,7 +268,7 @@ A self-check before you propose:
 
 ```
 LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/build_realized_ontology.py --strict-grounding
-uv run --no-sync python src/aegir/ontology/ontoclean.py src/aegir/ontology/catalog/08_derived.json
+uv run --no-sync python src/aegir/ontology/ontoclean.py src/aegir/ontology/catalog/catalog.json
 just check-ontology-schema      # TTL parses, labels/definitions present, BFO ancestry, SPARQL totality
 ```
 
@@ -361,7 +361,7 @@ uv run --no-sync python scripts/ontology_oquare.py corpora/ontology/sdg-ontology
     --certificate corpora/ontology/HERMIT_CERTIFICATE.md [--json]
 # membranes / realize (LD_LIBRARY_PATH bootstraps the JVM for HermiT/DeepOnto)
 LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/build_realized_ontology.py --strict-grounding
-uv run --no-sync python src/aegir/ontology/ontoclean.py src/aegir/ontology/catalog/08_derived.json
+uv run --no-sync python src/aegir/ontology/ontoclean.py src/aegir/ontology/catalog/catalog.json
 just check-ontology-schema
 # grounding + agent-assisted authoring
 uv run --no-sync python scripts/grounding_anchors.py query "<concept>"

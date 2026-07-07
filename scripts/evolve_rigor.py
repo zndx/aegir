@@ -138,8 +138,8 @@ def validate_axioms(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict[s
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/08_derived.json"))
-    ap.add_argument("--out", default=str(REPO / "src/aegir/ontology/catalog/08_derived.json"))
+    ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/catalog.json"))
+    ap.add_argument("--out", default=str(REPO / "src/aegir/ontology/catalog/catalog.json"))
     ap.add_argument("--batch", type=int, default=12)
     ap.add_argument("--limit", type=int, default=0, help="cap targets processed (0 = all)")
     ap.add_argument("--capability", default="instruct")

@@ -169,8 +169,8 @@ def _apply_and_check(targets: dict, cat, proposals: dict) -> "set[str]":
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--signals", default=str(SIGNALS_OUT), help="the boundary signal record (JSON)")
-    ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/08_derived.json"))
-    ap.add_argument("--out", default=str(REPO / "src/aegir/ontology/catalog/08_derived.json"))
+    ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/catalog.json"))
+    ap.add_argument("--out", default=str(REPO / "src/aegir/ontology/catalog/catalog.json"))
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--rounds", type=int, default=4, help="max feedback rounds per class")
     ap.add_argument("--limit", type=int, default=0)

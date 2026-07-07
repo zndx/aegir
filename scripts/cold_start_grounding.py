@@ -43,8 +43,8 @@ def _source_span(raw: dict) -> "str | None":
 
 def main() -> None:
     rng = np.random.default_rng(20260701)
-    promoted = {t["template_id"] for t in json.load(open(CAT / "08_derived.json"))["templates"]}
-    cands = json.load(open(CAT / "08_derived.candidate.json"))["templates"]
+    promoted = {t["template_id"] for t in json.load(open(CAT / "catalog.json"))["templates"]}
+    cands = json.load(open(CAT / "catalog.candidate.json"))["templates"]
 
     rows = []
     for c in cands:

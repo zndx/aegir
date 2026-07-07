@@ -91,9 +91,8 @@ def _patterns_for(concept: str, rng) -> list[patterns.AxiomPattern]:
 def _existing_structures(catalog_dir: Path) -> set[str]:
     """Normalized manchester structures already in the catalog (for the novelty gate)."""
     out: set[str] = set()
-    for f in catalog_dir.glob("0*.json"):
-        if ".candidate" in f.name or "combined" in f.name:
-            continue
+    from aegir.ontology.schema import catalog_files
+    for f in catalog_files(catalog_dir):
         for t in load_catalog(f).templates:
             out.add(_norm_structure(t.manchester_template))
     return out

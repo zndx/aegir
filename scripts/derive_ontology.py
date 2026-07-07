@@ -16,7 +16,7 @@ This inverts it. For each unit of real-world text:
   2. VERIFY    — the same membrane as ``generate_ontology_primitives`` (structural → clean-room → novelty →
                 realize-grounding → utility; ``--verify-jvm`` adds DeepOnto-verbalize + HermiT). Nothing
                 enters the catalog unverified.
-  3. GROW      — admitted primitives expand the ontology; ``08_derived.candidate.json`` accumulates. The
+  3. GROW      — admitted primitives expand the ontology; ``catalog.candidate.json`` accumulates. The
                 forward-cursor (``--skip-docs``) streams forward through FinePDFs so coverage compounds.
 
 The templates demote to a SEED + regression baseline; FinePDFs becomes the driver; the LLM does the lifting.
@@ -46,7 +46,7 @@ from aegir.ontology import derivation_membrane as DM  # noqa: E402 — the three
 import generate_ontology_primitives as G  # noqa: E402 — reuse G.assemble (pattern → CatalogTemplate)
 
 _TRACES = REPO / "build" / "ontology_derivation_traces.jsonl"
-_CANDIDATES = REPO / "src" / "aegir" / "ontology" / "catalog" / "08_derived.candidate.json"
+_CANDIDATES = REPO / "src" / "aegir" / "ontology" / "catalog" / "catalog.candidate.json"
 _CURSOR = REPO / "build" / "derive_ontology_cursor.json"
 _ARR_FENCE = re.compile(r"```(?:json)?\s*(\[.*?\]|\{.*?\})\s*```", re.S)
 # Local FinePDFs corpus candidates (\x03-delimited docs). Override with --corpus.
@@ -230,7 +230,7 @@ def main() -> int:
     ap.add_argument("--capability", default="instruct")
     ap.add_argument("--temperature", type=float, default=0.55)
     ap.add_argument("--seed", type=int, default=4649)
-    ap.add_argument("--write-candidates", action="store_true", help="write admitted primitives → 08_derived.candidate.json")
+    ap.add_argument("--write-candidates", action="store_true", help="write admitted primitives → catalog.candidate.json")
     ap.add_argument("--no-jvm", dest="jvm", action="store_false", help="skip the DeepOnto JVM gates (G1-parse/G3); G2/clean/anchor/faithful still run")
     ap.add_argument("--k-verbal", type=int, default=3, help="G3 floor: min distinct procedural verbalization skeletons")
     # ── semantic-domain aperture (ColBERT/Qdrant over the SKOS hierarchy) ──
@@ -369,7 +369,7 @@ def main() -> int:
                 existing_cand = []
         seen_ids = {t.get("template_id") for t in existing_cand}
         merged = existing_cand + [a for a in admitted if a["template_id"] not in seen_ids]
-        _CANDIDATES.write_text(json.dumps({"family": "08_derived", "templates": merged}, indent=1) + "\n")
+        _CANDIDATES.write_text(json.dumps({"family": "catalog", "templates": merged}, indent=1) + "\n")
         print(f"wrote {len(merged)} candidate primitives ({len(merged) - len(existing_cand)} new) → {_CANDIDATES.relative_to(REPO)}")
     else:
         print(f"(dry run — {len(admitted)} admitted; pass --write-candidates)")

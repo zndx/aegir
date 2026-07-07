@@ -115,7 +115,7 @@ def seed_template(template, family: str, dp_meta: dict, *, rounds: int, capabili
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/08_derived.json"))
+    ap.add_argument("--catalog", default=str(REPO / "src/aegir/ontology/catalog/catalog.json"))
     ap.add_argument("--rounds", type=int, default=3, help="max membrane feedback rounds per template")
     ap.add_argument("--limit", type=int, default=0, help="process only the first N uncovered templates")
     ap.add_argument("--refresh", action="store_true", help="re-seed templates already covered by the registry")

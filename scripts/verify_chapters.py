@@ -362,9 +362,8 @@ def geometric_mean(scores: list[float]) -> float:
 def load_ontology_lookup(catalog_dir: Path) -> dict[str, dict]:
     """All templates, keyed by template_id, across all canonical family files."""
     out: dict[str, dict] = {}
-    for p in sorted(catalog_dir.glob("0*.json")):
-        if "candidate" in p.name:
-            continue
+    from aegir.ontology.schema import catalog_files
+    for p in catalog_files(catalog_dir):
         data = json.loads(p.read_text())
         for t in data.get("templates", []):
             t = dict(t)
