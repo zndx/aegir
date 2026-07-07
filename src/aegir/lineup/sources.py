@@ -512,6 +512,25 @@ def releases() -> "list[dict]":
     return out
 
 
+def topic_associations() -> "dict | None":
+    """The newest inverted-topic-layer association run (``build/topic_associations/
+    <collection>-<sha>/``): the item ↔ topic lineage records the lineup projects as
+    ITEM notes on trunk. Newest by report mtime; graceful None before any run."""
+    import json as _json
+    reports = sorted((REPO / "build" / "topic_associations").glob("*/report.json"),
+                     key=lambda p: p.stat().st_mtime, reverse=True)
+    for rp in reports:
+        try:
+            report = _json.loads(rp.read_text())
+            records = [_json.loads(ln) for ln in
+                       (rp.parent / "associations.jsonl").read_text().splitlines() if ln]
+        except Exception:  # noqa: BLE001
+            continue
+        if records:
+            return {"dir": str(rp.parent), "report": report, "records": records}
+    return None
+
+
 def strategy_state() -> "dict | None":
     """The declared strategy (the sdg-strategy submodule's CURRENT manifest) + drift-lite."""
     try:

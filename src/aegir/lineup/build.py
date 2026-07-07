@@ -111,12 +111,14 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
                      term_topics: dict[str, list[int]] | None = None,
                      term_broader: dict[str, list[str]] | None = None,
                      term_narrower: dict[str, list[str]] | None = None,
-                     term_colls: dict[str, list[str]] | None = None) -> list[N.Note]:
+                     term_colls: dict[str, list[str]] | None = None,
+                     term_items: dict[str, list[str]] | None = None) -> list[N.Note]:
     term_chapters = term_chapters or {}
     term_topics = term_topics or {}
     term_broader = term_broader or {}
     term_narrower = term_narrower or {}
     term_colls = term_colls or {}
+    term_items = term_items or {}
     cats: dict[str, list[str]] = {}
     cat_meta: dict[str, dict] = {}
     anchors: dict[str, dict] = {}
@@ -165,6 +167,12 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
             body += ("\n**Realized across** " + str(len(cls)) + " collection(s): "
                      + ", ".join(N.wl(c, c.split("-")[-1]) for c in cls[:12])
                      + (" …" if len(cls) > 12 else "") + "\n")
+        itm = term_items.get(t.template_id, [])
+        if itm:
+            body += ("\n**Aligned items** (inverted topic layer — FinePDFs windows that "
+                     "unambiguously bind here): " + str(len(itm)) + " — "
+                     + ", ".join(N.wl(i, i.split("/")[-1][:8]) for i in itm[:10])
+                     + (" …" if len(itm) > 10 else "") + "\n")
         if not chs and not tps:
             body += "\n_Not yet exercised by any chapter or topic (a curation candidate)._\n"
 
@@ -248,6 +256,88 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
                           data_product="ontology", body=body,
                           frontmatter={"anchor": a["label"], "n_terms": len(a["terms"])}))
     return out
+
+
+# ── ITEM notes — the FedWiki granularity (the inverted topic layer's lineage) ────
+def project_items(assoc: dict, live_terms: set) -> "tuple[list[N.Note], dict[str, list[str]]]":
+    """Project the inverted topic layer's association records as ITEM notes (trunk).
+
+    An item is a passage window (content-addressed, span-faithful); its note IS the
+    lineage record made walkable: the window text, the adjudication (topic · score ·
+    hierarchical margin · collection state · encoder — RH rulings c/d/g), the topic as
+    a live term wikilink, and the containing document. Only ASSIGNED items get notes;
+    the ambiguous mass stays in the run report (it is the rigor loop's food, not a
+    browse surface). Returns (notes, term→item-ids) so term notes become the hubs."""
+    report = assoc.get("report") or {}
+    assigned = [r for r in assoc["records"] if r.get("assigned")]
+    docs_dir = S.REPO / "build" / "domain_harvest" / "docs"
+    doc_cache: dict[str, str] = {}
+    out: list[N.Note] = []
+    term_items: dict[str, list[str]] = {}
+    by_topic: dict[str, list[str]] = {}
+    seen: set[str] = set()
+    for r in assigned:
+        iid = f"item/{r['passage_hash'][:16]}"
+        if iid in seen:
+            continue
+        seen.add(iid)
+        src = r.get("source") or ""
+        if src not in doc_cache:
+            p = docs_dir / src
+            doc_cache[src] = p.read_text(errors="ignore") if (src and p.exists()) else ""
+        s, e = ((r.get("item_span") or []) + [0, 0])[:2]
+        text = doc_cache[src][s:e] if doc_cache[src] else ""
+        code = r.get("topic_code") or ""
+        is_term = code in live_terms
+        topic_wl = (N.wl(f"ontology/term/{code}", code) if is_term
+                    else f"`{code}` {r.get('topic_label', '')} (domain roll-up)")
+        body = (
+            f"**Item** `{r['passage_hash'][:16]}` — a passage window "
+            f"(chars {s}–{e} of doc `{(r.get('doc_hash') or '')[:16]}`, `{src}`).\n\n"
+            + (f"> {text[:900]}{'…' if len(text) > 900 else ''}\n\n" if text else "")
+            + f"**Topic.** {topic_wl}\n\n"
+            f"**Adjudication.** score {r.get('score')} · margin_h **{r.get('rel_margin_h')}** "
+            f"(flat {r.get('rel_margin')}) vs competitor `{r.get('competitor_code') or '—'}` · "
+            f"τ {r.get('tau')}\n\n"
+            f"**Lineage.** collection `{r.get('collection')}@{r.get('collection_sha')}` · "
+            f"encoder `{r.get('encoder')}` · projection `{r.get('projection', '-')}` · "
+            f"{r.get('n_tokens')} tokens\n\n"
+            f"All items: {N.wl('item/index', 'the item index')}")
+        out.append(N.Note(
+            id=iid, title=f"item {r['passage_hash'][:12]}", kind="item",
+            data_product="content", root="scratch", body=body,
+            frontmatter={"doc_hash": r.get("doc_hash"), "source": src,
+                         "span": r.get("item_span"), "topic_code": code,
+                         "topic_is_term": is_term, "score": r.get("score"),
+                         "rel_margin_h": r.get("rel_margin_h"),
+                         "collection_sha": r.get("collection_sha"),
+                         "encoder": r.get("encoder")}))
+        by_topic.setdefault(code, []).append(iid)
+        if is_term:
+            term_items.setdefault(code, []).append(iid)
+
+    lines = []
+    for code, iids in sorted(by_topic.items(), key=lambda kv: -len(kv[1])):
+        head = (N.wl(f"ontology/term/{code}", code) if code in live_terms
+                else f"`{code}` (domain)")
+        lines.append(f"- {head} — {len(iids)}: "
+                     + " · ".join(N.wl(i, i.split('/')[-1][:8]) for i in iids[:10])
+                     + (" …" if len(iids) > 10 else ""))
+    out.append(N.Note(
+        id="item/index", title="Items × Topics (inverted layer)", kind="item-index",
+        data_product="content", root="scratch",
+        frontmatter={"collection_sha": report.get("collection_sha"),
+                     "n_items": report.get("n"), "n_assigned": report.get("n_assigned"),
+                     "alignment_rate": report.get("alignment_rate"),
+                     "topics_hit": report.get("topics_hit")},
+        body=(f"**Items × Topics** — the inverted topic layer's lineage, walkable. "
+              f"{report.get('n_assigned')}/{report.get('n')} items aligned "
+              f"(rate {report.get('alignment_rate')}) across {report.get('topics_hit')} topics; "
+              f"registry `{report.get('collection')}@{report.get('collection_sha')}`, "
+              f"τ {report.get('tau')}. One passage window → ONE topic (hierarchical margin) "
+              f"or none — the unassigned mass drives the definitional-rigor loop.\n\n"
+              + "\n".join(lines))))
+    return out, term_items
 
 
 def project_retired_ontology(rows: list[tuple[str, CatalogTemplate]],
@@ -873,7 +963,8 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
 
 
 def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bool,
-                         zettel_head: str | None = None) -> list[N.Note]:
+                         zettel_head: str | None = None,
+                         items_report: dict | None = None) -> list[N.Note]:
     """The TRUNK kasten's lenses (scratch root) — the same lens ids as the release kasten,
     root-resolved (roots are refs, git-style). These browse the LIVE state: the derived
     catalog by pattern, the grounds-shape spine + the earned generated web, and the
@@ -899,6 +990,11 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
                     f"- {N.wl('corpus/sdg', 'the live SDG corpus')}\n")
     if zettel_head:
         content_body += f"- run chain head: {N.wl('corpus/runs/' + zettel_head, zettel_head)}\n"
+    if items_report:
+        content_body += (f"- {N.wl('item/index', 'Items × Topics')} — the inverted topic layer: "
+                         f"{items_report.get('n_assigned')}/{items_report.get('n')} passage "
+                         f"windows aligned to {items_report.get('topics_hit')} ontology-grounded "
+                         f"topics (registry `@{items_report.get('collection_sha')}`)\n")
     content = N.Note(
         id="lens/content", title="Content (trunk)", kind="lens", data_product="content",
         root="scratch", frontmatter={"lens": "content", "chord": False}, body=content_body)
@@ -1114,9 +1210,18 @@ def run(args=None) -> int:
 
     # TRUNK (scratch): the live catalog's lexicon + its deterministic spine — where new
     # work lands, git-trunk-style. The whole live projection is a scratch citizen.
+    assoc = S.topic_associations()
+    item_notes: list[N.Note] = []
+    term_items: dict[str, list[str]] = {}
+    if assoc:
+        item_notes, term_items = project_items(assoc, live_terms=set(tid2cat))
+        print(f"  items: {len(item_notes) - 1} aligned passage windows "
+              f"(inverted layer, registry @{assoc['report'].get('collection_sha')}, "
+              f"rate {assoc['report'].get('alignment_rate')})")
     trunk = (project_ontology(rows, term_chapters, term_topics, broader, narrower,
-                              term_colls=maps.get("term_colls"))
-             + project_relational(rows, has_sdg=bool(sc)))
+                              term_colls=maps.get("term_colls"), term_items=term_items)
+             + project_relational(rows, has_sdg=bool(sc))
+             + item_notes)
     for n in trunk:
         n.root = "scratch"
     notes = trunk
@@ -1343,7 +1448,8 @@ def run(args=None) -> int:
 
     # Trunk lenses (scratch) — same lens ids as the release kasten, root-resolved.
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
-                                  zettel_head=zs[-1]["id"] if zs else None)
+                                  zettel_head=zs[-1]["id"] if zs else None,
+                                  items_report=(assoc or {}).get("report"))
 
     for n in notes:
         N.write_note(kb, n)
