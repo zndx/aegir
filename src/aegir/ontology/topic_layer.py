@@ -157,10 +157,12 @@ def _adjudicate(hits: "list[dict]", *, tau: float, collection: str, collection_s
     near-miss is not ambiguity, the subtree is the unambiguous assignment (increment 2;
     the harvest gate's ``in_subtree`` implied this all along). No non-ancestor
     competitor in the top-k ⇒ rel_margin_h = 1.0 (maximally unambiguous at this k)."""
+    from typing import Any
     ph = passage_hash(text)
-    base = dict(passage_hash=ph, collection=collection, collection_sha=collection_sha,
-                tau=tau, unit=unit, doc_hash=doc_hash or ph, item_index=item_index,
-                item_span=item_span or [], n_tokens=n_tokens, n_chars=len(text), source=source)
+    base: "dict[str, Any]" = dict(
+        passage_hash=ph, collection=collection, collection_sha=collection_sha,
+        tau=tau, unit=unit, doc_hash=doc_hash or ph, item_index=item_index,
+        item_span=item_span or [], n_tokens=n_tokens, n_chars=len(text), source=source)
     if not hits:
         return Association(assigned=False, topic_code="", topic_iri="", topic_label="",
                            topic_path=[], score=0.0, margin=0.0, rel_margin=0.0,
@@ -300,6 +302,100 @@ def associate_store(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
     return report
 
 
+# ── the TERM-grounded topic registry (increment 3) ───────────────────────────────
+DEFAULT_REGISTRY = "sdg_topics"
+_VOCAB_NS = "https://signals.zndx.org/sdg#"     # matches build_skos_vocab's scheme
+
+
+def build_term_registry(*, url: str = DEFAULT_QDRANT_URL,
+                        collection: str = DEFAULT_REGISTRY,
+                        include_domains: bool = True, recreate: bool = True) -> dict:
+    """Materialize the topic registry from the LIVE catalog: every term is a topic anchor
+    (explicit ontology grounding per topic — ruling e), nested under its SKOS domain via
+    ``ancestor_codes`` so the hierarchical gate treats domain↔member-term as one lineage
+    while sibling terms COMPETE (that competition is the definitional-rigor signal).
+
+    The anchor text is the term's SKOS surface (prefLabel · slots-as-altLabels ·
+    verbalization-as-definition · a provenance scopeNote). Thin surfaces are EXPECTED —
+    the registry's own token counts are the rigor loop's first worklist (ruling f)."""
+    from qdrant_client import models
+
+    from aegir.ontology.colbert_encoder import get_encoder
+    from aegir.ontology.domain_index import DEFAULT_OVERLAY, load_skos
+    from aegir.ontology.schema import CATALOG_FILE, load_catalog
+
+    anchors: list[dict] = []
+    if include_domains:  # the rich aperture domains ride along as roll-up parents
+        for c in load_skos(DEFAULT_OVERLAY, overlays=None).values():
+            if not c.text():
+                continue
+            anchors.append({"text": c.text(), "payload": {
+                "iri": c.iri, "code": c.code, "pref_label": c.pref_label,
+                "alt_label": c.alt_label, "broader": c.broader,
+                "ancestor_codes": c.ancestor_codes(), "kind": "domain"}})
+    n_domains = len(anchors)
+    for t in load_catalog(CATALOG_FILE).templates:
+        prov = t.provenance or {}
+        dom = prov.get("domain") if isinstance(prov.get("domain"), dict) else {}
+        dom_code = str((dom or {}).get("code") or "")
+        ancestors = ([".".join(dom_code.split(".")[:i]) for i in range(1, dom_code.count(".") + 2)]
+                     if dom_code else [])
+        frames = t.frames() if hasattr(t, "frames") else []
+        definition = (frames[0] if frames else t.verbal_template) or ""
+        pref = t.template_id.replace("_", " ")
+        alts = ", ".join(s.replace("_", " ") for s in (t.slot_types or {}))
+        scope = ". ".join(p for p in (
+            f"In the '{(dom or {}).get('label')}' domain" if dom else "",
+            f"Pattern {prov.get('pattern')}" if prov.get("pattern") else "",
+            f"grounds {prov.get('grounds_ddl')}" if prov.get("grounds_ddl") else "") if p)
+        text = ". ".join(p for p in (pref, alts, definition, scope) if p).strip()
+        if not text:
+            continue
+        anchors.append({"text": text, "payload": {
+            "iri": f"{_VOCAB_NS}{t.template_id}", "code": t.template_id,
+            "pref_label": pref, "alt_label": alts, "broader": dom_code,
+            "ancestor_codes": ancestors, "kind": "term"}})
+
+    enc = get_encoder()
+    cl = _client(url)
+    if recreate and cl.collection_exists(collection):
+        cl.delete_collection(collection)
+    if not cl.collection_exists(collection):
+        cl.create_collection(
+            collection_name=collection,
+            vectors_config=models.VectorParams(
+                size=enc.dim, distance=models.Distance.COSINE,
+                multivector_config=models.MultiVectorConfig(
+                    comparator=models.MultiVectorComparator.MAX_SIM)))
+    vecs = enc.encode([a["text"] for a in anchors])
+    points = [models.PointStruct(id=i, vector=v.tolist(), payload=a["payload"])
+              for i, (a, v) in enumerate(zip(anchors, vecs))]
+    for start in range(0, len(points), 64):
+        cl.upsert(collection_name=collection, points=points[start:start + 64])
+
+    # the registry's own granularity report + the thin-anchor WORKLIST (rigor loop food)
+    state = collection_state(url=url, collection=collection)
+    terms = [(a, v.shape[0]) for a, v in zip(anchors, vecs) if a["payload"]["kind"] == "term"]
+    terms.sort(key=lambda av: av[1])
+    tok = sorted(nt for _, nt in terms) or [0]
+    worklist = [{"term": a["payload"]["code"], "n_tokens": int(nt),
+                 "domain": a["payload"]["broader"] or None}
+                for a, nt in terms if nt < 48]
+    out = {"collection": collection, "sha": state["sha"], "n_topics": state["n_topics"],
+           "n_domains": n_domains, "n_terms": len(terms),
+           "term_tokens_p10": tok[len(tok) // 10], "term_tokens_p50": tok[len(tok) // 2],
+           "term_tokens_p90": tok[(len(tok) * 9) // 10],
+           "anchor_tokens_p50": state["anchor_tokens_p50"],
+           "n_thin_terms": len(worklist)}
+    wdir = REPO / "build" / "topic_registry"
+    wdir.mkdir(parents=True, exist_ok=True)
+    (wdir / "worklist.json").write_text(json.dumps(
+        {"collection": collection, "sha": state["sha"], "floor_tokens": 48,
+         "thin_terms": worklist}, indent=1))
+    (wdir / "registry_report.json").write_text(json.dumps(out, indent=1))
+    return out
+
+
 def main(argv: "list[str] | None" = None) -> int:
     import argparse
     ap = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
@@ -311,10 +407,16 @@ def main(argv: "list[str] | None" = None) -> int:
     ap.add_argument("--out", default="", help="override the state-keyed output dir")
     ap.add_argument("--whole-doc", action="store_true",
                     help="adjudicate whole passages (no item windows — increment-1 mode)")
+    ap.add_argument("--build-registry", action="store_true",
+                    help="(re)build the term-grounded topic registry, then exit")
     ap.add_argument("--window-ratio", type=float, default=2.0,
                     help="item window tokens = ratio × the anchors' median token count")
     ap.add_argument("--stride", type=float, default=0.5, help="stride as a fraction of the window")
     a = ap.parse_args(argv)
+    if a.build_registry:
+        print(json.dumps(build_term_registry(
+            url=a.url, collection=a.collection or DEFAULT_REGISTRY), indent=1))
+        return 0
     collection = a.collection
     if not collection:
         try:  # the strategy declares the aiming collection — honor it when present
