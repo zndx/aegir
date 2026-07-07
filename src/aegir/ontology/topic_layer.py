@@ -398,8 +398,20 @@ def basin_calibration(base_dir: "str | Path", cand_dir: "str | Path", *,
     for code, rows in sorted(cand.items(), key=lambda kv: -len(kv[1])):
         b = len(base.get(code, []))
         if len(rows) >= min_items and len(rows) >= max_ratio * max(b, 1):
+            # doc-concentration = the secondary evidence that resolved both live flags
+            # (taxi, ancestor-veneration): N items from ONE long doc is topical
+            # concentration, N items corpus-wide is a basin problem.
+            docs: dict[str, int] = {}
+            for r in rows:
+                docs[(r.get("doc_hash") or "?")[:16]] = docs.get((r.get("doc_hash") or "?")[:16], 0) + 1
+            top_doc, top_n = max(docs.items(), key=lambda kv: kv[1])
             offenders.append({
                 "topic": code, "base": b, "new": len(rows),
+                "n_docs": len(docs), "top_doc": top_doc,
+                "top_doc_share": round(top_n / len(rows), 3),
+                "reading": ("single-source concentration (inspect the doc, likely legitimate)"
+                            if top_n / len(rows) >= 0.7 else
+                            "corpus-wide attraction (inspect the anchor — basin suspect)"),
                 "items": [{"item": r["passage_hash"][:16], "doc": (r.get("doc_hash") or "")[:16],
                            "rel_margin_h": r.get("rel_margin_h")} for r in rows[:12]]})
     return {"ok": not offenders, "min_items": min_items, "max_ratio": max_ratio,

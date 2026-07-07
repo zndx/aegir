@@ -1,5 +1,10 @@
 """build_topic_model — fit T_I on the pinned input corpus + compute null_stats.
 
+.. deprecated:: 2026-07-07
+   V0.3-ERA LEGACY (see topic_alignment.py) — the inverted topic layer
+   (``aegir.ontology.topic_layer``) replaces the fitted topic model; the live flow's
+   quality driver is ``aegir.ontology.congruence``. Kept for v0.3 reproducibility.
+
 Per the v0.5 concept brief P1b-β: fits the input-corpus topic
 model *T_I* once on a held-out subset of v2's SchemaPile +
 FinePDFs-lab slices, caches it to disk, then generates a

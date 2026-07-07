@@ -8977,7 +8977,9 @@
       },
       "is_complex": true,
       "verbal_template": "An organizational activity focused on managing communication and relationships between a company and its investors.",
-      "verbal_templates": [],
+      "verbal_templates": [
+        "This term covers organizational activities that manage communication channels between a company and its institutional investors. Practitioners organize earnings calls, distribute quarterly reports, and coordinate shareholder meetings to maintain transparent financial dialogue. These activities ensure consistent information flow regarding corporate performance and strategic direction."
+      ],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
       "broader": [],
@@ -8987,12 +8989,18 @@
           "date": "2026-07-07",
           "model": "engine/instruct",
           "membranes": "annotation_membrane M1-M6",
-          "registry": "78deaaff39621a08",
-          "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
+          "registry": "400fcc1ac0c6bdf6"
         }
       },
-      "alt_labels": [],
-      "scope_note": ""
+      "alt_labels": [
+        "Investor Relations",
+        "IR Activities",
+        "Investor Communication",
+        "Shareholder Relations",
+        "Investor Engagement",
+        "Capital Market Communication"
+      ],
+      "scope_note": "Applies to organizational activities managing communication channels between a company and its institutional investors."
     },
     {
       "template_id": "filler_keyframetimeline",
@@ -10083,7 +10091,9 @@
       },
       "is_complex": true,
       "verbal_template": "A computing artifact function that executes an artifact model for simulation purposes.",
-      "verbal_templates": [],
+      "verbal_templates": [
+        "A computing artifact function that runs mathematical models to replicate the behavior of complex systems under varying conditions. This software executes simulation models by processing input parameters, calculating system responses, and generating output data that reflects the simulated environment's dynamics."
+      ],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
       "broader": [],
@@ -10093,12 +10103,17 @@
           "date": "2026-07-07",
           "model": "engine/instruct",
           "membranes": "annotation_membrane M1-M6",
-          "registry": "78deaaff39621a08",
-          "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
+          "registry": "400fcc1ac0c6bdf6"
         }
       },
-      "alt_labels": [],
-      "scope_note": ""
+      "alt_labels": [
+        "Simulation Software",
+        "Simulation Execution Tool",
+        "Simulation Computing Artifact",
+        "Simulation Modeling Software",
+        "Simulation Execution Environment"
+      ],
+      "scope_note": "Applies to the computing artifact function that runs mathematical models to replicate the behavior of complex systems under varying conditions."
     },
     {
       "template_id": "filler_slaviclinguisticroot",
@@ -10596,7 +10611,9 @@
       },
       "is_complex": true,
       "verbal_template": "An act of advising that concerns property assessment.",
-      "verbal_templates": [],
+      "verbal_templates": [
+        "An official document or action where an authorized individual advises on the assessment and approval of property-related matters. This recommendation includes evaluations of property value, condition, and compliance to support decision-making by approving authorities."
+      ],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
       "broader": [],
@@ -10606,12 +10623,18 @@
           "date": "2026-07-07",
           "model": "engine/instruct",
           "membranes": "annotation_membrane M1-M6",
-          "registry": "78deaaff39621a08",
-          "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
+          "registry": "400fcc1ac0c6bdf6"
         }
       },
-      "alt_labels": [],
-      "scope_note": ""
+      "alt_labels": [
+        "approval recommendation",
+        "recommendation for approval",
+        "approval advice",
+        "approval proposal",
+        "recommendation document",
+        "approval suggestion"
+      ],
+      "scope_note": "This term applies in administrative and property management contexts where an official advises on the assessment and approval of property-related matters."
     },
     {
       "template_id": "filler_assessmentmethod",
@@ -10621,7 +10644,9 @@
       },
       "is_complex": true,
       "verbal_template": "An act of appraisal used for standardized evaluation.",
-      "verbal_templates": [],
+      "verbal_templates": [
+        "This term covers structured appraisal procedures used for standardized evaluation in professional or organizational contexts. Practitioners employ these methods to measure performance, verify compliance, or analyze outcomes using consistent criteria. The procedures rely on established protocols to ensure reliable and comparable results across different evaluation settings."
+      ],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
       "broader": [],
@@ -10631,12 +10656,18 @@
           "date": "2026-07-07",
           "model": "engine/instruct",
           "membranes": "annotation_membrane M1-M6",
-          "registry": "78deaaff39621a08",
-          "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
+          "registry": "400fcc1ac0c6bdf6"
         }
       },
-      "alt_labels": [],
-      "scope_note": ""
+      "alt_labels": [
+        "Assessment Method",
+        "Evaluation Procedure",
+        "Appraisal Technique",
+        "Standardized Assessment",
+        "Measurement Method",
+        "Evaluation Protocol"
+      ],
+      "scope_note": "Applies to structured appraisal procedures used for standardized evaluation in professional or organizational contexts."
     },
     {
       "template_id": "filler_assessmentparticipant",
@@ -10776,7 +10807,9 @@
       },
       "is_complex": true,
       "verbal_template": "A process that involves autotransfusion.",
-      "verbal_templates": [],
+      "verbal_templates": [
+        "A process that involves the clinical procedure where a patient's own blood is drawn, processed, and reinfused to treat specific conditions. This medical intervention utilizes autotransfusion techniques to administer the patient's own blood components back into their circulatory system."
+      ],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
       "broader": [],
@@ -10786,12 +10819,17 @@
           "date": "2026-07-07",
           "model": "engine/instruct",
           "membranes": "annotation_membrane M1-M6",
-          "registry": "78deaaff39621a08",
-          "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
+          "registry": "400fcc1ac0c6bdf6"
         }
       },
-      "alt_labels": [],
-      "scope_note": ""
+      "alt_labels": [
+        "Autohemotherapy Procedure",
+        "Autotransfusion Treatment",
+        "Autologous Blood Therapy",
+        "Autohemotherapy Session",
+        "Autotransfusion Therapy"
+      ],
+      "scope_note": "Applies to the clinical procedure where a patient's own blood is drawn, processed, and reinfused to treat specific conditions."
     },
     {
       "template_id": "filler_automatedsystem",
@@ -12016,7 +12054,9 @@
       },
       "is_complex": true,
       "verbal_template": "An act of requesting that involves a referral source role.",
-      "verbal_templates": [],
+      "verbal_templates": [
+        "A Referral Process encompasses activities that involve requesting services or resources through a referral source role, including client intake and service coordination. This process facilitates the transfer of clients or cases to appropriate service providers based on established criteria. The activity manages referral documentation, tracks referral status, and ensures continuity of care through structured communication protocols."
+      ],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
       "broader": [],
@@ -12026,12 +12066,17 @@
           "date": "2026-07-07",
           "model": "engine/instruct",
           "membranes": "annotation_membrane M1-M6",
-          "registry": "78deaaff39621a08",
-          "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
+          "registry": "400fcc1ac0c6bdf6"
         }
       },
-      "alt_labels": [],
-      "scope_note": ""
+      "alt_labels": [
+        "Referral Process",
+        "Case Referral Process",
+        "Client Referral Process",
+        "Service Referral Process",
+        "Referral Management Process"
+      ],
+      "scope_note": "Applies to activities that involve requesting services or resources through a referral source role, including client intake and service coordination."
     },
     {
       "template_id": "filler_regulatoryauthority",
@@ -12817,7 +12862,9 @@
       },
       "is_complex": true,
       "verbal_template": "An agent that engages in market exchange with external business partners.",
-      "verbal_templates": [],
+      "verbal_templates": [
+        "An Independent Economic Agent functions as an autonomous decision-maker that participates in market exchanges with external business partners. This entity maintains operational independence, negotiates contracts, and manages resources to achieve economic objectives. The agent engages in strategic market activities, including procurement, sales, and investment, to sustain its economic viability and competitive positioning."
+      ],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
       "broader": [],
@@ -12827,12 +12874,17 @@
           "date": "2026-07-07",
           "model": "engine/instruct",
           "membranes": "annotation_membrane M1-M6",
-          "registry": "78deaaff39621a08",
-          "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
+          "registry": "400fcc1ac0c6bdf6"
         }
       },
-      "alt_labels": [],
-      "scope_note": ""
+      "alt_labels": [
+        "Independent Economic Agent",
+        "Market Participant",
+        "Autonomous Economic Actor",
+        "Independent Business Entity",
+        "Standalone Economic Agent"
+      ],
+      "scope_note": "Applies to economic entities that participate in market exchanges as autonomous decision-makers, independent of other organizations."
     },
     {
       "template_id": "filler_individual",

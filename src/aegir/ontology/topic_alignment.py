@@ -1,5 +1,13 @@
 """Topic-alignment computation for the SDG verifier's R_D component.
 
+.. deprecated:: 2026-07-07
+   V0.3-ERA LEGACY. The corpus-fitted topic model (T_I.pkl, KMeans/BERTopic-style) was
+   superseded by the INVERTED TOPIC LAYER (``aegir.ontology.topic_layer`` — topics ≡
+   ontology-grounded qdrant anchors, margin-gated item associations, RH 2026-07-07
+   rulings a-h) and, in the live flow, by ``aegir.ontology.congruence`` (the R_D idea
+   reborn over the ColBERT/qdrant substrate). Kept for the v0.3 pipeline's
+   reproducibility; do not build new consumers on it.
+
 Implements the topic-alignment piece of the four-component
 verifier R(O, I) defined in
 ``docs/current/src/ontology/concept_brief.md`` v0.5. The brief commits

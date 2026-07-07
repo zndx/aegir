@@ -77,11 +77,24 @@ PROPOSAL_SCHEMA = {
 
 
 def _allowed_vocab(t, glosses) -> set:
-    """The grounding set for M4: the term's own name + axiom vocabulary + glosses."""
+    """The grounding set for M4: the term's own name + axiom vocabulary + glosses +
+    the top-k grounding-anchor labels/definitions near the term (CCO/FHIR/SysML — the
+    upper-ontology neighborhood the deriver itself grounds against). Without the
+    retrieval slice, M4 polices with too small a dictionary and positive-voice
+    specificity gets rejected as ungrounded (118 M4 rejections in the first re-run)."""
     import re
     words = set()
-    for chunk in (t.template_id, TL._axiom_vocabulary(t.manchester_template or "", glosses),
-                  t.verbal_template or "", " ".join(t.slot_types or {})):
+    chunks = [t.template_id, TL._axiom_vocabulary(t.manchester_template or "", glosses),
+              t.verbal_template or "", " ".join(t.slot_types or {})]
+    try:
+        sys.path.insert(0, str(REPO / "scripts"))
+        from grounding_anchors import Retriever
+        for hit in Retriever().retrieve(
+                f"{t.template_id.replace('_', ' ')}. {t.verbal_template or ''}", k=8):
+            chunks += [hit.get("label", ""), hit.get("def", "")]
+    except Exception:  # noqa: BLE001 — the anchors index is optional enrichment
+        pass
+    for chunk in chunks:
         words |= set(re.findall(r"[a-z]{4,}", chunk.lower().replace("_", " ")))
     # generic connective/practitioner words the membrane shouldn't punish
     words |= {"process", "record", "activity", "role", "entity", "involves", "applies",
