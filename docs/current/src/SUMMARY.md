@@ -30,6 +30,7 @@
   - [Semantic-Layer-Upkeep — the local-first quality loop](./roadmap/semantic_layer_upkeep.md)
   - [Supervised Bootstrapping (M2 fine-tune)](./roadmap/supervised.md)
   - [Phase Gate — Governance & DDL Spine](./roadmap/phase_gate_governance_ddl.md)
+  - [Phase Gate — The Inverted Topic Layer](./roadmap/phase_gate_inverted_topic_layer.md)
   - [Phase — SHARE Docs (browsable corpus)](./roadmap/phase_share_docs.md)
   - [Lineup Landing — collections × lens pivot](./roadmap/lineup_landing.md)
   - [Leaderboard → Convergence Observatory (ideas)](./roadmap/leaderboard_observatory.md)
