@@ -35,11 +35,18 @@ def passage_hash(text: str) -> str:
 def collection_state(*, url: str = DEFAULT_QDRANT_URL,
                      collection: str = DEFAULT_APERTURE) -> dict:
     """Content-address the topic registry: the qdrant collection's anchors as sorted
-    ``(id, code, iri, label, vector_sha)`` rows + a 16-hex digest over them.
+    ``(id, code, iri, label, vector_sha)`` identity rows + a 16-hex digest over them.
 
     This closes the lens-snapshot gap (which hashed ``(id, label, vector_sha)`` only):
     the ontology NOTATION rides along, so an association record names its topic in both
-    the ontology's terms and the vector state that adjudicated it."""
+    the ontology's terms and the vector state that adjudicated it.
+
+    Each row also carries ``n_tokens`` — the anchor's ColBERT multivector length IS its
+    token count, so the collection DECLARES its own granularity; ``anchor_tokens_p50``
+    is the windowing basis (RH: the intra-document window token-count is proportional
+    to the collection-item token-count). ``n_tokens`` annotates but does not enter the
+    identity digest (the vector hash already changes when the anchor text changes)."""
+    import numpy as np
     cl = _client(url)
     rows: list[dict] = []
     offset = None
@@ -48,68 +55,174 @@ def collection_state(*, url: str = DEFAULT_QDRANT_URL,
                                    with_payload=True, with_vectors=True, offset=offset)
         for p in points:
             pl = p.payload or {}
-            vec = p.vector
-            import numpy as np
-            v_sha = hashlib.sha256(np.asarray(vec, dtype=np.float32).tobytes()).hexdigest()[:16]
+            vec = np.asarray(p.vector, dtype=np.float32)
             rows.append({"id": str(p.id), "code": pl.get("code", ""), "iri": pl.get("iri", ""),
-                         "label": pl.get("pref_label") or pl.get("label") or "", "vector_sha": v_sha})
+                         "label": pl.get("pref_label") or pl.get("label") or "",
+                         "vector_sha": hashlib.sha256(vec.tobytes()).hexdigest()[:16],
+                         "n_tokens": int(vec.shape[0])})
         if offset is None:
             break
     rows.sort(key=lambda r: r["id"])
-    sha = hashlib.sha256(json.dumps(rows, sort_keys=True).encode()).hexdigest()[:16]
-    return {"collection": collection, "url": url, "n_topics": len(rows), "sha": sha, "rows": rows}
+    identity = [{k: r[k] for k in ("id", "code", "iri", "label", "vector_sha")} for r in rows]
+    sha = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:16]
+    tok = sorted(r["n_tokens"] for r in rows) or [0]
+    return {"collection": collection, "url": url, "n_topics": len(rows), "sha": sha,
+            "anchor_tokens_p50": tok[len(tok) // 2],
+            "anchor_tokens_min": tok[0], "anchor_tokens_max": tok[-1], "rows": rows}
+
+
+# ── intra-document sliding windows — the FedWiki ITEM granularity ────────────────
+def window_plan(state: dict, *, ratio: float = 2.0, stride_frac: float = 0.5) -> dict:
+    """Window sizing from the collection's own declared granularity: the item
+    (query window) token-count is PROPORTIONAL to the anchor token-count (RH ruling) —
+    late interaction is well-conditioned when both sides speak at comparable length,
+    and raw MaxSim otherwise scales with document length."""
+    w = max(32, round(ratio * state["anchor_tokens_p50"]))
+    return {"window_tokens": w, "stride_tokens": max(1, round(w * stride_frac)),
+            "ratio": ratio, "anchor_tokens_p50": state["anchor_tokens_p50"]}
+
+
+def windows(text: str, *, window_tokens: int, stride_tokens: int) -> "list[dict]":
+    """Slice a document into token-windowed ITEMS using the SAME tokenizer MaxSim sees;
+    char spans index the ORIGINAL text (no decode round-trip). The tail is always
+    covered. A short document yields one item (itself)."""
+    from aegir.ontology.colbert_encoder import get_encoder
+    tok = get_encoder()._tokenizer
+    encd = tok(text, add_special_tokens=False, return_offsets_mapping=True,
+               truncation=False, verbose=False)
+    offs = encd["offset_mapping"]
+    n = len(offs)
+    if n == 0:
+        return []
+    starts = list(range(0, max(1, n - window_tokens + 1), stride_tokens))
+    if starts[-1] + window_tokens < n:                     # tail coverage
+        starts.append(max(0, n - window_tokens))
+    out: list[dict] = []
+    seen: set[int] = set()
+    for idx, s in enumerate(starts):
+        if s in seen:
+            continue
+        seen.add(s)
+        e = min(n, s + window_tokens)
+        c0, c1 = offs[s][0], offs[e - 1][1]
+        out.append({"text": text[c0:c1], "span": [int(c0), int(c1)],
+                    "index": idx, "n_tokens": e - s})
+    return out
 
 
 @dataclass
 class Association:
-    """One passage ↔ one topic, with the full adjudication context — assigned or not.
-
-    An UNASSIGNED record still names the top candidate and both margins: the ambiguous
-    mass must be inspectable, because it is what the definitional-rigor loop consumes."""
-    passage_hash: str
+    """One item (passage window) ↔ one topic, with the full adjudication context —
+    assigned or not. An UNASSIGNED record still names the top candidate and every
+    margin: the ambiguous mass must be inspectable, because it is what the
+    definitional-rigor loop consumes."""
+    passage_hash: str                    # the ITEM's content address (window text)
     assigned: bool
     topic_code: str
     topic_iri: str
     topic_label: str
+    topic_path: list                     # ancestor roll-up + code
     score: float
-    margin: float
+    margin: float                        # flat: rank1 − rank2
     rel_margin: float
-    runner_up_code: str
-    runner_up_score: float
+    competitor_code: str                 # nearest NON-ancestor competitor (hierarchical)
+    competitor_score: float
+    rel_margin_h: float                  # THE gate signal — subtree-aware unambiguity
     collection: str
     collection_sha: str
     tau: float
+    unit: str = "item"                   # item (window) | doc (whole passage)
+    doc_hash: str = ""                   # the containing document's content address
+    item_index: int = 0
+    item_span: list = field(default_factory=list)
+    n_tokens: int = 0
     n_chars: int = 0
     source: str = ""                     # provenance hint (e.g. the harvest doc path)
     extra: dict = field(default_factory=dict)
 
 
-def associate(text: str, *, url: str = DEFAULT_QDRANT_URL,
-              collection: str = DEFAULT_APERTURE, collection_sha: str = "",
-              tau: float = DEFAULT_TAU, top_k: int = 5, source: str = "") -> Association:
-    """Associate one passage with exactly one topic — or refuse (rel_margin < tau).
+def _same_lineage(a: dict, b: dict) -> bool:
+    """True when one hit is an ancestor of the other (or the same concept)."""
+    ac = {a.get("code", "")} | set(a.get("ancestor_codes") or [])
+    bc = {b.get("code", "")} | set(b.get("ancestor_codes") or [])
+    return b.get("code", "") in ac or a.get("code", "") in bc
 
-    MaxSim adjudicates (qdrant-native late interaction); the margin gate makes the
-    assignment UNAMBIGUOUS-or-nothing, per ruling (c)."""
-    hits = classify(text, url=url, collection=collection, top_k=top_k)
+
+def _adjudicate(hits: "list[dict]", *, tau: float, collection: str, collection_sha: str,
+                text: str, source: str = "", unit: str = "doc", doc_hash: str = "",
+                item_index: int = 0, item_span: "list | None" = None,
+                n_tokens: int = 0) -> Association:
+    """Shared adjudication: flat margin (rank1−rank2) for the record, HIERARCHICAL
+    margin (rank1 − nearest NON-ancestor competitor) for the gate — a parent/child
+    near-miss is not ambiguity, the subtree is the unambiguous assignment (increment 2;
+    the harvest gate's ``in_subtree`` implied this all along). No non-ancestor
+    competitor in the top-k ⇒ rel_margin_h = 1.0 (maximally unambiguous at this k)."""
+    ph = passage_hash(text)
+    base = dict(passage_hash=ph, collection=collection, collection_sha=collection_sha,
+                tau=tau, unit=unit, doc_hash=doc_hash or ph, item_index=item_index,
+                item_span=item_span or [], n_tokens=n_tokens, n_chars=len(text), source=source)
     if not hits:
-        return Association(passage_hash=passage_hash(text), assigned=False, topic_code="",
-                           topic_iri="", topic_label="", score=0.0, margin=0.0, rel_margin=0.0,
-                           runner_up_code="", runner_up_score=0.0, collection=collection,
-                           collection_sha=collection_sha, tau=tau, n_chars=len(text), source=source)
+        return Association(assigned=False, topic_code="", topic_iri="", topic_label="",
+                           topic_path=[], score=0.0, margin=0.0, rel_margin=0.0,
+                           competitor_code="", competitor_score=0.0, rel_margin_h=0.0, **base)
     top = hits[0]
     s0 = float(top["score"])
     s1 = float(hits[1]["score"]) if len(hits) > 1 else 0.0
-    margin = s0 - s1
-    rel_margin = (margin / s0) if s0 else 0.0
+    comp = next((h for h in hits[1:] if not _same_lineage(top, h)), None)
+    sc = float(comp["score"]) if comp else 0.0
+    rel_margin = ((s0 - s1) / s0) if s0 else 0.0
+    rel_margin_h = ((s0 - sc) / s0) if s0 else 0.0
     return Association(
-        passage_hash=passage_hash(text), assigned=bool(rel_margin >= tau),
+        assigned=bool(rel_margin_h >= tau),
         topic_code=top.get("code", ""), topic_iri=top.get("iri", ""),
-        topic_label=top.get("pref_label", ""), score=round(s0, 4),
-        margin=round(margin, 4), rel_margin=round(rel_margin, 4),
-        runner_up_code=(hits[1].get("code", "") if len(hits) > 1 else ""),
-        runner_up_score=round(s1, 4), collection=collection,
-        collection_sha=collection_sha, tau=tau, n_chars=len(text), source=source)
+        topic_label=top.get("pref_label", ""),
+        topic_path=(top.get("ancestor_codes") or []) + [top.get("code", "")],
+        score=round(s0, 4), margin=round(s0 - s1, 4), rel_margin=round(rel_margin, 4),
+        competitor_code=(comp.get("code", "") if comp else ""),
+        competitor_score=round(sc, 4), rel_margin_h=round(rel_margin_h, 4), **base)
+
+
+def associate(text: str, *, url: str = DEFAULT_QDRANT_URL,
+              collection: str = DEFAULT_APERTURE, collection_sha: str = "",
+              tau: float = DEFAULT_TAU, top_k: int = 5, source: str = "") -> Association:
+    """Associate one whole passage with exactly one topic — or refuse.
+
+    MaxSim adjudicates (qdrant-native late interaction); the hierarchical margin gate
+    makes the assignment UNAMBIGUOUS-or-nothing, per ruling (c). Prefer
+    :func:`associate_items` — the item (window) granularity is the design's unit."""
+    hits = classify(text, url=url, collection=collection, top_k=top_k)
+    return _adjudicate(hits, tau=tau, collection=collection, collection_sha=collection_sha,
+                       text=text, source=source, unit="doc")
+
+
+def associate_items(text: str, *, url: str = DEFAULT_QDRANT_URL,
+                    collection: str = DEFAULT_APERTURE, state: "dict | None" = None,
+                    tau: float = DEFAULT_TAU, top_k: int = 5, ratio: float = 2.0,
+                    stride_frac: float = 0.5, source: str = "") -> "list[Association]":
+    """Window a document into anchor-proportional ITEMS and associate each — the
+    ratified granularity (items ≡ topic-windows). Windows batch-encode through the
+    shared ColBERT encoder; each item gets its own qdrant MaxSim adjudication."""
+    from aegir.ontology.colbert_encoder import get_encoder
+    state = state or collection_state(url=url, collection=collection)
+    plan = window_plan(state, ratio=ratio, stride_frac=stride_frac)
+    items = windows(text, window_tokens=plan["window_tokens"],
+                    stride_tokens=plan["stride_tokens"])
+    if not items:
+        return []
+    enc = get_encoder()
+    cl = _client(url)
+    vecs = enc.encode([it["text"] for it in items])
+    dh = passage_hash(text)
+    out: list[Association] = []
+    for it, v in zip(items, vecs):
+        res = cl.query_points(collection_name=collection, query=v.tolist(),
+                              limit=top_k, with_payload=True).points
+        hits = [{"score": float(p.score), **(p.payload or {})} for p in res]
+        out.append(_adjudicate(hits, tau=tau, collection=collection,
+                               collection_sha=state["sha"], text=it["text"], source=source,
+                               unit="item", doc_hash=dh, item_index=it["index"],
+                               item_span=it["span"], n_tokens=it["n_tokens"]))
+    return out
 
 
 def alignment_report(records: "list[Association] | list[dict]") -> dict:
@@ -121,39 +234,46 @@ def alignment_report(records: "list[Association] | list[dict]") -> dict:
     if not n:
         return {"n": 0}
     assigned = [r for r in rows if r["assigned"]]
-    margins = sorted(r["rel_margin"] for r in rows)
+    margins = sorted(r["rel_margin_h"] for r in rows)
     pct = lambda q: margins[min(n - 1, int(q * n))]  # noqa: E731
     by_topic: dict[str, int] = {}
     for r in assigned:
         key = f"{r['topic_code']} {r['topic_label']}".strip()
         by_topic[key] = by_topic.get(key, 0) + 1
     ambiguous = sorted((r for r in rows if not r["assigned"]),
-                       key=lambda r: -r["rel_margin"])[:10]
+                       key=lambda r: -r["rel_margin_h"])[:10]
+    docs = {r["doc_hash"] for r in rows if r.get("doc_hash")}
     return {
-        "n": n, "n_assigned": len(assigned),
+        "n": n, "n_docs": len(docs), "n_assigned": len(assigned),
         "alignment_rate": round(len(assigned) / n, 4),
-        "rel_margin_p10": round(pct(0.10), 4), "rel_margin_p50": round(pct(0.50), 4),
-        "rel_margin_p90": round(pct(0.90), 4),
+        "rel_margin_h_p10": round(pct(0.10), 4), "rel_margin_h_p50": round(pct(0.50), 4),
+        "rel_margin_h_p90": round(pct(0.90), 4),
         "topics_hit": len(by_topic),
         "by_topic": dict(sorted(by_topic.items(), key=lambda kv: -kv[1])),
-        "near_misses": [{"passage": r["passage_hash"][:16], "top": r["topic_code"],
-                         "runner_up": r["runner_up_code"], "rel_margin": r["rel_margin"]}
+        "near_misses": [{"item": r["passage_hash"][:16], "doc": (r.get("doc_hash") or "")[:16],
+                         "top": r["topic_code"], "competitor": r["competitor_code"],
+                         "rel_margin_h": r["rel_margin_h"]}
                         for r in ambiguous],
     }
 
 
 def associate_store(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
                     collection: str = DEFAULT_APERTURE, tau: float = DEFAULT_TAU,
-                    limit: int = 0, out_dir: "str | Path | None" = None) -> dict:
+                    limit: int = 0, out_dir: "str | Path | None" = None,
+                    unit: str = "item", ratio: float = 2.0,
+                    stride_frac: float = 0.5) -> dict:
     """Associate every passage in a content-addressed store (``<hash>.txt`` files, e.g.
     the harvest's ``build/domain_harvest/docs``) and persist the lineage:
     ``build/topic_associations/<collection>-<collection_sha>/associations.jsonl`` +
     ``report.json``. The out-dir is keyed by the collection STATE, so re-running against
-    an evolved registry lands beside — never over — the old adjudications."""
+    an evolved registry lands beside — never over — the old adjudications.
+    ``unit="item"`` (default) windows each document to the anchor-proportional item
+    granularity; ``unit="doc"`` adjudicates whole passages (the increment-1 behavior)."""
     docs = sorted(Path(docs_dir).glob("*.txt"))
     if limit:
         docs = docs[:limit]
     state = collection_state(url=url, collection=collection)
+    plan = window_plan(state, ratio=ratio, stride_frac=stride_frac)
     out = Path(out_dir) if out_dir else (REPO / "build" / "topic_associations"
                                          / f"{collection}-{state['sha']}")
     out.mkdir(parents=True, exist_ok=True)
@@ -161,12 +281,20 @@ def associate_store(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
     with (out / "associations.jsonl").open("w") as fh:
         for p in docs:
             text = p.read_text(errors="ignore")
-            rec = associate(text, url=url, collection=collection,
-                            collection_sha=state["sha"], tau=tau, source=p.name)
-            records.append(rec)
-            fh.write(json.dumps(asdict(rec)) + "\n")
+            if unit == "item":
+                recs = associate_items(text, url=url, collection=collection, state=state,
+                                       tau=tau, ratio=ratio, stride_frac=stride_frac,
+                                       source=p.name)
+            else:
+                recs = [associate(text, url=url, collection=collection,
+                                  collection_sha=state["sha"], tau=tau, source=p.name)]
+            records.extend(recs)
+            for rec in recs:
+                fh.write(json.dumps(asdict(rec)) + "\n")
     report = {"collection": collection, "collection_sha": state["sha"],
-              "n_topics": state["n_topics"], "tau": tau, **alignment_report(records)}
+              "n_topics": state["n_topics"], "tau": tau, "unit": unit,
+              **({"window": plan} if unit == "item" else {}),
+              **alignment_report(records)}
     (out / "report.json").write_text(json.dumps(report, indent=1))
     (out / "collection_state.json").write_text(json.dumps(state, indent=1))
     return report
@@ -181,6 +309,11 @@ def main(argv: "list[str] | None" = None) -> int:
     ap.add_argument("--tau", type=float, default=DEFAULT_TAU)
     ap.add_argument("--limit", type=int, default=0, help="associate only the first N passages")
     ap.add_argument("--out", default="", help="override the state-keyed output dir")
+    ap.add_argument("--whole-doc", action="store_true",
+                    help="adjudicate whole passages (no item windows — increment-1 mode)")
+    ap.add_argument("--window-ratio", type=float, default=2.0,
+                    help="item window tokens = ratio × the anchors' median token count")
+    ap.add_argument("--stride", type=float, default=0.5, help="stride as a fraction of the window")
     a = ap.parse_args(argv)
     collection = a.collection
     if not collection:
@@ -190,7 +323,9 @@ def main(argv: "list[str] | None" = None) -> int:
         except Exception:  # noqa: BLE001
             collection = DEFAULT_APERTURE
     report = associate_store(a.docs, url=a.url, collection=collection, tau=a.tau,
-                             limit=a.limit, out_dir=a.out or None)
+                             limit=a.limit, out_dir=a.out or None,
+                             unit="doc" if a.whole_doc else "item",
+                             ratio=a.window_ratio, stride_frac=a.stride)
     print(json.dumps(report, indent=1))
     return 0
 
