@@ -94,3 +94,27 @@ def run_zettels(corpus_dir: Path) -> "list[dict]":
         except Exception:  # noqa: BLE001
             continue
     return out
+
+
+def chain_roots(zettels: "list[dict]") -> "dict[str, str]":
+    """#147 zettel-lifecycle citizenship, computed from release CUT POINTS — nothing moves,
+    the ROOT is computed at projection time.
+
+    A release zettel (``kind == "release"`` — cut when a corpus is staged/released to
+    sdg-corpora) closes the segment before it: the LATEST release's segment projects to
+    ``current``, earlier releases' segments to ``archive``, and everything after the last
+    cut — the unreleased accretion — to ``scratch``. With no release cut in the chain yet
+    (today), the whole chain is unreleased → ``scratch``.
+    """
+    cuts = [i for i, z in enumerate(zettels) if z.get("kind") == "release"]
+    last = cuts[-1] if cuts else -1
+    prior = cuts[-2] if len(cuts) >= 2 else -1
+    roots: dict[str, str] = {}
+    for i, z in enumerate(zettels):
+        if i > last:
+            roots[z["id"]] = "scratch"
+        elif i > prior:
+            roots[z["id"]] = "current"
+        else:
+            roots[z["id"]] = "archive"
+    return roots

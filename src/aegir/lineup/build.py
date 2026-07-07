@@ -118,6 +118,7 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
     term_narrower = term_narrower or {}
     term_colls = term_colls or {}
     cats: dict[str, list[str]] = {}
+    cat_meta: dict[str, dict] = {}
     anchors: dict[str, dict] = {}
     out: list[N.Note] = []
 
@@ -125,6 +126,11 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
         term_id = f"ontology/term/{t.template_id}"
         cat_id = f"ontology/category/{cat}"
         cats.setdefault(cat, []).append(term_id)
+        prov = t.provenance or {}
+        cm = cat_meta.setdefault(cat, {"tier": None, "grounds": {}})
+        cm["tier"] = cm["tier"] or prov.get("tier")
+        g = S.relational_category(t)
+        cm["grounds"][g] = cm["grounds"].get(g, 0) + 1
         path = list(t.bfo_anchor_path or [])
         anchor = path[-1] if path else None
         aid = _anchor_id(anchor) if anchor else None
@@ -207,20 +213,31 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
                 "bfo_anchor_path": path, "slot_types": dict(t.slot_types or {}),
                 "is_complex": bool(t.is_complex), "manchester_template": t.manchester_template,
                 "n_chapters": len(chs), "n_topics": len(tps),
+                "tier": prov.get("tier"),
+                "domain": (prov.get("domain") or {}).get("label") if isinstance(prov.get("domain"), dict) else prov.get("domain"),
+                "grounds_ddl": S.relational_category(t),
                 "broader": bro, "narrower": nar,
                 "skos": skos, "retrieval_text": rtext,
                 "provenance": dict(t.provenance or {})}))
 
     for cat, term_ids in sorted(cats.items()):
         qn = category_qn(cat)
+        cm = cat_meta.get(cat) or {}
+        grounds = " · ".join(f"`{g}`×{n}" for g, n in sorted((cm.get("grounds") or {}).items(),
+                                                             key=lambda kv: -kv[1]))
+        head = (f"**Axiom pattern** `{cat}` (tier `{cm.get('tier')}`) — {len(term_ids)} terms. "
+                f"Grounds: {grounds}." if cm.get("tier") else
+                f"**Intermediate domain classes** (CTA subsumers, defined by the agent-mediated "
+                f"loop) — {len(term_ids)} terms.")
         body = (
-            f"**Category** `{qn}` — {len(term_ids)} terms. Part of the {N.wl('lens/terms', 'Lexicon')}.\n\n"
-            "A category organizes terms so the term's context can be enriched.\n\n"
+            f"{head} Part of the {N.wl('lens/terms', 'Lexicon')} `{qn}`.\n\n"
             + "\n".join(f"- {N.wl(tid, tid.split('/')[-1])}" for tid in sorted(term_ids))
         )
         out.append(N.Note(id=f"ontology/category/{cat}", title=cat, kind="ontology-category",
                           data_product="ontology", body=body, frontmatter={
-                              "qualified_name": qn, "parent": None, "children": [], "n_terms": len(term_ids)}))
+                              "qualified_name": qn, "parent": None, "children": [],
+                              "n_terms": len(term_ids), "tier": cm.get("tier"),
+                              "grounds": cm.get("grounds") or {}}))
 
     for aid, a in sorted(anchors.items()):
         body = f"BFO/CCO anchor **{a['label']}** — {len(a['terms'])} terms anchored here (siblings).\n\n"
@@ -233,39 +250,151 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
     return out
 
 
-# ── relational Data Product ─────────────────────────────────────────────────
-def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
-    """Project the DDL spine as relational/table notes (U2: FK-following navigation).
+def project_retired_ontology(rows: list[tuple[str, CatalogTemplate]],
+                             term_chapters: dict[str, list[str]] | None = None,
+                             term_topics: dict[str, list[int]] | None = None,
+                             term_colls: dict[str, list[str]] | None = None,
+                             cited: set | None = None,
+                             era_tables: dict[str, str] | None = None) -> list[N.Note]:
+    """The superseded catalog generations, ERA-ALIGNED into the roots (RH 2026-07-06):
+    ids the RELEASED corpus/coverage cite are the release's lexicon → ``current``
+    citizens (that corpus IS the current release, and these are its terms); the
+    recovered-but-uncited remainder → ``archive`` tombstones. ``era_tables`` maps a
+    template to its RELEASED spine table (corpora/ddl) so the release kasten pivots
+    term↔table within the current root."""
+    term_chapters = term_chapters or {}
+    term_topics = term_topics or {}
+    term_colls = term_colls or {}
+    cited = cited or set()
+    era_tables = era_tables or {}
+    out: list[N.Note] = []
+    fams: dict[str, list[str]] = {}
+    fam_cited: dict[str, int] = {}
+    for fam, t in rows:
+        term_id = f"ontology/term/{t.template_id}"
+        fams.setdefault(fam, []).append(term_id)
+        is_cited = t.template_id in cited
+        fam_cited[fam] = fam_cited.get(fam, 0) + (1 if is_cited else 0)
+        slots = ", ".join(f"`{s}` ({owl})" for s, owl in (t.slot_types or {}).items())
+        if is_cited:
+            banner = (f"**Release-era term** (family `{fam}`) — part of the lexicon the "
+                      f"RELEASED corpus cites (the current release). Superseded on trunk "
+                      f"(`scratch`) by the content-first derive.")
+        else:
+            banner = (f"**RETIRED** — a superseded catalog generation (family `{fam}`), "
+                      f"cited by nothing current; an archive tombstone.")
+        body = (
+            f"{banner}\n\n"
+            f"**Verbalization.** {_verbal(t)}\n\n"
+            f"**Axiom (Manchester).** `{t.manchester_template}`\n\n"
+            f"**Slots.** {slots or '—'}\n\n"
+            f"**Category.** {N.wl(f'ontology/category/{fam}', fam)}"
+        )
+        rt = era_tables.get(t.template_id)
+        if rt and is_cited:
+            body += f"  ·  **Relational projection.** {N.wl(f'relational/table/{rt}', rt)}"
+        body += "\n"
+        chs = term_chapters.get(t.template_id, [])
+        tps = sorted(term_topics.get(t.template_id, []))
+        if chs:
+            body += ("\n**Realized by** " + str(len(chs)) + " chapter(s): "
+                     + ", ".join(N.wl(f"content/chapter/{c}", c) for c in chs[:8])
+                     + (" …" if len(chs) > 8 else "") + "\n")
+        if tps:
+            body += ("\n**Mapped from** " + str(len(tps)) + " topic(s): "
+                     + ", ".join(N.wl(f"topic/{tp}", f"topic {tp}") for tp in tps[:12])
+                     + (" …" if len(tps) > 12 else "") + "\n")
+        cls = term_colls.get(t.template_id, [])
+        if cls:
+            body += ("\n**Realized across** " + str(len(cls)) + " collection(s): "
+                     + ", ".join(N.wl(c, c.split("-")[-1]) for c in cls[:12])
+                     + (" …" if len(cls) > 12 else "") + "\n")
+        out.append(N.Note(
+            id=term_id, title=t.template_id, kind="ontology-term", data_product="ontology",
+            root="current" if is_cited else "archive", body=body, frontmatter={
+                "era": "release", "cited": is_cited, "category": fam,
+                "qualified_name": f"{t.template_id}@{LEXICON}",
+                "slot_types": dict(t.slot_types or {}), "n_chapters": len(chs)}))
+    for fam, term_ids in sorted(fams.items()):
+        nc = fam_cited.get(fam, 0)
+        out.append(N.Note(
+            id=f"ontology/category/{fam}", title=fam, kind="ontology-category",
+            data_product="ontology", root="current",
+            frontmatter={"era": "release", "n_terms": len(term_ids), "n_cited": nc},
+            body=(f"**Release-era family** `{fam}` — {len(term_ids)} terms ({nc} cited by the "
+                  f"released corpus; the uncited remainder are archive tombstones). Part of the "
+                  f"release's {N.wl('lens/terms', 'Lexicon')}.\n\n"
+                  + "\n".join(f"- {N.wl(tid, tid.split('/')[-1])}" for tid in sorted(term_ids)))))
+    return out
 
-    Each table carries its typed columns, its outgoing **Foreign keys** (a column →
-    the referenced table, navigable), and the inverse **Referenced by**, so the lineup
-    panel-trail walks the relational graph along foreign keys — the invention."""
+
+def project_released_ddl(rd: dict) -> list[N.Note]:
+    """The RELEASED DDL spine (corpora/ddl, the SHARE record) as current-root relational
+    notes — the release kasten's schema surface, one note per released table, grouped by
+    the release-era family. Columns/FKs rendered from the run's ddl_statements rows."""
+    import json as _json
+    out: list[N.Note] = []
+    fam_tables: dict[str, list[str]] = {}
+    seen: set[str] = set()
+    for r in rd["rows"]:
+        name = r.get("table_name")
+        if not name or name in seen:
+            continue
+        seen.add(name)
+        fam = r.get("family") or "released"
+        rid = f"relational/table/{name}"
+        fam_tables.setdefault(fam, []).append(rid)
+        cols = _json.loads(r.get("columns_json") or "[]")
+        col_names = [(c.get("name") if isinstance(c, dict) else c) for c in cols]
+        fks = _json.loads(r.get("fks_json") or "[]")
+        fk_md = ""
+        if fks:
+            fk_md = ("\n**Foreign keys.**\n" + "\n".join(
+                f"- `{e.get('src_col', e.get('col', '?'))}` → "
+                f"`{e.get('dst_table', e.get('ref_table', '?'))}.{e.get('dst_col', e.get('ref_col', 'id'))}`"
+                for e in fks) + "\n")
+        out.append(N.Note(
+            id=rid, title=name, kind="relational-table", data_product="relational",
+            frontmatter={"era": "release", "run": rd["run"], "category": fam,
+                         "realizes": r.get("template_id"), "n_columns": len(col_names)},
+            body=(f"**Released table `{name}`** (run `{rd['run']}`, corpora/ddl — the SHARE "
+                  f"record). Realizes {N.wl('ontology/term/' + str(r.get('template_id')), str(r.get('template_id')))}"
+                  f" · category {N.wl(f'relational/category/{fam}', fam)}.\n\n"
+                  f"Columns ({len(col_names)}): " + " · ".join(f"`{c}`" for c in col_names) + "\n"
+                  + fk_md)))
+    for fam, rids in sorted(fam_tables.items()):
+        out.append(N.Note(
+            id=f"relational/category/{fam}", title=f"{fam} (tables)", kind="relational-category",
+            data_product="relational", frontmatter={"era": "release", "n_tables": len(rids)},
+            body=(f"**Release-era relational category** `{fam}` — {len(rids)} released tables "
+                  f"(corpora/ddl `{rd['run']}`).\n\n"
+                  + "\n".join(f"- {N.wl(rid, rid.split('/')[-1])}" for rid in sorted(rids)))))
+    return out
+
+
+# ── relational Data Product ─────────────────────────────────────────────────
+def project_relational(rows: list[tuple[str, CatalogTemplate]],
+                       has_sdg: bool = False) -> list[N.Note]:
+    """Project the deterministic DDL spine as relational/table notes.
+
+    Each table carries its typed columns, RI-true sample rows, and its **realized
+    subgraph** — the satellites + intra-subgraph FK edges the realize profile expands
+    it into (read from the newest spine run). The family-complex cross-family wiring is
+    RETIRED: cross-entity edges are the constructs web's to EARN (Convert 2) — the
+    earned graph is the verbatim ``relational/sdg-schema`` web, not this spine."""
     import math
     from collections import Counter
 
-    from aegir.ontology.ddl import cross_family_fks, template_to_table
+    from aegir.ontology.ddl import template_to_table
 
-    # Build the full spine first so cross-family FKs (the family-complex-gated joins) resolve.
     spine = []
     for cat, t in rows:
         try:
             spine.append(template_to_table(t, cat))
         except Exception as e:                       # noqa: BLE001
             print(f"  [relational] skip {t.template_id}: {type(e).__name__}: {e}")
-    try:
-        import aegir.ontology as _onto
-        from aegir.ontology.complex import FamilyComplex
-        fc = FamilyComplex.from_json(Path(_onto.__file__).resolve().parent / "family_complex.json")
-        fks, _audit = cross_family_fks(spine, fc)
-    except Exception as e:                            # noqa: BLE001 — notes are valid without FKs
-        print(f"  [relational] FK graph skipped: {type(e).__name__}: {e}")
-        fks = []
-    name2tid = {st.table.name: st.template.template_id for st in spine}
-    out_fks: dict[str, list] = {}
-    in_fks: dict[str, list] = {}
-    for e in fks:
-        out_fks.setdefault(e.src_table, []).append(e)
-        in_fks.setdefault(e.dst_table, []).append(e)
+    srun = S.spine_run()
+    subgraphs = (srun or {}).get("by_template", {})
 
     # ── Comp 5: confirmation surface — materialize RI-true rows (deterministic, same Comp-4 machinery
     # as the DDL spine: enums + curated pools + LLM-seeded entity values) so the lineup SHOWS sample data
@@ -273,7 +402,7 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
     try:
         from aegir.ontology.chapter_tables import definitions_for_spine, entity_pools_for_spine
         from aegir.ontology.rows import materialize_rows, table_rows_as_records
-        materialize_rows(spine, fks, definitions=definitions_for_spine(spine),
+        materialize_rows(spine, [], definitions=definitions_for_spine(spine),
                          entity_pools=entity_pools_for_spine(spine))
     except Exception as e:                            # noqa: BLE001 — notes are valid without rows
         print(f"  [relational] row materialization skipped: {type(e).__name__}: {e}")
@@ -310,29 +439,30 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
             return "typed"
         return "domain"
 
-    def _rel_wl(table_name: str) -> str | None:
-        tid = name2tid.get(table_name)
-        return N.wl(f"relational/table/{_table_id(tid)}", tid) if tid else None
-
     out: list[N.Note] = []
     cat_tables: dict[str, list[str]] = {}
     for st in spine:
-        t, cat, cols = st.template, st.family, st.table.columns
+        t, cols = st.template, st.table.columns
+        cat = S.relational_category(t)
         rid = f"relational/table/{_table_id(t.template_id)}"
         cat_tables.setdefault(cat, []).append(rid)
         rowsmd = "\n".join(f"| `{c.name}` | {c.slot_type} | {c.slot_ref} |" for c in cols)
-        ofk = [e for e in out_fks.get(st.table.name, []) if e.dst_table in name2tid]
-        ifk = [e for e in in_fks.get(st.table.name, []) if e.src_table in name2tid]
+        sub = subgraphs.get(t.template_id) or {}
+        sats = {n: c for n, c in (sub.get("tables") or {}).items() if n != st.table.name}
+        sfks = sub.get("fks") or []
         fk_md = ""
-        if ofk:
-            fk_md += "\n**Foreign keys** — follow → to the referenced table:\n\n" + "\n".join(
-                f"- `{e.src_col}` → {_rel_wl(e.dst_table)} · `{e.dst_col}`  _(via {e.via_slot})_"
-                for e in ofk) + "\n"
-        if ifk:
-            fk_md += "\n**Referenced by** — ← these tables foreign-key into this one:\n\n" + "\n".join(
-                f"- {_rel_wl(e.src_table)} · `{e.src_col}`  _(via {e.via_slot})_" for e in ifk) + "\n"
-        if not ofk and not ifk:
-            fk_md = "\n_No cross-family foreign keys (standalone table)._\n"
+        if sats or sfks:
+            fk_md = (f"\n**Realized subgraph** (`{cat}` profile, spine run `{(srun or {}).get('run')}`)"
+                     f" — {1 + len(sats)} tables · {len(sfks)} intra-subgraph FK edges:\n\n"
+                     + "\n".join(f"- `{n}` ({len(c)} cols)" for n, c in sorted(sats.items()))
+                     + ("\n" if sats else "")
+                     + ("\n".join(f"- `{e['src_table']}.{e['src_col']}` → `{e['dst_table']}.{e['dst_col']}`"
+                                  for e in sfks) + "\n" if sfks else ""))
+        else:
+            fk_md = "\n_Single-table realize profile (no satellites in the current spine run)._\n"
+        if has_sdg:
+            fk_md += ("\n_Cross-entity FK edges are the generated web's to earn (Convert 2) — see "
+                      + N.wl("relational/sdg-schema", "the SDG schema") + "._\n")
 
         # ── Comp 5: verbalization + sample rows + quality badge (the confirmation surface) ──
         anchor = (list(t.bfo_anchor_path) or ["(none)"])[-1]
@@ -343,7 +473,7 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
             vb_md = f"\n**Verbalization.** _{frames[0]}_{extra}\n"
 
         pk_names = {c.name for c in cols if c.slot_ref == "__pk__"}
-        fk_names = {e.src_col for e in ofk}
+        fk_names = {e["src_col"] for e in sfks if e.get("src_table") == st.table.name}
         sample_md, quality = "", {}
         if table_rows_as_records is not None and st.table.rows:
             records = table_rows_as_records(st)
@@ -378,24 +508,35 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]]) -> list[N.Note]:
         )
         out.append(N.Note(
             id=rid, title=st.table.name, kind="relational-table", data_product="relational",
-            root="archive",
             body=body, frontmatter={
                 "category": cat, "realizes": t.template_id, "table_name": st.table.name,
                 "columns": [{"name": c.name, "type": c.slot_type, "slot": c.slot_ref} for c in cols],
                 "not_null": sorted(getattr(st, "not_null", set()) or set()),
                 "quality": quality,
-                "foreign_keys": [{"column": e.src_col, "references_table": name2tid.get(e.dst_table),
-                                  "references_column": e.dst_col, "via": e.via_slot} for e in ofk],
-                "referenced_by": [{"table": name2tid.get(e.src_table), "column": e.src_col,
-                                   "via": e.via_slot} for e in ifk]}))
+                "realized_subgraph": ({"run": (srun or {}).get("run"),
+                                       "n_tables": 1 + len(sats), "n_fks": len(sfks),
+                                       "satellites": sorted(sats)} if (sats or sfks) else {})}))
 
+    _CAT_GLOSS = {
+        "junction": "many-to-many participation lowered to a junction table",
+        "dimension": "a star profile — the entity as a dimension with satellites",
+        "nested-child": "a parent-owned child table (composition)",
+        "constraint": "a CHECK/cardinality-bearing normalized table",
+        "enum": "a closed value-set lowered to an enum/lookup",
+        "eav": "an open attribute set lowered entity-attribute-value",
+        "intermediate": "intermediate domain classes (CTA subsumers) — plain normalized tables",
+    }
     for cat, rids in sorted(cat_tables.items()):
-        body = f"Relational tables in category **{cat}** — {len(rids)}.\n\n" + \
-               "\n".join(f"- {N.wl(rid, rid.split('/')[-1])}" for rid in sorted(rids))
+        gloss = _CAT_GLOSS.get(cat, "")
+        body = (f"Relational tables grounding the **{cat}** DDL shape — {len(rids)}."
+                + (f" _{gloss}._" if gloss else "") + "\n\n"
+                + "\n".join(f"- {N.wl(rid, rid.split('/')[-1])}" for rid in sorted(rids)))
         out.append(N.Note(id=f"relational/category/{cat}", title=f"{cat} (tables)",
                           kind="relational-category", data_product="relational", body=body,
                           frontmatter={"category": cat, "n_tables": len(rids)}))
-    print(f"  relational: {len(spine)} tables, {len(fks)} cross-family FKs (U2 FK-following edges)")
+    n_sfks = sum(len(s.get("fks") or []) for s in subgraphs.values())
+    print(f"  relational: {len(spine)} tables in {len(cat_tables)} grounds-shape categories; "
+          f"realized subgraphs {'from ' + srun['run'] + f' ({n_sfks} intra-subgraph FKs)' if srun else 'absent (no spine run)'}")
     return out
 
 
@@ -495,20 +636,33 @@ def project_registers(recs: list[dict]) -> list[N.Note]:
 
 # ── topics (coverage rows, if present) — bridge content↔ontology ─────────────
 def project_topics(recs: list[dict], topic_chapters: dict[int, list[str]] | None = None,
-                   topic_colls: dict[int, list[str]] | None = None) -> list[N.Note]:
+                   topic_colls: dict[int, list[str]] | None = None,
+                   tid2cat: dict[str, str] | None = None,
+                   retired_cat: dict[str, str] | None = None) -> list[N.Note]:
     topic_chapters = topic_chapters or {}
     topic_colls = topic_colls or {}
+    tid2cat = tid2cat or {}
+    retired_cat = retired_cat or {}
     out: list[N.Note] = []
     by_status: dict[str, list[int]] = {}
     for r in recs:
         tid = int(r["topic_id"])
         by_status.setdefault(str(r.get("status")), []).append(tid)
-        cat, top = r.get("top_family"), r.get("top_template_id")
+        # The category resolves through the top template's LIVE category (the coverage rows'
+        # stored top_family is the retired file-stem axis). A coverage run computed against
+        # the retired catalog resolves to the archive tombstone instead — a real trail, not
+        # a dangling link (the cure remains re-running the coverage audit).
+        top = r.get("top_template_id")
+        cat = tid2cat.get(str(top)) if top else None
+        rfam = retired_cat.get(str(top)) if (top and not cat) else None
         edges = []
-        if top:
-            edges.append(f"**Nearest term.** {N.wl(f'ontology/term/{top}', top)}")
-        if cat:
-            edges.append(f"**Top category.** {N.wl(f'ontology/category/{cat}', cat)}")
+        if top and (cat or rfam):
+            edges.append(f"**Nearest term.** {N.wl(f'ontology/term/{top}', str(top))}")
+        elif top:
+            edges.append(f"**Nearest term** (unknown catalog): `{top}`")
+        if cat or rfam:
+            c = cat or rfam
+            edges.append(f"**Top category.** {N.wl(f'ontology/category/{c}', c)}")
         covered = topic_chapters.get(tid, [])
         cov = (f"**Covered by** {len(covered)} chapter(s): "
                + ", ".join(N.wl(f"content/chapter/{c}", c) for c in covered[:6])) if covered else "**Covered by** 0 chapters (gap)"
@@ -522,7 +676,8 @@ def project_topics(recs: list[dict], topic_chapters: dict[int, list[str]] | None
             id=f"topic/{tid}", title=f"topic {tid}", kind="topic", data_product="content",
             body=f"{head}\n\n{(r.get('topic_repr_text') or '')[:1500]}\n", frontmatter={
                 "status": r.get("status"), "coverage_score": r.get("coverage_score"),
-                "top_category": cat, "top_term": top, "n_chapters": len(covered)}))
+                "top_category": cat or rfam, "top_term": top, "era_top": bool(rfam),
+                "n_chapters": len(covered)}))
     parts = [f"**Topics** — {sum(len(v) for v in by_status.values())} FinePDFs topics."]
     for status, ids in sorted(by_status.items()):
         parts.append(f"\n**{status}** ({len(ids)}).\n" +
@@ -547,11 +702,14 @@ def _idlist(v) -> list:
     return []
 
 
-def project_collections(recs: list[dict], coverage: list[dict]) -> tuple[list[N.Note], dict]:
+def project_collections(recs: list[dict], coverage: list[dict],
+                         live_terms: set | None = None) -> tuple[list[N.Note], dict]:
     """De-flattened, many-to-many collections — the unit the landing pivots. A collection's
     DOCUMENTS (chapters) are the hub: it relates to MANY topics (target ∪ style across its
     chapters) and many terms/tables, and each terminal recurs across collections. Returns
-    (notes, maps); maps drive the lens pivots and the transpose backlinks."""
+    (notes, maps); maps drive the lens pivots and the transpose backlinks. ``live_terms``
+    gates the Underlying-tables links (retired terms resolve as archive tombstones but have
+    no spine table)."""
     by_coll: dict[int, list[tuple[int, dict]]] = {}
     for i, r in enumerate(recs):
         t = r.get("target_topic_id")
@@ -579,7 +737,10 @@ def project_collections(recs: list[dict], coverage: list[dict]) -> tuple[list[N.
                                               for (_, r), c in zip(chs[:12], cids[:12])) or "—") + "\n\n"
             + "**Topics.** " + (" · ".join(N.wl(f"topic/{t}", f"topic {t}") for t in topics[:18]) or "—") + "\n\n"
             + "**Realizes terms.** " + (" · ".join(N.wl(f"ontology/term/{x}", x) for x in terms[:24]) or "—") + "\n\n"
-            + "**Underlying tables.** " + (" · ".join(N.wl(f"relational/table/{_table_id(x)}", x) for x in terms[:24]) or "—") + "\n")
+            + "**Underlying tables.** " + (" · ".join(
+                N.wl(f"relational/table/{_table_id(x)}", x)
+                for x in (terms if live_terms is None else [t for t in terms if t in live_terms])[:24])
+                or "— _(retired-catalog terms carry no live spine table)_") + "\n")
         notes.append(N.Note(id=cid, title=f"collection · topic {tid}", kind="collection",
                             data_product="content", body=body, frontmatter={
                                 "topic_id": tid, "n_topics": len(topics), "n_terms": len(terms),
@@ -605,54 +766,83 @@ def project_collections(recs: list[dict], coverage: list[dict]) -> tuple[list[N.
 
 # ── lenses (the landing pivot: collections × the lens-selected axis) ──────────
 def _relational_spine(rows):
-    """(tid→table_name, FKEdge list) for the Schema chord's FK-spanning substrate — mirrors the
-    spine project_relational builds. Guarded + lazy: the chord is optional enrichment, so any
-    failure yields ({}, []) rather than breaking the build."""
-    from aegir.ontology.ddl import cross_family_fks, template_to_table
-    import aegir.ontology as _onto
-    from aegir.ontology.complex import FamilyComplex
-    spine = []
+    """(tid→table_name, edge list, tid→column-token set) for the Schema chord substrate.
+
+    Post family-complex retirement the deterministic subgraphs are DISJOINT across
+    templates (0 shared table names, 0 cross-template FKs — measured), so the chord's
+    discriminating schema signal is COLUMN VOCABULARY (typed attributes genuinely recur
+    across templates — the h_colset/de-canning axis), with the realize subgraph edges
+    kept for the FK-hub term. Guarded + lazy: the chord is optional enrichment, so any
+    failure yields ({}, [], {}) rather than breaking the build."""
+    from types import SimpleNamespace
+    tid_table: dict[str, str] = {}
+    fks: list = []
+    col_tokens: dict[str, set] = {}
+    srun = S.spine_run()
+    if srun:
+        for tid, sub in srun["by_template"].items():
+            tables = sub.get("tables") or {}
+            if not tables:
+                continue
+            primary = next(iter(tables))
+            tid_table[tid] = primary
+            col_tokens[tid] = {(c.get("name") if isinstance(c, dict) else c)
+                               for cols in tables.values() for c in cols} - {"id", None}
+            fks += [SimpleNamespace(src_table=primary, dst_table=n)
+                    for n in tables if n != primary]
+        return tid_table, fks, col_tokens
+    # No spine run on disk — fall back to the in-process one-table lowering (columns only).
+    from aegir.ontology.ddl import template_to_table
     for cat, t in rows:
         try:
-            spine.append(template_to_table(t, cat))
+            st = template_to_table(t, cat)
         except Exception:  # noqa: BLE001
-            pass
-    tid_table = {st.template.template_id: st.table.name for st in spine}
-    try:
-        fc = FamilyComplex.from_json(Path(_onto.__file__).resolve().parent / "family_complex.json")
-        fks, _ = cross_family_fks(spine, fc)
-    except Exception:  # noqa: BLE001
-        fks = []
-    return tid_table, fks
+            continue
+        tid_table[t.template_id] = st.table.name
+        col_tokens[t.template_id] = {c.name for c in st.table.columns if c.name != "id"}
+    return tid_table, fks, col_tokens
 
 
-def project_lenses(categories: list[str], has_content: bool, has_topics: bool,
-                   maps: dict | None = None) -> list[N.Note]:
+def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
+                   maps: dict | None = None, rd: dict | None = None,
+                   live_terms: set | None = None,
+                   latest_release: str | None = None) -> list[N.Note]:
+    """The RELEASE kasten's lenses (current root) — the lens surfaces over the released
+    corpus, its era lexicon, and the released DDL spine. The trunk (scratch) gets its own
+    lens set from :func:`project_trunk_lenses` — same ids, root-resolved (roots are refs)."""
     maps = maps or {}
     colls = maps.get("collections")
-    # terms (default): collections × realized terms — the grounding pivot
+    live_terms = live_terms or set()
+    # terms (default): collections × realized terms — the grounding pivot.
     if colls:
         rows = ["| collection | realizes terms |", "|---|---|"]
         for tid in colls:
             cid = f"collection/topic-{tid:03d}"
-            tms = maps["coll_terms"][cid]
+            tms = sorted(maps["coll_terms"][cid], key=lambda x: (x not in live_terms, x))
             cell = " · ".join(N.wl(f"ontology/term/{x}", x) for x in tms[:6]) + (f" …(+{len(tms) - 6})" if len(tms) > 6 else "")
             rows.append(f"| {N.wl(cid, f'topic {tid}')} | {cell or '—'} |")
         terms_body = ("**Lexicon × Collections.** Each collection (a topic-grounded bundle) and the "
                       "ontology terms it realizes — the grounding made visible. Click a term to pivot "
                       "to *its* collections; a collection for its full bundle.\n\n" + "\n".join(rows))
     else:
-        terms_body = ("**Lexicon** `" + LEXICON + "`. Browse by category:\n\n"
-                      + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in categories))
+        terms_body = ("**Lexicon** `" + LEXICON + "` (release era). Browse by family:\n\n"
+                      + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in era_fams))
     terms = N.Note(id="lens/terms", title="Lexicon × Collections" if colls else "Lexicon", kind="lens",
                    data_product="ontology", frontmatter={"lens": "terms", "lexicon": LEXICON}, body=terms_body)
-    # schema: collections' footprint organized around category (tables shared across collections)
+    # schema: the RELEASED DDL spine (corpora/ddl — the SHARE record), by release-era family.
+    schema_body = ("**Schema × Collections.** The released relational footprint — a base table is "
+                   "shared across the collections whose chapters embed views over it.\n")
+    if rd:
+        fams = sorted({r.get("family") or "released" for r in rd["rows"]})
+        schema_body += (f"\n**The released DDL spine** (corpora/ddl `{rd['run']}`, "
+                        f"{len(rd['rows'])} tables), by family:\n\n"
+                        + "\n".join(f"- {N.wl(f'relational/category/{c}', c)}" for c in fams))
+    else:
+        schema_body += "\n_No released DDL spine on disk (corpora submodule absent)._"
+    schema_body += "\n\n_Trunk schema work (the generated web + the live spine) lives in `scratch`._"
     schema = N.Note(id="lens/schema", title="Schema × Collections" if colls else "Schema", kind="lens",
                     data_product="relational", frontmatter={"lens": "schema", "lexicon": LEXICON},
-                    body=("**Schema × Collections.** The relational footprint by category — a base "
-                          "table is shared across the collections whose chapters embed views over it "
-                          "(many-to-many). By category:\n\n"
-                          + "\n".join(f"- {N.wl(f'relational/category/{c}', c)}" for c in categories)))
+                    body=schema_body)
     # content: oriented around topics → topic → its collections (the densest cross-axis)
     tc = (maps or {}).get("topic_colls")
     if colls and tc:
@@ -664,16 +854,54 @@ def project_lenses(categories: list[str], has_content: bool, has_topics: bool,
         content_body = ("**Content × Topics.** FinePDFs topics and the collections they thread through "
                         "(target + style — many-to-many; a topic spans many collections). Click a topic "
                         "for its gist, a collection for its bundle.\n\n" + "\n".join(rows)
-                        + f"\n\nAll: {N.wl('collection/index', 'collections')} · {N.wl('topic/index', 'topics')}")
+                        + f"\n\nAll: {N.wl('collection/index', 'collections')} · {N.wl('topic/index', 'topics')}"
+                        + f" · {N.wl('content/index', 'chapters')}")
     else:
         content_body = ("**Content.** The corpus + FinePDFs topics.\n\n"
                         + (f"- {N.wl('content/index', 'the corpus chapters')}\n- {N.wl('topic/index', 'the FinePDFs topics')}"
                            if has_content or has_topics else "No corpus/topics projected yet."))
+    if latest_release:
+        content_body += ("\n\n**Release record.** "
+                         + N.wl(f"release/v{latest_release}", f"v{latest_release}")
+                         + " (the sdg-corpora card this kasten projects)")
     content = N.Note(id="lens/content", title="Content × Topics" if colls else "Content", kind="lens",
                      data_product="content", frontmatter={"lens": "content"}, body=content_body)
 
     # The lens chords render live via the bokeh server (aegir.viz.lineup_app), embedded by the React
     # <PanelView> — no chord is baked into the note frontmatter anymore.
+    return [terms, schema, content]
+
+
+def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bool,
+                         zettel_head: str | None = None) -> list[N.Note]:
+    """The TRUNK kasten's lenses (scratch root) — the same lens ids as the release kasten,
+    root-resolved (roots are refs, git-style). These browse the LIVE state: the derived
+    catalog by pattern, the grounds-shape spine + the earned generated web, and the
+    accreting corpus. ``chord: false`` — the collection chords are release-era."""
+    terms = N.Note(
+        id="lens/terms", title="Lexicon (trunk)", kind="lens", data_product="ontology",
+        root="scratch", frontmatter={"lens": "terms", "lexicon": LEXICON, "chord": False},
+        body=("**Lexicon** `" + LEXICON + "` — the LIVE derived catalog (trunk). Browse by "
+              "axiom-pattern category:\n\n"
+              + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in categories)))
+    schema_body = ("**Schema (trunk).** The live relational surfaces.\n")
+    if has_sdg:
+        schema_body += (f"\n**The generated web (earned).** {N.wl('relational/sdg-schema', 'SDG schema')} — "
+                        "the `just metaflow` constructs, verbatim, with their earned cross-entity FK edges.\n")
+    schema_body += ("\n**The deterministic spine, by grounds-shape:**\n\n"
+                    + "\n".join(f"- {N.wl(f'relational/category/{c}', c)}" for c in rel_cats))
+    schema = N.Note(
+        id="lens/schema", title="Schema (trunk)", kind="lens", data_product="relational",
+        root="scratch", frontmatter={"lens": "schema", "lexicon": LEXICON, "chord": False},
+        body=schema_body)
+    content_body = ("**Content (trunk).** The accreting corpus — incremental advancements land "
+                    "here per `just metaflow` window, toward the next release.\n\n"
+                    f"- {N.wl('corpus/sdg', 'the live SDG corpus')}\n")
+    if zettel_head:
+        content_body += f"- run chain head: {N.wl('corpus/runs/' + zettel_head, zettel_head)}\n"
+    content = N.Note(
+        id="lens/content", title="Content (trunk)", kind="lens", data_product="content",
+        root="scratch", frontmatter={"lens": "content", "chord": False}, body=content_body)
     return [terms, schema, content]
 
 
@@ -748,6 +976,23 @@ def project_metrics() -> list[N.Note]:
                               f"p99 {live_rs['cols_p99']} · max {live_rs['cols_max']} · "
                               f"wide(≥20) {live_rs['wide_rate']:.1%} · "
                               f"EMD vs SchemaPile: {emd if emd is not None else 'pending #139 norms'}\n")
+        if cslug == "provenance-authenticity":
+            man = S.spine_manifest()
+            rs = (man or {}).get("realize_summary") or {}
+            psd = rs.get("profile_source_distribution") or {}
+            if man and psd:
+                signal = sum(v for k, v in psd.items() if k.startswith("grounds_ddl:"))
+                static = sum(v for k, v in psd.items() if not k.startswith("grounds_ddl:"))
+                vps = rs.get("value_pool_sources") or {}
+                cat_fm = {"realize_summary": rs}
+                live_block = (
+                    f"\n\n**LIVE** (spine `{man['_run']}`): profile sources — signal-driven "
+                    f"**{signal}** vs default-minimal **{static}** (static fraction "
+                    f"**{static / (signal + static):.1%}**, dial → 0; the default-minimal are the "
+                    f"intermediate classes, which carry no grounding signal) · value pools "
+                    f"{' · '.join(f'{k} {v}' for k, v in sorted(vps.items()))} · "
+                    f"{rs.get('tables_per_template')} tables/template · "
+                    f"FK depth ≤ {rs.get('max_fk_depth')}\n")
         if cslug == "ontology-rigor":
             live = S.ontology_metrology()
             if live:
@@ -782,15 +1027,38 @@ def project_metrics() -> list[N.Note]:
     return out
 
 
+_ISO_DIR = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
 def run(args=None) -> int:
     kb = S.kb_dir()
     current = kb / "current"
     shutil.rmtree(current, ignore_errors=True)        # regenerable projection
     for d in (current, kb / "scratch", kb / "archive"):
         d.mkdir(parents=True, exist_ok=True)
+    # Projector-owned cleanup (roots are refs, RH 2026-07-06: current = the latest release
+    # kasten · scratch = TRUNK, the live projection · archive = past releases + snapshots).
+    # scratch: everything except authored <iso-date>/ dirs is projected trunk state.
+    # archive: the projected subtrees; snapshots (<year>Q<n>*) + aged authored notes stay.
+    for child in (kb / "scratch").iterdir():
+        if child.is_dir() and _ISO_DIR.match(child.name):
+            continue
+        shutil.rmtree(child, ignore_errors=True) if child.is_dir() else child.unlink(missing_ok=True)
+    for sub in ("ontology", "relational", "release", "corpus"):
+        shutil.rmtree(kb / "archive" / sub, ignore_errors=True)
 
     rows = S.load_ontology()
-    categories = sorted({cat for cat, _ in rows})
+    categories = sorted({cat for cat, _ in rows})          # axiom-pattern axis (+ intermediate)
+    tid2cat = {t.template_id: cat for cat, t in rows}
+    rel_cats = sorted({S.relational_category(t) for _, t in rows})   # grounds-shape axis
+    sc = S.sdg_constructs()   # the generated web — read early so downstream surfaces can link it
+    rd = S.released_ddl()     # the RELEASED DDL spine (corpora/ddl) — current-root schema surface
+    rels = S.releases()       # the sdg-corpora release records — read early so lenses can link them
+    latest_rel = rels[-1] if rels else None
+    # The superseded catalog generations (git-recovered). Era-alignment (RH): the ids the
+    # RELEASED corpus cites are the release's lexicon → current citizens; uncited → archive.
+    retired = [(f, t) for f, t in S.load_retired_ontology() if t.template_id not in tid2cat]
+    retired_cat = {t.template_id: f for f, t in retired}
 
     # Read content/coverage once + derive cross-references (so Terms show what exercises them).
     corpus, crun = S.corpus_recs()
@@ -842,13 +1110,39 @@ def run(args=None) -> int:
     coll_notes: list[N.Note] = []
     maps: dict = {}
     if corpus and coverage:
-        coll_notes, maps = project_collections(corpus, coverage)
+        coll_notes, maps = project_collections(corpus, coverage, live_terms=set(tid2cat))
 
-    notes = (project_ontology(rows, term_chapters, term_topics, broader, narrower,
+    # TRUNK (scratch): the live catalog's lexicon + its deterministic spine — where new
+    # work lands, git-trunk-style. The whole live projection is a scratch citizen.
+    trunk = (project_ontology(rows, term_chapters, term_topics, broader, narrower,
                               term_colls=maps.get("term_colls"))
-             + project_relational(rows))
-    print(f"  ontology+relational: {len(notes)} notes from {len(rows)} terms "
-          f"in {len(categories)} categories (Lexicon {LEXICON!r})")
+             + project_relational(rows, has_sdg=bool(sc)))
+    for n in trunk:
+        n.root = "scratch"
+    notes = trunk
+    print(f"  trunk(scratch): {len(trunk)} notes from {len(rows)} live terms "
+          f"in {len(categories)} pattern categories × {len(rel_cats)} grounds shapes "
+          f"(Lexicon {LEXICON!r})")
+    # RELEASE ERA (current/archive): the generation the released corpus cites is the
+    # release's lexicon (current citizens); recovered-but-uncited ids → archive tombstones.
+    cited: set[str] = set()
+    for r in corpus:
+        cited |= {str(x) for x in (r.get("template_ids") or [])}
+    cited |= {str(r["top_template_id"]) for r in coverage if r.get("top_template_id")}
+    if retired:
+        era_tables = {r["template_id"]: r["table_name"] for r in (rd or {}).get("rows", [])}
+        rt = project_retired_ontology(retired, term_chapters, term_topics,
+                                      term_colls=maps.get("term_colls"),
+                                      cited=cited, era_tables=era_tables)
+        notes += rt
+        n_cur = sum(1 for n in rt if n.root == "current")
+        print(f"  release lexicon: {len(rt)} era notes ({n_cur} current citizens — the released "
+              f"corpus's terms; {len(rt) - n_cur} uncited → archive)")
+    if rd:
+        rdn = project_released_ddl(rd)
+        notes += rdn
+        print(f"  release ddl: {len(rdn)} current notes from corpora/ddl `{rd['run']}` "
+              f"({len(rd['rows'])} released tables)")
     n_edges = sum(len(v) for v in broader.values())
     if n_edges:
         print(f"  hierarchy: {n_edges} HermiT-verified subsumption edges over "
@@ -865,7 +1159,8 @@ def run(args=None) -> int:
     else:
         print("  content: (no on-disk corpus run — skipped; set AEGIR_CORPUS_RUN to project)")
     if coverage:
-        tp = project_topics(coverage, topic_chapters, topic_colls=maps.get("topic_colls"))
+        tp = project_topics(coverage, topic_chapters, topic_colls=maps.get("topic_colls"),
+                            tid2cat=tid2cat, retired_cat=retired_cat)
         notes += tp
         print(f"  topics:  {len(tp)} notes   ({cov})")
     else:
@@ -876,22 +1171,33 @@ def run(args=None) -> int:
         print(f"  collections: {len(coll_notes) - 1} topic-grounded bundles (many-to-many: "
               f"{len(maps.get('topic_colls', {}))} topics × {len(maps.get('term_colls', {}))} terms)")
 
-    notes += project_lenses(categories, bool(corpus), bool(coverage), maps)
-    notes += project_training()
-    mt = project_metrics()
-    notes += mt
-    print(f"  training: 3 viz panels + metrics catalog ({len(mt)} notes)")
+    era_fams = sorted({f for f, _ in retired})
+    notes += project_lenses(era_fams, bool(corpus), bool(coverage), maps, rd=rd,
+                            live_terms=set(tid2cat),
+                            latest_release=latest_rel["version"] if latest_rel else None)
+    tr = project_training() + project_metrics()
+    notes += tr
+    # TRAINING twins on trunk (RH 2026-07-06) — the procedures run against the in-progress
+    # corpora as we iterate toward the next release, so the instruments live in scratch too.
+    import copy
+    trunk_tr = [copy.deepcopy(n) for n in tr]
+    for n in trunk_tr:
+        n.root = "scratch"
+    notes += trunk_tr
+    print(f"  training: 3 viz panels + metrics catalog ({len(tr)} notes, twinned current+scratch)")
 
+    strat_id = None
     st = S.strategy_state()
     if st:
         man, pillars = st["manifest"], st["manifest"]["pillars"]
+        strat_id = man["strategy_id"]
         pl_lines = []
         for pil, comps in pillars.items():
             pl_lines.append(f"\n**{pil}**")
             pl_lines += [f"- `{c}` — `{man['components'][c][:16]}`" for c in comps]
         notes.append(N.Note(
             id=f"strategy/{man['strategy_id']}", title=f"strategy {man['strategy_id']}",
-            kind="strategy", data_product="strategy",
+            kind="strategy", data_product="strategy", root="scratch",
             frontmatter={"strategy_id": man["strategy_id"], "commit": st["commit"],
                          "n_components": len(man["components"])},
             body=(f"**Strategy `{man['strategy_id']}`** @ sdg-strategy `{st['commit']}` — the "
@@ -902,7 +1208,6 @@ def run(args=None) -> int:
         print(f"  strategy: {man['strategy_id']} @ {st['commit']} "
               f"({len(man['components'])} components)", flush=True)
 
-    sc = S.sdg_constructs()
     if sc:
         tbls, vws = sc["tables"], sc["views"]
         known = set(tbls)
@@ -911,7 +1216,7 @@ def run(args=None) -> int:
                    for n, e in sorted(tbls.items())]
         notes.append(N.Note(
             id="relational/sdg-schema", title="SDG schema (generated)", kind="relational",
-            data_product="relational",
+            data_product="relational", root="scratch",
             body=(f"**The generated relational product, verbatim** — {len(tbls)} unique tables "
                   f"+ {len(vws)} views across {sc['n_constructs']} constructs (`just metaflow` "
                   f"corpus). Table and column names are the artifacts themselves — no wrappers.\n\n"
@@ -925,7 +1230,7 @@ def run(args=None) -> int:
             prov = ", ".join(e["constructs"][:4]) + ("…" if len(e["constructs"]) > 4 else "")
             notes.append(N.Note(
                 id=f"relational/table/{n}", title=n, kind="relational-table",
-                data_product="relational",
+                data_product="relational", root="scratch",
                 frontmatter={"pk": e.get("pk"), "pk_kind": e.get("pk_kind"),
                              "n_columns": len(e["columns"]), "constructs": len(e["constructs"])},
                 links=[f"relational/table/{fk.get('ref_table')}" for fk in e["fks"]
@@ -938,8 +1243,33 @@ def run(args=None) -> int:
         print(f"  relational(sdg): {len(tbls)} tables + {len(vws)} views VERBATIM "
               f"from {sc['n_constructs']} constructs", flush=True)
 
+    # Released corpus generations (the sdg-corpora CARDs) — the release records:
+    # the LATEST release is a current-root citizen, past releases are archive citizens.
+    for rel in rels:
+        latest = rel is latest_rel
+        others = " · ".join(N.wl(f"release/v{r['version']}", f"v{r['version']}")
+                            for r in rels if r is not rel) or "—"
+        notes.append(N.Note(
+            id=f"release/v{rel['version']}",
+            title=f"corpus release v{rel['version']}" + (" (latest)" if latest else ""),
+            kind="release-note", data_product="corpus",
+            root="current" if latest else "archive",
+            frontmatter={"version": rel["version"], "latest": latest, "source": rel["path"]},
+            body=(f"**Released corpus generation v{rel['version']}**"
+                  f"{' — the LATEST release (current citizen)' if latest else ' — a PAST release (archive citizen)'}."
+                  f" The SHARE record: `{rel['path']}` (sdg-corpora). Other releases: {others}. "
+                  f"The unreleased accretion on top of this lives in `scratch` — "
+                  + N.wl("corpus/sdg", "the live corpus") + ".\n\n---\n\n" + rel["body"])))
+    if rels:
+        print(f"  releases: {len(rels)} corpus cards (latest v{rels[-1]['version']} → current, "
+              f"{len(rels) - 1} past → archive)")
+
     gc = S.sdg_corpus()
+    zs: list = []
     if gc:
+        from aegir.lineup.zettel import chain_roots, run_zettels
+        zs = run_zettels(Path(gc["root"]))
+        zroots = chain_roots(zs)
         m = gc.get("metrics") or {}
         st = gc.get("structure") or m.get("structure") or {}
         cg = gc.get("congruence") or {}
@@ -950,9 +1280,20 @@ def run(args=None) -> int:
                        f"recovery {nat.get('top1_recovery_rate', '—')} / profile "
                        f"{nat.get('mean_profile_congruence', '—')} · semantic "
                        f"{sem.get('top1_recovery_rate', '—')} / {sem.get('mean_profile_congruence', '—')}")
+        chain_line = ""
+        if zs:
+            head = zs[-1]
+            chain_line = (f"\n\n**Run chain** ({len(zs)} zettels; the unreleased accretion lives in "
+                          f"`scratch` — #147 lifecycle): head {N.wl('corpus/runs/' + head['id'], head['id'])}")
+        if latest_rel:
+            chain_line += (f"\n**Latest release.** "
+                           + N.wl(f"release/v{latest_rel['version']}", f"v{latest_rel['version']}")
+                           + " (past releases live in `archive`)")
+        if strat_id:
+            chain_line += f"\n**Strategy.** {N.wl(f'strategy/{strat_id}', strat_id)} (the run's externalized determinants)"
         notes.append(N.Note(
             id="corpus/sdg", title="SDG corpus (live)", kind="corpus",
-            data_product="corpus",
+            data_product="corpus", root="scratch",
             frontmatter={"live": True, "passages": gc["passages_derived"],
                          "chapters": gc["chapters_natural"] + gc["chapters_semantic"],
                          "shape_emd": st.get("shape_emd")},
@@ -965,32 +1306,44 @@ def run(args=None) -> int:
                   f"{st.get('n_lookups', '—')} lookups · **shape EMD {st.get('shape_emd', '—')}**\n"
                   f"- Payload: {(m.get('payload') or {}).get('tables_embedded', '—')} tables + "
                   f"{(m.get('payload') or {}).get('views_embedded', '—')} views embedded"
-                  + cg_line +
+                  + cg_line + chain_line +
                   f"\n\nSource: `{gc['root']}` (metrics.json · congruence.json · concept_graph.json)")))
         print(f"  corpus: sdg live note ({gc['passages_derived']} passages, "
               f"{gc['chapters_natural'] + gc['chapters_semantic']} chapters)")
-        from aegir.lineup.zettel import run_zettels
-        zs = run_zettels(Path(gc["root"]))
         for z in zs:
-            w, st = z.get("window") or {}, z.get("state") or {}
+            w, zst = z.get("window") or {}, z.get("state") or {}
+            zv = z.get("versions") or {}
+            zstrat = zv.get("strategy_id")
+            strat_line = ""
+            if zstrat:
+                strat_line = ("\n- strategy: " + (N.wl(f"strategy/{zstrat}", zstrat)
+                                                  if zstrat == strat_id else f"`{zstrat}`"))
             notes.append(N.Note(
                 id=f"corpus/runs/{z['id']}", title=z["id"], kind="corpus-run",
-                data_product="corpus",
+                data_product="corpus", root=zroots.get(z["id"], "scratch"),
                 frontmatter={"prev": z.get("prev"), "at": z.get("at"),
-                             "deriver": (z.get("versions") or {}).get("deriver"),
-                             "commit": (z.get("versions") or {}).get("commit")},
+                             "deriver": zv.get("deriver"), "commit": zv.get("commit"),
+                             "strategy_id": zstrat},
                 links=[f"corpus/runs/{z['prev']}"] if z.get("prev") else [],
                 body=(f"**Run-zettel {z['id']}** (metaflow {z.get('metaflow_run_id', '?')})\n\n"
                       f"- window: cursor {w.get('harvest_cursor')} · "
                       f"{w.get('passages_fresh', 0)} fresh + {w.get('passages_cached', 0)} cached\n"
-                      f"- versions: deriver `{(z.get('versions') or {}).get('deriver')}` @ "
-                      f"`{(z.get('versions') or {}).get('commit')}`\n"
-                      f"- state: {st.get('n_chapters')} chapters · "
-                      f"EMD {(st.get('structure') or {}).get('shape_emd')} · "
-                      f"congruence {json.dumps(st.get('congruence'), default=str)[:120]}\n"
+                      f"- versions: deriver `{zv.get('deriver')}` @ `{zv.get('commit')}`"
+                      + strat_line +
+                      f"\n- state: {zst.get('n_chapters')} chapters · "
+                      f"EMD {(zst.get('structure') or {}).get('shape_emd')} · "
+                      f"congruence {json.dumps(zst.get('congruence'), default=str)[:120]}\n"
                       + (f"- prev: {N.wl('corpus/runs/' + z['prev'], z['prev'])}" if z.get("prev") else "- chain origin"))))
         if zs:
-            print(f"  corpus: {len(zs)} run-zettels (chain head {zs[-1]['id']})")
+            by_r: dict[str, int] = {}
+            for z in zs:
+                r = zroots.get(z["id"], "scratch")
+                by_r[r] = by_r.get(r, 0) + 1
+            print(f"  corpus: {len(zs)} run-zettels (chain head {zs[-1]['id']}; citizenship {by_r})")
+
+    # Trunk lenses (scratch) — same lens ids as the release kasten, root-resolved.
+    notes += project_trunk_lenses(categories, rel_cats, bool(sc),
+                                  zettel_head=zs[-1]["id"] if zs else None)
 
     for n in notes:
         N.write_note(kb, n)
@@ -1005,6 +1358,7 @@ def run(args=None) -> int:
         edges += len(e["links"])
     print(f"\n  KB projection → {kb}")
     print(f"  {len(entries)} notes  {edges} edges  by_dp={by_dp}  by_root={by_root}  ·  index {idx}")
-    print("  lenses: lens/terms (Lexicon) · lens/schema · lens/content")
-    print("  roots: current (projection, alongside) | scratch (authored) | archive (aged + snapshots)")
+    print("  lenses: lens/terms · lens/schema · lens/content (per-root — roots are refs)")
+    print("  roots: current (the latest release kasten) | scratch (TRUNK — the live projection "
+          "+ authored notes) | archive (past releases + snapshots + tombstones)")
     return 0

@@ -68,18 +68,25 @@ METRICS: list[dict] = [
          {"slug": "length-ok", "name": "length_ok", "formula": "prose length within the FinePDFs band",
           "gate": "in-band", "role": "no truncated / runt chapters", "src": "refine/eval.py"}]},
 
-    {"slug": "family-complex", "title": "Family simplicial complex",
-     "blurb": "The family-set a chapter cites is a simplex; generation is gated on the empirically-measured "
-              "complex so it samples only co-realizable family combinations.",
+    {"slug": "provenance-authenticity", "title": "Provenance authenticity — the convert doctrine",
+     "blurb": "The audit travels WITH the artifact (convert doctrine): how much of the realized spine is "
+              "signal-driven vs defaulted — the pre-registered CAS criterion (static fraction → 0) as a dial. "
+              "Replaces the retired family-simplicial-complex category (the sanctioned-simplex gate died with "
+              "the 01-07 family retirement; cross-entity structure is the deriver's to EARN — Convert 2).",
      "metrics": [
-         {"slug": "r-axiom-floor", "name": "R_axiom floor", "formula": "per-simplex axiom-score floor for admission",
-          "gate": "R_axiom ≥ floor, n ≥ min_count", "role": "which family-sets are allowed to co-occur",
-          "src": "ontology/complex.py"},
-         {"slug": "maximal-simplices", "name": "maximal_simplices", "formula": "the maximal allowed family faces",
-          "gate": "—", "role": "the sampler's admissible co-citation space", "src": "ontology/family_complex.json"},
-         {"slug": "below-floor", "name": "measured_below_floor", "formula": "observed punctures (failed simplices)",
-          "gate": "—", "role": "holes that do NOT propagate to supersets (best_face drops the offender)",
-          "src": "ontology/family_complex.json"}]},
+         {"slug": "profile-source", "name": "profile_source distribution",
+          "formula": "realize profile provenance per template: grounds_ddl:<shape> (signal-driven, by theorem) "
+                     "vs default-minimal (no grounding signal)",
+          "gate": "static fraction → 0", "role": "how much DDL shape is EARNED from the ontology signal",
+          "src": "ontology/realize.py → spine manifest realize_summary"},
+         {"slug": "value-pool-sources", "name": "value_pool_sources",
+          "formula": "materialized cell provenance: registry (curated/LLM-seeded domain pools) vs legacy vs unpooled",
+          "gate": "unpooled → 0", "role": "no dice-rolled placeholder values in the confirmation surface",
+          "src": "ontology/rows.py → spine manifest realize_summary"},
+         {"slug": "tables-per-template", "name": "tables_per_template",
+          "formula": "realized expansion factor (satellites per template) + max intra-subgraph FK depth",
+          "gate": "—", "role": "realized relational breadth of the deterministic spine",
+          "src": "spine manifest realize_summary"}]},
 
     {"slug": "corpus-quality", "title": "Corpus quality — Semantic-Layer-Upkeep",
      "blurb": "The SLU scorers that keep the corpus from going mechanical — verbalization variety, value "

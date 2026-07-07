@@ -25,8 +25,34 @@ def kb_dir() -> Path:
     return Path(os.environ.get("AEGIR_KB_DIR") or (REPO / "build" / "dev"))
 
 
+def template_category(t: CatalogTemplate) -> str:
+    """The term's browse category — the derive's axiom PATTERN (``provenance.pattern``),
+    the engineered axis that replaced the retired hand-authored families (8df0d23).
+    Intermediate domain classes (``define_intermediate_classes`` output — no pattern
+    provenance) group under ``intermediate``."""
+    prov = t.provenance or {}
+    if prov.get("pattern"):
+        return str(prov["pattern"])
+    return "intermediate"
+
+
+def relational_category(t: CatalogTemplate) -> str:
+    """The table's browse category — the DDL shape the template grounds
+    (``provenance.grounds_ddl``: junction / dimension / nested-child / constraint /
+    enum / eav); intermediate classes lower to plain ``intermediate`` tables."""
+    prov = t.provenance or {}
+    g = prov.get("grounds_ddl")
+    if isinstance(g, (list, tuple)):
+        g = g[0] if g else None
+    return str(g) if g else "intermediate"
+
+
 def load_ontology() -> list[tuple[str, CatalogTemplate]]:
-    """``[(family, CatalogTemplate)]`` from the 7 catalog family files (domain-adapted).
+    """``[(category, CatalogTemplate)]`` from the surviving derived catalog(s).
+
+    The category is the template's provenance pattern (``template_category``), NOT the
+    catalog filename — the file-stem "family" axis died with the 01-07 retirement
+    (every stem is ``08_derived`` now, which collapsed the category panels to one bucket).
 
     TODO(sync): overlay the canonical published ontology from the ``corpora`` submodule
     (zndx/sdg-corpora) when checked out — the SHARE layer atop this KNOW layer.
@@ -36,9 +62,65 @@ def load_ontology() -> list[tuple[str, CatalogTemplate]]:
     for f in sorted(glob.glob(str(REPO / CATALOG_GLOB))):
         if "candidate" in f or "combined" in f:
             continue
-        fam = Path(f).stem
         for t in load_catalog(f).templates:
-            out.append((fam, t))
+            out.append((template_category(t), t))
+    return out
+
+
+def load_retired_ontology() -> list[tuple[str, CatalogTemplate]]:
+    """``[(family, CatalogTemplate)]`` for the catalog generation the pre-R1 corpus and
+    coverage still CITE — the hand-authored 01-07 seed families plus the superseded
+    early ``08_derived`` batch — recovered from git history at build time (the parent of
+    the commit that deleted the seed files; discovered, not hardcoded).
+
+    The lineup projects these as ARCHIVE term notes so corpus citations RESOLVE (the
+    demote-to-archive ruling applied to the ontology axis) instead of dangling. They stop
+    being cited — and quietly remain archive tombstones — once the corpus/coverage are
+    regenerated against the derived catalog (R1). Graceful ``[]`` outside a git checkout.
+    """
+    import json as _json
+    import subprocess
+
+    def _git(*args: str) -> str:
+        try:
+            return subprocess.run(["git", *args], capture_output=True, text=True,
+                                  cwd=str(REPO)).stdout
+        except Exception:  # noqa: BLE001
+            return ""
+
+    fields = set(CatalogTemplate.__dataclass_fields__)
+    out: list[tuple[str, CatalogTemplate]] = []
+    seen: set[str] = set()
+
+    def _collect(fam: str, doc: dict) -> None:
+        for row in doc.get("templates", []):
+            if row.get("template_id") in seen:
+                continue
+            seen.add(row["template_id"])
+            # tolerate schema drift across the history boundary
+            out.append((fam, CatalogTemplate(**{k: v for k, v in row.items() if k in fields})))
+
+    # 1) The hand-authored seed families, at the parent of their deletion commit.
+    sha = _git("log", "--diff-filter=D", "-1", "--format=%H", "--",
+               "src/aegir/ontology/catalog/01_foundation.json").strip()
+    if sha:
+        for f in _git("ls-tree", "--name-only", f"{sha}^", "src/aegir/ontology/catalog/").split():
+            base = f.rsplit("/", 1)[-1]
+            if not base.startswith("0") or "candidate" in base or "combined" in base:
+                continue
+            try:
+                _collect(base.removesuffix(".json"), _json.loads(_git("show", f"{sha}^:{f}")))
+            except Exception:  # noqa: BLE001
+                continue
+    # 2) Every superseded generation of the derived catalog (newest-first, so the most
+    #    recent superseded definition of an id wins). The corpus was generated across
+    #    several 08_derived promotions; ids replaced within its history are cited too.
+    p08 = "src/aegir/ontology/catalog/08_derived.json"
+    for h in _git("log", "--format=%H", "--", p08).split():
+        try:
+            _collect("08_derived", _json.loads(_git("show", f"{h}:{p08}")))
+        except Exception:  # noqa: BLE001
+            continue
     return out
 
 
@@ -207,6 +289,80 @@ def relational_shape() -> dict | None:
     return out
 
 
+def _fullest_spine() -> "tuple[Path, dict] | None":
+    """The REALIZED spine run covering the most tables (mtime-newest on ties) — a partial
+    cohort run (e.g. a release subset materialized after the full spine) must not shadow
+    the full-catalog run for per-template projection surfaces. Coverage is measured from
+    the PARQUET row count (metadata-only read), not the manifest claim — a cohort run has
+    been observed carrying the full-run manifest over subset parquets."""
+    import json as _json
+    best: "tuple[int, Path, dict] | None" = None
+    for p in sorted(REPO.glob("build/spine_*/*/manifest.json"),
+                    key=lambda p: p.stat().st_mtime, reverse=True):
+        try:
+            man = _json.loads(p.read_text())
+        except Exception:  # noqa: BLE001
+            continue
+        if not man.get("realize"):
+            continue
+        ddl = p.parent / "ddl_statements.parquet"
+        try:
+            import pyarrow.parquet as _pq
+            n = _pq.ParquetFile(ddl).metadata.num_rows
+        except Exception:  # noqa: BLE001
+            continue
+        if best is None or n > best[0]:
+            best = (n, p, man)
+    return (best[1], best[2]) if best else None
+
+
+def spine_manifest() -> dict | None:
+    """The fullest realized spine run's manifest (``realize_summary`` — the
+    provenance-authenticity dial), tagged with ``_run``; graceful None."""
+    found = _fullest_spine()
+    if not found:
+        return None
+    p, man = found
+    man["_run"] = f"{p.parent.parent.name}/{p.parent.name}"
+    return man
+
+
+def spine_run() -> dict | None:
+    """The fullest deterministic DDL spine run's REALIZED subgraphs, per template.
+
+    Reads ``build/spine_*/<run>/ddl_statements.parquet`` (the realize expansion:
+    junction/star/normalized satellites + their intra-subgraph FK edges). This is what
+    replaced the retired family-complex FK wiring: cross-entity edges are the constructs
+    web's to EARN (Convert 2) — the deterministic spine's edges live INSIDE a template's
+    subgraph. Graceful None when no spine run exists.
+
+    Returns ``{"run": <name>, "by_template": {tid: {"tables": {name: [cols]},
+    "fks": [{src_table, src_col, dst_table, dst_col}]}}}``.
+    """
+    import json as _json
+    found = _fullest_spine()
+    if not found:
+        return None
+    run_dir = found[0].parent
+    ddl = run_dir / "ddl_statements.parquet"
+    if not ddl.exists():
+        return None
+    try:
+        import pyarrow.parquet as _pq
+        rows = _pq.read_table(
+            ddl, columns=["template_id", "table_name", "columns_json", "fks_json"]).to_pylist()
+    except Exception:  # noqa: BLE001 — the subgraph web is optional enrichment
+        return None
+    by_t: dict[str, dict] = {}
+    for r in rows:
+        e = by_t.setdefault(r["template_id"], {"tables": {}, "fks": []})
+        e["tables"][r["table_name"]] = _json.loads(r.get("columns_json") or "[]")
+        for fk in _json.loads(r.get("fks_json") or "[]"):
+            fk.setdefault("src_table", r["table_name"])   # implicit in the parquet row
+            e["fks"].append(fk)
+    return {"run": f"{run_dir.parent.name}/{run_dir.name}", "by_template": by_t}
+
+
 def ontology_metrology() -> dict | None:
     """The realized ontology's IOF/OQuaRE quality profile — ``ontology_metrology.compute`` (the rigor +
     field-standard metrics) + ``ontology_oquare.oquare`` (the 1-5 quality model + the publish-gate verdict),
@@ -303,6 +459,56 @@ def sdg_constructs() -> "dict | None":
     if not tables:
         return None
     return {"tables": tables, "views": views, "n_constructs": len(list(cdir.glob("*.json")))}
+
+
+def released_ddl() -> "dict | None":
+    """The RELEASED DDL spine — the newest run under ``corpora/ddl/`` (the SHARE record;
+    v0.4 = 623 tables lowered from the 623-template released catalog). Feeds the
+    current-root relational surface. Graceful None without the submodule."""
+    import json as _json
+    runs = sorted((REPO / "corpora" / "ddl").glob("*/manifest.json"))
+    if not runs:
+        return None
+    run_dir = runs[-1].parent
+    ddl = run_dir / "ddl_statements.parquet"
+    if not ddl.exists():
+        return None
+    try:
+        import pyarrow.parquet as _pq
+        rows = _pq.read_table(ddl).to_pylist()
+    except Exception:  # noqa: BLE001
+        return None
+    man: dict = {}
+    try:
+        man = _json.loads((run_dir / "manifest.json").read_text())
+    except Exception:  # noqa: BLE001
+        pass
+    return {"run": run_dir.name, "manifest": man, "rows": rows}
+
+
+def releases() -> "list[dict]":
+    """The RELEASED corpus generations — the sdg-corpora dataset CARDs (the SHARE record),
+    oldest→newest. These are the #147 cut-point anchors: the latest release projects to
+    ``current``, past releases to ``archive``. Each: ``{version, path, body}`` (the card's
+    markdown with its HF YAML header stripped). Graceful ``[]`` without the submodule."""
+    import re as _re
+    out: list[dict] = []
+    for p in sorted((REPO / "corpora" / "corpus").glob("CARD_v*.md")):
+        m = _re.match(r"CARD_v([\d.]+)\.md", p.name)
+        if not m:
+            continue
+        try:
+            text = p.read_text()
+        except OSError:
+            continue
+        body = text
+        if text.startswith("---"):
+            parts = text.split("---", 2)
+            if len(parts) == 3:
+                body = parts[2].strip()
+        out.append({"version": m.group(1), "path": str(p.relative_to(REPO)), "body": body})
+    out.sort(key=lambda r: tuple(int(x) for x in r["version"].split(".")))
+    return out
 
 
 def strategy_state() -> "dict | None":

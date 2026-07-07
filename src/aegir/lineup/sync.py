@@ -6,8 +6,8 @@ projection); ``sync`` publishes the ontology Data Product to the SHARE tier — 
 ``corpora`` submodule, which is attribution-clean and public. It regenerates, from the live
 ontology SoT (``src/aegir/ontology``), the shared artifacts under ``corpora/``:
 
-  • ontology/   — catalog mirror (the 7 family JSONs, incl. the ``broader`` subsumption
-                  hierarchy) + family_complex.json + sdg-vocab.ttl + SLOT_DSL.md
+  • ontology/   — catalog mirror (the derived catalog file(s), incl. the ``broader``
+                  subsumption hierarchy) + sdg-vocab.ttl + SLOT_DSL.md
   • vocabulary/ — SKOS ConceptScheme + Atelier ReferenceCategory annotations (build_skos_vocab)
   • ddl/        — the ontology→SQL DDL spine (build_ddl_spine)
 
@@ -100,7 +100,7 @@ def _mirror_ontology() -> None:
         if src.exists():
             shutil.copy2(src, dst / name)
     (dst / "family_complex.json").unlink(missing_ok=True)  # drop the retired artifact from the mirror
-    print(f"   mirrored {n} family catalogs + sdg-vocab.ttl + SLOT_DSL.md")
+    print(f"   mirrored {n} catalog file(s) + sdg-vocab.ttl + SLOT_DSL.md")
 
 
 def _regen_vocabulary() -> bool:

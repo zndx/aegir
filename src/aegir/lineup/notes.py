@@ -95,9 +95,11 @@ def read_note(kb_dir: Path, relpath: str) -> dict:
 
 
 def scan_notes(kb_dir: Path, root: str) -> list[dict]:
-    """Index entries for every ``.md`` under ``build/dev/<root>/`` (recursive), so the
-    projection (``current/``) AND authored notes (``scratch/``, ``archive/``) are all
-    navigable — ``current`` lives alongside the others. Projected notes carry their
+    """Index entries for every ``.md`` under ``build/dev/<root>/`` (recursive). Roots are
+    REFS (git-style, RH 2026-07-06): ``current`` = the latest release kasten; ``scratch`` =
+    TRUNK (the full live projection + authored working notes); ``archive`` = past releases,
+    frozen snapshots, aged notes, tombstones. The same surface ids exist per root; the
+    gateway resolves ``?root=`` scoped, falling back cross-root. Projected notes carry their
     root-less id in frontmatter ``name`` (matching the wikilinks); authored notes use
     their path as the id and infer ``data_product``/lens from frontmatter or the
     ``<utc>_<lens>.md`` zettelkasten filename convention."""

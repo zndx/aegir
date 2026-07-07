@@ -15,9 +15,9 @@ _rows = S.load_ontology()
 _corpus, _crun = S.corpus_recs()
 _coverage, _cov = S.coverage_recs()
 _notes, MAPS = build.project_collections(_corpus, _coverage)
-TID_TABLE, FKS = build._relational_spine(_rows)
+TID_TABLE, FKS, COL_TOKENS = build._relational_spine(_rows)
 
-_feats, FK_OK = C._features(MAPS, TID_TABLE, FKS)
+_feats, FK_OK = C._features(MAPS, TID_TABLE, FKS, COL_TOKENS)
 SIMS = {lens: (cids, s) for lens in C.LENSES for cids, s in [C._sim(_feats[lens])] if s is not None}
 
 _strength: dict[str, float] = defaultdict(float)
@@ -28,5 +28,6 @@ for _cids, _s in SIMS.values():
 RING = [c for c, _ in sorted(_strength.items(), key=lambda kv: -kv[1])[:30]]
 RING_IDX = {c: i for i, c in enumerate(RING)}
 NAME = {RING_IDX[c]: C._label(c) for c in RING}
-STATUS = "fk-spanning" if FK_OK else "fallback: tables≈terms (low relational complexity)"
+STATUS = ("subgraph + column-vocabulary" if FK_OK
+          else "fallback: tables≈terms (no spine run on disk)")
 N_COLLECTIONS = len(MAPS.get("collections", []))
