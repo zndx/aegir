@@ -67,6 +67,7 @@ def collection_state(*, url: str = DEFAULT_QDRANT_URL,
     sha = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:16]
     tok = sorted(r["n_tokens"] for r in rows) or [0]
     return {"collection": collection, "url": url, "n_topics": len(rows), "sha": sha,
+            "encoder": ENCODER_ID, "projection": "-",   # lens identity (L1); vectors already pin it
             "anchor_tokens_p50": tok[len(tok) // 2],
             "anchor_tokens_min": tok[0], "anchor_tokens_max": tok[-1], "rows": rows}
 
@@ -131,6 +132,8 @@ class Association:
     collection: str
     collection_sha: str
     tau: float
+    encoder: str = ""                    # lens identity (L1): the encoder that adjudicated
+    projection: str = "-"                # "-" = identity/ColBERT lens (no learned projection)
     unit: str = "item"                   # item (window) | doc (whole passage)
     doc_hash: str = ""                   # the containing document's content address
     item_index: int = 0
@@ -161,8 +164,9 @@ def _adjudicate(hits: "list[dict]", *, tau: float, collection: str, collection_s
     ph = passage_hash(text)
     base: "dict[str, Any]" = dict(
         passage_hash=ph, collection=collection, collection_sha=collection_sha,
-        tau=tau, unit=unit, doc_hash=doc_hash or ph, item_index=item_index,
-        item_span=item_span or [], n_tokens=n_tokens, n_chars=len(text), source=source)
+        tau=tau, encoder=ENCODER_ID, projection="-", unit=unit, doc_hash=doc_hash or ph,
+        item_index=item_index, item_span=item_span or [], n_tokens=n_tokens,
+        n_chars=len(text), source=source)
     if not hits:
         return Association(assigned=False, topic_code="", topic_iri="", topic_label="",
                            topic_path=[], score=0.0, margin=0.0, rel_margin=0.0,
@@ -305,6 +309,61 @@ def associate_store(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
 # ── the TERM-grounded topic registry (increment 3) ───────────────────────────────
 DEFAULT_REGISTRY = "sdg_topics"
 _VOCAB_NS = "https://signals.zndx.org/sdg#"     # matches build_skos_vocab's scheme
+ENCODER_ID = "colbert-ir/colbertv2.0"           # the lens's encoder identity (L1)
+
+# Compact glosses for the BFO classes/relations the catalog's axioms reference by
+# numeric IRI — declared genus knowledge that otherwise contributes ZERO anchor text.
+_BFO_GLOSS = {
+    "bfo:0000002": "continuant", "bfo:0000003": "occurrent",
+    "bfo:0000004": "independent continuant", "bfo:0000015": "process",
+    "bfo:0000016": "disposition", "bfo:0000017": "realizable entity",
+    "bfo:0000019": "quality", "bfo:0000020": "specifically dependent continuant",
+    "bfo:0000023": "role", "bfo:0000027": "object aggregate", "bfo:0000030": "object",
+    "bfo:0000031": "generically dependent continuant", "bfo:0000040": "material entity",
+    "bfo:0000050": "part of", "bfo:0000051": "has part", "bfo:0000052": "inheres in",
+    "bfo:0000054": "realized in", "bfo:0000055": "realizes",
+    "bfo:0000056": "participates in", "bfo:0000057": "has participant",
+    "bfo:0000066": "occurs in",
+}
+
+
+def _curie_glosses() -> "dict[str, tuple[str, str]]":
+    """curie → (label, definition) from the grounding-anchors index (CCO/FHIR/SysML/…),
+    used to surface the vocabulary a term's axiom DECLARES by numeric reference.
+    Graceful {} when the index hasn't been built."""
+    import pickle
+    p = REPO / "build" / "grounding" / "anchors.pkl"
+    if not p.exists():
+        return {}
+    try:
+        d = pickle.load(p.open("rb"))
+        return {c: (l, df or "") for c, l, df in zip(d["curies"], d["labels"], d["defs"])}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def _axiom_vocabulary(manchester: str, glosses: "dict[str, tuple[str, str]]") -> str:
+    """The human vocabulary a Manchester axiom references: resolved CCO/FHIR labels
+    (+ short definitions when present), BFO glosses, and humanized sdg: properties.
+    This is DECLARED content surfaced — no new claims are authored here."""
+    import re as _re
+    parts: list[str] = []
+    seen: set[str] = set()
+    for cu in _re.findall(r"(?:cco|fhir|sysml|witsml):[A-Za-z0-9_]+|bfo:\d{7}", manchester):
+        if cu in seen:
+            continue
+        seen.add(cu)
+        if cu in _BFO_GLOSS:
+            parts.append(_BFO_GLOSS[cu])
+        elif cu in glosses:
+            label, df = glosses[cu]
+            parts.append(f"{label}. {df[:140]}" if df else label)
+    for prop in _re.findall(r"sdg:([a-z][A-Za-z0-9_]*)", manchester):
+        h = prop.replace("_", " ")
+        if h not in seen:
+            seen.add(h)
+            parts.append(h)
+    return "; ".join(parts)
 
 
 def build_term_registry(*, url: str = DEFAULT_QDRANT_URL,
@@ -334,21 +393,29 @@ def build_term_registry(*, url: str = DEFAULT_QDRANT_URL,
                 "alt_label": c.alt_label, "broader": c.broader,
                 "ancestor_codes": c.ancestor_codes(), "kind": "domain"}})
     n_domains = len(anchors)
+    glosses = _curie_glosses()
     for t in load_catalog(CATALOG_FILE).templates:
         prov = t.provenance or {}
         dom = prov.get("domain") if isinstance(prov.get("domain"), dict) else {}
         dom_code = str((dom or {}).get("code") or "")
         ancestors = ([".".join(dom_code.split(".")[:i]) for i in range(1, dom_code.count(".") + 2)]
                      if dom_code else [])
-        frames = t.frames() if hasattr(t, "frames") else []
-        definition = (frames[0] if frames else t.verbal_template) or ""
-        pref = t.template_id.replace("_", " ")
+        # The FULL declared surface — the first (f)-loop iteration is honest exposure,
+        # not authorship: every fragment below already exists in the catalog/ontology.
+        frames = (t.frames() if hasattr(t, "frames") else []) or []
+        definition = " ".join(dict.fromkeys(frames[:3])) or (t.verbal_template or "")
+        pref = t.template_id.replace("_", " ").removeprefix("filler ")
         alts = ", ".join(s.replace("_", " ") for s in (t.slot_types or {}))
+        vocab = _axiom_vocabulary(t.manchester_template or "", glosses)
+        span = prov.get("source_span") or ""
+        grounded = f"Grounded in: {span[:300]}" if isinstance(span, str) and span else ""
         scope = ". ".join(p for p in (
             f"In the '{(dom or {}).get('label')}' domain" if dom else "",
             f"Pattern {prov.get('pattern')}" if prov.get("pattern") else "",
             f"grounds {prov.get('grounds_ddl')}" if prov.get("grounds_ddl") else "") if p)
-        text = ". ".join(p for p in (pref, alts, definition, scope) if p).strip()
+        text = ". ".join(p for p in (pref, alts, definition,
+                                     f"Involves: {vocab}" if vocab else "",
+                                     grounded, scope) if p).strip()[:1200]
         if not text:
             continue
         anchors.append({"text": text, "payload": {
