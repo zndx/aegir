@@ -149,7 +149,7 @@ def _register_api_routes(app: FastAPI) -> None:
         return _json.loads(p.read_text())
 
     @app.get("/api/kb/note/{note_id:path}")
-    def kb_note(note_id: str) -> dict:
+    def kb_note(note_id: str, root: str | None = None) -> dict:
         # provenance/<vid> ids are synthetic (the live AGE graph, not a projected file) — resolve them to a
         # provenance-kind note the React panel renders as a ReactFlow ego-graph centered on that node.
         if note_id.startswith("provenance/"):
@@ -166,9 +166,13 @@ def _register_api_routes(app: FastAPI) -> None:
         if not idx_p.exists():
             raise HTTPException(404, "KB projection not built — run `just kb-build`")
         idx = _json.loads(idx_p.read_text())
-        match = next((n for n in idx["notes"] if n["id"] == note_id), None)
-        if not match:
+        # Roots are refs (git-style): the same surface id (e.g. lens/terms) exists per root —
+        # current = the latest release kasten, scratch = trunk, archive = past. Prefer the
+        # requested root's instance; fall back to any (cross-root trails keep resolving).
+        hits = [n for n in idx["notes"] if n["id"] == note_id]
+        if not hits:
             raise HTTPException(404, f"no KB note {note_id!r}")
+        match = next((n for n in hits if n["root"] == root), hits[0])
         return _N.read_note(kb, match["relpath"])
 
     # ── /api/leaderboard ───────────────────────────────────────
