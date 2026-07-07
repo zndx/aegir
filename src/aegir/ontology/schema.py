@@ -70,6 +70,12 @@ class CatalogTemplate:
     bfo_anchor_path: list[str] = field(default_factory=list)
     broader: list[str] = field(default_factory=list)
     provenance: dict = field(default_factory=dict)
+    # Authored SKOS retrieval surfaces (increment 4b of the inverted topic layer):
+    # membrane-gated annotation content — NEVER ontological claims (those live in the
+    # Manchester axiom and pass HermiT). Consumed by the topic registry's anchor text
+    # and emitted as skos:altLabel / skos:scopeNote by build_skos_vocab.
+    alt_labels: list[str] = field(default_factory=list)
+    scope_note: str = ""
 
     def frames(self) -> list[str]:
         """The verbalization surface forms to sample from: the diverse ``verbal_templates`` set when

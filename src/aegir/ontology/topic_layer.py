@@ -204,13 +204,19 @@ def associate(text: str, *, url: str = DEFAULT_QDRANT_URL,
 def associate_items(text: str, *, url: str = DEFAULT_QDRANT_URL,
                     collection: str = DEFAULT_APERTURE, state: "dict | None" = None,
                     tau: float = DEFAULT_TAU, top_k: int = 5, ratio: float = 2.0,
-                    stride_frac: float = 0.5, source: str = "") -> "list[Association]":
+                    stride_frac: float = 0.5, source: str = "",
+                    window_tokens: int = 0) -> "list[Association]":
     """Window a document into anchor-proportional ITEMS and associate each — the
     ratified granularity (items ≡ topic-windows). Windows batch-encode through the
-    shared ColBERT encoder; each item gets its own qdrant MaxSim adjudication."""
+    shared ColBERT encoder; each item gets its own qdrant MaxSim adjudication.
+    ``window_tokens`` pins the window explicitly (A/B runs against an evolved registry
+    must pin to the baseline plan, or the per-item span join breaks)."""
     from aegir.ontology.colbert_encoder import get_encoder
     state = state or collection_state(url=url, collection=collection)
     plan = window_plan(state, ratio=ratio, stride_frac=stride_frac)
+    if window_tokens:
+        plan = {"window_tokens": window_tokens,
+                "stride_tokens": max(1, round(window_tokens * stride_frac))}
     items = windows(text, window_tokens=plan["window_tokens"],
                     stride_tokens=plan["stride_tokens"])
     if not items:
@@ -267,7 +273,8 @@ def associate_store(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
                     collection: str = DEFAULT_APERTURE, tau: float = DEFAULT_TAU,
                     limit: int = 0, out_dir: "str | Path | None" = None,
                     unit: str = "item", ratio: float = 2.0,
-                    stride_frac: float = 0.5) -> dict:
+                    stride_frac: float = 0.5,
+                    window_tokens: int = 0) -> dict:
     """Associate every passage in a content-addressed store (``<hash>.txt`` files, e.g.
     the harvest's ``build/domain_harvest/docs``) and persist the lineage:
     ``build/topic_associations/<collection>-<collection_sha>/associations.jsonl`` +
@@ -280,6 +287,11 @@ def associate_store(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
         docs = docs[:limit]
     state = collection_state(url=url, collection=collection)
     plan = window_plan(state, ratio=ratio, stride_frac=stride_frac)
+    if window_tokens:
+        plan = {"window_tokens": window_tokens,
+                "stride_tokens": max(1, round(window_tokens * stride_frac)),
+                "ratio": None, "pinned": True,
+                "anchor_tokens_p50": state["anchor_tokens_p50"]}
     out = Path(out_dir) if out_dir else (REPO / "build" / "topic_associations"
                                          / f"{collection}-{state['sha']}")
     out.mkdir(parents=True, exist_ok=True)
@@ -290,7 +302,7 @@ def associate_store(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
             if unit == "item":
                 recs = associate_items(text, url=url, collection=collection, state=state,
                                        tau=tau, ratio=ratio, stride_frac=stride_frac,
-                                       source=p.name)
+                                       source=p.name, window_tokens=window_tokens)
             else:
                 recs = [associate(text, url=url, collection=collection,
                                   collection_sha=state["sha"], tau=tau, source=p.name)]
@@ -366,6 +378,32 @@ def _axiom_vocabulary(manchester: str, glosses: "dict[str, tuple[str, str]]") ->
     return "; ".join(parts)
 
 
+def term_anchor_text(t, glosses: "dict[str, tuple[str, str]] | None" = None) -> str:
+    """THE anchor-text composition for a catalog term — the single source both the
+    registry build and the authoring membrane use (the membrane must judge exactly
+    what MaxSim will see). Full DECLARED surface + any membrane-admitted AUTHORED
+    surface (``alt_labels`` / ``scope_note`` / elaborated frames — 4b)."""
+    glosses = glosses if glosses is not None else _curie_glosses()
+    prov = t.provenance or {}
+    dom = prov.get("domain") if isinstance(prov.get("domain"), dict) else {}
+    frames = (t.frames() if hasattr(t, "frames") else []) or []
+    definition = " ".join(dict.fromkeys(frames[:3])) or (t.verbal_template or "")
+    pref = t.template_id.replace("_", " ").removeprefix("filler ")
+    alts = ", ".join([s.replace("_", " ") for s in (t.slot_types or {})]
+                     + list(getattr(t, "alt_labels", None) or []))
+    vocab = _axiom_vocabulary(t.manchester_template or "", glosses)
+    span = prov.get("source_span") or ""
+    grounded = f"Grounded in: {span[:300]}" if isinstance(span, str) and span else ""
+    scope = ". ".join(p for p in (
+        f"In the '{(dom or {}).get('label')}' domain" if dom else "",
+        f"Pattern {prov.get('pattern')}" if prov.get("pattern") else "",
+        f"grounds {prov.get('grounds_ddl')}" if prov.get("grounds_ddl") else "") if p)
+    scope = ". ".join(p for p in (getattr(t, "scope_note", "") or "", scope) if p)
+    return ". ".join(p for p in (pref, alts, definition,
+                                 f"Involves: {vocab}" if vocab else "",
+                                 grounded, scope) if p).strip()[:1200]
+
+
 def build_term_registry(*, url: str = DEFAULT_QDRANT_URL,
                         collection: str = DEFAULT_REGISTRY,
                         include_domains: bool = True, recreate: bool = True) -> dict:
@@ -400,22 +438,10 @@ def build_term_registry(*, url: str = DEFAULT_QDRANT_URL,
         dom_code = str((dom or {}).get("code") or "")
         ancestors = ([".".join(dom_code.split(".")[:i]) for i in range(1, dom_code.count(".") + 2)]
                      if dom_code else [])
-        # The FULL declared surface — the first (f)-loop iteration is honest exposure,
-        # not authorship: every fragment below already exists in the catalog/ontology.
-        frames = (t.frames() if hasattr(t, "frames") else []) or []
-        definition = " ".join(dict.fromkeys(frames[:3])) or (t.verbal_template or "")
         pref = t.template_id.replace("_", " ").removeprefix("filler ")
-        alts = ", ".join(s.replace("_", " ") for s in (t.slot_types or {}))
-        vocab = _axiom_vocabulary(t.manchester_template or "", glosses)
-        span = prov.get("source_span") or ""
-        grounded = f"Grounded in: {span[:300]}" if isinstance(span, str) and span else ""
-        scope = ". ".join(p for p in (
-            f"In the '{(dom or {}).get('label')}' domain" if dom else "",
-            f"Pattern {prov.get('pattern')}" if prov.get("pattern") else "",
-            f"grounds {prov.get('grounds_ddl')}" if prov.get("grounds_ddl") else "") if p)
-        text = ". ".join(p for p in (pref, alts, definition,
-                                     f"Involves: {vocab}" if vocab else "",
-                                     grounded, scope) if p).strip()[:1200]
+        alts = ", ".join([s.replace("_", " ") for s in (t.slot_types or {})]
+                         + list(getattr(t, "alt_labels", None) or []))
+        text = term_anchor_text(t, glosses)
         if not text:
             continue
         anchors.append({"text": text, "payload": {
@@ -478,6 +504,8 @@ def main(argv: "list[str] | None" = None) -> int:
                     help="(re)build the term-grounded topic registry, then exit")
     ap.add_argument("--window-ratio", type=float, default=2.0,
                     help="item window tokens = ratio × the anchors' median token count")
+    ap.add_argument("--window-tokens", type=int, default=0,
+                    help="PIN the window size (A/B runs vs an evolved registry)")
     ap.add_argument("--stride", type=float, default=0.5, help="stride as a fraction of the window")
     a = ap.parse_args(argv)
     if a.build_registry:
@@ -494,7 +522,8 @@ def main(argv: "list[str] | None" = None) -> int:
     report = associate_store(a.docs, url=a.url, collection=collection, tau=a.tau,
                              limit=a.limit, out_dir=a.out or None,
                              unit="doc" if a.whole_doc else "item",
-                             ratio=a.window_ratio, stride_frac=a.stride)
+                             ratio=a.window_ratio, stride_frac=a.stride,
+                             window_tokens=a.window_tokens)
     print(json.dumps(report, indent=1))
     return 0
 
