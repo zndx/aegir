@@ -10380,7 +10380,8 @@
           "date": "2026-07-07",
           "model": "engine/instruct",
           "membranes": "annotation_membrane M1-M6",
-          "registry": "79e6f45da0b32c91"
+          "registry": "79e6f45da0b32c91",
+          "m7_disposition": "accepted 2026-07-07 \u2014 10/10 flagged items from one traffic-ordinance doc (048d27a5); topical concentration, not basin pathology"
         }
       },
       "alt_labels": [

@@ -318,6 +318,95 @@ def associate_store(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
     return report
 
 
+# ── τ re-derivation (pre-registered) + the M7 basin gate ─────────────────────────
+def derive_tau(docs_dir: "str | Path", *, url: str = DEFAULT_QDRANT_URL,
+               collection: str = DEFAULT_APERTURE, alpha: float = 0.05,
+               seed: int = 44641, window_tokens: int = 170, stride_frac: float = 0.5,
+               limit: int = 0) -> dict:
+    """PRE-REGISTERED τ derivation (docs/scratch/2026-07-07/165051_tau_prereg…md):
+    τ* = the (1−α) quantile of ``rel_margin_h`` under the SHUFFLED-WINDOW NULL — the
+    reference items with their topical coherence destroyed (uniform token shuffle,
+    fixed seed) but vocabulary and length preserved. A shuffled window's surviving
+    margin is stylistic/vocabulary leakage; τ* is the gate that excludes ≥(1−α) of it.
+    Applies per lens identity; report-not-tune after the number is known."""
+    import random
+    from aegir.ontology.colbert_encoder import get_encoder
+    rng = random.Random(seed)
+    docs = sorted(Path(docs_dir).glob("*.txt"))
+    if limit:
+        docs = docs[:limit]
+    state = collection_state(url=url, collection=collection)
+    enc = get_encoder()
+    cl = _client(url)
+    stride = max(1, round(window_tokens * stride_frac))
+    null_margins: list[float] = []
+    for p in docs:
+        text = p.read_text(errors="ignore")
+        for it in windows(text, window_tokens=window_tokens, stride_tokens=stride):
+            toks = it["text"].split()
+            rng.shuffle(toks)
+            null_margins.append(_adjudicate(
+                [{"score": float(q.score), **(q.payload or {})} for q in
+                 cl.query_points(collection_name=collection,
+                                 query=enc.encode_single(" ".join(toks)).tolist(),
+                                 limit=5, with_payload=True).points],
+                tau=0.0, collection=collection, collection_sha=state["sha"],
+                text=" ".join(toks), unit="null").rel_margin_h)
+    null_margins.sort()
+    n = len(null_margins)
+    tau_star = null_margins[min(n - 1, int((1 - alpha) * n))] if n else 0.0
+    return {"tau_star": round(tau_star, 4), "alpha": alpha, "seed": seed, "n_null": n,
+            "null_p50": round(null_margins[n // 2], 4) if n else 0.0,
+            "null_p95": round(null_margins[int(0.95 * n)], 4) if n else 0.0,
+            "collection": collection, "collection_sha": state["sha"],
+            "window_tokens": window_tokens}
+
+
+def rescore_at_tau(assoc_dir: "str | Path", tau: float) -> dict:
+    """Re-score an existing association run's records at a different τ (offline —
+    records carry ``rel_margin_h``). Returns the alignment report at that τ."""
+    rows = [json.loads(ln) for ln in
+            (Path(assoc_dir) / "associations.jsonl").read_text().splitlines() if ln]
+    for r in rows:
+        r["assigned"] = bool(r.get("rel_margin_h", 0.0) >= tau)
+    rep = alignment_report(rows)
+    rep["tau"] = tau
+    return rep
+
+
+def basin_calibration(base_dir: "str | Path", cand_dir: "str | Path", *,
+                      min_items: int = 5, max_ratio: float = 3.0,
+                      tau: "float | None" = None) -> dict:
+    """The M7 BASIN GATE (the taxi lesson, mechanized): compare two association runs
+    over the SAME items (pinned window) and FLAG topics whose assigned-item count
+    explodes (``new ≥ min_items`` AND ``new ≥ max_ratio × max(base, 1)``). The gate
+    reports evidence (counts + the offending items with margins); disposition is the
+    loop's — it never silently mutates. Optional ``tau`` re-scores both sides first."""
+    def _load(d):
+        rows = [json.loads(ln) for ln in
+                (Path(d) / "associations.jsonl").read_text().splitlines() if ln]
+        if tau is not None:
+            for r in rows:
+                r["assigned"] = bool(r.get("rel_margin_h", 0.0) >= tau)
+        by: dict[str, list[dict]] = {}
+        for r in rows:
+            if r.get("assigned"):
+                by.setdefault(r.get("topic_code", ""), []).append(r)
+        return by
+    base, cand = _load(base_dir), _load(cand_dir)
+    offenders = []
+    for code, rows in sorted(cand.items(), key=lambda kv: -len(kv[1])):
+        b = len(base.get(code, []))
+        if len(rows) >= min_items and len(rows) >= max_ratio * max(b, 1):
+            offenders.append({
+                "topic": code, "base": b, "new": len(rows),
+                "items": [{"item": r["passage_hash"][:16], "doc": (r.get("doc_hash") or "")[:16],
+                           "rel_margin_h": r.get("rel_margin_h")} for r in rows[:12]]})
+    return {"ok": not offenders, "min_items": min_items, "max_ratio": max_ratio,
+            "tau": tau, "n_topics_base": len(base), "n_topics_cand": len(cand),
+            "offenders": offenders}
+
+
 # ── the TERM-grounded topic registry (increment 3) ───────────────────────────────
 DEFAULT_REGISTRY = "sdg_topics"
 _VOCAB_NS = "https://signals.zndx.org/sdg#"     # matches build_skos_vocab's scheme
