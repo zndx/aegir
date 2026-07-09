@@ -52,6 +52,14 @@ Scenario: Resume
 
 ## The beachhead: collections × lens
 
+> **Unit evolution (RH 2026-07-09).** The *release-era* collection (below) is a topic-grounded
+> bundle — honest for `current`. The **trunk** collection is being redefined on the founding
+> thesis: *documents whose tables/views form a connected DDL component* (FK + view edges,
+> Barabási-calibrated: infrastructure hubs removed at the percolation knee, validated by
+> within-collection topic entropy — 94 multi-doc collections, docs touch a median of one
+> component). See the pipeline chapter §"Collections as connected relational components". The
+> lens SHAPE is invariant across roots; the unit is era-true per root.
+
 `current` = a pivot. **Collections are the fixed rows**; the **lens selects the column dimension**
 (`terms` default → `schema` → `content`). **Cells are incidence — i.e. trailheads** (optionally
 carrying a count). The lens swaps *what the columns are*; the unit never changes. This is the user's

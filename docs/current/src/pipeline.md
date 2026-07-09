@@ -300,6 +300,41 @@ run-zettel (immutable, prev-linked, cites `strategy_id`) → the lineup
 projection, where every chapter, term, table, and topic-layer association
 is walkable back to its origins.
 
+### Both directions of the flow, one adjudicator (2026-07-09)
+
+The instrument reads **both sides**: input passages *and* generated
+chapters window and adjudicate through the *same* registry state, encoder,
+τ\*, and pinned window — making **input↔output topic-correspondence** a
+like-for-like measure for the first time. This supersedes by-construction
+template matching, which is *circular* as a measurement (we injected the
+templates; finding them verifies injection, not expression). First smoke:
+natural-register chapters align at 4.0% vs the inputs' 10.2% at the same
+gate — generated prose reads more diffuse per window than its sources, a
+generation-quality signal no prior instrument could see. The full build
+(both registers, per-topic mass-in/mass-out) is the semantic upgrade of
+coverage-close, the binding generator metric.
+
+### Collections as connected relational components (2026-07-09)
+
+The trunk's **collection** unit is being redefined on the founding thesis:
+*a collection = the output documents whose tables and views form a
+connected DDL graph* (FK + view-composition edges). The raw constructs web
+is scale-free — chapter generation performs preferential attachment into
+shared lookups — so one hub-glued giant component initially absorbed 58%
+of tables. Two network-science filters (Barabási), swept jointly and
+validated on the **semantic axis** (within-collection topic entropy from
+the item associations): targeted-attack hub removal × weak-ties
+(neighborhood-overlap) pruning, with a pre-declared selection rule
+(bounded giant component + the partition property: documents touch a
+median of **one** component + minimum entropy). Operating point: **160
+infrastructure hubs removed** (4.8% of nodes — the scale-free attack
+knee; `students`, `persons`, `geographic_regions`… — annotated as shared
+infrastructure, referenced by many collections, constitutive of none) →
+**94 multi-document collections**, giant component 2.2%, mean topic
+entropy **3.17 → 1.14 bits**. The two independent axes — relational
+(constructed) and semantic (adjudicated) — certify the unit jointly
+(`scripts/relational_collections.py`).
+
 ## Data Products & the release lifecycle
 
 The `corpora/` submodule (zndx/sdg-corpora) is SHARE — the published Data
@@ -308,6 +343,19 @@ certificate), **ddl** (the released spine), **corpus** (release CARDs),
 **vocabulary** (SKOS). Publishing goes through `aegir.lineup.sync` and is
 hard-gated (ontology schema CI + the OQuaRE metrology gate) — a flow never
 auto-pushes corpora.
+
+**The vocabulary is itself sufficiency-gated (2026-07-09):** the published
+`annotations.*` are MaxSim anchor surfaces (Atelier consumes them as a
+source taxonomy), so descriptions are **natural** — verbalization frames +
+membrane-authored scope notes; the Manchester axiom lives in a reference
+column that no anchor composer embeds (433 published descriptions used to
+carry raw axiom syntax — machine tokens as attractor mass, the
+positive-voice lesson operating at the publishing layer). Every record's
+composed anchor text must retrieve **itself** at rank-1 with hierarchical
+margin against the whole vocabulary (`scripts/vocabulary_sufficiency.py`
+— the self-retrieval gate applied at the know→share boundary; first run:
+944/944, median margin 0.20). A definition that cannot discriminate does
+not publish silently.
 
 Releases anchor the lineup's three roots (**roots are refs** — RH
 2026-07-06). `build/dev/{current,scratch,archive}` is a regenerable KB

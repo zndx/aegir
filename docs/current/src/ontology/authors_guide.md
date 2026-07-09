@@ -183,9 +183,22 @@ cannot operationalize them). Computed via the OntoClean classifier (`src/aegir/o
 |---|---|---|
 | `subsumption_cycles` | classes reachable from themselves via `subClassOf` (OOPS! P06) | **0 (hard)** |
 | `ontoclean_violations` | `subClassOf` edges where an **anti-rigid (role) parent subsumes a non-anti-rigid (rigid) child** | **0** |
-| `sibling_disjointness` | fraction of same-parent sibling *pairs* asserted `owl:disjointWith` (OOPS! P10) | → 1.0 |
+| `sibling_adjudication` | fraction of *adjudicable* sibling pairs carrying a verdict — `disjoint` (a realized `DisjointClasses`, HermiT-enforced) **or** explicit `overlap` (recorded) | **1.0** |
+| `sibling_disjointness` | the disjoint *share* of the adjudicable universe (sub-stat, not a target — roles co-inhere; blanket disjointness is a false claim) | report |
+| `sibling_pairs_grounding_debt` | sibling pairs sharing only a **bare BFO genus** — not siblinghood but grounding debt (the `bfo_grounded` lever): *ground first, then adjudicate* | ↓ |
 | `orphan_rate` | fraction of `sdg:` classes with no parent (OOPS! P04 — islands) | → 0 |
 | `taxonomic_cleanliness` | `1 − (subsumption_cycles + ontoclean_violations) / n_subClassOf` | **1.0** |
+
+> **Sibling adjudication (2026-07-09, supersedes the naive disjointness→1.0 objective).** The
+> universe = pairs sharing a *specific* genus (CCO/`sdg:`, or a BFO realizable where co-membership
+> matters); the closed loop (`scripts/adjudicate_siblings.py`) nominates disjoint pairs over an
+> explicit overlap-by-default, gated by membranes that return reasons: shape/membership, **ABox
+> refutation** (closure-aware: an individual *inferred* into both classes names itself as the
+> witness), and **batch HermiT** over the full theory (with a parse guard — a degraded OWLAPI
+> parse is run-fatal, never a vacuous pass). Verdicts persist in `catalog/adjudications.json`;
+> the realizer emits the `DisjointClasses` frames (full-IRI form — the Manchester parser
+> silently drops prefixed frames against full-IRI declarations) inside the HermiT boundary,
+> where kvasir also reads them natively.
 
 ### 3.4 Consistency
 
@@ -378,9 +391,13 @@ Passing is the floor; the AIM is 3.9 and the IOF frontier beyond it. To raise ea
   miss.
 - **Realizable machinery toward 14+** — wherever a relational/anti-rigid concept appears, model it as a
   BFO role/disposition/function with `inheres`/`realizes` differentiae rather than a subclass.
-- **OntoClean to a clean sheet** — push `sibling_disjointness` up (assert `disjointWith` between
-  identity-incompatible siblings) and keep `ontoclean_violations`/`subsumption_cycles` at 0. These are
+- **OntoClean to a clean sheet** — keep `sibling_adjudication` at 1.0 (every adjudicable pair carries
+  a verdict; nominate `disjointWith` only between identity-incompatible siblings — the ABox and HermiT
+  membranes refute overreach) and keep `ontoclean_violations`/`subsumption_cycles` at 0. These are
   the un-gameable signals; a clean OntoClean profile is the field's blind spot and your differentiator.
+- **Retire grounding debt** — `sibling_pairs_grounding_debt` counts pairs whose only shared genus is a
+  bare BFO category; the fix is *re-grounding to specific CCO/domain genera* (which also lifts
+  `bfo_grounded` and grows the adjudicable universe), never adjudicating meaninglessness.
 - **Annotation rigor** — supply genus-differentia definitions (not vacuous label-glosses); the
   `iao:0000115` should be a *real* sufficient definition, mirroring the `EquivalentTo`.
 - **Contribute patterns** — recurring genus-differentia or role shapes belong in
