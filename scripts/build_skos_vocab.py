@@ -90,8 +90,21 @@ def build_records() -> list[dict]:
             parent_code, parent_notation = a[0], a[1]
             counters[parent_code] = counters.get(parent_code, 0) + 1
             class_slots = [s for s, ty in t.slot_types.items() if ty != "ObjectProperty"]
-            desc = (t.verbal_template or "").strip()
-            desc = (desc + " — " if desc else "") + t.manchester_template.strip()
+            # NATURAL description (RH 2026-07-09): the published vocabulary is a MaxSim
+            # anchor surface (Atelier consumes annotations.* as its source taxonomy) —
+            # Manchester syntax in `description` was machine artifact poisoning the
+            # embedding (axiom tokens as attractors). The axiom moves to its own column;
+            # description = verbalization frames + the membrane-authored scope note
+            # (4b: positive-voice, self-retrieval-gated). common_names = the authored
+            # alt_labels — practitioner surface forms — falling back to humanized slots.
+            frames = (t.frames() if hasattr(t, "frames") else []) or []
+            desc = " ".join(dict.fromkeys(frames[:3])) or (t.verbal_template or "").strip()
+            scope = (getattr(t, "scope_note", "") or "").strip()
+            if scope:
+                desc = f"{desc} {scope}".strip()
+            alts = list(getattr(t, "alt_labels", None) or [])
+            common = ", ".join(alts) if alts else ", ".join(
+                s.replace("_", " ") for s in class_slots)
             records.append({
                 "code": f"{parent_code}.{t.template_id.upper()}",
                 "label": _humanize(t.template_id),
@@ -100,8 +113,10 @@ def build_records() -> list[dict]:
                 "parent_code": parent_code,
                 "taxonomy": "sdg",
                 "description": desc[:1000],
-                "common_names": f"family={family}; slots={','.join(class_slots)}",
+                "common_names": common[:400],
                 "example_values": "",  # harvested from the corpus later
+                "axiom": t.manchester_template.strip(),   # reference — NEVER anchor text
+                "family": family,
             })
 
     # 3) domain mid-tier from the HermiT-admitted domain taxonomy (Path A domain-taxonomy enrichment):
@@ -141,7 +156,8 @@ def build_records() -> list[dict]:
 
 def write_csv(records: list[dict], path: Path) -> None:
     cols = ["code", "label", "abbrev", "notation", "parent_code", "taxonomy",
-            "description", "common_names", "example_values"]
+            "description", "common_names", "example_values", "axiom", "family"]
+    records = [{c: r.get(c, "") for c in cols} for r in records]
     with open(path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
@@ -152,7 +168,8 @@ def write_parquet(records: list[dict], path: Path) -> None:
     import pyarrow as pa
     import pyarrow.parquet as pq
     cols = ["code", "label", "abbrev", "notation", "parent_code", "taxonomy",
-            "description", "common_names", "example_values"]
+            "description", "common_names", "example_values", "axiom", "family"]
+    records = [{c: r.get(c, "") for c in cols} for r in records]
     pq.write_table(pa.table({c: [r[c] for r in records] for c in cols}), path)
 
 
@@ -170,6 +187,9 @@ def write_ttl(records: list[dict], path: Path) -> None:
         lines.append(f'    skos:prefLabel "{esc(r["label"])}" ;')
         lines.append(f'    skos:notation "{r["notation"]}" ;')
         lines.append(f'    skos:altLabel "{esc(r["abbrev"])}" ;')
+        for cn in (r.get("common_names") or "").split(","):
+            if cn.strip() and cn.strip() != r["abbrev"]:
+                lines.append(f'    skos:altLabel "{esc(cn.strip())}" ;')
         if r["description"]:
             lines.append(f'    skos:definition "{esc(r["description"])}" ;')
         if r["parent_code"]:
