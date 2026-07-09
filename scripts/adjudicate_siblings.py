@@ -80,21 +80,39 @@ SCHEMA = {
 }
 
 
-def _abox_cotypes(owl_path: Path) -> "dict[frozenset, str]":
-    """{frozenset({A, B}): individual_local} for every pair of sdg classes co-asserted on
-    one individual — the deterministic refutation evidence for M-B."""
+def _abox_refuter(owl_path: Path):
+    """M-B, closure-aware: returns ``refute(a, b) -> reason|None``.
+
+    Refutes a nominated disjointness when (i) one class sits in the other's entailed
+    descendant closure (siblings that SUBSUME can't be disjoint), or (ii) any individual
+    is typed — directly or via the closure — in BOTH classes (an inferred co-member;
+    asserting the disjointness would make the whole theory inconsistent, which HermiT
+    reports globally in seconds but without pair-level names — this membrane names the
+    pair AND the witness)."""
     import rdflib
     from rdflib import OWL, RDF, URIRef
     g = rdflib.Graph()
     g.parse(str(owl_path))
-    out: dict[frozenset, str] = {}
+    desc = ADJ.descendant_closure(graph=g)
+    # individual -> asserted sdg types (locals)
+    typed: dict[str, set] = {}
     for i in g.subjects(RDF.type, OWL.NamedIndividual):
-        ts = sorted(str(c).split("#")[-1] for c in g.objects(i, RDF.type)
-                    if isinstance(c, URIRef) and str(c).startswith(ADJ.SDG))
-        for x in range(len(ts)):
-            for y in range(x + 1, len(ts)):
-                out.setdefault(frozenset((ts[x], ts[y])), str(i).split("#")[-1])
-    return out
+        ts = {str(c).split("#")[-1] for c in g.objects(i, RDF.type)
+              if isinstance(c, URIRef) and str(c).startswith(ADJ.SDG)}
+        if ts:
+            typed[str(i).split("#")[-1]] = ts
+
+    def refute(a: str, b: str) -> "str | None":
+        da, db = desc.get(a, {a}), desc.get(b, {b})
+        if b in da or a in db:
+            return f"({a},{b}) — one entails the other via the genus lattice (subsumption, not disjointness)"
+        for ind, ts in typed.items():
+            if ts & da and ts & db:
+                return (f"({a},{b}) REFUTED — individual `{ind}` is an inferred co-member "
+                        f"(typed {sorted(ts & da)[0]} ⊑ {a} and {sorted(ts & db)[0]} ⊑ {b})")
+        return None
+
+    return refute
 
 
 def _labels_for(members: "list[str]") -> str:
@@ -120,11 +138,22 @@ def _propose(fam_batch: "list[tuple[str, list[str]]]", feedback: "dict[str, str]
 
 
 def _hermit_check(disjoint_frames: "list[str]") -> "tuple[bool, list[str]]":
-    """M-C: append the frames to the realized OMN, reason once. Returns (ok, unsat_locals)."""
+    """M-C: append the frames to the realized OMN, reason once. Returns (ok, unsat_locals).
+
+    PARSE GUARD: a degraded parse (OWLAPI's silent multi-parser fallback → empty
+    ontology) must be RUN-FATAL, never a vacuous pass — the membrane refuses to
+    testify about a document it did not actually load."""
+    from aegir.ontology.deeponto_harness import ensure_jvm
+    ensure_jvm()   # BEFORE any deeponto import — else click.prompt() aborts headless runs
     from build_realized_ontology import _reason  # the realize boundary's own machinery
     doc = OMN_PATH.read_text().rstrip() + "\n\n" + "\n".join(disjoint_frames) + "\n"
-    onto, tmp, consistent, _n, unsat, _why = _reason(doc)
+    onto, tmp, consistent, n_classes, unsat, _why = _reason(doc)
     del onto, tmp
+    if n_classes < 100:   # the realized theory is hundreds of classes; ~0 = parse fallback
+        raise RuntimeError(
+            f"M-C PARSE DEGRADATION: the reasoned document loaded only {n_classes} classes "
+            f"— OWLAPI fell back on a Manchester parse error (check the appended frames); "
+            f"refusing the vacuous verdict")
     return (bool(consistent) and not unsat,
             [str(u).split("#")[-1].split(".")[-1] for u in (unsat or [])])
 
@@ -143,10 +172,10 @@ def main() -> int:
     fams = sorted(universe["adjudicable"].items(), key=lambda kv: -len(kv[1]))
     if a.limit_families:
         fams = fams[: a.limit_families]
-    cotypes = _abox_cotypes(OWL_PATH)
+    refute = _abox_refuter(OWL_PATH)
     print(f"universe: {universe['universe_pairs']} adjudicable pairs across {len(fams)} families "
           f"(grounding debt excluded: {universe['debt_pairs']} pairs) · "
-          f"{len(cotypes)} co-typed ABox pairs as refutation evidence", flush=True)
+          f"closure-aware ABox refuter armed", flush=True)
 
     adj = ADJ.load_adjudications()
     accepted: dict[str, dict] = {}      # genus -> record
@@ -179,11 +208,10 @@ def main() -> int:
                         stats["shape_rejected"] += 1
                         reasons.append(f"M-A: ({x},{y}) not a valid family-internal rationaled pair")
                         continue
-                    ind = cotypes.get(frozenset((x, y)))
-                    if ind:
+                    why_ref = refute(x, y)
+                    if why_ref:
                         stats["abox_refuted"] += 1
-                        reasons.append(f"M-B: ({x},{y}) REFUTED — individual `{ind}` "
-                                       f"instantiates both; the pair overlaps in fact")
+                        reasons.append(f"M-B: {why_ref}")
                         continue
                     ok_pairs.append({"a": min(x, y), "b": max(x, y), "rationale": why})
                 if reasons:
@@ -200,8 +228,7 @@ def main() -> int:
                   f"families adjudicated {len(accepted)}", flush=True)
 
         if a.hermit:
-            frames = [f"DisjointClasses: sdg:{p['a']}, sdg:{p['b']}"
-                      for rec in accepted.values() for p in rec["disjoint_pairs"]]
+            frames = ADJ.disjoint_manchester_frames({"families": accepted})
             if frames:
                 ok, unsat = _hermit_check(frames)
                 if not ok:

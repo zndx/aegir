@@ -97,6 +97,56 @@ def sibling_families(owl_path: "str | Path | None" = None, *, graph=None) -> dic
             "debt_pairs": sum(debt.values())}
 
 
+def named_supers(g, c) -> "set":
+    """ALL named superclasses a class's axioms entail directly: every named operand of
+    its EquivalentTo intersections (C ≡ A ⊓ …  ⇒  C ⊑ A) plus named subClassOf objects."""
+    out = set()
+    for eq in g.objects(c, OWL.equivalentClass):
+        for inter in g.objects(eq, OWL.intersectionOf):
+            for item in g.items(inter):
+                if isinstance(item, URIRef):
+                    out.add(item)
+        if isinstance(eq, URIRef):
+            out.add(eq)
+    for p in g.objects(c, RDFS.subClassOf):
+        if isinstance(p, URIRef):
+            out.add(p)
+    return out
+
+
+def descendant_closure(owl_path: "str | Path | None" = None, *, graph=None) -> dict:
+    """{class_local: set(descendant_locals incl. self)} over sdg classes, via the
+    entailed named-superclass lattice (genus operands + subClassOf). This is the
+    DETERMINISTIC entailment skeleton the ABox-refutation membrane must respect: an
+    individual typed in desc(A) ∩ desc(B) is an INFERRED co-member of (A, B) — a
+    disjointness over (A, B) would make the whole theory inconsistent."""
+    if graph is not None:
+        g = graph
+    else:
+        import rdflib
+        g = rdflib.Graph()
+        g.parse(str(owl_path))
+    sdg = [c for c in g.subjects(RDF.type, OWL.Class)
+           if isinstance(c, URIRef) and str(c).startswith(SDG)]
+    ancestors: dict[str, set] = {}
+    for c in sdg:
+        seen: set = set()
+        stack = [c]
+        while stack:
+            x = stack.pop()
+            for p in named_supers(g, x):
+                if p not in seen:
+                    seen.add(p)
+                    stack.append(p)
+        ancestors[str(c).split("#")[-1]] = {str(p).split("#")[-1] for p in seen
+                                            if str(p).startswith(SDG)}
+    desc: dict[str, set] = {k: {k} for k in ancestors}
+    for child, ancs in ancestors.items():
+        for a in ancs:
+            desc.setdefault(a, {a}).add(child)
+    return desc
+
+
 def load_adjudications(path: "str | Path | None" = None) -> dict:
     """The artifact, graceful-empty: ``{"families": {genus: record}}``."""
     p = Path(path) if path else ADJUDICATIONS_FILE
@@ -135,9 +185,15 @@ def coverage(universe: dict, adj: dict) -> dict:
 
 def disjoint_manchester_frames(adj: dict) -> "list[str]":
     """The kvasir-legible Manchester lines the realizer appends — one
-    ``DisjointClasses:`` frame per adjudicated-disjoint pair (sdg-prefixed)."""
+    ``DisjointClasses:`` frame per adjudicated-disjoint pair.
+
+    FULL-IRI form, deliberately: the realized OMN declares sdg classes as full IRIs,
+    and OWLAPI's Manchester parser SILENTLY degrades to an empty ontology when an
+    appended frame references them via the ``sdg:`` prefix instead (measured 2026-07-09:
+    base parses 828 classes; base + one prefixed frame parses 0; base + the same frame
+    in full-IRI form parses 828). Never emit prefixed names here."""
     out = []
     for rec in adj.get("families", {}).values():
         for pair in rec.get("disjoint_pairs", []):
-            out.append(f"DisjointClasses: sdg:{pair['a']}, sdg:{pair['b']}")
+            out.append(f"DisjointClasses: <{SDG}{pair['a']}>, <{SDG}{pair['b']}>")
     return out
