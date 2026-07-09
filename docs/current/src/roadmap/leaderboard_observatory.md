@@ -37,6 +37,9 @@ load-bearing, and is the model elucidating the relational structure we built?"
    them as a "provenance" tab that cross-links into the **lineup** (the collections/chord it consumed)
    and **Atlas** (the `RE_GROUNDS_TO` loop-closure subgraph). Closes the run↔data-product loop visibly
    — the same live-viz embed the chord uses. See [[atlas_age_provenance_graph]], [[lineup_kb_projection]].
+   *Substrate since built:* the [Provenance panel](./provenance.md) (Training ▸ Provenance, the
+   instance-level Atlas ego-graph) subsumes this slice; the per-run `RunArtifacts.start` provenance
+   stamp remains the unblocker.
 
 2. **Signals gate panels.** Per run, show the M1/M2/M3 criteria status (M1 H-Net isolation; M2 3-arm ×
    α×β instrument validity; final gate: matches RWKV-7 on general non-degeneracy AND beats the
@@ -66,7 +69,8 @@ load-bearing, and is the model elucidating the relational structure we built?"
    Run grouping/tags, metric pickers, cross-run config diff, run notes — Panel widgets / Tabulator.
 
 8. **Corpus-quality panels beside model metrics.** Surface the convergence proxies (coverage-close
-   R1, topic-recovery, family-complex) next to model metrics, since the loop is one coupled system —
+   R1, the topic-layer census + congruence (`src/aegir/ontology/congruence.py`), naturalness norms —
+   the family complex is retired) next to model metrics, since the loop is one coupled system —
    one observatory for both products.
 
 ## Dependencies / sequencing
@@ -78,9 +82,12 @@ load-bearing, and is the model elucidating the relational structure we built?"
   the same way; no new viz transport needed.
 
 ## RL training (GRPO/RLVR) — the observatory is the reward instrument
-P5 already runs **GRPO/RLVR** (`src/aegir/rl/`): the policy generates ontology compositions, the
-**deterministic verifier composite R** is the reward (`parallel_verify` → `verifier`), z-score group
-advantages, no critic. **GRPO is the right fit and PPO is not the question:** a value network is pure
+*(Status 2026-07: the GRPO/RLVR line is the **long-horizon Signals M4 apparatus** — its verifier is
+now realized as the deterministic membrane stack (HermiT/CCO, OntoClean, OQuaRE); see the
+[Roadmap](../roadmap.md) reframe. The panels below are its observatory when M4 unlocks; the P5 loop
+they read from is in the tree.)* P5 runs **GRPO/RLVR** (`src/aegir/rl/`): the policy generates
+ontology compositions, the **deterministic verifier composite R** is the reward
+(`parallel_verify` → `verifier`), z-score group advantages, no critic. **GRPO is the right fit and PPO is not the question:** a value network is pure
 overhead (memory + a second model to tune) when the reward is a cheap, parallelized, deterministic
 grader — PPO earns its keep only with *learned/noisy* reward models or dense per-token credit, neither
 of which applies here. The live questions are not PPO; they are **(a) reward-variance collapse** (if R
@@ -94,7 +101,8 @@ The earlier ideas are not left behind — RL makes them central, and most are ne
   **reward-variance band IS the GRPO health monitor** (the collapse canary). `advantage_mean/std` =
   signal strength. Already logged → a panel reading the GRPO `metrics_jsonl` (like `runs_app`).
 - **Reward-component decomposition** — `R_A·(0.50·R_B + 0.05·R_C + 0.45·R_D)` over training (a stacked
-  / small-multiples / PCP view). Small add: have `parallel_verify` log the sub-scores, not just `R`.
+  / small-multiples / PCP view; this is the v0.3-era runtime verifier — `R_D`'s successor is the
+  congruence + topic-layer census). Small add: have `parallel_verify` log the sub-scores, not just `R`.
   This is idea #4 (eval-instrument-aware) for RL.
 - **Verifier-pass-rate gates** — `R_A` structural-gate %, HermiT-consistency %, coverage-close % =
   idea #2 (Signals gate panels), as the RL pass-rate dashboard.

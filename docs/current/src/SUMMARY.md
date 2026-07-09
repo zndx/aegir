@@ -7,6 +7,7 @@
   - [RWKV-7/8 Time Mixing](./architecture/rwkv7.md)
   - [ROSA Suffix Automaton](./architecture/rosa.md)
   - [Block Types](./architecture/blocks.md)
+- [The Relational Data Generation Pipeline](./pipeline.md)
 - [Pretraining](./pretraining.md)
   - [Diagnostic Case Study: Representation Collapse](./pretraining/diagnostic_case_study.md)
 - [Training Regime: Sparse → Dense](./training_regime.md)

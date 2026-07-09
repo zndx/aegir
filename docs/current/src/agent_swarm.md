@@ -3,15 +3,18 @@
 The agent-swarm modules in `src/aegir/swarm/` are architectural
 substrate for the multi-agent operational pattern that the project
 will reach for as the metadata landscape scales beyond what a
-single-policy training loop can address. The system's current
-operational training pipeline — described in the
+single-policy loop can address. The system's current operational
+loop — the membrane-gated content-first pipeline (`just metaflow`,
+`src/aegir/flows/sdg_corpora_flow.py`) described in the
 [semantic-engine authoritative reference](./ontology/production_state.md)
-and the [RLVR-for-ontology-generation](./ontology/rlvr.md) chapter —
-is single-policy. This chapter documents the swarm modules' design,
+— is single-policy: one capability engine proposes, deterministic
+membranes dispose. This chapter documents the swarm modules' design,
 the engineering rationale for landing them in the codebase ahead of
 an operational multi-agent task, and the optimization layers
 (prompt evolution, agent RL) that will target the same verifier
-*R(O, I)* once the swarm becomes operational.
+*R(O, I)* — realized today as the deterministic membrane stack
+(see the [RLVR chapter](./ontology/rlvr.md)'s status note) — once
+the swarm becomes operational.
 
 ## When the swarm becomes operational
 
@@ -116,16 +119,18 @@ optimization loop adjusts the swarm against that reward. Three
 candidate layers are available today, and the project's plan is
 to adopt them in order as operational pressure justifies each.
 
-### Weight-level (current): GRPO
+### Weight-level: GRPO (long-horizon — Signals M4)
 
-The current paper-1 training program updates a single policy's
-weights via Group Relative Policy Optimization
-[Shao et al. 2024] against *R(O, I)*. This is the appropriate
-choice when there is one policy, the corpus is bounded, and
-training compute is available in chunks. The in-flight run
-described in
-[authoritative reference](./ontology/production_state.md)
-is the first end-to-end test of this layer.
+The weight-level layer updates a single policy's weights via Group
+Relative Policy Optimization [Shao et al. 2024] against *R(O, I)*.
+This is the appropriate choice when there is one policy, the corpus
+is bounded, and training compute is available in chunks. The
+GRPO/RLVR program is positioned as the long-horizon **Signals M4
+apparatus** (see the [RLVR chapter](./ontology/rlvr.md)'s status
+note and the [Signals Programme](./signals_programme.md)); its
+verifier is realized today as the deterministic membrane stack
+(HermiT/CCO, OntoClean, OQuaRE) that gates the generation
+pipeline.
 
 ### Prompt-level: GEPA
 
@@ -152,17 +157,23 @@ Two GEPA properties are directly relevant to a deployed swarm:
   `FrozenSpecialist` agents.
 - **Actionable Side Information (ASI).** GEPA's feedback channel
   is not just a scalar reward; it accepts structured error
-  messages, profiling data, and reasoning traces. The
-  deterministic verifier *R(O, I)* already produces this kind of
-  structured feedback — per-component scores, hard-gate failure
-  reasons, *R_D* topic-alignment diagnostics — which is the
-  feedback shape GEPA is designed to consume.
+  messages, profiling data, and reasoning traces. The membrane
+  stack already produces this kind of structured feedback —
+  per-component scores, hard-gate failure reasons, congruence and
+  topic-layer diagnostics (`src/aegir/ontology/congruence.py`,
+  `src/aegir/ontology/topic_layer.py`) — which is the feedback
+  shape GEPA is designed to consume, and which the
+  agent-mediated-feedback doctrine already requires membranes to
+  return.
 
-For Aegir, GEPA becomes the operational optimization loop when
-the swarm is composing ontology fragments and the goal is to
-adapt the system's behavior to a new domain (a new streaming
-source, a new compliance regime) faster than a full GRPO retrain
-can deliver.
+A GEPA-style loop is in fact already operational on the ontology
+side: `scripts/evolve_rigor.py` reflectively evolves the
+ontology's definitional rigor against the OQuaRE/metrology gates
+(single-policy, membrane-disposed — no swarm involved). For the
+swarm, GEPA becomes the operational optimization loop when it is
+composing ontology fragments and the goal is to adapt the
+system's behavior to a new domain (a new streaming source, a new
+compliance regime) faster than a full GRPO retrain can deliver.
 
 ### Agent-level RL: Agent Lightning
 
@@ -197,26 +208,54 @@ The three layers compose rather than compete:
 
 | Layer | What it adjusts | When to use |
 |---|---|---|
-| GRPO (weight-level) | Single-policy weights | Bounded corpus; training compute available in chunks; current paper-1 work |
+| GRPO (weight-level) | Single-policy weights | Bounded corpus; training compute available in chunks; the long-horizon Signals M4 apparatus |
 | GEPA (prompt-level) | Prompts of an LLM-based system | Online adaptation to new domains; multi-agent pipelines; rollout-budget-constrained settings |
 | Agent Lightning (agent-level RL) | Agent behavior incl. tool use, routing, multi-step | Multi-agent scenarios with delayed reward; framework-agnostic; streaming-SQL targets |
 
 All three target the same verifier *R(O, I)*. That property — the
 verifier is the durable asset, the optimization layers slot in
-above it — is the project's methodological commitment for keeping
-the verifier work paper-1-ready while leaving room for the swarm
-generalization downstream.
+above it — is the project's methodological commitment: the
+membranes are the durable core, and the swarm generalization
+slots in above them downstream.
+
+## The forward connection: latent lenses
+
+The freshest concrete role for these modules is the **latent-lens
+design direction** banked alongside the
+[inverted topic layer](./roadmap/phase_gate_inverted_topic_layer.md)
+(design note: `docs/scratch/2026-07-07/152519_latent_lens_design.md`).
+There, every latent space is a *lens* over the ontology-grounded
+topic registry — content-addressed by the triple
+`(registry_sha × encoder_sha × projection_sha)` — and never the
+registry itself:
+
+- **`AlignmentProjection` is the module shape for per-modality
+  lenses** (ladder stage L4): per-modality encoders (tables and
+  schematics first) project into the shared anchor space exactly
+  the way the module already projects recurrent states between
+  differently-sized agents.
+- **`RWKVStateFusion` is the LatentMAS tie-in** (opportunistic,
+  after L3): the topic lens becomes a fusable specialist *state* —
+  a topic-prior channel fused into the primary model's recurrent
+  state alongside domain specialists.
+
+The trust doctrine transfers verbatim: a lens changes *how fast*,
+never *what* is verified — the text-space ColBERT/qdrant
+adjudication (`src/aegir/ontology/topic_layer.py`) remains the
+oracle of record until a differential harness earns co-signing.
 
 ## What this chapter does not commit to
 
-- **The swarm is not yet operational.** The current paper-1
-  training run uses a single policy. The modules above exist in
+- **The swarm is not yet operational.** The modules above exist in
   `src/aegir/swarm/` but are not exercised by any current training
-  run.
-- **GEPA and Agent Lightning are not integrated yet.** Both are
-  named here as the methodological frameworks the project will
-  adopt when scaling pressure justifies them. Integration work
-  follows paper 1's first held-out evaluation.
+  run; the operational system remains the single-policy
+  membrane-gated pipeline.
+- **GEPA and Agent Lightning are not integrated with the swarm.**
+  GEPA-style reflective evolution runs today on the ontology's
+  definitional rigor (`scripts/evolve_rigor.py`); neither
+  framework yet drives the swarm modules. Integration follows the
+  [Signals Programme](./signals_programme.md)'s milestone gates,
+  not a calendar.
 - **The order of adoption is provisional.** Whether prompt-level
   optimization (GEPA) or agent-level RL (Agent Lightning) becomes
   operational first depends on which scaling pressure
@@ -241,10 +280,11 @@ generalization downstream.
 
 - [RLVR for ontology generation](./ontology/rlvr.md) — the
   verifier *R(O, I)* that all three optimization layers target;
-  the methodological chapter for paper 1.
+  the long-horizon Signals-M4 methodological record.
 - [Semantic-engine authoritative reference](./ontology/production_state.md)
-  — the operational state of the current single-policy paper-1
-  work.
-- [Roadmap](./roadmap.md) — the two-paper milestone structure and
-  the deferred-work section that names the K2.5 PARL plan as
-  superseded by the layered approach above.
+  — the operational state of the current single-policy semantic
+  engine.
+- [Roadmap](./roadmap.md) — the milestone structure; the K2.5
+  PARL plan (supervised → reward → PARL → swarm RL) folded into
+  the Signals milestone ladder, with the swarm modules persisting
+  as the infrastructure documented here.

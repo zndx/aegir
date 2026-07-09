@@ -1,6 +1,6 @@
 # Aegir's semantic engine: an authoritative reference
 
-*Last updated 2026-06-29. This document describes the current
+*Last updated 2026-07-09. This document describes the current
 operational state of Aegir's semantic engine for external/advisory
 audiences. The canonical, code-exact reference for every metric, band,
 gate, and membrane is the [Authors Guide](./authors_guide.md); this
@@ -47,10 +47,12 @@ an anti-rigidity violation.
 
 The realized artifact lives at `corpora/ontology/sdg-ontology.{omn,owl}`
 with a consistency certificate (`HERMIT_CERTIFICATE.md`). At the time
-of writing it has **285 named classes, 0 unsatisfiable classes**, and
-clears the pre-registered rigor objectives — definitional completeness
-**0.554**, BFO-grounding **0.896**, realizable-machinery **10** — with
-an OQuaRE aggregate of **4.24 (GREEN)**.
+of writing it has **828 named classes (661 `sdg:` domain classes), 0
+unsatisfiable classes, and 10,570 membrane-admitted individuals**
+(instance-level consistency certified by decomposition), and clears
+the pre-registered rigor objectives — definitional completeness
+**0.575**, BFO-grounding **0.861**, realizable-machinery **35** — with
+an OQuaRE aggregate of **4.19 (GREEN)**.
 
 ## 1. Background
 
@@ -145,7 +147,12 @@ This is the load-bearing architectural invariant — the ontology is
 forced to express cross-context concepts as shared subclasses of common
 BFO/CCO ancestors rather than as discipline-specific aliases for the
 same real-world entity. (The full committed branch structure and
-external-standard anchors are in the [Charter](./charter.md).)
+external-standard anchors are in the [Charter](./charter.md).) The
+branch commitment dates to the v0.1 seed era; the fully-derived
+catalog now populates the same upper anchors — at the time of writing
+106 classes anchor at `bfo:0000015` (process), 68 at `bfo:0000023`
+(role), and the ICE branches carry the record/measurement/directive
+classes.
 
 ### 3.1 Classes as the annotation vocabulary
 
@@ -163,54 +170,68 @@ annotation target.
 
 ### 3.2 Content-first derivation
 
-The ontology is **derived from FinePDFs**, concept-filtered by a
-ColBERT/Qdrant MaxSim domain filter over a SKOS index
-(`scripts/derive_ontology.py::_apply_domain_filter`). The seven family
-catalogs under `src/aegir/ontology/catalog/` (`01_foundation` …
-`07_long_tail`) are a **seed and regression baseline**; FinePDFs-derived
-intermediate classes accrete in `catalog.json`. The live driver is
-the content-first pipeline — text → engine derives candidate classes →
+The ontology is **fully derived from FinePDFs**, concept-filtered by a
+ColBERT/Qdrant MaxSim aperture over a SKOS index
+(`scripts/derive_ontology.py::_apply_domain_filter`,
+`src/aegir/ontology/domain_index.py`). The live catalog is
+`src/aegir/ontology/catalog/catalog.json` — 433 templates at the time
+of writing, every one accreted by the derive→promote loop (the
+hand-authored seed families are retired). The pipeline is: text → the
+engine derives axiom-pattern-bound primitives
+(`src/aegir/ontology/patterns.py`, tiers `fhir_minimum` / `owl2_core`
+/ `odp` / `sysmlv2`), staged in `catalog.candidate.json` →
 grounding-anchor retrieval supplies a real genus → the disposal
-membranes admit or reject — not a fixed template count. Classes are
-authored as Manchester-syntax catalog templates with a typed slot DSL
-that the realizer renders, grounds, and validates into the OWL artifact
+membranes admit or reject → `scripts/promote_candidates.py` threads
+the derivation provenance (`pattern` / `tier` / `grounds_ddl` /
+`domain` / `source_span`) into the catalog — not a fixed template
+count. Classes are authored as Manchester-syntax catalog templates
+with a typed slot DSL that the realizer renders, grounds, and
+validates into the OWL artifact
 (`scripts/build_realized_ontology.py`).
 
 ### 3.3 Cross-context cousining — concrete instances
 
-Cousining is verifiable directly from the catalog. Representative
-instances:
+Cousining is verifiable directly from the live catalog — the derived
+templates carry a `domain` provenance tag, and templates from
+different SKOS domains share upper anchors. Representative instances
+(template ids from `catalog.json`):
 
-- `bfo:Process` (BFO 2020 `bfo:0000015`) is shared by `sdg:LabRun`
-  (LIMS), `sdg:Trace` (database / MBSE), `sdg:eBPFEvent` (kernel
-  observability), `sdg:Transformation` + `sdg:Allocation` (lineage),
-  and `sdg:Audit` + governance activity.
-- `cco:DescriptiveICE` is shared by LIMS measurements, database
-  governance records (`sdg:ColumnPolicy`), PROV-O lineage edges, and
-  the DST primitives `sdg:Evidence` / `sdg:Claim` / `sdg:BeliefInterval`
-  / `sdg:MassFunction`.
-- `cco:DirectiveICE` (alias of `cco:ont00000965`) is shared by HIPAA
-  rules, column policies, SQL constraints, SysMLv2 constraints, and
-  eBPF security-policy classes — SQL `CHECK` clauses and SysMLv2
-  constraint blocks land at the same upper class as a HIPAA Privacy
-  Rule provision.
-- `cco:DesignativeICE` is shared by database identifiers, the kernel
-  syscall surface, and schema.org alignment properties — syscalls and
-  database identifiers are treated as cousins, not separate
-  disciplines.
+- `bfo:Process` (BFO 2020 `bfo:0000015`) is shared by
+  `clinical_documentation_activity` (clinical),
+  `vector_control_activity` (public health), `lecture_session`
+  (education), `pdf_export_process` (document systems), and
+  `specification_testing_event` (engineering) — 106 realized classes
+  anchor here.
+- `bfo:Role` (`bfo:0000023`) is shared by `data_controller_role`
+  (data governance), `police_officer_role` (public administration),
+  `investor_relations_director_role` (finance), and
+  `library_student_assistant_role` (education) — 68 classes; the
+  role/kind discipline is what OntoClean enforces.
+- `cco:InformationContentEntity` and `cco:DescriptiveICE` are shared
+  by `personal_health_record` (clinical),
+  `donation_transaction_record` (nonprofit finance),
+  `sequencing_coverage_parameter` (genomics), and
+  `small_group_surcharge_rule` (insurance) — records, measurements,
+  and rules from disparate domains land at the same ICE ancestors
+  rather than as discipline-specific aliases.
 
 ### 3.4 Atelier ↔ Aegir state-fusion via DST
 
 The `sdg:BeliefStructure` primitives — `sdg:MassFunction`,
-`sdg:BeliefInterval`, `sdg:Evidence`, `sdg:Claim` — provide shared
-structural vocabulary for Dempster-Shafer evidence-fusion pipelines.
-The Aegir agent-swarm state-fusion layer consumes belief structures
-emitted by **Atelier**, a sibling project providing DST-based evidence
-fusion for enterprise data-classification, using these names directly
-and without translation. The cousining is at the explicit-uncertainty
-layer: the same `sdg:Evidence → sdg:Claim → sdg:BeliefInterval` triplet
-covers LIMS quality-tier evidence, audit findings, lineage-edge
-plausibility, and column-tag claims at calibrated confidence levels.
+`sdg:BeliefInterval`, `sdg:Evidence`, `sdg:Claim` — were the seed-era
+commitment (Charter Q1) to a shared structural vocabulary for
+Dempster-Shafer evidence-fusion pipelines: the Aegir agent-swarm
+state-fusion layer consuming belief structures emitted by **Atelier**
+(a sibling project providing DST-based evidence fusion for enterprise
+data-classification) using these names directly and without
+translation. The belief branch was retired with the hand-authored
+seed families and is **not in the current realized artifact**; its
+reinstatement is a standing publish rider (the DST belief module,
+#136, named in `src/aegir/flows/sdg_corpora_flow.py`). The design
+intent stands: the cousining is at the explicit-uncertainty layer,
+one `Evidence → Claim → BeliefInterval` triplet covering quality-tier
+evidence, audit findings, lineage-edge plausibility, and column-tag
+claims at calibrated confidence levels.
 
 ## 4. Rigor — the metric suite and the publish gate
 
@@ -256,23 +277,65 @@ RealEstateCore (3.91).
 ### 4.3 Current state
 
 Verified against the realized artifact
-(`corpora/ontology/sdg-ontology.owl` + `HERMIT_CERTIFICATE.md`):
+(`corpora/ontology/sdg-ontology.owl` + `HERMIT_CERTIFICATE.md`,
+metrology re-run 2026-07-09):
 
 | metric | value | target |
 |---|---|---|
-| `definitional_completeness` | **0.554** | IOF ≈ 0.55 |
-| `bfo_grounded` | **0.896** | 1.0 |
-| `realizable_machinery` | **10** | IOF ≥ 14 |
-| `def_annotation_coverage` | **0.946** | 1.0 |
+| `definitional_completeness` | **0.575** | IOF ≈ 0.55 |
+| `bfo_grounded` | **0.861** | 1.0 |
+| `realizable_machinery` | **35** | IOF ≥ 14 |
+| `def_annotation_coverage` | **0.877** | 1.0 |
 | unsatisfiable classes | **0** | 0 (hard) |
-| OQuaRE FunctionalAdequacy | **4.55** | ≥ 3.0 (floor) |
-| OQuaRE aggregate | **4.24 (GREEN)** | ≥ 3.5 (floor), AIM 3.9 |
+| `subsumption_cycles` / `ontoclean_violations` | **0 / 0** | 0 (hard) |
+| OQuaRE FunctionalAdequacy | **4.63** | ≥ 3.0 (floor) |
+| OQuaRE aggregate | **4.19 (GREEN)** | ≥ 3.5 (floor), AIM 3.9 |
 
-Both pre-registered objectives are essentially met:
-**OQ-Structure** (`bfo_grounded ≥ 0.95` ∧ `def_annotation_coverage ≥
-0.90` ∧ `ar > 0` ∧ `oquare_aggregate ≥ 3.5`) and **OQ-Rigor**
-(`definitional_completeness ≥ 0.45` ∧ `realizable_machinery > 0`). See
-[`EVIDENCE.md`](../../../../EVIDENCE.md) for the full ledger history.
+**OQ-Rigor** (`definitional_completeness ≥ 0.45` ∧
+`realizable_machinery > 0`) is met outright. **OQ-Structure**'s
+grounding and annotation floors (`bfo_grounded ≥ 0.95`,
+`def_annotation_coverage ≥ 0.90`) sit slightly below after the
+catalog's growth to 661 domain classes — the active levers, while
+`ar > 0` and `oquare_aggregate ≥ 3.5` hold and the publish gate stays
+GREEN. See `EVIDENCE.md` (repo root) for the full
+ledger history.
+
+### 4.4 The topic layer — measurement on the retrieval face
+
+Since 2026-07-07 (phase-gated PASS,
+[record](../roadmap/phase_gate_inverted_topic_layer.md)) the same
+catalog terms are the corpus's **topic registry**: topics ≡
+ontology-grounded concept anchors in qdrant (`sdg_topics` — the 29
+SKOS domains plus all 433 live terms;
+`src/aegir/ontology/topic_layer.py`). FinePDFs items
+(anchor-proportional passage windows) associate with **one topic or
+none** by hierarchical-margin ColBERT MaxSim, and every association is
+content-addressed to the collection state that adjudicated it. The
+instruments sit alongside OQuaRE/IOF as the retrieval-face gates:
+
+- **τ\* = 0.1065** — the assignment gate on `rel_margin_h`,
+  pre-registered as the (1−α) quantile under the shuffled-window null
+  (α = 0.05, report-not-tune; lens-identity-scoped).
+- **Alignment / margins** — `rel_margin_h` is the margin over the
+  nearest *non-ancestor* competitor (a parent/child near-miss is not
+  ambiguity); the unassigned mass is the error signal that drives
+  definitional-rigor iteration on the **lexicon** side, never the
+  input.
+- **M1–M6, M8** (`src/aegir/ontology/annotation_membrane.py`) — the
+  membranes over authored anchor surfaces (`alt_labels`,
+  `scope_note`, definitions); **M8** is the durable rule: anchor
+  surfaces are *positive-voice only* — definition-by-negation is an
+  embedding anti-pattern.
+- **M7 basin gate** (`topic_layer.basin_calibration`) — registry
+  changes gated on the input side: a topic flags when its assigned
+  mass explodes between pinned runs, with doc-concentration evidence
+  attached; dispositions are manual and provenance-recorded.
+
+Full-store state at the gate: 15,976 items over 453 docs, 1,629
+aligned (10.2%), 175/462 topics hit, M7 PASS with zero flags. The
+BERTopic-era instruments (`topic_alignment.py`, `T_I.pkl`,
+`build_topic_model.py`) are deprecated — v0.3 reproducibility only;
+the live successors are the topic layer and congruence (§6).
 
 ## 5. The disposal membranes
 
@@ -307,29 +370,39 @@ accretes — each class grounded becomes a reusable anchor).
 ## 6. The closed-loop synthetic-data pipeline
 
 The realized ontology drives a closed loop that converts organic input
-corpora into a verifier-scored synthetic training corpus and a
-relational DDL spine. Input corpora (FinePDFs and others) are
-domain-filtered and used to **derive** intermediate classes; the
-ontology's classes are **verbalized** (DeepOnto parse-tree recomposition
-into slot-faithful procedural frames); verbalizations seed LLM
-generative chapter text and **RI-true relational tables** materialized
-from the ontology's slot structure; chapters are checked by a 4-scorer
-verification loop (`scripts/verify_chapters.py`) and the
-**Semantic-Layer-Upkeep gate** (verbalization diversity, value
-semantics, column-name de-canning). The relational DDL spine
-(`src/aegir/ontology/ddl.py`, `realize.py`) projects ontology → SQL
-tables/views/FKs and lands in the Atlas-on-AGE provenance graph as a
-relational Data Product.
+corpora into a measured synthetic training corpus and a relational DDL
+spine. **`just metaflow` is the entire pipeline**, idempotent per
+input window (`src/aegir/flows/sdg_corpora_flow.py`): FinePDFs
+passages are **harvested** cursor-windowed and content-hashed
+(`scripts/harvest_domain_docs.py`), classified through the qdrant
+ColBERT **aperture** (`src/aegir/ontology/domain_index.py`); the
+engine **derives** pattern-bound primitives that the membranes dispose
+and `promote_candidates` admits into the catalog; the catalog
+**realizes** to the HermiT-certified OWL; the deterministic **DDL
+spine** (`src/aegir/ontology/ddl.py`, `scripts/build_ddl_spine.py`)
+realizes profiles from `grounds_ddl` (junction / star / normalized /
+eav) into RI-true, polyglot-validated (Trino ∩ Spark) tables and
+views; **dual-register prose** (natural ∥ semantic, thinking traces
+retained) embeds the per-chapter constructs verbatim; and
+**verify/measure** runs **congruence**
+(`src/aegir/ontology/congruence.py` — input-window concepts ↔ chapter
+concepts over the *same* ColBERT substrate, the BERTopic-era R_D
+reborn), the sensitive-noun scan, naturalness norms, and shape EMD vs
+SchemaPile. Each completed run emits one immutable run-zettel
+(`src/aegir/lineup/zettel.py`) and the lineup re-projects
+(`just kb-build`). The family simplicial complex is retired —
+cross-entity FKs are the deriver's to *earn* through provenance,
+never name-match-wired.
 
 ```d2
 direction: down
 
-input: Input Corpora\nFinePDFs (domain-filtered), SchemaPile,\nSOTAB, GitTables {
+input: FinePDFs stream\nharvest (content-hashed docs)\n+ qdrant ColBERT aperture {
   style.fill: "#fce4ec"
   style.stroke: "#c62828"
 }
 
-ontology: SDG ontology\nBFO/CCO-grounded intermediate classes\nrealized + HermiT-validated OWL {
+ontology: SDG ontology\ncatalog.json (derive → promote)\nrealized + HermiT-certified OWL {
   style.fill: "#f0e8f8"
   style.stroke: "#6a1b9a"
 }
@@ -339,12 +412,12 @@ membranes: Disposal membranes\nparse → HermiT (CCO authority) → OntoClean\n+
   style.stroke: "#e65100"
 }
 
-verbalize: Verbalization\nDeepOnto parse-tree → slot-faithful frames {
+constructs: DDL spine + verbalization\ngrounds_ddl → RI-true tables/views\n(Trino ∩ Spark) · slot-faithful frames {
   style.fill: "#e8f4f8"
   style.stroke: "#1565c0"
 }
 
-output: Output Corpora\nontology-grounded chapters\n+ RI-true relational tables / views (DDL spine) {
+output: Output corpus\ndual-register chapters (traces retained)\n+ released DDL spine {
   style.fill: "#e8f8e8"
   style.stroke: "#2e7d32"
 }
@@ -354,8 +427,12 @@ ontology -> membranes: propose / dispose
 membranes -> ontology: reason (refine) {
   style.stroke-dash: 3
 }
-ontology -> verbalize: TBox classes
-verbalize -> output: LLM generative text + materialized rows
+ontology -> constructs: TBox + provenance
+constructs -> output: engine prose + materialized rows
+output -> input: congruence + topic layer\n(same ColBERT substrate) {
+  style.stroke-dash: 3
+  style.stroke: "#6a1b9a"
+}
 output -> input: byte-level pretraining slice\n(H-Net + RWKV-7) {
   style.stroke-dash: 5
   style.stroke: "#9e9e9e"
@@ -363,12 +440,14 @@ output -> input: byte-level pretraining slice\n(H-Net + RWKV-7) {
 ```
 
 **Figure 1 — The Aegir closed-loop pipeline.** FinePDFs content
-derives intermediate classes; the disposal membranes (and the OQuaRE
-publish gate) admit only rigorous additions and return their reasons;
-verbalized classes seed LLM chapter text and RI-true relational tables;
-the output corpus becomes a byte-level pretraining slice. The dashed
-gray arrow indicates the downstream pretraining application
-(continued-pretraining augmentation on RWKV World v3 — *Path A*).
+derives the catalog; the disposal membranes (and the OQuaRE publish
+gate) admit only rigorous additions and return their reasons; the
+catalog's provenance drives RI-true constructs and slot-faithful
+verbalization frames that seed dual-register chapters; congruence and
+the topic layer measure the output against the input window over the
+same ColBERT substrate. The dashed gray arrow indicates the downstream
+pretraining application (continued-pretraining augmentation on RWKV
+World v3 — *Path A*).
 
 ## 7. Repository state and reproducibility
 
@@ -384,7 +463,7 @@ uv run --no-sync python scripts/ontology_oquare.py corpora/ontology/sdg-ontology
 
 Re-deriving / re-realizing (the JVM membranes) needs the
 `LD_LIBRARY_PATH` bootstrap (DeepOnto/HermiT, see the project
-[CLAUDE.md](../../../../CLAUDE.md) ontology notes):
+`CLAUDE.md` ontology notes):
 
 ```
 LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/build_realized_ontology.py --strict-grounding
@@ -404,16 +483,19 @@ with stable public distributions.
 
 ## 8. Limitations and threats to validity
 
-- **Grounding is strong but not complete.** `bfo_grounded` is 0.896 and
-  `realizable_machinery` is 10 (IOF aim 14); a residual fraction of
-  classes still ground shallowly (a bare BFO category where a real CCO
-  genus would be better). These are the active levers, not closed
-  problems.
-- **Definitional rigor is at the IOF band, not beyond it.**
-  `definitional_completeness` (0.554) sits at the IOF ≈ 0.55 frontier;
-  the AIM is 3.9-class and the IOF discipline beyond it. Raising it
-  means defining more of the *referenced* intermediate classes, not
-  just the heads.
+- **Grounding is strong but not complete.** `bfo_grounded` is 0.861
+  and `def_annotation_coverage` 0.877 — both dipped below their
+  OQ-Structure floors (0.95 / 0.90) as the catalog grew to 661 domain
+  classes; `orphan_rate` is 0.139 and `sibling_disjointness` near 0.
+  A residual fraction of classes still ground shallowly (a bare BFO
+  category where a real CCO genus would be better). These are the
+  active levers, not closed problems (`realizable_machinery`, at 35,
+  now clears the IOF ≥ 14 aim).
+- **Definitional rigor is at the IOF band, not far beyond it.**
+  `definitional_completeness` (0.575) sits just past the IOF ≈ 0.55
+  frontier; the AIM is 3.9-class and the IOF discipline beyond it.
+  Raising it means defining more of the *referenced* intermediate
+  classes, not just the heads.
 - **The corpus's relational claim is not yet demonstrated at scale.**
   The ontology is *load-bearing for slot-type prediction (CPA)* but
   trades raw FinePDFs distribution alignment; whether the

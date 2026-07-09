@@ -1,8 +1,10 @@
 # Phase 4: Agent Swarm RL
 
-> **Deferred work.** This page describes a multi-specialist swarm
-> RL plan that has been deferred indefinitely. The agent-swarm
-> modules in `src/aegir/swarm/` remain in the codebase as
+> **Deferred work (status refreshed 2026-07-09).** This page describes
+> a multi-specialist swarm RL plan that has been deferred indefinitely;
+> the four-phase K2.5 PARL roadmap folded into the
+> [Signals Programme](../signals_programme.md) milestone ladder. The
+> agent-swarm modules in `src/aegir/swarm/` remain in the codebase as
 > infrastructure scaffolding, but no operational training currently
 > uses them. See [Roadmap](../roadmap.md) for the active two-track
 > work and [Agent Swarm](../agent_swarm.md) for the module-level

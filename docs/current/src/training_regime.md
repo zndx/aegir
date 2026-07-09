@@ -390,7 +390,7 @@ The Apr 20 single-slice GitTables pretrain (Stage B) demonstrated that
 the architecture converges under its native objective. v2 extends that
 result to a 2 GB mixed-corpus pretrain across nine slices and produces
 the project's first real backbone — the empirical anchor that the
-M2/M3 milestones build on.
+M2 head fine-tune (§11) and the v3 step-up build on.
 
 **Run mechanics:**
 
@@ -452,6 +452,14 @@ bytes.
 - **v3 corpus mix has a clean baseline to beat.** Any v3 mixture must
   keep `eval.fineweb-held` ≤ 1.61, push `eval.finepdfs-lab-held` below
   1.78, and not regress on schemapile/sqale.
+- **Synthetic slices enter under the Path A / Path B framing.** Any
+  ontology-grounded slice in a future mix rides a mixing fraction α
+  calibrated first on a fixed vanilla RWKV-7 harness — continue-pretrain
+  0.19B on an RWKV World-v3 subsample with and without the slice
+  (`scripts/continue_pretrain_rwkv7.py`,
+  `src/aegir/flows/path_a_training_flow.py`). Aegir's own pretrain
+  (Path B, the architecture thesis) inherits that α; see
+  [Pretraining](./pretraining.md).
 - **BIRD held-out as a second transfer probe** in v3 — same logic as
   Spider in v2, cleaner test.
 

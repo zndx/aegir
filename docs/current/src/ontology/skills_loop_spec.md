@@ -2,6 +2,26 @@
 
 **Status:** v0.1 — accepted; DOF 2 & 4 resolved · DOF 1 & 3 deferred (see §3) · **Date:** 2026-06-05
 
+> **Status (2026-07-09) — dated record; partially realized, partially
+> superseded.** The skills package landed
+> (`src/aegir/ontology/skills/` — S2/S3/S5/S6/S7 plus the
+> per-modality gates in `base.py`), and the closed
+> generate→verify→refine shape lives on in the metaflow pipeline
+> (`src/aegir/flows/sdg_corpora_flow.py`, `just metaflow`). Two
+> substrates named below are superseded: the **BERTopic re-grounding
+> spine** (the cached FinePDFs model, `topic_recovery`, `T_I.pkl`)
+> was deprecated 2026-07-07 — the loop-closure verifier's successors
+> are **congruence** (`src/aegir/ontology/congruence.py`) and the
+> **inverted topic layer** (`src/aegir/ontology/topic_layer.py`;
+> phase gate:
+> [Inverted Topic Layer](../roadmap/phase_gate_inverted_topic_layer.md))
+> — and the **family complex** (S6's admissibility gate; §2.1 step 7)
+> is retired: cross-entity links are the deriver's to earn, never
+> name-match-wired. The catalog is now fully derived
+> (`src/aegir/ontology/catalog/catalog.json`; the hand-authored seed
+> families are retired). Read the spec as the 2026-06-05 design; do
+> not build new consumers on its BERTopic surfaces.
+
 ## 0. The spine: FinePDFs as immutable fixed point, and the re-grounding invariant
 
 The pipeline is a **closed, verifiable loop** with FinePDFs as the fixed-point

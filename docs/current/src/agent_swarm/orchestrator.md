@@ -2,6 +2,8 @@
 
 The `SwarmOrchestrator` coordinates a trainable primary Aegir model with multiple frozen specialist agents, following the Parallel Agent Reinforcement Learning (PARL) pattern from Kimi K2.5 (arXiv:2602.02276). Implementation is in `src/aegir/swarm/orchestrator.py`.
 
+The scaffold implements routing, state fusion, and the combined-reward helper (`compute_parl_reward`); the annealing schedule, token-level clipping, and critical-steps sections below describe the K2.5 training design the scaffold anticipates — no current training run exercises it (see [Agent Swarm](../agent_swarm.md)).
+
 ## Architecture
 
 ```

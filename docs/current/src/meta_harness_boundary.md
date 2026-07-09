@@ -6,6 +6,16 @@ explicit boundary conditions (Holland, *Signals and Boundaries*). This is a **sp
 feature** — built clean and complete up front, because a cogent fact/rule/agenda/FSM
 architecture cannot be retrofitted out of a procedural loop.
 
+> **Status (2026-07-09).** Dated record. inc-0 shipped as designed
+> (`src/aegir/meta_harness/fsm_rete.py`, commit `a707b84`); the control-plane framing was then demoted
+> to **harness H₀** by [end_to_end_and_meta_harness](./end_to_end_and_meta_harness.md)
+> (`src/aegir/meta_harness/harness_h0.py`, `just mediate-h0`), and the spine earned its keep a second
+> time as the orchestrator of the membrane-gated refinement loop
+> ([refinement_loop](./refinement_loop.md) — `aegir.refine.loop` builds its rule cascade on
+> `fsm_rete.MetaHarness`). The §1 contract's gate suite has since evolved (the corpus-fitted topic
+> model behind the R1/E6-A signals gave way to the inverted topic layer + congruence) — the membrane
+> doctrine itself stands unchanged.
+
 ## 1. The Holland mapping (what the spine actually is)
 
 This is not decoration; it names the structure we established empirically.

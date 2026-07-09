@@ -1,5 +1,24 @@
 # RLVR for ontology generation
 
+> **Status (2026-07-09) — v0.3-era methodological record.** The
+> verifier *R(O, I)* described here is the v0.3-era runtime score;
+> its definition, locked weights, and AUC are preserved as written.
+> Since then, *R_D*'s corpus-fitted topic substrate
+> (`src/aegir/ontology/topic_alignment.py`, `T_I.pkl`) has been
+> deprecated (2026-07-07); its successors are **congruence**
+> (`src/aegir/ontology/congruence.py` — chapter ↔ input-window
+> concept alignment over the ColBERT/qdrant substrate) and the
+> **inverted topic layer** (`src/aegir/ontology/topic_layer.py`;
+> phase gate:
+> [Inverted Topic Layer](../roadmap/phase_gate_inverted_topic_layer.md)).
+> The generation pipeline the reward now serves is the membrane-gated
+> derive → promote → realize engine over the fully-derived
+> `src/aegir/ontology/catalog/catalog.json`, and the GRPO/RLVR
+> program itself is positioned as the long-horizon **Signals M4**
+> apparatus (see [Signals Programme](../signals_programme.md)); the
+> [concept brief](./concept_brief.md)'s status notes carry the same
+> framing.
+
 This chapter is the externally-readable description of the
 project's reinforcement-learning-with-verifiable-reward (RLVR)
 program — paper 1 of the two-paper structure documented in the

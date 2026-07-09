@@ -97,6 +97,12 @@ sets for downstream tools).
 | `just whoami` | runs | runs | (diagnostic only) |
 | `just sync` / `bdd-*` / etc. | runs | runs | (no shared-state writes) |
 
+The table shows the headline four; in fact the **entire primary
+`processes` set** — including the Metaflow service plane (RKE2
+bootstrap, port-forwards, UI), Atlas, MinIO, and the OTel collector —
+is gated behind `lib.mkIf isPrimary` in `devenv.nix`, so a secondary
+`devenv up` starts no shared-state services at all.
+
 Secondary worktrees connect to the primary's services via `localhost:<port>`.
 The filesystem path `/raid/checkpoints/p5/` is shared — the primary writes,
 the secondary's gateway (if running, via `ALLOW_SECONDARY`) reads, the
@@ -108,7 +114,8 @@ talks to.
 ```bash
 # ── In the primary checkout (e.g. systems work) ───────────────
 just whoami                 # → primary
-devenv up                   # postgres, qdrant, gateway, vite-dev all start
+devenv up                   # postgres, qdrant, gateway, vite-dev (and the
+                            # rest of the primary service plane) start
 just p5-train               # 9B-local GRPO/RLVR training
                             # writes /raid/checkpoints/p5/sae_features.live.jsonl
 ```

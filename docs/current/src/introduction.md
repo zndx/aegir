@@ -16,33 +16,82 @@ learns from.
 
 ## Two coupled research outputs
 
-The project produces two outputs that are cited together:
+The project produces two outputs that are cited together. The first is
+the **target**; the second is the **active track** — the generation
+pipeline is where current work lands.
 
-1. **A hierarchical byte-level sequence model.** All-RWKV-7
-   time-mixing with H-Net dynamic chunking, trained byte-level on a
-   mixed corpus and fine-tuned for the column-annotation tasks above.
-   The architecture is described in [Architecture](./architecture.md);
-   the operational pretraining work is described in
-   [Pretraining](./pretraining.md) and
+1. **A hierarchical byte-level sequence model** (the target, v0.2).
+   All-RWKV-7 time-mixing with H-Net dynamic chunking, trained
+   byte-level on a mixed corpus and fine-tuned for the
+   column-annotation tasks above. The architecture is described in
+   [Architecture](./architecture.md); the operational pretraining work
+   is described in [Pretraining](./pretraining.md) and
    [Training Regime](./training_regime.md).
 
 2. **An ontology-grounded synthetic corpus and the SDG ontology that
-   generates it.** A BFO/CCO-grounded domain ontology, content-derived
-   from FinePDFs and realized to a HermiT-validated OWL artifact,
-   drives LLM generation of deterministically-verifiable,
-   attribution-clean textbook chapters and a relational DDL spine. The
-   corpus is byte-level pretraining data *and* an independent
-   publishable deliverable (the `corpora/` submodule). The ontology,
-   its quality gates, and the disposal membranes that enforce them are
-   documented in the [SDG ontology chapter](./ontology.md) and the
+   generates it** (the active track, v0.3+). A BFO/CCO-grounded domain
+   ontology, content-derived from FinePDFs and realized to a
+   HermiT-validated OWL artifact, drives engine generation of
+   deterministically-verifiable, attribution-clean textbook chapters
+   and a relational DDL spine. The corpus is byte-level pretraining
+   data *and* an independent publishable deliverable (the `corpora/`
+   submodule). The ontology, its quality gates, and the disposal
+   membranes that enforce them are documented in the
+   [SDG ontology chapter](./ontology.md) and the
    [Ontology Authors Guide](./ontology/authors_guide.md).
 
-The two outputs share substrate — the SDG ontology, the family
-catalog of Manchester-syntax templates, the verbalization pipeline —
-and are coupled downstream: the ontology produces verbalized,
-verified chapters that feed back into the byte-level pretraining
-corpus. The ontology is treated as a primary research output in its
-own right, not as plumbing; its rigor program is described below.
+The two outputs share substrate — the SDG ontology, the derived
+template catalog (`src/aegir/ontology/catalog/catalog.json`; every
+template in it is content-derived, with per-template provenance), the
+verbalization pipeline — and are coupled downstream: the ontology
+produces verbalized, verified chapters that feed back into the
+byte-level pretraining corpus. The ontology is treated as a primary
+research output in its own right, not as plumbing; its rigor program
+is described below.
+
+### The generation pipeline (the active track)
+
+`just metaflow` runs the entire pipeline, idempotent per input window
+(`src/aegir/flows/sdg_corpora_flow.py`); the stage-by-stage reference
+is [The Relational Data Generation Pipeline](./pipeline.md). FinePDFs
+passages are
+harvested through a qdrant/ColBERT **aperture**
+(`src/aegir/ontology/domain_index.py`) declared by the run's strategy;
+the engine **derives** axiom-pattern-bound templates, which are
+membrane-gated into the live catalog on **promotion**; the catalog is
+**realized** to HermiT-certified OWL
+(`corpora/ontology/sdg-ontology.{omn,owl}`), projected to a
+referential-integrity-true **DDL spine**, and elaborated into
+dual-register prose chapters; the run is **measured** (congruence,
+sensitive scan, naturalness norms, shape EMD) and sealed as an
+immutable run-zettel that the lineup re-projects.
+
+```d2
+direction: right
+
+harvest: Harvest\n(FinePDFs)
+aperture: Aperture\n(qdrant ColBERT)
+derive: Derive\n(engine)
+promote: Promote\n(membranes)
+realize: Realize\n(HermiT OWL)
+ddl: DDL spine\n(RI-true)
+prose: Prose\n(dual-register)
+verify: Verify\n(congruence)
+zettel: Zettel\n(lineup)
+
+harvest -> aperture -> derive -> promote -> realize
+realize -> ddl -> prose -> verify -> zettel
+```
+
+The corpus census runs over the **inverted topic layer**
+(`src/aegir/ontology/topic_layer.py`): topics ≡ ontology-grounded
+concept anchors in qdrant, one passage window aligns to one topic or
+none under a pre-registered unambiguity gate, and the *lexicon* — not
+the input — is the parameter that iterates. See the
+[phase gate](./roadmap/phase_gate_inverted_topic_layer.md) (2026-07-07,
+PASS) and
+[End-to-end + Meta-Harness + reasoner](./end_to_end_and_meta_harness.md)
+for the machinery that orchestrates membrane-gated proposal.
 
 ### The ontology rigor program
 
@@ -65,15 +114,18 @@ the publish path so a regression cannot ship. The
 [Authors Guide](./ontology/authors_guide.md) is the canonical
 reference for every metric, band, and threshold.
 
-There is also an in-flight **RLVR research sub-track** — a
+There is also a long-horizon **RLVR research sub-track** — a
 language-model policy trained with Group Relative Policy Optimization
 (GRPO) against a deterministic four-component verifier *R(O, I)* over
 OWL compositions — documented in the
 [concept brief](./ontology/concept_brief.md) and the
-[RLVR chapter](./ontology/rlvr.md). It shares the catalog and the
-verbalization pipeline with the rest of the ontology track but is
-distinct from the production realization-and-gate path above; its
-status is tracked in `EVIDENCE.md`.
+[RLVR chapter](./ontology/rlvr.md). Its verifier is realized today as
+the deterministic membrane stack above, and a generator fine-tuned
+against that reward is the Signals M4 apparatus (see
+[Roadmap](./roadmap.md)); it shares the catalog and the verbalization
+pipeline with the rest of the ontology track but is distinct from the
+production realization-and-gate path. Its status is tracked in
+`EVIDENCE.md`.
 
 ## Problem setting
 
@@ -130,7 +182,13 @@ side contributes a *propose / dispose* discipline in which rigor is
 enforced by deterministic membranes (parse → HermiT/CCO → OntoClean)
 rather than asserted, and measured by an IOF-anchored OQuaRE gate — an
 intrinsic, reasoner-validated quality signal rather than a
-judge-mediated one.
+judge-mediated one. The corpus-measurement side contributes the
+**inverted topic layer**: topics are ontology-grounded concept
+anchors rather than corpus-fitted clusters, an item aligns to one
+topic or none under a null-calibrated unambiguity gate, and ambiguous
+mass indicts the *lexicon*, which iterates through the same membranes
+— including the durable positive-voice rule (definition-by-negation
+is an embedding anti-pattern).
 
 **Architecture.** A recursive hierarchy in which each stage selects
 its own block-type mix from a block factory. Every current default
@@ -151,8 +209,8 @@ emphasis on relational / data-element skill — the application of the
 byte-level model. The second is a measurably rigorous SDG ontology and
 the verifiable, attribution-clean corpus it generates — evaluated by
 intrinsic, reasoner-validated gates rather than by a judge. The two
-objectives share the SDG ontology and the family catalog as substrate;
-the second feeds the first downstream as pretraining data.
+objectives share the SDG ontology and the derived catalog as
+substrate; the second feeds the first downstream as pretraining data.
 
 ## Reading this document
 
@@ -162,9 +220,16 @@ the second feeds the first downstream as pretraining data.
 - A reader interested in the **ontology, its rigor program, and how to
   extend it** should read the [SDG ontology](./ontology.md) chapter
   and the [Ontology Authors Guide](./ontology/authors_guide.md); the
-  in-flight RLVR sub-track is in the
+  long-horizon RLVR sub-track is in the
   [concept brief](./ontology/concept_brief.md) and the
   [RLVR chapter](./ontology/rlvr.md).
+- A reader interested in the **generation pipeline and the machinery
+  that runs it** should read
+  [The Relational Data Generation Pipeline](./pipeline.md), then
+  [End-to-end + Meta-Harness + reasoner](./end_to_end_and_meta_harness.md)
+  and the dated phase-gate records under [Roadmap](./roadmap.md) —
+  most recently the
+  [inverted topic layer](./roadmap/phase_gate_inverted_topic_layer.md).
 - A reader interested in **byte-level pretraining and downstream
   fine-tune** should read [Pretraining](./pretraining.md) and
   [Training Regime](./training_regime.md).

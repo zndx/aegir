@@ -34,6 +34,21 @@
 > authoring documented in the [Authors Guide](./authors_guide.md)); the
 > two share the SDG ontology but are governed separately.
 
+> **Status addendum (2026-07-09).** Two of this brief's substrates
+> have since been superseded (their definitions below are preserved
+> as written). **R_D's corpus-fitted topic model** (BERTopic/KMeans →
+> `T_I.pkl`) was deprecated 2026-07-07; its successors are
+> **congruence** (`src/aegir/ontology/congruence.py` — chapter ↔
+> input-window concept alignment over the same ColBERT/qdrant
+> substrate the harvest classifies against) and the **inverted topic
+> layer** (`src/aegir/ontology/topic_layer.py`; phase gate:
+> [Inverted Topic Layer](../roadmap/phase_gate_inverted_topic_layer.md)).
+> And the catalog *C* is no longer hand-authored: the seed families
+> are retired, and `src/aegir/ontology/catalog/catalog.json` is
+> accreted by the derive → promote → realize engine
+> (`scripts/derive_ontology.py` → `scripts/promote_candidates.py` →
+> `scripts/build_realized_ontology.py`).
+
 ## Objective
 
 Define a four-component deterministic verifier *R* over OWL ontology
@@ -382,12 +397,14 @@ SQLite table where each row is a *template* and contains:
    shuffles) of compositions over *C* and cache the per-shuffle
    `complex_count` and `R_D` values. τ_B and R_D's null calibration
    live in *C*'s metadata.
-5. Commit *C* as a versioned artifact. *(As built, the catalog is the
-   seven family JSON files in `src/aegir/ontology/catalog/`
-   (`01_foundation` … `07_long_tail`) plus the FinePDFs-derived
-   `catalog.json`, not the single `C-v0.1.{json,sqlite}` file this
-   brief originally proposed; the null statistics live in
-   `null_stats_canonical.json` and the frozen topic model in
+5. Commit *C* as a versioned artifact. *(As built, the catalog passed
+   through seven hand-authored family JSON files
+   (`01_foundation` … `07_long_tail`), since retired (2026-07-07);
+   the live catalog is the single derived
+   `src/aegir/ontology/catalog/catalog.json`, accreted by the
+   derive→promote loop — not the `C-v0.1.{json,sqlite}` file this
+   brief originally proposed. The null statistics live in
+   `null_stats_canonical.json` and the frozen v0.3-era topic model in
    `T_I_canonical.pkl`.)*
 
 After P1, the JVM is gone. The RL loop, verifier, and any v3

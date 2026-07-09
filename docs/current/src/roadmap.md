@@ -13,8 +13,9 @@ turn, is the gate that certifies the ontology machinery.
 The current go-forward programme — the milestone ladder, its gates, and
 the scaling discipline — is the
 [**Signals Programme**](./signals_programme.md), of which this page is the
-landing view. The end-to-end pipeline and the agent-mediated machinery
-that runs it are specified in
+landing view. The end-to-end pipeline is documented stage-by-stage in
+[The Relational Data Generation Pipeline](./pipeline.md); the
+agent-mediated machinery that runs it is specified in
 [End-to-end + Meta-Harness + reasoner](./end_to_end_and_meta_harness.md).
 This page summarises what is **delivered**, what is **in flight**, and
 what is **gated**, and points to the authoritative reference for each.
@@ -65,8 +66,8 @@ evaluation stack, and a first real backbone.
   Hewitt-Liang selectivity. *Caveat:* per-column CTA did **not**
   separate the full / no-ontology / no-schema ablation arms — flat CTA
   is surface-solvable — so the ontology's load-bearing claim moved to
-  the relational axis (the M2 lift, below). See
-  [EVIDENCE.md](../../../EVIDENCE.md) (E1–E3, "already-supported claims").
+  the relational axis (the M2 lift, below). See the repo-root
+  `EVIDENCE.md` (E1–E3, "already-supported claims").
 
 These artifacts are the read surface and the warm-start for everything
 below.
@@ -75,8 +76,9 @@ below.
 
 The ontology is the **annotation vocabulary for Column Type / Column
 Property Annotation (CTA/CPA)** over wide relational tables. It is
-**content-derived from FinePDFs** (qdrant/ColBERT conceptual filtering),
-then realized to a **HermiT-validated OWL artifact** at
+**content-derived from FinePDFs** (the qdrant/ColBERT aperture,
+`src/aegir/ontology/domain_index.py`), then realized to a
+**HermiT-validated OWL artifact** at
 `corpora/ontology/sdg-ontology.{omn,owl}` (with `HERMIT_CERTIFICATE.md`).
 Its classes are **intermediate-depth subsumers** — the property-bearing
 classes a heterogeneous-but-coherent column belongs to — not leaf terms.
@@ -107,19 +109,53 @@ plus HermiT-consistent, aim 3.9, wired HARD into
 `definitional_completeness` 0.554, `bfo_grounded` 0.896,
 `realizable_machinery` 10, **0 unsatisfiable classes**, **OQuaRE 4.24 —
 GREEN**. The standing rule: no `sync --push` of the ontology Data
-Product below GREEN. See [EVIDENCE.md](../../../EVIDENCE.md) (OQ-Rigor /
+Product below GREEN. See the repo-root `EVIDENCE.md` (OQ-Rigor /
 OQ-Structure).
 
-**The corpus + DDL spine.** The verified-pipeline corpus is the
-byte-pretraining data and an independent publishable deliverable
-(`corpora/`, the `sdg-corpora` submodule). Generation runs a gRPC engine
-(+ a GLM/Grok mix) over ontology- and DDL-grounded prompts
-(`scripts/generate_chapter.py`), followed by a four-scorer verification
-loop (`scripts/verify_chapters.py`). The **DDL spine** projects the
-ontology into SQL tables / views / FKs with referential-integrity-true
-rows — a relational deliverable also projected into Atlas. **Path A**
-(`scripts/`, the TrainingFlow runs) is the continued-pretraining
-augmentation on RWKV World v3.
+**The corpus pipeline + DDL spine (delivered; phase gate PASSED
+2026-06-07).** `just metaflow` is the entire corpus pipeline,
+idempotent per input window (`src/aegir/flows/sdg_corpora_flow.py`):
+harvest (FinePDFs, cursor-windowed) → the aperture (qdrant ColBERT
+MaxSim, `src/aegir/ontology/domain_index.py`) → derive (the gRPC
+engine over the axiom-pattern library, `src/aegir/ontology/patterns.py`)
+→ membrane-gated promotion into the live catalog
+(`src/aegir/ontology/catalog/catalog.json`) → realization
+(HermiT-certified OWL) → the **DDL spine** — referential-integrity-true
+tables / views / FKs, polyglot-validated (Trino ∩ Spark), projected
+into Atlas ([Phase Gate — Governance & DDL
+Spine](./roadmap/phase_gate_governance_ddl.md)) → dual-register prose
+chapters with retained thinking traces → verification and measurement
+(congruence — input-window concepts ↔ chapter concepts over the same
+ColBERT substrate, `src/aegir/ontology/congruence.py` — plus the
+sensitive scan, naturalness norms, and shape EMD vs SchemaPile) → one
+immutable, prev-linked run-zettel per completed run
+(`src/aegir/lineup/zettel.py`, citing the run's `strategy_id`) and a
+lineup re-projection. The corpus is the byte-pretraining data and an
+independent publishable deliverable (`corpora/`, the `sdg-corpora`
+submodule). **Path A** (`src/aegir/flows/path_a_training_flow.py`) is
+the continued-pretraining augmentation on RWKV World v3 — the locked
+data-value harness whose calibrated α Path B (the Aegir architecture
+thesis) inherits.
+
+**The inverted topic layer (R1 — delivered; phase gate PASSED
+2026-07-07).** The live topic instrument
+(`src/aegir/ontology/topic_layer.py`): topics **≡** ontology-grounded
+concept anchors in qdrant — 462 anchors (the 29 SKOS domains + all 433
+live catalog terms), content-addressed by collection sha — and items
+are anchor-proportional passage windows that align to **one topic or
+none** via hierarchical-margin MaxSim under the pre-registered,
+null-calibrated gate (τ\* = 0.1065, the shuffled-window-null p95,
+report-not-tune). Ambiguous mass is the error signal and the
+**lexicon is the parameter**: anchor surfaces iterate through
+membranes M1–M8 that return their reasons (M8 — positive voice only —
+is the durable methodological rule). Every association is pinned to
+the collection state that adjudicated it and walkable in the lineup.
+This is R1's topic layer: the corpus census over ontology-grounded
+topics re-runs per input window with no topic-model re-fit; the
+BERTopic-era instruments (`topic_alignment.py`, `build_topic_model.py`,
+`T_I.pkl`) are deprecated to v0.3 reproducibility. Full evidence table
+and methods:
+[Phase Gate — The Inverted Topic Layer](./roadmap/phase_gate_inverted_topic_layer.md).
 
 ## Go-forward — the Signals Programme milestone ladder
 
@@ -129,7 +165,7 @@ ladder; the standing EVIDENCE rule is **no scaled spend without a green
 gate**. Full charter, the α×β interaction design, and the final-gate
 text are on the [Signals Programme page](./signals_programme.md); the
 pre-registered hypotheses, instruments, and decision rules are in
-[EVIDENCE.md](../../../EVIDENCE.md).
+`EVIDENCE.md` (repo root).
 
 - **M0 — substrate-evolution machinery. DELIVERED (SUPPORTED).** The
   reasoner gates and computes; the harness evolves: the HermiT
@@ -138,11 +174,12 @@ pre-registered hypotheses, instruments, and decision rules are in
   realization-as-CPA beachhead (inc-2d). See
   [End-to-end + Meta-Harness](./end_to_end_and_meta_harness.md) and the
   §Meta-harness entries in EVIDENCE.md.
-- **M1 — architecture baseline (the H-Net isolation gate). UNTESTED.**
-  Train H-Net+RWKV on RWKV-7's open corpus, swapping **only** the
-  tokenizer for byte-level dynamic chunking, and establish parity up the
-  scaling ladder to RWKV-7-matched params. **DOF = 1.** *Gate:*
-  H-Net+RWKV ≥ RWKV-7 at matched scale on standard evals.
+- **M1 — architecture baseline (the H-Net isolation gate). UNTESTED —
+  the next gated milestone.** Train H-Net+RWKV on RWKV-7's open corpus,
+  swapping **only** the tokenizer for byte-level dynamic chunking, and
+  establish parity up the scaling ladder to RWKV-7-matched params.
+  **DOF = 1.** *Gate:* H-Net+RWKV ≥ RWKV-7 at matched scale on standard
+  evals.
 - **M2 — instrument validity (the decisive corpus gate + proxy
   calibration). UNTESTED.** A same-architecture, matched-budget matrix at
   ≥2 ladder rungs — arms {grounded mix / no-ontology ablation /
@@ -188,6 +225,22 @@ degeneracy (M2 floor), corpus→model transfer (M2 lift), or scale-drift
 proxy-only corpus-as-deliverable gate: the proxies are *calibrated by
 it*, never trusted ahead of it.
 
+### Next moves (July 2026)
+
+With both corpus-side phase gates passed, the near-term ladder is:
+
+- **Path A training runs** (`src/aegir/flows/path_a_training_flow.py`)
+  — the World-v3 continued-pretraining harness that isolates the
+  *data* value of the generated corpus holding architecture fixed.
+- **M1 — the H-Net isolation gate** (above) — the model track's next
+  green light; blocks M2.
+- **The latent-lens ladder.** Supervision for it now accumulates by
+  operation: every topic-layer association record is a training pair
+  for the anchor-projection head (L3), and lens identity fields are
+  already stamped on every record and collection state (L1 — done).
+  L2, the latent-prediction auxiliary for Path-B pretraining, is the
+  next major move on this ladder.
+
 ## Shared infrastructure
 
 Both artifacts depend on shared substrate beyond the ontology:
@@ -196,8 +249,21 @@ Both artifacts depend on shared substrate beyond the ontology:
   (above), plus the **lineup / KB** — the LINEUP navigation primitive
   (Ward Cunningham, credited; not a wiki — no editing/forking) over the
   KB, which is a build **projection** of the three Data Products
-  (ontology / relational / content). The read surface for run sidecars,
-  ontology-rigor metrics, and corpus-quality surfaces alike.
+  (ontology / relational / content) at `build/dev/{current,scratch,archive}`
+  (`src/aegir/lineup/`, `just kb-build`). Roots are refs: **current** =
+  the latest `sdg-corpora` release as a complete kasten, **scratch** =
+  trunk (the full live projection), **archive** = past releases and
+  frozen snapshots; promotion snapshot-freezes current into archive
+  while trunk rolls on. Topic-layer associations project as walkable
+  item notes (Scratch → Content → Items × Topics → item → term). The
+  read surface for run sidecars, ontology-rigor metrics, and
+  corpus-quality surfaces alike.
+- **The strategy pillar.** The `sdg-strategy` submodule (`strategy/`)
+  is the "how it was made" Data Product — four pillars (lens / voices /
+  knobs / targets) under a Merkle `strategy_id`
+  (`src/aegir/strategy/manifest.py`), shadows-as-branches, promotion by
+  cherry-pick. Every run-zettel cites its `strategy_id`; strategy drift
+  at flow start is a hard failure.
 - **Lineage substrate.** The Atlas-on-AGE provenance graph, with
   **OpenLineage / Marquez compatibility** and **Atlas deep integration**
   — implemented in full. The discipline that keeps it non-dependent: the
@@ -234,7 +300,10 @@ Both artifacts depend on shared substrate beyond the ontology:
 3. **Locked artifacts are hash-tracked end-to-end.** Every run records
    its catalog version, locked-weights/null-statistics hashes, and run id
    in sidecar metadata; a strict-resume policy refuses to resume any run
-   whose locked artifacts have drifted.
+   whose locked artifacts have drifted. Pipeline runs additionally pin
+   the Merkle `strategy_id` and the topic-registry collection sha —
+   every topic association carries the collection state that
+   adjudicated it.
 
 4. **Outward contracts stay narrow.** The project publishes the
    `sdg-corpora` SHARE tier (ontology + SKOS vocabulary + DDL spine +

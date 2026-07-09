@@ -1,5 +1,15 @@
 # Semantic-Layer-Upkeep — the local-first quality loop
 
+> **Status update (2026-07-09): DELIVERED — the gate is 🟢 GREEN 7/7 (2026-06-20).** The spec below ran
+> to completion: Comp 3 (verbalization) landed the multi-frame template verbalizer
+> (`src/aegir/ontology/verbalization.py` recomposing DeepOnto's parse tree — skeletons 60→300, top-5
+> share 0.686→0.340, 100% slot-faithful; `scripts/compare_verbalizers.py`); Comp 4 (value/column)
+> landed intra-row temporal coherence (time-order violations 44→0), engine-seeded RI-safe domain
+> values (`src/aegir/ontology/entity_value_pools.json` — placeholder 0.447→0.000, domain 0.137→0.796),
+> and de-canning floored on column-name entropy `h_colset` (0 canned anchors). The pre-registered
+> paid-scale-out rule is cleared; the ledger record is `EVIDENCE.md` §SLU. The Non-goals section below
+> remains in force — the floors were cleared, not enshrined. Preserved as the dated spec.
+
 **Status: SPEC (2026-06-19, RH).** The procedure for keeping the **semantic layer** (ontology → DDL →
 views + verbalizations) *valuable enough to spend paid-API budget scaling out*. The last cycle established
 **structure** (RI-true tables/views, SKOS-native names) but the *semantic* content is thin — and semantic

@@ -1,9 +1,10 @@
 # Signals Programme — Relational Domain Adaptation (aegir workstream)
 
-Status: programme charter (2026-06-16). The go-forward development programme for the aegir track,
+Status: programme charter (2026-06-16; living — updated 2026-07-09: tri-root lineup, inverted
+topic layer, catalog-is-derived). The go-forward development programme for the aegir track,
 framed as a workstream of the cross-repo **Signals** initiative. Builds on
 [`end_to_end_and_meta_harness.md`](./end_to_end_and_meta_harness.md) (the substrate-evolution machinery)
-and the [`EVIDENCE.md`](../../../EVIDENCE.md) gate discipline. Designed to be lifted into a GitHub project
+and the repo-root `EVIDENCE.md` gate discipline. Designed to be lifted into a GitHub project
 across the component repos (§Component map).
 
 ## Thesis
@@ -27,39 +28,50 @@ The generator (SAE-instrumented **Qwen**, fine-tuned to mint the ontology) and t
 
 ## Source of truth & data flow — the ontology is primary; everything else serves it
 
-The single source of truth is the **generated ontology artifact itself**. Atlas, Qdrant, the
-`build/dev/current` projection, the lineup, and even the published `sdg-corpora` are projections, indices,
-views, and exports *of* it — never competing stores. The ontology spans two disclosure tiers: **KNOW** (the
-full, curated working ontology) ⊇ **SHARE** (`sdg-corpora`, the published subset). Same artifact, two tiers
-— not two artifacts.
+The single source of truth is the **generated ontology artifact itself**. Atlas, Qdrant, the tri-root
+lineup projection (`build/dev/{current,scratch,archive}`), and even the published `sdg-corpora` are
+projections, indices, views, and exports *of* it — never competing stores. The ontology spans two
+disclosure tiers: **KNOW** (the full, curated working ontology) ⊇ **SHARE** (`sdg-corpora`, the published
+subset). Same artifact, two tiers — not two artifacts.
 
+```d2
+direction: down
+
+ontology: "ONTOLOGY — the source of truth\nKNOW (full, curated) ⊇ SHARE (published)"
+
+lineup: "the lineup\nbuild/dev/{current, scratch, archive}\nroots are refs"
+atlas: "Atlas\n(synced VIEW)"
+qdrant: "Qdrant\nsdg_domains / sdg_aperture / sdg_topics"
+corpora: "sdg-corpora\n(the SHARE tier)"
+
+ontology -> lineup: project
+ontology -> atlas: glossary-sync
+ontology -> qdrant: index
+ontology -> corpora: export
+
+atlas -> ontology: edits suggest {
+  style.stroke-dash: 5
+}
 ```
-      ┌─────────────────────────────────────────────────────────────┐
-      │  ONTOLOGY  — the source of truth (the artifact itself)        │
-      │     KNOW (full, curated)   ⊇   SHARE (sdg-corpora, published) │
-      └─────────────────────────────────────────────────────────────┘
-            │ build              │ glossary-sync     │ index        │ export
-            ▼                    ▼                   ▼              ▼
-      build/dev/current   ◀──in sync──▶   Atlas     Qdrant      sdg-corpora
-      (projection)                        (synced VIEW;          (the SHARE tier)
-                                           edits ──suggest──▶ ontology curation)
 
-            the lineup  ── navigates / explores / curates all of the above
-```
-
-- **Dependency arrows point inward.** Regenerating the ontology re-projects `build/dev/current`, re-syncs
-  Atlas, re-indexes Qdrant, re-exports `sdg-corpora`. That inward-pointing dependency is what keeps a
-  multi-store assembly coherent instead of a web of drifting masters.
-- **`build/dev/current` ⟷ Atlas stay in sync *because both project from the ontology*** — not via a direct
-  link. There is no `current`↔Atlas channel; both are downstream of the one SoT.
+- **Dependency arrows point inward.** Regenerating the ontology re-projects the lineup trunk
+  (`just kb-build`), re-syncs Atlas, re-indexes Qdrant, re-exports `sdg-corpora`. That inward-pointing
+  dependency is what keeps a multi-store assembly coherent instead of a web of drifting masters.
+- **The lineup ⟷ Atlas stay in sync *because both project from the ontology*** — not via a direct
+  link. There is no lineup↔Atlas channel; both are downstream of the one SoT.
 - **Atlas edits *suggest*, they do not commit.** Atlas is a rich glossary-editing surface, but a curator's
   edit there is a **proposal** that round-trips into the ontology's curation queue (reviewed, reasoner-gated,
   applied), then re-projects outward. So the Atlas glossary-sync is a *suggestion-returning projection*, not
   an authoritative store — its write path is a PR against the ontology, never a commit to it. (Same shape as
-  `scratch → current` promotion; Atlas is just another suggestion inbox alongside the generator's minted
+  trunk → release promotion; Atlas is just another suggestion inbox alongside the generator's minted
   candidates and the authored scratch notes.)
 - **The lineup is the navigate / explore / curate layer** — the one place ontology-projection, Atlas-sync,
-  and the Qdrant retrieval text are seen together, and from which curation decisions are made.
+  and the Qdrant retrieval text are seen together, and from which curation decisions are made. Its three
+  roots are **refs** (RH 2026-07-06): `current` = the latest sdg-corpora **release** as a complete kasten
+  (released corpus + its era lexicon + released DDL + card); `scratch` = **trunk** (the full live
+  projection — live catalog, DDL spine, generated web, accreting corpus, zettel chain, strategy, items);
+  `archive` = past releases + frozen snapshots. Promotion = snapshot-freeze `current` → `archive`, project
+  the new release, trunk rolls on; the same surface ids resolve per root (gateway `?root=`).
 
 **The verification membrane (corollary of commitment #2).** The anchors partition verification by *where
 reality is authored*. **Inside** the loop — the ontology and everything projected from it (DDL spine, corpus
@@ -79,15 +91,20 @@ source of truth, so Atlas and every projection stay *rebuildable-from-the-ontolo
 master* (Atlas edits suggest, never commit). We sample patterns and adapt protocols on our terms; we owe the
 plane no gravity — and that freedom is exactly what makes integrating with it generously *safe*.
 
-**The maturation arc this enables.** The current ontology form is the template+slot catalog (the seed
-crystal). The lineup curation is the **forge** that converts it into a real lexicon of concrete,
-Atlas-synced, Qdrant-indexed **Terms** (Lexicon / Category / Term ≡ Atlas Glossary / Category / Term —
-vocabulary already aligned). A term is "real" when it clears the contract (HermiT-coherent, R1-grounded,
-novel), passes curation, gains its `AtlasGlossaryTerm` + `qualifiedName`, and is Qdrant-indexed. As real
-terms accumulate, the spent template *instantiations* retire to `archive/` — while the reusable axiom
-**shapes** stay live as the generator's cross-domain exemplar pool (RASE-in-novel-domains needs them;
-archive ≠ delete). End state: templates are history and **the lineup ≡ Atlas glossary ≡ Qdrant index —
-three views of one real ontology.**
+**The maturation arc — substantially landed.** The seed-crystal stage is over: the hand-authored seed
+families are retired and the catalog is fully **derived** (`src/aegir/ontology/catalog/catalog.json`,
+accreted by the membrane-gated derive → promote loop; discovery via `schema.catalog_files()`). The
+terms-are-real end state arrived as the **inverted topic layer** (2026-07-07, phase-gated PASS —
+[the gate record](./roadmap/phase_gate_inverted_topic_layer.md) is authoritative): topics **≡**
+ontology-grounded concept anchors in Qdrant (`sdg_topics`: the 29 SKOS domains + all 433 live catalog
+terms; `src/aegir/ontology/topic_layer.py`), items = anchor-proportional passage windows, one item → one
+topic via hierarchical-margin MaxSim or UNASSIGNED — and the **lexicon is the parameter**: unaligned
+input indicts the topics, never the input (the inverted-LDA direction). Every association is
+content-addressed to the collection state that adjudicated it, so accumulated lineage survives registry
+evolution. The corpus-fitted BERTopic-era topic model (`topic_alignment.py`, `build_topic_model.py`,
+`T_I.pkl`) is **deprecated** — v0.3 reproducibility only; R_D's successor is congruence
+(`src/aegir/ontology/congruence.py`) + the topic layer. The end state stands and is now measurable:
+**the lineup ≡ Atlas glossary ≡ Qdrant index — three views of one real ontology.**
 
 **The two faces that make a term "real":** (1) **Qdrant augmentation, recorded as SKOS annotation
 properties** *(built)* — per the BERTSubs §4.3.2 multi-label technique, each term's distinguishing
@@ -95,9 +112,12 @@ text-features live *in the ontology* as `skos:prefLabel` / `skos:altLabel` (the 
 MaxSim match surfaces) / `skos:definition` / `skos:scopeNote` / `skos:example` — common SKOS constructs with
 domain values, not novel ones. The lineup panel renders them, they assemble into the ColBERT/MaxSim
 retrieval text, and `L(c1)×L(c2)` over the altLabel sets multiplies the BERTSubs subsumption pairs (→ the
-hierarchy edges for per-term-panel navigation). `build.py` records them now (seeded from the term vocabulary);
-curation refines the altLabel set, **verified by retrieval-lift** (multi- vs single-label, the §4.3.2 ablation
-— the annotation-layer oracle, distinct from HermiT on the axiom layer). The **subsumption hierarchy** over
+hierarchy edges for per-term-panel navigation). The surfaces are now **authored through a closed membrane
+loop** (`scripts/author_skos_surfaces.py`): the engine proposes `{alt_labels, scope_note, definition}` per
+term; the annotation membrane (`src/aegir/ontology/annotation_membrane.py`, gates M1–M6 + **M8: positive
+voice only** — definition-by-negation is an embedding anti-pattern) disposes with a reason; the result is
+verified by the self-retrieval margin gate plus the input-side M7 basin gate — the annotation-layer oracle,
+distinct from HermiT on the axiom layer (annotations never assert taxonomy). The **subsumption hierarchy** over
 those terms is now realized *autonomously* by `mediate_hierarchy` (`scripts/`, built 2026-06-17): mpnet
 candidates → Grok proposes (ACP) → a two-layer gate — HermiT consistency/coherence/acyclicity **and** domain
 vocabulary overlap — admits only verified edges, **no human review** (the tools are the arbiter). This is a
@@ -135,6 +155,16 @@ low-DOF gates**, valid because the factorization respects the problem's interact
 
 ## Milestones
 
+**Status (2026-07-09).** M0 remains the last closed milestone; **M1 is the gated next spend** (GPU), with
+Path A (World-v3 augmentation: continue-pretrain vanilla RWKV-7 0.19B ± the grounded mix) locked as the
+data-value harness whose calibrated α Path B inherits. Everything landed since M0 sits on the instrument
+side, under the no-scaled-spend rule: the corpus pipeline became one idempotent flow (`just metaflow` →
+`src/aegir/flows/sdg_corpora_flow.py`; [the pipeline chapter](./pipeline.md)); Track A relational realism shipped with the token-yield bound
+measured early (Y_eff ≈ 7.9M — M2's "bound to quantify"); the refinement loop closed, scaled, and staged
+the v0.4 corpus ([refinement loop](./refinement_loop.md)); the realized ontology publishes under the
+OQuaRE/IOF hard gate; and the **inverted topic layer** passed its phase gate — R1's topic instrument is
+live and BERTopic-free ([gate record](./roadmap/phase_gate_inverted_topic_layer.md)).
+
 **M0 — Foundation (DONE, 2026-06-16).** The substrate-evolution machinery: HermiT coherence gate
 (inc-2a), single-file harness (inc-2b), Meta-Harness outer loop + first discovered harness (inc-2c),
 realization-as-CPA beachhead (inc-2d). Committed; see EVIDENCE.md. *The reasoner gates and computes; the
@@ -165,8 +195,8 @@ extrapolate α*(N)/β*(N) to target scale, confirm the lift persists. (Gate text
 (a) close the generator loop — SAE-instrumented Qwen with **process-reward** fine-tuning (anti-Goodhart:
 reward the ontological-reasoning circuit, not just the verdict), the mutually-affirming ontology↔generator
 cycle anchored by the downstream model; (b) **RASE in a novel domain** — apply the pipeline to a second
-information domain with *minimal re-tuning* and measure what breaks (topic model, family complex, BFO
-anchoring, R1). Promotes "valid instrument" → "validated method."
+information domain with *minimal re-tuning* and measure what breaks (the topic layer/lexicon, the
+aperture, BFO anchoring, congruence/R1). Promotes "valid instrument" → "validated method."
 
 ## Final phase gate
 

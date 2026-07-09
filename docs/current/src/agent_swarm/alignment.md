@@ -84,3 +84,7 @@ x_prev_target = align.forward_vector(x_prev_source)   # (B,256) -> (B,512)
 | Projection type | Bilinear `W_l @ S @ W_r^T` | Flatten + linear (equivalent expressiveness) |
 
 The end-to-end approach is viable because Aegir's swarm training already has gradient flow through the fusion module. The alignment projection sits in that gradient path and receives signal from the downstream task loss.
+
+## Forward Connection: the Per-Modality Lens Shape
+
+`AlignmentProjection` is the module shape the **latent-lens** design direction reuses (design note `docs/scratch/2026-07-07/152519_latent_lens_design.md`; certified substrate: [Phase Gate — The Inverted Topic Layer](../roadmap/phase_gate_inverted_topic_layer.md)). At ladder stage L4, per-modality encoders (tables and schematics first) project into the shared topic-anchor space exactly the way this module projects recurrent states between differently-sized agents. Each such lens is content-addressed by `(registry_sha × encoder_sha × projection_sha)` and is only ever a *lens over* the ontology-grounded registry, never the registry itself — if a lens underperforms, the fix is registry-side (definitions) or projection-side (retrain), never hand-edited vectors.

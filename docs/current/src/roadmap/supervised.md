@@ -132,13 +132,13 @@ staying within the byte budget.
 
 ```bash
 uv run --no-sync python train.py \
-    --task sotab-cta \
+    --task sotab \
     --model-size small \
     --pretrained outputs/mixed-v2/20260426T232240Z/final.pt \
     --epochs 10 \
     --batch-size 32 \
     --lr 1e-4 \
-    --warmup-steps 500
+    --warmup-ratio 0.1
 ```
 
 Hygiene parameters (lr 1e-4 with warmup, gradient clipping at
@@ -171,11 +171,13 @@ liveness gate. `base` is the target for competitive F1 numbers post-M2.
 Phase 1 is complete when, in order:
 
 1. The v2 → SOTAB head fine-tune passes the liveness gate
-   (`docs/current/ontology/charter.md`).
+   (formally specified in the [Ontology Charter](../ontology/charter.md)).
 2. Dynamic chunking continues to produce stable boundary predictions on
    the table-byte distribution (no degenerate all-boundary or
    no-boundary patterns under the fine-tune).
 3. The model meets or exceeds aspirational F1 targets on
    SOTAB-CTA/CPA at `base` config.
-4. The trained checkpoint is frozen and used as a specialist in the
-   far-future Phase 3 PARL training.
+4. The trained checkpoint is frozen and available as a specialist for
+   the long-horizon agent-swarm work (the [PARL plan](./parl.md) —
+   deferred; the four-phase K2.5 roadmap folded into the
+   [Signals Programme](../signals_programme.md) milestone ladder).

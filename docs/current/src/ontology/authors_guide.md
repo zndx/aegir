@@ -57,9 +57,12 @@ bearer-of · `bfo:0000054` realized-in.
 ## 2. How you author
 
 Classes are authored as **catalog templates** — a Manchester-syntax skeleton with typed slots — that
-the realizer renders, grounds, and validates into the OWL artifact. The seven family JSON files live
-in `src/aegir/ontology/catalog/`; FinePDFs-derived intermediate classes accrete in
-`catalog.json`. **Edit `catalog.json`, never `combined.json`** (regenerated).
+the realizer renders, grounds, and validates into the OWL artifact. The live catalog is
+**`src/aegir/ontology/catalog/catalog.json`** — fully derived (the hand-authored 01–07 seed families
+are retired; the catalog is what the derive→promote loop has accreted). The content-first deriver
+stages candidates in `catalog.candidate.json`; `scripts/promote_candidates.py` gates them in.
+Discovery is via `schema.catalog_files()`. **Edit `catalog.json` (or better: let the derive→promote
+loop accrete it), never `combined.json`** (regenerated).
 
 ### The slot DSL
 
@@ -69,8 +72,13 @@ in `src/aegir/ontology/catalog/`; FinePDFs-derived intermediate classes accrete 
 ```
 
 `Type ∈ {Class, ObjectProperty, DataProperty, Individual}`. A `CatalogTemplate` carries
-`manchester_template`, `slot_types`, `verbal_template` (an NL gloss → becomes the definition
-annotation), `bfo_anchor_path`, and `provenance`. Three canonical shapes:
+`manchester_template`, `slot_types`, `verbal_template`/`verbal_templates` (NL surface forms → the
+definition annotation + the corpus verbalization frames), `bfo_anchor_path`, `provenance`
+(`pattern` / `tier` / `grounds_ddl` / `domain` / `source_span` — the derivation signals downstream
+stages consume), and the **authored retrieval surfaces** (`alt_labels`, `scope_note` — membrane-gated
+annotation content, never ontological claims; see §3.5). Templates bind to an axiom pattern from
+`src/aegir/ontology/patterns.py` (tiers: `fhir_minimum` / `owl2_core` / `odp` / `sysmlv2`). Three
+canonical shapes:
 
 ```
 Class: {X:Class} SubClassOf: {Y:Class}                              # primitive (a kind, undefined)
@@ -186,6 +194,36 @@ HermiT over the realized ontology *with CCO imported*. Consumed by the gate from
 `isConsistent` yet contain unsatisfiable classes (classes that can have no instances); both must be
 clean for a publish.
 
+### 3.5 Topic-layer instruments (the retrieval face)
+
+Every term you author is also a **topic anchor**: the inverted topic layer
+(`src/aegir/ontology/topic_layer.py`; phase gate
+[here](../roadmap/phase_gate_inverted_topic_layer.md)) embeds each live catalog term as a ColBERT
+multivector in qdrant (`sdg_topics`, 29 SKOS domains + all 433 terms), and FinePDFs items
+(anchor-proportional passage windows) associate with **one topic or none** by hierarchical-margin
+MaxSim. Your class's *retrieval surface* — `term_anchor_text()` composes prefLabel · `alt_labels` ·
+verbalization frames · the axiom's referenced vocabulary resolved to labels/definitions ·
+`source_span` · `scope_note` — is therefore a measured artifact with its own gates:
+
+| instrument | what it enforces | value |
+|---|---|---|
+| **τ\*** (`topic_layer.derive_tau`) | the assignment gate on `rel_margin_h` — the (1−α) quantile under the shuffled-window null, pre-registered, **report-not-tune** | **0.1065** (α = 0.05; lens-identity-scoped — new lens ⇒ re-derive) |
+| **alignment / margins** (`associate_items`) | one item → one topic via `rel_margin_h` (margin over the nearest **non-ancestor** competitor; a parent/child near-miss is not ambiguity); flat margin recorded alongside; every association content-addressed to the registry's `collection_sha` | assigned ∨ UNASSIGNED — the ambiguous mass is the error signal |
+| **M1–M6, M8** (`src/aegir/ontology/annotation_membrane.py`) | authored surfaces (`alt_labels`/`scope_note`/`definition`): M1 shape · M2 token bounds vs the registry's granularity · M3 no smuggled ontological claims (taxonomy lives in the axiom, not prose) · M4 vocabulary grounding · M5 clean-room tripwire · M6 discrimination incl. the **self-retrieval margin gate** (the surface must retrieve its own anchor at rank-1) · **M8 positive voice** | verdict + reason, re-prompt carries the reason |
+| **M7 basin gate** (`topic_layer.basin_calibration`) | registry changes gated on the *input* side: a topic flags when its assigned mass explodes between pinned runs (`new ≥ 5 ∧ new ≥ 3× base`), with doc-concentration evidence attached; disposition is manual and provenance-recorded — the gate never silently mutates | PASS = zero unresolved flags |
+
+**M8 is the durable methodology rule:** *definition-by-negation is an embedding anti-pattern.* A
+similarity filter has no negation operator — "not used for X" injects X as attractor mass, and
+"distinct from ⟨sibling⟩" injects the sibling's vocabulary into this anchor. Anchor surfaces are
+**positive-voice only**: discriminate by specific positive vocabulary (participants, artifacts,
+settings, instruments), never by exclusion or contrast.
+
+Authored surfaces land on the `CatalogTemplate` with a `skos_authoring` provenance record (date,
+model, membranes, registry sha, dispositions) — `catalog.json` stays the single source of truth. On
+the output side, **congruence** (`src/aegir/ontology/congruence.py`) classifies generated chapters
+against the same ColBERT substrate — the successor to the BERTopic-era R_D
+(`topic_alignment.py`, deprecated).
+
 ---
 
 ## 4. The OQuaRE quality gate
@@ -263,6 +301,10 @@ reasons).
    Identity / Unity / Dependence and enforces the OntoClean constraint that an **anti-rigid property
    cannot subsume a rigid one** (a role cannot be the parent of a kind). Surfaces as
    `ontoclean_violations`. *Also un-fakeable* — reasoner-invisible yet checkable.
+4. **Annotation membranes M1–M8** (`src/aegir/ontology/annotation_membrane.py`) — for authored
+   *retrieval surfaces* (`alt_labels`, `scope_note`, definitions), not axioms: HermiT has no stake in
+   prose, so these membranes are the whole gate (§3.5). Reasons name the failing rule (and, for M6,
+   the sibling to differentiate from — the highest-value re-prompt feedback).
 
 A self-check before you propose:
 
@@ -367,18 +409,24 @@ just check-ontology-schema
 uv run --no-sync python scripts/grounding_anchors.py query "<concept>"
 LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/define_intermediate_classes.py --rounds 4
 uv run --no-sync python scripts/evolve_rigor.py --batch 12       # convert primitives → ≡ / roles
+# derive → promote (the accretion path)
+LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/promote_candidates.py   # candidate → catalog.json
 ```
 
 | file | role |
 |---|---|
-| `src/aegir/ontology/catalog/*.json` | the seven family catalogs (edit these, not `combined.json`) |
+| `src/aegir/ontology/catalog/catalog.json` | THE live catalog (edit this — or let the derive→promote loop accrete it — never `combined.json`) |
+| `src/aegir/ontology/catalog/catalog.candidate.json` | deriver staging, promoted by `scripts/promote_candidates.py` |
 | `src/aegir/ontology/SLOT_DSL.md` | the slot grammar |
-| `src/aegir/ontology/axiom_patterns.json` | DOSDP-style genus-differentia + role patterns |
+| `src/aegir/ontology/patterns.py` + `axiom_patterns.json` | the axiom-pattern library (tiers) + DOSDP-style genus-differentia / role patterns |
 | `scripts/ontology_metrology.py` | every metric (`compute()`) — the single source of truth |
 | `scripts/ontology_oquare.py` | the [1,5] bands, characteristic map, FLOORS, the publish gate |
 | `src/aegir/ontology/ontoclean.py` | the OntoClean classifier + meta-property membrane |
 | `scripts/build_realized_ontology.py` | render → CCO import → HermiT → `.owl` + certificate |
 | `scripts/grounding_anchors.py` | CCO+FHIR+accretive genus retrieval |
+| `src/aegir/ontology/topic_layer.py` | the topic registry (`sdg_topics`), item adjudication, τ\* derivation, M7 basin gate |
+| `src/aegir/ontology/annotation_membrane.py` | M1–M8 over authored retrieval surfaces |
+| `src/aegir/ontology/congruence.py` | output-side concept congruence (the R_D successor) |
 | `corpora/ontology/sdg-ontology.{omn,owl}` | the realized artifact (+ `HERMIT_CERTIFICATE.md`) |
 
 **Citations.** OQuaRE: Duque-Ramos et al. 2011. IOF/BFO signature: Smith et al. 2019. OntoClean:

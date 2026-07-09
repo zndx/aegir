@@ -125,9 +125,9 @@ Same model, same optimizer, same learning rate:
 | Collapse | no | yes |
 
 10× more gradient steps at the same aggressive hyperparameters is the
-differentiator. The reference RWKV-LM training recipes in `ref/rwkv-lm/`
-use lr ≈ 1e-4 with 1000+ warmup steps and always clip gradients. We
-did none of that.
+differentiator. The reference RWKV-LM training recipes (the RWKV-LM
+checkout, `~/local/src/oss/rwkv-lm/`) use lr ≈ 1e-4 with 1000+ warmup
+steps and always clip gradients. We did none of that.
 
 ## 5. Reusable methodology
 

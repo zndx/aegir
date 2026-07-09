@@ -3,10 +3,13 @@
 > **Deferred framing.** This page describes Stage 2 of an earlier
 > exploratory SysMLv2 / ORM pipeline for ontology-grounded
 > synthetic data that preceded the project's convergence on the
-> procedural-catalog approach. The active synthetic-data direction
-> is the closed-loop pipeline in the [semantic-engine authoritative
-> reference](../ontology/production_state.md); the SDG procedural
-> catalog is documented in the [Ontology chapter](../ontology.md).
+> content-first derived catalog
+> (`src/aegir/ontology/catalog/catalog.json`). The active
+> synthetic-data pipeline is `just metaflow`
+> (`src/aegir/flows/sdg_corpora_flow.py`), documented in the
+> [semantic-engine authoritative
+> reference](../ontology/production_state.md); the catalog is
+> documented in the [Ontology chapter](../ontology.md).
 > This page is preserved in the repository for archival continuity.
 
 Schema projection transforms BFO-grounded ontology fragments into relational database schemas through a two-step process: first into SysMLv2 systems engineering models, then into programmatic data objects and SQL schemas. The intermediate SysMLv2 representation captures structural constraints, lifecycle semantics, and system-level relationships that flat entity-relationship modeling would lose.

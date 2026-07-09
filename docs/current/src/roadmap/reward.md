@@ -1,11 +1,14 @@
 # Phase 2: Reward Modeling
 
-> **Deferred work.** This page describes a multi-agent
-> reward-modeling plan tied to the earlier K2.5 PARL roadmap, which
-> has been superseded by the two-track structure in
-> [Roadmap](../roadmap.md). The project's active reward modeling is
-> the four-component deterministic verifier *R(O, I)* described in
-> the [semantic-engine authoritative reference](../ontology/production_state.md);
+> **Deferred work (status refreshed 2026-07-09).** This page describes
+> a multi-agent reward-modeling plan tied to the earlier K2.5 PARL
+> roadmap, which folded into the
+> [Signals Programme](../signals_programme.md) milestone ladder (see
+> [Roadmap](../roadmap.md)). The project's operative reward today is
+> the four-component verifier *R(O, I)* **realized as the
+> deterministic membrane stack** (HermiT/CCO, OntoClean, OQuaRE) — the
+> long-horizon Signals M4 apparatus, per the
+> [semantic-engine authoritative reference](../ontology/production_state.md);
 > the `r_perf` / `r_parallel` / `r_finish` design below is preserved
 > for archival continuity and is not currently being implemented.
 

@@ -1,9 +1,11 @@
 # Cross-worktree SAE streaming
 
 The motivating use case for [Worktree Aware Development](../worktree_aware.md):
-a P5 GRPO/RLVR training run executes in the primary worktree while a
-React UI runs in a secondary worktree, and the UI observes SAE feature
-activations from the running training process in near-real-time.
+a P5 GRPO/RLVR training run (the long-horizon Signals-M4 apparatus — see
+[RLVR for ontology generation](../ontology/rlvr.md)) executes in the
+primary worktree while a React UI runs in a secondary worktree, and the
+UI observes SAE feature activations from the running training process in
+near-real-time.
 
 ## Pipeline
 
@@ -152,8 +154,9 @@ events queue in 4 KB chunks and you won't see them until enough land.
 
 ## What the UI gets to visualize
 
-The brief's morphism reading: **input bytes → SAE features → ontology
-term selection → output bytes**. The UI surfaces this in near-real-time
+The [concept brief](../ontology/concept_brief.md)'s morphism reading:
+**input bytes → SAE features → ontology term selection → output
+bytes**. The UI surfaces this in near-real-time
 so a user can correlate a bad reward with the features that fired
 during the failing generation:
 

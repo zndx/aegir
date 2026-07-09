@@ -28,8 +28,9 @@ certificate (`HERMIT_CERTIFICATE.md`) — shared through the `corpora`
 submodule (zndx/sdg-corpora). It is **versioned and independently
 consumable**: any consumer can load the `.omn`/`.owl` in an OWL
 reasoner (Protégé/HermiT, ROBOT, owlready2) and re-verify consistency.
-The ontology ships alongside the ontology-grounded synthetic corpus
-and the relational DDL spine derived from it.
+The ontology ships alongside the ontology-grounded synthetic corpus,
+the relational DDL spine derived from it, the catalog mirror, and the
+SKOS vocabulary — the Data Products of the `corpora` submodule.
 
 Publication is **gated** — no `sync --push` of the ontology Data
 Product until the OQuaRE quality gate is GREEN (see
@@ -71,11 +72,12 @@ see [Authors Guide § 5](./authors_guide.md#5-the-disposal-membranes-what-reject
 
 ## Design constraints that follow
 
-1. **The ontology lives in source, not in a database.** The seven
-   family catalogs and `catalog.json` are text files in version
-   control; mutations are PRs with diffs. The realized `.omn`/`.owl`
-   is build output. If a UI ever writes to a DB, the export pipeline
-   reconciles into the catalog, not the other way around.
+1. **The ontology lives in source, not in a database.** The live
+   catalog (`src/aegir/ontology/catalog/catalog.json`) and its
+   candidate staging are text files in version control; mutations are
+   PRs with diffs. The realized `.omn`/`.owl` is build output. If a UI
+   ever writes to a DB, the export pipeline reconciles into the
+   catalog, not the other way around.
 
 2. **The ontology drives a synthetic corpus, not a service.** The
    ontology-grounded chapter generation and DDL-spine materialization
@@ -85,12 +87,15 @@ see [Authors Guide § 5](./authors_guide.md#5-the-disposal-membranes-what-reject
    consumers; they are not a daemon or a network service in Ægir's own
    usage.
 
-3. **Content-first derivation drives coverage.** The live ontology
-   driver is FinePDFs-content derivation (qdrant/ColBERT domain
-   filtering → engine derives intermediate classes → membranes
-   dispose); the seven template families are a seed and regression
-   baseline. Coverage grows by deriving new property-bearing
-   subsumers from text, not by enlarging a fixed template count.
+3. **Content-first derivation drives coverage.** The ontology is
+   fully derived: FinePDFs-content derivation (qdrant/ColBERT
+   aperture filtering → engine derives pattern-bound primitives →
+   membranes dispose → `scripts/promote_candidates.py` admits into
+   `catalog.json`). The hand-authored seed families are retired —
+   everything in the catalog earned its way through the
+   derive→promote loop. Coverage grows by deriving new
+   property-bearing subsumers from text, not by enlarging a fixed
+   template count.
 
 4. **One BFO anchor, multiple operational contexts.** SDG forces
    cross-context concepts to be expressed as shared subclasses of
@@ -105,6 +110,16 @@ session note at `docs/scratch/2026-05-09/232551_domain_choice.md`.
 The branch structure and external anchors below remain the committed
 architecture of the SDG ontology.*
 
+*Note (2026-07-09): the `sdg:` leaf classes named below are the v0.1
+seed-era population; they were retired with the hand-authored seed
+families (`4d200e4`). The **upper-branch commitment and the
+cross-context-cousining invariant stand** — the fully-derived catalog
+populates the same BFO/CCO branches (at the time of writing 106
+realized classes anchor at `bfo:Process`, 68 at `bfo:Role`, with the
+ICE branches carrying the record / measurement / directive classes).
+The belief branch's reinstatement is a standing publish rider (the
+DST belief module, #136).*
+
 ### Identity
 
 The bespoke ontology the project authors and publishes is the
@@ -117,8 +132,8 @@ deployments.
   `cco:`, `bfo:`, `fhir:`, `iao:`, `skos:`, `rdfs:` for
   public-namespace anchors. (See the namespace table in
   [Authors Guide § 1](./authors_guide.md#namespaces).)
-- **Source-of-truth:** the family catalogs under
-  `src/aegir/ontology/catalog/`, realized to
+- **Source-of-truth:** the live catalog
+  `src/aegir/ontology/catalog/catalog.json`, realized to
   `corpora/ontology/sdg-ontology.{omn,owl}`.
 - **Aegir** remains the project / codebase identity; SDG is the
   ontology that the Aegir project hosts.

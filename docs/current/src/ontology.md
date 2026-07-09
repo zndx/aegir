@@ -4,12 +4,14 @@ Aegir is the canonical owner of the bespoke BFO 2020 / CCO-grounded
 ontology used by the metadata-tagging stack — the **Signals Data
 Governance (SDG)** ontology — and of the ontology-grounded
 synthetic-data pipeline that produces in-distribution pretraining
-bytes against it. The ontology, its rigor program, and the realized
-OWL artifact published outward all live in this chapter. The chapter
-covers what the ontology *is* now, how its classes function as the
-annotation vocabulary, the quantitative rigor metrics and the formal
-publish gate every extension must clear, and the disposal membranes
-that enforce rigor rather than assert it.
+bytes against it. The ontology, its rigor program, the realized OWL
+artifact published outward, and the topic layer that measures the
+corpus against it all live in this chapter. The chapter covers what
+the ontology *is* now, how its classes function as the annotation
+vocabulary, the derive → promote → realize → publish chain that grows
+and ships it, the quantitative rigor metrics and the formal publish
+gate every extension must clear, and the disposal membranes that
+enforce rigor rather than assert it.
 
 The ontology conditions everything downstream — it is the
 **annotation vocabulary for Column Type / Column Property Annotation
@@ -23,35 +25,118 @@ these decisions stay coherent.
 
 ## What the ontology is now
 
-`sdg-ontology` is **content-derived from FinePDFs** (qdrant/ColBERT
-MaxSim domain filtering over a SKOS index) and **realized to a
-HermiT-validated OWL artifact** at
-`corpora/ontology/sdg-ontology.{omn,owl}`, with a consistency
-certificate at `corpora/ontology/HERMIT_CERTIFICATE.md`. The seven
-family catalogs (`src/aegir/ontology/catalog/01…07`) are a **seed and
-regression baseline**; FinePDFs-derived intermediate classes accrete
-in `catalog.json`, and the live driver is the content-first
-derivation pipeline (`scripts/derive_ontology.py`,
-`scripts/define_intermediate_classes.py`), not a fixed template count.
+The ontology is **content-first and fully derived**. The live catalog
+is **`src/aegir/ontology/catalog/catalog.json`** — 433 templates at
+the time of writing, every one derived from FinePDFs passages (the
+hand-authored 01–07 seed families were retired in `4d200e4`; the
+catalog *is* what the derive→promote loop has accreted). Discovery is
+via `schema.catalog_files()`, never globs. Each template is a
+Manchester-syntax axiom skeleton with typed slots (`{name:Type}` /
+`{name:Type:Bound}` — `SLOT_DSL.md`), bound to an **axiom pattern**
+from the pattern library (`src/aegir/ontology/patterns.py`, four
+tiers: `fhir_minimum` / `owl2_core` / `odp` / `sysmlv2`) and carrying
+provenance — `pattern` / `tier` / `grounds_ddl` / `domain` /
+`source_span` — that downstream stages consume: `grounds_ddl` drives
+the deterministic DDL realize profile, `domain` is the cross-domain
+tag, `source_span` is the "informed by the inputs" evidence.
 
-The architecture is an **agent-mediated propose / dispose feedback
-loop**: an engine proposes axioms; a stack of deterministic membranes
-(parse → HermiT with CCO imported as a reasoning authority →
-OntoClean) disposes and returns the reason; the agent responds and
-refines. Rigor is *enforced, not asserted*. The
+The catalog realizes to a **HermiT-certified OWL artifact** at
+`corpora/ontology/sdg-ontology.{omn,owl}` with a consistency
+certificate at `corpora/ontology/HERMIT_CERTIFICATE.md` (828 named
+classes, 0 unsatisfiable, 10,570 membrane-admitted individuals).
+
+## The derive → promote → realize → publish chain
+
+```d2
+direction: down
+
+passages: FinePDFs passages\n(aperture-filtered, content-hashed)
+derive: DERIVE\nscripts/derive_ontology.py\npattern-bound primitives
+candidate: catalog.candidate.json\n(staging)
+promote: PROMOTE\nscripts/promote_candidates.py\nparse → HermiT → provenance threading
+catalog: catalog.json\n(THE live catalog, 433 templates)
+realize: REALIZE\nscripts/build_realized_ontology.py\nBFO 2020 + CCO, HermiT certificate
+publish: PUBLISH\naegir.lineup.sync\nOQuaRE hard gate → corpora/ontology/
+
+passages -> derive
+derive -> candidate
+candidate -> promote
+promote -> catalog: admitted
+promote -> derive: reason (refine) {
+  style.stroke-dash: 3
+}
+catalog -> realize
+realize -> publish
+```
+
+- **Derive** — the engine (Qwen3.6-35B over vLLM gRPC,
+  `src/aegir/engine/`) reads aperture-filtered FinePDFs passages and
+  derives axiom-pattern-bound primitives
+  (`scripts/derive_ontology.py`), staged in `catalog.candidate.json`.
+- **Promote** — `scripts/promote_candidates.py` is membrane-gated
+  admission into `catalog.json`: re-parse (DeepOnto), HermiT
+  consistency against BFO/CCO, and the provenance threading that
+  carries the derivation signals across the boundary (severing
+  `grounds_ddl` here once left the DDL spine 100% dice-rolled — do
+  not re-sever). `combined.json` is rebuilt, never edited.
+- **Realize** — `scripts/build_realized_ontology.py` instantiates
+  templates into concrete OWL over BFO 2020 + CCO (imported as a
+  reasoning authority), HermiT signs the certificate, and
+  unsatisfiability emits **justification signals**
+  (`build/realize_signals.json`) that the `scripts/reauthor_unsat.py`
+  agent loop consumes.
+- **Publish** — `aegir.lineup.sync` pushes the ontology Data Product
+  to the `corpora` submodule (zndx/sdg-corpora), hard-gated by the
+  OQuaRE quality gate (`sync._gate()`; no `--push` below GREEN).
+
+## Membranes with reasons — the doctrine
+
+Everywhere in this chapter the same shape recurs: an agent
+**proposes**, a deterministic membrane **disposes and returns the
+reason**, and the agent responds and refines — a closed loop, never
+one-shot propose→drop. Axioms face parse → HermiT (with CCO's
+disjointness axioms as the reasoning authority) → OntoClean; authored
+retrieval surfaces face the annotation membranes **M1–M8**
+(`src/aegir/ontology/annotation_membrane.py`), including the M8
+positive-voice rule (definition-by-negation is an embedding
+anti-pattern). Rigor is *enforced, not asserted*, and the two
+strongest axiom membranes (HermiT and OntoClean) are un-fakeable. The
 [Authors Guide](./ontology/authors_guide.md) is the canonical
 reference for every metric, band, gate, and membrane.
+
+## The topic layer — the retrieval / measurement face
+
+The same catalog terms are also the corpus's **topic registry**:
+topics ≡ ontology-grounded concept anchors in qdrant (`sdg_topics` —
+the 29 SKOS domains plus all 433 live terms;
+`src/aegir/ontology/topic_layer.py`). FinePDFs items
+(anchor-proportional passage windows) map to **one topic or none** by
+hierarchical-margin ColBERT MaxSim under the pre-registered,
+null-calibrated gate **τ\* = 0.1065**; every association is
+content-addressed to the collection state that adjudicated it. The
+ambiguous mass is the error signal and the **lexicon is the
+parameter** — unaligned input indicts the topics, never the input
+(the inverted-LDA direction). Registry changes are themselves gated
+(the M7 basin gate, `topic_layer.basin_calibration`). On the output
+side, **congruence** (`src/aegir/ontology/congruence.py`) classifies
+generated chapters against the same ColBERT substrate the harvest
+classified inputs with — the BERTopic-era R_D reborn. The
+[phase gate](./roadmap/phase_gate_inverted_topic_layer.md) is the
+authoritative record; the BERTopic-era instruments
+(`topic_alignment.py`, `T_I.pkl`, `build_topic_model.py`) are
+deprecated, kept for v0.3 reproducibility only.
 
 ## Scope summary
 
 | Concern | Owner | Notes |
 |---|---|---|
-| SDG ontology IRIs + BFO/CCO grounding | **Ægir** | `src/aegir/ontology/catalog/*.json` → realized `corpora/ontology/sdg-ontology.{omn,owl}` |
-| Content-first derivation (FinePDFs → classes) | **Ægir** | `scripts/derive_ontology.py`, `scripts/define_intermediate_classes.py` |
+| SDG ontology IRIs + BFO/CCO grounding | **Ægir** | `src/aegir/ontology/catalog/catalog.json` → realized `corpora/ontology/sdg-ontology.{omn,owl}` |
+| Content-first derivation (FinePDFs → templates) | **Ægir** | `scripts/derive_ontology.py`, `scripts/promote_candidates.py`, `src/aegir/ontology/patterns.py` |
 | Grounding-anchor retrieval (CCO + FHIR + accretive) | **Ægir** | `scripts/grounding_anchors.py` |
-| Rigor metrology + OQuaRE publish gate | **Ægir** | `scripts/ontology_metrology.py`, `scripts/ontology_oquare.py` |
-| Disposal membranes (parse / HermiT / OntoClean) | **Ægir** | `scripts/build_realized_ontology.py`, `src/aegir/ontology/ontoclean.py` |
-| Ontology-grounded synthetic corpus + DDL spine | **Ægir** | `scripts/generate_chapter.py`, `scripts/verify_chapters.py`, `src/aegir/ontology/ddl.py`, `realize.py` |
+| Rigor metrology + OQuaRE publish gate | **Ægir** | `scripts/ontology_metrology.py`, `scripts/ontology_oquare.py`, `aegir.lineup.sync._gate` |
+| Disposal membranes (parse / HermiT / OntoClean / M1–M8) | **Ægir** | `scripts/build_realized_ontology.py`, `src/aegir/ontology/ontoclean.py`, `src/aegir/ontology/annotation_membrane.py` |
+| Topic layer + congruence (retrieval/measurement) | **Ægir** | `src/aegir/ontology/topic_layer.py`, `src/aegir/ontology/congruence.py` |
+| Ontology-grounded synthetic corpus + DDL spine | **Ægir** | `src/aegir/flows/sdg_corpora_flow.py` (`just metaflow`), `src/aegir/ontology/ddl.py`, `realize.py` |
 | CTA / CPA dataset loaders | **Ægir** | `src/aegir/data/table_dataset.py` |
 | Model training + evaluation | **Ægir** | `train.py`, `train_pretrain.py`, `AegirForColumnAnnotation` |
 | **Consumer-side use of the above** | downstream projects | Outside Ægir's design constraints |
@@ -65,15 +150,16 @@ advisory input here, not specification.
 
 - [Authors Guide — metrics & quality gates](./ontology/authors_guide.md)
   — **canonical**: the full quantitative metric suite (IOF rigor
-  dimensions, OntoQA/OQuaRE structural metrics, OntoClean proxies),
-  the OQuaRE publish gate with its `[1,5]` bands and floors, the
-  disposal membranes, and the pre-registered OQ-Rigor / OQ-Structure
-  objectives, with the exact formulas the tooling enforces
+  dimensions, OntoQA/OQuaRE structural metrics, OntoClean proxies,
+  topic-layer instruments), the OQuaRE publish gate with its `[1,5]`
+  bands and floors, the disposal membranes, and the pre-registered
+  OQ-Rigor / OQ-Structure objectives, with the exact formulas the
+  tooling enforces
 - [Charter](./ontology/charter.md) — Ægir's internal direction-setter
   for the ontology scope: provenance discipline, the committed
   BFO/CCO branch structure, and external-standard anchors
 - [Migration](./ontology/migration.md) — authoring history for the
-  initial bespoke vocabulary
+  initial bespoke vocabulary (dated record)
 - [Concept brief — RLVR for ontology generation](./ontology/concept_brief.md)
   — the design of the long-horizon **Signals M4** apparatus: a
   four-component verifiable reward *R(O, I)* over OWL artifacts and a
@@ -89,3 +175,7 @@ advisory input here, not specification.
   apparatus: the verifier *R(O, I)*, now realized as the membrane stack,
   and the SAE-instrumented-Qwen policy that GRPO trains against it to
   autonomously generate ontology extensions
+- [Skills Library & Generate→Re-ground→Refine Engine](./ontology/skills_loop_spec.md)
+  — the dated v0.1 specification of the skills package
+  (`src/aegir/ontology/skills/`) and the closed refine loop whose
+  shape now lives in the metaflow pipeline

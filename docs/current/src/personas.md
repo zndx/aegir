@@ -49,21 +49,28 @@ commits to in its Business Glossary. Accountable upward for
 governance posture; accountable downward for the catalog.
 
 **Surface.** The Aegir UI's leaderboard, run-detail, and
-coverage views; the published Atlas Business Glossary; the SDG
-catalog (rendered as templates with cross-context cousining
-annotations); compliance and provenance reports lifted from
-lineage.
+coverage views; the lineup (current / scratch / archive roots —
+the released kasten in *current* is what she signs off on); the
+published Atlas Business Glossary; the SDG catalog
+(`catalog.json`, rendered with per-template provenance —
+pattern, tier, grounds_ddl, domain, source span); compliance
+and provenance reports lifted from lineage.
 
 **Daily workflow.** Reviews the coverage report from the latest
 training run (what fraction of the in-scope warehouse can be
 tagged with the current catalog, where are the systematic
-gaps). Examines failure clusters that the steward (Persona 2)
+gaps) and the topic-layer census from the latest input window
+(which ontology-grounded topics the harvested corpus actually
+hit, where aligned mass concentrates, what stayed unassigned).
+Examines failure clusters that the steward (Persona 2)
 escalates from day-to-day operations. Approves or revises
 proposed catalog deltas — new templates, term additions, term
-revisions. Verifies that approved terms land in the Atlas
-Business Glossary with their SKOS hierarchies and isA edges to
-the SDG classification types. Signs off on production tag
-deployments.
+revisions; each delta arrives already disposed by the
+promotion membranes, so her review is the human gate on top of
+the machine gates, never a substitute for them. Verifies that
+approved terms land in the Atlas Business Glossary with their
+SKOS hierarchies and isA edges to the SDG classification
+types. Signs off on production tag deployments.
 
 **Definition of success.** She can articulate to her CDO, in
 language the CDO understands, what the system tags well, what
@@ -88,8 +95,10 @@ this is where the real work gets done.
 
 **Surface.** The Aegir UI's run-detail pages (CTA results,
 failure cases, per-table breakdowns); the lineage trace view
-(cta_failure_trace, sample_provenance workflows); the sampling
-tools (sampling_strategy); the corpus-gap proposal tool
+(cta_failure_trace, sample_provenance workflows); the lineup's
+item-note trail (Scratch → Content → Items × Topics — the
+walkable item → topic → term lineage); the sampling tools
+(sampling_strategy); the corpus-gap proposal tool
 (corpus_gap_proposal); the SDG catalog with template-minimality
 guidance.
 
@@ -97,22 +106,29 @@ guidance.
 consumer: *column X on table Y is tagged wrong, here's why we
 think so.* Opens the run-detail page, locates the failure case
 in the held-out evaluation or production run. Initiates a
-**CTA failure trace**: which compositions did the model see
-that involved the concepts at issue? Which catalog templates
-produced those compositions? Which input-pool documents shaped
-*R_D* (topic alignment) for those compositions? Identifies a
-probable cause — a missing template that should distinguish the
-two concepts, an undersampled corpus region that left the
-model without a clear contrastive signal, or a slot-fill
-pattern the catalog doesn't yet express. Proposes a fix:
-either a **corpus addition** (sample more documents of type Z
-under a stated regex / filter rule) or a **template revision**
-(under template-minimality discipline — propose composition of
+**CTA failure trace**: which chapters did the model see that
+involved the concepts at issue? Which catalog templates did
+those chapters cite? Which input-window items aligned to those
+concepts in the topic layer — with what margin, against which
+competitor — each association pinned to the registry state that
+adjudicated it? Identifies a probable cause — a missing
+template that should distinguish the two concepts, an
+undersampled corpus region that left the model without a clear
+contrastive signal (the topic's aligned mass is thin, or the
+mass sits unassigned), or an anchor surface that fails to
+discriminate the sibling pair. Proposes a fix: a **corpus
+addition** (advance the harvest window under a stated strategy
+change — the aperture is the strategy's lens, and the change
+rides a new `strategy_id`), a **lexicon iteration** (re-author
+the term's anchor surface through the annotation membranes,
+positive voice only), or a **template revision** (under
+template-minimality discipline — propose composition of
 existing templates before authoring new ones). Submits the
 proposal to the director for approval. Once approved, runs the
-curation iteration: sample, fine-tune the warm-start, evaluate
-against the held-out set, compare to the prior run's *R*
-distribution. Reports back: did the fix close the failure?
+iteration: `just metaflow` over the new window, fine-tune the
+warm-start, evaluate against the held-out set, compare
+congruence and the topic-layer census to the prior run's.
+Reports back: did the fix close the failure?
 
 **Definition of success.** They can take any failure case and
 produce a defensible explanation plus a defensible fix
@@ -143,11 +159,13 @@ their reproducibility is downstream of Aegir's reproducibility.
 
 **Surface.** The Aegir gateway API (`/api/leaderboard`,
 run-detail endpoints, plot endpoints); the locked-artifacts
-table (catalog version, weights hash, null-statistics hash);
-the SAE feature dictionary when it is stable enough to cite;
-run-metadata sidecars (what catalog + weights produced this
-checkpoint); lineage events emitted to Atlas (canonical) and
-Marquez (OL push for compatibility).
+table (catalog version, weights hash, null-statistics hash —
+pipeline runs additionally pin the Merkle `strategy_id` and
+the topic-registry collection sha); the SAE feature dictionary
+when it is stable enough to cite; run-metadata sidecars (what
+catalog + weights produced this checkpoint); lineage events
+emitted to Atlas (canonical) and Marquez (OL push for
+compatibility).
 
 **Iteration workflow.** Pulls a new Aegir checkpoint into
 their integration test harness. Checks the locked-artifacts
@@ -197,14 +215,17 @@ authority's work.
 membrane); the authoritative reference in
 [production_state.md](./ontology/production_state.md) and the
 concept brief in [concept_brief.md](./ontology/concept_brief.md)
-for the in-flight RLVR sub-track; the realized ontology artifact
+for the long-horizon RLVR sub-track (the Signals M4 apparatus);
+the realized ontology artifact
 (`corpora/ontology/sdg-ontology.{omn,owl}`) and its
 `HERMIT_CERTIFICATE.md`; `EVIDENCE.md` (the pre-registered claims
-ledger); the locked C1 test set, held-out 50, and null-statistics
-snapshot; the verification gates (catalog schema check, the OQuaRE
-publish gate, the parse / HermiT / OntoClean disposal membranes, C1
-AUC regeneration, verifier determinism, end-to-end scaffold); the
-repository itself (clone and re-run).
+ledger); the dated phase-gate records under `roadmap/` (the
+governance/DDL spine; the inverted topic layer, with its
+pre-registered τ\*); the locked C1 test set, held-out 50, and
+null-statistics snapshot; the verification gates (catalog schema
+check, the OQuaRE publish gate, the parse / HermiT / OntoClean
+disposal membranes, C1 AUC regeneration, verifier determinism,
+end-to-end scaffold); the repository itself (clone and re-run).
 
 **Review workflow.** Reads the Authors Guide and the authoritative
 reference. Identifies the load-bearing claims. On the **ontology
@@ -215,19 +236,24 @@ ontology clears the pre-registered objectives in `EVIDENCE.md` —
 0.95` ∧ `def_annotation_coverage ≥ 0.90` ∧ `ar > 0` ∧
 `oquare_aggregate ≥ 3.5`), with zero unsatisfiable classes under
 HermiT; and that the disposal membranes (parse → HermiT/CCO →
-OntoClean) are un-fakeable. On the **in-flight RLVR sub-track**:
-verifier discrimination on C1 (AUC 0.9956, mean *R*-separation
-0.336), held-out 50 separation (0.5129), and the policy claim that
-GRPO can produce compositions whose *R*-distribution exceeds
-prompt-evolved and human-authored baselines. Picks one claim and
-tries to reproduce it from the repository alone, with no email to
-the authors. If reproduction works, asks the second-order
-questions. For the rigor program: **Do the metrics regenerate** —
-does `scripts/ontology_metrology.py` on the realized `.owl` produce
+OntoClean) are un-fakeable. On the **long-horizon RLVR sub-track**
+(the Signals M4 apparatus): verifier discrimination on C1 (AUC
+0.9956, mean *R*-separation 0.336), held-out 50 separation
+(0.5129), and the policy claim that GRPO can produce compositions
+whose *R*-distribution exceeds prompt-evolved and human-authored
+baselines. Picks one claim and tries to reproduce it from the
+repository alone, with no email to the authors. If reproduction
+works, asks the second-order questions. For the rigor program:
+**Do the metrics regenerate** — does
+`scripts/ontology_metrology.py` on the realized `.owl` produce
 the reported numbers, and does `scripts/ontology_oquare.py` return
 GREEN against the certificate? **Are the gates actually un-fakeable**
 — does an injected contradiction or anti-rigid-over-rigid
-subsumption get rejected with a reason? For the RLVR sub-track:
+subsumption get rejected with a reason? **Do the pre-registrations
+bind** — does the topic layer's τ\* regenerate from the
+shuffled-window null at the registered seed, with the method
+registered before the number (report-not-tune)? For the RLVR
+sub-track:
 **Are baselines visible** — what does the *R*-distribution look like
 under a prompt-evolved policy? under a random-sampling policy? under
 no constraint at all? **Is each verifier component validated
@@ -327,7 +353,7 @@ Feature: C1 sweep reproducibility
   reviewer-facing scenarios audit against, and that the
   practitioner scenarios produce evidence for.
 - [Concept brief — RLVR for ontology generation](./ontology/concept_brief.md)
-  — the research design for the in-flight RLVR sub-track that locks
+  — the research design for the long-horizon RLVR sub-track that locks
   the experimental claims the reviewer persona audits.
 - [Ontology Charter](./ontology/charter.md) — the outward
   contract that the director persona owns operationally.

@@ -33,6 +33,13 @@ loudly rather than drift silently.
 > (flagged, not performed): archive this page, or fold it into a short
 > "vocabulary provenance" note, once a maintainer confirms nothing
 > downstream still links to the phased cutover.**
+>
+> **Addendum (2026-07-09).** The hand-authored seed family catalogs
+> themselves have since been retired (`4d200e4`): the live catalog is
+> `src/aegir/ontology/catalog/catalog.json`, fully derived and grown by
+> the derive→promote loop. The present-state landing is
+> [Ontology](../ontology.md); the canonical gate reference is the
+> [Authors Guide](./authors_guide.md).
 
 ## Starting state (2026-05-09)
 

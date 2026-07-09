@@ -6,6 +6,14 @@ the gate is met at Phase B.** · **Decision:** scoped 2026-06-17 · **Depends on
 (UI-U0/U1/U2, delivered), the `aegir.lineup sync` SHARE verb (delivered), and a corpus regen
 against the current ontology (see [Dependencies](#dependencies)).
 
+> **Status note (2026-07-09):** Phase B remains PENDING; this page is preserved as the dated
+> phase record. One substrate has since moved under it: the "FinePDFs-grounded topic" that
+> anchors each collection below is the BERTopic-era coverage audit (v0.3-vintage, now deprecated
+> for reproducibility only) — the live topic instrument is the
+> [inverted topic layer](./phase_gate_inverted_topic_layer.md) (topics ≡ ontology-grounded
+> concept anchors over the live catalog), which the corpus regen this phase already waits on
+> would carry instead.
+
 This phase turns the public `sdg-corpora` repo from machine-readable artifacts (parquet / TTL /
 JSON) into a **human-browsable, cross-linked mdbook document** — the *static SHARE-tier rendering
 of the lineup*. Where the aegir gateway lineup is the dynamic, authenticated navigation for us,

@@ -92,3 +92,13 @@ fused_state = fusion(agent_states)  # (B, 8, 64, 64)
 | `weighted_sum` | `O(H*K + K*V*K)` | Yes | General use, default |
 | `gated` | `O(N)` | No | Quick experiments, few agents |
 | `concat_project` | `O(N*K*V*K*V)` | Yes | Maximum expressiveness, small N |
+
+## Forward Connection
+
+In the latent-lens design direction
+([Agent Swarm](../agent_swarm.md#the-forward-connection-latent-lenses);
+design note `docs/scratch/2026-07-07/152519_latent_lens_design.md`),
+the inverted topic layer's lens becomes a fusable specialist *state*:
+a topic-prior channel combined into the primary model's recurrent
+state through this module, alongside domain specialists — the
+LatentMAS tie-in, slated opportunistically after ladder stage L3.

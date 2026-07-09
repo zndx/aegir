@@ -8,6 +8,17 @@ candidates; (b) **the ontology IS the dynamic computational framework** — a re
 artifact we evolve in situ from domain inputs. Discipline (the lesson that produced this spec): adopt the
 **form**, not the language — every new piece must ground out in concrete, measured computation.
 
+> **Status (2026-07-09).** Dated record — kept as history; the increments shipped (inc-2a–d = Signals
+> **M0**, see `EVIDENCE.md`) and the spec's successors are live. The filesystem-DAG (§0/§5) matured into
+> the one idempotent flow `just metaflow` (`src/aegir/flows/sdg_corpora_flow.py` — the "later,
+> lightweight orchestrator" arrived as Metaflow); S1's corpus-fitted topic model is deprecated in favour
+> of the inverted topic layer + congruence (`src/aegir/ontology/{topic_layer,congruence}.py`,
+> [phase gate](./roadmap/phase_gate_inverted_topic_layer.md)); promotion lands in the derived
+> `catalog.json` (the hand-authored family files are retired); H₀ lives at
+> `src/aegir/meta_harness/harness_h0.py` (`just mediate-h0`); the realization-as-CPA beachhead (§3c)
+> shipped as `scripts/realize_corpus_as_cpa.py`. Present truth:
+> [signals_programme](./signals_programme.md).
+
 ## 0. The end-to-end flow (the complete workflow — keep this in view)
 
 A filesystem-DAG. Each stage writes a dir with `manifest.json` + a `run_id` that hashes its inputs →
@@ -21,7 +32,7 @@ S2 EVOLVE ◄── THE META-HARNESS. mediate.py (spine + ACP/Grok mint + Contra
    │          → evidence/meta_harness/<run>/ {trace, scorecard, candidates.candidate.json}
    │          [gap topic → mint construct → gate (DeepOnto+polyglot+R1+novelty+schema+CONSISTENCY)
    │           → promote]. THIS stage is what the OUTER LOOP (§2) optimizes.
-S2' REVIEW    charter: editorial review → promote .candidate → catalog family files (human-in-loop)
+S2' REVIEW    charter: editorial review → promote .candidate → catalog.json (human-in-loop)
 S3 DDL/SKOS   ddl.py (template_to_table→render_ddl→validate_ddl/polyglot) + build_skos_vocab.py
               → DDL spine + 548-concept SKOS + Atlas rdbms_* projection
 S4 CORPUS     generate_chapter.py (ontology+DDL → chapters + verifiable JSON + reasoning traces)

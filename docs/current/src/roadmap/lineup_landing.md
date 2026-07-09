@@ -188,9 +188,10 @@ source of the landing's graph.
 Before a regen (or any version cut), `just kb-snapshot --key <key>` freezes `current/` into a
 **namespaced, self-contained** zettelkasten under `archive/<key>/`: every note id and `[[wikilink]]`
 is prefixed `<key>/`, so the snapshot coexists with the regenerated `current` (no id collision) and is
-internally navigable (clicking inside stays inside). The Archive sidebar's SNAPSHOT selector
-discovers a kasten by its `<key>/lens/terms` surface (registry notes are no longer used for
-navigation); a `_manifest.json` pins the corpus/coverage/catalog it was projected from
+internally navigable (clicking inside stays inside). Kastens are discovered by their
+`<key>/lens/terms` surfaces (no SNAPSHOT selector and no registry notes — the Archive side-nav
+browses the newest frozen kasten; older freezes stay reachable by id, per the root semantics
+above); a `_manifest.json` pins the corpus/coverage/catalog it was projected from
 (reproducible). The snapshot survives `kb-build` (which rebuilds `current` only).
 
 **2026Q2 — pre-regen snapshot** (taken 2026-06-18, calendar quarter): 3,397 notes · corpus

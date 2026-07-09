@@ -6,8 +6,9 @@ byte-level pretrain** completed 2026-04-27 — 122k training steps on
 a 2 GB mixed corpus (FineWeb-Edu + SQaLe + SchemaPile + FinePDFs-lab),
 next-byte-trained at the architecture described in
 [Architecture](./architecture.md). The pretrain produced the
-backbone that the M2 milestone of [Track 1](./roadmap.md) fine-tunes
-for Column Type Annotation; the v2 result is the empirical anchor in
+backbone that the **M2 fine-tune**
+([Supervised Bootstrapping](./roadmap/supervised.md)) trains for
+Column Type Annotation; the v2 result is the empirical anchor in
 [Training Regime §10](./training_regime.md).
 
 The chapter is organized in two parts: the operational pretraining
@@ -53,7 +54,7 @@ The v2 corpus is 2 GB of mixed text drawn from four sources:
 122k training steps were run at the `small` configuration (56M
 parameters), single GPU, ≈10 h wall clock, with a cosine LR schedule
 and AdamW. Stratified held-out evaluation against trained-time
-matched slices shows the result the M2 milestone depends on:
+matched slices shows the result the M2 fine-tune depends on:
 non-degenerate representations across all four sources, ≈2 bpb
 drops on the domain-targeted FinePDFs-lab slice relative to a
 randomly-initialized baseline, and no regression on general prose.
@@ -71,16 +72,18 @@ Study](./pretraining/diagnostic_case_study.md).
 
 ### v3 — multi-GPU step-up
 
-The v3 pretrain is conditional on M2 clearing its liveness gate;
-M3 of [Track 1](./roadmap.md) describes the planned step-up to
+The v3 pretrain is conditional on the M2 fine-tune clearing its
+liveness gate ([Supervised Bootstrapping](./roadmap/supervised.md));
+the planned step-up is
 6 × RTX 4090 multi-GPU training at the next byte-budget bump
 (roughly 8 GB at ≈7 h vs. v2's 10 h on 2 GB single-GPU). The target
 evaluation thresholds — keep `eval.fineweb-held` ≤ 1.61, push
 `eval.finepdfs-lab-held` below 1.78, no regression on SchemaPile or
 SQaLe — anchor v3 against the v2 baseline. The v3 corpus mix may
-incorporate verifier-passing synthetic slices from the
-ontology-grounded corpus pipeline once that corpus is available at
-the budget v3 needs; see the next section.
+incorporate verified synthetic slices from the ontology-grounded
+corpus pipeline once that corpus is available at the budget v3
+needs — at a mixing fraction calibrated under the Path A / Path B
+framing described in the next section.
 
 ## The long-term direction — ontology-grounded synthetic data
 
@@ -105,31 +108,48 @@ version of how that program produces pretraining bytes:
    propose / dispose feedback loop** drives the ontology: an engine
    proposes axioms; deterministic membranes (parse → HermiT with CCO
    imported as a reasoning authority → OntoClean) dispose and return
-   their reason; the agent refines. The seven family catalogs
-   (`src/aegir/ontology/catalog/01…07`) are a seed and regression
-   baseline; the live driver is the content-first derivation pipeline,
-   not a fixed template count.
-2. **Generate ontology-grounded chapters.** `scripts/generate_chapter.py`
-   synthesizes textbook chapters grounded in the ontology — in the
-   current path, content-first from a FinePDFs harvest
-   (`--from-harvest`) — calling a generation backend that is either the
-   local gRPC engine (`engine/<capability>`, $0) or a weighted
-   GLM / Grok mix. Each chapter cites ontology templates, verbalizes
-   their axioms into prose, and embeds RI-true relational tables and
-   views projected from the DDL spine (`src/aegir/ontology/ddl.py`,
-   `realize.py`), so each column's source entity is known by
-   construction.
-3. **Verify each chapter.** `scripts/verify_chapters.py` runs a
-   four-scorer verification loop — `R_topic` (alignment with FinePDFs
-   style anchors; dropped for content-first chapters), `R_iri` (cited
-   templates' key terms present in prose), `R_density` (markdown-table
-   structure), and `R_axiom` (table headers match slot types) — and
-   composites them as a geometric mean, accepting at `τ_accept` 0.50.
-4. **Mix the accepted chapters into a v3-or-later pretraining corpus**
-   alongside real text, and **evaluate the pretrain lift** on the
-   Track 1 stratified-eval surface to attribute any improvement to the
-   ontology-grounded slice — the **paper 2** claim, scoped in
-   [Roadmap](./roadmap.md).
+   their reason; the agent refines. The hand-authored seed families
+   are retired — everything is derived. The live catalog is
+   `src/aegir/ontology/catalog/catalog.json`, accreted by the
+   derive → promote loop (`scripts/derive_ontology.py` staging into
+   `catalog.candidate.json`, membrane-gated promotion) and never
+   edited by hand.
+2. **Generate ontology-grounded chapters.** The whole loop runs as one
+   idempotent pipeline — `just metaflow`
+   (`src/aegir/flows/sdg_corpora_flow.py`): harvest a FinePDFs input
+   window (`scripts/harvest_domain_docs.py`), classify it through the
+   qdrant ColBERT aperture (`src/aegir/ontology/domain_index.py`),
+   derive and promote catalog templates, realize the ontology, build
+   the DDL spine, then generate dual-register chapters against the
+   local gRPC engine (`engine/<capability>`, $0, thinking traces
+   retained) or a weighted GLM / Grok mix. Each chapter cites catalog
+   templates, verbalizes their axioms into prose, and embeds RI-true
+   relational tables and views projected from the DDL spine
+   (`src/aegir/ontology/ddl.py`, `realize.py`), so each column's
+   source entity is known by construction.
+3. **Verify and measure each run.** The flow's verify step runs the
+   sensitive-noun scan, **congruence**
+   (`src/aegir/ontology/congruence.py` — input-window concepts against
+   chapter concepts over the same ColBERT substrate), and shape EMD
+   against SchemaPile; the ontology-grounded topic layer
+   (`src/aegir/ontology/topic_layer.py`) is the corpus-census
+   instrument, and naturalness norms track the corpus's mechanical
+   character. The v0.3-era four-scorer chapter loop
+   (`scripts/verify_chapters.py`) is retained for that era's
+   reproducibility.
+4. **Mix the chapters into pretraining as calibrated augmentation.**
+   The locked framing is two paths. **Path A** isolates the data's
+   value with the architecture held fixed: continue-pretrain a vanilla
+   RWKV-7 0.19B (warm-started, World tokenizer) on an RWKV World-v3
+   subsample with and without the synthetic slice
+   (`scripts/continue_pretrain_rwkv7.py`,
+   `src/aegir/flows/path_a_training_flow.py`), and evaluate the lift
+   on the stratified held-out surface
+   ([Training Regime §10](./training_regime.md)) to attribute any
+   improvement to the ontology-grounded slice — the **paper 2**
+   claim, scoped in [Roadmap](./roadmap.md). **Path B** — the Aegir byte-level
+   architecture thesis — inherits Path A's calibrated mixing
+   fraction α rather than re-deriving it at its own expense.
 
 The ontology-grounded corpus is also published as an independent
 deliverable: the [SHARE-docs](./roadmap/phase_share_docs.md) browsable
@@ -150,7 +170,8 @@ FinePDFs-derived intermediate classes rather than enumerating a fixed
 catalog. Independent constraints on the regime are tracked as
 pre-registered gates in `EVIDENCE.md` — in particular the corpus's
 maximum **non-repetitive token yield**, which caps the ontology-grounded
-fraction of any large pretraining budget, and the M2 lift that the v3
+fraction of any large pretraining budget, and the Signals **M2** lift
+([Signals Programme](./signals_programme.md)) that the grounded
 corpus mix must demonstrate over a no-ontology control.
 
 ### How this connects to Aegir's three target tasks

@@ -33,6 +33,56 @@ uv run --no-sync torchrun --nproc_per_node=6 train.py \
 
 Training uses DDP (DistributedDataParallel), AMP with bf16, cosine LR schedule with linear warmup, and load balancing loss for dynamic chunking regularization.
 
+Byte-level pretraining on the synthetic corpus (Phase 0 / 0.5, rank-sharded parquet) runs through `train_pretrain.py` — see its module docstring for the `--resume-from` / `--label-token-weight` knobs.
+
+## The Ontology Pipeline (v0.3+)
+
+The active track's entry point is one command. `just metaflow` runs **the entire pipeline** — harvest → aperture → derive → membrane/promote → realize (HermiT-certified) → DDL spine → dual-register chapters → verify → zettel/lineup — as a single Metaflow flow (`src/aegir/flows/sdg_corpora_flow.py`), **idempotent per input window**: content-hashed passages, cursor-advanced harvest, per-stage skip keys, so rerunning with the same window is a no-op top-up. The stage-by-stage reference is [The Relational Data Generation Pipeline](./pipeline.md).
+
+```bash
+just metaflow                        # top-up the corpus from the current harvest
+just metaflow --harvest-target 50    # advance the input window by ~50 in-domain docs
+```
+
+Long runs use local Metaflow metadata mode (the recipe's default: `AEGIR_METAFLOW_MODE=local`); the service plane (service + UI + MinIO on RKE2) comes up via `devenv up`.
+
+Gates and checks:
+
+```bash
+just check-ontology-schema    # mechanical CI: TTL parses, labels/definitions, BFO ancestry
+just check-ontology-oquare    # OQuaRE 1–5 gate on the realized OWL — the hard publish floor
+```
+
+### The catalog
+
+`src/aegir/ontology/catalog/catalog.json` is **THE live catalog** — everything in it is derived. The deriver stages into `catalog.candidate.json`; `scripts/promote_candidates.py` performs membrane-gated promotion. Edit `catalog.json` (or better: let the derive → promote loop accrete it), **never `combined.json`** (regenerated). Discovery goes through `aegir.ontology.schema.catalog_files()`, not globs.
+
+### The topic layer CLI
+
+The inverted topic layer (`src/aegir/ontology/topic_layer.py` — see the [phase gate](./roadmap/phase_gate_inverted_topic_layer.md)) is runnable as a module:
+
+```bash
+# (Re)build the term-grounded topic registry (qdrant `sdg_topics`), then exit
+uv run --no-sync python -m aegir.ontology.topic_layer --build-registry
+
+# Associate the harvest store: anchor-proportional item windows, one item → one
+# topic (or UNASSIGNED), sha-keyed output beside prior adjudications
+uv run --no-sync python -m aegir.ontology.topic_layer
+
+# A/B against an evolved registry: pin the window so per-item span joins hold
+uv run --no-sync python -m aegir.ontology.topic_layer --window-tokens 170
+```
+
+`--tau` defaults to 0.10; the pre-registered null-calibrated τ\* is 0.1065 and is lens-identity-scoped (new lens ⇒ re-derive, don't copy).
+
+### The lineup projection
+
+```bash
+just kb-build     # project build/dev/{current,scratch,archive} from the three Data Products
+just kb-render    # render the projection → a browsable mdbook
+just kb-sync      # SHARE: re-publish the ontology Data Product to the corpora submodule (gated)
+```
+
 ## CUDA Extension Build Notes
 
 The devenv/Nix environment provides GCC 15, which sets `_GLIBCXX_USE_CXX11_ABI=1`. However, PyTorch's cu124 wheels are built with `_GLIBCXX_USE_CXX11_ABI=0`. This ABI mismatch causes segfaults when CUDA extensions link against the wrong ABI.
@@ -133,8 +183,16 @@ uv run --no-sync python main.py
 
 ```
 aegir/
-  main.py                          -- Smoke tests
-  train.py                         -- Training script (DDP, AMP, cosine LR)
+  main.py                          -- Model smoke tests
+  train.py                         -- CTA/CPA training (DDP, AMP, cosine LR)
+  train_pretrain.py                -- Byte-level Phase 0/0.5 pretraining (rank-sharded parquet)
+  scripts/                         -- Pipeline stages + probes, notably:
+    harvest_domain_docs.py         -- FinePDFs harvest (content-hashed docs + manifest)
+    derive_ontology.py             -- Engine-driven, axiom-pattern-bound derivation
+    promote_candidates.py          -- Membrane-gated admission into catalog.json
+    build_realized_ontology.py     -- Templates -> concrete OWL, HermiT-certified
+    build_ddl_spine.py             -- Deterministic DDL spine (RI-true rows)
+    check_ontology_schema.py       -- Mechanical schema CI (just check-ontology-schema)
   src/aegir/
     models/
       config.py                    -- AegirConfig, SSMConfig, AttnConfig, RWKVConfig
@@ -148,6 +206,17 @@ aegir/
       rwkv.py                      -- RWKV-8 ROSA time mixing + relu^2 channel mixing
       rosa.py                      -- ROSA suffix automaton (CPU-based)
       mlp.py                       -- SwiGLU MLP
+    ontology/                      -- schema (catalog_files()), patterns, ddl, congruence,
+                                   -- topic_layer, domain_index, verifier, ontoclean, ...
+      catalog/catalog.json         -- THE live catalog (+ catalog.candidate.json staging)
+    flows/
+      sdg_corpora_flow.py          -- THE pipeline (just metaflow)
+      path_a_training_flow.py      -- Path A: World-v3 augmentation arms (just train-path-a)
+    engine/                        -- Capability/gRPC engine (only it talks to vLLM)
+    lineup/                        -- KB projection (just kb-build), zettel chain, sync (SHARE)
+    strategy/                      -- Strategy manifest (Merkle strategy_id; lens pillar)
+    gateway/                       -- FastAPI gateway (/api/kb, /api/p5, ...)
+    rl/                            -- P5 GRPO/RLVR (policy, checkpointing, SAE logging)
     swarm/
       state_fusion.py              -- RWKVStateFusion (3 modes)
       alignment.py                 -- AlignmentProjection (cross-agent state mapping)
@@ -159,6 +228,8 @@ aegir/
       table_dataset.py             -- PyTorch dataset for table benchmarks
     utils/
       train.py                     -- Load balancing loss, F1 metrics, param grouping
+  corpora/                         -- The SHARE submodule (zndx/sdg-corpora): ontology, ddl,
+                                   -- corpus cards, vocabulary
   docs/                            -- mdbook documentation (this book)
   ref/                             -- Reference papers
 ```

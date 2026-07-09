@@ -3,10 +3,13 @@
 > **Deferred framing.** This page describes Stage 3 of an earlier
 > exploratory SysMLv2 / ORM pipeline for ontology-grounded
 > synthetic data that preceded the project's convergence on the
-> procedural-catalog approach. The active synthetic-data direction
-> is the closed-loop pipeline in the [semantic-engine authoritative
-> reference](../ontology/production_state.md); the SDG procedural
-> catalog is documented in the [Ontology chapter](../ontology.md).
+> content-first derived catalog
+> (`src/aegir/ontology/catalog/catalog.json`). The active
+> synthetic-data pipeline is `just metaflow`
+> (`src/aegir/flows/sdg_corpora_flow.py`), documented in the
+> [semantic-engine authoritative
+> reference](../ontology/production_state.md); the catalog is
+> documented in the [Ontology chapter](../ontology.md).
 > This page is preserved in the repository for archival continuity.
 
 Given a relational schema with known ontological provenance, the third stage populates tables with realistic synthetic data. The goal is not just to fill rows -- it is to produce data distributions that exercise the same patterns and confusable types the model will encounter in real enterprise databases.

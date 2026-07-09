@@ -1,5 +1,18 @@
 # Agent-Mediated Refinement Loop (adopted 2026-06-24)
 
+> **Status (2026-07-09).** Adopted design — the increment ladder shipped. **inc-0** closed and measured
+> on ch0 (`ae7c905`→`d4d5ca3`, 4/4 metrics moved); the loop lives in `src/aegir/refine/` (`loop.py`
+> builds the cascade on `fsm_rete.MetaHarness`; landed states PROPOSE → VALUE_GATE → PLACEHOLDER →
+> RI_GATE → PROSE_GATE → COMMIT). One design decision changed in the build: the proposer is **not**
+> hermes-agent-as-library — the ACP-wire form arrived at inc-0 (the zndx/oss-mistral-cli `vibe-acp`
+> fork, vendored at `components/oss-mistral-cli`, driven as a fork-venv subprocess: the env boundary IS
+> the protocol boundary). **inc-1** ran the loop on the live corpus with the taxonomy-bootstrapped
+> value-ontology (`run_inc1.py`; VALUE_GATE proven live on a contaminated column), inc-1.5 retained
+> cell-source-from-mixing (`b62705a`); **inc-2** gave the agent scaffold agency over the tables +
+> dual-register output (`68d2793`); the multi-provider scale runs (`run_parallel.py`/`run_scale.py`)
+> produced the refinement-loop corpus staged into sdg-corpora v0.4 (`910d310`), with every exchange +
+> COMMIT event in the hx/OL lineage plane. Open from the ladder: inc-3's skills accumulation.
+
 A layered verification cascade that turns single-shot chapter generation (a *truncated creative process*)
 into an iterative, membrane-gated refinement loop. The ACP-wrapped agent is the **proposer only**; every gate
 is a deterministic membrane effector the agent cannot run or bypass. Extends the meta-harness
