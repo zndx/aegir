@@ -1,0 +1,962 @@
+{
+ "families": {
+  "http://purl.obolibrary.org/obo/BFO_0000023": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "http://purl.obolibrary.org/obo/BFO_0000023",
+   "members": [
+    "AcademicRole",
+    "AdministrativeRole",
+    "AnimalControlOfficerRole",
+    "AthleticAttendantRole",
+    "AuthorizedRepresentativeRole",
+    "BCorporationMember",
+    "BeneficiaryDesignation",
+    "BoardMemberRole",
+    "BoardOfAuditorsRole",
+    "ChiefComplianceOfficerRole",
+    "ChiefFinancialOfficerRole",
+    "ClearingBrokerRole",
+    "CollegeOfficialRole",
+    "ComplianceCoordinatorRole",
+    "DataControllerRole",
+    "DecisionMakerRole",
+    "DeveloperRepresentativeRole",
+    "DeviceExpertRole",
+    "DisabledAdultParentRole",
+    "EligibleRaffleConductorRole",
+    "EntrepreneurRole",
+    "ExecutiveDirectorRole",
+    "ExecutiveOfficerRole",
+    "ExecutiveTeamRoster",
+    "GeneralManagerRole",
+    "IndigenousChildRole",
+    "InvestorRelationsDirectorRole",
+    "JointBoardChairRole",
+    "JuvenileOffenderPatientRole",
+    "LegalServiceAdvertiserRole",
+    "LegalTechServiceProvision",
+    "LibraryStudentAssistantRole",
+    "MunicipalSwimmingPoolAssistantManager",
+    "ParentingRole",
+    "PerformanceBasedCareProviderRole",
+    "PetitionerRole",
+    "PoliceOfficerRole",
+    "QualifiedSourceTestingIndividual",
+    "RecognitionManagerRole",
+    "RecordAuthorizationRole",
+    "ReferralSourceRole",
+    "RegisteredManagerRole",
+    "RetailLeadershipTeamMember",
+    "RetainingEmployeeRole",
+    "SecretaryRole",
+    "SeniorAnimalServicesOfficerRole",
+    "ServiceStaffRole",
+    "SocialMediaAccountAdministrator",
+    "StaffSocialMediaAccountAdministratorRole",
+    "StudentEntrepreneurRole",
+    "TelemarketerSalesAdministratorRole",
+    "TraditionalReligiousHealerRole",
+    "UnaccompaniedMinorRole",
+    "YoungPhysicianAmbassadorRole",
+    "YoungResearcherRole"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://signals.zndx.org/sdg#DisseminationChannel": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://signals.zndx.org/sdg#DisseminationChannel",
+   "members": [
+    "OfflineChannel",
+    "OnlineChannel"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://signals.zndx.org/sdg#OrganizationalActivity": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://signals.zndx.org/sdg#OrganizationalActivity",
+   "members": [
+    "InvestorRelationsActivity",
+    "RaffleConductingActivity"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://signals.zndx.org/sdg#ServiceType": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "RequestedProviderType",
+     "b": "SocialNetworkingServiceType",
+     "rationale": "RequestedProviderType refers to a type of healthcare provider (a person or organization), whereas SocialNetworkingServiceType refers to a type of software service or platform, making the categories of entities (agent vs. service) incompatible."
+    }
+   ],
+   "genus": "https://signals.zndx.org/sdg#ServiceType",
+   "members": [
+    "RequestedProviderType",
+    "SocialNetworkingServiceType"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://signals.zndx.org/sdg#SubjectConcept": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "AgendaSubject",
+     "b": "MathematicalConcept",
+     "rationale": "An agenda subject is a topic of discussion or policy focus within a specific context, whereas a mathematical concept is an abstract, formal construct defined by logical axioms, making them incompatible as distinct kinds of conceptual entities."
+    }
+   ],
+   "genus": "https://signals.zndx.org/sdg#SubjectConcept",
+   "members": [
+    "AgendaSubject",
+    "MathematicalConcept"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/BFO_0000144": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/BFO_0000144",
+   "members": [
+    "ClientProfile",
+    "ExportExecution"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/DescriptiveICE": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "AcademicProgramRequirement",
+     "b": "NetworkResourceMapping",
+     "rationale": "An academic requirement is a condition for educational progress, whereas a network resource mapping is a technical configuration of IT assets, which are incompatible descriptions."
+    },
+    {
+     "a": "LeadershipExperienceRequirement",
+     "b": "SmallGroupSurchargeRule",
+     "rationale": "A leadership requirement is a qualification for a role, whereas a surcharge rule is a financial penalty condition, making them incompatible descriptions of the same entity."
+    },
+    {
+     "a": "NetworkResourceMapping",
+     "b": "RetirementBenefitOption",
+     "rationale": "A network mapping describes technical infrastructure, whereas a retirement benefit option describes a financial plan, creating an incompatibility in the nature of the information."
+    },
+    {
+     "a": "RetirementBenefitOption",
+     "b": "WorkplaceCultureDimension",
+     "rationale": "A benefit option is a financial choice, whereas a culture dimension is a sociological metric, making them incompatible descriptions of the same entity."
+    },
+    {
+     "a": "SequencingCoverageParameter",
+     "b": "YoungPhysicianEligibilityConstraint",
+     "rationale": "A sequencing parameter is a technical genomics metric, whereas an eligibility constraint is a professional qualification rule, creating an incompatibility in the nature of the information."
+    },
+    {
+     "a": "SmallGroupSurchargeRule",
+     "b": "StorageAllocation",
+     "rationale": "A surcharge rule is a financial penalty condition, whereas a storage allocation is a technical specification for data, making them incompatible descriptions."
+    },
+    {
+     "a": "SocialNetworkingServicePlatform",
+     "b": "StorageAllocation",
+     "rationale": "A service platform is a digital infrastructure for social interaction, whereas a storage allocation is a technical specification for data retention, which are incompatible descriptions."
+    },
+    {
+     "a": "WorkplaceCultureDimension",
+     "b": "YoungPhysicianEligibilityConstraint",
+     "rationale": "A culture dimension is a sociological metric, whereas an eligibility constraint is a professional qualification rule, making them incompatible descriptions of the same entity."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/DescriptiveICE",
+   "mc_refuted": [
+    {
+     "a": "AbuseIndicator",
+     "b": "PaymentMethodCategory",
+     "rationale": "An abuse indicator is a sign or metric related to harm or maltreatment, whereas a payment method category is a classification for financial transactions, making them incompatible descriptions.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "AssessmentStandard",
+     "b": "StorageAllocation",
+     "rationale": "An assessment standard is a criterion for evaluation, whereas a storage allocation is a technical specification for data retention, creating an incompatibility in the domain of the information.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "NutritionalStatusIndicator",
+     "b": "SequencingCoverageParameter",
+     "rationale": "A nutritional indicator relates to health and diet, whereas a sequencing parameter relates to genomics, making them incompatible descriptions of the same entity.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "ObservatoryMountingConfiguration",
+     "b": "SocialNetworkingServicePlatform",
+     "rationale": "A mounting configuration is a physical/technical setup for a telescope, whereas a service platform is a digital infrastructure for social media, which are incompatible descriptions.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "PaymentMethodCategory",
+     "b": "ThermalOperatingRangeConstraint",
+     "rationale": "A payment category is a financial classification, whereas a thermal constraint is a physical limit for equipment, creating an incompatibility in the domain of the information.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "ThermalOperatingRangeConstraint",
+     "b": "WorkplaceCultureDimension",
+     "rationale": "A thermal constraint is a physical limit for hardware, whereas a culture dimension is a sociological metric, creating an incompatibility in the domain of the information.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    }
+   ],
+   "members": [
+    "AbuseIndicator",
+    "AcademicProgramRequirement",
+    "AssessmentStandard",
+    "LeadershipExperienceRequirement",
+    "NetworkResourceMapping",
+    "NutritionalStatusIndicator",
+    "ObservatoryMountingConfiguration",
+    "PaymentMethodCategory",
+    "RetirementBenefitOption",
+    "SequencingCoverageParameter",
+    "ServiceChargeRate",
+    "SmallGroupSurchargeRule",
+    "SocialNetworkingServicePlatform",
+    "StorageAllocation",
+    "ThermalOperatingRangeConstraint",
+    "WorkplaceCultureDimension",
+    "YoungPhysicianEligibilityConstraint"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/DirectiveICE": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "CommunicableDiseaseNotificationRequirement",
+     "b": "TopWorkplaceAward",
+     "rationale": "A notification requirement is a mandatory reporting obligation, whereas a top workplace award is a recognition honor, making them incompatible descriptions of the same entity."
+    },
+    {
+     "a": "SafeguardMeasure",
+     "b": "TopWorkplaceAward",
+     "rationale": "A safeguard measure is a protective action, whereas a top workplace award is a recognition honor, creating an incompatibility in the nature of the directive."
+    },
+    {
+     "a": "TopWorkplaceAward",
+     "b": "VariationMarginRuleSet",
+     "rationale": "An award is a recognition of achievement, whereas a variation margin rule set is a financial regulation, making them incompatible descriptions of the same entity."
+    },
+    {
+     "a": "LawAndSocietyTrackRequirement",
+     "b": "VariationMarginRuleSet",
+     "rationale": "A variation margin rule set is a financial regulation, whereas a law and society track requirement is an academic condition, creating an incompatibility in the domain of the directive."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/DirectiveICE",
+   "mc_refuted": [
+    {
+     "a": "LawAndSocietyTrackRequirement",
+     "b": "ResidencyRequirement",
+     "rationale": "A law and society track requirement is an academic program condition, whereas a residency requirement is a legal or policy condition for status, creating an incompatibility in the domain of the directive.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "ResidencyRequirement",
+     "b": "SafeguardMeasure",
+     "rationale": "A residency requirement is a status condition, whereas a safeguard measure is a protective action or rule, making them incompatible descriptions of the same entity.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    }
+   ],
+   "members": [
+    "CommunicableDiseaseNotificationRequirement",
+    "LawAndSocietyTrackRequirement",
+    "ResidencyRequirement",
+    "SafeguardMeasure",
+    "TopWorkplaceAward",
+    "VariationMarginRuleSet"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/InformationContentEntity": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "AdoptionApplicationForm",
+     "b": "BusinessPlan",
+     "rationale": "An adoption application is a specific legal/administrative form for a family placement, whereas a business plan is a strategic document for commercial enterprise, making them identity-incompatible descriptions of the same information entity."
+    },
+    {
+     "a": "ClinicalIntelligenceArtifact",
+     "b": "FinancialReportArtifact",
+     "rationale": "Clinical intelligence pertains to medical/health data analysis, whereas financial reports pertain to economic/monetary data, creating an incompatibility in the domain of the information content."
+    },
+    {
+     "a": "FineAssessmentEvent",
+     "b": "InspectionReport",
+     "rationale": "An event is a temporal occurrence of assessing a fine, whereas a report is a persistent information entity documenting findings, making them identity-incompatible kinds."
+    },
+    {
+     "a": "MaritalStatusCertification",
+     "b": "PatientFeedbackRecord",
+     "rationale": "A certification is an official declaration of a legal status, whereas a feedback record is a subjective account of an experience, creating an incompatibility in the nature of the information."
+    },
+    {
+     "a": "PersonalHealthProfile",
+     "b": "ProductDisclosureStatement",
+     "rationale": "A health profile contains personal medical data about an individual, whereas a product disclosure statement contains commercial information about a good, making them incompatible descriptions."
+    },
+    {
+     "a": "QualityImprovementPresentation",
+     "b": "SupplierLandscapeSurvey",
+     "rationale": "A presentation is a communicative act or artifact designed to convey information to an audience, whereas a survey is a method or result of data collection, which are incompatible descriptions."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/InformationContentEntity",
+   "mc_refuted": [
+    {
+     "a": "DonationTransactionRecord",
+     "b": "HousingPolicyInformation",
+     "rationale": "A transaction record documents a specific financial event of transfer, whereas housing policy information describes regulatory rules, making them incompatible descriptions of the same entity.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "EducationalCourse",
+     "b": "EtymologicalDeciphering",
+     "rationale": "An educational course is a structured program of instruction, whereas etymological deciphering is a specific analytical process or result of language study, which cannot be the same entity.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "StakeholderNeed",
+     "b": "SurveyFinding",
+     "rationale": "A need is an abstract requirement or desire for a stakeholder, whereas a finding is a concrete result derived from data analysis, making them incompatible kinds of information content.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    },
+    {
+     "a": "TelemarketingKPIConstraint",
+     "b": "WeeklySalesReport",
+     "rationale": "A constraint is a rule or limit governing performance, whereas a report is a record of past performance, creating an incompatibility in the nature of the information entity.",
+     "refuted_by": "TBox: one subsumes the other (frame would make the subclass unsat)"
+    }
+   ],
+   "members": [
+    "AdoptionApplicationForm",
+    "AppealWaiverCertification",
+    "BackShellDimensionSpec",
+    "BreedingProgramApplication",
+    "BusinessPlan",
+    "CampaignCoordination",
+    "ClinicalIntelligenceArtifact",
+    "ClinicalPerformanceDataEvaluation",
+    "ConferenceProgramme",
+    "CorporateReputationInfluenceSituation",
+    "DeviceInventoryRecord",
+    "DonationTransactionRecord",
+    "DonorProfile",
+    "DuplicatingRequest",
+    "EducationHealthCarePlan",
+    "EducationalCourse",
+    "EtymologicalDeciphering",
+    "EvacuationInstruction",
+    "FinancialReportArtifact",
+    "FineAssessmentEvent",
+    "HSSSEQ_Issue_Document",
+    "HousingPolicyInformation",
+    "InspectionReport",
+    "InternalAuditStrategy",
+    "MaritalStatusCertification",
+    "MatchedSMEDataSet",
+    "MeasurementCapability",
+    "MeasurementCapabilityProfile",
+    "MembershipTransferRequest",
+    "PatientEducationalContentPackage",
+    "PatientFeedbackRecord",
+    "PersonalHealthProfile",
+    "PersonalHealthRecord",
+    "ProductDisclosureStatement",
+    "PropertyAssessmentNotice",
+    "QualityImprovementPresentation",
+    "ResponsibleInvestmentFundCollection",
+    "RolePerception",
+    "StakeholderNeed",
+    "SupervisedTestUnitCatalog",
+    "SupplierLandscapeSurvey",
+    "SurveyFinding",
+    "TelemarketingKPIConstraint",
+    "WeeklySalesReport",
+    "YouthHealthCareSummary"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000120": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000120",
+   "members": [
+    "HeightMeasurement",
+    "MeasurementParameter"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000175": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "BoardMember",
+     "b": "ExecutiveDirectorFunction",
+     "rationale": "A board member is a person holding a position, whereas an executive director function is a role or activity, which cannot be the same entity."
+    },
+    {
+     "a": "DepartingEmployee",
+     "b": "LifeguardStaff",
+     "rationale": "A departing employee is defined by their status of leaving an organization, whereas a lifeguard staff member is defined by their specific job function, making them incompatible descriptions."
+    },
+    {
+     "a": "DistrictEmployee",
+     "b": "OrganizationalLeadershipRole",
+     "rationale": "A district employee is a person employed in a specific jurisdiction, whereas an organizational leadership role is a position of authority, which cannot be the same entity."
+    },
+    {
+     "a": "ExecutiveDirectorFunction",
+     "b": "Member",
+     "rationale": "A function is an activity or role, whereas a member is a person, creating an incompatibility in the nature of the entity."
+    },
+    {
+     "a": "LifeguardStaff",
+     "b": "OrganizationMember",
+     "rationale": "Lifeguard staff is a specific job classification, whereas an organization member is a general status of affiliation, which are incompatible descriptions of the same entity."
+    },
+    {
+     "a": "Member",
+     "b": "OrganizationalLeadershipRole",
+     "rationale": "A member is a person, whereas a leadership role is a position or function, making them incompatible descriptions of the same entity."
+    },
+    {
+     "a": "OrganizationMember",
+     "b": "OrganizationalLeadershipRole",
+     "rationale": "An organization member is a person, whereas a leadership role is a position, creating an incompatibility in the nature of the entity."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00000175",
+   "members": [
+    "BoardMember",
+    "DepartingEmployee",
+    "DistrictEmployee",
+    "ExecutiveDirectorFunction",
+    "LifeguardStaff",
+    "Member",
+    "OrganizationMember",
+    "OrganizationalLeadershipRole"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000187": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000187",
+   "members": [
+    "LocalAuthority",
+    "RegulatoryAuthority"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000192": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "FacilityInfrastructure",
+     "b": "MunicipalPoolFacility",
+     "rationale": "Infrastructure refers to the underlying foundational systems (e.g., utilities, structural supports) that enable operations, whereas a municipal pool facility is a functional service entity or building, making them incompatible as distinct categories of physical assets."
+    },
+    {
+     "a": "FacilityInfrastructure",
+     "b": "ReceivingFacilityStaff",
+     "rationale": "Infrastructure consists of physical systems and structural components, whereas staff are human agents or organizational roles, representing a fundamental category mistake to conflate physical assets with persons."
+    },
+    {
+     "a": "MunicipalPoolFacility",
+     "b": "ReceivingFacilityStaff",
+     "rationale": "A municipal pool facility is a physical location or building used for recreation, whereas receiving facility staff are human employees or agents, making them mutually exclusive as an individual cannot be both a place and a person."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00000192",
+   "members": [
+    "FacilityInfrastructure",
+    "MunicipalPoolFacility",
+    "ReceivingFacilityStaff"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000288": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000288",
+   "members": [
+    "EnergySavingComponent",
+    "IndustrialEmissionSource"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000307": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "AvailableTopping",
+     "b": "Dish",
+     "rationale": "An available topping is a component ingredient or additive, whereas a dish is a complete, prepared food item or meal, making them incompatible as distinct levels of culinary composition."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00000307",
+   "members": [
+    "AvailableTopping",
+    "Dish"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000366": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "DataCollectionProcess",
+     "b": "DataInput",
+     "rationale": "A process is an occurrent that unfolds over time, whereas data input is a discrete entity or state that results from an action, making them identity-incompatible as an individual cannot be both a process and its result simultaneously."
+    },
+    {
+     "a": "DataCollectionProcess",
+     "b": "InvestmentChoiceDecision",
+     "rationale": "A data collection process is an operational activity involving systematic gathering of information, while an investment choice decision is a specific cognitive or administrative act of selection, representing incompatible functional roles within an organization."
+    },
+    {
+     "a": "DataInput",
+     "b": "InvestmentChoiceDecision",
+     "rationale": "Data input refers to the act or mechanism of entering information into a system, whereas an investment choice decision is a substantive judgment or outcome of deliberation, making them incompatible as distinct kinds of organizational acts."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00000366",
+   "members": [
+    "DataCollectionProcess",
+    "DataInput",
+    "InvestmentChoiceDecision"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000408": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "LawEnforcementAgency",
+     "b": "LegislativeDepartment",
+     "rationale": "An agency's primary function is enforcement and policing, while a department's primary function is law-making and deliberation, rendering their core operational purposes incompatible."
+    },
+    {
+     "a": "LawEnforcementAgency",
+     "b": "PublicInformationOfficer",
+     "rationale": "An agency is a collective organizational body, whereas a PublicInformationOfficer is an individual human role, making them ontologically disjoint as a matter of kind."
+    },
+    {
+     "a": "LawEnforcementAgency",
+     "b": "SocialServicesDepartment",
+     "rationale": "An agency focuses on enforcement and policing, while a department focuses on welfare and social support, rendering their core operational purposes incompatible."
+    },
+    {
+     "a": "LegislativeDepartment",
+     "b": "PublicInformationOfficer",
+     "rationale": "A department is a collective organizational body, whereas a PublicInformationOfficer is an individual human role, making them ontologically disjoint as a matter of kind."
+    },
+    {
+     "a": "LegislativeDepartment",
+     "b": "SocialServicesDepartment",
+     "rationale": "A department focused on law-making and deliberation is functionally incompatible with a department focused on welfare and social support."
+    },
+    {
+     "a": "PublicInformationOfficer",
+     "b": "SocialServicesDepartment",
+     "rationale": "An individual human role is ontologically disjoint from a collective organizational body, regardless of the specific domain of that organization."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00000408",
+   "members": [
+    "LawEnforcementAgency",
+    "LegislativeDepartment",
+    "PublicInformationOfficer",
+    "SocialServicesDepartment"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000443": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000443",
+   "members": [
+    "CorporateAgent",
+    "LegalTechSolutionLab"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000537": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000537",
+   "members": [
+    "EthicalInvestmentAsset",
+    "FinancialProduct"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000568": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000568",
+   "members": [
+    "InformationCapability",
+    "OrganizationalFunction"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000575": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000575",
+   "members": [
+    "CareQualityAssessment",
+    "HealthStandardCompliance",
+    "QualityImprovementFramework"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000608": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "FinancialResource",
+     "b": "MarketDemand",
+     "rationale": "Financial resources are tangible or intangible assets (e.g., cash, credit) available for use, whereas market demand is an abstract economic condition or aggregate desire for goods, making them incompatible as distinct ontological categories of economic entities."
+    },
+    {
+     "a": "FinancialResource",
+     "b": "MarketTrend",
+     "rationale": "Financial resources are concrete or abstract assets with exchange value, whereas market trends are dynamic patterns or statistical observations of price movements over time, representing incompatible kinds of economic phenomena."
+    },
+    {
+     "a": "MarketDemand",
+     "b": "MarketTrend",
+     "rationale": "Market demand is a static or dynamic aggregate of willingness to purchase, whereas market trends are observed patterns or trajectories of market behavior over time, making them incompatible as distinct economic concepts."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00000608",
+   "members": [
+    "FinancialResource",
+    "MarketDemand",
+    "MarketTrend"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000647": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000647",
+   "members": [
+    "AuthorizedEntity",
+    "CollegeCommunityMember",
+    "CorporateEmployee",
+    "ExecutiveTeamMember"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000769": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000769",
+   "members": [
+    "ReferralProcess",
+    "ServiceRequest"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000870": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000870",
+   "members": [
+    "ClinicalSystem",
+    "CriminalJusticeSystem",
+    "HealthcareNetworkInfrastructure",
+    "OperationalEquipment"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000934": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00000934",
+   "members": [
+    "MaritalState",
+    "RecoveredState"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00000958": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "FinancialReport",
+     "b": "SocialTag",
+     "rationale": "A FinancialReport is a formal, structured quantitative document, whereas a SocialTag is a user-generated informal keyword or label, making their intrinsic semantic structures incompatible."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00000958",
+   "members": [
+    "FinancialReport",
+    "HealthCareSummary",
+    "InformationItem",
+    "SocialTag"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00001017": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "Client",
+     "b": "DonorAgent",
+     "rationale": "A client is a recipient of services, whereas a donor agent is a source of funds or support, creating an incompatibility in the role relative to the transaction."
+    },
+    {
+     "a": "ExternalAgency",
+     "b": "HumanAgent",
+     "rationale": "An external agency is an organizational entity, whereas a human agent is an individual person, making them incompatible descriptions of the same entity."
+    },
+    {
+     "a": "HealthcareAgent",
+     "b": "IndependentEconomicAgent",
+     "rationale": "A healthcare agent is defined by their role in providing medical services, whereas an independent economic agent is defined by their role in market transactions, creating an incompatibility in the primary function."
+    },
+    {
+     "a": "HumanAgent",
+     "b": "OrganizationalAgent",
+     "rationale": "A human agent is an individual person, whereas an organizational agent is a collective entity, making them incompatible descriptions of the same entity."
+    },
+    {
+     "a": "IndependentEconomicAgent",
+     "b": "OrganizationalAgent",
+     "rationale": "An independent economic agent is typically an individual or unaffiliated entity, whereas an organizational agent is part of a structured group, creating an incompatibility in the nature of the agent."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00001017",
+   "members": [
+    "Client",
+    "DonorAgent",
+    "ExternalAgency",
+    "HealthcareAgent",
+    "HumanAgent",
+    "IndependentEconomicAgent",
+    "OrganizationalAgent"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00001042": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00001042",
+   "members": [
+    "ExpeditionEquipment",
+    "ObservatoryMountingStructure"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00001180": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00001180",
+   "members": [
+    "ChildProtectionTeam",
+    "CollegeAdministration",
+    "ExecutiveTeam",
+    "HealthcareOrganization",
+    "NonprofitOrganization"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00001262": {
+   "default": "overlap",
+   "disjoint_pairs": [
+    {
+     "a": "CancerPatient",
+     "b": "MinorPerson",
+     "rationale": "A person can simultaneously have a specific medical condition (cancer) and a specific age status (minor), making these classes compatible rather than disjoint."
+    },
+    {
+     "a": "MinorPerson",
+     "b": "Patient",
+     "rationale": "A person can be both a patient (receiving medical care) and a minor (under a certain age), making these classes compatible."
+    },
+    {
+     "a": "CancerPatient",
+     "b": "Patient",
+     "rationale": "A CancerPatient is a specific subclass of Patient, meaning they are not disjoint but rather overlapping by definition."
+    }
+   ],
+   "genus": "https://www.commoncoreontologies.org/ont00001262",
+   "members": [
+    "CancerPatient",
+    "MinorPerson",
+    "Patient"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00001330": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00001330",
+   "members": [
+    "HealthRecordTransferProcess",
+    "ServiceManagementProcess"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  },
+  "https://www.commoncoreontologies.org/ont00002039": {
+   "default": "overlap",
+   "disjoint_pairs": [],
+   "genus": "https://www.commoncoreontologies.org/ont00002039",
+   "members": [
+    "PdfDocument",
+    "PersonalDataRecord"
+   ],
+   "provenance": {
+    "date": "2026-07-09",
+    "membranes": "adjudicate_siblings M-A/M-B/M-C",
+    "model": "engine/instruct"
+   }
+  }
+ },
+ "universe_rule": "sibling pairs under a SPECIFIC genus (CCO/sdg or BFO realizable); bare-BFO-genus pairs are grounding debt",
+ "version": "0.1"
+}
