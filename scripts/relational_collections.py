@@ -144,11 +144,38 @@ def evaluate(comps: "list[set]", docs_of: dict, topics: dict) -> dict:
     }
 
 
+def strategy_pin() -> "dict | None":
+    """The declared strategy's collections_unit operating point (truth flows repo →
+    runtime): when the strategy pins the unit, the builder APPLIES it; ``--sweep``
+    re-derives and proposes, never silently rebinds."""
+    p = REPO / "strategy" / "components" / "targets" / "collections_unit.json"
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text()).get("operating_point")
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def main() -> int:
+    import argparse
+    ap = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
+    ap.add_argument("--sweep", action="store_true",
+                    help="re-derive the operating point (proposal mode; default applies the strategy pin)")
+    args = ap.parse_args()
     adj, docs_of = build_graph()
     topics = doc_topics()
     deg = sorted(adj, key=lambda t: -len(adj[t]))
     OUT.mkdir(parents=True, exist_ok=True)
+
+    pin = None if args.sweep else strategy_pin()
+    if pin:
+        comps = _components(adj, set(deg[: pin["hubs_removed"]]), pin["overlap_floor"])
+        row = {"hubs_removed": pin["hubs_removed"], "overlap_floor": pin["overlap_floor"],
+               **evaluate(comps, docs_of, topics)}
+        print("STRATEGY-PINNED operating point:", json.dumps(row))
+        _emit(comps, docs_of, deg, row)
+        return 0
     sweep = []
     for k in (0, 5, 10, 20, 40, 80, 160):
         for floor in (0.0, 0.05, 0.1):
@@ -168,21 +195,25 @@ def main() -> int:
     if best:
         removed = set(deg[: best["hubs_removed"]])
         comps = _components(adj, removed, best["overlap_floor"])
-        import hashlib
-        colls = []
-        for c in sorted(comps, key=len, reverse=True):
-            pids = sorted(set().union(*(docs_of.get(t, set()) for t in c)))
-            if not pids:
-                continue
-            cid = hashlib.sha256(",".join(sorted(c)).encode()).hexdigest()[:12]
-            colls.append({"id": cid, "n_tables": len(c), "tables": sorted(c)[:200],
-                          "docs": pids})
-        (OUT / "collections.json").write_text(json.dumps(
-            {"operating_point": best, "infrastructure_hubs": deg[: best["hubs_removed"]],
-             "collections": colls}, indent=1))
-        print(f"collections.json: {len(colls)} collections · "
-              f"infrastructure hubs: {deg[:min(8, best['hubs_removed'])]}…")
+        _emit(comps, docs_of, deg, best)
     return 0
+
+
+def _emit(comps: "list[set]", docs_of: dict, deg: "list[str]", best: dict) -> None:
+    import hashlib
+    colls = []
+    for c in sorted(comps, key=len, reverse=True):
+        pids = sorted(set().union(*(docs_of.get(t, set()) for t in c)))
+        if not pids:
+            continue
+        cid = hashlib.sha256(",".join(sorted(c)).encode()).hexdigest()[:12]
+        colls.append({"id": cid, "n_tables": len(c), "tables": sorted(c)[:200],
+                      "docs": pids})
+    (OUT / "collections.json").write_text(json.dumps(
+        {"operating_point": best, "infrastructure_hubs": deg[: best["hubs_removed"]],
+         "collections": colls}, indent=1))
+    print(f"collections.json: {len(colls)} collections · "
+          f"infrastructure hubs: {deg[:min(8, best['hubs_removed'])]}…")
 
 
 if __name__ == "__main__":

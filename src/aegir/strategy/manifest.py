@@ -166,6 +166,26 @@ def collect_targets() -> "dict[str, bytes]":
         "congruence_top_k": 5,
         "note": "gate floors gathered at capture; unify into strategy.conf at increment 2",
     })
+    # The COLLECTION UNIT definition (RH 2026-07-09) — an outcome-shaping determinant that
+    # is neither input window nor code: what a "collection" of output documents IS
+    # (connected DDL components) and the Barabási calibration that makes it domain-aligned.
+    # Captured from the calibrated artifact; CONSUMED by the builder (truth flows repo →
+    # runtime — scripts/relational_collections.py applies the pinned operating point;
+    # --sweep re-derives and PROPOSES an update, never silently rebinds).
+    cal = REPO / "build" / "relational_collections" / "collections.json"
+    if cal.exists():
+        c = json.loads(cal.read_text())
+        comp["targets/collections_unit.json"] = _canon({
+            "definition": ("a collection = the output documents whose tables/views form a "
+                           "connected DDL graph (FK + view-composition edges), after "
+                           "infrastructure-hub removal"),
+            "method": ("targeted-attack fragmentation × neighborhood-overlap pruning; "
+                       "selection rule pre-declared: giant component ≤ 15%, docs touch "
+                       "p50 one component, minimum within-collection topic entropy "
+                       "(validated against the inverted topic layer's associations)"),
+            "operating_point": c.get("operating_point"),
+            "infrastructure_hubs": c.get("infrastructure_hubs"),
+        })
     return comp
 
 
