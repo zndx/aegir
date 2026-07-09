@@ -230,7 +230,7 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
         {/* live embeds render for current/scratch only — archive kastens are frozen */}
         {note?.kind === "lens" && note.chord !== false && note.root !== "archive" && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
-            <PanelView app="lineup_app" params={{ lens: note.name ?? note.id }} />
+            <PanelView app="lineup_app" params={{ lens: note.name ?? note.id, root: note.root ?? "current" }} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
               top collection associations (TF-IDF) — live HoloViews via Panel · drag a node, hover a ribbon
             </Text>

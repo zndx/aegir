@@ -25,37 +25,50 @@ from aegir.viz import lineup_data as D
 hv.extension("bokeh", logo=False)
 
 
-def _chord(lens: str):
-    cids, s = D.SIMS[lens]
+def _chord(lens: str, root: str = "current"):
+    # Roots are refs (RH): the chord SHAPE is invariant; the substrate is root-true —
+    # current = the release-era collections pivot, scratch = the inverted topic layer's
+    # term-grounded topics associated by shared documents.
+    trunk = root == "scratch" and lens in D.TRUNK_SIMS
+    sims, ring, ring_idx, name = ((D.TRUNK_SIMS, D.TRUNK_RING, D.TRUNK_RING_IDX, D.TRUNK_NAME)
+                                  if trunk else (D.SIMS, D.RING, D.RING_IDX, D.NAME))
+    cids, s = sims[lens]
     pos = {c: j for j, c in enumerate(cids)}
     edges = []
-    for a in range(len(D.RING)):
-        if D.RING[a] not in pos:
+    for a in range(len(ring)):
+        if ring[a] not in pos:
             continue
-        for b in range(a + 1, len(D.RING)):
-            if D.RING[b] not in pos:
+        for b in range(a + 1, len(ring)):
+            if ring[b] not in pos:
                 continue
-            v = float(s[pos[D.RING[a]], pos[D.RING[b]]])
+            v = float(s[pos[ring[a]], pos[ring[b]]])
             if v > 1e-6:
-                edges.append((D.RING_IDX[D.RING[a]], D.RING_IDX[D.RING[b]], v))
+                edges.append((ring_idx[ring[a]], ring_idx[ring[b]], v))
     edges.sort(key=lambda e: -e[2])
     edges = edges[:50]
     present = sorted({e[0] for e in edges} | {e[1] for e in edges})
     local = {gi: k for k, gi in enumerate(present)}
-    nodes = pd.DataFrame([{"index": local[gi], "name": D.NAME[gi]} for gi in present])
+    nodes = pd.DataFrame([{"index": local[gi], "name": name[gi]} for gi in present])
     eds = pd.DataFrame([(local[a], local[b], v) for a, b, v in edges],
                        columns=["source", "target", "value"])
+    label = "trunk topics × shared docs" if trunk else "collections"
     return hv.Chord((eds, hv.Dataset(nodes, "index"))).opts(
         hv.opts.Chord(labels="name", node_color="index", edge_color="source", cmap="Category20",
-                      width=520, height=520, tools=["hover"], title=f"{lens} · live via Bokeh server"))
+                      width=520, height=520, tools=["hover"],
+                      title=f"{lens} · {label} · live via Bokeh server"))
 
 
-def _lens_arg() -> str:
+def _args() -> "tuple[str, str]":
     sc = curdoc().session_context
     args = sc.request.arguments if (sc and sc.request) else {}
-    raw = args.get("lens", [b"lens/terms"])
-    lens = raw[0].decode() if raw and isinstance(raw[0], (bytes, bytearray)) else (raw[0] if raw else "lens/terms")
-    return lens if lens in D.SIMS else "lens/terms"
+
+    def _get(key: str, default: str) -> str:
+        raw = args.get(key, [default.encode()])
+        return raw[0].decode() if raw and isinstance(raw[0], (bytes, bytearray)) else (raw[0] if raw else default)
+
+    lens = _get("lens", "lens/terms")
+    root = _get("root", "current")
+    return (lens if lens in D.SIMS else "lens/terms"), root
 
 
-curdoc().add_root(hv.render(_chord(_lens_arg()), backend="bokeh"))
+curdoc().add_root(hv.render(_chord(*_args()), backend="bokeh"))

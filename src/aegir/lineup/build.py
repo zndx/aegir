@@ -792,6 +792,44 @@ def _idlist(v) -> list:
     return []
 
 
+def assign_topic_threads(corpus: list[dict], coverage: list[dict]) -> "dict[str, list[int]]":
+    """MUTATES corpus records in place: template-driven chapters get an ORGANIC
+    ``target_topic_id`` (+ style thread) voted from their templates' coverage alignment
+    — without this the topic/collections axis collapses (most records carry no topic).
+    Returns ``term_topics`` (template → aligned topic ids). SHARED by ``run()`` and
+    ``aegir.viz.lineup_data`` — the two substrates must stay in lock-step (this function
+    exists because they silently didn't: the chord app saw 1 collection for weeks)."""
+    term_topics: dict[str, list[int]] = {}
+    for r in coverage:
+        if int(r["topic_id"]) < 0:            # BERTopic outlier/noise cluster (-1) — never assign
+            continue
+        tset: set[str] = set()
+        if r.get("top_template_id"):
+            tset.add(str(r["top_template_id"]))
+        for e in (r.get("top_templates") or []):
+            t = e.get("template_id") if isinstance(e, dict) else e
+            if t:
+                tset.add(str(t))
+        for t in tset:
+            term_topics.setdefault(t, []).append(int(r["topic_id"]))
+    for r in corpus:
+        cur = r.get("target_topic_id")
+        if cur is not None and int(cur) < 0:
+            r["target_topic_id"] = cur = None
+        if r.get("style_topic_ids"):
+            r["style_topic_ids"] = [s for s in _idlist(r["style_topic_ids"]) if int(s) >= 0]
+        if cur is None:
+            votes: dict[int, int] = {}
+            for tid in (r.get("template_ids") or []):
+                for tp in term_topics.get(str(tid), []):
+                    votes[tp] = votes.get(tp, 0) + 1
+            if votes:
+                ranked = sorted(votes, key=lambda k: (-votes[k], k))
+                r["target_topic_id"] = ranked[0]
+                r["style_topic_ids"] = ranked[1:5]
+    return term_topics
+
+
 def project_collections(recs: list[dict], coverage: list[dict],
                          live_terms: set | None = None) -> tuple[list[N.Note], dict]:
     """De-flattened, many-to-many collections — the unit the landing pivots. A collection's
@@ -985,19 +1023,32 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
         id="lens/schema", title="Schema (trunk)", kind="lens", data_product="relational",
         root="scratch", frontmatter={"lens": "schema", "lexicon": LEXICON, "chord": False},
         body=schema_body)
-    content_body = ("**Content (trunk).** The accreting corpus — incremental advancements land "
-                    "here per `just metaflow` window, toward the next release.\n\n"
+    content_body = ("**Content × Topics (trunk).** The accreting corpus, pivoted over the "
+                    "INVERTED TOPIC LAYER — term-grounded topics and the items that "
+                    "unambiguously bind to them (margin-gated; the lens shape is invariant "
+                    "across roots, the substrate is era-true).\n\n"
                     f"- {N.wl('corpus/sdg', 'the live SDG corpus')}\n")
     if zettel_head:
         content_body += f"- run chain head: {N.wl('corpus/runs/' + zettel_head, zettel_head)}\n"
+    chord_on = False
     if items_report:
-        content_body += (f"- {N.wl('item/index', 'Items × Topics')} — the inverted topic layer: "
-                         f"{items_report.get('n_assigned')}/{items_report.get('n')} passage "
-                         f"windows aligned to {items_report.get('topics_hit')} ontology-grounded "
-                         f"topics (registry `@{items_report.get('collection_sha')}`)\n")
+        content_body += (f"- {N.wl('item/index', 'Items × Topics index')} — "
+                         f"{items_report.get('n_assigned')}/{items_report.get('n')} items aligned "
+                         f"to {items_report.get('topics_hit')} topics "
+                         f"(registry `@{items_report.get('collection_sha')}`)\n")
+        by_topic = items_report.get("by_topic") or {}
+        if by_topic:
+            chord_on = True
+            rows = ["", "| topic | aligned items |", "|---|---|"]
+            for key, n_items in list(by_topic.items())[:40]:
+                code = key.split(" ")[0]
+                cell = (N.wl(f"ontology/term/{code}", code) if not code[0].isdigit()
+                        else f"`{code}` {key[len(code):].strip()} (domain)")
+                rows.append(f"| {cell} | {n_items} |")
+            content_body += "\n".join(rows) + "\n"
     content = N.Note(
-        id="lens/content", title="Content (trunk)", kind="lens", data_product="content",
-        root="scratch", frontmatter={"lens": "content", "chord": False}, body=content_body)
+        id="lens/content", title="Content × Topics (trunk)", kind="lens", data_product="content",
+        root="scratch", frontmatter={"lens": "content", "chord": chord_on}, body=content_body)
     return [terms, schema, content]
 
 
@@ -1159,37 +1210,7 @@ def run(args=None) -> int:
     # Read content/coverage once + derive cross-references (so Terms show what exercises them).
     corpus, crun = S.corpus_recs()
     coverage, cov = S.coverage_recs()
-    # template → aligned topic_ids (coverage top-template alignment — the rich `top_templates` list, ~5/topic).
-    # Built FIRST so template-driven (refinement) chapters get an ORGANIC target_topic_id from the templates they
-    # realize; without it they carry no topic and the topic/collections axis can't grow as the refined corpus does.
-    term_topics: dict[str, list[int]] = {}
-    for r in coverage:
-        if int(r["topic_id"]) < 0:            # BERTopic outlier/noise cluster (-1) — not a real topic; never assign
-            continue
-        tset: set[str] = set()
-        if r.get("top_template_id"):
-            tset.add(str(r["top_template_id"]))
-        for e in (r.get("top_templates") or []):
-            t = e.get("template_id") if isinstance(e, dict) else e
-            if t:
-                tset.add(str(t))
-        for t in tset:
-            term_topics.setdefault(t, []).append(int(r["topic_id"]))
-    for r in corpus:                              # template-driven chapters → derive their topic THREAD from the
-        cur = r.get("target_topic_id")            # templates' coverage alignment: a dominant ANCHOR topic plus the
-        if cur is not None and int(cur) < 0:      # secondary alignments as STYLE topics — so a collection spans
-            r["target_topic_id"] = cur = None     # many topics and a topic threads many collections (the m:n graph).
-        if r.get("style_topic_ids"):              # scrub outlier (-1) style topics carried by older generations
-            r["style_topic_ids"] = [s for s in _idlist(r["style_topic_ids"]) if int(s) >= 0]
-        if cur is None:
-            votes: dict[int, int] = {}
-            for tid in (r.get("template_ids") or []):
-                for tp in term_topics.get(str(tid), []):
-                    votes[tp] = votes.get(tp, 0) + 1
-            if votes:
-                ranked = sorted(votes, key=lambda k: (-votes[k], k))
-                r["target_topic_id"] = ranked[0]
-                r["style_topic_ids"] = ranked[1:5]   # secondary template-topic alignments → the m:n thread
+    term_topics = assign_topic_threads(corpus, coverage)
     term_chapters: dict[str, list[str]] = {}
     topic_chapters: dict[int, list[str]] = {}
     for i, r in enumerate(corpus):

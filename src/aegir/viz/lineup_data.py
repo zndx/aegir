@@ -14,6 +14,7 @@ from aegir.lineup import build, chords as C, sources as S
 _rows = S.load_ontology()
 _corpus, _crun = S.corpus_recs()
 _coverage, _cov = S.coverage_recs()
+build.assign_topic_threads(_corpus, _coverage)   # lock-step with build.run() — organic topics
 _notes, MAPS = build.project_collections(_corpus, _coverage)
 TID_TABLE, FKS, COL_TOKENS = build._relational_spine(_rows)
 
@@ -30,4 +31,33 @@ RING_IDX = {c: i for i, c in enumerate(RING)}
 NAME = {RING_IDX[c]: C._label(c) for c in RING}
 STATUS = ("subgraph + column-vocabulary" if FK_OK
           else "fallback: tables≈terms (no spine run on disk)")
+
+# ── TRUNK (scratch) substrate — the inverted topic layer's lineage, not a fitted pivot:
+# term-grounded topics associated by the DOCUMENTS whose items bind to them (margin-gated
+# associations; aegir.ontology.topic_layer). Same invariant chord shape, era-true data.
+TRUNK_SIMS: dict = {}
+TRUNK_RING: list = []
+TRUNK_RING_IDX: dict = {}
+TRUNK_NAME: dict = {}
+try:
+    _assoc = S.topic_associations()
+    if _assoc:
+        _by_topic: dict[str, set] = {}
+        for _r in _assoc["records"]:
+            if _r.get("assigned"):
+                _by_topic.setdefault(_r.get("topic_code", ""), set()).add(_r.get("doc_hash", ""))
+        _cids2, _s2 = C._sim({k: v for k, v in _by_topic.items() if k})
+        if _s2 is not None:
+            for _lens in C.LENSES:
+                TRUNK_SIMS[_lens] = (_cids2, _s2)
+            _st2: dict = defaultdict(float)
+            _tot2 = _s2.sum(axis=1)
+            for _i, _c in enumerate(_cids2):
+                _st2[_c] += float(_tot2[_i])
+            TRUNK_RING = [c for c, _ in sorted(_st2.items(), key=lambda kv: -kv[1])[:30]]
+            TRUNK_RING_IDX = {c: i for i, c in enumerate(TRUNK_RING)}
+            TRUNK_NAME = {TRUNK_RING_IDX[c]: (c[:22] + "…" if len(c) > 23 else c)
+                          for c in TRUNK_RING}
+except Exception:  # noqa: BLE001 — the trunk chord is optional enrichment
+    pass
 N_COLLECTIONS = len(MAPS.get("collections", []))
