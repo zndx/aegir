@@ -425,6 +425,17 @@ def main() -> int:
     if degen:
         print(f"   dropped {len(degen)} degenerate stale head(s) (single-letter slots): {degen}")
 
+    # Sibling adjudications (RH 2026-07-09): adjudicated-disjoint pairs land as Manchester
+    # DisjointClasses frames INSIDE the HermiT boundary — every realize re-validates every
+    # adjudication against the full theory + ABox (a co-typed individual refutes it loudly).
+    # kvasir parses these natively (Manchester-only tool). Overlap verdicts are record-only.
+    from aegir.ontology import adjudication as ADJ
+    _adj_frames = ADJ.disjoint_manchester_frames(ADJ.load_adjudications())
+    if _adj_frames:
+        base_doc = base_doc.rstrip() + "\n\n# sibling adjudications (catalog/adjudications.json)\n" \
+            + "\n".join(_adj_frames) + "\n"
+        print(f"   sibling adjudications: {len(_adj_frames)} DisjointClasses frames appended")
+
     # ABox: the individual registry's membrane-admitted, class-typed individuals — the ontology
     # INSTANTIATED (Convert 1b). Held ASIDE here and joined only after the TBox converges: the ABox pass
     # costs > the whole TBox pass (ladder 2026-07-02: TBox 480s; +248 individuals > 1200s — instance

@@ -172,19 +172,14 @@ def compute(path: str) -> dict:
     anti = {c: (c in role_classes or ontoclean.anti_rigid_lexical(label_of[c], comment_of[c])) for c in sdg}
     # the OntoClean rigidity constraint: an anti-rigid (role) class may NOT subsume a non-anti-rigid (rigid) one
     ontoclean_violations = sum(1 for c in sdg for p in sdg_parents.get(c, []) if anti.get(p) and not anti.get(c))
-    children_of: dict = {}
-    for c in sdg:
-        for p in sdg_parents.get(c, []):
-            children_of.setdefault(p, []).append(c)
-    disjoint_pairs = {frozenset((s, o)) for s, _, o in g.triples((None, OWL.disjointWith, None))
-                      if isinstance(s, URIRef) and isinstance(o, URIRef)}
-    sib_total = sib_disjoint = 0
-    for kids in children_of.values():
-        for i in range(len(kids)):
-            for j in range(i + 1, len(kids)):
-                sib_total += 1
-                sib_disjoint += frozenset((kids[i], kids[j])) in disjoint_pairs
-    sibling_disjointness = sib_disjoint / max(1, sib_total)                       # OOPS! P10
+    # Sibling ADJUDICATION (supersedes the naive OOPS!-P10 disjointness→1.0 objective,
+    # RH 2026-07-09): the universe = pairs sharing a SPECIFIC genus (CCO/sdg, or a BFO
+    # realizable); pairs sharing only a bare BFO category are GROUNDING DEBT (the
+    # bfo_grounded lever), reported, never adjudicated. Coverage counts pairs with an
+    # explicit verdict — disjoint (realized DisjointClasses, HermiT-enforced) OR
+    # overlap (recorded) — from catalog/adjudications.json.
+    from aegir.ontology import adjudication as ADJ
+    _adj = ADJ.coverage(ADJ.sibling_families(graph=g), ADJ.load_adjudications())
     orphan_rate = sum(1 for c in sdg if not parents.get(c)) / n                   # OOPS! P04 — islands
     taxonomic_cleanliness = round(1.0 - (subsumption_cycles + ontoclean_violations) / max(1, n_sub), 4)
 
@@ -211,7 +206,7 @@ def compute(path: str) -> dict:
         "n_defined": len(defined), "n_grounded": len(grounded), "n_annotated": len(has_def),
         # OntoClean Tier-A/B taxonomic-correctness proxies (un-gameable)
         "subsumption_cycles": subsumption_cycles, "ontoclean_violations": ontoclean_violations,
-        "sibling_disjointness": round(sibling_disjointness, 4), "orphan_rate": round(orphan_rate, 4),
+        **_adj, "orphan_rate": round(orphan_rate, 4),
         "taxonomic_cleanliness": taxonomic_cleanliness,
     }
 
@@ -238,7 +233,9 @@ def _print_profile(m: dict) -> None:
     print(f"  taxonomic cleanliness      (1 − (cycles+violations)/subClassOf)          {m['taxonomic_cleanliness']:6.3f}")
     print(f"  subsumption cycles         (OOPS! P06 — must be 0)                        {m['subsumption_cycles']:<6}")
     print(f"  OntoClean violations       (anti-rigid role subsumes a rigid kind)       {m['ontoclean_violations']:<6}")
-    print(f"  sibling disjointness       (OOPS! P10 — identity-incompatible → disjoint){m['sibling_disjointness']:6.2f}")
+    print(f"  sibling adjudication       (specific-genus pairs with a verdict → 1.0)    {m['sibling_adjudication']:6.2f}"
+          f"   ({m['sibling_pairs_universe']} pairs; {m['n_disjoint_axioms']} disjoint)")
+    print(f"  sibling grounding debt     (pairs under bare BFO genera — ground, don't adjudicate) {m['sibling_pairs_grounding_debt']:<6}")
     print(f"  orphan rate                (OOPS! P04 — ungrounded islands)              {m['orphan_rate']:6.1%}")
     print()
     print(f"AXIOM EXPRESSIVITY: {m['n_subclass']} subClassOf · {m['n_equiv']} ≡ · {m['n_some']} ∃some · "
