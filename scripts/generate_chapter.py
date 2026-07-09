@@ -842,6 +842,7 @@ def build_axiom_section_with_tables(templates: list[dict], payload, rng=None) ->
     (plain ``build_axiom_section``) still lacks all of this — the load-bearing contrast is preserved.
     """
     from aegir.ontology.ddl import render_ddl
+    from aegir.ontology.presentation import present_table  # prose render register (≠ schema identity)
 
     base_by_ref = {st.table.ref: st for st in payload.base_tables}
     fks_by_src: dict[str, list] = {}
@@ -870,16 +871,22 @@ def build_axiom_section_with_tables(templates: list[dict], payload, rng=None) ->
         if st is not None:
             lines.append("    RELATIONAL SCHEMA:")
             lines.append("      " + render_ddl(st, fks_by_src.get(st.table.name, [])).replace("\n", "\n      "))
+            # PROSE render register: prettify headers + demote a leading surrogate id (schema/footer
+            # keep physical snake_case identity — presentation ≠ identifier). Values untouched → RI +
+            # table_fidelity preserved.
             colnames = [c.name for c in st.table.columns]
+            slot_refs = [c.slot_ref for c in st.table.columns]
+            disp_cols, disp_rows = present_table(colnames, st.table.rows, slot_refs=slot_refs)
             lines.append("    AUTHORITATIVE ROWS (reproduce verbatim):")
-            lines.append("      " + _md_table(colnames, st.table.rows).replace("\n", "\n      "))
+            lines.append("      " + _md_table(disp_cols, disp_rows).replace("\n", "\n      "))
         lines.append("")
     joins = [(v, r) for v, r in payload.views if v.fk is not None]
     if joins:
         lines.append("CROSS-TABLE VIEWS (narrate at least one of these joins using the real keys shown):")
         for v, vrows in joins[:4]:
             lines.append(f"  VIEW {v.name}: {v.verbalization}")
-            lines.append("    " + _md_table([vc for vc, _, _ in v.columns], vrows).replace("\n", "\n    "))
+            vcols, vdisp = present_table([vc for vc, _, _ in v.columns], vrows)
+            lines.append("    " + _md_table(vcols, vdisp).replace("\n", "\n    "))
         lines.append("")
     lines.append("AFTER the chapter body, append EXACTLY this fenced JSON block verbatim — it records the "
                  "authoritative rows you wrote prose around (do not modify it):")

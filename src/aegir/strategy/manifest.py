@@ -186,6 +186,33 @@ def collect_targets() -> "dict[str, bytes]":
             "operating_point": c.get("operating_point"),
             "infrastructure_hubs": c.get("infrastructure_hubs"),
         })
+    # The RENDER REGISTER target (RH 2026-07-09, "presentation ≠ identifier"): the corpus commits
+    # to prose tables that read as human documents, not raw schemas. Measured FinePDFs reference +
+    # our baseline + floors; the metric (table_register.score_register) scores every chapter, the
+    # transform (presentation.py) drives it. Captured from the reference artifact.
+    reg = REPO / "build" / "table_register" / "reference.json"
+    if reg.exists():
+        comp["targets/table_register.json"] = reg.read_bytes()
+    # SEMANTIC PLAUSIBILITY as a strategy aspect (RH 2026-07-09): a quality we hold the corpus to
+    # even where the shape-mask metric CANNOT see it — whether a value/name is domain-plausible
+    # (is "Chelsea" a city or a person?). Not fully mechanizable; declared with the proxies we DO
+    # have and an honest boundary, so it stays a first-class target rather than an unstated hope.
+    comp["targets/semantic_plausibility.json"] = _canon({
+        "aspect": ("values, names, and headers must be plausible FOR THEIR DOMAIN — not merely "
+                   "well-shaped. The render register (table_register) makes a table LOOK real; "
+                   "semantic plausibility asks whether its CONTENT could be real."),
+        "boundary": ("shape masks and header rules cannot judge meaning; this aspect is only "
+                     "partially mechanizable. It is declared, tracked by proxy, and — where a "
+                     "proxy cannot reach — held as an authored obligation, not silently dropped."),
+        "proxies": [
+            "entity_value_pools / individuals registry (domain-real instance values, membrane-gated)",
+            "brand_lexicon (disallow real trademark leakage; ambiguous-brand guard)",
+            "grounding-anchor retrieval (CCO/FHIR vocabulary as the plausibility field)",
+            "naturalness_norms (placeholder/numeric/distinct-ratio character vs FinePDFs anchor)",
+        ],
+        "open": ("a learned or LLM-judge plausibility scorer over cell values is not yet built; "
+                 "until then plausibility is proxied, and the gap is acknowledged, not hidden."),
+    })
     return comp
 
 

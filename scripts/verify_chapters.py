@@ -50,6 +50,8 @@ import pyarrow.parquet as pq
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
 
+from aegir.ontology.table_register import score_register  # noqa: E402
+
 logger = logging.getLogger("verify-chapters")
 
 
@@ -433,6 +435,7 @@ def main() -> int:
         r_composite = geometric_mean([r for r in (r_topic, r_iri, r_density, r_axiom) if r is not None])
         rel_tables_json = (ch["rel_tables_json"] if "rel_tables_json" in ch.index else None)
         r_table_fidelity = score_table_fidelity(chapter_text, rel_tables_json)
+        r_register, register_sub = score_register(tables)  # render-register diagnostic (not in composite)
 
         if r_composite >= args.tau_accept:
             status = "accepted"
@@ -449,6 +452,8 @@ def main() -> int:
         if not tables: notes_parts.append("no_tables")
         if r_table_fidelity is not None and r_table_fidelity < 0.50:
             notes_parts.append("mangled_tables")  # Track A: model didn't reproduce the fixed tables
+        if r_register is not None and register_sub.get("lead_id_rate", 0) >= 0.5:
+            notes_parts.append("schema_register")  # prose reads as raw schema (leads with id)
 
         rows.append({
             "chapter_id": str(ch["chapter_id"]),
@@ -465,6 +470,10 @@ def main() -> int:
             "r_axiom": float(r_axiom),
             "r_composite": float(r_composite),
             "r_table_fidelity": (float(r_table_fidelity) if r_table_fidelity is not None else None),
+            "r_register": (float(r_register) if r_register is not None else None),
+            "lead_id_rate": float(register_sub.get("lead_id_rate", 0.0)),
+            "machine_header_rate": float(register_sub.get("machine_header_rate", 0.0)),
+            "value_mask_entropy": float(register_sub.get("value_mask_entropy", 0.0)),
             "status": status,
             "notes": ",".join(notes_parts),
             "verified_at": datetime.now(timezone.utc),
@@ -486,6 +495,10 @@ def main() -> int:
         ("r_axiom", pa.float32()),
         ("r_composite", pa.float32()),
         ("r_table_fidelity", pa.float32()),
+        ("r_register", pa.float32()),
+        ("lead_id_rate", pa.float32()),
+        ("machine_header_rate", pa.float32()),
+        ("value_mask_entropy", pa.float32()),
         ("status", pa.string()),
         ("notes", pa.string()),
         ("verified_at", pa.timestamp("us", tz="UTC")),
@@ -517,6 +530,10 @@ def main() -> int:
         print(f"    R_density mean={s('r_density'):.3f}")
         print(f"    R_axiom   mean={s('r_axiom'):.3f}")
         print(f"    R_comp    mean={s('r_composite'):.3f}")
+        print(f"    R_register mean={s('r_register'):.3f}  "
+              f"(lead_id {s('lead_id_rate'):.2f} vs ref 0.02 · "
+              f"machine_hdr {s('machine_header_rate'):.2f} vs ref 0.01 · "
+              f"val_entropy {s('value_mask_entropy'):.2f} vs ref 0.52)")
     print()
     print(f"  most common notes:")
     from collections import Counter
