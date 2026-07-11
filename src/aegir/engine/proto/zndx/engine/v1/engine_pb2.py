@@ -24,23 +24,37 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bzndx/engine/v1/engine.proto\x12\x0ezndx.engine.v1\"\x8a\x01\n\x0f\x43ompleteRequest\x12\x12\n\ncapability\x18\x01 \x01(\t\x12\x0e\n\x06prompt\x18\x02 \x01(\t\x12\x15\n\rsystem_prompt\x18\x03 \x01(\t\x12\x12\n\nmax_tokens\x18\x04 \x01(\x05\x12\x13\n\x0btemperature\x18\x05 \x01(\x02\x12\x13\n\x0bjson_schema\x18\x06 \x01(\t\"\xa7\x01\n\x10\x43ompleteResponse\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\r\n\x05model\x18\x02 \x01(\t\x12\x15\n\rprompt_tokens\x18\x03 \x01(\x05\x12\x19\n\x11\x63ompletion_tokens\x18\x04 \x01(\x05\x12\x12\n\nlatency_ms\x18\x05 \x01(\x02\x12\x19\n\x11reasoning_content\x18\x06 \x01(\t\x12\x15\n\rfinish_reason\x18\x07 \x01(\t\"\x0f\n\rStatusRequest\"_\n\x08\x45ndpoint\x12\x12\n\ncapability\x18\x01 \x01(\t\x12\r\n\x05model\x18\x02 \x01(\t\x12\x0f\n\x07healthy\x18\x03 \x01(\x08\x12\x0f\n\x07gpu_ids\x18\x04 \x03(\x05\x12\x0e\n\x06\x64\x65tail\x18\x05 \x01(\t\"b\n\x0eStatusResponse\x12\x0f\n\x07project\x18\x01 \x01(\t\x12+\n\tendpoints\x18\x02 \x03(\x0b\x32\x18.zndx.engine.v1.Endpoint\x12\x12\n\ntotal_gpus\x18\x03 \x01(\x05\x32\xa0\x01\n\x06\x45ngine\x12M\n\x08\x43omplete\x12\x1f.zndx.engine.v1.CompleteRequest\x1a .zndx.engine.v1.CompleteResponse\x12G\n\x06Status\x12\x1d.zndx.engine.v1.StatusRequest\x1a\x1e.zndx.engine.v1.StatusResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bzndx/engine/v1/engine.proto\x12\x0ezndx.engine.v1\"D\n\tCandidate\x12\x0b\n\x03iri\x18\x01 \x01(\t\x12\r\n\x05label\x18\x02 \x01(\t\x12\x0c\n\x04kind\x18\x03 \x01(\t\x12\r\n\x05score\x18\x04 \x01(\x02\"\x81\x01\n\x0e\x42oundarySignal\x12(\n\x04kind\x18\x01 \x01(\x0e\x32\x1a.zndx.engine.v1.SignalKind\x12\x0f\n\x07subject\x18\x02 \x01(\t\x12\x11\n\toffending\x18\x03 \x01(\t\x12\x0e\n\x06reason\x18\x04 \x01(\t\x12\x11\n\tauthority\x18\x05 \x01(\t\"\x90\x01\n\rSignalContext\x12-\n\ncandidates\x18\x01 \x03(\x0b\x32\x19.zndx.engine.v1.Candidate\x12\x15\n\rjustification\x18\x02 \x03(\t\x12*\n\x07\x61nchors\x18\x03 \x03(\x0b\x32\x19.zndx.engine.v1.Candidate\x12\r\n\x05rules\x18\x04 \x03(\t\"\xb1\x01\n\x12RemediationRequest\x12\x12\n\ncapability\x18\x01 \x01(\t\x12.\n\x06signal\x18\x02 \x01(\x0b\x32\x1e.zndx.engine.v1.BoundarySignal\x12.\n\x07\x63ontext\x18\x03 \x01(\x0b\x32\x1d.zndx.engine.v1.SignalContext\x12\x12\n\nmax_tokens\x18\x04 \x01(\x05\x12\x13\n\x0btemperature\x18\x05 \x01(\x02\"\xc7\x01\n\x13RemediationResponse\x12\x12\n\ncorrection\x18\x01 \x01(\t\x12\x30\n\x0b\x64isposition\x18\x02 \x01(\x0e\x32\x1b.zndx.engine.v1.Disposition\x12\x11\n\trationale\x18\x03 \x01(\t\x12\r\n\x05model\x18\x04 \x01(\t\x12\x19\n\x11reasoning_content\x18\x05 \x01(\t\x12\x19\n\x11\x63ompletion_tokens\x18\x06 \x01(\x05\x12\x12\n\nlatency_ms\x18\x07 \x01(\x02\"\x8a\x01\n\x0f\x43ompleteRequest\x12\x12\n\ncapability\x18\x01 \x01(\t\x12\x0e\n\x06prompt\x18\x02 \x01(\t\x12\x15\n\rsystem_prompt\x18\x03 \x01(\t\x12\x12\n\nmax_tokens\x18\x04 \x01(\x05\x12\x13\n\x0btemperature\x18\x05 \x01(\x02\x12\x13\n\x0bjson_schema\x18\x06 \x01(\t\"\xa7\x01\n\x10\x43ompleteResponse\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\r\n\x05model\x18\x02 \x01(\t\x12\x15\n\rprompt_tokens\x18\x03 \x01(\x05\x12\x19\n\x11\x63ompletion_tokens\x18\x04 \x01(\x05\x12\x12\n\nlatency_ms\x18\x05 \x01(\x02\x12\x19\n\x11reasoning_content\x18\x06 \x01(\t\x12\x15\n\rfinish_reason\x18\x07 \x01(\t\"\x0f\n\rStatusRequest\"_\n\x08\x45ndpoint\x12\x12\n\ncapability\x18\x01 \x01(\t\x12\r\n\x05model\x18\x02 \x01(\t\x12\x0f\n\x07healthy\x18\x03 \x01(\x08\x12\x0f\n\x07gpu_ids\x18\x04 \x03(\x05\x12\x0e\n\x06\x64\x65tail\x18\x05 \x01(\t\"b\n\x0eStatusResponse\x12\x0f\n\x07project\x18\x01 \x01(\t\x12+\n\tendpoints\x18\x02 \x03(\x0b\x32\x18.zndx.engine.v1.Endpoint\x12\x12\n\ntotal_gpus\x18\x03 \x01(\x05*\x81\x01\n\nSignalKind\x12\x1b\n\x17SIGNAL_KIND_UNSPECIFIED\x10\x00\x12 \n\x1c\x45XTERNAL_NAMESPACE_VIOLATION\x10\x01\x12\x11\n\rUNSATISFIABLE\x10\x02\x12\x0e\n\nUNGROUNDED\x10\x03\x12\x11\n\rVERSION_DRIFT\x10\x04*]\n\x0b\x44isposition\x12\x1b\n\x17\x44ISPOSITION_UNSPECIFIED\x10\x00\x12\r\n\tCORRECTED\x10\x01\x12\x10\n\x0c\x43OINED_LOCAL\x10\x02\x12\x10\n\x0cUNRESOLVABLE\x10\x03\x32\xf6\x01\n\x06\x45ngine\x12M\n\x08\x43omplete\x12\x1f.zndx.engine.v1.CompleteRequest\x1a .zndx.engine.v1.CompleteResponse\x12G\n\x06Status\x12\x1d.zndx.engine.v1.StatusRequest\x1a\x1e.zndx.engine.v1.StatusResponse\x12T\n\tRemediate\x12\".zndx.engine.v1.RemediationRequest\x1a#.zndx.engine.v1.RemediationResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'zndx.engine.v1.engine_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_COMPLETEREQUEST']._serialized_start=48
-  _globals['_COMPLETEREQUEST']._serialized_end=186
-  _globals['_COMPLETERESPONSE']._serialized_start=189
-  _globals['_COMPLETERESPONSE']._serialized_end=356
-  _globals['_STATUSREQUEST']._serialized_start=358
-  _globals['_STATUSREQUEST']._serialized_end=373
-  _globals['_ENDPOINT']._serialized_start=375
-  _globals['_ENDPOINT']._serialized_end=470
-  _globals['_STATUSRESPONSE']._serialized_start=472
-  _globals['_STATUSRESPONSE']._serialized_end=570
-  _globals['_ENGINE']._serialized_start=573
-  _globals['_ENGINE']._serialized_end=733
+  _globals['_SIGNALKIND']._serialized_start=1304
+  _globals['_SIGNALKIND']._serialized_end=1433
+  _globals['_DISPOSITION']._serialized_start=1435
+  _globals['_DISPOSITION']._serialized_end=1528
+  _globals['_CANDIDATE']._serialized_start=47
+  _globals['_CANDIDATE']._serialized_end=115
+  _globals['_BOUNDARYSIGNAL']._serialized_start=118
+  _globals['_BOUNDARYSIGNAL']._serialized_end=247
+  _globals['_SIGNALCONTEXT']._serialized_start=250
+  _globals['_SIGNALCONTEXT']._serialized_end=394
+  _globals['_REMEDIATIONREQUEST']._serialized_start=397
+  _globals['_REMEDIATIONREQUEST']._serialized_end=574
+  _globals['_REMEDIATIONRESPONSE']._serialized_start=577
+  _globals['_REMEDIATIONRESPONSE']._serialized_end=776
+  _globals['_COMPLETEREQUEST']._serialized_start=779
+  _globals['_COMPLETEREQUEST']._serialized_end=917
+  _globals['_COMPLETERESPONSE']._serialized_start=920
+  _globals['_COMPLETERESPONSE']._serialized_end=1087
+  _globals['_STATUSREQUEST']._serialized_start=1089
+  _globals['_STATUSREQUEST']._serialized_end=1104
+  _globals['_ENDPOINT']._serialized_start=1106
+  _globals['_ENDPOINT']._serialized_end=1201
+  _globals['_STATUSRESPONSE']._serialized_start=1203
+  _globals['_STATUSRESPONSE']._serialized_end=1301
+  _globals['_ENGINE']._serialized_start=1531
+  _globals['_ENGINE']._serialized_end=1777
 # @@protoc_insertion_point(module_scope)
