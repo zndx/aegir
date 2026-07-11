@@ -14135,6 +14135,186 @@
       },
       "alt_labels": [],
       "scope_note": ""
+    },
+    {
+      "template_id": "prim_age",
+      "manchester_template": "Class: {Age:Class} SubClassOf: bfo:0000019",
+      "slot_types": {
+        "Age": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "A temporal quality measuring the duration of existence since a specific starting point.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_continuousmode",
+      "manchester_template": "Class: {ContinuousMode:Class} SubClassOf: bfo:0000023",
+      "slot_types": {
+        "ContinuousMode": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "A role assumed by a monitoring system to operate without interruption over a defined period.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_riskmanagementactivity",
+      "manchester_template": "Class: {RiskManagementActivity:Class} SubClassOf: sdg:FinancialManagementProcess",
+      "slot_types": {
+        "RiskManagementActivity": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "A corporate process involving the identification, assessment, and mitigation of potential hazards or uncertainties.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_chemical",
+      "manchester_template": "Class: {Chemical:Class} SubClassOf: bfo:0000040",
+      "slot_types": {
+        "Chemical": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "A material entity that is a chemical substance or mixture.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_schoolsecuritypolicy",
+      "manchester_template": "Class: {SchoolSecurityPolicy:Class} SubClassOf: bfo:0000031",
+      "slot_types": {
+        "SchoolSecurityPolicy": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "A specifically dependent continuant that specifies rules and procedures for security within a school environment.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_scientificorganization",
+      "manchester_template": "Class: {ScientificOrganization:Class} SubClassOf: cco:ont00001180",
+      "slot_types": {
+        "ScientificOrganization": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "An organization whose primary purpose is to conduct or support scientific research and development.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_servicelevelagreement",
+      "manchester_template": "Class: {ServiceLevelAgreement:Class} SubClassOf: bfo:0000031",
+      "slot_types": {
+        "ServiceLevelAgreement": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "A specifically dependent continuant that defines the expected service metrics, responsibilities, and standards between a service provider and a client.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_stateaction",
+      "manchester_template": "Class: {StateAction:Class} SubClassOf: cco:ont00000142",
+      "slot_types": {
+        "StateAction": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "StateAction is grounded as an Act of Government.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_tariffstructure",
+      "manchester_template": "Class: {TariffStructure:Class} SubClassOf: sdg:CatalogStructure",
+      "slot_types": {
+        "TariffStructure": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "TariffStructure is grounded as a CatalogStructure.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_vulnerabilitystate",
+      "manchester_template": "Class: {VulnerabilityState:Class} SubClassOf: cco:ont00000548",
+      "slot_types": {
+        "VulnerabilityState": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "VulnerabilityState is grounded as a Vulnerability.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
     }
   ],
   "null_stats": {}
