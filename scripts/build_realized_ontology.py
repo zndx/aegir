@@ -694,6 +694,17 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001
             print(f"  (.owl RDF/XML save skipped: {type(e).__name__}: {str(e)[:80]})")
 
+        # LOGICAL grounding certificate — reasoner-ENTAILED BFO/CCO subsumption per class (the metric
+        # reads THIS, not the syntactic rdflib edge-walk, so nth-order/earned grounding is credited;
+        # RH 2026-07-11, [[bfo_cco_grounding_mandate]]). TBox-only (~3s). Pre-kvasir HermiT; kvasir-destined.
+        try:
+            from aegir.ontology.grounding import write_certificate
+            _gc = write_certificate(OUT / "sdg-ontology.omn", OUT / "grounding_certificate.json")
+            print(f"   grounding certificate: {_gc['grounded_count']}/{_gc['n']} = {_gc['rate']} "
+                  f"BFO/CCO-grounded (HermiT-entailed)")
+        except Exception as e:  # noqa: BLE001
+            print(f"  (grounding certificate skipped: {type(e).__name__}: {str(e)[:80]})")
+
         cert = (
             "# HermiT consistency certificate — `sdg-ontology`\n\n"
             f"- **isConsistent**: `{consistent}`\n"

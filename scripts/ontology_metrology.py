@@ -183,13 +183,31 @@ def compute(path: str) -> dict:
     orphan_rate = sum(1 for c in sdg if not parents.get(c)) / n                   # OOPS! P04 — islands
     taxonomic_cleanliness = round(1.0 - (subsumption_cycles + ontoclean_violations) / max(1, n_sub), 4)
 
+    # LOGICAL grounding (RH 2026-07-11): grounding is what the reasoner ENTAILS subsumed by BFO/CCO,
+    # not what the syntactic rdflib walk sees. When a reasoner grounding certificate exists next to the
+    # ontology (emitted by build_realized_ontology → aegir.ontology.grounding; pre-kvasir HermiT,
+    # kvasir-destined) it is AUTHORITATIVE — it credits the nth-order chains the syntactic walk misses.
+    # The syntactic `grounded` remains the fallback so the metric never hard-depends on a fresh reasoner run.
+    from aegir.ontology.grounding import load_certificate
+    _cert = load_certificate(Path(path).parent / "grounding_certificate.json")
+    if _cert and _cert.get("n"):
+        bfo_grounded_val = _cert["rate"]
+        n_grounded_val = _cert["grounded_count"]
+        grounding_source = "reasoner:" + _cert.get("engine", "hermit")
+    else:
+        bfo_grounded_val = len(grounded) / n
+        n_grounded_val = len(grounded)
+        grounding_source = "syntactic-edgewalk"
+
     return {
         "path": path,
         "n_domain_classes": len(sdg), "n_object_properties": len(sdg_props),
         "n_datatype_properties": len(dataprops),
         # IOF-derived rigor dimensions
         "definitional_completeness": len(defined) / n,
-        "bfo_grounded": len(grounded) / n,
+        "bfo_grounded": bfo_grounded_val,
+        "bfo_grounded_syntactic": len(grounded) / n,
+        "grounding_source": grounding_source,
         "realizable_machinery": realiz_uses,
         "def_annotation_coverage": len(has_def) / n,
         # field-standard structural metrics (OntoQA / OQuaRE)
@@ -203,7 +221,7 @@ def compute(path: str) -> dict:
         "n_subclass": n_sub, "n_equiv": n_equiv, "n_some": n_some, "n_all": n_all,
         "n_card": n_card, "n_disjoint": n_disj, "bfo_anchors": dict(bfo_dist.most_common(8)),
         # raw counts (for the OQuaRE module + diagnostics)
-        "n_defined": len(defined), "n_grounded": len(grounded), "n_annotated": len(has_def),
+        "n_defined": len(defined), "n_grounded": n_grounded_val, "n_annotated": len(has_def),
         # OntoClean Tier-A/B taxonomic-correctness proxies (un-gameable)
         "subsumption_cycles": subsumption_cycles, "ontoclean_violations": ontoclean_violations,
         **_adj, "orphan_rate": round(orphan_rate, 4),
