@@ -96,8 +96,16 @@ def validate_detailed(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict
     import jpype
     OWLManager = jpype.JClass("org.semanticweb.owlapi.apibinding.OWLManager")
     StringDocumentSource = jpype.JClass("org.semanticweb.owlapi.io.StringDocumentSource")
+    from aegir.ontology.external_index import verify_external_refs  # noqa: PLC0415
     out: dict[str, tuple[bool, str]] = {}
     for tid, man in candidates:
+        # (0) EXTERNAL-NAMESPACE INTEGRITY (RH 2026-07-11): a bfo:/cco: reference is a CLAIM the IRI exists in the
+        # current authoritative ontology. LLMs coin fictional external terms (cco:DirectiveICE); those are tampering
+        # and are REJECTED here, hard, before parse — the agent must use a real IRI or coin in sdg:. ([[bfo_cco_grounding_mandate]])
+        ext = verify_external_refs(man)
+        if ext:
+            out[tid] = (False, "external-namespace tampering — " + "; ".join(r for _ref, r in ext[:2]))
+            continue
         try:
             tmp = dataclasses.replace(by_id[tid], manchester_template=man, slot_types=parse_slots(man))
             doc, _ = RG.render_batch([tmp])

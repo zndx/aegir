@@ -327,20 +327,14 @@ def _write_signals(signals: "dict[str, dict]") -> None:
 CCO_TTL = REPO / "build" / "grounding" / "cco-module.ttl"  # π(CCO): the ⊥-locality module — BFO + π is the one fixed theory (gate-certified tractable; full cco-merged.ttl is intractable, see build_cco_module.py)
 CCO_ICE = "cco:ont00000958"  # Information Content Entity (real opaque CCO IRI) — the FHIR-resource bridge target
 
-# The engine invents READABLE cco: genera that do NOT exist in real CCO (which uses opaque `ont…` IRIs).
-# They parse and pass HermiT (an undeclared class is trivially satisfiable) but never reach BFO, so they
-# ground NOTHING — the "fake grounding" the metrology anchor-walk exposes (RH 2026-07-10: ~53 sdg classes
-# depended on these). Canonicalize each to the real CCO class so ≡-grounding reaches BFO THROUGH real CCO
-# (depth-preserving), NOT the coarse generic-BFO fallback `ground_closure` would otherwise apply. The real
-# IRIs live in the grounding-anchor index, so the DURABLE fix is a canonicalizer in the authoring membrane
-# (see the rigor methodology notes); this dict is the deterministic realize-time backstop.
-CCO_READABLE_ALIASES = {
-    "cco:InformationContentEntity": "cco:ont00000958",  # Information Content Entity ⊑ BFO_0000031
-    "cco:DescriptiveICE": "cco:ont00000853",            # Descriptive Information Content Entity
-    "cco:DirectiveICE": "cco:ont00000965",              # Prescriptive ICE (CCO's term for a directive)
-    "cco:DesignativeICE": "cco:ont00000686",            # Designative Information Content Entity
-    "cco:BFO_0000144": "bfo:0000144",                   # malformed: a BFO IRI written under the cco: NS
-}
+# RETIRED 2026-07-11 (RH, with extreme prejudice): CCO_READABLE_ALIASES was a hardcoded dict that rewrote
+# fictional readable cco: genera (cco:DirectiveICE) to real CCO IRIs at realize. That was an ANTI-PATTERN —
+# it silently BLESSED the hallucination (reinforcing DirectiveICE across refinement) and masked a broader
+# contamination it never covered (cco:BusinessEntity, cco:has_part, legacy bfo:0000052). External namespaces
+# are AUTHORITIES, not sandboxes: the fix is the HARD verification gate (aegir.ontology.external_index,
+# wired into evolve_rigor.validate_detailed) that REJECTS any cco:/bfo: reference not existing in the current
+# authoritative ontology, forcing the agent to use a real IRI or coin sdg:. Existing contamination was
+# resolved once through that index (scripts/resolve_contamination.py). See [[bfo_cco_grounding_mandate]].
 
 
 def import_cco_bridge_fhir(doc: str) -> str:
@@ -353,8 +347,6 @@ def import_cco_bridge_fhir(doc: str) -> str:
     theory, always applied. bfo: already aligns (purl obo BFO_ in both), so the chains are coherent."""
     out = doc.replace("Prefix: cco: <http://www.commoncoreontologies.org/>",
                       "Prefix: cco: <https://www.commoncoreontologies.org/>")
-    for readable, real in CCO_READABLE_ALIASES.items():   # fictional readable cco: genera → real CCO IRIs
-        out = re.sub(re.escape(readable) + r"\b", real, out)
     if "Prefix: fhir:" not in out:
         out = out.replace("Prefix: cco: <https://www.commoncoreontologies.org/>\n",
                           "Prefix: cco: <https://www.commoncoreontologies.org/>\nPrefix: fhir: <http://hl7.org/fhir/>\n")
