@@ -13397,6 +13397,744 @@
         "Oxygen-ozone solution"
       ],
       "scope_note": "Applies to medical preparations containing a mixture of ozone and oxygen used in therapeutic treatments."
+    },
+    {
+      "template_id": "filler_academicdegree",
+      "manchester_template": "Class: {AcademicDegree:Class} EquivalentTo: bfo:0000031 and sdg:conferredBy some sdg:HigherEducationInstitution and sdg:signifiesCompletionOf some sdg:AcademicCurriculumProgram",
+      "slot_types": {
+        "AcademicDegree": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An academic degree is a generically dependent continuant that signifies the completion of an academic curriculum program and is conferred by a higher education institution.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_calendarproduct",
+      "manchester_template": "Class: {CalendarProduct:Class} EquivalentTo: bfo:0000031 and sdg:implements some cco:ont00000891 and sdg:specifiesTemporalReferenceFor some cco:ont00000259",
+      "slot_types": {
+        "CalendarProduct": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A calendar product is a generically dependent continuant that implements a calendar system and specifies temporal references for calendar months.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_callvolume",
+      "manchester_template": "Class: {CallVolume:Class} EquivalentTo: bfo:0000019 and sdg:measures some cco:ont00001190",
+      "slot_types": {
+        "CallVolume": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Call volume is a quality that measures the number of telephone calls occurring within a specified period.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_child",
+      "manchester_template": "Class: {Child:Class} EquivalentTo: cco:ont00001262 and sdg:hasAge some sdg:Age and sdg:hasBiologicalParent some cco:ont00001262",
+      "slot_types": {
+        "Child": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A child is a person who is in the early developmental stage of life and has at least one biological parent.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_clinicalcare",
+      "manchester_template": "Class: {ClinicalCare:Class} EquivalentTo: bfo:0000015 and sdg:involvesAgent some sdg:IndividualClinician and sdg:hasPatient some sdg:Patient",
+      "slot_types": {
+        "ClinicalCare": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Clinical care is a process in which a clinician provides medical services to a patient to diagnose, treat, or prevent disease.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_communicationsecurityaspect",
+      "manchester_template": "Class: {CommunicationSecurityAspect:Class} EquivalentTo: bfo:0000019 and sdg:pertainsTo some sdg:CommunicationChannel and sdg:ensuresSecurityOf some cco:ont00001036",
+      "slot_types": {
+        "CommunicationSecurityAspect": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Communication security aspect is a quality that pertains to a communication channel and ensures the security of a communication system.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_constructedpredicate",
+      "manchester_template": "Class: {ConstructedPredicate:Class} EquivalentTo: bfo:0000031 and sdg:encodesLogicalRelation some cco:ont00000965 and sdg:appliesTo some cco:ont00001037",
+      "slot_types": {
+        "ConstructedPredicate": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A constructed predicate is a generically dependent continuant that encodes a logical relation from a prescriptive information entity and applies to a constructed feature.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_continuousemissionsmonitoringprocess",
+      "manchester_template": "Class: {ContinuousEmissionsMonitoringProcess:Class} EquivalentTo: cco:ont00002075 and sdg:monitors some sdg:IndustrialEmissionSource and sdg:hasMonitoringMode some sdg:ContinuousMode",
+      "slot_types": {
+        "ContinuousEmissionsMonitoringProcess": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Continuous emissions monitoring process is a sensing process that continuously monitors emissions from an industrial emission source.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_corporateactivity",
+      "manchester_template": "Class: {CorporateActivity:Class} EquivalentTo: sdg:OrganizationalActivity and sdg:conductedBy some cco:ont00000443",
+      "slot_types": {
+        "CorporateActivity": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Corporate activity is an organizational activity conducted by a commercial organization to further its business objectives.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_corporateauditprocess",
+      "manchester_template": "Class: {CorporateAuditProcess:Class} EquivalentTo: bfo:0000015 and sdg:examinesRecordsOf some cco:ont00000443 and sdg:verifiesComplianceWith some sdg:AuditMethodology",
+      "slot_types": {
+        "CorporateAuditProcess": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Corporate audit process is a process that examines the records of a commercial organization and verifies compliance with established audit methodologies.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_corporateemploymentprocess",
+      "manchester_template": "Class: {CorporateEmploymentProcess:Class} EquivalentTo: cco:ont00001226 and sdg:involvesAgent some cco:ont00000443 and sdg:resultsInRole some sdg:CorporateEmployee",
+      "slot_types": {
+        "CorporateEmploymentProcess": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Corporate employment process is an act of employment by an organization that involves a commercial agent and results in a corporate employee role.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_corporatereputation",
+      "manchester_template": "Class: {CorporateReputation:Class} EquivalentTo: bfo:0000019 and sdg:reflectsPerceptionOf some cco:ont00000443 and sdg:heldBy some sdg:StakeholderRole",
+      "slot_types": {
+        "CorporateReputation": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "Corporate reputation is a quality that reflects the perception of a commercial organization and is held by stakeholder roles.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_course",
+      "manchester_template": "Class: {Course:Class} EquivalentTo: bfo:0000031 and sdg:hasCurriculum some sdg:AcademicCurriculumProgram and sdg:deliveredBy some sdg:HigherEducationInstitution",
+      "slot_types": {
+        "Course": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A course is a generically dependent continuant that constitutes a structured educational program with a defined curriculum and is delivered by a higher education institution.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_criminaljusticeprocess",
+      "manchester_template": "Class: {CriminalJusticeProcess:Class} EquivalentTo: bfo:0000015 and bfo:participates_in some sdg:CriminalJusticeSystem",
+      "slot_types": {
+        "CriminalJusticeProcess": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A process that participates in a criminal justice system.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_customerdevice",
+      "manchester_template": "Class: {CustomerDevice:Class} EquivalentTo: bfo:0000040 and bfo:participates_in some sdg:CustomerNetwork",
+      "slot_types": {
+        "CustomerDevice": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A material entity that participates in a customer network.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_databasecontainer",
+      "manchester_template": "Class: {DatabaseContainer:Class} EquivalentTo: cco:ont00000020 and sdg:usedForStorage some sdg:CloudStorageVolume",
+      "slot_types": {
+        "DatabaseContainer": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A container that is used for storage in a cloud storage volume.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_decisionaction",
+      "manchester_template": "Class: {DecisionAction:Class} EquivalentTo: bfo:0000015 and bfo:has_part some sdg:DecisionMakingProcess",
+      "slot_types": {
+        "DecisionAction": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An action that is a part of a decision-making process.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_decisiontransitionaction",
+      "manchester_template": "Class: {DecisionTransitionAction:Class} EquivalentTo: bfo:0000015 and bfo:has_part some sdg:DecisionMakingProcess",
+      "slot_types": {
+        "DecisionTransitionAction": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A transition action that is a part of a decision-making process.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_diagnosticimaging",
+      "manchester_template": "Class: {DiagnosticImaging:Class} EquivalentTo: bfo:0000015 and sdg:facilitated_by some sdg:ImagingEquipment",
+      "slot_types": {
+        "DiagnosticImaging": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A process that is facilitated by imaging equipment for diagnostic purposes.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_ethicalinvestment",
+      "manchester_template": "Class: {EthicalInvestment:Class} EquivalentTo: bfo:0000015 and sdg:hasPurpose some sdg:EthicalInvestmentAsset",
+      "slot_types": {
+        "EthicalInvestment": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A financial activity that has an ethical investment asset as its purpose.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_ethicalstandard",
+      "manchester_template": "Class: {EthicalStandard:Class} EquivalentTo: cco:ont00000575 and sdg:hasStandard some sdg:EthicalRequirement",
+      "slot_types": {
+        "EthicalStandard": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A quality specification that serves as a standard for an ethical requirement.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_executivedirection",
+      "manchester_template": "Class: {ExecutiveDirection:Class} EquivalentTo: bfo:0000015 and sdg:hasResponsibility some sdg:ExecutiveDirectorFunction",
+      "slot_types": {
+        "ExecutiveDirection": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A process that is a responsibility of an executive director function.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_executiveimplementation",
+      "manchester_template": "Class: {ExecutiveImplementation:Class} EquivalentTo: bfo:0000015 and sdg:hasPurpose some sdg:ExecutiveExecutionFunction",
+      "slot_types": {
+        "ExecutiveImplementation": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A process that serves as the purpose of an executive execution function.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_executiveleadershiprole",
+      "manchester_template": "Class: {ExecutiveLeadershipRole:Class} EquivalentTo: sdg:OrganizationalLeadershipRole and sdg:hasMember some sdg:ExecutiveTeam",
+      "slot_types": {
+        "ExecutiveLeadershipRole": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An organizational leadership role that is a member of an executive team.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_externalbusinesspartner",
+      "manchester_template": "Class: {ExternalBusinessPartner:Class} EquivalentTo: cco:ont00000599 and sdg:hasRelationship some sdg:ExternalAgency and sdg:engages_in_market_exchange some sdg:IndependentEconomicAgent",
+      "slot_types": {
+        "ExternalBusinessPartner": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An interpersonal relationship role that has a relationship with an external agency and engages in market exchange with an independent economic agent.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_financialinstrument",
+      "manchester_template": "Class: {FinancialInstrument:Class} EquivalentTo: sdg:FinancialProduct and bfo:involves_object some sdg:ClearingProcess",
+      "slot_types": {
+        "FinancialInstrument": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A financial product that is an object involved in a clearing process.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_financialstrategyoversight",
+      "manchester_template": "Class: {FinancialStrategyOversight:Class} EquivalentTo: bfo:0000015 and bfo:involves some sdg:FinancialManagementProcess",
+      "slot_types": {
+        "FinancialStrategyOversight": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A process that is involved in a financial management process.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_highereducationinstitution",
+      "manchester_template": "Class: {HigherEducationInstitution:Class} EquivalentTo: cco:ont00000564 and sdg:confersAcademicDegree some cco:ont00002003",
+      "slot_types": {
+        "HigherEducationInstitution": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An educational organization that confers academic degrees.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_institutionalinvestor",
+      "manchester_template": "Class: {InstitutionalInvestor:Class} EquivalentTo: bfo:0000040 and sdg:providesInvestorFunding some sdg:InvestorFundingSituation",
+      "slot_types": {
+        "InstitutionalInvestor": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A material entity that provides investor funding for financial situations.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_legalproceeding",
+      "manchester_template": "Class: {LegalProceeding:Class} EquivalentTo: cco:ont00001314 and sdg:involvesCourtDocument some sdg:CourtDocument",
+      "slot_types": {
+        "LegalProceeding": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A legal system act that involves court documents.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_networkuser",
+      "manchester_template": "Class: {NetworkUser:Class} EquivalentTo: bfo:0000040 and sdg:usesNetwork some cco:ont00000700",
+      "slot_types": {
+        "NetworkUser": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A material entity that uses a computer network.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_observationfunction",
+      "manchester_template": "Class: {ObservationFunction:Class} EquivalentTo: cco:ont00001306 and sdg:enablesObservation some cco:ont00000889",
+      "slot_types": {
+        "ObservationFunction": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An observation artifact function that enables visible observation.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_organization",
+      "manchester_template": "Class: {Organization:Class} EquivalentTo: bfo:0000040 and sdg:hasMember some cco:ont00000647",
+      "slot_types": {
+        "Organization": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A material entity that has organization members.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_organizationalculture",
+      "manchester_template": "Class: {OrganizationalCulture:Class} EquivalentTo: cco:ont00000568 and sdg:inheresInOrganization some sdg:Organization",
+      "slot_types": {
+        "OrganizationalCulture": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An organization capability that inheres in an organization.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_originaldocument",
+      "manchester_template": "Class: {OriginalDocument:Class} EquivalentTo: cco:ont00002039 and sdg:isSourceOfInformationContentFor some sdg:CopiedDocument",
+      "slot_types": {
+        "OriginalDocument": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A document content entity that is the source of information content for a copied document.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_pdfformat",
+      "manchester_template": "Class: {PdfFormat:Class} EquivalentTo: bfo:0000019 and sdg:appliesToDocument some sdg:PdfDocument",
+      "slot_types": {
+        "PdfFormat": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A quality that applies to a PDF document.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_personallyidentifiableinformation",
+      "manchester_template": "Class: {PersonallyIdentifiableInformation:Class} EquivalentTo: cco:ont00000958 and sdg:identifiesPerson some bfo:0000040",
+      "slot_types": {
+        "PersonallyIdentifiableInformation": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An information content entity that identifies a person.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_population",
+      "manchester_template": "Class: {Population:Class} EquivalentTo: cco:ont00000914 and sdg:isSubjectOfPrevalenceRate some sdg:PrevalenceRate",
+      "slot_types": {
+        "Population": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A group of persons that is the subject of a prevalence rate.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_professionalexperience",
+      "manchester_template": "Class: {ProfessionalExperience:Class} EquivalentTo: bfo:0000015 and sdg:involvesProfessionalPractice some sdg:PracticeSession",
+      "slot_types": {
+        "ProfessionalExperience": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A process that involves professional practice.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_qualificationlevel",
+      "manchester_template": "Class: {QualificationLevel:Class} EquivalentTo: cco:ont00002003 and sdg:indicatesStatisticalSignificance some sdg:SignificanceLevel",
+      "slot_types": {
+        "QualificationLevel": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "An academic degree that indicates statistical significance.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "filler_raffle",
+      "manchester_template": "Class: {Raffle:Class} EquivalentTo: bfo:0000015 and sdg:distributesPrizesViaLotNumber some cco:ont00001309",
+      "slot_types": {
+        "Raffle": "Class"
+      },
+      "is_complex": true,
+      "verbal_template": "A process that distributes prizes via lot numbers.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "define_fillers"
+      },
+      "alt_labels": [],
+      "scope_note": ""
     }
   ],
   "null_stats": {}

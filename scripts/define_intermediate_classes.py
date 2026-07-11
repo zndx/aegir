@@ -37,6 +37,8 @@ from grounding_anchors import Retriever  # noqa: E402
 from build_realized_ontology import consistency_check  # noqa: E402
 
 _SLOT = re.compile(r"\{(\w+):(\w+)\}")
+# a property restriction whose FILLER is a direct sdg: IRI (a relationship-target concept, not a slot)
+_RESTR = re.compile(r"(?:sdg|bfo|cco):(\w+)\s+(?:some|only|exactly\s+\d+|min\s+\d+|max\s+\d+)\s+sdg:(\w+)")
 _CAMEL = re.compile(r"(?<=[a-z0-9])(?=[A-Z])")
 
 
@@ -122,6 +124,8 @@ def main() -> int:
     ap.add_argument("--batch", type=int, default=14)
     ap.add_argument("--rounds", type=int, default=3, help="max feedback rounds per filler")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--all-undefined", action="store_true",
+                    help="target every referenced-undefined class (default: only reasoner-ungrounded ones)")
     ap.add_argument("--capability", default="instruct")
     ap.add_argument("--temperature", type=float, default=0.4)
     args = ap.parse_args()
@@ -137,10 +141,24 @@ def main() -> int:
         head = hm.group(1) if hm else "?"
         for name, _typ in slots[1:]:
             contexts.setdefault(name, []).append(head)
+        # direct-IRI restriction-range fillers (RH 2026-07-11): concepts referenced as `<prop> some sdg:X`
+        # (relationship TARGETS), NOT {X:Class} slots — outside the slot-DSL, so the loop missed them. The
+        # property is the grounding signal (X is what the head `measures`/`hasExperience` of).
+        for prop, cls in _RESTR.findall(man):
+            contexts.setdefault(cls, []).append(f"{head} (the target of {prop})")
     defined_heads = {hm.group(1) for t in cat.templates
                      if (hm := re.search(r"Class:\s*\{(\w+)", t.manchester_template or ""))
                      and "EquivalentTo" in (t.manchester_template or "")}
     fillers = sorted(set(contexts) - heads - defined_heads)
+    # OUTCOME-GATE on grounding: focus the loop on exactly the classes the reasoner certificate says lack a
+    # BFO/CCO path — defining them (genus+differentia into a grounded anchor) grounds them ([[bfo_cco_grounding_mandate]]).
+    if not args.all_undefined:
+        from aegir.ontology.grounding import load_certificate
+        cert = load_certificate(REPO / "corpora/ontology/grounding_certificate.json")
+        if cert and cert.get("ungrounded"):
+            ung = set(cert["ungrounded"])
+            fillers = [f for f in fillers if f in ung]
+            print(f"  outcome-gated to {len(fillers)} reasoner-ungrounded referenced concepts")
     if args.limit:
         fillers = fillers[:args.limit]
     print(f"define-intermediate-classes: {len(fillers)} intermediate classes · two-membrane loop ≤{args.rounds} rounds (heads {len(heads)})")
