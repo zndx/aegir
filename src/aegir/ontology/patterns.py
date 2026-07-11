@@ -146,7 +146,7 @@ def instantiate(pattern_name: str, fillers: "dict[str, str]", *, template_id: st
     abstract ``{X/Y/Z}`` fillers carry domain semantics into the axiom, verbalization, prose and
     realized columns/values instead of bare slot letters. Substitution is anchored on the
     EXACT slot token / ``$param`` boundary (a blind ``str.replace('at', …)`` once corrupted IRIs like
-    ``cco:InformATionContentEntity`` and dropped property slots — see derivation audit 2026-06-20).
+    ``cco:ont00000958`` and dropped property slots — see derivation audit 2026-06-20).
     The ``_unfilled_*`` fields let the membrane's instance gate reject anything left structurally incomplete.
     The result is DeepOnto-parse / HermiT-verified before catalog admission."""
     p = library()[pattern_name]

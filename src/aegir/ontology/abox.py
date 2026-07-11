@@ -215,10 +215,10 @@ def load_ontology(omn: str):
 _DEMO_TBOX = """Prefix: cco: <http://www.commoncoreontologies.org/>
 Prefix: ex: <http://aegir.example.org/abox#>
 Ontology: <http://aegir.example.org/abox-demo>
-Class: cco:Artifact
-Class: cco:InformationContentEntity
-Class: ex:MedicinalHerbalPlant SubClassOf: cco:Artifact
-Class: ex:BioactiveCompound SubClassOf: cco:InformationContentEntity
+Class: cco:ont00000995
+Class: cco:ont00000958
+Class: ex:MedicinalHerbalPlant SubClassOf: cco:ont00000995
+Class: ex:BioactiveCompound SubClassOf: cco:ont00000958
 ObjectProperty: ex:hasActiveCompound Domain: ex:MedicinalHerbalPlant Range: ex:BioactiveCompound
 """
 

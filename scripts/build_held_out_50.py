@@ -87,7 +87,7 @@ def good_composition(catalog, _scenario_id: str, rng: random.Random) -> list[dic
                 "sdg:eBPFProgram", "sdg:KernelHook", "sdg:Syscall",
                 "sdg:Transformation", "sdg:LineageEdge",
                 "sdg:Evidence", "sdg:Claim", "sdg:BeliefInterval",
-                "cco:Artifact", "bfo:0000015",
+                "cco:ont00000995", "bfo:0000015",
             ])
             for slot in tmpl.slot_types.keys()
         }

@@ -25,33 +25,33 @@ OUT = Path("build/foundation")
 
 # WITSML 2.0 data objects → BFO/CCO genus + our gloss (energy/drilling). Apache (PDS); names drawn + cited.
 WITSML = {
-    "Well": ("bfo:site", "a well — a constructed feature for accessing subsurface hydrocarbons"),
-    "Wellbore": ("bfo:site", "a wellbore — the drilled hole within a well"),
-    "WellboreGeometry": ("bfo:spatial_region", "the as-built geometry of a wellbore"),
-    "Target": ("bfo:site", "a subsurface drilling target"),
-    "Trajectory": ("bfo:spatial_region", "the path of a wellbore through space"),
-    "TrajectoryStation": ("bfo:spatial_region", "a surveyed point on a wellbore trajectory"),
-    "Log": ("cco:ICE", "a well log — a record of measurements along a wellbore"),
-    "WellLog": ("cco:ICE", "a well-log information object"),
-    "MudLog": ("cco:ICE", "a record of formation/cuttings observations made while drilling"),
-    "ChannelSet": ("cco:ICE", "a set of indexed measurement channels"),
-    "Channel": ("cco:Measurement", "a single indexed measurement series along a wellbore"),
-    "FormationMarker": ("cco:ICE", "a geological formation pick/marker"),
-    "OpsReport": ("cco:ICE", "a drilling operations report"),
-    "FluidsReport": ("cco:ICE", "a drilling-fluids report"),
-    "BhaRun": ("cco:ICE", "a record of a bottom-hole-assembly run"),
-    "Risk": ("cco:ICE", "a recorded operational risk"),
-    "Message": ("cco:ICE", "an operational message/log entry"),
-    "DrillReport": ("cco:DirectiveICE", "a drilling report against a program"),
-    "SurveyProgram": ("cco:DirectiveICE", "a planned wellbore survey program"),
-    "Rig": ("cco:Artifact", "a drilling rig — the equipment assembly that drills a well"),
-    "Tubular": ("cco:Artifact", "a tubular component (drill pipe, casing) in the wellbore"),
-    "Bit": ("cco:Artifact", "a drill bit"),
-    "CementJob": ("bfo:process", "a cementing operation in the wellbore"),
-    "StimJob": ("bfo:process", "a well-stimulation operation"),
+    "Well": ("bfo:0000029", "a well — a constructed feature for accessing subsurface hydrocarbons"),
+    "Wellbore": ("bfo:0000029", "a wellbore — the drilled hole within a well"),
+    "WellboreGeometry": ("bfo:0000006", "the as-built geometry of a wellbore"),
+    "Target": ("bfo:0000029", "a subsurface drilling target"),
+    "Trajectory": ("bfo:0000006", "the path of a wellbore through space"),
+    "TrajectoryStation": ("bfo:0000006", "a surveyed point on a wellbore trajectory"),
+    "Log": ("cco:ont00000958", "a well log — a record of measurements along a wellbore"),
+    "WellLog": ("cco:ont00000958", "a well-log information object"),
+    "MudLog": ("cco:ont00000958", "a record of formation/cuttings observations made while drilling"),
+    "ChannelSet": ("cco:ont00000958", "a set of indexed measurement channels"),
+    "Channel": ("cco:ont00000853", "a single indexed measurement series along a wellbore"),
+    "FormationMarker": ("cco:ont00000958", "a geological formation pick/marker"),
+    "OpsReport": ("cco:ont00000958", "a drilling operations report"),
+    "FluidsReport": ("cco:ont00000958", "a drilling-fluids report"),
+    "BhaRun": ("cco:ont00000958", "a record of a bottom-hole-assembly run"),
+    "Risk": ("cco:ont00000958", "a recorded operational risk"),
+    "Message": ("cco:ont00000958", "an operational message/log entry"),
+    "DrillReport": ("cco:ont00000965", "a drilling report against a program"),
+    "SurveyProgram": ("cco:ont00000965", "a planned wellbore survey program"),
+    "Rig": ("cco:ont00000995", "a drilling rig — the equipment assembly that drills a well"),
+    "Tubular": ("cco:ont00000995", "a tubular component (drill pipe, casing) in the wellbore"),
+    "Bit": ("cco:ont00000995", "a drill bit"),
+    "CementJob": ("bfo:0000015", "a cementing operation in the wellbore"),
+    "StimJob": ("bfo:0000015", "a well-stimulation operation"),
 }
 
-# BRL-CAD CSG solid primitives → bfo:spatial_region (shapes). US-gov/LGPL/BSD; names drawn + cited.
+# BRL-CAD CSG solid primitives → bfo:0000006 (shapes). US-gov/LGPL/BSD; names drawn + cited.
 BRLCAD_PRIMS = {
     "arb8": "an arbitrary convex polyhedron of up to 8 vertices",
     "arbn": "an arbitrary convex polyhedron bounded by N planes",
@@ -70,11 +70,11 @@ BRLCAD_PRIMS = {
 }
 # BRL-CAD CSG combination machinery → the boolean tree.
 BRLCAD_CSG = {
-    "region": ("bfo:spatial_region", "a CSG region — a combination of primitives forming a solid with material"),
-    "combination": ("bfo:spatial_region", "a CSG combination — a boolean tree over primitives/sub-combinations"),
-    "BooleanUnion": ("bfo:process", "the CSG boolean union of two solids"),
-    "BooleanIntersection": ("bfo:process", "the CSG boolean intersection of two solids"),
-    "BooleanDifference": ("bfo:process", "the CSG boolean difference (subtraction) of two solids"),
+    "region": ("bfo:0000006", "a CSG region — a combination of primitives forming a solid with material"),
+    "combination": ("bfo:0000006", "a CSG combination — a boolean tree over primitives/sub-combinations"),
+    "BooleanUnion": ("bfo:0000015", "the CSG boolean union of two solids"),
+    "BooleanIntersection": ("bfo:0000015", "the CSG boolean intersection of two solids"),
+    "BooleanDifference": ("bfo:0000015", "the CSG boolean difference (subtraction) of two solids"),
 }
 
 WITSML_PROV = ("WITSML 2.0 data model (Energistics; permissive Apache PDS distribution, github.com/pds-technology); "
@@ -96,7 +96,7 @@ def main() -> None:
     witsml = [{"name": n, "kind": "object", "supertypes": [], "genus": g, "gloss": d,
                "domain": "energy", "source": "witsml", "provenance": WITSML_PROV}
               for n, (g, d) in WITSML.items()]
-    brlcad = [{"name": n, "kind": "primitive", "supertypes": [], "genus": "bfo:spatial_region", "gloss": d,
+    brlcad = [{"name": n, "kind": "primitive", "supertypes": [], "genus": "bfo:0000006", "gloss": d,
                "domain": "csg-design", "source": "brlcad", "provenance": BRLCAD_PROV}
               for n, d in BRLCAD_PRIMS.items()]
     brlcad += [{"name": n, "kind": "csg", "supertypes": [], "genus": g, "gloss": d,

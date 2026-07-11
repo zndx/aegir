@@ -433,7 +433,7 @@ _BFO_GLOSS = {
     "bfo:0000019": "quality", "bfo:0000020": "specifically dependent continuant",
     "bfo:0000023": "role", "bfo:0000027": "object aggregate", "bfo:0000030": "object",
     "bfo:0000031": "generically dependent continuant", "bfo:0000040": "material entity",
-    "bfo:0000050": "part of", "bfo:0000051": "has part", "bfo:0000052": "inheres in",
+    "bfo:0000050": "part of", "bfo:0000051": "has part", "bfo:0000197": "inheres in",  # coined-ok: recognizes legacy/external relation IRIs (translation table, not minted)
     "bfo:0000054": "realized in", "bfo:0000055": "realizes",
     "bfo:0000056": "participates in", "bfo:0000057": "has participant",
     "bfo:0000066": "occurs in",

@@ -31,17 +31,17 @@ from aegir.ontology.ddl import render_ddl, template_to_table  # noqa: E402
 # the gate predicts the re-audit (sibling import; generate_ontology runs from scripts/).
 from ontology_coverage_audit import template_embedding_text  # noqa: E402
 
-ANCHORS = {"bfo:Process", "bfo:IndependentContinuant", "cco:Artifact",
-           "cco:InformationContentEntity", "cco:DescriptiveICE", "cco:DirectiveICE",
-           "cco:DesignativeICE"}
+ANCHORS = {"bfo:0000015", "bfo:0000004", "cco:ont00000995",
+           "cco:ont00000958", "cco:ont00000853", "cco:ont00000965",
+           "cco:ont00000686"}
 SLOT_RE = re.compile(r"\{(?P<name>\w+):(?P<type>Class|ObjectProperty|DataProperty|Individual)(?::[^}]+)?\}")
 JSON_RE = re.compile(r"```json\s*(.*?)```", re.S)
 
 SLOT_DSL = (
     "Slot DSL: write each axiom as OWL Manchester syntax with typed slots {name:Type} where Type "
-    "is Class | ObjectProperty | DataProperty | Individual. Use BFO/CCO/sdg IRIs (bfo:Process, "
-    "cco:Artifact, cco:DescriptiveICE, sdg:producesMeasurement, …) for fixed terms and {slots} for "
-    "the variable concepts. e.g. 'Class: {X:Class} SubClassOf: cco:Artifact, {p:ObjectProperty} some {Y:Class}'."
+    "is Class | ObjectProperty | DataProperty | Individual. Use BFO/CCO/sdg IRIs (bfo:0000015, "
+    "cco:ont00000995, cco:ont00000853, sdg:producesMeasurement, …) for fixed terms and {slots} for "
+    "the variable concepts. e.g. 'Class: {X:Class} SubClassOf: cco:ont00000995, {p:ObjectProperty} some {Y:Class}'."
 )
 
 
@@ -149,7 +149,7 @@ def gate_deeponto(t: CatalogTemplate) -> tuple[bool, str]:
             return False, "no verbalization produced"
         # Non-triviality: require an asserted COMPLEX class (restriction /
         # intersection / cardinality), not a bare atomic subsumption. A trivial
-        # "X SubClassOf: cco:Artifact" verbalizes ("X is an artifact") but carries
+        # "X SubClassOf: cco:ont00000995" verbalizes ("X is an artifact") but carries
         # no relational structure — reject it so generated constructs are
         # genuinely non-trivial AND DeepOnto-verbalized.
         if not r.is_complex:

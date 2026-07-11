@@ -87,7 +87,7 @@ def ensure_types():
             class_defs.append(cdef(n, f"Domain: table realized from ontology family {f}"))
     # CPA: column property
     for n, d in [("cpa_complex_axiom", "CPA: column from a complex (DeepOnto) axiom template"),
-                 ("cpa_bfo_process", "CPA: table anchored under bfo:Process")]:
+                 ("cpa_bfo_process", "CPA: table anchored under bfo:0000015")]:
         if n not in existing:
             class_defs.append(cdef(n, d))
 
@@ -295,7 +295,7 @@ def classify(base, base_tbl_guid, base_col_guid):
         tg = base_tbl_guid.get(tid)
         if tg:
             by_type.setdefault(f"domain_{fam_label(b['fam'])}", []).append(tg)
-            if b["bfo"] == "bfo:Process":
+            if b["bfo"] == "bfo:0000015":
                 by_type.setdefault("cpa_bfo_process", []).append(tg)
         for slot, owl in b["owl"].items():
             cg = base_col_guid.get(tid, {}).get(slot)

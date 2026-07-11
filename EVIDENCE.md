@@ -139,7 +139,7 @@ throughout — reasoner (formal), corpus (empirical-fit), held-out H-Net+RWKV (b
      time_order_violations == 0.
   3. **column-name de-canning** (`check_decanning_entropy` vs SchemaPile p10): canned_anchors == 0, floored
      on column-name **entropy `h_colset`** (NOT raw `distinct_ratio`). Rationale (Comp 4): ontology-grounded
-     tables legitimately share typed attributes (correct-by-construction — every `cco:Artifact` bears an
+     tables legitimately share typed attributes (correct-by-construction — every `cco:ont00000995` bears an
      identifier/version), which structurally depresses `distinct_ratio` without being "canned"; `h_colset` is
      the vocabulary-collapse metric the scorer names, and our tables match SchemaPile's *median* on it.
      `distinct_ratio` stays reported as transparent context (the residual, structurally-bounded gap).
@@ -490,7 +490,7 @@ topic-distribution coverage). Artifacts: `evidence/e5/pilot.candidate.json`, `ev
 
 **Gate hardening (2026-06-15).** `gate_deeponto` now also requires a **non-trivial** construct — an
 asserted COMPLEX class (`onto.get_asserted_complex_classes()` non-empty: restriction / intersection /
-cardinality), not a bare atomic subsumption. A trivial `X SubClassOf: cco:Artifact` verbalizes ("X is an
+cardinality), not a bare atomic subsumption. A trivial `X SubClassOf: cco:ont00000995` verbalizes ("X is an
 artifact") but carries no relational structure; now rejected, so generated constructs are genuinely
 non-trivial AND DeepOnto-verbalized (Manchester required to verbalize). Verified: atomic
 (`subclass_to_artifact`, `subclass_basic`) → REJECT; restriction (`artifact_with_existential`) → PASS.
@@ -517,7 +517,7 @@ injected), `gate` = ContractGate (`scripts/mediate_gate.py`, the committed verif
 the one-shot failed.** On t124 (herbal medicine; one-shot R1 ≈0.007, Δ+0.003 CI-touching-0): the spine
 **promoted in 1 iteration**, r1_on **0.387**, ci_low 0.385 (CI-clean), full conjunctive contract passed
 (DeepOnto verbalize+complex, polyglot DDL, novelty, schema, R1). Construct:
-`anti_inflammatory_herbal_plant_pharmaceutics_review_article` — complex, cco:DescriptiveICE-anchored,
+`anti_inflammatory_herbal_plant_pharmaceutics_review_article` — complex, cco:ont00000853-anchored,
 topic-specific (`MedicinalHerbalPlant`, `reviewsMedicinalHerbalPlant`). The difference from the one-shot
 is the contract-aware prompt (the agent is TOLD the contract + the topic vocabulary), not the model.
 **Real reasoning on the critical path — no simulation (the deterministic fixture is logic-only).** The
@@ -532,8 +532,8 @@ minimal BFO/CCO top-level disjointness grounding (`Occurrent ⊥ Continuant`, th
 the two disjoint categories) and checks `getUnsatisfiableClasses()` — the meaningful TBox check, since a
 TBox with an unsatisfiable class stays globally *consistent* (so `isConsistent()` alone misses it).
 **Instrument validity proven**: the gate ground-truth-rejects a hand-crafted cross-category construct
-(`X SubClassOf bfo:Process, cco:Artifact` → `X` unsatisfiable) and passes a coherent one
-(`X SubClassOf cco:DescriptiveICE, p some Y`). Wired into `ContractGate` as the `consistent` signal
+(`X SubClassOf bfo:0000015, cco:ont00000995` → `X` unsatisfiable) and passes a coherent one
+(`X SubClassOf cco:ont00000853, p some Y`). Wired into `ContractGate` as the `consistent` signal
 (both real constructs — the `artifact_with_existential` seed and the generated journal construct — report
 `consistent: true`); the spine (`fsm_rete.py`) gains an `inconsistent` rule → `fix_consistency` objective,
 `contract_satisfied` now *requires* `consistent`, and `mediate_acp.py`'s mint prompt carries the coherence

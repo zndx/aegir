@@ -68,7 +68,7 @@ Quality profiles emitted:
   ("xqzpf", "blkrn", etc.) — verbalizes but content is
   semantically meaningless.
 - ``bad_one_axiom_per_class.ttl`` — 10 classes each with single
-  ``SubClassOf cco:Artifact`` axiom; no relations among them.
+  ``SubClassOf cco:ont00000995`` axiom; no relations among them.
 """
 
 from __future__ import annotations
@@ -107,7 +107,7 @@ def good_lab_measurement() -> str:
 ex:Sample a owl:Class ;
     rdfs:label "specimen sample" ;
     skos:definition "A specimen taken from a subject for analysis." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:BloodSample a owl:Class ;
     rdfs:label "blood sample" ;
@@ -117,7 +117,7 @@ ex:BloodSample a owl:Class ;
 ex:Instrument a owl:Class ;
     rdfs:label "laboratory instrument" ;
     skos:definition "A device used for laboratory measurements." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:Spectrometer a owl:Class ;
     rdfs:label "spectrometer" ;
@@ -130,7 +130,7 @@ ex:Spectrometer a owl:Class ;
 ex:Measurement a owl:Class ;
     rdfs:label "measurement" ;
     skos:definition "A quantitative observation produced by a laboratory instrument." ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:SpectralReading a owl:Class ;
     rdfs:label "spectral reading" ;
@@ -143,7 +143,7 @@ ex:SpectralReading a owl:Class ;
 ex:Unit a owl:Class ;
     rdfs:label "unit of measurement" ;
     skos:definition "A standard quantity used to express measurements." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:Nanometer a owl:Class ;
     rdfs:label "nanometer unit" ;
@@ -167,7 +167,7 @@ ex:LabRun a owl:Class ;
 ex:CalibrationProtocol a owl:Class ;
     rdfs:label "calibration protocol" ;
     skos:definition "A directive specifying instrument calibration steps." ;
-    rdfs:subClassOf cco:DirectiveICE .
+    rdfs:subClassOf cco:ont00000965 .
 
 ex:QualityControl a owl:Class ;
     rdfs:label "quality control check" ;
@@ -201,7 +201,7 @@ def good_database_metadata() -> str:
 ex:Dataset a owl:Class ;
     rdfs:label "dataset" ;
     skos:definition "A collection of structured data records organized as a table or file." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:Table a owl:Class ;
     rdfs:label "database table" ;
@@ -214,7 +214,7 @@ ex:Table a owl:Class ;
 ex:Column a owl:Class ;
     rdfs:label "database column" ;
     skos:definition "A typed column within a relational table." ;
-    rdfs:subClassOf cco:DesignativeICE ;
+    rdfs:subClassOf cco:ont00000686 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:hasDataType ;
                       owl:someValuesFrom ex:DataType ] .
@@ -222,7 +222,7 @@ ex:Column a owl:Class ;
 ex:DataType a owl:Class ;
     rdfs:label "column data type" ;
     skos:definition "A type specification for column values (varchar, integer, decimal, timestamp)." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:VarcharType a owl:Class ;
     rdfs:label "varchar data type" ;
@@ -243,7 +243,7 @@ ex:TimestampType a owl:Class ;
 ex:Constraint a owl:Class ;
     rdfs:label "table constraint" ;
     skos:definition "A directive that constrains valid values within a column or relation between tables." ;
-    rdfs:subClassOf cco:DirectiveICE ;
+    rdfs:subClassOf cco:ont00000965 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:appliesTo ;
                       owl:someValuesFrom ex:Column ] .
@@ -315,7 +315,7 @@ ex:DatabaseSpan a owl:Class ;
 ex:Service a owl:Class ;
     rdfs:label "service" ;
     skos:definition "A deployable unit of software that emits telemetry." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:CheckoutService a owl:Class ;
     rdfs:label "checkout service" ;
@@ -324,7 +324,7 @@ ex:CheckoutService a owl:Class ;
 ex:AttributeKey a owl:Class ;
     rdfs:label "telemetry attribute key" ;
     skos:definition "A typed key naming a telemetry attribute (http.method, db.system, etc.)." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:HttpMethod a owl:Class ;
     rdfs:label "http method attribute" ;
@@ -337,7 +337,7 @@ ex:DbSystem a owl:Class ;
 ex:Resource a owl:Class ;
     rdfs:label "telemetry resource" ;
     skos:definition "An entity describing the deployment unit emitting telemetry." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:KubernetesPod a owl:Class ;
     rdfs:label "kubernetes pod resource" ;
@@ -359,7 +359,7 @@ def good_governance_policy() -> str:
 ex:Policy a owl:Class ;
     rdfs:label "governance policy" ;
     skos:definition "A directive that governs handling of resources within an organization." ;
-    rdfs:subClassOf cco:DirectiveICE ;
+    rdfs:subClassOf cco:ont00000965 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:appliesTo ;
                       owl:minCardinality 1 ] .
@@ -380,7 +380,7 @@ ex:AccessControlPolicy a owl:Class ;
 ex:Control a owl:Class ;
     rdfs:label "compliance control" ;
     skos:definition "A directive that constrains operations to ensure compliance." ;
-    rdfs:subClassOf cco:DirectiveICE .
+    rdfs:subClassOf cco:ont00000965 .
 
 ex:EncryptionControl a owl:Class ;
     rdfs:label "encryption control" ;
@@ -401,14 +401,14 @@ ex:Audit a owl:Class ;
 ex:Attestation a owl:Class ;
     rdfs:label "compliance attestation" ;
     skos:definition "A formal declaration that controls have been implemented." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:supports ;
                       owl:someValuesFrom ex:Control ] .
 
 ex:Dataset a owl:Class ;
     rdfs:label "governed dataset" ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:appliesTo a owl:ObjectProperty ;
     rdfs:label "applies to" .
@@ -432,7 +432,7 @@ ex:ClinicalTrial a owl:Class ;
 ex:Patient a owl:Class ;
     rdfs:label "patient" ;
     skos:definition "A human research participant from whom samples are collected." ;
-    rdfs:subClassOf cco:Person .
+    rdfs:subClassOf cco:ont00001262 .
 
 ex:Visit a owl:Class ;
     rdfs:label "patient visit" ;
@@ -442,7 +442,7 @@ ex:Visit a owl:Class ;
 ex:BiologicalSample a owl:Class ;
     rdfs:label "biological sample" ;
     skos:definition "A specimen of biological tissue, fluid, or cell material taken for analysis." ;
-    rdfs:subClassOf cco:Artifact ;
+    rdfs:subClassOf cco:ont00000995 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:collectedFrom ;
                       owl:someValuesFrom ex:Patient ] .
@@ -474,7 +474,7 @@ ex:GenotypingAssay a owl:Class ;
 ex:LabResult a owl:Class ;
     rdfs:label "laboratory result" ;
     skos:definition "A measurement value produced by a laboratory assay." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:producedBy ;
                       owl:someValuesFrom ex:Assay ] .
@@ -482,7 +482,7 @@ ex:LabResult a owl:Class ;
 ex:Diagnosis a owl:Class ;
     rdfs:label "clinical diagnosis" ;
     skos:definition "A medical interpretation derived from clinical findings." ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:hasParticipant a owl:ObjectProperty ; rdfs:label "has participant" .
 ex:collectedFrom a owl:ObjectProperty ; rdfs:label "collected from" .
@@ -498,7 +498,7 @@ def good_macrobase_outliers() -> str:
 ex:OutlierClaim a owl:Class ;
     rdfs:label "outlier explanation claim" ;
     skos:definition "A statistical explanation pointing to attribute combinations that distinguish anomalies." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:hasAttributeSet ;
                       owl:minCardinality 1 ] .
@@ -506,7 +506,7 @@ ex:OutlierClaim a owl:Class ;
 ex:AttributeSet a owl:Class ;
     rdfs:label "explanation attribute set" ;
     skos:definition "A combination of attribute values that jointly characterize an outlier population." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:hasAttribute ;
                       owl:minCardinality 1 ] .
@@ -514,7 +514,7 @@ ex:AttributeSet a owl:Class ;
 ex:Lift a owl:Class ;
     rdfs:label "statistical lift score" ;
     skos:definition "A ratio of foreground to background frequencies for an attribute set." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:ofAttributeSet ;
                       owl:someValuesFrom ex:AttributeSet ] .
@@ -522,14 +522,14 @@ ex:Lift a owl:Class ;
 ex:Aggregation a owl:Class ;
     rdfs:label "aggregation" ;
     skos:definition "A summary statistic over a group of underlying measurements." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:aggregates ;
                       owl:someValuesFrom ex:Measurement ] .
 
 ex:Measurement a owl:Class ;
     rdfs:label "measurement" ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:LatencyMeasurement a owl:Class ;
     rdfs:label "latency measurement" ;
@@ -585,28 +585,28 @@ ex:DatabaseClientSpan a owl:Class ;
 ex:HttpMethodAttribute a owl:Class ;
     rdfs:label "http.method attribute" ;
     skos:definition "An attribute key naming the HTTP method (GET, POST, PUT, DELETE)." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:DbSystemAttribute a owl:Class ;
     rdfs:label "db.system attribute" ;
     skos:definition "An attribute key naming the database system (postgres, mysql, mongodb)." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:LatencyMetric a owl:Class ;
     rdfs:label "latency metric" ;
     skos:definition "A measurement of operation duration in milliseconds." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:hasUnit ;
                       owl:someValuesFrom ex:Millisecond ] .
 
 ex:RequestCountMetric a owl:Class ;
     rdfs:label "request count metric" ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:Millisecond a owl:Class ;
     rdfs:label "millisecond unit" ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:hasAttribute a owl:ObjectProperty ; rdfs:label "has attribute" .
 ex:hasUnit a owl:ObjectProperty ; rdfs:label "has unit" .
@@ -628,7 +628,7 @@ ex:ObservationEvent a owl:Class ;
 ex:Measurement a owl:Class ;
     rdfs:label "measurement value" ;
     skos:definition "A quantitative observation of a property of an entity at a moment in time." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:hasValue ;
                       owl:cardinality 1 ] ;
@@ -638,17 +638,17 @@ ex:Measurement a owl:Class ;
 
 ex:MeasurementUnit a owl:Class ;
     rdfs:label "measurement unit" ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:Timestamp a owl:Class ;
     rdfs:label "observation timestamp" ;
     skos:definition "The temporal coordinate at which an observation was recorded." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:Sensor a owl:Class ;
     rdfs:label "measurement sensor" ;
     skos:definition "A device that produces measurements for a designated property." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:TemperatureSensor a owl:Class ;
     rdfs:label "temperature sensor" ;
@@ -671,7 +671,7 @@ def good_dataquality_profile() -> str:
 ex:ColumnProfile a owl:Class ;
     rdfs:label "column profile" ;
     skos:definition "A statistical summary of values in a database column." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:hasNullRate ;
                       owl:cardinality 1 ] ;
@@ -682,17 +682,17 @@ ex:ColumnProfile a owl:Class ;
 ex:NullRate a owl:Class ;
     rdfs:label "null rate statistic" ;
     skos:definition "The fraction of values in a column that are null or missing." ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:Cardinality a owl:Class ;
     rdfs:label "cardinality statistic" ;
     skos:definition "The number of distinct values in a column." ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:DistributionSummary a owl:Class ;
     rdfs:label "value distribution summary" ;
     skos:definition "A histogram or quantile sketch describing how values are distributed." ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:NumericProfile a owl:Class ;
     rdfs:label "numeric column profile" ;
@@ -718,7 +718,7 @@ def good_iam_security() -> str:
 ex:Identity a owl:Class ;
     rdfs:label "identity" ;
     skos:definition "An identifier representing a human or service principal in an access control system." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:UserIdentity a owl:Class ;
     rdfs:label "user identity" ;
@@ -731,7 +731,7 @@ ex:ServiceIdentity a owl:Class ;
 ex:Role a owl:Class ;
     rdfs:label "access role" ;
     skos:definition "A named collection of permissions granted to identities." ;
-    rdfs:subClassOf cco:DesignativeICE ;
+    rdfs:subClassOf cco:ont00000686 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:hasPermission ;
                       owl:minCardinality 1 ] .
@@ -739,7 +739,7 @@ ex:Role a owl:Class ;
 ex:Permission a owl:Class ;
     rdfs:label "permission" ;
     skos:definition "An authorized operation on a target resource." ;
-    rdfs:subClassOf cco:DirectiveICE .
+    rdfs:subClassOf cco:ont00000965 .
 
 ex:ReadPermission a owl:Class ;
     rdfs:label "read permission" ;
@@ -756,7 +756,7 @@ ex:DeletePermission a owl:Class ;
 ex:AccessPolicy a owl:Class ;
     rdfs:label "access policy" ;
     skos:definition "A directive specifying which identities may perform which operations on which resources." ;
-    rdfs:subClassOf cco:DirectiveICE ;
+    rdfs:subClassOf cco:ont00000965 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:grantsRole ;
                       owl:someValuesFrom ex:Role ] .
@@ -773,7 +773,7 @@ def good_workflow_orchestration() -> str:
 ex:Job a owl:Class ;
     rdfs:label "data pipeline job" ;
     skos:definition "A configured data processing workflow definition." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:Run a owl:Class ;
     rdfs:label "job run" ;
@@ -806,7 +806,7 @@ ex:LoadStep a owl:Class ;
 ex:Trigger a owl:Class ;
     rdfs:label "job trigger" ;
     skos:definition "An event or schedule that causes a job to run." ;
-    rdfs:subClassOf cco:DirectiveICE .
+    rdfs:subClassOf cco:ont00000965 .
 
 ex:ScheduleTrigger a owl:Class ;
     rdfs:label "schedule trigger" ;
@@ -828,12 +828,12 @@ def good_metadata_governance() -> str:
 ex:Tag a owl:Class ;
     rdfs:label "metadata tag" ;
     skos:definition "A classification label attached to a data resource." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:Classification a owl:Class ;
     rdfs:label "data classification" ;
     skos:definition "A categorization of data sensitivity, ownership, or domain." ;
-    rdfs:subClassOf cco:DescriptiveICE ;
+    rdfs:subClassOf cco:ont00000853 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:atTier ;
                       owl:someValuesFrom ex:SensitivityTier ] .
@@ -841,7 +841,7 @@ ex:Classification a owl:Class ;
 ex:SensitivityTier a owl:Class ;
     rdfs:label "sensitivity tier" ;
     skos:definition "A graded level of data sensitivity." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:PublicTier a owl:Class ;
     rdfs:label "public tier" ;
@@ -858,16 +858,16 @@ ex:RestrictedTier a owl:Class ;
 ex:DataOwner a owl:Class ;
     rdfs:label "data owner" ;
     skos:definition "An identity accountable for governance of a data resource." ;
-    rdfs:subClassOf cco:Person .
+    rdfs:subClassOf cco:ont00001262 .
 
 ex:Steward a owl:Class ;
     rdfs:label "data steward" ;
     skos:definition "An identity responsible for day-to-day operational governance of data." ;
-    rdfs:subClassOf cco:Person .
+    rdfs:subClassOf cco:ont00001262 .
 
 ex:Glossary a owl:Class ;
     rdfs:label "business glossary entry" ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:atTier a owl:ObjectProperty ; rdfs:label "at tier" .
 """
@@ -880,7 +880,7 @@ def good_sample_provenance() -> str:
 ex:Specimen a owl:Class ;
     rdfs:label "biological specimen" ;
     skos:definition "A physical sample of biological material under tracked custody." ;
-    rdfs:subClassOf cco:Artifact ;
+    rdfs:subClassOf cco:ont00000995 ;
     rdfs:subClassOf [ a owl:Restriction ;
                       owl:onProperty ex:wasDerivedFrom ;
                       owl:maxCardinality 1 ] .
@@ -914,7 +914,7 @@ ex:CustodyTransfer a owl:Class ;
 ex:Operator a owl:Class ;
     rdfs:label "laboratory operator" ;
     skos:definition "A person who performs sample processing or analysis." ;
-    rdfs:subClassOf cco:Person .
+    rdfs:subClassOf cco:ont00001262 .
 
 ex:wasDerivedFrom a owl:ObjectProperty ; rdfs:label "was derived from" .
 ex:produced a owl:ObjectProperty ; rdfs:label "produced" .
@@ -929,7 +929,7 @@ def good_ebpf_observability() -> str:
 ex:EbpfProgram a owl:Class ;
     rdfs:label "ebpf program" ;
     skos:definition "A small kernel-attachable program that captures observability events." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:KprobeProgram a owl:Class ;
     rdfs:label "kprobe ebpf program" ;
@@ -942,12 +942,12 @@ ex:XdpProgram a owl:Class ;
 ex:KernelHook a owl:Class ;
     rdfs:label "kernel hook attachment point" ;
     skos:definition "A site in the kernel where an ebpf program may be attached." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:Syscall a owl:Class ;
     rdfs:label "system call" ;
     skos:definition "An entry point through which a process invokes kernel functionality." ;
-    rdfs:subClassOf cco:DesignativeICE .
+    rdfs:subClassOf cco:ont00000686 .
 
 ex:OpenSyscall a owl:Class ;
     rdfs:label "open system call" ;
@@ -967,7 +967,7 @@ ex:KernelEvent a owl:Class ;
 ex:Map a owl:Class ;
     rdfs:label "ebpf map" ;
     skos:definition "An in-kernel data structure shared between an ebpf program and userspace." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:capturedBy a owl:ObjectProperty ; rdfs:label "captured by" .
 ex:atHook a owl:ObjectProperty ; rdfs:label "at hook" .
@@ -981,28 +981,28 @@ def good_sysml_blocks() -> str:
 ex:SystemBlock a owl:Class ;
     rdfs:label "system block" ;
     skos:definition "A modular system element that can be parameterized and connected to other blocks." ;
-    rdfs:subClassOf cco:Artifact ;
+    rdfs:subClassOf cco:ont00000995 ;
     rdfs:subClassOf [ a owl:Restriction ;
-                      owl:onProperty bfo:0000051 ;
+                      owl:onProperty bfo:0000051 ;  # coined-ok: legacy/RO relation IRI — VERSION_DRIFT, resolved in-context by the sweep
                       owl:minCardinality 0 ] .
 
 ex:Part a owl:Class ;
     rdfs:label "system part" ;
     skos:definition "A nested constituent of a containing system block." ;
-    rdfs:subClassOf cco:Artifact ;
+    rdfs:subClassOf cco:ont00000995 ;
     rdfs:subClassOf [ a owl:Restriction ;
-                      owl:onProperty bfo:0000050 ;
+                      owl:onProperty bfo:0000050 ;  # coined-ok: legacy/RO relation IRI — VERSION_DRIFT, resolved in-context by the sweep
                       owl:someValuesFrom ex:SystemBlock ] .
 
 ex:Port a owl:Class ;
     rdfs:label "block port" ;
     skos:definition "An interface point on a system block enabling connection to other blocks." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:Connection a owl:Class ;
     rdfs:label "block connection" ;
     skos:definition "A relationship linking ports of different system blocks." ;
-    rdfs:subClassOf cco:Artifact .
+    rdfs:subClassOf cco:ont00000995 .
 
 ex:Action a owl:Class ;
     rdfs:label "system action" ;
@@ -1012,12 +1012,12 @@ ex:Action a owl:Class ;
 ex:State a owl:Class ;
     rdfs:label "system state" ;
     skos:definition "A condition of the system at a given point in time." ;
-    rdfs:subClassOf cco:DescriptiveICE .
+    rdfs:subClassOf cco:ont00000853 .
 
 ex:Requirement a owl:Class ;
     rdfs:label "system requirement" ;
     skos:definition "A directive specifying a property the system must satisfy." ;
-    rdfs:subClassOf cco:DirectiveICE .
+    rdfs:subClassOf cco:ont00000965 .
 
 ex:VerificationCase a owl:Class ;
     rdfs:label "verification case" ;
@@ -1283,16 +1283,16 @@ def bad_one_axiom_per_class() -> str:
     return PREFIXES + """
 <http://example.org/test/bad-one-axiom> a owl:Ontology .
 
-ex:A1 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A2 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A3 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A4 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A5 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A6 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A7 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A8 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A9 a owl:Class ; rdfs:subClassOf cco:Artifact .
-ex:A10 a owl:Class ; rdfs:subClassOf cco:Artifact .
+ex:A1 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A2 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A3 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A4 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A5 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A6 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A7 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A8 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A9 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
+ex:A10 a owl:Class ; rdfs:subClassOf cco:ont00000995 .
 """
 
 

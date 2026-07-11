@@ -69,6 +69,7 @@ def _parse(text: str) -> list:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--rounds", type=int, default=3)
+    ap.add_argument("--batch", type=int, default=4, help="concepts per engine call (small: reasoning-token headroom)")
     ap.add_argument("--capability", default="instruct")
     ap.add_argument("--temperature", type=float, default=0.3)
     args = ap.parse_args()
@@ -100,8 +101,8 @@ def main() -> int:
         # BATCH small: Qwen3.6 spends ~4-9k reasoning tokens PER concept, so a big batch overflows max_tokens
         # and truncates before the content json emits (silently → 0 proposed). 4/call keeps content in budget.
         proposed: dict[str, tuple] = {}
-        for bi in range(0, len(pending), 4):
-            chunk = pending[bi:bi + 4]
+        for bi in range(0, len(pending), args.batch):
+            chunk = pending[bi:bi + args.batch]
             lines = []
             for f in chunk:
                 ctx = ", ".join(sorted(set(contexts.get(f, ["(a referenced domain concept)"])))[:4])

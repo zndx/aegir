@@ -41,7 +41,7 @@ _SYS = (
     "the stated relations), KEEP `SubClassOf:` and say why.\n"
     "• role — if the concept is anti-rigid AND relational (supplier / operator / reviewer / participant: its "
     "bearer could stop being it and still exist), re-model it as a BFO ROLE: `Class: {Head} SubClassOf: "
-    "bfo:0000023, bfo:0000052 some {Bearer:Class}` (inheres-in a bearer) and, where a process is implied, "
+    "bfo:0000023, bfo:0000197 some {Bearer:Class}` (inheres-in a bearer) and, where a process is implied, "
     "`bfo:0000054 some {Process:Class}` (realized-in) — NOT a rigid subclass of an Agent/Continuant kind.\n"
     "Hard rules: PRESERVE the `{Name:Class}` slot DSL and the existing properties/anchors (keep the same slot "
     "names); change ONLY the operator (SubClassOf→EquivalentTo) and, if you refine, ADD slots/restrictions — "
@@ -100,7 +100,7 @@ def validate_detailed(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict
     out: dict[str, tuple[bool, str]] = {}
     for tid, man in candidates:
         # (0) EXTERNAL-NAMESPACE INTEGRITY (RH 2026-07-11): a bfo:/cco: reference is a CLAIM the IRI exists in the
-        # current authoritative ontology. LLMs coin fictional external terms (cco:DirectiveICE); those are tampering
+        # current authoritative ontology. LLMs coin fictional external terms (cco:ont00000965); those are tampering
         # and are REJECTED here, hard, before parse — the agent must use a real IRI or coin in sdg:. ([[bfo_cco_grounding_mandate]])
         ext = verify_external_refs(man)
         if ext:
@@ -130,7 +130,7 @@ def validate_detailed(candidates: "list[tuple[str, str]]", by_id: dict) -> "dict
                 h = re.search(r"Class:\s*\{(\w+)", man) or re.search(r"Class:\s*<[^#>]*#(\w+)>", man)
                 if h and h.group(1) in unsat_names:
                     hint = ("realized_in (bfo:0000054) needs a Process/occurrent filler" if "0000054" in man
-                            else "inheres_in (bfo:0000052) needs an independent-continuant bearer" if "0000052" in man
+                            else "inheres_in (bfo:0000197) needs an independent-continuant bearer" if "0000052" in man
                             else "check BFO role discipline + CCO disjointness")
                     out[tid] = (False, f"unsatisfiable vs BFO+π(CCO): the class can have no instances — {hint}; "
                                        "re-author the offending conjunct")

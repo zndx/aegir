@@ -1,6 +1,6 @@
 """build_cco_module.py — π(CCO): the Horn projection of CCO over the fragment that constrains our domain.
 
-CCO's VALUE to us is its subsumption taxonomy (grounds our cco:ont refs to BFO) + its class disjointness
+CCO's VALUE to us is its subsumption taxonomy (grounds our cco:ont refs to BFO) + its class disjointness  # coined-ok: prose/placeholder, not a real ref
 (catches a grounding landing under two disjoint branches). Both are Horn — deterministic, linear for the
 hypertableau calculus. CCO's COST is its SHIQ machinery: 79 inverse + 8 transitive + 37 ⊔, over cco: PROPERTIES
 and unions that our ontology never references (our roles are sdg:/bfo:, our grounding is subClassOf/≡-genus).
@@ -51,7 +51,7 @@ def horn_project(g: rdflib.Graph) -> rdflib.Graph:
     for pfx, ns in g.namespaces():
         out.bind(pfx, ns)
 
-    # subsumption taxonomy (named → named) — grounds our cco:ont refs up to BFO
+    # subsumption taxonomy (named → named) — grounds our cco:ont refs up to BFO  # coined-ok: prose/placeholder, not a real ref
     for s, o in g.subject_objects(RDFS.subClassOf):
         if isinstance(s, URIRef) and isinstance(o, URIRef):
             out.add((s, RDFS.subClassOf, o))

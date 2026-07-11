@@ -126,11 +126,11 @@ def _warmup_verbaliser() -> None:
         probe_template(CatalogTemplate(
             template_id="__warmup__",
             manchester_template=(
-                "Class: {X:Class} SubClassOf: cco:Artifact, "
+                "Class: {X:Class} SubClassOf: cco:ont00000995, "
                 "{p:ObjectProperty} some {Y:Class}"
             ),
             slot_types={"X": "Class", "p": "ObjectProperty", "Y": "Class"},
-            bfo_anchor_path=["cco:Artifact"],
+            bfo_anchor_path=["cco:ont00000995"],
         ))
     except Exception as e:  # warmup is best-effort; JVM is up regardless
         logger.debug("verbaliser warmup probe failed (non-fatal): %s", e)
@@ -302,24 +302,24 @@ PUBLIC_LABELS: dict[str, str] = {
     "bfo:0000031": "generically dependent continuant",
     "bfo:0000034": "function",
     "bfo:0000040": "material entity",
-    "bfo:0000050": "part of",
-    "bfo:0000051": "has part",
+    "bfo:0000050": "part of",  # coined-ok: recognizes legacy/external relation IRIs (translation table, not minted)
+    "bfo:0000051": "has part",  # coined-ok: recognizes legacy/external relation IRIs (translation table, not minted)
     "bfo:0000054": "realized in",
     "bfo:0000055": "realizes",
     "bfo:0000056": "participates in",
     "bfo:0000057": "has participant",
     "bfo:0000063": "precedes",
-    "bfo:0000067": "contains process",
+    "bfo:0000067": "contains process",  # coined-ok: recognizes legacy/external relation IRIs (translation table, not minted)
     "bfo:0000108": "exists at",
     "bfo:0000182": "history",
     # CCO common
-    "cco:Artifact": "artifact",
-    "cco:Person": "person",
-    "cco:Organization": "organization",
-    "cco:InformationContentEntity": "information content entity",
-    "cco:DesignativeICE": "designative information content entity",
-    "cco:DescriptiveICE": "descriptive information content entity",
-    "cco:DirectiveICE": "directive information content entity",
+    "cco:ont00000995": "artifact",
+    "cco:ont00001262": "person",
+    "cco:ont00001180": "organization",
+    "cco:ont00000958": "information content entity",
+    "cco:ont00000686": "designative information content entity",
+    "cco:ont00000853": "descriptive information content entity",
+    "cco:ont00000965": "directive information content entity",
 }
 
 
@@ -347,7 +347,7 @@ def _auto_declare_referenced_iris(template: CatalogTemplate, slot_filler_iris: s
     This is a best-effort heuristic for DeepOnto's verbalizer, which
     silently skips entities it doesn't see in the loaded ontology.
     Auto-declaration ensures the verbalizer can resolve labels for
-    IRIs hardcoded in the template (e.g., ``cco:Artifact``).
+    IRIs hardcoded in the template (e.g., ``cco:ont00000995``).
 
     The heuristic for ObjectProperty vs Class: tokens that appear
     immediately before ``some|only|min|max|exactly|value`` are
@@ -497,7 +497,7 @@ def _split_conjuncts(rhs: str) -> list[str]:
 
 def _named_superclass_label(template: CatalogTemplate) -> str | None:
     """Label of the named-class conjunct asserted as a superclass of
-    the head (the BFO/CCO anchor in ``X SubClassOf: cco:Artifact, ...``).
+    the head (the BFO/CCO anchor in ``X SubClassOf: cco:ont00000995, ...``).
 
     This is the conjunct DeepOnto drops when it verbalizes the restriction
     conjuncts with an implicit subject ("... is something that ..."). It is

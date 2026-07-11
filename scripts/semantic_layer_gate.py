@@ -37,7 +37,7 @@ FLOORS = {
     "verbalization": {"min_distinct_skeletons": 90, "max_top5_skeleton_share": 0.55, "min_relational_share": 0.30},
     "value": {"max_placeholder_ratio": 0.30, "min_domain_fraction": 0.40, "max_time_order_violations": 0},
     # De-canning floors on column-name ENTROPY (h_colset) vs SchemaPile p10, NOT raw distinct_ratio.
-    # Rationale (Comp 4): ontology-grounded tables legitimately share typed attributes (every cco:Artifact
+    # Rationale (Comp 4): ontology-grounded tables legitimately share typed attributes (every cco:ont00000995
     # genuinely bears an identifier/version/checksum) — correct-by-construction grounding that structurally
     # depresses distinct_ratio without being "canned". h_colset is the collapse metric the de-canning
     # scorer names ("a naming upgrade that collapses every table to the same columns"); per-template

@@ -115,7 +115,7 @@ seed-era population; they were retired with the hand-authored seed
 families (`4d200e4`). The **upper-branch commitment and the
 cross-context-cousining invariant stand** — the fully-derived catalog
 populates the same BFO/CCO branches (at the time of writing 106
-realized classes anchor at `bfo:Process`, 68 at `bfo:Role`, with the
+realized classes anchor at `bfo:0000015`, 68 at `bfo:0000023`, with the
 ICE branches carrying the record / measurement / directive classes).
 The belief branch's reinstatement is a standing publish rider (the
 DST belief module, #136).*
@@ -146,24 +146,24 @@ share `sdg:ObservationProcess`) is the load-bearing architectural
 invariant.
 
 ```
-bfo:Continuant
-├── cco:IndependentContinuant
-│   ├── cco:Artifact ← sdg:Instrument, sdg:Dataset, sdg:SystemBlock,
+bfo:0000002
+├── bfo:0000004
+│   ├── cco:ont00000995 ← sdg:Instrument, sdg:Dataset, sdg:SystemBlock,
 │   │                  sdg:Program, sdg:Sample, sdg:eBPFProgram,
 │   │                  sdg:KernelHook, sdg:Map (eBPF map)
-│   └── cco:Person / cco:Organization
-└── bfo:GenericallyDependentContinuant
-    └── cco:InformationContentEntity
-        ├── cco:DesignativeICE ← sdg:Identifier, sdg:AttributeKey,
+│   └── cco:ont00001262 / cco:ont00001180
+└── bfo:0000031
+    └── cco:ont00000958
+        ├── cco:ont00000686 ← sdg:Identifier, sdg:AttributeKey,
         │                         sdg:Reference, sdg:Syscall (ID)
-        ├── cco:DescriptiveICE ← sdg:Measurement, sdg:Profile,
+        ├── cco:ont00000853 ← sdg:Measurement, sdg:Profile,
         │                         sdg:OutlierClaim, sdg:State,
         │                         sdg:Annotation, sdg:AttributeSet,
         │                         sdg:Lift, sdg:Aggregation
         │   └── sdg:BeliefStructure ← sdg:MassFunction,
         │                              sdg:BeliefInterval,
         │                              sdg:Evidence, sdg:Claim
-        └── cco:DirectiveICE ← sdg:Requirement, sdg:Control,
+        └── cco:ont00000965 ← sdg:Requirement, sdg:Control,
                                 sdg:Policy, sdg:Constraint
                                 (CCO label is "Prescriptive ICE";
                                  SDG names this branch "Directive
@@ -171,8 +171,8 @@ bfo:Continuant
                                  cco:ont00000965 — see naming note
                                  below)
 
-bfo:Occurrent
-└── bfo:Process
+bfo:0000003
+└── bfo:0000015
     ├── sdg:ObservationProcess ← sdg:LabRun, sdg:Trace,
     │                             sdg:Profiling, sdg:OutlierDetection,
     │                             sdg:eBPFEvent
@@ -199,7 +199,7 @@ bfo:Occurrent
 |---|---|
 | **BFO 2020** | Upper structure; every leaf has `subClassOf+` to BFO |
 | **CCO 2.x** | Mid-tier (Artifact, ICE branches); imported as a reasoning authority so HermiT validates grounding against CCO's disjointness axioms |
-| **FHIR R5** | Clinical/record genera, bridged to `cco:InformationContentEntity` (210 types in the grounding index) |
+| **FHIR R5** | Clinical/record genera, bridged to `cco:ont00000958` (210 types in the grounding index) |
 | **OBI / IAO** (OBO Foundry) | `iao:0000115` definition annotations; anchor for `sdg:LabRun`, `sdg:Measurement`, `sdg:Instrument` |
 | **PROV-O** (W3C) | OWL-semantics anchor for `sdg:DerivationProcess` lineage |
 | **OpenLineage** (LF AI&Data) | Operational runtime surface for `sdg:LineageEdge`; mapped via SSSOM |
@@ -209,18 +209,15 @@ bfo:Occurrent
 | **NIST PII / ISO 19944** | Public reference for `sdg:Classification` sensitivity tiers |
 | **W3C DCAT, Schema.org, DBpedia** | Public mid-tier for benchmark coverage (SOTAB, GitTables) |
 
-### Naming note — DirectiveICE vs CCO's PrescriptiveICE
+### Naming note — the ICE trichotomy cites CCO's real IRIs
 
-CCO's canonical IRI `cco:ont00000965` carries `rdfs:label
-"Prescriptive Information Content Entity"`. SDG renames this branch
-"Directive ICE" because *directive* better captures the normative
-sense (requirements, controls, policies, constraints) than
-*prescriptive* (which can read as recipe-like). The rename is a
-shorthand convention only — the bespoke `sdg:DirectiveICE` is declared
-as `owl:equivalentClass cco:ont00000965` so all CCO-side deductions
-remain available. Reviewers reading CCO source see the canonical
-"Prescriptive ICE" label; reviewers reading SDG see "Directive ICE";
-both ground at the same IRI.
+The three Information Content Entity children are cited by their **authoritative CCO IRIs** —
+`cco:ont00000686` (Designative), `cco:ont00000853` (Descriptive), `cco:ont00000965` (Prescriptive),
+under genus `cco:ont00000958` — never a coined CamelCase alias. An earlier "Directive ICE" rename of
+the Prescriptive branch was a **hallucination vector**: it kept re-surfacing as a fictional
+`cco:DirectiveICE` across refinement, so it is retired with extreme prejudice. <!-- coined-ok: names the banned token to document it --> We coin only in `sdg:`,
+and only with HermiT-verifiable grounding into BFO/CCO; the CamelCase `…ICE` forms are banned outright
+by `scripts/scan_coined_external.py` (`just scan-coined`) so they cannot return.
 
 ### Resolved design decisions (2026-05-09)
 
@@ -228,7 +225,7 @@ The six open questions in
 `docs/scratch/2026-05-09/232551_domain_choice.md` resolved as:
 
 - **Q1 — Belief branch:** **include**; `sdg:BeliefStructure` under
-  `cco:DescriptiveICE`. Direct alignment with Atelier's DST evidence
+  `cco:ont00000853`. Direct alignment with Atelier's DST evidence
   fusion; future-proofs federated-intelligence use cases where
   conflict *K* and epistemic uncertainty must propagate across nodes.
 - **Q2 — eBPF / cybersec depth:** **eBPF first-class**; adds

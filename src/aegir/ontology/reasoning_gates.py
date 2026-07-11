@@ -32,16 +32,16 @@ from aegir.ontology.schema import CatalogTemplate
 # Minimal BFO/CCO upper grounding (mirrors mediate_consistency): the anchors under two disjoint top
 # categories, so a construct spanning Occurrent⊥Continuant yields an unsatisfiable head.
 _GROUNDING = """
-Class: bfo:Occurrent
-Class: bfo:Continuant
-DisjointClasses: bfo:Occurrent, bfo:Continuant
-Class: bfo:Process SubClassOf: bfo:Occurrent
-Class: bfo:IndependentContinuant SubClassOf: bfo:Continuant
-Class: cco:Artifact SubClassOf: bfo:IndependentContinuant
-Class: cco:InformationContentEntity SubClassOf: bfo:Continuant
-Class: cco:DescriptiveICE SubClassOf: cco:InformationContentEntity
-Class: cco:DirectiveICE SubClassOf: cco:InformationContentEntity
-Class: cco:DesignativeICE SubClassOf: cco:InformationContentEntity
+Class: bfo:0000003
+Class: bfo:0000002
+DisjointClasses: bfo:0000003, bfo:0000002
+Class: bfo:0000015 SubClassOf: bfo:0000003
+Class: bfo:0000004 SubClassOf: bfo:0000002
+Class: cco:ont00000995 SubClassOf: bfo:0000004
+Class: cco:ont00000958 SubClassOf: bfo:0000002
+Class: cco:ont00000853 SubClassOf: cco:ont00000958
+Class: cco:ont00000965 SubClassOf: cco:ont00000958
+Class: cco:ont00000686 SubClassOf: cco:ont00000958
 """
 _FILLER_RE = re.compile(re.escape(TEST_NAMESPACE) + r"#T_([A-Za-z0-9_]+)")
 

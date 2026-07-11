@@ -8,7 +8,7 @@ genus makes it a process would give a SKOS edge the OWL does not entail. The man
 broader edge. This checks it and reports divergences (the ones to re-author or re-anchor).
 
 Anchors are mapped to their REAL CCO IRIs (the fictional readable cco: names the SKOS keys on —
-cco:DescriptiveICE — canonicalized to cco:ont00000853, matching the OWL). Pre-kvasir HermiT.
+cco:ont00000853 — canonicalized to cco:ont00000853, matching the OWL). Pre-kvasir HermiT.
 
     LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/verify_owl_skos.py
 """
@@ -36,7 +36,7 @@ ANCHOR_IRI = {
     "SDG.PROCESS": BFO + "0000015",
     "SDG.INDEPENDENT_CONTINUANT": BFO + "0000004",
     "SDG.MATERIAL_ENTITY": BFO + "0000040",
-    "SDG.ARTIFACT": BFO + "0000004",           # cco:Artifact → its BFO parent (independent continuant)
+    "SDG.ARTIFACT": BFO + "0000004",           # cco:ont00000995 → its BFO parent (independent continuant)
     "SDG.GDC": BFO + "0000031",
     "SDG.ICE": CCO + "ont00000958",
     "SDG.ICE.DESCRIPTIVE": CCO + "ont00000853",

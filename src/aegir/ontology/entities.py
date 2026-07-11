@@ -90,7 +90,7 @@ class Entity:
     definition, typed attributes, and cardinality-bounded relations."""
     name: str                       # concept name (→ sdg:Name)
     label: str = ""
-    genus: str = "cco:Artifact"     # BFO/CCO anchor (prefixed IRI)
+    genus: str = "cco:ont00000995"     # BFO/CCO anchor (prefixed IRI)
     definition: str = ""
     attributes: list[DataAttr] = field(default_factory=list)
     relations: list[Relation] = field(default_factory=list)
@@ -298,7 +298,7 @@ ENTITY_SCHEMA = {
 _IRI = re.compile(r"([A-Za-z][\w-]*:[\w-]+)")
 
 
-def clean_iri(tok: str, default: str = "cco:Artifact") -> str:
+def clean_iri(tok: str, default: str = "cco:ont00000995") -> str:
     """Extract a prefixed IRI from a token the agent may have decorated (``bfo:0000040
     (Person)`` → ``bfo:0000040``); default if none is present."""
     m = _IRI.search(tok or "")
@@ -687,7 +687,7 @@ def from_json(obj: dict) -> list[Entity]:
         out.append(Entity(
             name=str(e["name"]),
             label=str(e.get("label", "")),
-            genus=clean_iri(str(e.get("genus") or "cco:Artifact")),
+            genus=clean_iri(str(e.get("genus") or "cco:ont00000995")),
             definition=str(e.get("definition", "")),
             attributes=[DataAttr(name=str(a["name"]), xsd=_norm_xsd(str(a.get("xsd", "string"))),
                                  enum=_scrub_enum([str(v) for v in (a.get("enum") or [])]))

@@ -38,7 +38,7 @@ vocabulary, and the gates exist to keep every term a *coherent, grounded* annota
 |---|---|---|
 | `bfo:` | `http://purl.obolibrary.org/obo/BFO_` | upper categories (numeric IRIs, e.g. `bfo:0000040`) |
 | `cco:` | `https://www.commoncoreontologies.org/` | mid-level genera (numeric IRIs, e.g. `cco:ont00000713` = Vehicle) — **note https** |
-| `fhir:` | `http://hl7.org/fhir/` | clinical/record types, bridged to `cco:InformationContentEntity` |
+| `fhir:` | `http://hl7.org/fhir/` | clinical/record types, bridged to `cco:ont00000958` |
 | `iao:` | `http://purl.obolibrary.org/obo/IAO_` | annotation properties (`iao:0000115` = definition) |
 | `sdg:` | `https://signals360.example.org/sdg#` | our own classes/properties |
 | `skos:`, `rdfs:`, `owl:` | standard | labels, definitions, structure |
@@ -49,7 +49,7 @@ vocabulary, and the gates exist to keep every term a *coherent, grounded* annota
 `bfo:0000015` process · `bfo:0000031` generically dependent continuant (ICE) · `bfo:0000019` quality ·
 `bfo:0000020` specifically dependent continuant · `bfo:0000023` role · `bfo:0000016` disposition ·
 `bfo:0000034` function · `bfo:0000017` realizable entity.
-Realizable-machinery properties: `bfo:0000055` realizes · `bfo:0000052` inheres-in · `bfo:0000053`
+Realizable-machinery properties: `bfo:0000055` realizes · `bfo:0000197` inheres-in · `bfo:0000196`
 bearer-of · `bfo:0000054` realized-in.
 
 ---
@@ -68,7 +68,7 @@ loop accrete it), never `combined.json`** (regenerated).
 
 ```
 {name:Type}                  e.g. {X:Class}, {p:ObjectProperty}, {Y:Class}
-{name:Type:Bound}            subtype constraint: {X:Class:bfo:Continuant}
+{name:Type:Bound}            subtype constraint: {X:Class:bfo:0000002}
 ```
 
 `Type ∈ {Class, ObjectProperty, DataProperty, Individual}`. A `CatalogTemplate` carries
@@ -111,13 +111,13 @@ with the grounding-anchor retriever rather than inventing one:
 
 ```
 uv run --no-sync python scripts/grounding_anchors.py query "shipping address"
-#   0.74 [cco]  Mailing Address     cco:ont00000xxx
+#   0.74 [cco]  Mailing Address     cco:ont00000xxx  <!-- coined-ok: placeholder IRI -->
 #   0.59 [fhir] Address             fhir:Address
 #   0.55 [sdg]  StopLocation        sdg:StopLocation   (reuse our own)
 ```
 
 The index spans CCO (1431 BFO-aligned genera), FHIR R5 (210 record types, bridged to
-`cco:InformationContentEntity`), and **our own grounded classes** (the index accretes — each class
+`cco:ont00000958`), and **our own grounded classes** (the index accretes — each class
 you ground becomes a reusable anchor). Prefer, in order: an existing `sdg:` class (reuse), a CCO/FHIR
 genus, then a bare BFO category as a last resort. A generic `bfo:0000040` placeholder where you meant
 "Patient" is *grounded but shallow* — find the real genus.
@@ -129,10 +129,10 @@ being it and still exist). Model it as a BFO role, never a rigid subclass:
 
 ```
 Class: {OperatorRole:Class} SubClassOf: bfo:0000023,
-   bfo:0000052 some {Operator:Class}, bfo:0000054 some {OperationProcess:Class}
+   bfo:0000197 some {Operator:Class}, bfo:0000054 some {OperationProcess:Class}
 ```
 
-The `inheres-in` (`bfo:0000052`) and `realized-in` (`bfo:0000054`) restrictions are what the
+The `inheres-in` (`bfo:0000197`) and `realized-in` (`bfo:0000054`) restrictions are what the
 `realizable_machinery` metric counts and what BFO discipline requires.
 
 ---
@@ -307,7 +307,7 @@ reasons).
    entities, `#` comments. Reason: the parser error or "0 classes."
 2. **Reasoning-authority membrane** (`build_realized_ontology.consistency_check`) — imports CCO and
    runs HermiT, so your grounding is validated against **CCO's disjointness axioms**. A class grounded
-   to a CCO-*disjoint* or BFO-*incompatible* genus (e.g. a `Plant` placed under `cco:Vehicle`, or a
+   to a CCO-*disjoint* or BFO-*incompatible* genus (e.g. a `Plant` placed under `cco:ont00000713`, or a
    continuant genus where a process is required) is **unsatisfiable** and rejected. Reason: "genus X is
    incompatible — re-ground to a compatible parent." *This is un-fakeable.*
 3. **OntoClean meta-property membrane** (`src/aegir/ontology/ontoclean.py`) — assigns Rigidity /
@@ -353,13 +353,13 @@ avg-time-on-site.
 parent — so it enters as a `realizes`-style differentia, keeping the genus an Address.
 
 **(2) Ground the genus.** `grounding_anchors.py query "mailing address"` → reuse `sdg:PostalAddress`
-if present, else `cco:ont…` (Mailing Address). Coin `sdg:` only for genuinely new differentia.
+if present, else `cco:ont…` (Mailing Address). Coin `sdg:` only for genuinely new differentia.  <!-- coined-ok: prose -->
 
 **(3) Author.**
 
 ```
 Class: {ShippingStopAddress:Class} EquivalentTo:
-   cco:ont00000xxx
+   cco:ont00000xxx  <!-- coined-ok: placeholder IRI -->
    and sdg:bearsShippingRole some {ShippingRole:Class}
    and sdg:hasAverageTimeOnSite some xsd:duration
 Annotations: rdfs:label "shipping stop address",

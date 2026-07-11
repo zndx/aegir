@@ -53,9 +53,9 @@ _HEAD_SLOT = re.compile(r"\{(\w+):Class\}")
 
 # numeric ↔ named BFO bridge — only the skeleton pairs the omn + vocab pools actually use
 _BFO_NAMED = {
-    "bfo:0000001": "bfo:Entity", "bfo:0000002": "bfo:Continuant",
-    "bfo:0000003": "bfo:Occurrent", "bfo:0000004": "bfo:IndependentContinuant",
-    "bfo:0000015": "bfo:Process", "bfo:0000040": "bfo:MaterialEntity",
+    "bfo:0000001": "bfo:0000001", "bfo:0000002": "bfo:0000002",
+    "bfo:0000003": "bfo:0000003", "bfo:0000004": "bfo:0000004",
+    "bfo:0000015": "bfo:0000015", "bfo:0000040": "bfo:0000040",
 }
 
 
@@ -253,7 +253,7 @@ def accrete_from_catalog(profiles: "dict[str, ClassProfile]", catalog: Catalog) 
 # ── vocab accretion (anchor-keyed DataProperty pools) ──────────────────────────
 def accrete_from_vocab(profiles: "dict[str, ClassProfile]") -> dict:
     """Accrete ``sdg-vocab.ttl`` typed attributes along each profile's grounding walk.
-    Pools key on NAMED anchors (bfo:Process, cco:Artifact); the omn grounds through the
+    Pools key on NAMED anchors (bfo:0000015, cco:ont00000995); the omn grounds through the
     NUMERIC skeleton — bridged via ``_BFO_NAMED``, then closed through ``_ANCHOR_PARENTS``.
     Full pool, no budget (see module docstring). Enumerations attach from the property's
     ``skos:definition``."""

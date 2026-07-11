@@ -59,7 +59,7 @@ _SYS = (
     "PRINCIPLE: narrow the domain of THIS class to what is logically coherent; do NOT weaken the theory. "
     "The usual fix is to make a filler's TYPE match the property's RANGE — e.g. if `realized_in` ranges over "
     "processes (occurrents) but the filler is a Function (a continuant), realize the role in a PROCESS filler "
-    "(a bfo:0000015 subclass), or use a property whose range is a continuant (e.g. `bfo:0000051 has_part` / a "
+    "(a bfo:0000015 subclass), or use a property whose range is a continuant (e.g. `bfo:0000178 has_continuant_part` / a "  # coined-ok: legacy/RO relation IRI — VERSION_DRIFT, resolved in-context by the sweep
     "`has_function` relation). Prefer a FAITHFUL type fix over deleting the conjunct; delete a conjunct only "
     "if no coherent repair preserves the class's meaning.\n\n" + _SYNTAX +
     "\nOUTPUT exactly one ```json block {\"repairs\":[{\"name\":\"<ClassName>\",\"manchester_template\":\"Class: "

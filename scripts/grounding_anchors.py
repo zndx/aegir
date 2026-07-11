@@ -4,9 +4,9 @@ The agent grounds fillers to GENERIC bfo: categories (or coins ungrounded sdg: t
 the mid-level genera it reaches for — Organism, Vehicle, Patient. A boolean "ungrounded" can't repair that
 (missing reference, not inattention). This index gives the boundary a richer signal: seed grounded anchors
 from CC0 imports — CCO (1431 BFO-aligned classes) + FHIR R5 types (clinical/record types, bridged to
-cco:InformationContentEntity) — and ACCRETE our own grounded classes over time ("build on what we define";
+cco:ont00000958) — and ACCRETE our own grounded classes over time ("build on what we define";
 each grounded class becomes a reusable building block). define_fillers retrieves the top-k nearest anchors per
-concept and injects them, so the agent grounds to cco:ont... / fhir:Patient instead of bfo:0000040. Retrieval
+concept and injects them, so the agent grounds to cco:ont... / fhir:Patient instead of bfo:0000040. Retrieval  # coined-ok: prose/placeholder, not a real ref
 is the stochastic SIGNAL; the grounding gate (chain-to-BFO at realize) still deterministically DISPOSES.
 
     uv run --no-sync python scripts/grounding_anchors.py build              # (re)build the accreting index
@@ -115,7 +115,7 @@ def _foundation_terms(terms, default_source):
     """Domain-standard foundation terms (SysMLv2/WITSML/BRL-CAD…) → (iri, label, def, source-prefix).
 
     Each standard EXTENDS the BFO/CCO/FHIR foundation with domain vocabulary so the deriver can ground domain
-    columns onto it (an enclosure → sysml:Part → cco:Artifact; a wellbore → witsml:Wellbore → bfo:site) AND so
+    columns onto it (an enclosure → sysml:Part → cco:ont00000995; a wellbore → witsml:Wellbore → bfo:0000029) AND so
     the qdrant classifier can DISCRIMINATE domains. EPL/Apache/US-gov-clean: our glosses only, names drawn+cited."""
     import re
     out = []

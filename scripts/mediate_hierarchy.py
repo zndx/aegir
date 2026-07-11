@@ -208,8 +208,8 @@ CANDIDATE related pairs (embedding-nearest neighbours — RELATEDNESS ONLY; you 
 
 CONTRACT — a sound reasoner (HermiT) and a domain check VERIFY every edge; propose only what will pass:
 1. ACYCLIC — the edges must form a DAG. Multiple parents are fine; cycles are not.
-2. COHERENT — NEVER assert an edge across DISJOINT BFO categories. Terms anchored under bfo:Process
-   (Occurrents) and terms anchored under cco:Artifact / cco:*ICE (Continuants) are DISJOINT: no edge
+2. COHERENT — NEVER assert an edge across DISJOINT BFO categories. Terms anchored under bfo:0000015
+   (Occurrents) and terms anchored under cco:ont00000995 / cco:*ICE (Continuants) are DISJOINT: no edge
    between them holds in either direction. Respect each term's anchor.
 3. SPECIFIC — assert `child ⊑ parent` ONLY when the child's gloss genuinely NARROWS the parent's
    (a true is-a, not mere relatedness or sibling resemblance). Prefer few, high-confidence edges.

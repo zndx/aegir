@@ -108,10 +108,10 @@ _NS = {
 }
 # anchor → parent anchor, so a table inherits its ancestors' typed attributes.
 _ANCHOR_PARENTS = {
-    "cco:Artifact": "bfo:IndependentContinuant",
-    "cco:DescriptiveICE": "cco:InformationContentEntity",
-    "cco:DirectiveICE": "cco:InformationContentEntity",
-    "cco:DesignativeICE": "cco:InformationContentEntity",
+    "cco:ont00000995": "bfo:0000004",
+    "cco:ont00000853": "cco:ont00000958",
+    "cco:ont00000965": "cco:ont00000958",
+    "cco:ont00000686": "cco:ont00000958",
 }
 _DATAPROP_CACHE: "dict[str, list[tuple[str, str, str]]] | None" = None
 
@@ -299,7 +299,7 @@ def _dataprop_ranges(manchester: str) -> dict[str, str]:
 # BFO/RO relations carry opaque numeric local names (BFO_0000050); map the ones we use to
 # readable column names — a numeric-leading local name is also invalid as an unquoted SQL column.
 _OPAQUE_PROP_LABELS = {
-    "bfo:0000050": "part_of", "bfo:0000051": "has_part", "bfo:0000066": "occurs_in",
+    "bfo:0000050": "part_of", "bfo:0000051": "has_part", "bfo:0000066": "occurs_in",  # coined-ok: recognizes legacy/external relation IRIs (translation table, not minted)
     "bfo:0000063": "precedes", "bfo:0000062": "preceded_by", "bfo:0000055": "realizes",
     "bfo:0000056": "participates_in", "bfo:0000057": "has_participant",
 }
@@ -317,10 +317,10 @@ def _prop_col(prop: str) -> str:
 # ── SKOS-native subject naming (decorative; slot_ref stays canonical) ──────────
 # BFO/CCO anchor IRI → readable column-name stem for a subject-head column.
 _CLASS_LABEL = {
-    "cco:Artifact": "artifact", "cco:InformationContentEntity": "information_entity",
-    "cco:DescriptiveICE": "descriptive_record", "cco:DirectiveICE": "directive",
-    "cco:DesignativeICE": "designator", "bfo:Process": "process",
-    "bfo:IndependentContinuant": "continuant",
+    "cco:ont00000995": "artifact", "cco:ont00000958": "information_entity",
+    "cco:ont00000853": "descriptive_record", "cco:ont00000965": "directive",
+    "cco:ont00000686": "designator", "bfo:0000015": "process",
+    "bfo:0000004": "continuant",
 }
 _NAME_STOP = {"subclass", "class", "basic", "template", "generic", "with", "via",
               "and", "the", "for", "to", "of", "an", "from"}
@@ -544,7 +544,7 @@ def build_table_comment(template: CatalogTemplate, family: str) -> str:
 
 # ── cross-family foreign keys (the join structure), gated by the family complex ─
 def _anchor_root(template: CatalogTemplate) -> str | None:
-    """Top of the BFO anchor path (e.g. 'bfo:Process'); None if anchorless."""
+    """Top of the BFO anchor path (e.g. 'bfo:0000015'); None if anchorless."""
     return template.bfo_anchor_path[-1] if template.bfo_anchor_path else None
 
 

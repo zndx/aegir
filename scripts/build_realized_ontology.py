@@ -50,8 +50,8 @@ Class: bfo:0000020 SubClassOf: bfo:0000002
 Class: bfo:0000023 SubClassOf: bfo:0000017
 Class: bfo:0000031 SubClassOf: bfo:0000002
 Class: bfo:0000040 SubClassOf: bfo:0000004
-ObjectProperty: bfo:0000050
-ObjectProperty: bfo:0000051
+ObjectProperty: bfo:0000050  # coined-ok: legacy/RO relation IRI — VERSION_DRIFT, resolved in-context by the sweep
+ObjectProperty: bfo:0000051  # coined-ok: legacy/RO relation IRI — VERSION_DRIFT, resolved in-context by the sweep
 ObjectProperty: bfo:0000054
 ObjectProperty: bfo:0000055
 ObjectProperty: bfo:0000056
@@ -160,7 +160,7 @@ def _backbone_parents() -> dict:
 def ground_closure(doc: str) -> "tuple[str, int]":
     """A.1b — ground every sdg: class that cannot actually REACH BFO. ``ground_fillers`` trusts any
     SubClassOf/≡ as grounding, but the engine's ≡ genera include CCO refs it invented as readable http IRIs
-    (``cco:DescriptiveICE``) that don't match CCO's real opaque https IRIs — so they never resolve to BFO —
+    (``cco:ont00000853``) that don't match CCO's real opaque https IRIs — so they never resolve to BFO —
     and sdg: genus chains can dead-end. Compute real reachability (subClassOf + ≡-first-genus, prefixes
     resolved, CCO backbone merged) and add a DIRECT ``SubClassOf: <bfo category>`` for each unreachable sdg:
     class — a correct coarse grounding that leaves the ≡ intact. Recovers bfo_grounded to what the ontology
@@ -191,7 +191,7 @@ def ground_closure(doc: str) -> "tuple[str, int]":
     # Ground the TERMINAL dead-ends the ≡ chains bottom out at — the parentless, non-BFO IRIs the doc references
     # (the fictional cco: genera the engine invented + sdg: leaves ground_fillers didn't reach). Grounding THESE
     # (not the ≡-heads) lets each head reach BFO THROUGH its genus with no 2nd parent, so bfo_grounded recovers
-    # with NO tangledness penalty (a head ≡ sdg:Y ⊓ …, Y ≡ cco:Fictional resolves once cco:Fictional is grounded).
+    # with NO tangledness penalty (a head ≡ sdg:Y ⊓ …, Y ≡ sdg:Fictional resolves once sdg:Fictional is grounded).
     ung = sorted(c for c in doc_refs
                  if c.startswith("http") and not parents.get(c) and not any(c.startswith(b) for b in bfo_ns))
     if not ung:
@@ -328,9 +328,9 @@ CCO_TTL = REPO / "build" / "grounding" / "cco-module.ttl"  # π(CCO): the ⊥-lo
 CCO_ICE = "cco:ont00000958"  # Information Content Entity (real opaque CCO IRI) — the FHIR-resource bridge target
 
 # RETIRED 2026-07-11 (RH, with extreme prejudice): CCO_READABLE_ALIASES was a hardcoded dict that rewrote
-# fictional readable cco: genera (cco:DirectiveICE) to real CCO IRIs at realize. That was an ANTI-PATTERN —
-# it silently BLESSED the hallucination (reinforcing DirectiveICE across refinement) and masked a broader
-# contamination it never covered (cco:BusinessEntity, cco:has_part, legacy bfo:0000052). External namespaces
+# fictional readable cco: genera (cco:ont00000965) to real CCO IRIs at realize. That was an ANTI-PATTERN —
+# it silently BLESSED the hallucination (reinforcing DirectiveICE across refinement) and masked a broader  coined-ok
+# contamination it never covered (cco:BusinessEntity, cco:has_part, legacy bfo:0000052 — coined-ok: names to reject). External namespaces
 # are AUTHORITIES, not sandboxes: the fix is the HARD verification gate (aegir.ontology.external_index,
 # wired into evolve_rigor.validate_detailed) that REJECTS any cco:/bfo: reference not existing in the current
 # authoritative ontology, forcing the agent to use a real IRI or coin sdg:. Existing contamination was
@@ -338,8 +338,8 @@ CCO_ICE = "cco:ont00000958"  # Information Content Entity (real opaque CCO IRI) 
 
 
 def import_cco_bridge_fhir(doc: str) -> str:
-    """Align the cco: prefix to CCO's real https IRIs (so our 140 cco:ont refs resolve to CCO's deep hierarchy
-    for grounding), declare fhir:, bridge each referenced FHIR type to cco:InformationContentEntity, and import
+    """Align the cco: prefix to CCO's real https IRIs (so our 140 cco:ont refs resolve to CCO's deep hierarchy  # coined-ok: prose/placeholder, not a real ref
+    for grounding), declare fhir:, bridge each referenced FHIR type to cco:ont00000958, and import
     π(CCO) — the ⊥-locality module (CCO_TTL) — to make CCO a REASONING authority: HermiT validates grounding
     against CCO's disjointness (it REJECTs Plant⊑Vehicle). π(CCO) replaces full CCO, which is intractable once
     hundreds of ≡ interact with its inverse/transitive/⊔; the module is lossless over our signature, so every

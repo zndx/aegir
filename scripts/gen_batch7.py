@@ -19,7 +19,7 @@ from pathlib import Path
 OUT = Path("src/aegir/ontology/catalog/07_long_tail.candidate.json")
 
 
-def ex(prop: str, anchor: str = "cco:Artifact") -> dict:
+def ex(prop: str, anchor: str = "cco:ont00000995") -> dict:
     """F2 — existential restriction template."""
     return {
         "shape": f"Class: {{X:Class}} SubClassOf: {anchor}, sdg:{prop} some {{Y:Class}}",
@@ -28,7 +28,7 @@ def ex(prop: str, anchor: str = "cco:Artifact") -> dict:
     }
 
 
-def uni(prop: str, anchor: str = "cco:Artifact") -> dict:
+def uni(prop: str, anchor: str = "cco:ont00000995") -> dict:
     """F3 — universal."""
     return {
         "shape": f"Class: {{X:Class}} SubClassOf: {anchor}, sdg:{prop} only {{Y:Class}}",
@@ -37,7 +37,7 @@ def uni(prop: str, anchor: str = "cco:Artifact") -> dict:
     }
 
 
-def card_min(prop: str, anchor: str = "cco:Artifact", n: int = 1) -> dict:
+def card_min(prop: str, anchor: str = "cco:ont00000995", n: int = 1) -> dict:
     return {
         "shape": f"Class: {{X:Class}} SubClassOf: {anchor}, sdg:{prop} min {n} {{Y:Class}}",
         "slots": {"X": "Class", "Y": "Class"},
@@ -45,7 +45,7 @@ def card_min(prop: str, anchor: str = "cco:Artifact", n: int = 1) -> dict:
     }
 
 
-def card_max(prop: str, anchor: str = "cco:Artifact", n: int = 1) -> dict:
+def card_max(prop: str, anchor: str = "cco:ont00000995", n: int = 1) -> dict:
     return {
         "shape": f"Class: {{X:Class}} SubClassOf: {anchor}, sdg:{prop} max {n} {{Y:Class}}",
         "slots": {"X": "Class", "Y": "Class"},
@@ -53,7 +53,7 @@ def card_max(prop: str, anchor: str = "cco:Artifact", n: int = 1) -> dict:
     }
 
 
-def basic(anchor: str = "cco:Artifact") -> dict:
+def basic(anchor: str = "cco:ont00000995") -> dict:
     """F1 — bare subclass."""
     return {
         "shape": f"Class: {{X:Class}} SubClassOf: {anchor}",
@@ -62,7 +62,7 @@ def basic(anchor: str = "cco:Artifact") -> dict:
     }
 
 
-def union2(anchor: str = "cco:Artifact") -> dict:
+def union2(anchor: str = "cco:ont00000995") -> dict:
     """F6 — equivalent to anchor and (Y or Z)."""
     return {
         "shape": f"Class: {{X:Class}} EquivalentTo: {anchor} and ({{Y:Class}} or {{Z:Class}})",
@@ -71,7 +71,7 @@ def union2(anchor: str = "cco:Artifact") -> dict:
     }
 
 
-def neg(anchor: str = "cco:Artifact") -> dict:
+def neg(anchor: str = "cco:ont00000995") -> dict:
     """F7 — subclass with complement."""
     return {
         "shape": f"Class: {{X:Class}} SubClassOf: {anchor}, not {{Y:Class}}",
@@ -80,7 +80,7 @@ def neg(anchor: str = "cco:Artifact") -> dict:
     }
 
 
-def cross_ex(prop: str, target_anchor: str, src_anchor: str = "cco:Artifact") -> dict:
+def cross_ex(prop: str, target_anchor: str, src_anchor: str = "cco:ont00000995") -> dict:
     """Cross-branch — anchor on src, target restricted to anchor class only."""
     return {
         "shape": f"Class: {{X:Class}} SubClassOf: {src_anchor}, sdg:{prop} some {target_anchor}",
@@ -124,88 +124,88 @@ SOTAB_GAP = [
 
 # CTA/CPA-aligned annotation patterns — column-tag content.
 CTA_CPA_GAP = [
-    ("column_tag_subclass",          ex("annotatesColumn", "cco:DescriptiveICE")),
-    ("column_tag_at_confidence",     ex("hasTagConfidence", "cco:DescriptiveICE")),
-    ("column_tag_from_annotator",    ex("byAnnotator", "cco:DescriptiveICE")),
-    ("column_property_subclass",     ex("annotatesPropertyOf", "cco:DescriptiveICE")),
-    ("column_pair_subject",          ex("hasSubjectColumn", "cco:DescriptiveICE")),
-    ("column_pair_object",           ex("hasObjectColumn", "cco:DescriptiveICE")),
-    ("table_topic_tag",              ex("hasTableTopic", "cco:DescriptiveICE")),
-    ("entity_match_link",            ex("matchesEntity", "cco:DescriptiveICE")),
-    ("foreign_key_relation",         ex("foreignKeyTo", "cco:DescriptiveICE")),
-    ("primary_key_designation",      ex("isPrimaryKeyOf", "cco:DescriptiveICE")),
-    ("functional_dependency_lhs",    ex("hasFDLeftHandSide", "cco:DescriptiveICE")),
-    ("functional_dependency_rhs",    ex("hasFDRightHandSide", "cco:DescriptiveICE")),
-    ("column_distinctness",          ex("hasDistinctnessRatio", "cco:DescriptiveICE")),
-    ("column_nullability_state",     ex("hasNullabilityState", "cco:DescriptiveICE")),
-    ("column_value_distribution",    ex("hasValueDistribution", "cco:DescriptiveICE")),
-    ("table_provenance_source",      ex("sourcedFromTable", "cco:DescriptiveICE")),
-    ("entity_type_belongs_to",       ex("entityTypeBelongsTo", "cco:DescriptiveICE")),
-    ("ontology_class_match",         ex("matchesOntologyClass", "cco:DescriptiveICE")),
-    ("schemaorg_label_alignment",    ex("alignedToSchemaOrgLabel", "cco:DescriptiveICE")),
-    ("dbpedia_label_alignment",      ex("alignedToDBpediaLabel", "cco:DescriptiveICE")),
+    ("column_tag_subclass",          ex("annotatesColumn", "cco:ont00000853")),
+    ("column_tag_at_confidence",     ex("hasTagConfidence", "cco:ont00000853")),
+    ("column_tag_from_annotator",    ex("byAnnotator", "cco:ont00000853")),
+    ("column_property_subclass",     ex("annotatesPropertyOf", "cco:ont00000853")),
+    ("column_pair_subject",          ex("hasSubjectColumn", "cco:ont00000853")),
+    ("column_pair_object",           ex("hasObjectColumn", "cco:ont00000853")),
+    ("table_topic_tag",              ex("hasTableTopic", "cco:ont00000853")),
+    ("entity_match_link",            ex("matchesEntity", "cco:ont00000853")),
+    ("foreign_key_relation",         ex("foreignKeyTo", "cco:ont00000853")),
+    ("primary_key_designation",      ex("isPrimaryKeyOf", "cco:ont00000853")),
+    ("functional_dependency_lhs",    ex("hasFDLeftHandSide", "cco:ont00000853")),
+    ("functional_dependency_rhs",    ex("hasFDRightHandSide", "cco:ont00000853")),
+    ("column_distinctness",          ex("hasDistinctnessRatio", "cco:ont00000853")),
+    ("column_nullability_state",     ex("hasNullabilityState", "cco:ont00000853")),
+    ("column_value_distribution",    ex("hasValueDistribution", "cco:ont00000853")),
+    ("table_provenance_source",      ex("sourcedFromTable", "cco:ont00000853")),
+    ("entity_type_belongs_to",       ex("entityTypeBelongsTo", "cco:ont00000853")),
+    ("ontology_class_match",         ex("matchesOntologyClass", "cco:ont00000853")),
+    ("schemaorg_label_alignment",    ex("alignedToSchemaOrgLabel", "cco:ont00000853")),
+    ("dbpedia_label_alignment",      ex("alignedToDBpediaLabel", "cco:ont00000853")),
 ]
 
 # Compliance-frame depth: NIST 800-53, ISO 27001, SOC2, GDPR.
 COMPLIANCE_GAP = [
-    ("nist80053_control_subclass", ex("nist80053Control", "cco:DirectiveICE")),
-    ("nist80053_low_impact",       ex("atNISTImpactLevel", "cco:DirectiveICE")),
-    ("nist80053_moderate_impact",  ex("atNISTImpactLevel", "cco:DirectiveICE")),
-    ("nist80053_high_impact",      ex("atNISTImpactLevel", "cco:DirectiveICE")),
-    ("iso27001_clause_subclass",   ex("iso27001Clause", "cco:DirectiveICE")),
-    ("iso27001_annexa_subclass",   ex("iso27001AnnexA", "cco:DirectiveICE")),
-    ("soc2_trust_criterion",       ex("soc2TrustCriterion", "cco:DirectiveICE")),
-    ("soc2_security_subclass",     ex("forSOC2Domain", "cco:DirectiveICE")),
-    ("soc2_availability_subclass", ex("forSOC2Domain", "cco:DirectiveICE")),
-    ("soc2_confidentiality_subclass", ex("forSOC2Domain", "cco:DirectiveICE")),
-    ("soc2_processing_integrity",  ex("forSOC2Domain", "cco:DirectiveICE")),
-    ("soc2_privacy_subclass",      ex("forSOC2Domain", "cco:DirectiveICE")),
-    ("gdpr_article_subclass",      ex("gdprArticle", "cco:DirectiveICE")),
-    ("gdpr_lawful_basis",          ex("hasLawfulBasis", "cco:DirectiveICE")),
-    ("gdpr_data_subject_right",    ex("grantsDataSubjectRight", "cco:DirectiveICE")),
-    ("hipaa_safeguard_admin",      ex("hipaaSafeguard", "cco:DirectiveICE")),
-    ("hipaa_safeguard_physical",   ex("hipaaSafeguard", "cco:DirectiveICE")),
-    ("hipaa_safeguard_technical",  ex("hipaaSafeguard", "cco:DirectiveICE")),
-    ("pci_dss_requirement",        ex("pciDssRequirement", "cco:DirectiveICE")),
-    ("policy_only_for_high_impact", uni("atNISTImpactLevel", "cco:DirectiveICE")),
+    ("nist80053_control_subclass", ex("nist80053Control", "cco:ont00000965")),
+    ("nist80053_low_impact",       ex("atNISTImpactLevel", "cco:ont00000965")),
+    ("nist80053_moderate_impact",  ex("atNISTImpactLevel", "cco:ont00000965")),
+    ("nist80053_high_impact",      ex("atNISTImpactLevel", "cco:ont00000965")),
+    ("iso27001_clause_subclass",   ex("iso27001Clause", "cco:ont00000965")),
+    ("iso27001_annexa_subclass",   ex("iso27001AnnexA", "cco:ont00000965")),
+    ("soc2_trust_criterion",       ex("soc2TrustCriterion", "cco:ont00000965")),
+    ("soc2_security_subclass",     ex("forSOC2Domain", "cco:ont00000965")),
+    ("soc2_availability_subclass", ex("forSOC2Domain", "cco:ont00000965")),
+    ("soc2_confidentiality_subclass", ex("forSOC2Domain", "cco:ont00000965")),
+    ("soc2_processing_integrity",  ex("forSOC2Domain", "cco:ont00000965")),
+    ("soc2_privacy_subclass",      ex("forSOC2Domain", "cco:ont00000965")),
+    ("gdpr_article_subclass",      ex("gdprArticle", "cco:ont00000965")),
+    ("gdpr_lawful_basis",          ex("hasLawfulBasis", "cco:ont00000965")),
+    ("gdpr_data_subject_right",    ex("grantsDataSubjectRight", "cco:ont00000965")),
+    ("hipaa_safeguard_admin",      ex("hipaaSafeguard", "cco:ont00000965")),
+    ("hipaa_safeguard_physical",   ex("hipaaSafeguard", "cco:ont00000965")),
+    ("hipaa_safeguard_technical",  ex("hipaaSafeguard", "cco:ont00000965")),
+    ("pci_dss_requirement",        ex("pciDssRequirement", "cco:ont00000965")),
+    ("policy_only_for_high_impact", uni("atNISTImpactLevel", "cco:ont00000965")),
 ]
 
 # DST combination operators.
 DST_GAP = [
-    ("dempster_combination_subclass", ex("combinesViaDempster", "cco:DescriptiveICE")),
-    ("dempster_combinant_first",   ex("hasFirstCombinant", "cco:DescriptiveICE")),
-    ("dempster_combinant_second",  ex("hasSecondCombinant", "cco:DescriptiveICE")),
-    ("dempster_conflict_mass",     ex("hasConflictMass", "cco:DescriptiveICE")),
-    ("conjunctive_combination",    ex("conjunctivelyCombines", "cco:DescriptiveICE")),
-    ("disjunctive_combination",    ex("disjunctivelyCombines", "cco:DescriptiveICE")),
-    ("yager_combination",          ex("yagerCombines", "cco:DescriptiveICE")),
-    ("frame_refinement",           ex("refinesFrame", "cco:DescriptiveICE")),
-    ("frame_coarsening",           ex("coarsensFrame", "cco:DescriptiveICE")),
-    ("pignistic_transformation",   ex("hasPignisticTransform", "cco:DescriptiveICE")),
-    ("plausibility_function_for",  ex("plausibilityForClaim", "cco:DescriptiveICE")),
-    ("belief_function_for",        ex("beliefForClaim", "cco:DescriptiveICE")),
-    ("evidence_independent_of",    ex("evidenceIndependentOf", "cco:DescriptiveICE")),
-    ("evidence_correlated_with",   ex("evidenceCorrelatedWith", "cco:DescriptiveICE")),
-    ("mass_function_normalized_form", ex("hasNormalizedForm", "cco:DescriptiveICE")),
+    ("dempster_combination_subclass", ex("combinesViaDempster", "cco:ont00000853")),
+    ("dempster_combinant_first",   ex("hasFirstCombinant", "cco:ont00000853")),
+    ("dempster_combinant_second",  ex("hasSecondCombinant", "cco:ont00000853")),
+    ("dempster_conflict_mass",     ex("hasConflictMass", "cco:ont00000853")),
+    ("conjunctive_combination",    ex("conjunctivelyCombines", "cco:ont00000853")),
+    ("disjunctive_combination",    ex("disjunctivelyCombines", "cco:ont00000853")),
+    ("yager_combination",          ex("yagerCombines", "cco:ont00000853")),
+    ("frame_refinement",           ex("refinesFrame", "cco:ont00000853")),
+    ("frame_coarsening",           ex("coarsensFrame", "cco:ont00000853")),
+    ("pignistic_transformation",   ex("hasPignisticTransform", "cco:ont00000853")),
+    ("plausibility_function_for",  ex("plausibilityForClaim", "cco:ont00000853")),
+    ("belief_function_for",        ex("beliefForClaim", "cco:ont00000853")),
+    ("evidence_independent_of",    ex("evidenceIndependentOf", "cco:ont00000853")),
+    ("evidence_correlated_with",   ex("evidenceCorrelatedWith", "cco:ont00000853")),
+    ("mass_function_normalized_form", ex("hasNormalizedForm", "cco:ont00000853")),
 ]
 
 # Schema evolution + dataset-version lineage.
 SCHEMA_EVO_GAP = [
     ("schema_version_subclass",    ex("hasSchemaVersion")),
     ("schema_revision_of",         ex("schemaRevisionOf")),
-    ("column_version_subclass",    ex("hasColumnVersion", "cco:DescriptiveICE")),
-    ("column_renamed_from",        ex("renamedFrom", "cco:DescriptiveICE")),
-    ("column_type_changed_from",   ex("typeChangedFrom", "cco:DescriptiveICE")),
-    ("column_added_at_version",    ex("addedAtSchemaVersion", "cco:DescriptiveICE")),
-    ("column_dropped_at_version",  ex("droppedAtSchemaVersion", "cco:DescriptiveICE")),
+    ("column_version_subclass",    ex("hasColumnVersion", "cco:ont00000853")),
+    ("column_renamed_from",        ex("renamedFrom", "cco:ont00000853")),
+    ("column_type_changed_from",   ex("typeChangedFrom", "cco:ont00000853")),
+    ("column_added_at_version",    ex("addedAtSchemaVersion", "cco:ont00000853")),
+    ("column_dropped_at_version",  ex("droppedAtSchemaVersion", "cco:ont00000853")),
     ("dataset_snapshot_subclass",  ex("snapshotOf")),
     ("dataset_at_version",         ex("atDatasetVersion")),
-    ("breaking_change_subclass",   ex("breakingChangeFor", "cco:DescriptiveICE")),
-    ("nonbreaking_change_subclass", ex("nonBreakingChangeFor", "cco:DescriptiveICE")),
+    ("breaking_change_subclass",   ex("breakingChangeFor", "cco:ont00000853")),
+    ("nonbreaking_change_subclass", ex("nonBreakingChangeFor", "cco:ont00000853")),
     ("schema_migration_subclass",  ex("migratesSchemaTo", "bfo:0000015")),
-    ("rollback_relation",          ex("rollsBackTo", "cco:DescriptiveICE")),
-    ("forward_compatible_with",    ex("forwardCompatibleWith", "cco:DescriptiveICE")),
-    ("backward_compatible_with",   ex("backwardCompatibleWith", "cco:DescriptiveICE")),
+    ("rollback_relation",          ex("rollsBackTo", "cco:ont00000853")),
+    ("forward_compatible_with",    ex("forwardCompatibleWith", "cco:ont00000853")),
+    ("backward_compatible_with",   ex("backwardCompatibleWith", "cco:ont00000853")),
 ]
 
 # Telemetry / Span / Metric / Log specializations
@@ -227,8 +227,8 @@ TELEMETRY_GAP = [
     ("log_within_span_context",     ex("withinSpanContext")),
     ("trace_with_root_span",        ex("hasRootSpan")),
     ("trace_with_service_name",     ex("hasServiceName")),
-    ("anomaly_in_metric",           ex("anomalyInMetric", "cco:DescriptiveICE")),
-    ("baseline_for_metric",         ex("baselineFor", "cco:DescriptiveICE")),
+    ("anomaly_in_metric",           ex("anomalyInMetric", "cco:ont00000853")),
+    ("baseline_for_metric",         ex("baselineFor", "cco:ont00000853")),
     ("alert_triggered_by",          ex("triggeredByMetric", "bfo:0000015")),
 ]
 
@@ -253,52 +253,52 @@ EBPF_GAP = [
 
 # Cross-branch density (diagonal connections)
 CROSS_GAP = [
-    ("trace_supports_claim",       cross_ex("supportsClaim", "cco:DescriptiveICE", "bfo:0000015")),
-    ("audit_produces_evidence",    cross_ex("producesEvidence", "cco:DescriptiveICE", "bfo:0000015")),
-    ("transformation_governed_by", cross_ex("governedBy", "cco:DirectiveICE", "bfo:0000015")),
-    ("ebpf_program_governed_by_directive", cross_ex("governedBy", "cco:DirectiveICE")),
-    ("lineage_describes_transformation", cross_ex("describesTransformation", "bfo:0000015", "cco:DescriptiveICE")),
-    ("syscall_governed_by_directive", cross_ex("governedBy", "cco:DirectiveICE", "cco:DesignativeICE")),
-    ("claim_observed_by_event",    cross_ex("observedAt", "bfo:0000015", "cco:DescriptiveICE")),
-    ("metric_observed_by_event",   cross_ex("observedAt", "bfo:0000015", "cco:DescriptiveICE")),
-    ("policy_attests_artifact",    cross_ex("attestsToArtifact", "cco:Artifact", "cco:DirectiveICE")),
-    ("evidence_for_audit",         cross_ex("evidenceForProcess", "bfo:0000015", "cco:DescriptiveICE")),
+    ("trace_supports_claim",       cross_ex("supportsClaim", "cco:ont00000853", "bfo:0000015")),
+    ("audit_produces_evidence",    cross_ex("producesEvidence", "cco:ont00000853", "bfo:0000015")),
+    ("transformation_governed_by", cross_ex("governedBy", "cco:ont00000965", "bfo:0000015")),
+    ("ebpf_program_governed_by_directive", cross_ex("governedBy", "cco:ont00000965")),
+    ("lineage_describes_transformation", cross_ex("describesTransformation", "bfo:0000015", "cco:ont00000853")),
+    ("syscall_governed_by_directive", cross_ex("governedBy", "cco:ont00000965", "cco:ont00000686")),
+    ("claim_observed_by_event",    cross_ex("observedAt", "bfo:0000015", "cco:ont00000853")),
+    ("metric_observed_by_event",   cross_ex("observedAt", "bfo:0000015", "cco:ont00000853")),
+    ("policy_attests_artifact",    cross_ex("attestsToArtifact", "cco:ont00000995", "cco:ont00000965")),
+    ("evidence_for_audit",         cross_ex("evidenceForProcess", "bfo:0000015", "cco:ont00000853")),
     ("provenance_agent_signs_audit", cross_ex("signsProcess", "bfo:0000015")),
     ("dataset_under_audit",        cross_ex("underAudit", "bfo:0000015")),
-    ("schema_evolution_under_directive", cross_ex("governedBy", "cco:DirectiveICE", "cco:DescriptiveICE")),
-    ("kernel_anomaly_supports_claim", cross_ex("supportsClaim", "cco:DescriptiveICE")),
-    ("telemetry_span_observes_syscall", cross_ex("observesSyscall", "cco:DesignativeICE", "bfo:0000015")),
-    ("attestation_about_compliance_claim", cross_ex("attestsToClaim", "cco:DescriptiveICE", "bfo:0000015")),
-    ("dempster_combines_audit_evidences", cross_ex("combinesViaDempster", "cco:DescriptiveICE")),
-    ("column_lineage_for_compliance_claim", cross_ex("supportsClaim", "cco:DescriptiveICE")),
-    ("alert_governed_by_runbook",  cross_ex("governedBy", "cco:DirectiveICE", "bfo:0000015")),
-    ("frozen_artifact_governed_by", cross_ex("governedBy", "cco:DirectiveICE")),
+    ("schema_evolution_under_directive", cross_ex("governedBy", "cco:ont00000965", "cco:ont00000853")),
+    ("kernel_anomaly_supports_claim", cross_ex("supportsClaim", "cco:ont00000853")),
+    ("telemetry_span_observes_syscall", cross_ex("observesSyscall", "cco:ont00000686", "bfo:0000015")),
+    ("attestation_about_compliance_claim", cross_ex("attestsToClaim", "cco:ont00000853", "bfo:0000015")),
+    ("dempster_combines_audit_evidences", cross_ex("combinesViaDempster", "cco:ont00000853")),
+    ("column_lineage_for_compliance_claim", cross_ex("supportsClaim", "cco:ont00000853")),
+    ("alert_governed_by_runbook",  cross_ex("governedBy", "cco:ont00000965", "bfo:0000015")),
+    ("frozen_artifact_governed_by", cross_ex("governedBy", "cco:ont00000965")),
 ]
 
 # Mixed-pattern boosters: union, cardinality, negation across branches.
 BOOSTERS = [
     ("artifact_min_one_owner",     card_min("hasOwner", n=1)),
     ("artifact_max_one_owner",     card_max("hasOwner", n=1)),
-    ("descriptive_only_about_artifact", uni("isAbout", "cco:DescriptiveICE")),
-    ("directive_only_governs_artifact", uni("governs", "cco:DirectiveICE")),
+    ("descriptive_only_about_artifact", uni("isAbout", "cco:ont00000853")),
+    ("directive_only_governs_artifact", uni("governs", "cco:ont00000965")),
     ("process_min_one_input",      card_min("hasInput", "bfo:0000015", n=1)),
     ("process_min_one_output",     card_min("hasOutput", "bfo:0000015", n=1)),
     ("process_max_one_operator",   card_max("hasOperator", "bfo:0000015", n=1)),
     ("artifact_either_active_or_archived", union2()),
     ("artifact_either_internal_or_external", union2()),
-    ("descriptive_either_evidence_or_claim", union2("cco:DescriptiveICE")),
+    ("descriptive_either_evidence_or_claim", union2("cco:ont00000853")),
     ("artifact_not_deprecated",    neg()),
     ("artifact_not_revoked",       neg()),
-    ("descriptive_not_retracted",  neg("cco:DescriptiveICE")),
-    ("directive_not_superseded",   neg("cco:DirectiveICE")),
+    ("descriptive_not_retracted",  neg("cco:ont00000853")),
+    ("directive_not_superseded",   neg("cco:ont00000965")),
     ("process_either_started_or_completed", union2("bfo:0000015")),
 ]
 
 ALL_GAPS = [
     ("Artifact.SOTAB",          SOTAB_GAP),
-    ("DescriptiveICE.CTACPA",   CTA_CPA_GAP),
-    ("DirectiveICE.Compliance", COMPLIANCE_GAP),
-    ("DescriptiveICE.DSTOps",   DST_GAP),
+    ("Descriptive ICE.CTACPA",   CTA_CPA_GAP),
+    ("Prescriptive ICE.Compliance", COMPLIANCE_GAP),
+    ("Descriptive ICE.DSTOps",   DST_GAP),
     ("Artifact.SchemaEvolution", SCHEMA_EVO_GAP),
     ("Process.Telemetry",       TELEMETRY_GAP),
     ("Artifact.eBPFExtension",  EBPF_GAP),
@@ -308,16 +308,16 @@ ALL_GAPS = [
 
 
 def emit(branch: str, name: str, spec: dict) -> dict:
-    anchor = "cco:Artifact"
+    anchor = "cco:ont00000995"
     shape = spec["shape"]
-    if "cco:DescriptiveICE" in shape:
-        anchor = "cco:DescriptiveICE"
-    elif "cco:DirectiveICE" in shape:
-        anchor = "cco:DirectiveICE"
-    elif "cco:DesignativeICE" in shape:
-        anchor = "cco:DesignativeICE"
+    if "cco:ont00000853" in shape:
+        anchor = "cco:ont00000853"
+    elif "cco:ont00000965" in shape:
+        anchor = "cco:ont00000965"
+    elif "cco:ont00000686" in shape:
+        anchor = "cco:ont00000686"
     elif "bfo:0000015" in shape:
-        anchor = "bfo:Process"
+        anchor = "bfo:0000015"
     return {
         "template_id": name,
         "manchester_template": shape,

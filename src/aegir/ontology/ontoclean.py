@@ -37,7 +37,7 @@ _FUNCTION = re.compile(r"\b(by design|designed to|in order to|evolved to|for the
 # already role/realizable-modelled in the axiom → leave it
 # the realizable-machinery PROPERTIES (realizes/inheres/bearer/realized) — a class counts as "already enriched"
 # only if it carries these RESTRICTIONS, not merely a bfo:0000023 role anchor (which still lacks the machinery).
-_REALIZABLE = re.compile(r"bfo:000005[2345]|BFO_000005[2345]|\brealizes\b|inheres|bearer of")
+_REALIZABLE = re.compile(r"bfo:000005[2345]|BFO_000005[2345]|\brealizes\b|inheres|bearer of")  # coined-ok: detector regex for legacy realizable-relation IRIs
 _ROLE_ANCHOR = re.compile(r"bfo:0000023|BFO_0000023")
 # agentive deverbal nominalization — weak; only counts WITH corroboration, and never for these non-role -er/-or nouns
 _AGENTIVE = re.compile(r"(er|or|ant|ee|ist)$")  # NB: not -ent (catches -ment nominalizations: commitment/judgment)

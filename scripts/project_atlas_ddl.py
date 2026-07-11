@@ -114,7 +114,7 @@ def ensure_types():
         if (n := f"domain_{fam_label(f)}") not in existing:
             class_defs.append(cdef(n, f"Domain: table realized from ontology family {f}"))
     for n, d in [("cpa_complex_axiom", "CPA: column from a complex (DeepOnto) axiom template"),
-                 ("cpa_bfo_process", "CPA: table anchored under bfo:Process")]:
+                 ("cpa_bfo_process", "CPA: table anchored under bfo:0000015")]:
         if n not in existing:
             class_defs.append(cdef(n, d))
 
@@ -343,13 +343,13 @@ def glossary_responsive(probe_timeout: int = GLOSSARY_TIMEOUT) -> bool:
 # BFO/CCO upper-type leaf anchors → readable glossary sub-category names. The bfo_anchor_path
 # leaf is one of these 7; it gives each family a second organizing axis (domain × upper-type).
 _ANCHOR_LABELS = {
-    "cco:Artifact": "Artifacts",
-    "bfo:Process": "Processes",
-    "cco:DescriptiveICE": "Descriptive Information",
-    "cco:DirectiveICE": "Directive Information",
-    "cco:DesignativeICE": "Designative Information",
-    "cco:InformationContentEntity": "Information Content Entities",
-    "bfo:IndependentContinuant": "Independent Continuants",
+    "cco:ont00000995": "Artifacts",
+    "bfo:0000015": "Processes",
+    "cco:ont00000853": "Descriptive Information",
+    "cco:ont00000965": "Directive Information",
+    "cco:ont00000686": "Designative Information",
+    "cco:ont00000958": "Information Content Entities",
+    "bfo:0000004": "Independent Continuants",
 }
 
 
@@ -539,7 +539,7 @@ def classify(base, base_tbl_guid, base_col_guid):
         bfo = st.template.bfo_anchor_path[-1] if st.template.bfo_anchor_path else ""
         if (tg := base_tbl_guid.get(tid)):
             by_type.setdefault(f"domain_{fam_label(st.family)}", []).append(tg)
-            if bfo == "bfo:Process":
+            if bfo == "bfo:0000015":
                 by_type.setdefault("cpa_bfo_process", []).append(tg)
         slot2col = {c.slot_ref: c.name for c in st.table.columns}  # slot_ref is canonical (cols renamed)
         for slot, owl in st.template.slot_types.items():

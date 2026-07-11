@@ -29,25 +29,25 @@ _CAND = REPO / "build" / "domain_taxonomy_candidates.json"
 _ADMITTED = REPO / "build" / "domain_taxonomy_admitted.json"
 
 _ANCHOR_IRI = {
-    "process": "bfo:Process",
-    "independent_continuant": "bfo:IndependentContinuant",
-    "artifact": "cco:Artifact",
-    "information_content_entity": "cco:InformationContentEntity",
-    "descriptive_ice": "cco:DescriptiveICE",
-    "directive_ice": "cco:DirectiveICE",
-    "designative_ice": "cco:DesignativeICE",
+    "process": "bfo:0000015",
+    "independent_continuant": "bfo:0000004",
+    "artifact": "cco:ont00000995",
+    "information_content_entity": "cco:ont00000958",
+    "descriptive_ice": "cco:ont00000853",
+    "directive_ice": "cco:ont00000965",
+    "designative_ice": "cco:ont00000686",
 }
 _GROUNDING = """
-Class: bfo:Occurrent
-Class: bfo:Continuant
-DisjointClasses: bfo:Occurrent, bfo:Continuant
-Class: bfo:Process SubClassOf: bfo:Occurrent
-Class: bfo:IndependentContinuant SubClassOf: bfo:Continuant
-Class: cco:Artifact SubClassOf: bfo:IndependentContinuant
-Class: cco:InformationContentEntity SubClassOf: bfo:Continuant
-Class: cco:DescriptiveICE SubClassOf: cco:InformationContentEntity
-Class: cco:DirectiveICE SubClassOf: cco:InformationContentEntity
-Class: cco:DesignativeICE SubClassOf: cco:InformationContentEntity
+Class: bfo:0000003
+Class: bfo:0000002
+DisjointClasses: bfo:0000003, bfo:0000002
+Class: bfo:0000015 SubClassOf: bfo:0000003
+Class: bfo:0000004 SubClassOf: bfo:0000002
+Class: cco:ont00000995 SubClassOf: bfo:0000004
+Class: cco:ont00000958 SubClassOf: bfo:0000002
+Class: cco:ont00000853 SubClassOf: cco:ont00000958
+Class: cco:ont00000965 SubClassOf: cco:ont00000958
+Class: cco:ont00000686 SubClassOf: cco:ont00000958
 """
 _HEADER = ("Prefix: bfo: <http://x/bfo#>\nPrefix: cco: <http://x/cco#>\nPrefix: dom: <http://x/dom#>\n"
            "Ontology: <http://x/aegir-domtax-admit>\n")

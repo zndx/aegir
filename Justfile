@@ -104,6 +104,12 @@ _restore-patched-wheels:
 check-ontology-schema:
     uv run --no-sync python scripts/check_ontology_schema.py
 
+# External-namespace integrity: every cco:/bfo: ref on the live surface (code + current docs + cards)
+# must EXIST in the authority, and the named …ICE / InformationContentEntity hallucinations are banned
+# outright — so coined readable aliases cannot re-surface from stale docs/notes/old code.
+scan-coined:
+    uv run --no-sync python scripts/scan_coined_external.py
+
 # OQuaRE ontology-quality gate (IOF-anchored 1-5 model) on the realized OWL — the hard publish floor
 # (aggregate >=3.5 AND Functional-Adequacy >=3.0). Cert-driven consistency, JVM-free. (Wired into bdd-0
 # once the rigor gradient lands GREEN — see EVIDENCE.md OQ-Structure.)

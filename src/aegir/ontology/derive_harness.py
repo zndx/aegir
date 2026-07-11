@@ -31,8 +31,8 @@ bibliographic wrapper is noise; the domain phenomena the text is ABOUT are the s
 
 For each entity (a real named class):
 - give a CamelCase `name` and a plain-English `label`;
-- anchor it to a `genus` — a real BFO/CCO IRI: cco:Artifact (a made thing / record / sample),
-  bfo:0000015 (a process / activity / measurement), cco:InformationContentEntity (a document
+- anchor it to a `genus` — a real BFO/CCO IRI: cco:ont00000995 (a made thing / record / sample),
+  bfo:0000015 (a process / activity / measurement), cco:ont00000958 (a document
   / dataset / designator), bfo:0000023 (a role);
 - write a one-sentence `definition`;
 - give it MANY `attributes` (typed DataProperties) — 4 to 10 per entity, the real measured and

@@ -32,40 +32,40 @@ from aegir.ontology.schema import load_catalog  # noqa: E402
 # The 7 ``bfo_anchor`` classes as upper SKOS concepts + their CCO/BFO subsumption.
 # (code, notation, prefLabel, abbrev, parent_code, definition)
 ANCHORS: dict[str, tuple[str, str, str, str, str | None, str]] = {
-    "bfo:Process": ("SDG.PROCESS", "1", "Process", "PROC", None,
+    "bfo:0000015": ("SDG.PROCESS", "1", "Process", "PROC", None,
                     "A BFO process (occurrent): an entity that unfolds in time, e.g. an "
                     "observation, a program execution, a governance activity."),
-    "bfo:IndependentContinuant": ("SDG.INDEPENDENT_CONTINUANT", "2", "Independent Continuant",
+    "bfo:0000004": ("SDG.INDEPENDENT_CONTINUANT", "2", "Independent Continuant",
                     "INDCONT", None,
                     "A BFO independent continuant: a bearer of qualities that persists through time."),
-    "cco:Artifact": ("SDG.ARTIFACT", "2.1", "Artifact", "ARTIFACT", "SDG.INDEPENDENT_CONTINUANT",
+    "cco:ont00000995": ("SDG.ARTIFACT", "2.1", "Artifact", "ARTIFACT", "SDG.INDEPENDENT_CONTINUANT",
                     "A CCO artifact: an object intentionally made to realize a function "
                     "(instruments, systems, datasets-as-objects)."),
-    "bfo:GenericallyDependentContinuant": ("SDG.GDC", "3", "Generically Dependent Continuant", "GDC", None,
+    "bfo:0000031": ("SDG.GDC", "3", "Generically Dependent Continuant", "GDC", None,
                     "A BFO generically dependent continuant: a continuant that depends on one or more "
                     "bearers and can migrate between them (information, patterns, designs)."),
-    "cco:InformationContentEntity": ("SDG.ICE", "3.0", "Information Content Entity", "ICE", "SDG.GDC",
+    "cco:ont00000958": ("SDG.ICE", "3.0", "Information Content Entity", "ICE", "SDG.GDC",
                     "A CCO information content entity: a generically dependent continuant that "
                     "is about, or carries information concerning, some entity."),
-    "bfo:Quality": ("SDG.QUALITY", "4", "Quality", "QUAL", None,
+    "bfo:0000019": ("SDG.QUALITY", "4", "Quality", "QUAL", None,
                     "A BFO quality: a specifically dependent continuant that is exhibited whenever its "
                     "bearer exists (a measurable/observable attribute)."),
-    "bfo:Role": ("SDG.ROLE", "5", "Role", "ROLE", None,
+    "bfo:0000023": ("SDG.ROLE", "5", "Role", "ROLE", None,
                     "A BFO role: a realizable specifically dependent continuant a bearer has in virtue "
                     "of external circumstances (physician role, foreign-key role)."),
-    "bfo:Disposition": ("SDG.DISPOSITION", "6", "Disposition", "DISP", None,
+    "bfo:0000016": ("SDG.DISPOSITION", "6", "Disposition", "DISP", None,
                     "A BFO disposition: a realizable entity grounded in the bearer's physical make-up "
                     "(a capacity or tendency to be realized in a process)."),
-    "bfo:MaterialEntity": ("SDG.MATERIAL_ENTITY", "2.2", "Material Entity", "MATENT", "SDG.INDEPENDENT_CONTINUANT",
+    "bfo:0000040": ("SDG.MATERIAL_ENTITY", "2.2", "Material Entity", "MATENT", "SDG.INDEPENDENT_CONTINUANT",
                     "A BFO material entity: an independent continuant that has matter as a part."),
-    "cco:DescriptiveICE": ("SDG.ICE.DESCRIPTIVE", "3.1", "Descriptive Information Content Entity",
+    "cco:ont00000853": ("SDG.ICE.DESCRIPTIVE", "3.1", "Descriptive Information Content Entity",
                     "DESCICE", "SDG.ICE",
                     "An ICE that describes an entity or state of affairs (measurements, records, "
                     "observations)."),
-    "cco:DirectiveICE": ("SDG.ICE.DIRECTIVE", "3.2", "Directive Information Content Entity",
+    "cco:ont00000965": ("SDG.ICE.DIRECTIVE", "3.2", "Directive Information Content Entity",
                     "DIRICE", "SDG.ICE",
                     "An ICE that prescribes or directs (plans, rules, requirements, policies)."),
-    "cco:DesignativeICE": ("SDG.ICE.DESIGNATIVE", "3.3", "Designative Information Content Entity",
+    "cco:ont00000686": ("SDG.ICE.DESIGNATIVE", "3.3", "Designative Information Content Entity",
                     "DESIGICE", "SDG.ICE",
                     "An ICE that designates or names an entity (identifiers, codes, keys)."),
 }

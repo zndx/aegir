@@ -26,16 +26,16 @@ from aegir.ontology.deeponto_harness import ensure_jvm, render_template_ontology
 # Minimal BFO/CCO upper grounding: the seven anchors slotted under two disjoint
 # top categories, so a cross-category construct is provably incoherent.
 _GROUNDING = """
-Class: bfo:Occurrent
-Class: bfo:Continuant
-DisjointClasses: bfo:Occurrent, bfo:Continuant
-Class: bfo:Process SubClassOf: bfo:Occurrent
-Class: bfo:IndependentContinuant SubClassOf: bfo:Continuant
-Class: cco:Artifact SubClassOf: bfo:IndependentContinuant
-Class: cco:InformationContentEntity SubClassOf: bfo:Continuant
-Class: cco:DescriptiveICE SubClassOf: cco:InformationContentEntity
-Class: cco:DirectiveICE SubClassOf: cco:InformationContentEntity
-Class: cco:DesignativeICE SubClassOf: cco:InformationContentEntity
+Class: bfo:0000003
+Class: bfo:0000002
+DisjointClasses: bfo:0000003, bfo:0000002
+Class: bfo:0000015 SubClassOf: bfo:0000003
+Class: bfo:0000004 SubClassOf: bfo:0000002
+Class: cco:ont00000995 SubClassOf: bfo:0000004
+Class: cco:ont00000958 SubClassOf: bfo:0000002
+Class: cco:ont00000853 SubClassOf: cco:ont00000958
+Class: cco:ont00000965 SubClassOf: cco:ont00000958
+Class: cco:ont00000686 SubClassOf: cco:ont00000958
 """
 
 
@@ -76,14 +76,14 @@ if __name__ == "__main__":
     ensure_jvm()
     ok = CatalogTemplate(
         template_id="t_ok",
-        manchester_template="Class: {X:Class} SubClassOf: cco:DescriptiveICE, {p:ObjectProperty} some {Y:Class}",
+        manchester_template="Class: {X:Class} SubClassOf: cco:ont00000853, {p:ObjectProperty} some {Y:Class}",
         slot_types={"X": "Class", "p": "ObjectProperty", "Y": "Class"},
-        bfo_anchor_path=["cco:DescriptiveICE"])
+        bfo_anchor_path=["cco:ont00000853"])
     bad = CatalogTemplate(  # anchored across disjoint BFO categories → head unsatisfiable
         template_id="t_bad",
-        manchester_template="Class: {X:Class} SubClassOf: bfo:Process, cco:Artifact",
+        manchester_template="Class: {X:Class} SubClassOf: bfo:0000015, cco:ont00000995",
         slot_types={"X": "Class"},
-        bfo_anchor_path=["bfo:Process"])
+        bfo_anchor_path=["bfo:0000015"])
     ro, rb = coherence(ok), coherence(bad)
     print(f"COHERENT   construct: {ro}")
     print(f"INCOHERENT construct: {rb}")

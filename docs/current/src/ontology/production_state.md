@@ -133,10 +133,10 @@ in BFO 2020 and CCO and organized into five top-level branches plus a
 belief branch:
 
 - **Artifact** (CCO) — material things, datasets, programs.
-- **DesignativeICE** (CCO) — names, identifiers, designators.
-- **DescriptiveICE** (CCO) — measurements, claims, lineage records;
+- **Designative ICE** (CCO) — names, identifiers, designators.
+- **Descriptive ICE** (CCO) — measurements, claims, lineage records;
   hosts the `sdg:BeliefStructure` (DST) branch.
-- **DirectiveICE** (CCO; alias of `cco:ont00000965` "Prescriptive
+- **Prescriptive ICE** (CCO; alias of `cco:ont00000965` "Prescriptive
   ICE") — requirements, controls, policies, constraints.
 - **Process** (BFO 2020 `bfo:0000015`) — observation, derivation,
   governance activity.
@@ -196,18 +196,18 @@ templates carry a `domain` provenance tag, and templates from
 different SKOS domains share upper anchors. Representative instances
 (template ids from `catalog.json`):
 
-- `bfo:Process` (BFO 2020 `bfo:0000015`) is shared by
+- `bfo:0000015` (BFO 2020 `bfo:0000015`) is shared by
   `clinical_documentation_activity` (clinical),
   `vector_control_activity` (public health), `lecture_session`
   (education), `pdf_export_process` (document systems), and
   `specification_testing_event` (engineering) — 106 realized classes
   anchor here.
-- `bfo:Role` (`bfo:0000023`) is shared by `data_controller_role`
+- `bfo:0000023` (`bfo:0000023`) is shared by `data_controller_role`
   (data governance), `police_officer_role` (public administration),
   `investor_relations_director_role` (finance), and
   `library_student_assistant_role` (education) — 68 classes; the
   role/kind discipline is what OntoClean enforces.
-- `cco:InformationContentEntity` and `cco:DescriptiveICE` are shared
+- `cco:ont00000958` and `cco:ont00000853` are shared
   by `personal_health_record` (clinical),
   `donation_transaction_record` (nonprofit finance),
   `sequencing_coverage_parameter` (genomics), and
@@ -364,7 +364,7 @@ reasons). Full detail in
 Grounding-anchor retrieval (`scripts/grounding_anchors.py`) lets the
 agent ground proposals to real genera: the index spans CCO (1431
 BFO-aligned classes), FHIR R5 (210 record types bridged to
-`cco:InformationContentEntity`), and **our own grounded classes** (it
+`cco:ont00000958`), and **our own grounded classes** (it
 accretes — each class grounded becomes a reusable anchor).
 
 ## 6. The closed-loop synthetic-data pipeline

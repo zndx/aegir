@@ -67,9 +67,9 @@ def load_harness(cdir: str | Path):
 _FIXTURE_RESP = (
     "```json\n[{"
     '"template_id": "fixture_probe_construct", '
-    '"manchester_template": "Class: {X:Class} SubClassOf: cco:DescriptiveICE, {p:ObjectProperty} some {Y:Class}", '
+    '"manchester_template": "Class: {X:Class} SubClassOf: cco:ont00000853, {p:ObjectProperty} some {Y:Class}", '
     '"slot_types": {"X": "Class", "p": "ObjectProperty", "Y": "Class"}, '
-    '"bfo_anchor_path": ["cco:DescriptiveICE"]}]\n```'
+    '"bfo_anchor_path": ["cco:ont00000853"]}]\n```'
 )
 
 

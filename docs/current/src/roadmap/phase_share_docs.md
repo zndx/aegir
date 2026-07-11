@@ -74,7 +74,7 @@ An mdbook site (the devenv already ships mdbook + d2/katex/mermaid) with three c
 ## Locked design decisions
 
 1. **"Hydrated" = resolved-template** (confirmed). The ontology entry page shows **not** the
-   abstract template (`Class: {X:Class} SubClassOf: cco:Artifact, sdg:hasSKU some {Y:Class}`,
+   abstract template (`Class: {X:Class} SubClassOf: cco:ont00000995, sdg:hasSKU some {Y:Class}`,
    slot placeholders) but the template **resolved for its specific table**: the concrete class
    name, the Manchester axiom with slots named as the actual columns/relationships the table
    instantiates, the SKOS definition (verbalization), the BFO/CCO anchor, the `broader`/`narrower`
