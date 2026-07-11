@@ -35,11 +35,16 @@ OMN = REPO / "corpora" / "ontology" / "sdg-ontology.omn"
 ANCHOR_IRI = {
     "SDG.PROCESS": BFO + "0000015",
     "SDG.INDEPENDENT_CONTINUANT": BFO + "0000004",
+    "SDG.MATERIAL_ENTITY": BFO + "0000040",
     "SDG.ARTIFACT": BFO + "0000004",           # cco:Artifact → its BFO parent (independent continuant)
+    "SDG.GDC": BFO + "0000031",
     "SDG.ICE": CCO + "ont00000958",
     "SDG.ICE.DESCRIPTIVE": CCO + "ont00000853",
     "SDG.ICE.DIRECTIVE": CCO + "ont00000965",  # CCO Prescriptive ICE
     "SDG.ICE.DESIGNATIVE": CCO + "ont00000686",
+    "SDG.QUALITY": BFO + "0000019",
+    "SDG.ROLE": BFO + "0000023",
+    "SDG.DISPOSITION": BFO + "0000016",
     "SDG.GENERIC": None,                        # anchorless — no entailment claimed
 }
 

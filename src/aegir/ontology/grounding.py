@@ -30,6 +30,11 @@ _ANCHOR_ORDER = [
     (CCO + "ont00000965", "SDG.ICE.DIRECTIVE"),
     (CCO + "ont00000686", "SDG.ICE.DESIGNATIVE"),
     (CCO + "ont00000958", "SDG.ICE"),
+    (BFO + "0000031", "SDG.GDC"),                 # generically dependent continuant (non-ICE)
+    (BFO + "0000023", "SDG.ROLE"),                # realizable specifically-dependent continuants
+    (BFO + "0000016", "SDG.DISPOSITION"),
+    (BFO + "0000019", "SDG.QUALITY"),
+    (BFO + "0000040", "SDG.MATERIAL_ENTITY"),     # under independent continuant
     (BFO + "0000015", "SDG.PROCESS"),
     (BFO + "0000004", "SDG.INDEPENDENT_CONTINUANT"),
 ]

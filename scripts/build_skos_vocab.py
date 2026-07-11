@@ -41,9 +41,23 @@ ANCHORS: dict[str, tuple[str, str, str, str, str | None, str]] = {
     "cco:Artifact": ("SDG.ARTIFACT", "2.1", "Artifact", "ARTIFACT", "SDG.INDEPENDENT_CONTINUANT",
                     "A CCO artifact: an object intentionally made to realize a function "
                     "(instruments, systems, datasets-as-objects)."),
-    "cco:InformationContentEntity": ("SDG.ICE", "3", "Information Content Entity", "ICE", None,
+    "bfo:GenericallyDependentContinuant": ("SDG.GDC", "3", "Generically Dependent Continuant", "GDC", None,
+                    "A BFO generically dependent continuant: a continuant that depends on one or more "
+                    "bearers and can migrate between them (information, patterns, designs)."),
+    "cco:InformationContentEntity": ("SDG.ICE", "3.0", "Information Content Entity", "ICE", "SDG.GDC",
                     "A CCO information content entity: a generically dependent continuant that "
                     "is about, or carries information concerning, some entity."),
+    "bfo:Quality": ("SDG.QUALITY", "4", "Quality", "QUAL", None,
+                    "A BFO quality: a specifically dependent continuant that is exhibited whenever its "
+                    "bearer exists (a measurable/observable attribute)."),
+    "bfo:Role": ("SDG.ROLE", "5", "Role", "ROLE", None,
+                    "A BFO role: a realizable specifically dependent continuant a bearer has in virtue "
+                    "of external circumstances (physician role, foreign-key role)."),
+    "bfo:Disposition": ("SDG.DISPOSITION", "6", "Disposition", "DISP", None,
+                    "A BFO disposition: a realizable entity grounded in the bearer's physical make-up "
+                    "(a capacity or tendency to be realized in a process)."),
+    "bfo:MaterialEntity": ("SDG.MATERIAL_ENTITY", "2.2", "Material Entity", "MATENT", "SDG.INDEPENDENT_CONTINUANT",
+                    "A BFO material entity: an independent continuant that has matter as a part."),
     "cco:DescriptiveICE": ("SDG.ICE.DESCRIPTIVE", "3.1", "Descriptive Information Content Entity",
                     "DESCICE", "SDG.ICE",
                     "An ICE that describes an entity or state of affairs (measurements, records, "
