@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from zndx.engine.v1 import engine_pb2 as zndx_dot_engine_dot_v1_dot_engine__pb2
+from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zndx_dot_engine_dot_v1_dot_engine__pb2
 
 GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
