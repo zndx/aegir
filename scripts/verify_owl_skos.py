@@ -45,16 +45,16 @@ ANCHOR_IRI = {
 
 
 def main() -> int:
-    cat = load_catalog(CATALOG_FILE)
-    # template head class → its SKOS anchor parent_code (mirror build_skos_vocab)
+    # read the ACTUAL published vocab (annotations.parquet): each leaf carries its parent_code (the SKOS
+    # anchor edge) + its axiom (from which we recover the OWL head class) — so we verify the real artifact.
+    import pyarrow.parquet as pq
+    vocab = pq.read_table(REPO / "corpora" / "vocabulary" / "annotations.parquet").to_pylist()
     head_anchor: dict[str, str] = {}
-    for t in cat.templates:
-        hm = re.search(r"Class:\s*\{(\w+)", t.manchester_template or "")
-        if not hm:
-            continue
-        anchor = t.bfo_anchor_path[-1] if t.bfo_anchor_path else None
-        parent_code = (ANCHORS.get(anchor, GENERIC) if anchor else GENERIC)[0]
-        head_anchor[hm.group(1)] = parent_code
+    for rec in vocab:
+        pc = rec.get("parent_code") or ""
+        hm = re.search(r"Class:\s*\{(\w+)", rec.get("axiom") or "")
+        if pc and hm:
+            head_anchor[hm.group(1)] = pc
 
     from aegir.ontology.deeponto_harness import ensure_jvm
     ensure_jvm()

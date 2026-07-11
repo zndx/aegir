@@ -14315,6 +14315,42 @@
       },
       "alt_labels": [],
       "scope_note": ""
+    },
+    {
+      "template_id": "prim_skillimprovement",
+      "manchester_template": "Class: {SkillImprovement:Class} SubClassOf: cco:ont00000131",
+      "slot_types": {
+        "SkillImprovement": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "SkillImprovement is grounded as a specific type of increase in a quality, representing the enhancement of an individual's capabilities.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
+    },
+    {
+      "template_id": "prim_socialnetworkingserviceusage",
+      "manchester_template": "Class: {SocialNetworkingServiceUsage:Class} SubClassOf: sdg:ServiceUsageCategory",
+      "slot_types": {
+        "SocialNetworkingServiceUsage": "Class"
+      },
+      "is_complex": false,
+      "verbal_template": "SocialNetworkingServiceUsage is grounded as a specific instance of a service usage category, representing the activity of utilizing a social networking platform.",
+      "verbal_templates": [],
+      "mean_verbal_length": 0.0,
+      "bfo_anchor_path": [],
+      "broader": [],
+      "provenance": {
+        "source": "ground_primitives"
+      },
+      "alt_labels": [],
+      "scope_note": ""
     }
   ],
   "null_stats": {}

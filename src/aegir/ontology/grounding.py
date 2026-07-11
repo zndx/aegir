@@ -23,6 +23,17 @@ SDG = "https://signals.zndx.org/sdg#"
 BFO = "http://purl.obolibrary.org/obo/BFO_"
 CCO = "https://www.commoncoreontologies.org/"
 
+# the SKOS upper anchors as REAL BFO/CCO IRIs, most-specific first — a class's SKOS parent is the first
+# anchor the reasoner entails it under (so build_skos_vocab derives the hierarchy from the OWL logic).
+_ANCHOR_ORDER = [
+    (CCO + "ont00000853", "SDG.ICE.DESCRIPTIVE"),
+    (CCO + "ont00000965", "SDG.ICE.DIRECTIVE"),
+    (CCO + "ont00000686", "SDG.ICE.DESIGNATIVE"),
+    (CCO + "ont00000958", "SDG.ICE"),
+    (BFO + "0000015", "SDG.PROCESS"),
+    (BFO + "0000004", "SDG.INDEPENDENT_CONTINUANT"),
+]
+
 
 def compute_grounding(omn_path: "str | Path") -> dict:
     """Reasoner-entailed BFO/CCO grounding per sdg class. Returns
@@ -48,26 +59,28 @@ def compute_grounding(omn_path: "str | Path") -> dict:
     InferenceType = jpype.JClass("org.semanticweb.owlapi.reasoner.InferenceType")
     r.precomputeInferences(jpype.JArray(InferenceType)([InferenceType.CLASS_HIERARCHY]))
 
-    def _grounded(c) -> bool:
-        for s in r.getSuperClasses(c, False).getFlattened().toArray():
-            iri = str(s.getIRI())
-            if iri.startswith(BFO) or iri.startswith(CCO):
-                return True
-        for s in r.getEquivalentClasses(c).getEntities().toArray():
-            iri = str(s.getIRI())
-            if iri.startswith(BFO) or iri.startswith(CCO):
-                return True
-        return False
+    def _supers(c) -> set:
+        out = {str(s.getIRI()) for s in r.getSuperClasses(c, False).getFlattened().toArray()}
+        out |= {str(s.getIRI()) for s in r.getEquivalentClasses(c).getEntities().toArray()}
+        return out
 
     classes = [c for c in onto.owl_onto.getClassesInSignature().toArray()
                if str(c.getIRI()).startswith(SDG)]
-    grounded, ungrounded = [], []
+    grounded, ungrounded, anchors = [], [], {}
     for c in classes:
-        (grounded if _grounded(c) else ungrounded).append(str(c.getIRI()).split("#")[-1])
+        local = str(c.getIRI()).split("#")[-1]
+        sup = _supers(c)
+        if any(s.startswith(BFO) or s.startswith(CCO) for s in sup):
+            grounded.append(local)
+            # the most-specific SKOS anchor the reasoner ENTAILS membership in — so the SKOS hierarchy
+            # can be derived FROM the logic (OWL ⊨ SKOS by construction), not a sparse template annotation.
+            anchors[local] = next((code for iri, code in _ANCHOR_ORDER if iri in sup), "SDG.GENERIC")
+        else:
+            ungrounded.append(local)
     n = max(1, len(classes))
     return {"engine": "hermit", "n": len(classes),
             "grounded_count": len(grounded), "rate": round(len(grounded) / n, 4),
-            "grounded": sorted(grounded), "ungrounded": sorted(ungrounded)}
+            "grounded": sorted(grounded), "ungrounded": sorted(ungrounded), "anchors": anchors}
 
 
 def write_certificate(omn_path: "str | Path", out_path: "str | Path") -> dict:

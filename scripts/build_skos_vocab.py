@@ -80,14 +80,27 @@ def build_records() -> list[dict]:
                         "parent_code": parent or "", "taxonomy": "sdg", "description": definition,
                         "common_names": "", "example_values": ""})
 
+    # OWL ⊨ SKOS by construction (RH 2026-07-11): the SKOS parent is the reasoner's ENTAILED anchor
+    # (the grounding certificate), not the sparse `bfo_anchor_path` annotation — so every skos:broader edge
+    # is HermiT-entailed and the SKOS reflects the OWL's real grounding depth ([[bfo_cco_grounding_mandate]]).
+    from aegir.ontology.grounding import load_certificate
+    _cert = load_certificate(Path(__file__).resolve().parents[1] / "corpora/ontology/grounding_certificate.json")
+    cert_anchors = (_cert or {}).get("anchors", {})
+    code2notation = {a[0]: a[1] for a in [*ANCHORS.values(), GENERIC]}
+
     # 2) one leaf concept per template, under its anchor
     counters: dict[str, int] = {}
     for path in files:
         family = Path(path).stem
         for t in load_catalog(path).templates:
-            anchor = t.bfo_anchor_path[-1] if t.bfo_anchor_path else None
-            a = ANCHORS.get(anchor, GENERIC) if anchor else GENERIC
-            parent_code, parent_notation = a[0], a[1]
+            hm = re.search(r"Class:\s*\{(\w+)", t.manchester_template or "")
+            parent_code = cert_anchors.get(hm.group(1)) if hm else None
+            if parent_code:  # reasoner-entailed anchor
+                parent_notation = code2notation.get(parent_code, "0")
+            else:            # fallback: the template's own bfo_anchor annotation
+                anchor = t.bfo_anchor_path[-1] if t.bfo_anchor_path else None
+                a = ANCHORS.get(anchor, GENERIC) if anchor else GENERIC
+                parent_code, parent_notation = a[0], a[1]
             counters[parent_code] = counters.get(parent_code, 0) + 1
             class_slots = [s for s, ty in t.slot_types.items() if ty != "ObjectProperty"]
             # NATURAL description (RH 2026-07-09): the published vocabulary is a MaxSim
