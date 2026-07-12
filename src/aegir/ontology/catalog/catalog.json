@@ -746,7 +746,6 @@
       "manchester_template": "Class: {InvestorRelationsDirectorRole:Class} SubClassOf: bfo:0000023, bfo:0000054 some {InvestorRelationsActivity:Class}",
       "slot_types": {
         "InvestorRelationsDirectorRole": "Class",
-        "CorporateAgent": "Class",
         "InvestorRelationsActivity": "Class"
       },
       "is_complex": true,
@@ -1577,11 +1576,7 @@
     {
       "template_id": "cardiothoracic_radiologist_role",
       "manchester_template": "Class: sdg:CardiothoracicRadiologistRole SubClassOf: bfo:0000023 and bfo:0000055 some bfo:0000004 and sdg:realizesFunction some cco:ont00000601",
-      "slot_types": {
-        "CardiothoracicRadiologistRole": "Class",
-        "Person": "Class",
-        "DiagnosticImagingPractice": "Class"
-      },
+      "slot_types": {},
       "is_complex": true,
       "verbal_template": "A CardiothoracicRadiologistRole is a role borne by exactly one Person and realizing a DiagnosticImagingPractice.",
       "verbal_templates": [],
@@ -4868,7 +4863,6 @@
       "manchester_template": "Class: {ExecutiveOfficerRole:Class} SubClassOf: bfo:0000023, bfo:0000054 some {ExecutiveExecutionFunction:Class}",
       "slot_types": {
         "ExecutiveOfficerRole": "Class",
-        "CorporateAgent": "Class",
         "ExecutiveExecutionFunction": "Class"
       },
       "is_complex": true,
@@ -11113,9 +11107,7 @@
     {
       "template_id": "filler_decisionmakingprocess",
       "manchester_template": "Class: sdg:DecisionMakingProcess EquivalentTo: cco:ont00000511 and bfo:0000117 some sdg:DecisionAction and bfo:0000117 some sdg:DecisionTransitionAction",
-      "slot_types": {
-        "DecisionMakingProcess": "Class"
-      },
+      "slot_types": {},
       "is_complex": true,
       "verbal_template": "A decision making process is an act of planning that has a decision action and a decision transition action as parts.",
       "verbal_templates": [
@@ -13681,9 +13673,7 @@
     {
       "template_id": "filler_decisionaction",
       "manchester_template": "Class: sdg:DecisionAction EquivalentTo: bfo:0000015 and cco:ont00001777 some sdg:DecisionMakingProcess",
-      "slot_types": {
-        "DecisionAction": "Class"
-      },
+      "slot_types": {},
       "is_complex": true,
       "verbal_template": "An action that is a part of a decision-making process.",
       "verbal_templates": [],

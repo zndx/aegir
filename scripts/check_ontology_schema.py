@@ -99,10 +99,19 @@ def check_catalog_file(path: Path) -> tuple[int, int]:
 
 
 def main() -> int:
-    # null_stats*.json are R_D normalization artifacts, not catalogs (no
-    # `templates` key) — skip them so the glob only validates catalog files.
+    # Only validate files that ARE catalogs (a top-level `templates` key). The catalog dir also holds
+    # non-catalog JSON — null_stats* (R_D normalization), adjudications.json (families/universe_rule) —
+    # which the glob would otherwise try to load as a catalog and fail. Robust to future non-catalog files.
+    import json as _json
+
+    def _is_catalog(f: "Path") -> bool:
+        try:
+            d = _json.loads(f.read_text())
+            return isinstance(d, dict) and "templates" in d
+        except (OSError, ValueError):
+            return False
     catalog_files = [f for f in sorted(CATALOG_DIR.glob("*.json"))
-                     if not f.name.startswith("null_stats") and ".candidate." not in f.name]
+                     if ".candidate." not in f.name and _is_catalog(f)]
     if not catalog_files:
         print(f"no catalog files found under {CATALOG_DIR.relative_to(REPO_ROOT)}")
         return 0
