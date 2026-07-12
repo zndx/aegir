@@ -63,7 +63,10 @@ def _candidates(idx, retriever, offending: str, axiom: str = "") -> list:
 
 _RULES = ["external namespaces (cco:/bfo:/fhir:) may NOT be coined — a reference must EXIST in the current "
           "authoritative ontology; use a real IRI from the candidates or coin a term in the sdg: namespace",
-          "keep the head class and the intended meaning; change only the offending reference(s)"]
+          "keep the head class and the intended meaning; change only the offending reference(s)",
+          "PRESERVE every {Name:Type} slot-DSL wrapper EXACTLY as written (e.g. {Dish:Class}, "
+          "{p:ObjectProperty}, {X:Class:bfo:0000002}) — the template is a slot skeleton; NEVER rewrite a "
+          "{Name:Class} slot into a bare identifier or a full IRI. Change ONLY the offending external reference."]
 
 
 def remediate_template(t, idx, retriever, rounds: int = 3):
@@ -72,6 +75,7 @@ def remediate_template(t, idx, retriever, rounds: int = 3):
     axiom = t.manchester_template
     tid = t.template_id
     last_reason = ""
+    deferred = None  # a namespace-clean, parsing, but structurally-UNSAT rewrite → reauthor_unsat's job, not ours
     for rnd in range(rounds):
         viol = verify_external_refs(axiom)  # ALL offending refs — a template may carry several
         refs = [r for r, _ in viol]
@@ -111,8 +115,15 @@ def remediate_template(t, idx, retriever, rounds: int = 3):
         ok, why = validate_detailed([(tid, corr)], {tid: t}).get(tid, (False, "not validated"))
         if ok:
             return corr, resp.get("disposition", "CORRECTED"), resp.get("rationale", "")
+        # Namespace-clean + parses but STRUCTURALLY UNSAT (a domain/range clash) is reauthor_unsat's job, NOT the
+        # namespace loop's — the two loops compose. DEFER it: the ref is now real, and a single unsat class is not
+        # an inconsistent ontology, so realize emits its signal → reauthor_unsat re-authors the offending conjunct.
+        if "unsatisfiable" in why.lower():
+            deferred = (corr, resp.get("rationale", ""), why)
         last_reason = why
         axiom = corr
+    if deferred:
+        return deferred[0], "UNSAT_DEFER", f"namespace-clean; → reauthor_unsat: {deferred[2][:110]}"
     return None
 
 
@@ -134,7 +145,7 @@ def main() -> int:
           f"(authority: CCO {idx.version('cco').split('/')[-1]}, BFO {idx.version('bfo').split('/')[-1]})")
     retriever = Retriever()
 
-    fixed = 0
+    fixed = deferred = 0
     corrections: dict[str, str] = {}
     for t in contaminated:
         before = verify_external_refs(t.manchester_template)[0][0]
@@ -143,11 +154,13 @@ def main() -> int:
             corr, disp, rationale = res
             corrections[t.template_id] = corr
             fixed += 1
-            print(f"  ✓ {t.template_id[:34]:34s} [{before} → {disp}]  {rationale[:70]}")
+            mark = "⚠" if disp == "UNSAT_DEFER" else "✓"
+            deferred += disp == "UNSAT_DEFER"
+            print(f"  {mark} {t.template_id[:34]:34s} [{before} → {disp}]  {rationale[:70]}")
         else:
             print(f"  ✗ {t.template_id[:34]:34s} [{before}] — unresolved after {args.rounds} rounds")
 
-    print(f"\n{fixed}/{len(contaminated)} remediated (agent-reasoned, membrane-disposed)")
+    print(f"\n{fixed}/{len(contaminated)} namespace-clean ({fixed - deferred} consistent, {deferred} unsat→reauthor_unsat)")
     if args.apply and corrections:
         for t in cat.templates:
             if t.template_id in corrections:
