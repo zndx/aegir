@@ -242,24 +242,28 @@ def emit_datatype_props(doc: str, derived) -> "tuple[str, int]":
 
 
 def drop_classes(doc: str, iris: "list[str]") -> str:
-    """DEGRADE every Class: frame whose head is one of ``iris`` to a BARE ``Class: <iri>`` declaration: the
-    unsatisfiable axiom body is shed (so the class is no longer empty), but the DECLARATION is KEPT. Removing
-    the frame outright cascade-breaks every axiom that references the class (another template's filler, a
-    DisjointClasses adjudication) → the Manchester parse degrades to 0 classes. Keeping a bare declaration
-    lets the document parse while the offending axiom is recovered by reauthor_unsat from the emitted signal.
-    (task #14 — signal, don't bulldoze; [[signal_boundary_machinery]])."""
+    """REMOVE every targeted Class frame entirely — for INTERNAL probe classes (ABox conjunction probes,
+    kvasir pre-screen) that must NEVER appear in the published artifact or its grounding count. For an
+    unsatisfiable REAL class use degrade_classes (keep a bare declaration so references still resolve)."""
+    return _shed_classes(doc, iris, keep_declaration=False)
+
+
+# a Class head appears in EITHER form in the rendered doc — full IRI `Class: <…#Name>` OR prefixed
+# `Class: sdg:Name`; match both (an IRI-only pattern silently misses every prefixed head).
+_CLASS_HEAD_RE = re.compile(r"^Class:\s+(<[^>]*#([A-Za-z0-9_]+)>|sdg:([A-Za-z0-9_]+))")
+
+
+def _shed_classes(doc: str, iris: "list[str]", keep_declaration: bool) -> str:
+    """Shed the body of every targeted Class frame. ``keep_declaration`` False REMOVES the frame outright
+    (for INTERNAL probe classes that must not reach the published artifact); True keeps a bare declaration."""
     targets = {i.split("#")[-1] for i in iris}
-    # a Class head appears in EITHER form in the rendered doc — full IRI `Class: <…#Name>` OR prefixed
-    # `Class: sdg:Name`; match both (the earlier IRI-only pattern silently missed every prefixed head, so
-    # those classes were never degraded and the narrowing stalled on exactly them).
-    head_re = re.compile(r"^Class:\s+(<[^>]*#([A-Za-z0-9_]+)>|sdg:([A-Za-z0-9_]+))")
     out, skipping = [], False
     for line in doc.split("\n"):
-        m = head_re.match(line)
+        m = _CLASS_HEAD_RE.match(line)
         if m:
-            name = m.group(2) or m.group(3)
-            if name in targets:
-                out.append(f"Class: {m.group(1)}")  # keep the declaration (same form); shed the unsat body
+            if (m.group(2) or m.group(3)) in targets:
+                if keep_declaration:
+                    out.append(f"Class: {m.group(1)}")  # keep the declaration (same form); shed the unsat body
                 skipping = True
                 continue
             skipping = False
@@ -268,6 +272,14 @@ def drop_classes(doc: str, iris: "list[str]") -> str:
         if not skipping:
             out.append(line)
     return "\n".join(out)
+
+
+def degrade_classes(doc: str, iris: "list[str]") -> str:
+    """DEGRADE every targeted Class frame to a BARE declaration — for an unsatisfiable REAL class: keep it
+    DECLARED (references resolve, the document parses) while shedding the unsat body; the full axiom is
+    recovered by reauthor_unsat from the emitted signal (task #14). Contrast drop_classes, which REMOVES the
+    frame (for internal probe classes that must never appear in the published artifact)."""
+    return _shed_classes(doc, iris, keep_declaration=True)
 
 
 # Default 90 min (RH 2026-07-02: 30 min to start, "~90 minutes acceptable" — real, meaningful ontologies
@@ -606,7 +618,7 @@ def main() -> int:
             print(f"   ⚠ narrowing: {iri.split('#')[-1]} — {sig.get('why', 'unsatisfiable vs the theory')}")
             for ax in sig.get("axioms", [])[:5]:
                 print(f"       · {ax}")
-        doc = drop_classes(doc, unsat)
+        doc = degrade_classes(doc, unsat)  # keep unsat REAL classes as bare declarations (references resolve)
         Path(path).unlink(missing_ok=True)
         onto, path, consistent, n_classes, unsat, why = _reason(doc, explain=True)
         unsat, pu = _split_probes(unsat)

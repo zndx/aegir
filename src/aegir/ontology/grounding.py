@@ -69,8 +69,10 @@ def compute_grounding(omn_path: "str | Path") -> dict:
         out |= {str(s.getIRI()) for s in r.getEquivalentClasses(c).getEntities().toArray()}
         return out
 
+    # INTERNAL reasoning artifacts (ABox conjunction probes) are not real ontology classes — they must never
+    # count toward grounding (they'd deflate the honest rate; a leaked run showed 84 probes dragging 0.957→0.850).
     classes = [c for c in onto.owl_onto.getClassesInSignature().toArray()
-               if str(c.getIRI()).startswith(SDG)]
+               if str(c.getIRI()).startswith(SDG) and "__conjprobe_" not in str(c.getIRI())]
     grounded, ungrounded, anchors = [], [], {}
     for c in classes:
         local = str(c.getIRI()).split("#")[-1]

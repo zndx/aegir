@@ -314,7 +314,7 @@
     },
     {
       "template_id": "campaign_coordination",
-      "manchester_template": "Class: {CampaignCoordination:Class} EquivalentTo: cco:InformationContentEntity and sdg:coordinates some {OnlineChannel:Class} and sdg:coordinates some {OfflineChannel:Class} and sdg:hasEngagementMetric some xsd:decimal",
+      "manchester_template": "Class: {CampaignCoordination:Class} EquivalentTo: cco:ont00000958 and sdg:coordinates some {OnlineChannel:Class} and sdg:coordinates some {OfflineChannel:Class} and sdg:hasEngagementMetric some xsd:decimal",
       "slot_types": {
         "CampaignCoordination": "Class",
         "OnlineChannel": "Class",
@@ -376,7 +376,7 @@
     },
     {
       "template_id": "retirement_benefit_option",
-      "manchester_template": "Class: {RetirementBenefitOption:Class} EquivalentTo: cco:DescriptiveICE and sdg:specifiesSurvivorPercentage some xsd:decimal and sdg:specifiesGuaranteeMonths some xsd:decimal",
+      "manchester_template": "Class: {RetirementBenefitOption:Class} EquivalentTo: cco:ont00000853 and sdg:specifiesSurvivorPercentage some xsd:decimal and sdg:specifiesGuaranteeMonths some xsd:decimal",
       "slot_types": {
         "RetirementBenefitOption": "Class"
       },
@@ -405,7 +405,7 @@
     },
     {
       "template_id": "marital_status_certification",
-      "manchester_template": "Class: {MaritalStatusCertification:Class} EquivalentTo: cco:InformationContentEntity and sdg:certifiesMaritalState some {MaritalState:Class} and sdg:specifiesConsentReason some {SpousalConsentReason:Class}",
+      "manchester_template": "Class: {MaritalStatusCertification:Class} EquivalentTo: cco:ont00000958 and sdg:certifiesMaritalState some {MaritalState:Class} and sdg:specifiesConsentReason some {SpousalConsentReason:Class}",
       "slot_types": {
         "MaritalStatusCertification": "Class",
         "MaritalState": "Class",
@@ -436,7 +436,7 @@
     },
     {
       "template_id": "beneficiary_designation",
-      "manchester_template": "Class: {BeneficiaryDesignation:Class} SubClassOf: bfo:0000023, bfo:0000052 some bfo:0000002",
+      "manchester_template": "Class: {BeneficiaryDesignation:Class} SubClassOf: bfo:0000023",
       "slot_types": {
         "BeneficiaryDesignation": "Class"
       },
@@ -496,14 +496,13 @@
     },
     {
       "template_id": "law_and_society_track_requirement",
-      "manchester_template": "Class: {LawAndSocietyTrackRequirement:Class} EquivalentTo: cco:DirectiveICE and sdg:specifiesCourseSelection some {CourseSelectionSet:Class} and sdg:appliesToStudent some {StudentRole:Class}",
+      "manchester_template": "Class: {LawAndSocietyTrackRequirement:Class} EquivalentTo: cco:ont00000133 and sdg:specifiesCourseSelection some bfo:0000015 and sdg:appliesToStudent some {StudentRole:Class}",
       "slot_types": {
         "LawAndSocietyTrackRequirement": "Class",
-        "CourseSelectionSet": "Class",
         "StudentRole": "Class"
       },
       "is_complex": true,
-      "verbal_template": "LawAndSocietyTrackRequirement is a DirectiveICE that specifies a CourseSelectionSet and applies to a StudentRole.",
+      "verbal_template": "Changed the filler of specifiesCourseSelection from CourseSelectionSet to a process (bfo:0000015) to align with the property domain constraints, resolving the continuant/occurrent disjointness.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -527,7 +526,7 @@
     },
     {
       "template_id": "senior_animal_services_officer_role",
-      "manchester_template": "Class: {SeniorAnimalServicesOfficerRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {SeniorAnimalServicesOfficer:Class}, bfo:0000054 some {AnimalControlActivity:Class}",
+      "manchester_template": "Class: {SeniorAnimalServicesOfficerRole:Class} SubClassOf: bfo:0000023, bfo:0000054 some {SeniorAnimalServicesOfficer:Class}, bfo:0000056 some {AnimalControlActivity:Class}",
       "slot_types": {
         "SeniorAnimalServicesOfficerRole": "Class",
         "SeniorAnimalServicesOfficer": "Class",
@@ -651,7 +650,7 @@
     },
     {
       "template_id": "data_controller_role",
-      "manchester_template": "Class: {DataControllerRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {LegalEntityOrPerson:Class}, bfo:0000054 some {DataDeterminationActivity:Class}",
+      "manchester_template": "Class: {DataControllerRole:Class} SubClassOf: bfo:0000023, bfo:0000056 some {LegalEntityOrPerson:Class}, bfo:0000054 some {DataDeterminationActivity:Class}",
       "slot_types": {
         "DataControllerRole": "Class",
         "LegalEntityOrPerson": "Class",
@@ -744,7 +743,7 @@
     },
     {
       "template_id": "investor_relations_director_role",
-      "manchester_template": "Class: {InvestorRelationsDirectorRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {CorporateAgent:Class}, bfo:0000054 some {InvestorRelationsActivity:Class}",
+      "manchester_template": "Class: {InvestorRelationsDirectorRole:Class} SubClassOf: bfo:0000023, bfo:0000054 some {InvestorRelationsActivity:Class}",
       "slot_types": {
         "InvestorRelationsDirectorRole": "Class",
         "CorporateAgent": "Class",
@@ -806,7 +805,7 @@
     },
     {
       "template_id": "personal_health_record",
-      "manchester_template": "Class: {PersonalHealthRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:states some {HealthCondition:Class} and sdg:subjectOf some {ClientProfile:Class}",
+      "manchester_template": "Class: {PersonalHealthRecord:Class} EquivalentTo: cco:ont00000958 and sdg:states some {HealthCondition:Class} and sdg:subjectOf some {ClientProfile:Class}",
       "slot_types": {
         "PersonalHealthRecord": "Class",
         "HealthCondition": "Class",
@@ -1055,7 +1054,7 @@
     },
     {
       "template_id": "conference_programme",
-      "manchester_template": "Class: {ConferenceProgramme:Class} EquivalentTo: cco:InformationContentEntity and sdg:contains_presentation some {AcademicPresentation:Class}",
+      "manchester_template": "Class: {ConferenceProgramme:Class} EquivalentTo: cco:ont00000958 and sdg:contains_presentation some {AcademicPresentation:Class}",
       "slot_types": {
         "ConferenceProgramme": "Class",
         "AcademicPresentation": "Class"
@@ -1116,7 +1115,7 @@
     },
     {
       "template_id": "donor_profile",
-      "manchester_template": "Class: {DonorProfile:Class} EquivalentTo: cco:InformationContentEntity and sdg:hasContactInformation some {ContactInformation:Class}",
+      "manchester_template": "Class: {DonorProfile:Class} EquivalentTo: cco:ont00000958 and sdg:hasContactInformation some {ContactInformation:Class}",
       "slot_types": {
         "DonorProfile": "Class",
         "ContactInformation": "Class"
@@ -1146,7 +1145,7 @@
     },
     {
       "template_id": "donation_transaction_record",
-      "manchester_template": "Class: {DonationTransactionRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:involvesDonor some {Donor:Class} and sdg:allocatesTo some {GiftAllocationPurpose:Class} and sdg:hasMonetaryValue some xsd:decimal",
+      "manchester_template": "Class: {DonationTransactionRecord:Class} EquivalentTo: cco:ont00000958 and sdg:involvesDonor some {Donor:Class} and sdg:allocatesTo some {GiftAllocationPurpose:Class} and sdg:hasMonetaryValue some xsd:decimal",
       "slot_types": {
         "DonationTransactionRecord": "Class",
         "Donor": "Class",
@@ -1239,7 +1238,7 @@
     },
     {
       "template_id": "membership_transfer_request",
-      "manchester_template": "Class: {MembershipTransferRequest:Class} EquivalentTo: cco:InformationContentEntity and sdg:submittedBy some {SocialServicesDepartment:Class}",
+      "manchester_template": "Class: {MembershipTransferRequest:Class} EquivalentTo: cco:ont00000958 and sdg:submittedBy some {SocialServicesDepartment:Class}",
       "slot_types": {
         "MembershipTransferRequest": "Class",
         "SocialServicesDepartment": "Class"
@@ -1269,7 +1268,7 @@
     },
     {
       "template_id": "education_health_care_plan",
-      "manchester_template": "Class: {EducationHealthCarePlan:Class} EquivalentTo: cco:InformationContentEntity and sdg:describesStudentProfile some {Student:Class} and sdg:specifiesInterventionRequirements some {SpecialEducationalNeeds:Class}",
+      "manchester_template": "Class: {EducationHealthCarePlan:Class} EquivalentTo: cco:ont00000965 and sdg:describesStudentProfile some {Student:Class} and sdg:specifiesInterventionRequirements some {SpecialEducationalNeeds:Class}",
       "slot_types": {
         "EducationHealthCarePlan": "Class",
         "Student": "Class",
@@ -1393,7 +1392,7 @@
     },
     {
       "template_id": "cloud_storage_allocation",
-      "manchester_template": "Class: {StorageAllocation:Class} EquivalentTo: cco:DescriptiveICE and sdg:allocatesTo exactly 1 {Student:Class} and sdg:providesResource exactly 1 {CloudStorageVolume:Class}",
+      "manchester_template": "Class: {StorageAllocation:Class} EquivalentTo: cco:ont00000853 and sdg:allocatesTo exactly 1 {Student:Class} and sdg:providesResource exactly 1 {CloudStorageVolume:Class}",
       "slot_types": {
         "StorageAllocation": "Class",
         "Student": "Class",
@@ -1424,7 +1423,7 @@
     },
     {
       "template_id": "measurement_capability",
-      "manchester_template": "Class: {MeasurementCapability:Class} EquivalentTo: cco:InformationContentEntity and sdg:hasMeasurementParameter some {MeasurementParameter:Class} and sdg:hasMeasurementRange some {MeasurementRange:Class} and sdg:hasExpandedUncertainty some xsd:decimal",
+      "manchester_template": "Class: {MeasurementCapability:Class} EquivalentTo: cco:ont00000958 and sdg:hasMeasurementParameter some {MeasurementParameter:Class} and sdg:hasMeasurementRange some {MeasurementRange:Class} and sdg:hasExpandedUncertainty some xsd:decimal",
       "slot_types": {
         "MeasurementCapability": "Class",
         "MeasurementParameter": "Class",
@@ -1486,7 +1485,7 @@
     },
     {
       "template_id": "device_inventory_record",
-      "manchester_template": "Class: {DeviceInventoryRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:enumeratesDevice some {MedicalDevice:Class}",
+      "manchester_template": "Class: {DeviceInventoryRecord:Class} EquivalentTo: cco:ont00000958 and sdg:enumeratesDevice some {MedicalDevice:Class}",
       "slot_types": {
         "DeviceInventoryRecord": "Class",
         "MedicalDevice": "Class"
@@ -1516,7 +1515,7 @@
     },
     {
       "template_id": "community_learning_disability_nurse",
-      "manchester_template": "Class: {CommunityLearningDisabilityNurse:Class} SubClassOf: bfo:0000023 and bfo:0000052 some {HealthcareAgent:Class} and sdg:fulfillsProfessionalRole exactly 1 {HealthcareAgent:Class} and sdg:realizesRole some {CommunityHealthcareSetting:Class}",
+      "manchester_template": "Class: {CommunityLearningDisabilityNurse:Class} SubClassOf: bfo:0000023 and bfo:0000054 some {HealthcareAgent:Class} and sdg:fulfillsProfessionalRole exactly 1 {HealthcareAgent:Class} and sdg:realizesRole some {CommunityHealthcareSetting:Class}",
       "slot_types": {
         "CommunityLearningDisabilityNurse": "Class",
         "HealthcareAgent": "Class",
@@ -1547,7 +1546,7 @@
     },
     {
       "template_id": "role_perception",
-      "manchester_template": "Class: {RolePerception:Class} EquivalentTo: cco:InformationContentEntity and sdg:cognitivelyRepresents some {RoleConcept:Class}",
+      "manchester_template": "Class: {RolePerception:Class} EquivalentTo: cco:ont00000958 and sdg:cognitivelyRepresents some {RoleConcept:Class}",
       "slot_types": {
         "RolePerception": "Class",
         "RoleConcept": "Class"
@@ -1577,7 +1576,7 @@
     },
     {
       "template_id": "cardiothoracic_radiologist_role",
-      "manchester_template": "Class: {CardiothoracicRadiologistRole:Class} SubClassOf: bfo:0000023 and bfo:0000052 some {Person:Class} and sdg:bearsRole exactly 1 {Person:Class} and sdg:realizesFunction some {DiagnosticImagingPractice:Class}",
+      "manchester_template": "Class: sdg:CardiothoracicRadiologistRole SubClassOf: bfo:0000023 and bfo:0000055 some bfo:0000004 and sdg:realizesFunction some cco:ont00000601",
       "slot_types": {
         "CardiothoracicRadiologistRole": "Class",
         "Person": "Class",
@@ -1608,7 +1607,7 @@
     },
     {
       "template_id": "preclinical_imaging_core",
-      "manchester_template": "Class: {PreclinicalImagingCore:Class} EquivalentTo: bfo:0000004 and bfo:0000050 some {ImagingEquipment:Class}",
+      "manchester_template": "Class: {PreclinicalImagingCore:Class} EquivalentTo: bfo:0000004 and bfo:0000115 some {ImagingEquipment:Class}",
       "slot_types": {
         "PreclinicalImagingCore": "Class",
         "ImagingEquipment": "Class"
@@ -1731,7 +1730,7 @@
     },
     {
       "template_id": "safeguard_measure",
-      "manchester_template": "Class: {SafeguardMeasure:Class} EquivalentTo: cco:DirectiveICE and sdg:mitigates some {AbuseEvent:Class} and sdg:appliesToProgram some {gTLDProgram:Class}",
+      "manchester_template": "Class: {SafeguardMeasure:Class} EquivalentTo: cco:ont00000133 and sdg:mitigates some {AbuseEvent:Class} and sdg:appliesToProgram some {gTLDProgram:Class}",
       "slot_types": {
         "SafeguardMeasure": "Class",
         "AbuseEvent": "Class",
@@ -1762,7 +1761,7 @@
     },
     {
       "template_id": "responsible_investment_fund_collection",
-      "manchester_template": "Class: {ResponsibleInvestmentFundCollection:Class} EquivalentTo: cco:InformationContentEntity and sdg:comprises some {EthicalInvestmentAsset:Class}",
+      "manchester_template": "Class: {ResponsibleInvestmentFundCollection:Class} EquivalentTo: cco:ont00000958 and sdg:comprises some {EthicalInvestmentAsset:Class}",
       "slot_types": {
         "ResponsibleInvestmentFundCollection": "Class",
         "EthicalInvestmentAsset": "Class"
@@ -1792,14 +1791,13 @@
     },
     {
       "template_id": "corporate_reputation_influence_situation",
-      "manchester_template": "Class: {CorporateReputationInfluenceSituation:Class} EquivalentTo: cco:InformationContentEntity and sdg:supports some {CorporateReputationMetric:Class} and sdg:influences some {InvestmentChoiceDecision:Class}",
+      "manchester_template": "Class: {CorporateReputationInfluenceSituation:Class} EquivalentTo: cco:ont00000958 and sdg:supports some cco:ont00000253 and sdg:influences some {InvestmentChoiceDecision:Class}",
       "slot_types": {
         "CorporateReputationInfluenceSituation": "Class",
-        "CorporateReputationMetric": "Class",
         "InvestmentChoiceDecision": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A CorporateReputationInfluenceSituation is an InformationContentEntity that supports some CorporateReputationMetric and influences some InvestmentChoiceDecision.",
+      "verbal_template": "A corporate reputation influence situation is a function that supports a specific continuant and influences an investment decision.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -1854,7 +1852,7 @@
     },
     {
       "template_id": "matched_sme_dataset",
-      "manchester_template": "Class: {MatchedSMEDataSet:Class} EquivalentTo: cco:InformationContentEntity and sdg:containsResponseRecord some {SurveyResponseRecord:Class} and sdg:isMatchedDatasetOf some {SurveyResponseRecord:Class}",
+      "manchester_template": "Class: {MatchedSMEDataSet:Class} EquivalentTo: cco:ont00000958 and sdg:containsResponseRecord some {SurveyResponseRecord:Class} and sdg:isMatchedDatasetOf some {SurveyResponseRecord:Class}",
       "slot_types": {
         "MatchedSMEDataSet": "Class",
         "SurveyResponseRecord": "Class"
@@ -1915,7 +1913,7 @@
     },
     {
       "template_id": "stakeholder_need",
-      "manchester_template": "Class: {StakeholderNeed:Class} EquivalentTo: cco:InformationContentEntity and sdg:expressedBy some {StakeholderRole:Class}",
+      "manchester_template": "Class: {StakeholderNeed:Class} EquivalentTo: cco:ont00000958 and sdg:expressedBy some {StakeholderRole:Class}",
       "slot_types": {
         "StakeholderNeed": "Class",
         "StakeholderRole": "Class"
@@ -1976,7 +1974,7 @@
     },
     {
       "template_id": "academic_program_requirement",
-      "manchester_template": "Class: {AcademicProgramRequirement:Class} EquivalentTo: cco:DescriptiveICE and sdg:minimumCreditHours some xsd:decimal and sdg:maximumCreditHours some xsd:decimal",
+      "manchester_template": "Class: {AcademicProgramRequirement:Class} EquivalentTo: cco:ont00000853 and sdg:minimumCreditHours some xsd:decimal and sdg:maximumCreditHours some xsd:decimal",
       "slot_types": {
         "AcademicProgramRequirement": "Class"
       },
@@ -2005,7 +2003,7 @@
     },
     {
       "template_id": "sequencing_coverage_parameter",
-      "manchester_template": "Class: {SequencingCoverageParameter:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasCoverageDepth exactly 1 xsd:decimal",
+      "manchester_template": "Class: {SequencingCoverageParameter:Class} EquivalentTo: cco:ont00000853 and sdg:hasCoverageDepth exactly 1 xsd:decimal",
       "slot_types": {
         "SequencingCoverageParameter": "Class"
       },
@@ -2096,7 +2094,7 @@
     },
     {
       "template_id": "personal_health_profile",
-      "manchester_template": "Class: {PersonalHealthProfile:Class} EquivalentTo: cco:InformationContentEntity and sdg:incorporatesGenomicData some {GenomicData:Class} and sdg:incorporatesImagingData some {ClinicalImagingData:Class}",
+      "manchester_template": "Class: {PersonalHealthProfile:Class} EquivalentTo: cco:ont00000958 and sdg:incorporatesGenomicData some {GenomicData:Class} and sdg:incorporatesImagingData some {ClinicalImagingData:Class}",
       "slot_types": {
         "PersonalHealthProfile": "Class",
         "GenomicData": "Class",
@@ -2282,14 +2280,14 @@
     },
     {
       "template_id": "financial_strategy_and_planning_process",
-      "manchester_template": "Class: {FinancialStrategyAndPlanningProcess:Class} EquivalentTo: bfo:0000015 and sdg:involvesParticipant some {ExecutiveTeam:Class} and sdg:hasOutput some {FinancialReport:Class}",
+      "manchester_template": "Class: {FinancialStrategyAndPlanningProcess:Class} EquivalentTo: bfo:0000015 and sdg:involvesParticipant some {ExecutiveLeadershipProcess:Class} and sdg:hasOutput some {FinancialReport:Class}",
       "slot_types": {
         "FinancialStrategyAndPlanningProcess": "Class",
-        "ExecutiveTeam": "Class",
+        "ExecutiveLeadershipProcess": "Class",
         "FinancialReport": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A FinancialStrategyAndPlanningProcess is a process that involves an ExecutiveTeam and has a FinancialReport as output.",
+      "verbal_template": "A financial strategy and planning process is a process involving an executive leadership process and outputting a financial report.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -2313,13 +2311,13 @@
     },
     {
       "template_id": "executive_team_roster",
-      "manchester_template": "Class: {ExecutiveTeamRoster:Class} SubClassOf: bfo:0000023, bfo:0000052 some {ExecutiveTeam:Class}",
+      "manchester_template": "Class: {ExecutiveTeamRoster:Class} EquivalentTo: bfo:0000023 and bfo:0000056 some {ExecutiveLeadershipProcess:Class}",
       "slot_types": {
         "ExecutiveTeamRoster": "Class",
-        "ExecutiveTeam": "Class"
+        "ExecutiveLeadershipProcess": "Class"
       },
       "is_complex": true,
-      "verbal_template": "An ExecutiveTeamRoster is an information content entity that has an ExecutiveTeamMember as a member.",
+      "verbal_template": "A roster for an executive team is a function that is realized in an executive leadership process, aligning the process filler with the range of realized_in.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -2467,7 +2465,7 @@
     },
     {
       "template_id": "supervised_test_unit_catalog",
-      "manchester_template": "Class: {SupervisedTestUnitCatalog:Class} EquivalentTo: cco:InformationContentEntity and sdg:contains some {IndustrialEmissionSource:Class} and sdg:hasStructure some {CatalogStructure:Class}",
+      "manchester_template": "Class: {SupervisedTestUnitCatalog:Class} EquivalentTo: cco:ont00000958 and sdg:contains some {IndustrialEmissionSource:Class} and sdg:hasStructure some {CatalogStructure:Class}",
       "slot_types": {
         "SupervisedTestUnitCatalog": "Class",
         "IndustrialEmissionSource": "Class",
@@ -2591,7 +2589,7 @@
     },
     {
       "template_id": "social_networking_service_platform",
-      "manchester_template": "Class: {SocialNetworkingServicePlatform:Class} EquivalentTo: cco:DescriptiveICE and sdg:designates_service_type some {SocialNetworkingServiceType:Class}",
+      "manchester_template": "Class: {SocialNetworkingServicePlatform:Class} EquivalentTo: cco:ont00000686 and sdg:designates_service_type some {SocialNetworkingServiceType:Class}",
       "slot_types": {
         "SocialNetworkingServicePlatform": "Class",
         "SocialNetworkingServiceType": "Class"
@@ -2621,7 +2619,7 @@
     },
     {
       "template_id": "back_shell_dimension_spec",
-      "manchester_template": "Class: {BackShellDimensionSpec:Class} EquivalentTo: cco:InformationContentEntity and sdg:specifiesWidth some {WidthMeasurement:Class} and sdg:specifiesHeight some {HeightMeasurement:Class} and sdg:hasDepth some xsd:decimal",
+      "manchester_template": "Class: {BackShellDimensionSpec:Class} EquivalentTo: cco:ont00000958 and sdg:specifiesWidth some {WidthMeasurement:Class} and sdg:specifiesHeight some {HeightMeasurement:Class} and sdg:hasDepth some xsd:decimal",
       "slot_types": {
         "BackShellDimensionSpec": "Class",
         "WidthMeasurement": "Class",
@@ -2652,7 +2650,7 @@
     },
     {
       "template_id": "menu_course",
-      "manchester_template": "Class: {MenuCourse:Class} EquivalentTo: bfo:0000004 and bfo:0000050 some {Dish:Class}",
+      "manchester_template": "Class: {MenuCourse:Class} EquivalentTo: bfo:0000004 and bfo:0000178 some {Dish:Class}",
       "slot_types": {
         "MenuCourse": "Class",
         "Dish": "Class"
@@ -2744,7 +2742,7 @@
     },
     {
       "template_id": "record_authorization_role",
-      "manchester_template": "Class: {RecordAuthorizationRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {YouthOrGuardian:Class}, bfo:0000054 some {HealthRecordTransferProcess:Class}",
+      "manchester_template": "Class: {RecordAuthorizationRole:Class} SubClassOf: bfo:0000023, bfo:0000056 some {YouthOrGuardian:Class}, bfo:0000054 some {HealthRecordTransferProcess:Class}",
       "slot_types": {
         "RecordAuthorizationRole": "Class",
         "YouthOrGuardian": "Class",
@@ -2775,7 +2773,7 @@
     },
     {
       "template_id": "communicable_disease_notification_requirement",
-      "manchester_template": "Class: {CommunicableDiseaseNotificationRequirement:Class} EquivalentTo: cco:DirectiveICE and sdg:requiresDisclosureOf some {HealthCareSummary:Class} and sdg:directedTo some {ReceivingFacilityStaff:Class}",
+      "manchester_template": "Class: {CommunicableDiseaseNotificationRequirement:Class} EquivalentTo: cco:ont00000133 and sdg:requiresDisclosureOf some {HealthCareSummary:Class} and sdg:directedTo some {ReceivingFacilityStaff:Class}",
       "slot_types": {
         "CommunicableDiseaseNotificationRequirement": "Class",
         "HealthCareSummary": "Class",
@@ -2806,7 +2804,7 @@
     },
     {
       "template_id": "youth_health_care_summary",
-      "manchester_template": "Class: {YouthHealthCareSummary:Class} EquivalentTo: cco:InformationContentEntity and sdg:describesSituation some {YouthHealthStatus:Class} and sdg:formattedAs some {EstablishedDataFormat:Class}",
+      "manchester_template": "Class: {YouthHealthCareSummary:Class} EquivalentTo: cco:ont00000853 and sdg:describesSituation some {YouthHealthStatus:Class} and sdg:formattedAs some {EstablishedDataFormat:Class}",
       "slot_types": {
         "YouthHealthCareSummary": "Class",
         "YouthHealthStatus": "Class",
@@ -2961,7 +2959,7 @@
     },
     {
       "template_id": "retail_leadership_team_member",
-      "manchester_template": "Class: {RetailLeadershipTeamMember:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {CorporateEmployee:Class} and bfo:0000054 some bfo:0000015",
+      "manchester_template": "Class: {RetailLeadershipTeamMember:Class} EquivalentTo: bfo:0000023 and bfo:0000056 some {CorporateEmployee:Class} and bfo:0000054 some bfo:0000015",
       "slot_types": {
         "RetailLeadershipTeamMember": "Class",
         "CorporateEmployee": "Class"
@@ -3023,7 +3021,7 @@
     },
     {
       "template_id": "abuse_indicator",
-      "manchester_template": "Class: {AbuseIndicator:Class} EquivalentTo: cco:DescriptiveICE and sdg:manifestsAs some {PhysicalManifestation:Class}",
+      "manchester_template": "Class: {AbuseIndicator:Class} EquivalentTo: cco:ont00000853 and sdg:manifestsAs some {PhysicalManifestation:Class}",
       "slot_types": {
         "AbuseIndicator": "Class",
         "PhysicalManifestation": "Class"
@@ -3208,7 +3206,7 @@
     },
     {
       "template_id": "clinical_performance_data_evaluation",
-      "manchester_template": "Class: {ClinicalPerformanceDataEvaluation:Class} EquivalentTo: cco:InformationContentEntity and sdg:evaluatesEntity some {ClinicalSystem:Class} and sdg:evaluatesEntity some {IndividualClinician:Class} and sdg:hasMetricValue some xsd:decimal",
+      "manchester_template": "Class: {ClinicalPerformanceDataEvaluation:Class} EquivalentTo: cco:ont00000958 and sdg:evaluatesEntity some {ClinicalSystem:Class} and sdg:evaluatesEntity some {IndividualClinician:Class} and sdg:hasMetricValue some xsd:decimal",
       "slot_types": {
         "ClinicalPerformanceDataEvaluation": "Class",
         "ClinicalSystem": "Class",
@@ -3239,7 +3237,7 @@
     },
     {
       "template_id": "quality_improvement_presentation",
-      "manchester_template": "Class: {QualityImprovementPresentation:Class} EquivalentTo: cco:InformationContentEntity and sdg:addressesSituation some {EvidenceBasedMedicine:Class} and sdg:formulatesSituation some {QualityImprovementFramework:Class}",
+      "manchester_template": "Class: {QualityImprovementPresentation:Class} EquivalentTo: cco:ont00000958 and sdg:addressesSituation some {EvidenceBasedMedicine:Class} and sdg:formulatesSituation some {QualityImprovementFramework:Class}",
       "slot_types": {
         "QualityImprovementPresentation": "Class",
         "EvidenceBasedMedicine": "Class",
@@ -3516,7 +3514,7 @@
     },
     {
       "template_id": "product_disclosure_statement",
-      "manchester_template": "Class: {ProductDisclosureStatement:Class} EquivalentTo: cco:InformationContentEntity and sdg:describes some {FinancialFund:Class}",
+      "manchester_template": "Class: {ProductDisclosureStatement:Class} EquivalentTo: cco:ont00000958 and sdg:describes some {FinancialFund:Class}",
       "slot_types": {
         "ProductDisclosureStatement": "Class",
         "FinancialFund": "Class"
@@ -3608,7 +3606,7 @@
     },
     {
       "template_id": "stage_5_checklist",
-      "manchester_template": "Class: {Stage5Checklist:Class} SubClassOf: bfo:0000023 and bfo:0000052 some bfo:0000015 and sdg:containsChecklistItem some {InspectionChecklistItem:Class}",
+      "manchester_template": "Class: {Stage5Checklist:Class} SubClassOf: bfo:0000023 and bfo:0000054 some bfo:0000015 and sdg:containsChecklistItem some {InspectionChecklistItem:Class}",
       "slot_types": {
         "Stage5Checklist": "Class",
         "InspectionChecklistItem": "Class"
@@ -3669,7 +3667,7 @@
     },
     {
       "template_id": "supplier_landscape_survey",
-      "manchester_template": "Class: {SupplierLandscapeSurvey:Class} EquivalentTo: cco:InformationContentEntity and sdg:assesses some {Supplier:Class} and sdg:documents some {MarketTrend:Class} and sdg:hasMarketGrowthIndex some xsd:decimal",
+      "manchester_template": "Class: {SupplierLandscapeSurvey:Class} EquivalentTo: cco:ont00000958 and sdg:assesses some {Supplier:Class} and sdg:documents some {MarketTrend:Class} and sdg:hasMarketGrowthIndex some xsd:decimal",
       "slot_types": {
         "SupplierLandscapeSurvey": "Class",
         "Supplier": "Class",
@@ -3762,7 +3760,7 @@
     },
     {
       "template_id": "leadership_experience_requirement",
-      "manchester_template": "Class: {LeadershipExperienceRequirement:Class} EquivalentTo: cco:DescriptiveICE and sdg:minYearsOfLeadershipExperience exactly 1 xsd:decimal",
+      "manchester_template": "Class: {LeadershipExperienceRequirement:Class} EquivalentTo: cco:ont00000853 and sdg:minYearsOfLeadershipExperience exactly 1 xsd:decimal",
       "slot_types": {
         "LeadershipExperienceRequirement": "Class"
       },
@@ -3791,7 +3789,7 @@
     },
     {
       "template_id": "financial_report_artifact",
-      "manchester_template": "Class: {FinancialReportArtifact:Class} EquivalentTo: cco:InformationContentEntity and sdg:describes some {FinancialStatus:Class} and sdg:supports some {FinancialStrategy:Class}",
+      "manchester_template": "Class: {FinancialReportArtifact:Class} EquivalentTo: cco:ont00000958 and sdg:describes some {FinancialStatus:Class} and sdg:supports some {FinancialStrategy:Class}",
       "slot_types": {
         "FinancialReportArtifact": "Class",
         "FinancialStatus": "Class",
@@ -3822,13 +3820,12 @@
     },
     {
       "template_id": "executive_director_role",
-      "manchester_template": "Class: {ExecutiveDirectorRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {OrganizationMember:Class} and bfo:0000054 some bfo:0000015",
+      "manchester_template": "Class: {ExecutiveDirectorRole:Class} EquivalentTo: bfo:0000023 and bfo:0000056 some bfo:0000015 and bfo:0000054 some bfo:0000015",
       "slot_types": {
-        "ExecutiveDirectorRole": "Class",
-        "OrganizationMember": "Class"
+        "ExecutiveDirectorRole": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A role realized in an organization member that realizes a process.",
+      "verbal_template": "A role realized by a process and realized in a continuant.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -3978,7 +3975,7 @@
     },
     {
       "template_id": "patient_feedback_record",
-      "manchester_template": "Class: {PatientFeedbackRecord:Class} EquivalentTo: cco:InformationContentEntity and sdg:describesCareQualityAssessment some {CareQualityAssessment:Class} and sdg:reflectsServiceExperienceSituation some {ServiceExperienceSituation:Class}",
+      "manchester_template": "Class: {PatientFeedbackRecord:Class} EquivalentTo: cco:ont00000958 and sdg:describesCareQualityAssessment some {CareQualityAssessment:Class} and sdg:reflectsServiceExperienceSituation some {ServiceExperienceSituation:Class}",
       "slot_types": {
         "PatientFeedbackRecord": "Class",
         "CareQualityAssessment": "Class",
@@ -4041,7 +4038,7 @@
     },
     {
       "template_id": "young_physician_eligibility_constraint",
-      "manchester_template": "Class: {YoungPhysicianEligibilityConstraint:Class} EquivalentTo: cco:DescriptiveICE and sdg:has_max_age_years some xsd:decimal and sdg:has_max_practice_years some xsd:decimal",
+      "manchester_template": "Class: {YoungPhysicianEligibilityConstraint:Class} EquivalentTo: cco:ont00000853 and sdg:has_max_age_years some xsd:decimal and sdg:has_max_practice_years some xsd:decimal",
       "slot_types": {
         "YoungPhysicianEligibilityConstraint": "Class"
       },
@@ -4197,7 +4194,7 @@
     },
     {
       "template_id": "variation_margin_rule_set",
-      "manchester_template": "Class: {VariationMarginRuleSet:Class} EquivalentTo: cco:DirectiveICE and sdg:mandates some {CollateralExchangeProcess:Class} and sdg:verifiedBy some {ComplianceAudit:Class}",
+      "manchester_template": "Class: {VariationMarginRuleSet:Class} EquivalentTo: cco:ont00000133 and sdg:mandates some {CollateralExchangeProcess:Class} and sdg:verifiedBy some {ComplianceAudit:Class}",
       "slot_types": {
         "VariationMarginRuleSet": "Class",
         "CollateralExchangeProcess": "Class",
@@ -4228,7 +4225,7 @@
     },
     {
       "template_id": "recognition_manager_role",
-      "manchester_template": "Class: {RecognitionManagerRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {RegulatoryAuthority:Class} and bfo:0000054 some bfo:0000015",
+      "manchester_template": "Class: {RecognitionManagerRole:Class} EquivalentTo: bfo:0000023 and bfo:0000054 some {RegulatoryAuthority:Class} and bfo:0000056 some bfo:0000015",
       "slot_types": {
         "RecognitionManagerRole": "Class",
         "RegulatoryAuthority": "Class"
@@ -4258,7 +4255,7 @@
     },
     {
       "template_id": "small_group_surcharge_rule",
-      "manchester_template": "Class: {SmallGroupSurchargeRule:Class} EquivalentTo: cco:DescriptiveICE and sdg:groupSizeThreshold some xsd:decimal and sdg:surchargeAmount some xsd:decimal",
+      "manchester_template": "Class: {SmallGroupSurchargeRule:Class} EquivalentTo: cco:ont00000853 and sdg:groupSizeThreshold some xsd:decimal and sdg:surchargeAmount some xsd:decimal",
       "slot_types": {
         "SmallGroupSurchargeRule": "Class"
       },
@@ -4287,7 +4284,7 @@
     },
     {
       "template_id": "service_charge_rate",
-      "manchester_template": "Class: {ServiceChargeRate:Class} EquivalentTo: cco:DescriptiveICE and sdg:percentageValue exactly 1 xsd:decimal",
+      "manchester_template": "Class: {ServiceChargeRate:Class} EquivalentTo: cco:ont00000853 and sdg:percentageValue exactly 1 xsd:decimal",
       "slot_types": {
         "ServiceChargeRate": "Class"
       },
@@ -4347,7 +4344,7 @@
     },
     {
       "template_id": "workplace_culture_dimension",
-      "manchester_template": "Class: {WorkplaceCultureDimension:Class} EquivalentTo: cco:DescriptiveICE and sdg:categorizesAttribute some {CulturalAttribute:Class}",
+      "manchester_template": "Class: {WorkplaceCultureDimension:Class} EquivalentTo: cco:ont00000853 and sdg:categorizesAttribute some {CulturalAttribute:Class}",
       "slot_types": {
         "WorkplaceCultureDimension": "Class",
         "CulturalAttribute": "Class"
@@ -4377,7 +4374,7 @@
     },
     {
       "template_id": "top_workplace_award",
-      "manchester_template": "Class: {TopWorkplaceAward:Class} EquivalentTo: cco:DirectiveICE and sdg:grantedBy some {RecognizingOrganization:Class} and sdg:verifiesCompliance some {HealthStandardCompliance:Class}",
+      "manchester_template": "Class: {TopWorkplaceAward:Class} EquivalentTo: cco:ont00000133 and sdg:grantedBy some {RecognizingOrganization:Class} and sdg:verifiesCompliance some {HealthStandardCompliance:Class}",
       "slot_types": {
         "TopWorkplaceAward": "Class",
         "RecognizingOrganization": "Class",
@@ -4408,13 +4405,12 @@
     },
     {
       "template_id": "b_corporation_member",
-      "manchester_template": "Class: {BCorporationMember:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {BusinessEntity:Class} and bfo:0000054 some bfo:0000015",
+      "manchester_template": "Class: {BCorporationMember:Class} EquivalentTo: bfo:0000023 and bfo:0000054 some bfo:0000015 and bfo:0000056 some bfo:0000015",
       "slot_types": {
-        "BCorporationMember": "Class",
-        "BusinessEntity": "Class"
+        "BCorporationMember": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A role realized in a business entity that realizes a process.",
+      "verbal_template": "A B corporation member is a role that realizes a process and is realized in a process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -4655,7 +4651,7 @@
     },
     {
       "template_id": "thermal_operating_range_constraint",
-      "manchester_template": "Class: {ThermalOperatingRangeConstraint:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasLowerTemperatureLimit some xsd:decimal and sdg:hasUpperTemperatureLimit some xsd:decimal",
+      "manchester_template": "Class: {ThermalOperatingRangeConstraint:Class} EquivalentTo: cco:ont00000853 and sdg:hasLowerTemperatureLimit some xsd:decimal and sdg:hasUpperTemperatureLimit some xsd:decimal",
       "slot_types": {
         "ThermalOperatingRangeConstraint": "Class"
       },
@@ -4715,7 +4711,7 @@
     },
     {
       "template_id": "educational_course",
-      "manchester_template": "Class: {EducationalCourse:Class} EquivalentTo: cco:InformationContentEntity and sdg:hasCourseStandard some {AssessmentStandard:Class} and sdg:hasParticipant some {StudentEntity:Class}",
+      "manchester_template": "Class: {EducationalCourse:Class} EquivalentTo: cco:ont00000958 and sdg:hasCourseStandard some {AssessmentStandard:Class} and sdg:hasParticipant some {StudentEntity:Class}",
       "slot_types": {
         "EducationalCourse": "Class",
         "AssessmentStandard": "Class",
@@ -4746,7 +4742,7 @@
     },
     {
       "template_id": "assessment_standard",
-      "manchester_template": "Class: {AssessmentStandard:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasAssessmentMethod some {AssessmentMethod:Class}",
+      "manchester_template": "Class: {AssessmentStandard:Class} EquivalentTo: cco:ont00000853 and sdg:hasAssessmentMethod some {AssessmentMethod:Class}",
       "slot_types": {
         "AssessmentStandard": "Class",
         "AssessmentMethod": "Class"
@@ -4869,7 +4865,7 @@
     },
     {
       "template_id": "executive_officer_role",
-      "manchester_template": "Class: {ExecutiveOfficerRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {CorporateAgent:Class}, bfo:0000054 some {ExecutiveExecutionFunction:Class}",
+      "manchester_template": "Class: {ExecutiveOfficerRole:Class} SubClassOf: bfo:0000023, bfo:0000054 some {ExecutiveExecutionFunction:Class}",
       "slot_types": {
         "ExecutiveOfficerRole": "Class",
         "CorporateAgent": "Class",
@@ -4900,13 +4896,12 @@
     },
     {
       "template_id": "board_of_auditors_role",
-      "manchester_template": "Class: {BoardOfAuditorsRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {CorporateAgent:Class} and bfo:0000054 some bfo:0000015",
+      "manchester_template": "Class: {BoardOfAuditorsRole:Class} EquivalentTo: bfo:0000023 and bfo:0000056 some bfo:0000015 and bfo:0000054 some bfo:0000015",
       "slot_types": {
-        "BoardOfAuditorsRole": "Class",
-        "CorporateAgent": "Class"
+        "BoardOfAuditorsRole": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A role realized in a corporate agent that realizes a process.",
+      "verbal_template": "A board of auditors role is a role that is realized in a process and realizes a process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -4992,7 +4987,7 @@
     },
     {
       "template_id": "fine_assessment_event",
-      "manchester_template": "Class: {FineAssessmentEvent:Class} EquivalentTo: cco:InformationContentEntity and sdg:assessesOwner some {PropertyOwner:Class} and sdg:addressesViolation some {PolicyViolation:Class} and sdg:assessmentAmount some xsd:decimal",
+      "manchester_template": "Class: {FineAssessmentEvent:Class} EquivalentTo: cco:ont00000958 and sdg:assessesOwner some {PropertyOwner:Class} and sdg:addressesViolation some {PolicyViolation:Class} and sdg:assessmentAmount some xsd:decimal",
       "slot_types": {
         "FineAssessmentEvent": "Class",
         "PropertyOwner": "Class",
@@ -5023,7 +5018,7 @@
     },
     {
       "template_id": "inspection_report",
-      "manchester_template": "Class: {InspectionReport:Class} EquivalentTo: cco:InformationContentEntity and sdg:documents some {InspectionEvent:Class}",
+      "manchester_template": "Class: {InspectionReport:Class} EquivalentTo: cco:ont00000958 and sdg:documents some {InspectionEvent:Class}",
       "slot_types": {
         "InspectionReport": "Class",
         "InspectionEvent": "Class"
@@ -5053,7 +5048,7 @@
     },
     {
       "template_id": "secretary_role",
-      "manchester_template": "Class: {SecretaryRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {StateGovernment:Class} and bfo:0000054 some bfo:0000015 and sdg:hasOrganizationalAffiliation exactly 1 {StateGovernment:Class} and sdg:realizesFunction some {LegislativeDepartment:Class}",
+      "manchester_template": "Class: {SecretaryRole:Class} EquivalentTo: bfo:0000023 and bfo:0000054 some {StateGovernment:Class} and bfo:0000056 some bfo:0000015 and sdg:hasOrganizationalAffiliation exactly 1 {StateGovernment:Class} and sdg:realizesFunction some {LegislativeDepartment:Class}",
       "slot_types": {
         "SecretaryRole": "Class",
         "StateGovernment": "Class",
@@ -5117,7 +5112,7 @@
     },
     {
       "template_id": "evacuation_instruction",
-      "manchester_template": "Class: {EvacuationInstruction:Class} EquivalentTo: cco:InformationContentEntity and sdg:describes_hazard some {HazardEvent:Class} and sdg:issued_by some {LocalAuthority:Class}",
+      "manchester_template": "Class: {EvacuationInstruction:Class} EquivalentTo: cco:ont00000965 and sdg:describes_hazard some {HazardEvent:Class} and sdg:issued_by some {LocalAuthority:Class}",
       "slot_types": {
         "EvacuationInstruction": "Class",
         "HazardEvent": "Class",
@@ -5210,7 +5205,7 @@
     },
     {
       "template_id": "clean_traffic_redirection",
-      "manchester_template": "Class: {CleanTrafficRedirection:Class} EquivalentTo: bfo:0000015 and sdg:originatesFrom some {NetworkScrubbingCenter:Class} and sdg:deliversTo some {CustomerNetwork:Class} and bfo:0000057 some {ScrubbingActivity:Class}",
+      "manchester_template": "Class: {CleanTrafficRedirection:Class} EquivalentTo: bfo:0000015 and sdg:originatesFrom some {NetworkScrubbingCenter:Class} and sdg:deliversTo some {CustomerNetwork:Class} and bfo:0000056 some {ScrubbingActivity:Class}",
       "slot_types": {
         "CleanTrafficRedirection": "Class",
         "NetworkScrubbingCenter": "Class",
@@ -5218,7 +5213,7 @@
         "ScrubbingActivity": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A CleanTrafficRedirection is a Process that originatesFrom some NetworkScrubbingCenter and deliversTo some CustomerNetwork and bfo:0000057 some ScrubbingActivity.",
+      "verbal_template": "Clean traffic redirection is a process that originates from a network scrubbing center, delivers to a customer network, and is realized in a scrubbing activity.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -5273,7 +5268,7 @@
     },
     {
       "template_id": "business_plan",
-      "manchester_template": "Class: {BusinessPlan:Class} EquivalentTo: cco:InformationContentEntity and sdg:describes some {FutureBusinessScenario:Class} and sdg:targets some {InvestorFundingSituation:Class}",
+      "manchester_template": "Class: {BusinessPlan:Class} EquivalentTo: cco:ont00000958 and sdg:describes some {FutureBusinessScenario:Class} and sdg:targets some {InvestorFundingSituation:Class}",
       "slot_types": {
         "BusinessPlan": "Class",
         "FutureBusinessScenario": "Class",
@@ -5335,7 +5330,7 @@
     },
     {
       "template_id": "internal_audit_strategy",
-      "manchester_template": "Class: {InternalAuditStrategy:Class} EquivalentTo: cco:InformationContentEntity and sdg:targetsObjective some {AuditObjective:Class} and sdg:specifiesMethodology some {AuditMethodology:Class}",
+      "manchester_template": "Class: {InternalAuditStrategy:Class} EquivalentTo: cco:ont00000958 and sdg:targetsObjective some {AuditObjective:Class} and sdg:specifiesMethodology some {AuditMethodology:Class}",
       "slot_types": {
         "InternalAuditStrategy": "Class",
         "AuditObjective": "Class",
@@ -5521,7 +5516,7 @@
     },
     {
       "template_id": "network_resource_mapping",
-      "manchester_template": "Class: {NetworkResourceMapping:Class} EquivalentTo: cco:DescriptiveICE and sdg:mapsSource exactly 1 {NetworkResource:Class} and sdg:mapsTarget exactly 1 {TrafficPath:Class}",
+      "manchester_template": "Class: {NetworkResourceMapping:Class} EquivalentTo: cco:ont00000853 and sdg:mapsSource exactly 1 {NetworkResource:Class} and sdg:mapsTarget exactly 1 {TrafficPath:Class}",
       "slot_types": {
         "NetworkResourceMapping": "Class",
         "NetworkResource": "Class",
@@ -5552,7 +5547,7 @@
     },
     {
       "template_id": "petitioner_role",
-      "manchester_template": "Class: {PetitionerRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {Person:Class}, bfo:0000054 some {AdultAdoptionProcess:Class}, sdg:hasBearer exactly 1 {Person:Class}, sdg:realizesRole some {AdultAdoptionProcess:Class}",
+      "manchester_template": "Class: {PetitionerRole:Class} SubClassOf: bfo:0000023, bfo:0000054 some {Person:Class}, bfo:0000056 some {AdultAdoptionProcess:Class}, sdg:hasBearer exactly 1 {Person:Class}, sdg:realizesRole some {AdultAdoptionProcess:Class}",
       "slot_types": {
         "PetitionerRole": "Class",
         "Person": "Class",
@@ -5583,14 +5578,12 @@
     },
     {
       "template_id": "adult_adoption_process",
-      "manchester_template": "Class: {AdultAdoptionProcess:Class} EquivalentTo: bfo:0000015 and sdg:involvesParticipant some {PetitionerRole:Class} and sdg:involvesParticipant some {AdopteeRole:Class}",
+      "manchester_template": "Class: {AdultAdoptionProcess:Class} EquivalentTo: bfo:0000015 and sdg:involvesParticipant some bfo:0000015 and sdg:involvesParticipant some bfo:0000015",
       "slot_types": {
-        "AdultAdoptionProcess": "Class",
-        "PetitionerRole": "Class",
-        "AdopteeRole": "Class"
+        "AdultAdoptionProcess": "Class"
       },
       "is_complex": true,
-      "verbal_template": "An AdultAdoptionProcess is a BFO process that involves a PetitionerRole and an AdopteeRole.",
+      "verbal_template": "An adult adoption process is a process that involves participant processes.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -5614,14 +5607,13 @@
     },
     {
       "template_id": "adoption_application_form",
-      "manchester_template": "Class: {AdoptionApplicationForm:Class} EquivalentTo: cco:InformationContentEntity and sdg:documentsProcess some {AdultAdoptionProcess:Class} and sdg:documentsParticipant some {PetitionerRole:Class} and sdg:formVersion some xsd:decimal",
+      "manchester_template": "Class: {AdoptionApplicationForm:Class} EquivalentTo: cco:ont00000958 and sdg:documentsProcess some {AdultAdoptionProcess:Class} and sdg:documentsParticipant some bfo:0000015 and sdg:formVersion some xsd:decimal",
       "slot_types": {
         "AdoptionApplicationForm": "Class",
-        "AdultAdoptionProcess": "Class",
-        "PetitionerRole": "Class"
+        "AdultAdoptionProcess": "Class"
       },
       "is_complex": true,
-      "verbal_template": "An AdoptionApplicationForm is an ICE that documents an AdultAdoptionProcess, documents a PetitionerRole, and has a formVersion decimal.",
+      "verbal_template": "An adoption application form is a document that records an adult adoption process, a participant process, and a version number.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -5676,7 +5668,7 @@
     },
     {
       "template_id": "clinical_intelligence_artifact",
-      "manchester_template": "Class: {ClinicalIntelligenceArtifact:Class} EquivalentTo: cco:InformationContentEntity and sdg:implementsMethod some {AnalyticMethod:Class}",
+      "manchester_template": "Class: {ClinicalIntelligenceArtifact:Class} EquivalentTo: cco:ont00000958 and sdg:implementsMethod some {AnalyticMethod:Class}",
       "slot_types": {
         "ClinicalIntelligenceArtifact": "Class",
         "AnalyticMethod": "Class"
@@ -5737,7 +5729,7 @@
     },
     {
       "template_id": "hssseq_issue_document",
-      "manchester_template": "Class: {HSSSEQ_Issue_Document:Class} EquivalentTo: cco:InformationContentEntity and sdg:describesSituation some {HSSSEQ_Situation:Class} and sdg:addressesSubject some {Regulatory_Context:Class}",
+      "manchester_template": "Class: {HSSSEQ_Issue_Document:Class} EquivalentTo: cco:ont00000958 and sdg:describesSituation some {HSSSEQ_Situation:Class} and sdg:addressesSubject some {Regulatory_Context:Class}",
       "slot_types": {
         "HSSSEQ_Issue_Document": "Class",
         "HSSSEQ_Situation": "Class",
@@ -5800,7 +5792,7 @@
     },
     {
       "template_id": "etymological_deciphering",
-      "manchester_template": "Class: {EtymologicalDeciphering:Class} EquivalentTo: cco:InformationContentEntity and sdg:derivesFromTribe some {GaulishTribe:Class} and sdg:mapsToSlavicRoot some {SlavicLinguisticRoot:Class} and sdg:hasConfidenceScore some xsd:decimal",
+      "manchester_template": "Class: {EtymologicalDeciphering:Class} EquivalentTo: cco:ont00000958 and sdg:derivesFromTribe some {GaulishTribe:Class} and sdg:mapsToSlavicRoot some {SlavicLinguisticRoot:Class} and sdg:hasConfidenceScore some xsd:decimal",
       "slot_types": {
         "EtymologicalDeciphering": "Class",
         "GaulishTribe": "Class",
@@ -5862,7 +5854,7 @@
     },
     {
       "template_id": "residency_requirement",
-      "manchester_template": "Class: {ResidencyRequirement:Class} EquivalentTo: cco:DirectiveICE and sdg:mandatesCompletion some {StudentAgent:Class} and sdg:enforcedByOffice some {AdministrativeOffice:Class}",
+      "manchester_template": "Class: {ResidencyRequirement:Class} EquivalentTo: cco:ont00000133 and sdg:mandatesCompletion some {StudentAgent:Class} and sdg:enforcedByOffice some {AdministrativeOffice:Class}",
       "slot_types": {
         "ResidencyRequirement": "Class",
         "StudentAgent": "Class",
@@ -5893,7 +5885,7 @@
     },
     {
       "template_id": "appeal_waiver_certification",
-      "manchester_template": "Class: {AppealWaiverCertification:Class} EquivalentTo: cco:InformationContentEntity and sdg:certifiesForEvent exactly 1 {BoardOfEqualization:Class} and sdg:certifiesParticipant exactly 1 {AppealWaiver:Class} and sdg:hasCertificationTime some {CertificationTime:Class}",
+      "manchester_template": "Class: {AppealWaiverCertification:Class} EquivalentTo: cco:ont00000958 and sdg:certifiesForEvent exactly 1 {BoardOfEqualization:Class} and sdg:certifiesParticipant exactly 1 {AppealWaiver:Class} and sdg:hasCertificationTime some {CertificationTime:Class}",
       "slot_types": {
         "AppealWaiverCertification": "Class",
         "BoardOfEqualization": "Class",
@@ -6018,7 +6010,7 @@
     },
     {
       "template_id": "pick_drop_location",
-      "manchester_template": "Class: {PickDropLocation:Class} EquivalentTo: bfo:0000004 and bfo:0000050 some {TransportRoute:Class}",
+      "manchester_template": "Class: {PickDropLocation:Class} EquivalentTo: bfo:0000004 and bfo:0000124 some {TransportRoute:Class}",
       "slot_types": {
         "PickDropLocation": "Class",
         "TransportRoute": "Class"
@@ -6081,13 +6073,12 @@
     },
     {
       "template_id": "juvenile_offender_patient_role",
-      "manchester_template": "Class: {JuvenileOffenderPatientRole:Class} EquivalentTo: bfo:0000023 and bfo:0000052 some {IndependentContinuant:Class} and bfo:0000054 some bfo:0000015",
+      "manchester_template": "Class: {JuvenileOffenderPatientRole:Class} EquivalentTo: bfo:0000023 and bfo:0000054 some bfo:0000015 and bfo:0000056 some bfo:0000015",
       "slot_types": {
-        "JuvenileOffenderPatientRole": "Class",
-        "IndependentContinuant": "Class"
+        "JuvenileOffenderPatientRole": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A role realized in an independent continuant that realizes a process.",
+      "verbal_template": "Changed the filler of realized_in from IndependentContinuant to a process (bfo:0000015) to match the property range, since roles are realized in processes, not continuants.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -6113,7 +6104,7 @@
     },
     {
       "template_id": "payment_method_category",
-      "manchester_template": "Class: {PaymentMethodCategory:Class} EquivalentTo: cco:DescriptiveICE and sdg:hasPaymentType some {FundingSource:Class}",
+      "manchester_template": "Class: {PaymentMethodCategory:Class} EquivalentTo: cco:ont00000853 and sdg:hasPaymentType some {FundingSource:Class}",
       "slot_types": {
         "PaymentMethodCategory": "Class",
         "FundingSource": "Class"
@@ -6176,7 +6167,7 @@
     },
     {
       "template_id": "nutritional_status_indicator",
-      "manchester_template": "Class: {NutritionalStatusIndicator:Class} EquivalentTo: cco:DescriptiveICE and sdg:expressesValue some {QuantitativeMeasurement:Class} and sdg:expressesValue only {QuantitativeMeasurement:Class}",
+      "manchester_template": "Class: {NutritionalStatusIndicator:Class} EquivalentTo: cco:ont00000853 and sdg:expressesValue some {QuantitativeMeasurement:Class} and sdg:expressesValue only {QuantitativeMeasurement:Class}",
       "slot_types": {
         "NutritionalStatusIndicator": "Class",
         "QuantitativeMeasurement": "Class"
@@ -6268,7 +6259,7 @@
     },
     {
       "template_id": "property_assessment_notice",
-      "manchester_template": "Class: {PropertyAssessmentNotice:Class} EquivalentTo: cco:InformationContentEntity and sdg:submittedForApproval some {ApprovalRecommendation:Class}",
+      "manchester_template": "Class: {PropertyAssessmentNotice:Class} EquivalentTo: cco:ont00000958 and sdg:submittedForApproval some {ApprovalRecommendation:Class}",
       "slot_types": {
         "PropertyAssessmentNotice": "Class",
         "ApprovalRecommendation": "Class"
@@ -6298,7 +6289,7 @@
     },
     {
       "template_id": "animal_control_officer_role",
-      "manchester_template": "Class: {AnimalControlOfficerRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {HumanAgent:Class}, bfo:0000054 some {AnimalEnforcementActivity:Class}",
+      "manchester_template": "Class: {AnimalControlOfficerRole:Class} SubClassOf: bfo:0000023, bfo:0000056 some {HumanAgent:Class}, bfo:0000054 some {AnimalEnforcementActivity:Class}",
       "slot_types": {
         "AnimalControlOfficerRole": "Class",
         "HumanAgent": "Class",
@@ -6391,7 +6382,7 @@
     },
     {
       "template_id": "patient_educational_content_package",
-      "manchester_template": "Class: {PatientEducationalContentPackage:Class} EquivalentTo: cco:InformationContentEntity and sdg:aggregates some {MedicationFactSheet:Class} and sdg:hasPurpose some {PatientEducationPurpose:Class}",
+      "manchester_template": "Class: {PatientEducationalContentPackage:Class} EquivalentTo: cco:ont00000958 and sdg:aggregates some {MedicationFactSheet:Class} and sdg:hasPurpose some {PatientEducationPurpose:Class}",
       "slot_types": {
         "PatientEducationalContentPackage": "Class",
         "MedicationFactSheet": "Class",
@@ -6422,7 +6413,7 @@
     },
     {
       "template_id": "observatory_mounting_configuration",
-      "manchester_template": "Class: {ObservatoryMountingConfiguration:Class} EquivalentTo: cco:DescriptiveICE and sdg:specifiesInstrument exactly 1 {TelescopeInstrumentArtifact:Class} and sdg:allocatesToStructure exactly 1 {ObservatoryMountingStructure:Class}",
+      "manchester_template": "Class: {ObservatoryMountingConfiguration:Class} EquivalentTo: cco:ont00000853 and sdg:specifiesInstrument exactly 1 {TelescopeInstrumentArtifact:Class} and sdg:allocatesToStructure exactly 1 {ObservatoryMountingStructure:Class}",
       "slot_types": {
         "ObservatoryMountingConfiguration": "Class",
         "TelescopeInstrumentArtifact": "Class",
@@ -6484,7 +6475,7 @@
     },
     {
       "template_id": "telemarketing_kpi_constraint",
-      "manchester_template": "Class: {TelemarketingKPIConstraint:Class} EquivalentTo: cco:InformationContentEntity and sdg:applies_to some {TelemarketerSalesAdministratorRole:Class} and sdg:measures some {CallVolumeMetric:Class} and sdg:minimumCallsPerHour some xsd:decimal",
+      "manchester_template": "Class: {TelemarketingKPIConstraint:Class} EquivalentTo: cco:ont00000958 and sdg:applies_to some {TelemarketerSalesAdministratorRole:Class} and sdg:measures some {CallVolumeMetric:Class} and sdg:minimumCallsPerHour some xsd:decimal",
       "slot_types": {
         "TelemarketingKPIConstraint": "Class",
         "TelemarketerSalesAdministratorRole": "Class",
@@ -6515,7 +6506,7 @@
     },
     {
       "template_id": "weekly_sales_report",
-      "manchester_template": "Class: {WeeklySalesReport:Class} EquivalentTo: cco:InformationContentEntity and sdg:describes some {TeleSalesActivity:Class} and sdg:situated_in some {ReportingPeriod:Class} and sdg:hasPeriodType some {WeeklyPeriod:Class}",
+      "manchester_template": "Class: {WeeklySalesReport:Class} EquivalentTo: cco:ont00000958 and sdg:describes some {TeleSalesActivity:Class} and sdg:situated_in some {ReportingPeriod:Class} and sdg:hasPeriodType some {WeeklyPeriod:Class}",
       "slot_types": {
         "WeeklySalesReport": "Class",
         "TeleSalesActivity": "Class",
@@ -6608,14 +6599,14 @@
     },
     {
       "template_id": "duplicating_request",
-      "manchester_template": "Class: {DuplicatingRequest:Class} EquivalentTo: cco:InformationContentEntity and sdg:hasRequester some {RequestingEntity:Class} and sdg:hasDocument some {CopiedDocument:Class} and sdg:hasTurnaroundHours some xsd:decimal",
+      "manchester_template": "Class: {DuplicatingRequest:Class} EquivalentTo: cco:ont00000958 and sdg:hasRequester some {RequestingEntity:Class} and sdg:hasDocument some {ont00000253:Class} and sdg:hasTurnaroundHours some xsd:decimal",
       "slot_types": {
         "DuplicatingRequest": "Class",
         "RequestingEntity": "Class",
-        "CopiedDocument": "Class"
+        "ont00000253": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A DuplicatingRequest is an InformationContentEntity that hasRequester some RequestingEntity, hasDocument some CopiedDocument, and hasTurnaroundHours some decimal.",
+      "verbal_template": "A duplicating request involves a requester, a turnaround time, and a document that is a material entity.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [
@@ -6670,7 +6661,7 @@
     },
     {
       "template_id": "referral_source_role",
-      "manchester_template": "Class: {ReferralSourceRole:Class} SubClassOf: bfo:0000023, bfo:0000052 some {CriminalJusticeSystem:Class}, bfo:0000054 some {ReferralProcess:Class}",
+      "manchester_template": "Class: {ReferralSourceRole:Class} SubClassOf: bfo:0000023, bfo:0000056 some {CriminalJusticeSystem:Class}, bfo:0000054 some {ReferralProcess:Class}",
       "slot_types": {
         "ReferralSourceRole": "Class",
         "CriminalJusticeSystem": "Class",
@@ -6701,7 +6692,7 @@
     },
     {
       "template_id": "survey_finding",
-      "manchester_template": "Class: {SurveyFinding:Class} EquivalentTo: cco:InformationContentEntity and sdg:hasSubstanceType some {SubstanceType:Class} and sdg:hasPrevalenceRate some {PrevalenceRate:Class} and sdg:hasPercentageValue some xsd:decimal",
+      "manchester_template": "Class: {SurveyFinding:Class} EquivalentTo: cco:ont00000958 and sdg:hasSubstanceType some {SubstanceType:Class} and sdg:hasPrevalenceRate some {PrevalenceRate:Class} and sdg:hasPercentageValue some xsd:decimal",
       "slot_types": {
         "SurveyFinding": "Class",
         "SubstanceType": "Class",
@@ -6763,7 +6754,7 @@
     },
     {
       "template_id": "breeding_program_application",
-      "manchester_template": "Class: {BreedingProgramApplication:Class} EquivalentTo: cco:InformationContentEntity and sdg:containsFormSection some {HorseIdentity:Class} and sdg:identifies some {HorseIdentity:Class}",
+      "manchester_template": "Class: {BreedingProgramApplication:Class} EquivalentTo: cco:ont00000958 and sdg:containsFormSection some {HorseIdentity:Class} and sdg:identifies some {HorseIdentity:Class}",
       "slot_types": {
         "BreedingProgramApplication": "Class",
         "HorseIdentity": "Class"
@@ -6793,7 +6784,7 @@
     },
     {
       "template_id": "measurement_capability_profile",
-      "manchester_template": "Class: {MeasurementCapabilityProfile:Class} EquivalentTo: cco:InformationContentEntity and sdg:hasMeasurementParameter some {MeasurementParameter:Class} and sdg:hasMeasurementRange some {MeasurementRange:Class} and sdg:hasExpandedUncertaintyValue some xsd:decimal",
+      "manchester_template": "Class: {MeasurementCapabilityProfile:Class} EquivalentTo: cco:ont00000958 and sdg:hasMeasurementParameter some {MeasurementParameter:Class} and sdg:hasMeasurementRange some {MeasurementRange:Class} and sdg:hasExpandedUncertaintyValue some xsd:decimal",
       "slot_types": {
         "MeasurementCapabilityProfile": "Class",
         "MeasurementParameter": "Class",
@@ -6855,7 +6846,7 @@
     },
     {
       "template_id": "housing_policy_information",
-      "manchester_template": "Class: {HousingPolicyInformation:Class} EquivalentTo: cco:InformationContentEntity and sdg:concernsTopic some {HousingPolicyTopic:Class}",
+      "manchester_template": "Class: {HousingPolicyInformation:Class} EquivalentTo: cco:ont00000965 and sdg:concernsTopic some {HousingPolicyTopic:Class}",
       "slot_types": {
         "HousingPolicyInformation": "Class",
         "HousingPolicyTopic": "Class"
@@ -6885,7 +6876,7 @@
     },
     {
       "template_id": "filler_businessactivityprocess",
-      "manchester_template": "Class: {BusinessActivityProcess:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:BusinessEntity",
+      "manchester_template": "Class: {BusinessActivityProcess:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:ont00000958",
       "slot_types": {
         "BusinessActivityProcess": "Class"
       },
@@ -6910,7 +6901,7 @@
     },
     {
       "template_id": "filler_businessdecision",
-      "manchester_template": "Class: {BusinessDecision:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:BusinessEntity",
+      "manchester_template": "Class: {BusinessDecision:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:ont00000958",
       "slot_types": {
         "BusinessDecision": "Class"
       },
@@ -6972,7 +6963,7 @@
     },
     {
       "template_id": "filler_businessinitiative",
-      "manchester_template": "Class: {BusinessInitiative:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:BusinessEntity",
+      "manchester_template": "Class: {BusinessInitiative:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:ont00000253",
       "slot_types": {
         "BusinessInitiative": "Class"
       },
@@ -7243,12 +7234,13 @@
     },
     {
       "template_id": "filler_clearingprocess",
-      "manchester_template": "Class: {ClearingProcess:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some sdg:FinancialInstrument",
+      "manchester_template": "Class: {ClearingProcess:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some {FinancialProduct:Class}",
       "slot_types": {
-        "ClearingProcess": "Class"
+        "ClearingProcess": "Class",
+        "FinancialProduct": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A process that involves a financial instrument as an object.",
+      "verbal_template": "A clearing process is a process that involves a financial product as an object.",
       "verbal_templates": [
         "This term describes the procedural mechanism through which financial instruments are processed and validated. It involves the systematic handling of instruments to ensure accurate recording and completion of financial transactions. The term emphasizes the active role of the process in managing the lifecycle of financial instruments from initiation to resolution."
       ],
@@ -7276,7 +7268,7 @@
     },
     {
       "template_id": "filler_client",
-      "manchester_template": "Class: {Client:Class} EquivalentTo: cco:ont00001017 and sdg:receives_service some cco:FinancialProductAdviceService",
+      "manchester_template": "Class: {Client:Class} EquivalentTo: cco:ont00001017 and sdg:receives_financial_advice some cco:ont00000509",
       "slot_types": {
         "Client": "Class"
       },
@@ -7307,7 +7299,7 @@
     },
     {
       "template_id": "filler_clientprofile",
-      "manchester_template": "Class: {ClientProfile:Class} EquivalentTo: cco:BFO_0000144 and sdg:relatesTo some sdg:NetworkUser",
+      "manchester_template": "Class: {ClientProfile:Class} EquivalentTo: cco:ont00001309 and sdg:relatesTo some sdg:NetworkUser",
       "slot_types": {
         "ClientProfile": "Class"
       },
@@ -7598,7 +7590,7 @@
     },
     {
       "template_id": "filler_continuousemissionsmonitoringsystem",
-      "manchester_template": "Class: {ContinuousEmissionsMonitoringSystem:Class} EquivalentTo: cco:ont00000453 and bfo:participates_in some sdg:ContinuousEmissionsMonitoringProcess",
+      "manchester_template": "Class: {ContinuousEmissionsMonitoringSystem:Class} EquivalentTo: cco:ont00000453 and bfo:0000056 some sdg:ContinuousEmissionsMonitoringProcess",
       "slot_types": {
         "ContinuousEmissionsMonitoringSystem": "Class"
       },
@@ -7630,12 +7622,12 @@
     },
     {
       "template_id": "filler_copieddocument",
-      "manchester_template": "Class: {CopiedDocument:Class} EquivalentTo: cco:ont00001298 and cco:derives_information_content_from some sdg:OriginalDocument",
+      "manchester_template": "Class: {CopiedDocument:Class} EquivalentTo: cco:ont00001298 and cco:ont00001824 some cco:ont00000253",
       "slot_types": {
         "CopiedDocument": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material copy of a document that derives its information content from an original document.",
+      "verbal_template": "A copied document is a document that has a role realized in a specific continuant.",
       "verbal_templates": [
         "A material copy of a document that derives its information content from an original document. This term describes any physical or digital artifact that replicates the informational structure of a source document through duplication processes. The concept encompasses all material forms of document replication, from photocopies to digital reproductions, where the informational content flows directly from the original source."
       ],
@@ -7662,7 +7654,7 @@
     },
     {
       "template_id": "filler_corporateagent",
-      "manchester_template": "Class: {CorporateAgent:Class} EquivalentTo: cco:ont00000443 and bfo:participates_in some sdg:CorporateActivity",
+      "manchester_template": "Class: {CorporateAgent:Class} EquivalentTo: cco:ont00000443 and bfo:0000056 some sdg:CorporateActivity",
       "slot_types": {
         "CorporateAgent": "Class"
       },
@@ -7694,7 +7686,7 @@
     },
     {
       "template_id": "filler_corporateauditfunction",
-      "manchester_template": "Class: {CorporateAuditFunction:Class} EquivalentTo: cco:ont00000938 and cco:realizes_in some sdg:CorporateAuditProcess",
+      "manchester_template": "Class: {CorporateAuditFunction:Class} EquivalentTo: cco:ont00000938 and bfo:0000056 some sdg:CorporateAuditProcess",
       "slot_types": {
         "CorporateAuditFunction": "Class"
       },
@@ -7726,12 +7718,12 @@
     },
     {
       "template_id": "filler_corporatecoalition",
-      "manchester_template": "Class: {CorporateCoalition:Class} EquivalentTo: cco:ont00001239 and cco:has_participant some cco:ont00000443",
+      "manchester_template": "Class: {CorporateCoalition:Class} EquivalentTo: cco:ont00001239 and bfo:0000178 some cco:ont00000443",
       "slot_types": {
         "CorporateCoalition": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A group of organizations that includes at least one commercial organization as a participant.",
+      "verbal_template": "A corporate coalition is a continuant type that has a continuant part which is a social role or function, correcting the mismatch where realized_in (process domain/range) was incorrectly applied to a continuant subject.",
       "verbal_templates": [
         "A group of organizations that includes at least one commercial organization as a participant. This term describes organizational structures where multiple commercial entities collaborate through formalized partnerships. The concept captures business arrangements where corporations join forces to pursue common goals, maintain shared operations, or execute joint commercial initiatives through structured organizational frameworks."
       ],
@@ -7758,7 +7750,7 @@
     },
     {
       "template_id": "filler_corporateemployee",
-      "manchester_template": "Class: {CorporateEmployee:Class} EquivalentTo: cco:ont00000647 and bfo:participates_in some sdg:CorporateEmploymentProcess",
+      "manchester_template": "Class: {CorporateEmployee:Class} EquivalentTo: cco:ont00000647 and bfo:0000056 some sdg:CorporateEmploymentProcess",
       "slot_types": {
         "CorporateEmployee": "Class"
       },
@@ -7789,12 +7781,12 @@
     },
     {
       "template_id": "filler_corporatereputationmetric",
-      "manchester_template": "Class: {CorporateReputationMetric:Class} EquivalentTo: cco:ont00001163 and cco:measures some sdg:CorporateReputation",
+      "manchester_template": "Class: {CorporateReputationMetric:Class} EquivalentTo: bfo:0000056 some sdg:CorporateReputationMeasurement",
       "slot_types": {
         "CorporateReputationMetric": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A measurement information content entity that measures corporate reputation.",
+      "verbal_template": "A corporate reputation metric that is realized in a measurement process.",
       "verbal_templates": [
         "This term identifies measurement information content entities that quantify corporate reputation through structured data collection and analytical processes. Practitioners apply this label when documenting survey instruments, media monitoring reports, social sentiment scores, or brand equity assessments that capture public perception, stakeholder trust, and organizational standing in commercial markets."
       ],
@@ -7822,12 +7814,12 @@
     },
     {
       "template_id": "filler_courseselectionset",
-      "manchester_template": "Class: {CourseSelectionSet:Class} EquivalentTo: bfo:0000031 and cco:has_participant some sdg:Course",
+      "manchester_template": "Class: {CourseSelectionSet:Class} EquivalentTo: bfo:0000031",
       "slot_types": {
         "CourseSelectionSet": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A generically dependent continuant that comprises a set of courses selected for an educational track.",
+      "verbal_template": "A set of course selections classified as an information content entity.",
       "verbal_templates": [
         "A course selection set is a generically dependent continuant that comprises a set of courses selected for an educational track. This collection is tailored to meet specific educational goals or requirements, ensuring that participants acquire the necessary knowledge and skills through a structured curriculum."
       ],
@@ -7854,7 +7846,7 @@
     },
     {
       "template_id": "filler_courtdocument",
-      "manchester_template": "Class: {CourtDocument:Class} EquivalentTo: cco:ont00002044 and bfo:participates_in some sdg:LegalProceeding",
+      "manchester_template": "Class: {CourtDocument:Class} EquivalentTo: cco:ont00002044 and bfo:0000056 some sdg:LegalProceeding",
       "slot_types": {
         "CourtDocument": "Class"
       },
@@ -7886,7 +7878,7 @@
     },
     {
       "template_id": "filler_criminaljusticesystem",
-      "manchester_template": "Class: {CriminalJusticeSystem:Class} EquivalentTo: cco:ont00000870 and bfo:participates_in some sdg:CriminalJusticeProcess",
+      "manchester_template": "Class: {CriminalJusticeSystem:Class} EquivalentTo: cco:ont00000870 and bfo:0000056 some sdg:CriminalJusticeProcess",
       "slot_types": {
         "CriminalJusticeSystem": "Class"
       },
@@ -7918,7 +7910,7 @@
     },
     {
       "template_id": "filler_culturalattribute",
-      "manchester_template": "Class: {CulturalAttribute:Class} EquivalentTo: bfo:0000019 and bfo:inheres_in some sdg:OrganizationalCulture",
+      "manchester_template": "Class: {CulturalAttribute:Class} EquivalentTo: bfo:0000019 and bfo:0000197 some sdg:OrganizationalCulture",
       "slot_types": {
         "CulturalAttribute": "Class"
       },
@@ -7949,7 +7941,7 @@
     },
     {
       "template_id": "filler_curriculum",
-      "manchester_template": "Class: {Curriculum:Class} EquivalentTo: bfo:0000031 and cco:has_participant some sdg:Course",
+      "manchester_template": "Class: {Curriculum:Class} EquivalentTo: bfo:0000031 and bfo:0000178 some sdg:Course",
       "slot_types": {
         "Curriculum": "Class"
       },
@@ -7982,12 +7974,12 @@
     },
     {
       "template_id": "filler_customernetwork",
-      "manchester_template": "Class: {CustomerNetwork:Class} EquivalentTo: cco:ont00000700 and cco:has_participant some sdg:CustomerDevice",
+      "manchester_template": "Class: {CustomerNetwork:Class} EquivalentTo: cco:ont00000700 and bfo:0000178 some sdg:CustomerDevice",
       "slot_types": {
         "CustomerNetwork": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A computer network that includes customer devices as participants.",
+      "verbal_template": "Retained has_continuant_part as it correctly relates the network continuant to its device parts.",
       "verbal_templates": [
         "A customer network connects a business with its clients through digital devices such as smartphones, tablets, or web browsers. The term encompasses platforms used for customer engagement, loyalty program tracking, or service delivery via mobile applications and web interfaces."
       ],
@@ -8425,12 +8417,12 @@
     },
     {
       "template_id": "filler_executiveteam",
-      "manchester_template": "Class: {ExecutiveTeam:Class} EquivalentTo: cco:ont00001180 and sdg:hasMember some sdg:ExecutiveLeadershipRole",
+      "manchester_template": "Class: {ExecutiveTeam:Class} EquivalentTo: cco:ont00001180 and sdg:hasMember some sdg:ExecutiveLeadershipProcess",
       "slot_types": {
         "ExecutiveTeam": "Class"
       },
       "is_complex": true,
-      "verbal_template": "An organization composed of members holding executive leadership roles.",
+      "verbal_template": "An executive team is an organizational entity that has member some executive leadership process.",
       "verbal_templates": [
         "An organization composed of members holding executive leadership roles. This term describes groups of individuals who collectively hold executive leadership positions, such as CEOs, CFOs, or department heads, and collaborate on strategic decision-making and governance within an organization."
       ],
@@ -8457,12 +8449,12 @@
     },
     {
       "template_id": "filler_executiveteammember",
-      "manchester_template": "Class: {ExecutiveTeamMember:Class} EquivalentTo: cco:ont00000647 and sdg:servesOn some sdg:ExecutiveTeam",
+      "manchester_template": "Class: {ExecutiveTeamMember:Class} EquivalentTo: cco:ont00000647 and sdg:servesOn some sdg:ExecutiveLeadershipProcess",
       "slot_types": {
         "ExecutiveTeamMember": "Class"
       },
       "is_complex": true,
-      "verbal_template": "An organization member who serves as part of an executive team.",
+      "verbal_template": "An executive team member is an organizational role/person that serves on some executive leadership process.",
       "verbal_templates": [
         "Designates an individual serving in a senior leadership role as part of an organization's executive team. This entity represents the active participation of a leader in executive decision-making and strategic governance."
       ],
@@ -8588,7 +8580,7 @@
     },
     {
       "template_id": "filler_exportexecution",
-      "manchester_template": "Class: {ExportExecution:Class} EquivalentTo: cco:BFO_0000144 and sdg:realizes some sdg:PdfExportProcess",
+      "manchester_template": "Class: {ExportExecution:Class} EquivalentTo: cco:ont00001309 and sdg:realizes some sdg:PdfExportProcess",
       "slot_types": {
         "ExportExecution": "Class"
       },
@@ -9004,7 +8996,7 @@
     },
     {
       "template_id": "filler_keyframetimeline",
-      "manchester_template": "Class: {KeyframeTimeline:Class} EquivalentTo: cco:BFO_0000202 and sdg:marksAnimationKeyframes some bfo:0000040",
+      "manchester_template": "Class: {KeyframeTimeline:Class} EquivalentTo: bfo:0000040 and sdg:hasKeyframe some bfo:0000040",
       "slot_types": {
         "KeyframeTimeline": "Class"
       },
@@ -11024,7 +11016,7 @@
     },
     {
       "template_id": "filler_cybersecurityincident",
-      "manchester_template": "Class: {CyberSecurityIncident:Class} EquivalentTo: bfo:0000015 and cco:participates_in some cco:ont00000700 and cco:involves some sdg:CommunicationSecurityAspect",
+      "manchester_template": "Class: {CyberSecurityIncident:Class} EquivalentTo: bfo:0000015 and bfo:0000056 some cco:ont00000700 and bfo:0000056 some sdg:CommunicationSecurityAspect",
       "slot_types": {
         "CyberSecurityIncident": "Class"
       },
@@ -11056,7 +11048,7 @@
     },
     {
       "template_id": "filler_datacollectionprocess",
-      "manchester_template": "Class: {DataCollectionProcess:Class} EquivalentTo: cco:ont00000366 and cco:accomplishes some sdg:MonitoringProtocol and cco:has_participant some cco:ont00002006",
+      "manchester_template": "Class: {DataCollectionProcess:Class} EquivalentTo: bfo:0000055 some sdg:MonitoringProtocol and bfo:0000057 some cco:ont00002006",
       "slot_types": {
         "DataCollectionProcess": "Class"
       },
@@ -11088,7 +11080,7 @@
     },
     {
       "template_id": "filler_datainput",
-      "manchester_template": "Class: {DataInput:Class} EquivalentTo: cco:ont00000366 and cco:has_participant some cco:ont00002044 and cco:involves some cco:ont00002006",
+      "manchester_template": "Class: {DataInput:Class} EquivalentTo: bfo:0000057 some bfo:0000054 and bfo:0000056 some bfo:0000055",
       "slot_types": {
         "DataInput": "Class"
       },
@@ -11120,7 +11112,7 @@
     },
     {
       "template_id": "filler_decisionmakingprocess",
-      "manchester_template": "Class: {DecisionMakingProcess:Class} EquivalentTo: cco:ont00000511 and cco:has_part some sdg:DecisionAction and cco:has_part some sdg:DecisionTransitionAction",
+      "manchester_template": "Class: sdg:DecisionMakingProcess EquivalentTo: cco:ont00000511 and bfo:0000117 some sdg:DecisionAction and bfo:0000117 some sdg:DecisionTransitionAction",
       "slot_types": {
         "DecisionMakingProcess": "Class"
       },
@@ -11152,7 +11144,7 @@
     },
     {
       "template_id": "filler_degradedsystemcondition",
-      "manchester_template": "Class: {DegradedSystemCondition:Class} EquivalentTo: cco:ont00000982 and cco:inheres_in some sdg:StateAction and cco:has_quality some cco:ont00000876",
+      "manchester_template": "Class: {DegradedSystemCondition:Class} EquivalentTo: cco:ont00000982 and bfo:0000197 some sdg:DegradedStateAction and cco:ont00001907 some cco:ont00000876",
       "slot_types": {
         "DegradedSystemCondition": "Class"
       },
@@ -11170,12 +11162,12 @@
     },
     {
       "template_id": "filler_departingemployee",
-      "manchester_template": "Class: {DepartingEmployee:Class} EquivalentTo: cco:ont00000175 and cco:realized_in some cco:ont00000520 and cco:has_participant some cco:ont00001226",
+      "manchester_template": "Class: {DepartingEmployee:Class} EquivalentTo: cco:ont00001787 some cco:ont00000520 and sdg:has_departure_status some cco:ont00001226",
       "slot_types": {
         "DepartingEmployee": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A departing employee is an organization member role that is realized in an act of departure and has an act of employment by an organization as a participant.",
+      "verbal_template": "A departing employee is defined by having a specific role and a departure status, excluding the disjoint function conjunct.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -11220,7 +11212,7 @@
     },
     {
       "template_id": "filler_governancefunction",
-      "manchester_template": "Class: {GovernanceFunction:Class} EquivalentTo: cco:BFO_0000034 and sdg:exercises_governance some cco:ont00000408",
+      "manchester_template": "Class: {GovernanceFunction:Class} EquivalentTo: cco:ont00000419 and sdg:exercises_governance some cco:ont00000408",
       "slot_types": {
         "GovernanceFunction": "Class"
       },
@@ -13080,7 +13072,7 @@
     },
     {
       "template_id": "filler_operationalequipment",
-      "manchester_template": "Class: {OperationalEquipment:Class} EquivalentTo: cco:ont00000870 and bfo:participates_in some cco:ont00000567",
+      "manchester_template": "Class: {OperationalEquipment:Class} EquivalentTo: cco:ont00000870 and bfo:0000178 some cco:ont00000567",
       "slot_types": {
         "OperationalEquipment": "Class"
       },
@@ -13112,12 +13104,12 @@
     },
     {
       "template_id": "filler_operationalprotocol",
-      "manchester_template": "Class: {OperationalProtocol:Class} EquivalentTo: sdg:MonitoringProtocol and bfo:participates_in some cco:ont00000567",
+      "manchester_template": "Class: {OperationalProtocol:Class} EquivalentTo: sdg:MonitoringProtocol and bfo:0000056 some bfo:0000015",
       "slot_types": {
         "OperationalProtocol": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A standardized procedure or set of rules governing activities within an operational area.",
+      "verbal_template": "Changed the filler of realized_by from a continuant (ont00000567) to a process (bfo:0000015) to match the property range.",
       "verbal_templates": [
         "Defines a standardized procedure or set of rules governing activities within a specific operational area or site. This entity ensures consistent execution of tasks and maintains safety standards in operational environments."
       ],
@@ -13145,12 +13137,12 @@
     },
     {
       "template_id": "filler_operationalunit",
-      "manchester_template": "Class: {OperationalUnit:Class} EquivalentTo: cco:ont00000172 and bfo:has_participant some sdg:PoliceOfficerRole",
+      "manchester_template": "Class: {OperationalUnit:Class} EquivalentTo: cco:ont00000172 and cco:ont00001901 some sdg:PoliceOfficerRole",
       "slot_types": {
         "OperationalUnit": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A base of operations or organizational entity comprising law enforcement personnel.",
+      "verbal_template": "A functional unit that bears a police officer role.",
       "verbal_templates": [
         "A base of operations or organizational entity comprising law enforcement personnel. This entity serves as a physical or organizational location for police officers. The entity provides the structural framework for police officer roles."
       ],
@@ -13176,7 +13168,7 @@
     },
     {
       "template_id": "filler_orderconstraint",
-      "manchester_template": "Class: {OrderConstraint:Class} EquivalentTo: cco:ont00001041 and bfo:participates_in some sdg:PromotionalCalendarOrder",
+      "manchester_template": "Class: {OrderConstraint:Class} EquivalentTo: cco:ont00001041 and bfo:0000056 some sdg:PromotionalCalendarOrder",
       "slot_types": {
         "OrderConstraint": "Class"
       },
@@ -13208,7 +13200,7 @@
     },
     {
       "template_id": "filler_organizationmember",
-      "manchester_template": "Class: {OrganizationMember:Class} EquivalentTo: cco:ont00000175 and bfo:has_participant some sdg:Organization",
+      "manchester_template": "Class: {OrganizationMember:Class} EquivalentTo: cco:ont00000175 and bfo:0000178 some cco:ont00001180",
       "slot_types": {
         "OrganizationMember": "Class"
       },
@@ -13241,7 +13233,7 @@
     },
     {
       "template_id": "filler_organizationalagent",
-      "manchester_template": "Class: {OrganizationalAgent:Class} EquivalentTo: cco:ont00001017 and bfo:participates_in some sdg:FinancialPlanningProcess",
+      "manchester_template": "Class: {OrganizationalAgent:Class} EquivalentTo: cco:ont00001017 and bfo:0000056 some sdg:FinancialPlanningProcess",
       "slot_types": {
         "OrganizationalAgent": "Class"
       },
@@ -13273,7 +13265,7 @@
     },
     {
       "template_id": "filler_organizationalfunction",
-      "manchester_template": "Class: {OrganizationalFunction:Class} EquivalentTo: cco:ont00000568 and bfo:realizes some sdg:GeneralManagerRole",
+      "manchester_template": "Class: {OrganizationalFunction:Class} EquivalentTo: cco:ont00000568 and sdg:GeneralManagerRole",
       "slot_types": {
         "OrganizationalFunction": "Class"
       },
@@ -13304,7 +13296,7 @@
     },
     {
       "template_id": "filler_organizationalhealthmetric",
-      "manchester_template": "Class: {OrganizationalHealthMetric:Class} EquivalentTo: sdg:HealthOutcomeMetric and bfo:participates_in some sdg:EmployeeFeedbackSurvey",
+      "manchester_template": "Class: {OrganizationalHealthMetric:Class} EquivalentTo: sdg:HealthOutcomeMetric and bfo:0000056 some sdg:EmployeeFeedbackSurvey",
       "slot_types": {
         "OrganizationalHealthMetric": "Class"
       },
@@ -13336,7 +13328,7 @@
     },
     {
       "template_id": "filler_organizationalleadershiprole",
-      "manchester_template": "Class: {OrganizationalLeadershipRole:Class} EquivalentTo: cco:ont00000175 and bfo:realized_in some sdg:ExecutiveLeadershipProcess",
+      "manchester_template": "Class: {OrganizationalLeadershipRole:Class} EquivalentTo: cco:ont00000768 and bfo:0000178 some sdg:ExecutiveLeadershipProcess",
       "slot_types": {
         "OrganizationalLeadershipRole": "Class"
       },
@@ -13368,7 +13360,7 @@
     },
     {
       "template_id": "filler_ozoneoxygenmixture",
-      "manchester_template": "Class: {OzoneOxygenMixture:Class} EquivalentTo: cco:ont00000897 and bfo:participates_in some sdg:OzoneTherapySession",
+      "manchester_template": "Class: {OzoneOxygenMixture:Class} EquivalentTo: cco:ont00000897 and bfo:0000056 some sdg:OzoneTherapySession",
       "slot_types": {
         "OzoneOxygenMixture": "Class"
       },
@@ -13634,12 +13626,12 @@
     },
     {
       "template_id": "filler_criminaljusticeprocess",
-      "manchester_template": "Class: {CriminalJusticeProcess:Class} EquivalentTo: bfo:0000015 and bfo:participates_in some sdg:CriminalJusticeSystem",
+      "manchester_template": "Class: {CriminalJusticeProcess:Class} EquivalentTo: bfo:0000015 and bfo:0000056 some sdg:CriminalJusticeAdministration",
       "slot_types": {
         "CriminalJusticeProcess": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A process that participates in a criminal justice system.",
+      "verbal_template": "A criminal justice process that is realized in an administration process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -13652,12 +13644,12 @@
     },
     {
       "template_id": "filler_customerdevice",
-      "manchester_template": "Class: {CustomerDevice:Class} EquivalentTo: bfo:0000040 and bfo:participates_in some sdg:CustomerNetwork",
+      "manchester_template": "Class: {CustomerDevice:Class} EquivalentTo: bfo:0000040 and bfo:0000178 some sdg:CustomerNetwork",
       "slot_types": {
         "CustomerDevice": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A material entity that participates in a customer network.",
+      "verbal_template": "Replaced realized_in with has_continuant_part to match the continuant range required for relating devices to networks.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -13688,7 +13680,7 @@
     },
     {
       "template_id": "filler_decisionaction",
-      "manchester_template": "Class: {DecisionAction:Class} EquivalentTo: bfo:0000015 and bfo:has_part some sdg:DecisionMakingProcess",
+      "manchester_template": "Class: sdg:DecisionAction EquivalentTo: bfo:0000015 and cco:ont00001777 some sdg:DecisionMakingProcess",
       "slot_types": {
         "DecisionAction": "Class"
       },
@@ -13706,12 +13698,12 @@
     },
     {
       "template_id": "filler_decisiontransitionaction",
-      "manchester_template": "Class: {DecisionTransitionAction:Class} EquivalentTo: bfo:0000015 and bfo:has_part some sdg:DecisionMakingProcess",
+      "manchester_template": "Class: {DecisionTransitionAction:Class} EquivalentTo: bfo:0000015 and bfo:0000056 some sdg:DecisionMakingProcess",
       "slot_types": {
         "DecisionTransitionAction": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A transition action that is a part of a decision-making process.",
+      "verbal_template": "A decision transition action is an occurrent process realized in a decision making process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -13814,12 +13806,12 @@
     },
     {
       "template_id": "filler_executiveleadershiprole",
-      "manchester_template": "Class: {ExecutiveLeadershipRole:Class} EquivalentTo: sdg:OrganizationalLeadershipRole and sdg:hasMember some sdg:ExecutiveTeam",
+      "manchester_template": "Class: {ExecutiveLeadershipRole:Class} EquivalentTo: sdg:OrganizationalLeadershipRole and sdg:hasMember some sdg:ExecutiveLeadershipProcess",
       "slot_types": {
         "ExecutiveLeadershipRole": "Class"
       },
       "is_complex": true,
-      "verbal_template": "An organizational leadership role that is a member of an executive team.",
+      "verbal_template": "An executive leadership role is an organizational leadership role that has member some executive leadership process.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -13850,12 +13842,13 @@
     },
     {
       "template_id": "filler_financialinstrument",
-      "manchester_template": "Class: {FinancialInstrument:Class} EquivalentTo: sdg:FinancialProduct and bfo:involves_object some sdg:ClearingProcess",
+      "manchester_template": "Class: {FinancialInstrument:Class} EquivalentTo: sdg:FinancialProduct and bfo:0000056 some {ClearingFunction:Class}",
       "slot_types": {
-        "FinancialInstrument": "Class"
+        "FinancialInstrument": "Class",
+        "ClearingFunction": "Class"
       },
       "is_complex": true,
-      "verbal_template": "A financial product that is an object involved in a clearing process.",
+      "verbal_template": "A financial instrument is a financial product that realizes a clearing function.",
       "verbal_templates": [],
       "mean_verbal_length": 0.0,
       "bfo_anchor_path": [],
@@ -13868,7 +13861,7 @@
     },
     {
       "template_id": "filler_financialstrategyoversight",
-      "manchester_template": "Class: {FinancialStrategyOversight:Class} EquivalentTo: bfo:0000015 and bfo:involves some sdg:FinancialManagementProcess",
+      "manchester_template": "Class: {FinancialStrategyOversight:Class} EquivalentTo: bfo:0000015 and bfo:0000056 some sdg:FinancialManagementProcess",
       "slot_types": {
         "FinancialStrategyOversight": "Class"
       },
