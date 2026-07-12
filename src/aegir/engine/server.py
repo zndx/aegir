@@ -98,11 +98,17 @@ class ZndxEngineServicer:
         sysp = (
             "You are an ontology-authoring agent ADAPTING to a boundary signal: a reasoner/membrane detected "
             "an error in an axiom you must re-author. Reason about the CAUSE, then produce a single corrected "
-            "Manchester axiom. Use ONLY real IRIs present in CANDIDATES or ANCHORS (they are from the CURRENT "
-            "authoritative ontology); if none fits, COIN a term in the sdg: namespace. NEVER invent a cco:/bfo:/"
-            "fhir: name. Output exactly one ```json block "
-            "{\"correction\":\"<one Manchester axiom>\",\"disposition\":\"CORRECTED|COINED_LOCAL|UNRESOLVABLE\","
-            "\"rationale\":\"<why>\"}.")
+            "Manchester axiom. STRONGLY PREFER a real IRI from CANDIDATES/ANCHORS (they are the CURRENT "
+            "authoritative BFO/CCO entities) — choose the one whose meaning fits, and for a RELATION "
+            "(object-property) slot pick the correct DIRECTION: a WHOLE 'has continuant part' (bfo:0000178) its "
+            "parts; a PART is 'continuant part of' (bfo:0000176) its whole. Almost every structural relation "
+            "already exists in BFO/CCO — reach for it. COIN in the sdg: namespace ONLY when NO real entity can "
+            "express the meaning; if you coin an sdg: OBJECT PROPERTY you MUST ground it in the SAME axiom set by "
+            "also emitting `ObjectProperty: sdg:<name> SubPropertyOf: <a real bfo:/cco: relation>` (an ungrounded "
+            "coined relation is rejected). NEVER invent a cco:/bfo:/fhir: name. Set disposition CORRECTED when you "
+            "used a real IRI, COINED_LOCAL only when you had to coin (and grounded it). Output exactly one ```json "
+            "block {\"correction\":\"<one or more Manchester frames>\",\"disposition\":\"CORRECTED|COINED_LOCAL|"
+            "UNRESOLVABLE\",\"rationale\":\"<why>\"}.")
         prompt = (
             f"BOUNDARY SIGNAL [{kind}] — authority: {sig.authority}\n"
             f"  offending: {sig.offending}\n  reason: {sig.reason}\n\n"
@@ -117,17 +123,30 @@ class ZndxEngineServicer:
             "rationale": {"type": "string"}}, "required": ["correction", "disposition", "rationale"]})
         try:
             out = self.mgr.complete(request.capability or "instruct", prompt, sysp,
-                                    request.max_tokens or 6000, request.temperature or 0.3, json_schema=schema)
-            m = re.search(r"\{.*\}", out["text"], re.S)
-            d = json.loads(m.group(0)) if m else {}
-            dname = d.get("disposition", "UNRESOLVABLE")
-            disp = zpb.Disposition.Value(dname) if dname in zpb.Disposition.keys() else zpb.UNRESOLVABLE
-            return zpb.RemediationResponse(
-                correction=d.get("correction", ""), disposition=disp, rationale=d.get("rationale", ""),
-                model=out["model"], reasoning_content=out["reasoning_content"],
-                completion_tokens=out["completion_tokens"], latency_ms=out["latency_ms"])
-        except Exception as e:  # noqa: BLE001
+                                    request.max_tokens or 12000, request.temperature or 0.3, json_schema=schema)
+        except Exception as e:  # noqa: BLE001 — a genuine vLLM/engine failure surfaces as a gRPC error
             context.abort(grpc.StatusCode.INTERNAL, f"remediate[{kind}] failed: {e}")
+            return
+        # A truncated/malformed completion is an UNRESOLVABLE disposition, NOT an RPC failure: the caller's
+        # membrane must still receive a well-formed response so one bad template cannot crash a batch sweep.
+        m = re.search(r"\{.*\}", out["text"], re.S)
+        try:
+            d = json.loads(m.group(0)) if m else {}
+        except ValueError:
+            d = {}
+        if not d:
+            trunc = " (output truncated — raise max_tokens)" if out.get("finish_reason") == "length" else ""
+            return zpb.RemediationResponse(
+                correction="", disposition=zpb.UNRESOLVABLE,
+                rationale=f"model output was not valid JSON{trunc}: {out['text'][:400]}",
+                model=out["model"], reasoning_content=out.get("reasoning_content", ""),
+                completion_tokens=out["completion_tokens"], latency_ms=out["latency_ms"])
+        dname = d.get("disposition", "UNRESOLVABLE")
+        disp = zpb.Disposition.Value(dname) if dname in zpb.Disposition.keys() else zpb.UNRESOLVABLE
+        return zpb.RemediationResponse(
+            correction=d.get("correction", ""), disposition=disp, rationale=d.get("rationale", ""),
+            model=out["model"], reasoning_content=out["reasoning_content"],
+            completion_tokens=out["completion_tokens"], latency_ms=out["latency_ms"])
 
 
 def serve(port: int = ENGINE_GRPC_PORT) -> None:

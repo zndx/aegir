@@ -50,13 +50,17 @@ Class: bfo:0000020 SubClassOf: bfo:0000002
 Class: bfo:0000023 SubClassOf: bfo:0000017
 Class: bfo:0000031 SubClassOf: bfo:0000002
 Class: bfo:0000040 SubClassOf: bfo:0000004
-ObjectProperty: bfo:0000050  # coined-ok: legacy/RO relation IRI — VERSION_DRIFT, resolved in-context by the sweep
-ObjectProperty: bfo:0000051  # coined-ok: legacy/RO relation IRI — VERSION_DRIFT, resolved in-context by the sweep
 ObjectProperty: bfo:0000054
 ObjectProperty: bfo:0000055
 ObjectProperty: bfo:0000056
 ObjectProperty: bfo:0000057
 ObjectProperty: bfo:0000066
+ObjectProperty: bfo:0000117
+ObjectProperty: bfo:0000132
+ObjectProperty: bfo:0000176
+ObjectProperty: bfo:0000178
+ObjectProperty: bfo:0000196
+ObjectProperty: bfo:0000197
 """
 
 PROBE_RE = re.compile(re.escape(TEST_NAMESPACE) + r"#T_[A-Za-z0-9_]+")

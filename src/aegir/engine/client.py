@@ -45,7 +45,7 @@ def complete(prompt: str, *, capability: str = "instruct", system_prompt: str = 
                              max_tokens=max_tokens, temperature=temperature, timeout=timeout)["text"]
 
 
-def remediate(signal: dict, context: dict, *, capability: str = "reauthor", max_tokens: int = 6000,
+def remediate(signal: dict, context: dict, *, capability: str = "reauthor", max_tokens: int = 12000,
               temperature: float = 0.3, timeout: float = 1200.0) -> dict:
     """Adapt to a boundary SIGNAL via the engine's Remediate capability (Holland CAS). The engine reasons
     over the signal + LIVE context and returns a proposed correction; the CALLER's membrane disposes it +

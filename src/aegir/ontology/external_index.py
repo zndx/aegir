@@ -49,6 +49,7 @@ class ExternalIndex:
     def __init__(self) -> None:
         self.iris: dict[str, str] = {}          # full IRI → kind
         self.labels: dict[str, list] = {}       # normalized label → [full IRIs]
+        self.iri_labels: dict[str, str] = {}    # full IRI → authoritative label (for token-partial search + gloss)
         self.versions: dict[str, str] = {}      # ns → versionIRI
         self._load()
 
@@ -63,6 +64,7 @@ class ExternalIndex:
             try:
                 d = pickle.loads(_CACHE.read_bytes())
                 self.iris, self.labels, self.versions = d["iris"], d["labels"], d["versions"]
+                self.iri_labels = d["iri_labels"]  # KeyError on an old cache → falls through to rebuild
                 return
             except Exception:  # noqa: BLE001
                 pass
@@ -80,8 +82,10 @@ class ExternalIndex:
                     self.iris[iri] = kind
                     for lab in g.objects(s, RDFS.label):
                         self.labels.setdefault(_norm(lab), []).append(iri)
+                        self.iri_labels.setdefault(iri, str(lab))
         try:
-            _CACHE.write_bytes(pickle.dumps({"iris": self.iris, "labels": self.labels, "versions": self.versions}))
+            _CACHE.write_bytes(pickle.dumps({"iris": self.iris, "labels": self.labels,
+                                             "iri_labels": self.iri_labels, "versions": self.versions}))
         except Exception:  # noqa: BLE001
             pass
 
@@ -106,13 +110,56 @@ class ExternalIndex:
         iri = self.expand(ref)
         return self.iris.get(iri) if iri else None
 
-    def search(self, text: str, prefix: "str | None" = None) -> list:
-        """label → [curies], for AGENT ASSISTANCE (suggesting the real IRI), never silent substitution."""
-        out = []
+    def label(self, ref: str) -> "str | None":
+        iri = self.expand(ref)
+        return self.iri_labels.get(iri) if iri else None
+
+    def _curie(self, iri: str, prefix: "str | None") -> "str | None":
+        for pfx, (base, _f, _u) in SOURCES.items():
+            if iri.startswith(base) and (prefix is None or pfx == prefix):
+                return f"{pfx}:{iri[len(base):]}"
+        return None
+
+    def search(self, text: str, prefix: "str | None" = None, kind: "str | None" = None) -> list:
+        """label → [curies], for AGENT ASSISTANCE (suggesting the real IRI), never silent substitution.
+        ``kind`` filters by entity type (e.g. "objectproperty" so a RELATION slot is offered relations, not
+        classes). Exact normalized-label match first; if none, a WORD-TOKEN-overlap fallback so "has part"
+        surfaces "has continuant part"/"continuant part of" etc. — the relation family the agent should pick."""
+        exact, seen = [], set()
         for iri in self.labels.get(_norm(text), []):
-            for pfx, (base, _f, _u) in SOURCES.items():
-                if iri.startswith(base) and (prefix is None or pfx == prefix):
-                    out.append(f"{pfx}:{iri[len(base):]}")
+            if kind and self.iris.get(iri) != kind:
+                continue
+            c = self._curie(iri, prefix)
+            if c and c not in seen:
+                seen.add(c); exact.append(c)
+        if exact:
+            return exact
+        toks = set(re.findall(r"[a-z0-9]+", text.lower()))
+        if not toks:
+            return []
+        scored = []
+        for iri, lab in self.iri_labels.items():
+            if kind and self.iris.get(iri) != kind:
+                continue
+            lt = set(re.findall(r"[a-z0-9]+", lab.lower()))
+            ov = len(toks & lt)
+            if ov:
+                c = self._curie(iri, prefix)
+                if c and c not in seen:
+                    seen.add(c); scored.append((ov / len(toks | lt), c))
+        scored.sort(key=lambda t: -t[0])
+        return [c for _s, c in scored[:8]]
+
+    def by_kind(self, kind: str, prefix: "str | None" = None) -> list:
+        """All entities of a kind as (curie, label) — e.g. the BFO object-property family, offered to the
+        agent as a fallback when a relation slot's name matches no label (a numeric-legacy or off-vocabulary
+        ref like bfo:0000050 / cco:involves) so it can still reach a REAL relation instead of coining one."""
+        out = []
+        for iri, k in self.iris.items():
+            if k == kind:
+                c = self._curie(iri, prefix)
+                if c:
+                    out.append((c, self.iri_labels.get(iri, "")))
         return out
 
     def version(self, ns: str) -> "str | None":
