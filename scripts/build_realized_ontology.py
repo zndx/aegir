@@ -249,12 +249,17 @@ def drop_classes(doc: str, iris: "list[str]") -> str:
     lets the document parse while the offending axiom is recovered by reauthor_unsat from the emitted signal.
     (task #14 — signal, don't bulldoze; [[signal_boundary_machinery]])."""
     targets = {i.split("#")[-1] for i in iris}
+    # a Class head appears in EITHER form in the rendered doc — full IRI `Class: <…#Name>` OR prefixed
+    # `Class: sdg:Name`; match both (the earlier IRI-only pattern silently missed every prefixed head, so
+    # those classes were never degraded and the narrowing stalled on exactly them).
+    head_re = re.compile(r"^Class:\s+(<[^>]*#([A-Za-z0-9_]+)>|sdg:([A-Za-z0-9_]+))")
     out, skipping = [], False
     for line in doc.split("\n"):
-        m = re.match(r"^Class: <([^>]*#([A-Za-z0-9_]+))>", line)
+        m = head_re.match(line)
         if m:
-            if m.group(2) in targets:
-                out.append(f"Class: <{m.group(1)}>")  # keep the declaration; shed the unsat body + its continuation
+            name = m.group(2) or m.group(3)
+            if name in targets:
+                out.append(f"Class: {m.group(1)}")  # keep the declaration (same form); shed the unsat body
                 skipping = True
                 continue
             skipping = False
