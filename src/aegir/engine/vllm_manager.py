@@ -5,6 +5,7 @@ endpoint is never exposed outside the engine — workloads reach inference only 
 from __future__ import annotations
 
 import os
+import re
 import signal
 import subprocess
 import threading
@@ -129,15 +130,24 @@ class VllmManager:
                                 "strict": True},
             }
         t0 = time.time()
-        r = httpx.post(
-            f"http://127.0.0.1:{ep.port}/v1/chat/completions",
-            json=body,
-            # RETAIN thinking: Qwen3.x reasons verbosely and the trace is a corpus value-add (Cerebras-style
-            # reasoning retention), so we do NOT pass enable_thinking=False. Generous read timeout — long
-            # traces are expected and acceptable (the workload waits). reasoning_content is populated when
-            # the model/parser separates it; otherwise the trace is retained inline in content.
-            timeout=900.0,
-        )
+        url = f"http://127.0.0.1:{ep.port}/v1/chat/completions"
+        # RETAIN thinking: Qwen3.x reasons verbosely and the trace is a corpus value-add (Cerebras-style
+        # reasoning retention), so we do NOT pass enable_thinking=False. Generous read timeout — long
+        # traces are expected and acceptable (the workload waits). reasoning_content is populated when
+        # the model/parser separates it; otherwise the trace is retained inline in content.
+        r = httpx.post(url, json=body, timeout=900.0)
+        # A caller may request prompt+max_tokens beyond the model window; vLLM 400s. CLAMP to fit and retry
+        # once rather than surface an opaque INTERNAL — the error carries the exact counts (this bit
+        # reauthor_unsat: max_tokens=16000 + a batched prompt > the 16384 window). Reasoning may still truncate
+        # (finish_reason='length'), which the caller already handles; a hard context 400 must not be fatal.
+        if r.status_code == 400 and "maximum context length" in r.text.lower():
+            m = re.search(r"maximum context length is (\d+).*?\((\d+) in the messages", r.text, re.S)
+            if m:
+                ctx, msg_toks = int(m.group(1)), int(m.group(2))
+                fit = max(256, ctx - msg_toks - 64)
+                if fit < body["max_tokens"]:
+                    body["max_tokens"] = fit
+                    r = httpx.post(url, json=body, timeout=900.0)
         r.raise_for_status()
         d = r.json()
         choice = d["choices"][0]

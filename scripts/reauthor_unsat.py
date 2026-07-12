@@ -136,7 +136,7 @@ def _propose(chunk: "list[str]", targets: dict, signals: dict, feedback: dict, c
         lines.append(block)
     prompt = "Repair these unsatisfiable classes:\n\n" + "\n\n".join(lines)
     call = proposer or (lambda p: complete_detailed(p, capability=cap, system_prompt=_SYS,
-                                                    max_tokens=16000, temperature=temp)["text"])
+                                                    max_tokens=12000, temperature=temp)["text"])
     text = call(prompt)
     proposed = {}
     for d in _parse_repairs(text):
