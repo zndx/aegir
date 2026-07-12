@@ -242,17 +242,25 @@ def emit_datatype_props(doc: str, derived) -> "tuple[str, int]":
 
 
 def drop_classes(doc: str, iris: "list[str]") -> str:
-    """Remove every Class: frame (inline or indented) whose head is one of ``iris`` — used to shed a class
-    that stays unsatisfiable after the grounding back-off (a derived axiom mis-using a BFO role)."""
+    """DEGRADE every Class: frame whose head is one of ``iris`` to a BARE ``Class: <iri>`` declaration: the
+    unsatisfiable axiom body is shed (so the class is no longer empty), but the DECLARATION is KEPT. Removing
+    the frame outright cascade-breaks every axiom that references the class (another template's filler, a
+    DisjointClasses adjudication) → the Manchester parse degrades to 0 classes. Keeping a bare declaration
+    lets the document parse while the offending axiom is recovered by reauthor_unsat from the emitted signal.
+    (task #14 — signal, don't bulldoze; [[signal_boundary_machinery]])."""
     targets = {i.split("#")[-1] for i in iris}
-    out, skip = [], False
+    out, skipping = [], False
     for line in doc.split("\n"):
-        m = re.match(r"^Class: <[^>]*#([A-Za-z0-9_]+)>", line)
+        m = re.match(r"^Class: <([^>]*#([A-Za-z0-9_]+))>", line)
         if m:
-            skip = m.group(1) in targets
-        elif line[:1].strip():
-            skip = False
-        if not skip:
+            if m.group(2) in targets:
+                out.append(f"Class: <{m.group(1)}>")  # keep the declaration; shed the unsat body + its continuation
+                skipping = True
+                continue
+            skipping = False
+        elif line[:1].strip():  # a new top-level frame ends the shed
+            skipping = False
+        if not skipping:
             out.append(line)
     return "\n".join(out)
 
@@ -445,8 +453,9 @@ def main() -> int:
     from aegir.ontology import adjudication as ADJ
     _adj_frames = ADJ.disjoint_manchester_frames(ADJ.load_adjudications())
     if _adj_frames:
-        base_doc = base_doc.rstrip() + "\n\n# sibling adjudications (catalog/adjudications.json)\n" \
-            + "\n".join(_adj_frames) + "\n"
+        # NB (line 140): NO '#' comment lines — OWLAPI's Manchester parser does not treat '#' as a comment
+        # and the whole document fails to load (the OBO/KRSS2/RDFa cascade all reject it). Append frames only.
+        base_doc = base_doc.rstrip() + "\n\n" + "\n".join(_adj_frames) + "\n"
         print(f"   sibling adjudications: {len(_adj_frames)} DisjointClasses frames appended")
 
     # ABox: the individual registry's membrane-admitted, class-typed individuals — the ontology
