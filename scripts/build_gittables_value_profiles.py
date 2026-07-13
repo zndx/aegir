@@ -34,7 +34,8 @@ OUT = REPO / "build" / "gittables"
 # signal (reliable); the value validator guards against a mis-named column polluting a pool.
 # v3: PER-VALUE validator gate — a value enters a pool only if its OWN shape corroborates the type, not merely
 # because its column name did (v2 admitted a name-column's stray junk rows / a single-word place in an org column).
-SEG_VERSION = "seg-v3-2026-07-13"
+# v4: reject ERP/CMS framework internals (Odoo ir.model.access / Frappe DocType) + code-like identifier gate.
+SEG_VERSION = "seg-v4-2026-07-13"
 _NAME = re.compile(r"^[A-Z][a-z]+(?:[ '\-][A-Z][a-z]+){1,2}$")
 _MONEY = re.compile(r"^\$?\d{1,3}(?:,\d{3})+(?:\.\d{2})?$|^\$\d+(?:\.\d{2})?$|^\d+\.\d{2}$")  # needs $, comma-thousands, or cents
 _EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[a-z]{2,}$", re.I)
@@ -50,7 +51,16 @@ _LOREM = re.compile(r"\b(lorem|ipsum|dolor|amet|consectetur|adipiscing|sed|nulla
 # (WHOIS redaction, proxy privacy, "not disclosed", test/dummy stand-ins) — reject broadly.
 _PLACEHOLDER = re.compile(r"\b(redacted|privacy|whois|undisclosed|not\s+disclosed|not\s+applicable|"
                           r"data\s+protected|domains?\s+by\s+proxy|placeholder|dummy|test\s*data)\b", re.I)
-_IDENT = re.compile(r"^(?=.*[A-Za-z0-9])(?!\d+\.\d+$)[A-Za-z0-9][A-Za-z0-9\-_/]{2,}$")  # alnum code, not a float
+# ERP/CMS FRAMEWORK internals scraped into value columns (Odoo ir.model.access CSV dumps, Frappe DocType
+# labels) — 'access_account_analytic_account_user', 'model_mrp_document', 'Link DocType', 'Feedback Rating'.
+# Real GitTables values, but framework junk that reads as nonsense in a DOMAIN column. Reject across all pools.
+_FRAMEWORK = re.compile(r"\b(doctype|docfield|ir_model|ir\.model|res_(?:users|partner|company)|"
+                        r"mrp_document|analytic_account|stock_picking)\b|"
+                        r"^(?:access|model|ir|res|wizard|report|base|mail|bus|web)_[a-z][a-z_]+$", re.I)
+# a code-like identifier: alnum/-/_ and NOT a pure lowercase english phrase — the lookahead requires a DIGIT,
+# an UPPERCASE letter, or at most ONE underscore, so 'access_project_task_history' / 'model_procurement_order'
+# (Odoo/Frappe internal names scraped into id columns) are rejected while UUIDs, SKU-2024, VB-IC-0 pass.
+_IDENT = re.compile(r"^(?=.*\d|.*[A-Z]|^[^_]*_?[^_]*$)(?!\d+\.\d+$)[A-Za-z0-9][A-Za-z0-9\-_/]{2,}$")
 _QUANT = re.compile(r"^\d+$")                                                  # a plain count
 _DECIMAL = re.compile(r"^-?\d+\.\d+$")
 RULES: "dict[str, tuple[re.Pattern, re.Pattern | None]]" = {
@@ -83,8 +93,8 @@ def _clean(v: str) -> "str | None":
     v = re.sub(r"\s+", " ", str(v)).strip().strip("'\"").strip()  # collapse newlines/ws + strip stray quotes
     if not v or v.lower() in ("nan", "none", "null", "na", "n/a", "-", "--") or len(v) > FILTER["max_value_len"]:
         return None
-    if _JUNK.search(v) or _LOREM.search(v) or _PLACEHOLDER.search(v):  # formatting junk / lorem / redaction noise
-        return None
+    if _JUNK.search(v) or _LOREM.search(v) or _PLACEHOLDER.search(v) or _FRAMEWORK.search(v):
+        return None                                                   # junk / lorem / redaction / framework noise
     return v
 
 
