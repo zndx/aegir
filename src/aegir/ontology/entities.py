@@ -13,8 +13,13 @@ and their attributes, the way an organic domain ontology reads.
 """
 from __future__ import annotations
 
+import hashlib
+import logging
+import random
 import re
 from dataclasses import dataclass, field
+
+logger = logging.getLogger(__name__)
 
 # BFO/CCO prefixes the deriver anchors into; the doc header a realized ontology carries.
 PREFIXES = (
@@ -321,13 +326,57 @@ _HEAD = ["Framework", "Assessment", "Initiative", "Protocol", "Survey", "Model",
          "Corridor", "Cluster", "Standard", "Series", "Review"]
 
 
-def _cell(a: "DataAttr", i: int) -> str:
+def _gt_value(name: str, xsd: str, i: int, constraint=None) -> "str | None":
+    """A real, PROVENANCE-retained GitTables value for a ``(name, xsd)`` cell at row ``i``, or None → the
+    mechanical generator. Delegates to the SAME core as ``rows.value_for`` (:func:`rows._gittables_value`) so the
+    flow's construct values and the textbook-embedded values are realism-identical (one core, no split-brain):
+    ontology-grounding → relational → views → textbooks all carry the same real values. Deterministic per cell
+    (blake2b, so stable across processes — unlike ``hash()``). [[gittables_value_realism]]"""
+    from aegir.ontology import rows  # noqa: PLC0415 — late import (rows imports nothing from entities)
+    xt = xsd if str(xsd).startswith("xsd:") else f"xsd:{xsd}"
+    seed = int.from_bytes(hashlib.blake2b(f"{name}|{i}".encode(), digest_size=8).digest(), "big")
+    return rows._gittables_value(name, xt, random.Random(seed), constraint)
+
+
+def resolve_construct_constraints(entities: "list[Entity]", domain: str = "", *, engine: bool = True) -> dict:
+    """Agent-mediated round-trip for the FLOW path: resolve a plausibility Constraint for each NUMERIC attribute
+    (cached, deduped) → ``{attr_name: Constraint}``. Numeric GitTables pools are magnitude-mixed, so this range
+    is what makes a flow numeric column REAL rather than mechanical. Graceful per-attr: an engine hiccup is
+    LOGGED and that attr stays mechanical (availability is guaranteed by ``rows.require_gittables``; this is the
+    quality refinement). Mirrors :func:`rows.resolve_constraints` so both value paths behave identically."""
+    from aegir.ontology import rows, value_alignment  # noqa: PLC0415
+    out: dict = {}
+    seen: dict[str, object] = {}
+    for e in entities:
+        for a in e.attributes:
+            sem = rows._semantic_type_of(a.name, f"xsd:{a.xsd}")
+            if sem is None or sem not in rows._GT_NUMERIC:
+                continue
+            key = f"{sem}|{a.name.lower()}"
+            if key not in seen:
+                pool = rows._gt_pools().get(sem) or []
+                try:
+                    seen[key] = value_alignment.constrain(
+                        prop_name(a.name), a.definition, sem, pool[:12], domain, engine=engine)
+                except Exception as exc:  # noqa: BLE001 — a hiccup degrades THIS attr (logged), not the run
+                    logger.warning(f"value-alignment skipped for '{a.name}' ({sem}): {exc}")
+                    seen[key] = None
+            if seen[key] is not None:
+                out[a.name] = seen[key]
+    return out
+
+
+def _cell(a: "DataAttr", i: int, constraint=None) -> str:
     """A domain-plausible sample value for attribute ``a`` at row ``i`` (RI-true rows for
-    prose). Value REALISM is a pipeline lever (naturalness_norms): namey columns draw from
-    varied title-case pools; codey columns get prefixed codes; dates jitter (no arithmetic
-    series); nothing echoes the column stem into every row."""
+    prose). Value REALISM is a pipeline lever (naturalness_norms): real GitTables values for
+    injectable columns (names/orgs always; numerics within the aligner's plausible range),
+    else namey columns draw from varied title-case pools; codey columns get prefixed codes;
+    dates jitter (no arithmetic series); nothing echoes the column stem into every row."""
     if a.enum:
         return a.enum[i % len(a.enum)]
+    gv = _gt_value(a.name, a.xsd, i, constraint)   # real value (strings always; numerics iff a constraint)
+    if gv is not None:
+        return gv
     x = a.xsd
     h = hash(a.name)
     if x in ("integer", "int", "long"):
@@ -457,13 +506,15 @@ def _fk_col_name(prop: str, tgt_plan: dict, own: "set[str]", col_style: str) -> 
     return base
 
 
-def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str = "") -> dict:
+def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str = "",
+                 constraints: dict | None = None) -> dict:
     """Bridge entities → the prose-harness ``construct`` dict: tables with REAL-WORLD KEY
     SHAPES (per the mined SchemaPile distributions — bare ``id`` / ``<table>_id`` / natural
     keys; integer surrogates; per-chapter naming conventions; audit-column idioms), RI-true
     rows, and FK columns referencing the target's ACTUAL pk values. Many-to-many relations
-    are left to ``add_views`` (junction tables with composite keys)."""
-    import random
+    are left to ``add_views`` (junction tables with composite keys). ``constraints`` is the
+    per-attr round-trip map from :func:`resolve_construct_constraints` (numeric plausibility)."""
+    constraints = constraints or {}
     kp = plan_keys(entities)
     rng = random.Random(kp["seed"] ^ 0x5EED)
     plans, col_style = kp["plans"], kp["col_style"]
@@ -478,7 +529,7 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
         plan = plans[e.iri()]
         if plan["kind"] == "natural":
             attr = next(a for a in e.attributes if a.name == plan["pk_attr"])
-            pk_vals[e.iri()] = [_cell(attr, i) for i in range(n_rows)]
+            pk_vals[e.iri()] = [_cell(attr, i, constraints.get(attr.name)) for i in range(n_rows)]
         else:
             base = rng.choice([1, 1, 1, 100, 1000])
             pk_vals[e.iri()] = [str(base + i) for i in range(n_rows)]
@@ -498,7 +549,7 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
                 continue
             cols.append({"name": cname, "concept": prop_name(a.name),
                          "cells": [{"value": pk_vals[e.iri()][i] if a.name == plan["pk_attr"]
-                                    else _cell(a, i)} for i in range(n_rows)]})
+                                    else _cell(a, i, constraints.get(a.name))} for i in range(n_rows)]})
             own.add(cname)
         fks = []
         for r in e.relations:

@@ -32,7 +32,9 @@ OUT = REPO / "build" / "gittables"
 # ── SEGMENTATION RULES (the regex layer — a DISCRETE lineage entry; versioned) ─────────────────────────────
 # semantic_type → (column-name token pattern, optional value-shape validator). Column NAME is the primary
 # signal (reliable); the value validator guards against a mis-named column polluting a pool.
-SEG_VERSION = "seg-v2-2026-07-13"
+# v3: PER-VALUE validator gate — a value enters a pool only if its OWN shape corroborates the type, not merely
+# because its column name did (v2 admitted a name-column's stray junk rows / a single-word place in an org column).
+SEG_VERSION = "seg-v3-2026-07-13"
 _NAME = re.compile(r"^[A-Z][a-z]+(?:[ '\-][A-Z][a-z]+){1,2}$")
 _MONEY = re.compile(r"^\$?\d{1,3}(?:,\d{3})+(?:\.\d{2})?$|^\$\d+(?:\.\d{2})?$|^\d+\.\d{2}$")  # needs $, comma-thousands, or cents
 _EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[a-z]{2,}$", re.I)
@@ -44,6 +46,10 @@ _ORG = re.compile(r"\b(Inc|LLC|Ltd|Corp|Company|Bank|University|GmbH|PLC|Foundat
                   r"^[A-Z][A-Za-z0-9&.'\-]+ [A-Z][A-Za-z0-9&.'\- ]+$")          # org suffix OR ≥2 Capitalized words
 _LOREM = re.compile(r"\b(lorem|ipsum|dolor|amet|consectetur|adipiscing|sed|nullam|porttitor|potenti|"
                     r"vestibulum|euismod|tincidunt|fermentum|malesuada|pellentesque|vivamus|aliquam)\b", re.I)
+# registration / scrape placeholders that pass the shape validators but read as nonsense in a real column
+# (WHOIS redaction, proxy privacy, "not disclosed", test/dummy stand-ins) — reject broadly.
+_PLACEHOLDER = re.compile(r"\b(redacted|privacy|whois|undisclosed|not\s+disclosed|not\s+applicable|"
+                          r"data\s+protected|domains?\s+by\s+proxy|placeholder|dummy|test\s*data)\b", re.I)
 _IDENT = re.compile(r"^(?=.*[A-Za-z0-9])(?!\d+\.\d+$)[A-Za-z0-9][A-Za-z0-9\-_/]{2,}$")  # alnum code, not a float
 _QUANT = re.compile(r"^\d+$")                                                  # a plain count
 _DECIMAL = re.compile(r"^-?\d+\.\d+$")
@@ -77,7 +83,9 @@ def _clean(v: str) -> "str | None":
     v = re.sub(r"\s+", " ", str(v)).strip().strip("'\"").strip()  # collapse newlines/ws + strip stray quotes
     if not v or v.lower() in ("nan", "none", "null", "na", "n/a", "-", "--") or len(v) > FILTER["max_value_len"]:
         return None
-    return None if (_JUNK.search(v) or _LOREM.search(v)) else v  # drop formatting junk + lorem-ipsum filler
+    if _JUNK.search(v) or _LOREM.search(v) or _PLACEHOLDER.search(v):  # formatting junk / lorem / redaction noise
+        return None
+    return v
 
 
 def _semantic_type(col: str, vals: "list[str]") -> "str | None":
@@ -131,8 +139,15 @@ def main() -> int:
             st = _semantic_type(cname, vals)
             if not st or len(pools[st]) >= FILTER["cap_per_type"]:
                 continue
+            # PER-VALUE gate: the column NAME classified the type, but only values whose SHAPE also corroborates
+            # the type enter the pool — else a mostly-name column's stray junk row ('Incr Critical%') or a
+            # single-word place in an org column ('Guéckédou') pollutes it. Column-level match ≠ value admission.
+            val_re = RULES[st][1]
+            clean = [v for v in vals if val_re is None or val_re.match(v)]
+            if not clean:
+                continue
             th = th or _table_hash(f)
-            for v in list(dict.fromkeys(vals))[: FILTER["cap_per_col"]]:  # dedup within col
+            for v in list(dict.fromkeys(clean))[: FILTER["cap_per_col"]]:  # dedup within col
                 pools[st].append([v, f"{th}:{cname}"])
             prov[st]["tables"].add(th)
             prov[st]["cols"] += 1

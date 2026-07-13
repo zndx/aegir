@@ -214,19 +214,20 @@ def build_views(spine: Sequence[SpineTable],
 
 
 def payload_from_spine(spine: list[SpineTable], family_complex, *,
-                       seed: int = _CHAPTER_SEED) -> RelationalPayload:
+                       seed: int = _CHAPTER_SEED, align: bool = False, domain: str = "") -> RelationalPayload:
     """Materialize RI-true rows + build views for an already-lowered spine."""
     fks: list[FKEdge] = []
     if family_complex is not None:
         fks, _ = cross_family_fks(spine, family_complex)
     materialize_rows(spine, fks, seed=seed, definitions=definitions_for_spine(spine),
-                     entity_pools=mixed_entity_pools(spine))  # C2 de-leaked + C2.5 L1 domain-mix
+                     entity_pools=mixed_entity_pools(spine), align=align, domain=domain)  # C2 de-leaked + round-trip
     assert_referential_integrity(spine, fks)
     return RelationalPayload(base_tables=spine, fks=fks, views=build_views(spine, fks))
 
 
 def realized_payload_from_dicts(templates: Sequence[dict], family_complex, *,
-                                seed: int = _CHAPTER_SEED, realize_seed: int = 0x5EED) -> RelationalPayload:
+                                seed: int = _CHAPTER_SEED, realize_seed: int = 0x5EED,
+                                align: bool = False, domain: str = "") -> RelationalPayload:
     """Realize each chosen template into a stochastic schema SUBGRAPH (EAV/junction/star/snowflake) and
     assemble the chapter payload from the union — so a chapter is written around RICH relational structure
     (the super-linear DDL+views deliverable), not flat tables. RI = 1.0 by construction; clean-room."""
@@ -260,7 +261,7 @@ def realized_payload_from_dicts(templates: Sequence[dict], family_complex, *,
                      if e.src_col in cols.get(e.src_table, set()) and e.dst_col in cols.get(e.dst_table, set())]
     fks = rfks + cross_fks
     materialize_rows(tables, fks, seed=seed, definitions=definitions_for_spine(tables),
-                     entity_pools=mixed_entity_pools(tables))  # C2 de-leaked + C2.5 L1 domain-mix
+                     entity_pools=mixed_entity_pools(tables), align=align, domain=domain)  # C2 + round-trip
     assert_referential_integrity(tables, fks)
     views = [(v, []) for v in rviews] + build_views(primary, cross_fks)
     return RelationalPayload(base_tables=tables, fks=fks, views=views)
@@ -268,12 +269,15 @@ def realized_payload_from_dicts(templates: Sequence[dict], family_complex, *,
 
 def chapter_relational_payload(templates: Sequence[dict], family_complex, *,
                                seed: int = _CHAPTER_SEED, realize: bool = False,
-                               realize_seed: int = 0x5EED) -> RelationalPayload:
+                               realize_seed: int = 0x5EED, align: bool = True, domain: str = "") -> RelationalPayload:
     """The fixed tables a chapter (its chosen templates) is written around. RI = 1.0 by construction.
-    ``realize`` expands each template into a schema subgraph (rich structure) instead of one flat table."""
+    ``realize`` expands each template into a schema subgraph (rich structure) instead of one flat table.
+    ``align`` (default on) runs the agent-mediated round-trip so numerics land in a plausible range — the SAME
+    realism the flow's ``to_construct`` path applies, so textbook-embedded tables match the release corpus."""
     if realize:
-        return realized_payload_from_dicts(templates, family_complex, seed=seed, realize_seed=realize_seed)
-    return payload_from_spine(spine_from_dicts(templates), family_complex, seed=seed)
+        return realized_payload_from_dicts(templates, family_complex, seed=seed, realize_seed=realize_seed,
+                                           align=align, domain=domain)
+    return payload_from_spine(spine_from_dicts(templates), family_complex, seed=seed, align=align, domain=domain)
 
 
 if __name__ == "__main__":  # smoke: materialize + view-join over two real templates, RI=1.0

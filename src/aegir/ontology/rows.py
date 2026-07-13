@@ -23,6 +23,7 @@ from __future__ import annotations
 import functools
 import hashlib
 import json
+import logging
 import random
 import re
 from collections.abc import Sequence
@@ -37,6 +38,7 @@ MIN_ROWS, MAX_ROWS = 4, 8
 _FK_TARGET_MIN_ROWS = 6                 # FK targets need enough distinct parents for organic fan-out
 _JUNCTION_MIN_ROWS = 12                 # association-class (M:N) tables get denser fan-out than base tables
 _GLOBAL_SEED = 0xAE61
+logger = logging.getLogger(__name__)
 
 _ENTITY = {"Class", "Individual", "NamedIndividual"}
 _XSD_NONSTRING = {"xsd:dateTime", "xsd:date", "xsd:integer", "xsd:int", "xsd:long",
@@ -321,25 +323,63 @@ def _gt_pools() -> dict:
 # matched (so they claim the column ahead of the generic `name` rule) but NOT injected — routed to the
 # mechanical fallback pending stronger pool curation (product pool still admits lorem/macro noise).
 _GT_DEFERRED = {"product"}
+_GT_NUMERIC = {"monetary", "measurement", "quantity"}  # pools are magnitude-mixed → require the aligner's range
 
 
-def _gittables_value(name: str, xsd_type: str, rng: random.Random) -> "str | None":
-    """A real GitTables value for a column, type-checked against the xsd type. None → no match (fall back)."""
-    pools = _gt_pools()
-    if not pools:
-        return None
+def require_gittables(min_types: int = 6, min_values: int = 40) -> None:
+    """LOUD availability BOUNDARY (RH: no silent degradation) — call at corpus-gen entry. If the GitTables value
+    profiles are missing or degenerate (transiently unavailable / un-built), HALT rather than let realistic
+    columns silently revert to mechanical placeholders. Build with scripts/build_gittables_value_profiles.py."""
+    healthy = [st for st, vs in _gt_pools().items() if len(vs) >= min_values]
+    if len(healthy) < min_types:
+        raise RuntimeError(
+            f"GitTables value profiles unavailable/degenerate ({len(healthy)} healthy types < {min_types}); "
+            f"value realism would silently degrade — refusing to generate. Run "
+            f"`uv run --no-sync python scripts/build_gittables_value_profiles.py`. ({_GT_PROFILES})")
+
+
+def _semantic_type_of(name: str, xsd_type: str) -> "str | None":
+    """The GitTables semantic type an injected column claims, or None (a legitimate non-match → mechanical).
+    ``name`` is taken in its ORIGINAL case: camelCase/underscored heads are split to spaced-lowercase so the
+    word-boundary rules fire on ``employeeName`` / ``employee_name`` / ``employee name`` alike — the SINGLE
+    normalization both value paths (rows.value_for + entities._cell) share, so realism is identical across them."""
     want = _GT_XSD_CLASS.get(xsd_type, "str")  # string/entity slots → "str"
+    norm = re.sub(r"[_\s]+", " ", re.sub(r"(?<!^)(?=[A-Z])", " ", name)).lower()  # camelCase/snake → boundaries
     for st, name_re, compat in _GT_NAME_RULES:
-        if name_re.search(name) and (compat == want or (want == "str" and compat == "str")):
-            if st in _GT_DEFERRED or st not in pools:
-                return None  # claim the column (so it doesn't mis-route to person_name), but fall to mechanical
-            return rng.choice(pools[st])
+        if name_re.search(norm) and (compat == want or (want == "str" and compat == "str")):
+            return st
     return None
+
+
+def _gittables_value(name: str, xsd_type: str, rng: random.Random, constraint=None) -> "str | None":
+    """A real, PROVENANCE-retained GitTables value — type-checked + (optionally) plausibility-CONSTRAINED by the
+    agent-mediated aligner (subtractive). None → the column claims no injected type (legitimate mechanical), or a
+    deferred type (claimed but curation-pending). If a constraint empties the pool, we sample the nearest REAL
+    values rather than a mechanical placeholder — the cell stays real + provenanced, never a silent fallback."""
+    st = _semantic_type_of(name, xsd_type)
+    if st is None or st in _GT_DEFERRED:
+        return None
+    # a NUMERIC pool is magnitude-mixed ($5 unit price beside $2M revenue) → only draw from it when the round-trip
+    # actually supplied a RANGE. An absent OR empty (engine-off) constraint keeps the safe mechanical generator —
+    # a non-None-but-rangeless constraint must NOT re-open the magnitude-mixed pool (the base_salary=2.97M trap).
+    if st in _GT_NUMERIC and not (constraint is not None
+                                  and (constraint.num_min is not None or constraint.num_max is not None)):
+        return None
+    pool = _gt_pools().get(st)
+    if not pool:
+        return None
+    if constraint is not None:
+        from aegir.ontology import value_alignment  # noqa: PLC0415
+        filtered = value_alignment.apply(pool, constraint)
+        if filtered:                                   # plausible real values survive → sample a plausible one
+            return rng.choice(filtered)
+        # constraint emptied the pool → still a REAL value from the full pool (provenanced), never mechanical
+    return rng.choice(pool)
 
 
 def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
               definition: str | None = None, pools: dict[str, list[str]] | None = None,
-              entity_values: list[str] | None = None, gittables: bool = False) -> str:
+              entity_values: list[str] | None = None, gittables: bool = True, constraint=None) -> str:
     """A single deterministic, type-true, realistic cell value for ``col`` at ``row_ix``.
 
     FK columns are NOT produced here — :func:`materialize_rows` overwrites them from
@@ -358,7 +398,7 @@ def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
         return rng.choice(enum)
     if t in _XSD_NONSTRING:                        # numeric/temporal/boolean: the xsd type is authoritative
         if gittables:                              # real value, type-checked to this xsd type (realism > rng.uniform)
-            gv = _gittables_value(name, t, rng)
+            gv = _gittables_value(col.name, t, rng, constraint)   # original case → camelCase heads detected
             if gv is not None:
                 return gv
         return _xsd_value(t, name, rng)
@@ -367,7 +407,7 @@ def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
     if name in pools:                              # curated semantic pool
         return rng.choice(pools[name])
     if gittables:                                  # real GitTables value in place of a "{Concept} NN" placeholder
-        gv = _gittables_value(name, t, rng)
+        gv = _gittables_value(col.name, t, rng, constraint)       # original case → camelCase heads detected
         if gv is not None:
             return gv
     return _entity_value(col, st, row_ix)          # mechanical fallback (xsd:string / untyped / unknown)
@@ -433,9 +473,43 @@ def _fill_eav_values(st: "SpineTable", by_name: dict, *, seed: int) -> None:
 _EAV_KINDS = {"eav_registry", "eav_value"}
 
 
+def resolve_constraints(spine: Sequence["SpineTable"], definitions: dict[str, dict[str, str]] | None = None,
+                        domain: str = "", *, engine: bool = True) -> dict:
+    """Agent-mediated round-trip (the SUBTRACTIVE aligner): for each NUMERIC injected column, resolve a
+    plausibility Constraint ONCE (cached, deduped across the corpus) → ``{(table, col): Constraint}``. A numeric
+    GitTables pool is magnitude-mixed ($5 unit-price beside $2M revenue), so this range is what makes a numeric
+    column REAL rather than mechanical. Graceful per-column: an engine hiccup is LOGGED and that column stays
+    mechanical (not silent, not catastrophic) — the availability guarantee is ``require_gittables``, this is the
+    quality refinement on top. [[gittables_value_realism]] [[signal_boundary_machinery]]"""
+    from aegir.ontology import value_alignment  # noqa: PLC0415
+    definitions = definitions or {}
+    out: dict = {}
+    seen: dict[tuple[str, str], object] = {}
+    for st in spine:
+        tname = st.table.name
+        col_defs = definitions.get(tname, {})
+        for col in st.table.columns:
+            sem = _semantic_type_of(col.name, col.slot_type)
+            if sem is None or sem not in _GT_NUMERIC:
+                continue
+            ckey = (sem, col.name.lower())
+            if ckey not in seen:
+                pool = _gt_pools().get(sem) or []
+                try:
+                    seen[ckey] = value_alignment.constrain(
+                        col.name, col_defs.get(col.name, ""), sem, pool[:12], domain, engine=engine)
+                except Exception as exc:  # noqa: BLE001 — a hiccup degrades THIS column (logged), not the run
+                    logger.warning(f"value-alignment skipped for '{col.name}' ({sem}): {exc}")
+                    seen[ckey] = None
+            if seen[ckey] is not None:
+                out[(tname, col.name)] = seen[ckey]
+    return out
+
+
 def materialize_rows(spine: Sequence["SpineTable"], fks: Sequence, *, seed: int = _GLOBAL_SEED,
                      definitions: dict[str, dict[str, str]] | None = None,
-                     entity_pools: dict[str, dict[str, list[str]]] | None = None) -> None:
+                     entity_pools: dict[str, dict[str, list[str]]] | None = None,
+                     align: bool = False, domain: str = "") -> None:
     """Populate ``st.table.rows`` for every table so that RI = 1.0 by construction.
 
     Three passes: (A) synthesize each table's PK pool; (B) typed/realistic non-FK
@@ -481,6 +555,10 @@ def materialize_rows(spine: Sequence["SpineTable"], fks: Sequence, *, seed: int 
         if getattr(st, "kind", "entity") == "eav_value":
             _fill_eav_values(st, by_name, seed=seed)
 
+    # Round-trip alignment (agent-mediated) — resolve per-numeric-column plausibility constraints once, so a
+    # numeric GitTables value lands in a domain-plausible range (else it stays the safe mechanical generator).
+    cmap = resolve_constraints(spine, definitions, domain) if align else {}
+
     # Pass B + C — non-PK cells, then FK overwrite from target PK pool (EAV tables already complete)
     for st in spine:
         if getattr(st, "kind", "entity") in _EAV_KINDS:
@@ -501,7 +579,7 @@ def materialize_rows(spine: Sequence["SpineTable"], fks: Sequence, *, seed: int 
                         row[ci] = pool[_seed(tname, col.name, i, "fk", base=seed) % len(pool)]
                         continue
                 row[ci] = value_for(col, st, row_ix=i, seed=seed, definition=col_defs.get(col.name),
-                                    entity_values=col_pools.get(col.name))
+                                    entity_values=col_pools.get(col.name), constraint=cmap.get((tname, col.name)))
             _enforce_temporal_coherence(st, row, seed=seed, row_ix=i)
 
 

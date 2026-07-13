@@ -301,7 +301,11 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         self._arm_strategy_env()
         from aegir.generate.harness import kvasir_facts
         from aegir.ontology.entities import (add_views, from_json, render_payload_blocks,
-                                             to_construct, to_manchester)
+                                             resolve_construct_constraints, to_construct, to_manchester)
+        from aegir.ontology.rows import require_gittables
+        # BOUNDARY (no silent degradation): real GitTables values or HALT — a transiently-missing value
+        # profile must not silently revert the whole corpus to mechanical placeholders (RH 2026-07-13).
+        require_gittables()
         cons_dir = Path(self.run_out, "constructs")
         cons_dir.mkdir(exist_ok=True)
         self.construct_ids = []
@@ -332,7 +336,9 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             if not ents:
                 continue
             omn = to_manchester(ents)
-            con = to_construct(ents, n_rows=4)
+            # round-trip alignment (engine up by this step) — real, in-range numerics; cached across constructs
+            constraints = resolve_construct_constraints(ents)
+            con = to_construct(ents, n_rows=4, constraints=constraints)
             con = add_views(con, ents)
             blocks = render_payload_blocks(con)
             con["payload_blocks"] = blocks

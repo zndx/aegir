@@ -1008,6 +1008,10 @@ def main() -> int:
     catalog_dir = REPO / args.catalog_dir
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
+    # BOUNDARY (no silent degradation): real GitTables values or HALT before writing a whole corpus run with
+    # mechanical placeholders because the value profiles were transiently missing (RH 2026-07-13).
+    from aegir.ontology.rows import require_gittables
+    require_gittables()
     content_first = bool(args.from_harvest)
     sampler_tag = "content-first" if content_first else "topic-first"
 
