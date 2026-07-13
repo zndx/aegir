@@ -20,11 +20,14 @@ elsewhere. Operates on duck-typed ``SpineTable`` (``.table`` / ``.not_null`` /
 """
 from __future__ import annotations
 
+import functools
 import hashlib
+import json
 import random
 import re
 from collections.abc import Sequence
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:                       # typing only — no runtime import (avoids ddl↔rows cycle)
@@ -280,9 +283,63 @@ def _enforce_temporal_coherence(st: "SpineTable", row: list[str], *, seed: int, 
         row[ei] = _fmt_temporal(end_dt, ecol.slot_type)
 
 
+# ── GitTables empirical value pools (real values, PROVENANCE-retained; RH 2026-07-13) ──────────────────────
+# Ground value generation in the empirical distribution of real GitTables columns instead of rng.uniform /
+# "{Column} NN". Values are admitted with retained lineage (the sampling strategy is a discrete versioned
+# sdg-strategy entry → Atlas), never sanitized. Type-checked so a real value never violates the xsd type;
+# a corpus run passes profiles in (loaded from build/gittables/value_profiles.json). [[gittables_value_realism]]
+_GT_PROFILES = Path(__file__).resolve().parent.parent.parent.parent / "build" / "gittables" / "value_profiles.json"
+# column-name keyword → (semantic_type, xsd-compat class). ORDER MATTERS — specific compounds (company_name,
+# product_name) MUST precede the generic `name` or they'd fall into person_name. Restricted to the pools that
+# curate reliably clean; job_title/category/geo_place are DEFERRED (residual noise) and email/phone to the
+# sensitivity membrane (high-risk PII), temporal to the mechanical date-gen (format-correct).
+_GT_NAME_RULES: "list[tuple[str, re.Pattern, str]]" = [
+    ("organization", re.compile(r"company|organi|org|employer|vendor|supplier|firm|agency|brand|manufacturer"), "str"),
+    ("product", re.compile(r"product|item|model|goods|part"), "str"),
+    ("person_name", re.compile(r"name|employee|person|contact|author|customer|client|owner|holder"), "str"),
+    ("url", re.compile(r"url|link|website|homepage|uri"), "str"), ("color", re.compile(r"colou?r"), "str"),
+    ("identifier", re.compile(r"\b(id|code|ref|sku|isbn|barcode|serial)\b"), "str"),
+    ("monetary", re.compile(r"salary|pay|wage|price|cost|amount|revenue|budget|fee|income|balance"), "num"),
+    ("measurement", re.compile(r"weight|height|length|width|depth|temperature|distance|speed|size|dimension"), "num"),
+    ("quantity", re.compile(r"count|quantity|qty|total|units|stock"), "int"),
+]
+_GT_XSD_CLASS = {"xsd:decimal": "num", "xsd:double": "num", "xsd:float": "num",
+                 "xsd:integer": "int", "xsd:int": "int", "xsd:long": "int",
+                 "xsd:date": "date", "xsd:dateTime": "date"}
+
+
+@functools.lru_cache(maxsize=1)
+def _gt_pools() -> dict:
+    """{semantic_type: [values]} loaded once from the profiles; {} if not built (falls back to mechanism)."""
+    try:
+        d = json.loads(_GT_PROFILES.read_text())
+        return {st: [v for v, _src in p["values"]] for st, p in d.items() if p.get("values")}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
+# matched (so they claim the column ahead of the generic `name` rule) but NOT injected — routed to the
+# mechanical fallback pending stronger pool curation (product pool still admits lorem/macro noise).
+_GT_DEFERRED = {"product"}
+
+
+def _gittables_value(name: str, xsd_type: str, rng: random.Random) -> "str | None":
+    """A real GitTables value for a column, type-checked against the xsd type. None → no match (fall back)."""
+    pools = _gt_pools()
+    if not pools:
+        return None
+    want = _GT_XSD_CLASS.get(xsd_type, "str")  # string/entity slots → "str"
+    for st, name_re, compat in _GT_NAME_RULES:
+        if name_re.search(name) and (compat == want or (want == "str" and compat == "str")):
+            if st in _GT_DEFERRED or st not in pools:
+                return None  # claim the column (so it doesn't mis-route to person_name), but fall to mechanical
+            return rng.choice(pools[st])
+    return None
+
+
 def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
               definition: str | None = None, pools: dict[str, list[str]] | None = None,
-              entity_values: list[str] | None = None) -> str:
+              entity_values: list[str] | None = None, gittables: bool = False) -> str:
     """A single deterministic, type-true, realistic cell value for ``col`` at ``row_ix``.
 
     FK columns are NOT produced here — :func:`materialize_rows` overwrites them from
@@ -296,18 +353,24 @@ def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
     t = col.slot_type
     name = col.name.lower()
     rng = random.Random(_seed(st.table.name, col.name, row_ix, "v", base=seed))
-    if t in _XSD_NONSTRING:                       # type is authoritative for non-string xsd
-        return _xsd_value(t, name, rng)
     enum = parse_enum_from_definition(definition)
-    if enum:                                       # ontology-grounded value set
+    if enum:                                       # ontology-grounded value set — most specific, any type
         return rng.choice(enum)
+    if t in _XSD_NONSTRING:                        # numeric/temporal/boolean: the xsd type is authoritative
+        if gittables:                              # real value, type-checked to this xsd type (realism > rng.uniform)
+            gv = _gittables_value(name, t, rng)
+            if gv is not None:
+                return gv
+        return _xsd_value(t, name, rng)
     if entity_values:                              # concept-specific LLM-seeded domain values
         return rng.choice(entity_values)
     if name in pools:                              # curated semantic pool
         return rng.choice(pools[name])
-    if t in _ENTITY:                               # named instance of the concept
-        return _entity_value(col, st, row_ix)
-    return _entity_value(col, st, row_ix)          # xsd:string / untyped DataProperty / unknown
+    if gittables:                                  # real GitTables value in place of a "{Concept} NN" placeholder
+        gv = _gittables_value(name, t, rng)
+        if gv is not None:
+            return gv
+    return _entity_value(col, st, row_ix)          # mechanical fallback (xsd:string / untyped / unknown)
 
 
 def _col_idx(st: "SpineTable", name: str) -> int | None:
