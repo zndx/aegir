@@ -326,16 +326,17 @@ _HEAD = ["Framework", "Assessment", "Initiative", "Protocol", "Survey", "Model",
          "Corridor", "Cluster", "Standard", "Series", "Review"]
 
 
-def _gt_value(name: str, xsd: str, i: int, constraint=None) -> "str | None":
+def _gt_value(name: str, xsd: str, i: int, constraint=None, context: str = "") -> "str | None":
     """A real, PROVENANCE-retained GitTables value for a ``(name, xsd)`` cell at row ``i``, or None → the
     mechanical generator. Delegates to the SAME core as ``rows.value_for`` (:func:`rows._gittables_value`) so the
     flow's construct values and the textbook-embedded values are realism-identical (one core, no split-brain):
     ontology-grounding → relational → views → textbooks all carry the same real values. Deterministic per cell
-    (blake2b, so stable across processes — unlike ``hash()``). [[gittables_value_realism]]"""
+    (blake2b, so stable across processes — unlike ``hash()``). ``context`` is the owning entity identity
+    (genus + name) so a bare ``name`` column disambiguates person vs thing. [[gittables_value_realism]]"""
     from aegir.ontology import rows  # noqa: PLC0415 — late import (rows imports nothing from entities)
     xt = xsd if str(xsd).startswith("xsd:") else f"xsd:{xsd}"
     seed = int.from_bytes(hashlib.blake2b(f"{name}|{i}".encode(), digest_size=8).digest(), "big")
-    return rows._gittables_value(name, xt, random.Random(seed), constraint)
+    return rows._gittables_value(name, xt, random.Random(seed), constraint, context)
 
 
 def resolve_construct_constraints(entities: "list[Entity]", domain: str = "", *, engine: bool = True) -> dict:
@@ -348,8 +349,9 @@ def resolve_construct_constraints(entities: "list[Entity]", domain: str = "", *,
     out: dict = {}
     seen: dict[str, object] = {}
     for e in entities:
+        ectx = f"{e.name} {e.genus}"
         for a in e.attributes:
-            sem = rows._semantic_type_of(a.name, f"xsd:{a.xsd}")
+            sem = rows._semantic_type_of(a.name, f"xsd:{a.xsd}", ectx)
             if sem is None or sem not in rows._GT_NUMERIC:
                 continue
             key = f"{sem}|{a.name.lower()}"
@@ -366,15 +368,16 @@ def resolve_construct_constraints(entities: "list[Entity]", domain: str = "", *,
     return out
 
 
-def _cell(a: "DataAttr", i: int, constraint=None) -> str:
+def _cell(a: "DataAttr", i: int, constraint=None, context: str = "") -> str:
     """A domain-plausible sample value for attribute ``a`` at row ``i`` (RI-true rows for
     prose). Value REALISM is a pipeline lever (naturalness_norms): real GitTables values for
     injectable columns (names/orgs always; numerics within the aligner's plausible range),
     else namey columns draw from varied title-case pools; codey columns get prefixed codes;
-    dates jitter (no arithmetic series); nothing echoes the column stem into every row."""
+    dates jitter (no arithmetic series); nothing echoes the column stem into every row.
+    ``context`` is the owning entity identity (genus+name) — disambiguates a bare ``name`` column."""
     if a.enum:
         return a.enum[i % len(a.enum)]
-    gv = _gt_value(a.name, a.xsd, i, constraint)   # real value (strings always; numerics iff a constraint)
+    gv = _gt_value(a.name, a.xsd, i, constraint, context)   # real value (strings always; numerics iff a constraint)
     if gv is not None:
         return gv
     x = a.xsd
@@ -529,7 +532,8 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
         plan = plans[e.iri()]
         if plan["kind"] == "natural":
             attr = next(a for a in e.attributes if a.name == plan["pk_attr"])
-            pk_vals[e.iri()] = [_cell(attr, i, constraints.get(attr.name)) for i in range(n_rows)]
+            ectx = f"{e.name} {e.genus}"
+            pk_vals[e.iri()] = [_cell(attr, i, constraints.get(attr.name), ectx) for i in range(n_rows)]
         else:
             base = rng.choice([1, 1, 1, 100, 1000])
             pk_vals[e.iri()] = [str(base + i) for i in range(n_rows)]
@@ -537,6 +541,7 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
     tables = []
     for e in entities:
         plan = plans[e.iri()]
+        ectx = f"{e.name} {e.genus}"                # owning-entity context → disambiguates a bare `name` column
         own: "set[str]" = set()
         cols = []
         if plan["kind"] != "natural":
@@ -549,7 +554,7 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
                 continue
             cols.append({"name": cname, "concept": prop_name(a.name),
                          "cells": [{"value": pk_vals[e.iri()][i] if a.name == plan["pk_attr"]
-                                    else _cell(a, i, constraints.get(a.name))} for i in range(n_rows)]})
+                                    else _cell(a, i, constraints.get(a.name), ectx)} for i in range(n_rows)]})
             own.add(cname)
         fks = []
         for r in e.relations:

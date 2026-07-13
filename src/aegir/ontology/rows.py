@@ -308,6 +308,12 @@ _GT_NAME_RULES: "list[tuple[str, re.Pattern, str]]" = [
 _GT_XSD_CLASS = {"xsd:decimal": "num", "xsd:double": "num", "xsd:float": "num",
                  "xsd:integer": "int", "xsd:int": "int", "xsd:long": "int",
                  "xsd:date": "date", "xsd:dateTime": "date"}
+# person_name disambiguation: a BARE `name`/`label`/`title` column is a person only when its ENTITY context is
+# person-like — else it's a thing's name (a canapé's name is not "Dana Nguyen"). Explicit signals always win.
+_PERSON_EXPLICIT = re.compile(r"employee|person|contact|author|customer|client|owner|holder|surname|"
+                              r"full.?name|first.?name|last.?name|given.?name")
+_PERSON_CTX = re.compile(r"person|people|employee|customer|client|author|user|member|contact|agent|staff|"
+                         r"patient|owner|holder|individual|manager|professor|doctor|nurse|technician|worker")
 
 
 @functools.lru_cache(maxsize=1)
@@ -338,25 +344,32 @@ def require_gittables(min_types: int = 6, min_values: int = 40) -> None:
             f"`uv run --no-sync python scripts/build_gittables_value_profiles.py`. ({_GT_PROFILES})")
 
 
-def _semantic_type_of(name: str, xsd_type: str) -> "str | None":
+def _semantic_type_of(name: str, xsd_type: str, context: str = "") -> "str | None":
     """The GitTables semantic type an injected column claims, or None (a legitimate non-match → mechanical).
     ``name`` is taken in its ORIGINAL case: camelCase/underscored heads are split to spaced-lowercase so the
     word-boundary rules fire on ``employeeName`` / ``employee_name`` / ``employee name`` alike — the SINGLE
-    normalization both value paths (rows.value_for + entities._cell) share, so realism is identical across them."""
+    normalization both value paths (rows.value_for + entities._cell) share, so realism is identical across them.
+    ``context`` is the owning entity/table identity: a BARE ``name`` column is only a person_name when that
+    context is person-like (else a canapé's ``name`` would become 'Dana Nguyen')."""
     want = _GT_XSD_CLASS.get(xsd_type, "str")  # string/entity slots → "str"
     norm = re.sub(r"[_\s]+", " ", re.sub(r"(?<!^)(?=[A-Z])", " ", name)).lower()  # camelCase/snake → boundaries
+    ctx = context.lower()  # entity/table context may be mixed-case ("Employee cco:Person") or snake ("employees")
     for st, name_re, compat in _GT_NAME_RULES:
         if name_re.search(norm) and (compat == want or (want == "str" and compat == "str")):
+            if st == "person_name" and not _PERSON_EXPLICIT.search(norm) and not _PERSON_CTX.search(ctx):
+                continue  # a bare name/label with no person signal or person-like context → not a person here
             return st
     return None
 
 
-def _gittables_value(name: str, xsd_type: str, rng: random.Random, constraint=None) -> "str | None":
+def _gittables_value(name: str, xsd_type: str, rng: random.Random, constraint=None,
+                     context: str = "") -> "str | None":
     """A real, PROVENANCE-retained GitTables value — type-checked + (optionally) plausibility-CONSTRAINED by the
     agent-mediated aligner (subtractive). None → the column claims no injected type (legitimate mechanical), or a
     deferred type (claimed but curation-pending). If a constraint empties the pool, we sample the nearest REAL
-    values rather than a mechanical placeholder — the cell stays real + provenanced, never a silent fallback."""
-    st = _semantic_type_of(name, xsd_type)
+    values rather than a mechanical placeholder — the cell stays real + provenanced, never a silent fallback.
+    ``context`` is the owning entity/table identity (disambiguates a bare ``name`` column — see _semantic_type_of)."""
+    st = _semantic_type_of(name, xsd_type, context)
     if st is None or st in _GT_DEFERRED:
         return None
     # a NUMERIC pool is magnitude-mixed ($5 unit price beside $2M revenue) → only draw from it when the round-trip
@@ -396,9 +409,10 @@ def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
     enum = parse_enum_from_definition(definition)
     if enum:                                       # ontology-grounded value set — most specific, any type
         return rng.choice(enum)
+    ctx = st.table.name                            # owning table identity → disambiguates a bare `name` column
     if t in _XSD_NONSTRING:                        # numeric/temporal/boolean: the xsd type is authoritative
         if gittables:                              # real value, type-checked to this xsd type (realism > rng.uniform)
-            gv = _gittables_value(col.name, t, rng, constraint)   # original case → camelCase heads detected
+            gv = _gittables_value(col.name, t, rng, constraint, ctx)   # original case → camelCase heads detected
             if gv is not None:
                 return gv
         return _xsd_value(t, name, rng)
@@ -407,7 +421,7 @@ def value_for(col, st: "SpineTable", *, row_ix: int, seed: int = _GLOBAL_SEED,
     if name in pools:                              # curated semantic pool
         return rng.choice(pools[name])
     if gittables:                                  # real GitTables value in place of a "{Concept} NN" placeholder
-        gv = _gittables_value(col.name, t, rng, constraint)       # original case → camelCase heads detected
+        gv = _gittables_value(col.name, t, rng, constraint, ctx)   # original case → camelCase heads detected
         if gv is not None:
             return gv
     return _entity_value(col, st, row_ix)          # mechanical fallback (xsd:string / untyped / unknown)
@@ -489,7 +503,7 @@ def resolve_constraints(spine: Sequence["SpineTable"], definitions: dict[str, di
         tname = st.table.name
         col_defs = definitions.get(tname, {})
         for col in st.table.columns:
-            sem = _semantic_type_of(col.name, col.slot_type)
+            sem = _semantic_type_of(col.name, col.slot_type, tname)
             if sem is None or sem not in _GT_NUMERIC:
                 continue
             ckey = (sem, col.name.lower())
