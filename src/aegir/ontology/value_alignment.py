@@ -86,12 +86,15 @@ _SYS = (
 def constrain(col_name: str, definition: str, semantic_type: str, samples: "list[str]",
               domain: str = "", *, engine=True) -> Constraint:
     """Agent-mediated + cached. Returns a plausibility Constraint for the column (the SIGNAL→reason→dispose loop).
-    ``engine=False`` returns an empty constraint (tests / offline) — the caller's boundary decides strictness."""
+    ``engine=False`` returns an empty constraint (tests / offline) that is NOT cached — an offline placeholder must
+    never poison the key so a later engine-on call can still resolve it authoritatively."""
     cache = _load_cache()
     k = _key(col_name, semantic_type, domain)
     if k in cache:
         return Constraint(**cache[k])
-    if not engine or semantic_type not in _NUMERIC and semantic_type not in ("organization", "product", "job_title"):
+    if not engine:                                   # offline/test: empty placeholder, NEVER cached (see docstring)
+        return Constraint(notes="offline (engine=False) — no constraint applied", model="")
+    if semantic_type not in _NUMERIC and semantic_type not in ("organization", "product", "job_title"):
         c = Constraint(notes="no alignment needed (clean string pool or non-injected)", model="")
         cache[k] = asdict(c); _save_cache(cache); return c
     from aegir.engine.client import complete_detailed  # noqa: PLC0415 — late import (no engine dep at import)
