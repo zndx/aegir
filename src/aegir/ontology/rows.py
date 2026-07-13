@@ -295,15 +295,18 @@ _GT_PROFILES = Path(__file__).resolve().parent.parent.parent.parent / "build" / 
 # product_name) MUST precede the generic `name` or they'd fall into person_name. Restricted to the pools that
 # curate reliably clean; job_title/category/geo_place are DEFERRED (residual noise) and email/phone to the
 # sensitivity membrane (high-risk PII), temporal to the mechanical date-gen (format-correct).
+# ALL tokens are \b-anchored WHOLE WORDS (the name is normalized to spaced-lowercase first, so compound heads
+# are split): a bare-substring match would give 'firm'ware→org, ac'count'→quantity, de'part'ment→product,
+# sec'uri'ty→url, cof'fee'→monetary. Whole-word matching against the split form kills that class.
 _GT_NAME_RULES: "list[tuple[str, re.Pattern, str]]" = [
-    ("organization", re.compile(r"company|organi|org|employer|vendor|supplier|firm|agency|brand|manufacturer"), "str"),
-    ("product", re.compile(r"product|item|model|goods|part"), "str"),
-    ("person_name", re.compile(r"name|employee|person|contact|author|customer|client|owner|holder"), "str"),
-    ("url", re.compile(r"url|link|website|homepage|uri"), "str"), ("color", re.compile(r"colou?r"), "str"),
+    ("organization", re.compile(r"\b(company|companies|organi[sz]ations?|employer|vendor|supplier|agency|brand|manufacturer)\b"), "str"),
+    ("product", re.compile(r"\b(product|item|goods|merchandise|sku)\b"), "str"),
+    ("person_name", re.compile(r"\b(name|names|employee|person|contact|author|customer|client|owner|holder|surname)\b"), "str"),
+    ("url", re.compile(r"\b(url|link|website|homepage|uri)\b"), "str"), ("color", re.compile(r"\b(colou?rs?)\b"), "str"),
     ("identifier", re.compile(r"\b(id|code|ref|sku|isbn|barcode|serial)\b"), "str"),
-    ("monetary", re.compile(r"salary|pay|wage|price|cost|amount|revenue|budget|fee|income|balance"), "num"),
-    ("measurement", re.compile(r"weight|height|length|width|depth|temperature|distance|speed|size|dimension"), "num"),
-    ("quantity", re.compile(r"count|quantity|qty|total|units|stock"), "int"),
+    ("monetary", re.compile(r"\b(salary|salaries|pay|wage|price|cost|amount|revenue|budget|fee|fees|income|balance)\b"), "num"),
+    ("measurement", re.compile(r"\b(weight|height|length|width|depth|temperature|distance|speed|size|dimension)\b"), "num"),
+    ("quantity", re.compile(r"\b(count|counts|quantity|qty|total|units|stock)\b"), "int"),
 ]
 _GT_XSD_CLASS = {"xsd:decimal": "num", "xsd:double": "num", "xsd:float": "num",
                  "xsd:integer": "int", "xsd:int": "int", "xsd:long": "int",
