@@ -29,6 +29,38 @@ REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
 from aegir.ontology.individuals import _AMBIG_CTX, _BRANDS_AMBIG, real_entity_hits  # noqa: E402
 
+# ── PROVENANCE is the deciding factor (RH 2026-07-14) ──────────────────────────────────────────────────
+# A real particular (org / person / product) that is traceable to the EXPLICIT GitTables lineage is
+# PERMITTED everywhere — tables AND prose — because its provenance is retained (the
+# `provenance/gittables_value_sampling` strategy component + per-value source in the pools). Only a
+# NON-provenanced real particular (an LLM naming a brand that never came from GitTables) stays a violation.
+# This does NOT relax the fictional-particulars policy; it recognises lineage-backed values as accounted-for.
+_GT_PROFILES = REPO / "build/gittables/value_profiles.json"
+
+
+def gittables_provenance_tokens() -> "set[str]":
+    """Lowercased tokens (full values + component words) present in the GitTables value pools — the explicit
+    lineage set. A brand/particular whose token is in here is provenance-backed → not a violation."""
+    toks: "set[str]" = set()
+    try:
+        pools = json.loads(_GT_PROFILES.read_text())
+    except (OSError, ValueError):
+        return toks
+    for _st, rec in pools.items():
+        for pair in rec.get("values", []):
+            v = str(pair[0] if isinstance(pair, (list, tuple)) else pair).lower()
+            toks.add(v)
+            toks.update(w for w in re.findall(r"[a-z0-9&]+", v) if len(w) >= 2)
+    return toks
+
+
+_PROV = gittables_provenance_tokens()
+
+
+def _provenanced(brand: str) -> bool:
+    """True when the matched brand token is accounted for by the explicit GitTables lineage."""
+    return bool(_PROV) and brand.strip().lower() in _PROV
+
 
 def scan_registry(path: Path) -> "list[tuple[str, str, str]]":
     if not path.exists():
@@ -39,7 +71,8 @@ def scan_registry(path: Path) -> "list[tuple[str, str, str]]":
         cols = rec.get("columns") if isinstance(rec, dict) else None
         for col, vals in (cols or {}).items() if cols else []:
             for v, brand in real_entity_hits(list(vals)):
-                out.append((f"{tid}.{col}", v, brand))
+                if not _provenanced(brand):
+                    out.append((f"{tid}.{col}", v, brand))
     return out
 
 
@@ -54,7 +87,8 @@ def scan_pools(path: Path) -> "list[tuple[str, str, str]]":
         for col, vals in cols.items():
             if isinstance(vals, list):
                 for v, brand in real_entity_hits([str(x) for x in vals]):
-                    out.append((f"{tid}.{col}", v, brand))
+                    if not _provenanced(brand):
+                        out.append((f"{tid}.{col}", v, brand))
     return out
 
 
@@ -62,7 +96,7 @@ def scan_omn(path: Path) -> "list[tuple[str, str, str]]":
     if not path.exists():
         return []
     labels = re.findall(r'rdfs:label "([^"]+)"', path.read_text())
-    return [("omn:rdfs:label", v, b) for v, b in real_entity_hits(labels)]
+    return [("omn:rdfs:label", v, b) for v, b in real_entity_hits(labels) if not _provenanced(b)]
 
 
 def scan_chapters(root: Path) -> "tuple[list, list]":
@@ -94,6 +128,8 @@ def scan_chapters(root: Path) -> "tuple[list, list]":
         # scan line-wise so the hit report carries usable context
         for line in text.splitlines():
             for v, brand in real_entity_hits([line.strip()[:120]]):
+                if _provenanced(brand):        # traceable to explicit GitTables lineage → permitted (RH 2026-07-14)
+                    continue
                 if brand in allowed or _domain_initialism(brand):
                     allowed.add(brand)
                     continue
@@ -120,7 +156,8 @@ def scan_spine(run_dir: Path) -> "list[tuple[str, str, str]]":
         v = r.get("value")
         if v:
             for hit, brand in real_entity_hits([str(v)]):
-                out.append((f"{r['table_name']}.{r['col_name']}", hit, brand))
+                if not _provenanced(brand):
+                    out.append((f"{r['table_name']}.{r['col_name']}", hit, brand))
     return out
 
 

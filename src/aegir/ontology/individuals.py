@@ -42,7 +42,9 @@ _GENERIC_VALUES = {"example", "value", "item", "test", "sample", "data", "entity
 _BRANDS_CLEAR = re.compile(
     r"\b(microsoft|google|amazon|facebook|instagram|nvidia|intel|qualcomm|broadcom|samsung|huawei|"
     r"foxconn|tsmc|asml|cisco|lenovo|toshiba|hitachi|siemens|panasonic|ericsson|nokia|motorola|"
-    r"ibm|sap|salesforce|workday|servicenow|databricks|snowflake|cloudera|teradata|informatica|"
+    # 'snowflake' dropped from the unconditional list — star-and-SNOWFLAKE schemas are a CORE DDL concept in
+    # this corpus (realize.py generates them), so 'snowflake schema/pattern/dimension' is domain usage, not the co.
+    r"ibm|sap|salesforce|workday|servicenow|databricks|cloudera|teradata|informatica|"
     r"cerner|meditech|allscripts|athenahealth|epic\s+systems|medtronic|stryker|baxter|danaher|"
     r"agilent|shimadzu|perkinelmer|perkin\s+elmer|bruker|sartorius|mettler[- ]toledo|labware|"
     r"labvantage|starlims|thermo\s+fisher|beckman|biorad|bio-rad|illumina|qiagen|pfizer|novartis|"
