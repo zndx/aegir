@@ -155,8 +155,11 @@ def parse_membrane(d: dict) -> "tuple[bool, str]":
     return True, "well-formed"
 
 
-def observability_membrane(d: dict) -> "tuple[bool, str]":
-    """The differentia must project to data: a datatype/enum column (data) or an FK to a class (object)."""
+def observability_membrane(d: dict, class_names: "frozenset[str]" = frozenset()) -> "tuple[bool, str]":
+    """The differentia must project to data: a datatype/enum column (data) or an FK to a class (object). A
+    ``value`` restriction must be a real domain value — not the property/species name, and not an actual CLASS
+    name (that's the class-name-echo defect, e.g. 'HealthRecord'). Checked against the real class set, NOT a
+    CamelCase heuristic (which wrongly rejected real technical values like 'LiDAR')."""
     r = d.get("restriction", "")
     if d["kind"] == "data" and not re.search(r"xsd:|value\s+|\{", r):
         return False, "not observable: a data differentia needs an xsd datatype / enumerated value"
@@ -167,8 +170,8 @@ def observability_membrane(d: dict) -> "tuple[bool, str]":
         v = vm.group(1).strip()
         if v.lower() == d.get("property", "").lower():
             return False, f'the value "{v}" echoes the property name — use a real discriminating value'
-        if re.match(r"^[A-Z][a-z]+[A-Z]", v) or re.match(r"^[A-Z][a-z]+(Record|Kind|Type|Status|Role|Entity)$", v):
-            return False, f'the value "{v}" looks like a class/type name — use a real domain value (e.g. "health")'
+        if v in class_names:
+            return False, f'the value "{v}" is an ontology CLASS name — use a real domain value (e.g. "health")'
     return True, "observable (projects to a column/join)"
 
 
@@ -249,7 +252,8 @@ def discrimination_membrane(d: dict, sibling_diffs: "list[Differentia]") -> "tup
 # ── the CAS loop ────────────────────────────────────────────────────────────────────────────────────────────
 def author_differentia(genus: str, species: str, species_def: str, siblings: "list[tuple[str, str]]",
                        sibling_diffs: "list[Differentia]", *, proposer=engine_proposer, max_rounds: int = 3,
-                       known_values: "list[str] | None" = None, seed_feedback: str = "") -> Differentia:
+                       known_values: "list[str] | None" = None, seed_feedback: str = "",
+                       class_names: "frozenset[str]" = frozenset()) -> Differentia:
     """Boundary→signal→propose→dispose→re-prompt for ONE species. Membranes short-circuit with their reason.
     ``seed_feedback`` primes round 1 with a prior verdict (e.g. the HermiT membrane's re-prompt)."""
     result = Differentia(species=species)
@@ -262,7 +266,7 @@ def author_differentia(genus: str, species: str, species_def: str, siblings: "li
             result.reason = f"proposer error: {type(e).__name__}: {str(e)[:80]}"
             return result
         result.model = d.get("_model", "")
-        for membrane in (parse_membrane, observability_membrane,
+        for membrane in (parse_membrane, lambda dd: observability_membrane(dd, class_names),
                          lambda dd: discrimination_membrane(dd, sibling_diffs)):
             ok, reason = membrane(d)
             if not ok:
@@ -279,7 +283,8 @@ def author_differentia(genus: str, species: str, species_def: str, siblings: "li
 
 def author_genus(genus_label: str, species: "list[tuple[str, str]]", *, proposer=engine_proposer,
                  max_rounds: int = 3, enum_values: "dict[str, list[str]] | None" = None,
-                 hermit: bool = True, genus_rounds: int = 2) -> "dict[str, Differentia]":
+                 hermit: bool = True, genus_rounds: int = 2,
+                 class_names: "frozenset[str]" = frozenset()) -> "dict[str, Differentia]":
     """Author a distinguishing differentia for each species (structural membranes, per-species CAS), then fire
     the HermiT membrane over the assembled genus; re-author the species it flags UNSAT (genus-level CAS) up to
     ``genus_rounds``. Value-enriched: each species is seeded with its real enum values. Returns the accepted set
@@ -292,7 +297,7 @@ def author_genus(genus_label: str, species: "list[tuple[str, str]]", *, proposer
         for name, defn in species:
             sibs = [(n, d) for n, d in species if n != name]
             r = author_differentia(genus_label, name, defn, sibs, accepted, proposer=proposer,
-                                   max_rounds=max_rounds, known_values=enum_values.get(name))
+                                   max_rounds=max_rounds, known_values=enum_values.get(name), class_names=class_names)
             out[name] = r
             if r.accepted:
                 accepted.append(r)
@@ -313,7 +318,7 @@ def author_genus(genus_label: str, species: "list[tuple[str, str]]", *, proposer
             sibs = [(n, d) for n, d in species if n != name]
             r = author_differentia(genus_label, name, defn, sibs, accepted, proposer=proposer,
                                    max_rounds=max_rounds, known_values=enum_values.get(name),
-                                   seed_feedback=f"HermiT rejected the prior differentia: {reason}")
+                                   seed_feedback=f"HermiT rejected the prior differentia: {reason}", class_names=class_names)
             out[name] = r
             if r.accepted:
                 accepted.append(r)

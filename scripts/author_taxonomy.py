@@ -60,7 +60,7 @@ def main() -> int:
         core = idx[np.argsort(-(X[idx] @ centers[g]))][: a.members_per_genus]
         members = [(names[i], specs[names[i]]) for i in core]
         glabel = (name_genus([m[0] for m in members]) or {}).get("label") or names[core[0]]
-        diffs = author_genus(glabel, members, enum_values=enums, hermit=True, genus_rounds=2)
+        diffs = author_genus(glabel, members, enum_values=enums, hermit=True, genus_rounds=2, class_names=frozenset(names))
         h = diffs.get("__hermit__")
         axioms = to_manchester(glabel, diffs)
         acc = sum(1 for s, d in diffs.items() if d.accepted and s != "__hermit__")
