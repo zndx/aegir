@@ -51,6 +51,8 @@ def _sig(proj: "dict[str, tuple]") -> tuple:
         kind, val = feat
         if kind == "enum":
             desc.append("enum:" + "|".join(sorted(val)))     # the value set discriminates
+        elif kind == "value":
+            desc.append("value:" + str(val))                  # a fixed value — the sharpest in-cell discriminator
         elif kind == "ref":
             desc.append("ref:" + str(val))                    # the join target discriminates
         else:
@@ -80,6 +82,8 @@ def shape_projections(shapes_ttl: Path) -> "dict[str, dict[str, tuple]]":
             if enum:  # sh:in is an RDF list head; collect members
                 vals = frozenset(str(x) for x in g.items(enum[0]))
                 proj[key] = ("enum", vals)
+            elif (hv := next(iter(g.objects(p, SH["hasValue"])), None)) is not None:
+                proj[key] = ("value", str(hv))                # a fixed VALUE — the sharpest in-cell discriminator
             elif (cl := next(iter(g.objects(p, SH["class"])), None)) is not None:
                 proj[key] = ("ref", _local(cl))
             elif (dt := next(iter(g.objects(p, SH.datatype)), None)) is not None:
