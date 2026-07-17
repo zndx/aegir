@@ -329,6 +329,24 @@ def _gt_pools() -> dict:
         return {}
 
 
+# DIFFERENTIA-TYPE pools (RH 2026-07-17): real GitTables values harvested PER DIFFERENTIA COLUMN against the
+# sdg-strategy spec component (targets/differentia_value_specs) — local baseline now, Atelier's federated
+# maxsim/NHSVM/CatBoost ensemble at Increment 2. Keyed by the spec's projected snake column; consulted AHEAD
+# of the name-rule semantic types because an exact spec-column match is strictly more specific. Optional-
+# additive: absent file → the existing paths, no gate change. Built by scripts/harvest_differentia_values.py.
+_DIFF_PROFILES = _GT_PROFILES.parent / "differentia_profiles.json"
+
+
+@functools.lru_cache(maxsize=1)
+def _diff_pools() -> dict:
+    """{spec_snake_column: [values]} from the differentia harvest; {} if not built."""
+    try:
+        d = json.loads(_DIFF_PROFILES.read_text())
+        return {c: [v for v, _src in p["values"]] for c, p in d.get("pools", {}).items() if p.get("values")}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
 # matched (so they claim the column ahead of the generic `name` rule) but NOT injected — routed to the
 # mechanical fallback pending stronger pool curation (product pool still admits lorem/macro noise).
 _GT_DEFERRED = {"product"}
@@ -372,6 +390,15 @@ def _gittables_value(name: str, xsd_type: str, rng: random.Random, constraint=No
     deferred type (claimed but curation-pending). If a constraint empties the pool, we sample the nearest REAL
     values rather than a mechanical placeholder — the cell stays real + provenanced, never a silent fallback.
     ``context`` is the owning entity/table identity (disambiguates a bare ``name`` column — see _semantic_type_of)."""
+    # DIFFERENTIA pools first — an exact spec-column match beats any name-rule type. String-class only
+    # (numeric stays behind the aligner's magnitude gate). Shape-bound species cells never arrive here
+    # (the authored enum short-circuits upstream, sh:hasValue constancy preserved by design), so a hit
+    # is a legitimately-widenable use: an empty-enum typed differentia or a same-named non-bound column.
+    if _GT_XSD_CLASS.get(xsd_type, "str") == "str":
+        norm = re.sub(r"[_\s]+", " ", re.sub(r"(?<!^)(?=[A-Z])", " ", name)).lower().strip()
+        dpool = _diff_pools().get(norm.replace(" ", "_"))
+        if dpool:
+            return rng.choice(dpool)
     st = _semantic_type_of(name, xsd_type, context)
     if st is None or st in _GT_DEFERRED:
         return None
