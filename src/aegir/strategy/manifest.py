@@ -186,6 +186,15 @@ def collect_targets() -> "dict[str, bytes]":
             "operating_point": c.get("operating_point"),
             "infrastructure_hubs": c.get("infrastructure_hubs"),
         })
+    # The DIFFERENTIA-TYPE HARVEST SPECS (RH 2026-07-17): one spec per distinct differentia property
+    # of the authored taxonomy — the what-to-harvest contract for grounding differentia-column values
+    # in real GitTables columns via Atelier's federated ensemble (maxsim/NHSVM/CatBoost). Captured
+    # here so the harvest is reproducible (pure function of the component @sha + GitTables snapshot +
+    # harvester version) and Atelier consumes the contract BY STRATEGY REF, not over the wire.
+    # Emitted deterministically by scripts/emit_differentia_specs.py from build/taxonomy/<tag>/.
+    dvs = REPO / "build" / "taxonomy" / "differentia_specs.json"
+    if dvs.exists():
+        comp["targets/differentia_value_specs.json"] = dvs.read_bytes()
     # The RENDER REGISTER target (RH 2026-07-09, "presentation ≠ identifier"): the corpus commits
     # to prose tables that read as human documents, not raw schemas. Measured FinePDFs reference +
     # our baseline + floors; the metric (table_register.score_register) scores every chapter, the
