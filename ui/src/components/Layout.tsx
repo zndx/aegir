@@ -32,7 +32,8 @@ function Layout({ children, fullHeight }: LayoutProps) {
           display: "flex",
           alignItems: "center",
           gap: 16,
-          background: "#1f1f2a",
+          background: "var(--color-kumo-base)",
+          borderBottom: "1px solid var(--color-kumo-hairline)",
           padding: "0 clamp(12px, 2vw, 24px)",
         }}
       >

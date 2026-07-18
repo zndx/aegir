@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 // Silently swallow proxy errors during startup — the Aegir gateway may not
 // be running yet when the Vite dev server starts (or running in a different
@@ -10,7 +11,7 @@ const silenceProxyError = (err: Error, _req: unknown, _res: unknown) => {
 };
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   // @xyflow/react is reachable only through a lazy import (ProvenanceGraph), so Vite's startup dep-scan never
   // pre-bundles it — opening Provenance then triggers an on-demand re-optimize and the in-flight dynamic import
   // 504s ("Outdated Optimize Dep"). Force it into the startup optimization so the lazy chunk loads cleanly.

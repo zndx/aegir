@@ -13,8 +13,8 @@ function App() {
   return (
     <ConfigProvider
       theme={{
-        algorithm: theme.defaultAlgorithm,
-        token: { colorPrimary: "#4f7cff", borderRadius: 6 },
+        algorithm: theme.darkAlgorithm,  // org norm: dark default (cldr-design-template); antd bridged until Kumo migration completes
+        token: { colorPrimary: "#6366f1", borderRadius: 6 },
       }}
     >
       <BrowserRouter>

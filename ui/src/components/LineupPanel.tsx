@@ -56,7 +56,7 @@ function renderInline(text: string, onLink: (id: string) => void, kp: string): R
         <a
           key={`${kp}-${i}`}
           onClick={(e) => { e.preventDefault(); onLink(id); }}
-          style={{ color: "#2a6fb0", cursor: "pointer", fontWeight: 500 }}
+          style={{ color: "var(--text-color-kumo-link)", cursor: "pointer", fontWeight: 500 }}
           title={id}
         >
           {label}
@@ -66,7 +66,7 @@ function renderInline(text: string, onLink: (id: string) => void, kp: string): R
       out.push(<strong key={`${kp}-${i}`}>{m[3]}</strong>);
     } else if (m[4] !== undefined) {
       out.push(
-        <code key={`${kp}-${i}`} style={{ background: "#f0f0f2", padding: "1px 4px", borderRadius: 3, fontSize: 12 }}>
+        <code key={`${kp}-${i}`} style={{ background: "var(--color-kumo-recessed)", padding: "1px 4px", borderRadius: 3, fontSize: 12 }}>
           {m[4]}
         </code>,
       );
@@ -110,13 +110,13 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
         <table key={`t-${i}`} style={{ borderCollapse: "collapse", fontSize: 12, margin: "6px 0", width: "100%" }}>
           <thead>
             <tr>{header.map((h, j) => (
-              <th key={j} style={{ textAlign: "left", borderBottom: "1px solid #ddd", padding: "2px 6px", color: "#888" }}>{h}</th>
+              <th key={j} style={{ textAlign: "left", borderBottom: "1px solid var(--color-kumo-line)", padding: "2px 6px", color: "var(--text-color-kumo-subtle)" }}>{h}</th>
             ))}</tr>
           </thead>
           <tbody>
             {data.map((r, ri) => (
               <tr key={ri}>{r.map((c, cj) => (
-                <td key={cj} style={{ borderBottom: "1px solid #f0f0f0", padding: "2px 6px" }}>{renderInline(c, onLink, `td-${i}-${ri}-${cj}`)}</td>
+                <td key={cj} style={{ borderBottom: "1px solid var(--color-kumo-hairline)", padding: "2px 6px" }}>{renderInline(c, onLink, `td-${i}-${ri}-${cj}`)}</td>
               ))}</tr>
             ))}
           </tbody>
@@ -156,19 +156,19 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
                 <table style={{ borderCollapse: "collapse", fontSize: 12, width: "100%" }}>
                   {Array.isArray(t.columns) && t.columns.length > 0 && (
                     <thead><tr>{t.columns.map((c: any, cj: number) => (
-                      <th key={cj} style={{ textAlign: "left", borderBottom: "1px solid #ddd", padding: "2px 6px", color: "#888" }}>{String(c)}</th>
+                      <th key={cj} style={{ textAlign: "left", borderBottom: "1px solid var(--color-kumo-line)", padding: "2px 6px", color: "var(--text-color-kumo-subtle)" }}>{String(c)}</th>
                     ))}</tr></thead>
                   )}
                   <tbody>
                     {(t.rows || []).slice(0, 100).map((r: any, ri: number) => (
                       <tr key={ri}>{(Array.isArray(r) ? r : [r]).map((c: any, cj: number) => (
-                        <td key={cj} style={{ borderBottom: "1px solid #f0f0f0", padding: "2px 6px" }}>{String(c)}</td>
+                        <td key={cj} style={{ borderBottom: "1px solid var(--color-kumo-hairline)", padding: "2px 6px" }}>{String(c)}</td>
                       ))}</tr>
                     ))}
                   </tbody>
                 </table>
                 {(t.rows?.length ?? 0) > 100 && (
-                  <div style={{ fontSize: 11, color: "#aaa" }}>…{t.rows.length - 100} more rows</div>
+                  <div style={{ fontSize: 11, color: "var(--text-color-kumo-inactive)" }}>…{t.rows.length - 100} more rows</div>
                 )}
               </div>
             ))}
@@ -177,7 +177,7 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
         continue;
       }
       blocks.push(
-        <pre key={`c-${i}`} style={{ background: "#f6f8fa", padding: 8, borderRadius: 4, fontSize: 11.5, overflowX: "auto", margin: "6px 0" }}>
+        <pre key={`c-${i}`} style={{ background: "var(--color-kumo-recessed)", padding: 8, borderRadius: 4, fontSize: 11.5, overflowX: "auto", margin: "6px 0" }}>
           {obj ? JSON.stringify(obj, null, 2) : raw}
         </pre>,
       );
@@ -220,19 +220,19 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
     <div
       style={{
         flex: `0 0 ${basis}`, maxWidth: basis, height: "100%", overflowY: "auto",
-        background: "#fff", border: "1px solid #d0d0d8", borderTop: `3px solid ${accent}`,
-        borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", marginRight: 12,
+        background: "var(--color-kumo-base)", border: "1px solid var(--color-kumo-hairline)", borderTop: `3px solid ${accent}`,
+        borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.35)", marginRight: 12,
       }}
     >
-      <div style={{ display: "flex", alignItems: "baseline", gap: 8, padding: "10px 16px 6px", borderBottom: "1px solid #eee" }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, padding: "10px 16px 6px", borderBottom: "1px solid var(--color-kumo-hairline)" }}>
         <Text strong style={{ fontSize: 16 }}>{note?.title ?? (loading ? "…" : "not found")}</Text>
         {note && <Tag color={accent} style={{ marginInlineStart: "auto" }}>{note.kind}</Tag>}
-        <CloseOutlined onClick={onClose} style={{ cursor: "pointer", color: "#bbb", fontSize: 12 }} />
+        <CloseOutlined onClick={onClose} style={{ cursor: "pointer", color: "var(--text-color-kumo-inactive)", fontSize: 12 }} />
       </div>
-      <div style={{ padding: "8px 16px 16px", fontSize: 13.5, color: "#222" }}>
+      <div style={{ padding: "8px 16px 16px", fontSize: 13.5, color: "var(--text-color-kumo-default)" }}>
         {/* live embeds render for current/scratch only — archive kastens are frozen */}
         {note?.kind === "lens" && note.chord !== false && note.root !== "archive" && (
-          <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
+          <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid var(--color-kumo-hairline)", paddingBottom: 6 }}>
             <PanelView app="lineup_app" params={{ lens: note.name ?? note.id, root: note.root ?? "current" }} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
               top collection associations (TF-IDF) — live HoloViews via Panel · drag a node, hover a ribbon
@@ -240,7 +240,7 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
           </div>
         )}
         {note?.kind === "training" && note.viz_app && note.root !== "archive" && (
-          <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid #f0f0f0", paddingBottom: 6 }}>
+          <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid var(--color-kumo-hairline)", paddingBottom: 6 }}>
             <PanelView app={note.viz_app} height={460} />
             <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
               live HoloViews via the bokeh server · drag to pan, hover for values
