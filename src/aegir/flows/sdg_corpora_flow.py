@@ -543,8 +543,10 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         """Lineup KB projection — the corpus/sdg live note + all surfaces re-project
         so the /lineup panel reflects this run's accretion. Failure-tolerant tail."""
         try:
+            import os as _os
             r = subprocess.run(["uv", "run", "--no-sync", "python", "-m", "aegir.lineup", "build"],
-                               cwd=str(REPO), capture_output=True, text=True, timeout=600)
+                               cwd=str(REPO), capture_output=True, text=True, timeout=600,
+                               env={**_os.environ, "AEGIR_SDG_RUN": str(self.run_out)})  # project THIS run
             line = next((l for l in r.stdout.splitlines() if "sdg" in l), "")
             print(f"  lineup: {line.strip() or 'projected'}", flush=True)
         except Exception as e:  # noqa: BLE001 — projection is the tail; never lose the corpus to it

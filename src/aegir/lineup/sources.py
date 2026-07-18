@@ -398,13 +398,29 @@ def ontology_metrology() -> dict | None:
     }
 
 
+def sdg_run_root() -> "Path | None":
+    """The sdg run dir the LIVE (scratch/trunk) surfaces project. ``AEGIR_SDG_RUN`` pins it — the
+    flow's project step passes its OWN run_out, so the lineup reflects the run that just completed
+    (with ``--corpus false`` per-run dirs, the old hard pin to ``corpus/`` silently kept projecting
+    the last ACCRETED corpus — v0.5 — while fresh runs landed elsewhere). Manual builds fall back to
+    the newest ``corpus*`` dir with constructs (mtime, not lexicographic), then the legacy pin."""
+    if os.environ.get("AEGIR_SDG_RUN"):
+        p = Path(os.environ["AEGIR_SDG_RUN"])
+        return p if (p / "constructs").exists() or p.exists() else None
+    cands = [p.parent for p in Path(f"{_ART}/sdg-corpora").glob("corpus*/constructs")]
+    if cands:
+        return max(cands, key=lambda p: p.stat().st_mtime)
+    legacy = Path(f"{_ART}/sdg-corpora/corpus")
+    return legacy if legacy.exists() else None
+
+
 def sdg_corpus() -> "dict | None":
     """LIVE state of the sdg corpus dir (`just metaflow` accretes it): counts +
     the flow's metrics/congruence when present. Graceful None when the corpus is absent —
     the lineup stays in sync with the pipeline AS IT RUNS (kb-build re-projects)."""
     import json as _json
-    root = Path("/raid/checkpoints/aegir-artifacts/sdg-corpora/corpus")
-    if not root.exists():
+    root = sdg_run_root()
+    if root is None:
         return None
     out: dict = {
         "root": str(root),
@@ -429,7 +445,9 @@ def sdg_constructs() -> "dict | None":
     `just metaflow` offers up — wrapping names is obfuscation). One entry per unique table
     name across all constructs; FK targets by real name; provenance = construct pids."""
     import json as _json
-    root = Path("/raid/checkpoints/aegir-artifacts/sdg-corpora/corpus")
+    root = sdg_run_root()
+    if root is None:
+        return None
     cdir = root / "constructs"
     if not cdir.exists():
         return None
