@@ -1009,19 +1009,24 @@ def project_lexicon_constructs() -> list[N.Note]:
     guard is that refinement lands HERE (and in the modules), keeping the lineup a Cunningham primitive,
     not a wiki."""
     C = {
-        "domain": ("A DOMAIN is a region of admissible input meaning, operationalized as the AIMING "
-                   "collection's admission rule: a raw-stream passage enters iff its ColBERT/MaxSim "
-                   "score against the domain's anchor documents clears the aperture threshold. Domains "
-                   "are the SKOS top-concepts of the ontology-derived vocabulary.\n\n"
-                   "Operationalization: `aegir.ontology.domain_index` (aiming collection); the strategy "
-                   "`lens/` pillar pins the snapshot. Relations: a domain COMPRISES concepts; the "
-                   "aperture = domain anchors × the admission rule; SysMLv2 extends domains additively."),
+        "domain": ("A DOMAIN is a SPECIFICATION over concepts — a region of admissible input meaning "
+                   "that naturally SUBSUMES many SKOS concepts, while any concept may occur within many "
+                   "domains: the relationship is a proper MANY-TO-MANY LATTICE, not a tree (RH "
+                   "2026-07-19 — domains are NOT SKOS top-concepts, and navigation must not imply "
+                   "single-parenting).\n\nOperationalization: a domain is realized through the "
+                   + N.wl("lexicon/construct/aperture", "Canonical Aperture") + "'s composite anchors "
+                   "and the admission rule (`aegir.ontology.domain_index`). Domains may be refined "
+                   "IN SITU — e.g. as novel physical compute environments are explored — and any "
+                   "refinement must preserve the sufficiency-of-differentiation of the aperture's "
+                   "constituent concepts."),
         "concept": ("A CONCEPT is one anchor point in the vocab collection — an ontology-derived SKOS "
                     "concept embedded in qdrant: the unit of classification and the identity-bearer "
-                    "for anchor-topics.\n\nOperationalization: `domain_index` vocab collection; "
-                    "strategy `lens/vocab.snapshot`. Relations: belongs to ≥1 domain; a topic IS a "
-                    "concept once passages accumulate on it; spectral analysis may PROPOSE new "
-                    "concepts (the aperture-refinement loop)."),
+                    "for anchor-topics. A concept naturally occurs within MULTIPLE domains "
+                    "(the domain⇄concept lattice is many-to-many).\n\nOperationalization: "
+                    "`domain_index` vocab collection; strategy `lens/vocab.snapshot`. Relations: a "
+                    "topic IS a concept once passages accumulate on it; PRIMARY constituent concepts "
+                    "composite into the Canonical Aperture's anchors; spectral analysis may PROPOSE "
+                    "new concepts (the aperture-refinement loop)."),
         "topic": ("A TOPIC is a concept anchor with accumulated evidence: each passage assigns to its "
                   "nearest concept anchor, margin-gated — ONE passage, ONE topic (ratified 2026-07-07; "
                   "collection-state pinned; BERTopic vestigial).\n\n_De novo_ topics (STAGED, #30): "
@@ -1030,6 +1035,18 @@ def project_lexicon_constructs() -> list[N.Note]:
                   "because one encoder sees both. Reconciliation with anchor-topics may propose new "
                   "concepts → aperture refinement. Operationalization: the inverted topic layer; "
                   "instruments: clt-qwen3-1.7b (live) + SAE-Res-Qwen3.5-27B."),
+        "aperture": ("The CANONICAL APERTURE is the composite admission surface: a qdrant collection "
+                     "whose anchors COMPOSITE primary constituent concepts (currently named 'aiming' — "
+                     "an odd historical name; migration to aperture-proper naming is deliberate "
+                     "follow-up #31, not a drive-by). A passage is admitted iff its ColBERT/MaxSim "
+                     "score against the composite anchors clears the threshold.\n\nThe VERIFICATION "
+                     "obligation (RH 2026-07-19): the primary constituent concepts must be SUFFICIENTLY "
+                     "DIFFERENTIATED under ANY domain specification or refinement — the "
+                     "insufficient-differentia frame extended from taxonomy species to aperture "
+                     "constituents, measurable with the same margin machinery (genus_induction/"
+                     "discriminability). Refinement may happen in situ (novel physical compute "
+                     "environments). Constituent-concept mappings are not yet surfaced in the strategy "
+                     "snapshot (vector_sha only) — surfacing them is part of #31."),
         "collection": ("A COLLECTION is an output-side bundle: the documents whose tables/views form "
                        "one connected DDL graph (FK + view-composition edges) after infrastructure-hub "
                        "removal — the Barabási-calibrated operating point.\n\nOperationalization: "
@@ -1057,10 +1074,13 @@ def project_lexicon_constructs() -> list[N.Note]:
         id="lexicon/constructs", title="Lexicon constructs", kind="lexicon-construct",
         data_product="ontology", root="scratch",
         body=("**The meta-vocabulary of the pipeline** — refined here, enforced in the modules.\n\n"
-              "The chain: the APERTURE (domains · concepts) admits ITEMS → TOPICS accumulate on "
-              "concept anchors → CHAPTERS generate against terms → COLLECTIONS bundle the relational "
-              "output. The ontology stratum (TERMS · GENERA · DIFFERENTIAE) threads every step — "
-              "and the refinement loop closes when spectral topics propose new concepts.\n\n"
+              "The chain: the CANONICAL APERTURE (composite anchors over primary constituent "
+              "concepts) admits ITEMS → TOPICS accumulate on concept anchors → CHAPTERS generate "
+              "against terms → COLLECTIONS bundle the relational output. The ontology stratum "
+              "(TERMS · GENERA · DIFFERENTIAE) threads every step; the refinement loop closes when "
+              "spectral topics propose new concepts.\n\nSTRUCTURAL COMMITMENT (RH): domain⇄concept "
+              "is a MANY-TO-MANY LATTICE — a domain subsumes many concepts, a concept occurs in many "
+              "domains — so Lexicon navigation is FACETED, never single-parent tree.\n\n"
               + "\n".join(f"- {N.wl(f'lexicon/construct/{c}', c)}" for c in sibs)))]
     for c, body in C.items():
         notes.append(N.Note(
@@ -1070,6 +1090,40 @@ def project_lexicon_constructs() -> list[N.Note]:
             body=body + "\n\nSiblings: "
                  + " · ".join(N.wl(f"lexicon/construct/{x}", x) for x in sibs if x != c)))
     return notes
+
+def project_aperture_anchors() -> list[N.Note]:
+    """The Canonical Aperture's composite anchors as notes (RH 2026-07-19): one per anchor, from the
+    strategy lens snapshot (truth flows repo → runtime). Constituent-concept mappings are not yet in
+    the snapshot (vector_sha only) — each note says so honestly; surfacing them is #31."""
+    try:
+        import json as _json
+        from aegir.strategy.manifest import read_component
+        pts = _json.loads(read_component("lens/aiming.snapshot.json"))
+        pts = pts.get("points", pts) if isinstance(pts, dict) else pts
+    except Exception:  # noqa: BLE001
+        return []
+    notes = [N.Note(
+        id="lexicon/aperture/index", title="Canonical Aperture", kind="lexicon-construct",
+        data_product="ontology", root="scratch",
+        body=("**The Canonical Aperture** — " + str(len(pts)) + " composite anchors, each compositing "
+              "primary constituent concepts (see " + N.wl("lexicon/construct/aperture", "the construct")
+              + "). domain⇄concept is many-to-many; anchors are the admission surface.\n\n"
+              + "\n".join(f"- {N.wl('lexicon/aperture/' + str(p0.get('id')), p0.get('label') or str(p0.get('id')))}"
+                           for p0 in pts)))]
+    for p0 in pts:
+        aid, label = str(p0.get("id")), p0.get("label") or str(p0.get("id"))
+        notes.append(N.Note(
+            id=f"lexicon/aperture/{aid}", title=label, kind="lexicon-construct",
+            data_product="ontology", root="scratch",
+            frontmatter={"vector_sha": p0.get("vector_sha")},
+            body=(f"**{label}** — a Canonical Aperture composite anchor (id `{aid}`, vector "
+                  f"`{p0.get('vector_sha')}`). Composites primary constituent concepts; the "
+                  f"constituent list is not yet surfaced in the strategy snapshot (#31 surfaces it, "
+                  f"plus the per-domain sufficiency-of-differentiation verification).\n\n"
+                  + "Part of " + N.wl("lexicon/aperture/index", "the Canonical Aperture") + " · "
+                  + N.wl("lexicon/construct/aperture", "aperture (construct)"))))
+    return notes
+
 
 def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bool,
                          zettel_head: str | None = None,
@@ -1087,8 +1141,10 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
         aiming = _json.loads(read_component("lens/aiming.snapshot.json"))
         n_c = len(vocab.get("points", vocab) if isinstance(vocab, dict) else vocab)
         n_d = len(aiming.get("points", aiming) if isinstance(aiming, dict) else aiming)
-        ap_line = (f"**Aperture.** {n_d} domain anchors (aiming) · {n_c} concepts (vocab) — "
-                   f"the admission surface, pinned by the strategy lens pillar.\n\n")
+        ap_line = (f"**Canonical Aperture.** {n_d} composite anchors (each compositing primary "
+                   f"constituent concepts) · {n_c} concepts (vocab) — the admission surface, pinned "
+                   f"by the strategy lens pillar. domain⇄concept is MANY-TO-MANY (faceted navigation, "
+                   f"never a tree): " + N.wl("lexicon/aperture/index", "browse the anchors") + ".\n\n")
     except Exception:  # noqa: BLE001 — strategy snapshots optional at build time
         ap_line = ("**Aperture.** domains (aiming) + concepts (vocab) — the admission surface, "
                    "pinned by the strategy lens pillar (snapshots not readable at build).\n\n")
@@ -1695,6 +1751,7 @@ def run(args=None) -> int:
 
     # Trunk lenses (scratch) — same lens ids as the release kasten, root-resolved.
     notes += project_lexicon_constructs()
+    notes += project_aperture_anchors()
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
                                   zettel_head=zs[-1]["id"] if zs else None,
                                   items_report=(assoc or {}).get("report"))
