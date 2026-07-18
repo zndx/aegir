@@ -78,9 +78,9 @@ Managed by **devenv** (Nix) with **direnv** auto-activation via `.envrc`. Python
 ## Commands
 
 ```bash
-# IMPORTANT: always pass --no-sync to avoid clobbering patched CUDA extensions
-uv run --no-sync python main.py                                             # Shape/forward smoke tests
-uv run --no-sync python train.py --smoke-test --model-size tiny --epochs 3  # Training smoke test (synthetic data)
+# (--no-sync retired 2026-07-19 — plain uv run is supported; see CUDA Extension Notes)
+uv run python main.py                                             # Shape/forward smoke tests
+uv run python train.py --smoke-test --model-size tiny --epochs 3  # Training smoke test (synthetic data)
 
 # Multi-GPU training (e.g. 6x RTX 4090)
 uv run --no-sync torchrun --nproc_per_node=6 train.py --smoke-test --model-size small --epochs 30
@@ -129,9 +129,10 @@ uv pip install --no-deps \
 ```
 On a torch minor bump, pick the matching `cu12torchX.Ycxx11abiTRUE` assets from the same releases.
 
-**`--no-sync` status**: still required, but for a smaller reason than the old ABI fear: these wheels are
-URL-installed and not declared in `pyproject.toml`, so a plain `uv sync` would REMOVE them. Remaining
-hygiene step: declare them as direct-URL deps; until then keep `--no-sync`.
+**`--no-sync` is RETIRED (2026-07-19)**: the wheels are declared in `pyproject.toml` ([tool.uv.sources]
+URL pins + the `flash`/`mamba` extras) and locked — plain `uv sync --extra flash --extra mamba` and plain
+`uv run` are the supported path. The first full sync surfaced one undeclared-dep debt (grpcio ≥1.81.1 for
+the generated engine stubs), now pinned.
 
 **Still true (unrelated to ABI):** the Nix driver mask — torch's "no NVIDIA driver" needs
 `LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs`. Triton kernels on a non-default GPU need
