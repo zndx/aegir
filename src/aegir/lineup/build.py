@@ -1347,14 +1347,48 @@ def run(args=None) -> int:
                   f"+ {len(vws)} views across {sc['n_constructs']} constructs (`just metaflow` "
                   f"corpus). Table and column names are the artifacts themselves — no wrappers.\n\n"
                   + "\n".join(t_lines))))
+        # shape-bound DOMAINS from the run's SHACL shapes (the differentia arc, visible in the panel):
+        # class → table via the register projections; enum-kind props → `col ∈ {…}` constraint lines.
+        shape_proj: dict = {}
+        shape_idx: dict = {}
+        try:
+            from aegir.lineup.sources import sdg_run_root
+            from aegir.ontology.discriminability import shape_projections
+            from aegir.ontology.entities import _plural, _snake
+            _shp = (sdg_run_root() or Path("/nonexistent")) / "ontology" / "shapes.ttl"
+            if _shp.exists():
+                shape_proj = shape_projections(_shp)
+                for _cls in shape_proj:
+                    for _key in (_cls, _snake(_cls), _plural(_snake(_cls))):
+                        shape_idx.setdefault(_key, _cls)
+        except Exception as _e:  # noqa: BLE001 — shapes are additive; the panel renders without them
+            print(f"  (shape-bound constraints unavailable: {str(_e)[:80]})", flush=True)
         for n, e in tbls.items():
-            fk_lines = [f"- `{fk.get('col')}` → " +
-                        (N.wl("relational/table/" + fk.get("ref_table", ""), fk.get("ref_table", ""))
-                         if fk.get("ref_table") in known else f"`{fk.get('ref_table')}`") +
-                        f" · `{fk.get('ref_col')}`"
-                        for fk in e["fks"]]
+            # CONSTRAINTS — the unbounded category gets its own SECTION (RH): full statements live here
+            # (PRIMARY KEY · FOREIGN KEY · shape-bound enum domains, more kinds as they become
+            # derivable); the schema table keeps `key` as the bounded at-a-glance marker.
+            pk_cols = e.get("pk") if isinstance(e.get("pk"), list) else ([e.get("pk")] if e.get("pk") else [])
+            fk_lines = ([f"- `PRIMARY KEY ({', '.join(pk_cols)})`"] if pk_cols else [])
+            fk_lines += [f"- `FOREIGN KEY {fk.get('col')}` → " +
+                         (N.wl("relational/table/" + fk.get("ref_table", ""), fk.get("ref_table", ""))
+                          if fk.get("ref_table") in known else f"`{fk.get('ref_table')}`") +
+                         f" · `{fk.get('ref_col')}`"
+                         for fk in e["fks"]]
+            _cls = shape_idx.get(n)
+            if _cls:
+                from aegir.ontology.entities import _snake as _sn
+                colnames = {c["name"] for c in e["columns"]}
+                snake_reg = any("_" in c["name"] for c in e["columns"]) or n == n.lower()
+                for _prop, (_kind, _val) in sorted(shape_proj.get(_cls, {}).items()):
+                    if _kind != "enum":
+                        continue
+                    _col = _sn(_prop) if snake_reg else _prop
+                    if _col in colnames:
+                        fk_lines.append(f"- `{_col} ∈ {{{' · '.join(sorted(_val))}}}` "
+                                        f"— shape-bound domain (sh:in)")
             prov = ", ".join(e["constructs"][:4]) + ("…" if len(e["constructs"]) > 4 else "")
-            # the column detail TABLE — schema only (RH 2026-07-18: samples move to lists below Views)
+            # the column detail TABLE — schema only; `key` stays the bounded at-a-glance marker, the
+            # full (unbounded) constraint statements render in the Constraints section below.
             col_rows = ["| column | type | key |", "|---|---|---|"]
             for c in e["columns"]:
                 key = ("PK" if c["pk"] else "") + ("+" if c["pk"] and c["fk"] else "") + \
@@ -1408,7 +1442,7 @@ def run(args=None) -> int:
                       f"(verbatim; pk kind **{e.get('pk_kind') or ('composite' if e.get('junction') else '—')}**, "
                       f"pk `{e.get('pk') or '—'}`).\n\n"
                       + "\n".join(col_rows) + "\n\n"
-                      + ("**Foreign keys**\n" + "\n".join(fk_lines) + "\n\n" if fk_lines else "")
+                      + ("**Constraints**\n" + "\n".join(fk_lines) + "\n\n" if fk_lines else "")
                       + ("**Referenced by**\n" + "\n".join(ref_by)
                          + (f"\n- _…{more_ref} more_" if more_ref > 0 else "") + "\n\n" if ref_by else "")
                       + ((f"**Views over this table** ({len(vw)})\n" + "\n".join(vw_lines)
