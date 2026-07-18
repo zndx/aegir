@@ -14,7 +14,9 @@ function App() {
     <ConfigProvider
       theme={{
         algorithm: theme.darkAlgorithm,  // org norm: dark default (cldr-design-template); antd bridged until Kumo migration completes
-        token: { colorPrimary: "#6366f1", borderRadius: 6 },
+        token: { colorPrimary: "#6366f1", borderRadius: 6,
+                 // antd neutrals aligned to the Cloudera kumo tokens (theme-cloudera.css) for the bridge
+                 colorBgBase: "#12121a", colorTextBase: "#e5e7eb" },
       }}
     >
       <BrowserRouter>

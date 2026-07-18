@@ -34,7 +34,7 @@ export interface KBNote {
 
 // Flag accent per Data Product — the FedWiki "flag" reinterpreted as a lens color.
 const ACCENT: Record<string, string> = {
-  ontology: "#4f7cff",
+  ontology: "#6366f1",
   relational: "#13a884",
   content: "#e08e0b",
   lens: "#8a5cf6",
@@ -150,7 +150,7 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
           <div key={`j-${i}`} style={{ margin: "8px 0" }}>
             {obj.tables.map((t: any, ti: number) => (
               <div key={ti} style={{ margin: "8px 0" }}>
-                <div style={{ fontSize: 11, color: "#888", fontFamily: "monospace", marginBottom: 2 }}>
+                <div style={{ fontSize: 11, color: "var(--text-color-kumo-subtle)", fontFamily: "monospace", marginBottom: 2 }}>
                   {String(t.name ?? `table ${ti + 1}`)} · {(t.rows?.length ?? 0)} rows
                 </div>
                 <table style={{ borderCollapse: "collapse", fontSize: 12, width: "100%" }}>

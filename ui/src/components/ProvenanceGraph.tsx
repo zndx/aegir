@@ -29,8 +29,9 @@ function ArtifactNode({ data }: NodeProps) {
   const d = data as unknown as ArtifactData;
   return (
     <div style={{
-      background: d.focal ? "#222" : "#fff", color: d.focal ? "#fff" : "#333",
-      border: `2px solid ${d.focal ? "#4f7cff" : d.color}`, borderRadius: 8, padding: "5px 8px",
+      background: d.focal ? "var(--color-kumo-recessed)" : "var(--color-kumo-elevated)",
+      color: d.focal ? "var(--text-color-kumo-strong)" : "var(--text-color-kumo-default)",
+      border: `2px solid ${d.focal ? "var(--color-kumo-brand)" : d.color}`, borderRadius: 8, padding: "5px 8px",
       width: 150, textAlign: "center", fontSize: 11, cursor: d.focal ? "default" : "pointer",
     }}>
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
@@ -78,8 +79,8 @@ function Graph({ ego, onLink }: { ego: Ego; onLink: (id: string) => void }) {
       const id = `${source}->${target}:${n.edge}`;
       if (seen.has(id)) continue;
       seen.add(id);
-      es.push({ id, source, target, label: n.edge, style: { stroke: "#ccc" },
-                labelStyle: { fontSize: 9, fill: "#999" }, labelBgStyle: { fill: "#fff", fillOpacity: 0.85 } });
+      es.push({ id, source, target, label: n.edge, style: { stroke: "#3d3d4d" },
+                labelStyle: { fontSize: 9, fill: "#9ca3af" }, labelBgStyle: { fill: "#1a1a25", fillOpacity: 0.9 } });
     }
     return { nodes: ns, edges: es };
   }, [ego, fid]);
@@ -91,7 +92,7 @@ function Graph({ ego, onLink }: { ego: Ego; onLink: (id: string) => void }) {
       onNodeClick={(_, node) => { if (node.id !== fid) onLink(`provenance/${node.id}`); }}
       proOptions={{ hideAttribution: true }}
     >
-      <Background color="#eee" gap={16} />
+      <Background color="#2e2e3a" gap={16} />
       <Controls showInteractive={false} />
     </ReactFlow>
   );
@@ -112,22 +113,22 @@ function Inner({ focal, onLink }: { focal: number | null; onLink: (id: string) =
     return () => { live = false; };
   }, [focal]);
 
-  if (loading) return <div style={{ padding: 16, color: "#888", fontSize: 12 }}>loading lineage…</div>;
+  if (loading) return <div style={{ padding: 16, color: "var(--text-color-kumo-subtle)", fontSize: 12 }}>loading lineage…</div>;
   if (!ego || ego.error || !ego.focal)
     return (
-      <div style={{ padding: 16, color: "#888", fontSize: 12 }}>
+      <div style={{ padding: 16, color: "var(--text-color-kumo-subtle)", fontSize: 12 }}>
         provenance graph unavailable{ego?.error ? ` (${ego.error})` : ""} — is aegir_hx up?
       </div>
     );
 
   return (
     <div style={{ margin: "0 -4px 8px" }}>
-      <div style={{ height: 440, width: "100%", border: "1px solid #f0f0f0", borderRadius: 6, background: "#fcfcfd" }}>
+      <div style={{ height: 440, width: "100%", border: "1px solid var(--color-kumo-hairline)", borderRadius: 6, background: "var(--color-kumo-base)" }}>
         <ReactFlowProvider>
           <Graph ego={ego} onLink={onLink} />
         </ReactFlowProvider>
       </div>
-      <div style={{ fontSize: 11, color: "#888", textAlign: "center", padding: "3px 0" }}>
+      <div style={{ fontSize: 11, color: "var(--text-color-kumo-subtle)", textAlign: "center", padding: "3px 0" }}>
         <b>{ego.focal.name}</b> ({ego.focal.label}) · {ego.neighbors.length} neighbors
         {ego.truncated ? ` (capped at ${ego.cap}; more exist)` : ""} · click a node to walk the lineage →
       </div>
@@ -141,7 +142,7 @@ class Boundary extends Component<{ children: ReactNode }, { err: string | null }
   static getDerivedStateFromError(e: unknown) { return { err: e instanceof Error ? e.message : String(e) }; }
   render() {
     if (this.state.err)
-      return <div style={{ padding: 16, color: "#c0392b", fontSize: 12 }}>
+      return <div style={{ padding: 16, color: "var(--text-color-kumo-danger)", fontSize: 12 }}>
         provenance graph failed to render: {this.state.err} (see the browser console)</div>;
     return this.props.children;
   }

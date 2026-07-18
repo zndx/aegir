@@ -34,7 +34,7 @@ const ROOTS = ["archive", "current", "scratch"];
 function tab(active: boolean): React.CSSProperties {
   return {
     display: "block", padding: "5px 10px", borderRadius: 4, cursor: "pointer", fontSize: 13,
-    color: active ? "#fff" : "#333", background: active ? "#4f7cff" : "transparent",
+    color: active ? "#fff" : "var(--text-color-kumo-default)", background: active ? "var(--color-kumo-brand)" : "transparent",
     textDecoration: "none",
   };
 }
@@ -57,7 +57,7 @@ function saveTrail(layer: string, seed: string, trail: string[]): void {
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <>
-      <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5, display: "block", marginTop: 16 }}>
+      <Text strong style={{ fontSize: 11, color: "var(--text-color-kumo-inactive)", letterSpacing: 0.5, display: "block", marginTop: 16 }}>
         {title}
       </Text>
       <div style={{ display: "flex", flexDirection: "column", gap: 2, margin: "8px 0 8px" }}>{children}</div>
@@ -131,8 +131,8 @@ function Lineup() {
 
   return (
     <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
-      <div style={{ flex: "0 0 210px", borderRight: "1px solid #e5e5e5", padding: "14px 12px", overflowY: "auto", background: "#fafafb" }}>
-        <Text strong style={{ fontSize: 11, color: "#999", letterSpacing: 0.5 }}>SECTION</Text>
+      <div style={{ flex: "0 0 210px", borderRight: "1px solid var(--color-kumo-hairline)", padding: "14px 12px", overflowY: "auto", background: "var(--color-kumo-base)" }}>
+        <Text strong style={{ fontSize: 11, color: "var(--text-color-kumo-inactive)", letterSpacing: 0.5 }}>SECTION</Text>
         <Select
           value={root}
           size="small"
@@ -166,14 +166,14 @@ function Lineup() {
           </Text>
         )}
         {index && (
-          <div style={{ marginTop: 18, fontSize: 11, color: "#aaa" }}>
+          <div style={{ marginTop: 18, fontSize: 11, color: "var(--text-color-kumo-inactive)" }}>
             {index.counts.total} notes ·{" "}
             {Object.entries(index.counts.by_data_product).map(([k, v]) => `${v} ${k}`).join(" · ")}
           </div>
         )}
       </div>
 
-      <div style={{ flex: 1, display: "flex", overflowX: "auto", padding: 14, background: "#ececef" }}>
+      <div style={{ flex: 1, display: "flex", overflowX: "auto", padding: 14, background: "var(--color-kumo-canvas)" }}>
         {trail.map((id, i) => (
           <LineupPanel
             key={`${root}-${id}-${i}`}

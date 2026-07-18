@@ -189,7 +189,7 @@ export default function Classifications() {
                 title="Micro F1"
                 value={latest.micro_f1 ?? 0}
                 precision={4}
-                valueStyle={{ color: "#4f7cff" }}
+                valueStyle={{ color: "#6366f1" }}
               />
             </Col>
             <Col span={8}>
@@ -197,7 +197,7 @@ export default function Classifications() {
                 title="Macro F1"
                 value={latest.macro_f1 ?? 0}
                 precision={4}
-                valueStyle={{ color: "#4f7cff" }}
+                valueStyle={{ color: "#6366f1" }}
               />
             </Col>
             <Col span={8}>
