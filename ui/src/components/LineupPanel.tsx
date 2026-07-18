@@ -181,7 +181,7 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
         continue;
       }
       blocks.push(
-        <pre key={`c-${i}`} style={{ background: "var(--color-kumo-recessed)", padding: 8, borderRadius: 4, fontSize: 11.5, overflowX: "auto", margin: "6px 0" }}>
+        <pre key={`c-${i}`} style={{ background: "var(--color-kumo-recessed)", padding: 8, borderRadius: 4, fontSize: 11.5, margin: "6px 0", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
           {obj ? JSON.stringify(obj, null, 2) : raw}
         </pre>,
       );

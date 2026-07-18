@@ -1434,11 +1434,11 @@ def run(args=None) -> int:
                 vtypes.append(S._infer_sql_type(col_vals) if col_vals else "text")
             col_tbl = ["| column | type |", "|---|---|"] + \
                       [f"| `{h}` | {t} |" for h, t in zip(headers, vtypes)]
-            sample_tbl = []
-            if rows_:
-                sample_tbl = ["| " + " | ".join(f"`{h}`" for h in headers) + " |",
-                              "|" + "---|" * len(headers)] + \
-                             ["| " + " | ".join(str(x)[:28] for x in r[:10]) + " |" for r in rows_[:4]]
+            sample_tbls = []
+            for i, h in enumerate(headers):
+                vals = [str(r[i])[:28] for r in rows_[:4] if i < len(r)]
+                if vals:
+                    sample_tbls.append(f"| `{h}` |\n|---|\n" + "\n".join(f"| {v} |" for v in vals))
             erd_nodes = [{"id": vn, "kind": "view", "focal": True,
                           "cols": [f"{h}: {t}" for h, t in list(zip(headers, vtypes))[:8]]}]
             erd_edges = []
@@ -1456,7 +1456,8 @@ def run(args=None) -> int:
                 body=(f"**`{vn}`** — generated view (verbatim; kind **{v.get('kind') or '—'}**) over "
                       + (" · ".join(N.wl("relational/table/" + t, t) for t in srcs) or "`—`") + ".\n\n"
                       + "\n".join(col_tbl) + "\n\n"
-                      + (("**Result sample**\n" + "\n".join(sample_tbl) + "\n\n") if sample_tbl else "")
+                      + (("**Sample Values**\n\n" + "\n\n".join(sample_tbls) + "\n\n")
+                         if sample_tbls else "")
                       + "```sql\n" + (v.get("sql") or "").strip() + "\n```\n\n"
                       + f"_Construct: {v.get('construct')}_")))
         print(f"  relational(sdg): {len(tbls)} tables + {len(vws)} views VERBATIM "
