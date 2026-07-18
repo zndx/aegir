@@ -107,7 +107,9 @@ export default function PanelView({ app, params, height = 540 }: PanelViewProps)
   return (
     <div style={{ position: "relative", overflow: "hidden", maxWidth: "100%" }}
          onWheelCapture={gateWheel} onTouchMoveCapture={gateTouch}>
-      <div ref={hostRef} style={{ minHeight: height, maxWidth: "100%", display: "grid", placeItems: "center" }} />
+      {/* a plain block with definite width — a scale_width bokeh root SIZES FROM its container, and a
+          centered grid cell sizes from content (circular → 0×0, the invisible-embed failure mode) */}
+      <div ref={hostRef} style={{ minHeight: height, width: "100%" }} />
       <div style={{
         position: "absolute", top: 10, left: "50%", transform: "translateX(-50%)",
         padding: "3px 10px", borderRadius: 12, fontSize: 11, whiteSpace: "nowrap",
