@@ -24,9 +24,14 @@ practice:
 - **Values are token-grain nodes.** Every pooled value lands as `(:Token)-[:TOKEN_OF]->(:Dataset)`
   (full value + ≥2-char fragments — scan-compatible semantics), so noun admission is a graph query:
   `governance.provenance.provenance_backed(token)`.
-- **Known gap (follow-up):** `SdgCorporaFlow.project` does not run `project_atlas_ddl` (the
-  SemanticCorpusFlow-era Atlas/OL emitter) — the corpus main path emits OTel span facets only. Restoring
-  main-path emission is the next increment.
+- **Main-path emission RESTORED (same day, task #23).** `SdgCorporaFlow.project` now emits one OL run per
+  corpus run via `governance.provenance.emit_corpus_lineage` — at **construct grain** (the current truth;
+  deliberately NOT the template-era `project_atlas_ddl` footprint, which projects the vestigial catalog
+  shape). The run declares the provenance triple from its run-zettel (window · strategy_id · code commit +
+  per-stage stage_keys); inputs = the strategy dataset + the pool datasets; outputs = ontology/constructs/
+  chapters + one dataset per construct, `PART_OF`-linked. Best-effort like the lineup tail; backfill:
+  `python -m aegir.governance.provenance <run_dir>`. Verified on the taxonomy run: 24 complete
+  `gittables → harvest run → pool → corpus run` paths walkable in the ego-graph.
 
 ## What is built (v1.5 — the instance-level ego-graph)
 The panel renders a node's **first-order neighbourhood** as a ReactFlow graph

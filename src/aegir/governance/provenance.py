@@ -87,6 +87,66 @@ def provenance_backed(token: str) -> "bool | None":
         return None
 
 
+def emit_corpus_lineage(run_dir: "Path | str") -> dict:
+    """The corpus MAIN-PATH emission (task #23 — restores what the SemanticCorpusFlow→SdgCorporaFlow
+    succession dropped): one OL run per corpus flow run, at CONSTRUCT grain (the current truth — NOT the
+    template-era project_atlas_ddl footprint, which projects the vestigial catalog shape).
+
+    Declares the provenance triple from the run-zettel — (window, strategy_id, code commit) + per-stage
+    stage_keys — as run-level identity; inputs are the strategy dataset + the pool datasets the rows core
+    reads (as published at emission); outputs are the run's ontology/constructs/chapters datasets plus one
+    dataset per construct (n_tables/n_views/stage_key facets), PART_OF-linked for walkability. Idempotent.
+    """
+    run_dir = Path(run_dir)
+    zs = sorted((run_dir / "runs").glob("*.json"))
+    if not zs:
+        raise FileNotFoundError(f"no run-zettel under {run_dir}/runs")
+    z = json.loads(zs[-1].read_text())
+    versions, rid = z.get("versions", {}), z["id"]
+    metrics = json.loads((run_dir / "metrics.json").read_text()) if (run_dir / "metrics.json").exists() else {}
+
+    inputs = [{"namespace": "strategy", "name": versions.get("strategy_id", "undeclared"),
+               "facets": {"strategy": {"commit": versions.get("strategy_commit", "")}}}]
+    vp = _GT_DIR / "value_profiles.json"
+    if vp.exists():
+        inputs += [{"namespace": "pools", "name": f"semantic/{st}"} for st in sorted(json.loads(vp.read_text()))]
+    dp = _GT_DIR / "differentia_profiles.json"
+    if dp.exists():
+        inputs += [{"namespace": "pools", "name": f"differentia/{c}"}
+                   for c in sorted(json.loads(dp.read_text()).get("pools") or {})]
+
+    constructs = sorted((run_dir / "constructs").glob("*.json"))
+    outputs = [
+        {"namespace": "corpus", "name": f"{rid}/ontology",
+         "facets": {"ontology": {k: v for k, v in (metrics.get("structure") or {}).items()
+                                 if isinstance(v, (int, float, str, bool))}}},
+        {"namespace": "corpus", "name": f"{rid}/constructs", "facets": {"corpus": {"n": len(constructs)}}},
+        {"namespace": "corpus", "name": f"{rid}/chapters",
+         "facets": {"corpus": {"n": metrics.get("n_chapters", 0),
+                               "prose_chars_median": metrics.get("prose_chars_median", 0)}}},
+    ]
+    for cf in constructs:
+        c = json.loads(cf.read_text())
+        outputs.append({"namespace": "corpus", "name": f"{rid}/construct/{cf.stem}",
+                        "facets": {"construct": {"n_tables": len(c.get("tables", [])),
+                                                 "n_views": len(c.get("views", [])),
+                                                 "stage_key": c.get("stage_key", "")}}})
+
+    run_id = str(uuid.uuid5(uuid.NAMESPACE_URL, f"{ol.PRODUCER}/sdg_corpora_flow/{z.get('metaflow_run_id', rid)}"))
+    event = {"eventType": "COMPLETE", "eventTime": datetime.now(timezone.utc).isoformat(),
+             "producer": ol.PRODUCER, "run": {"runId": run_id},
+             "job": {"namespace": "aegir", "name": "sdg_corpora_flow"},
+             "inputs": inputs, "outputs": outputs}
+    res = ol.ingest_run_event(event)
+    with G.connect() as conn:
+        G.merge_node(conn, "Run", {"run_id": run_id},
+                     {k: str(v) for k, v in versions.items() if not isinstance(v, dict)})
+        for cf in constructs:                             # construct → collection membership (walkability)
+            G.merge_edge(conn, "Dataset", {"qualifiedName": f"corpus:{rid}/construct/{cf.stem}"},
+                         "PART_OF", "Dataset", {"qualifiedName": f"corpus:{rid}/constructs"})
+    return {**res, "zettel": rid}
+
+
 def backfill() -> dict:
     """Re-project BOTH local pool artifacts into the graph (truth → Atlas, rebuildable any time)."""
     out = {}
@@ -114,5 +174,11 @@ def backfill() -> dict:
 
 
 if __name__ == "__main__":
-    for job, res in backfill().items():
-        print(f"{job}: run {res['run_id'][:8]}… · {res['outputs']} pool datasets · {res['tokens']} tokens")
+    import sys as _sys
+    if len(_sys.argv) > 1:                                # corpus-run backfill: <run_dir>
+        r = emit_corpus_lineage(_sys.argv[1])
+        print(f"sdg_corpora_flow[{r['zettel']}]: run {r['run_id'][:8]}… · "
+              f"{r['inputs']} inputs · {r['outputs']} datasets · {r['columns']} column edges")
+    else:
+        for job, res in backfill().items():
+            print(f"{job}: run {res['run_id'][:8]}… · {res['outputs']} pool datasets · {res['tokens']} tokens")

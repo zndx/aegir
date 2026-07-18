@@ -549,6 +549,17 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             print(f"  lineup: {line.strip() or 'projected'}", flush=True)
         except Exception as e:  # noqa: BLE001 — projection is the tail; never lose the corpus to it
             print(f"  lineup projection skipped ({str(e)[:100]})", flush=True)
+        # Atlas+OL main-path emission (task #23 — the enhancement the flow succession dropped): the run
+        # becomes a walkable OL run in aegir_hx at CONSTRUCT grain, declaring the provenance triple from
+        # the run-zettel. Best-effort like the lineup: a down graph never loses the corpus; backfill via
+        # `python -m aegir.governance.provenance <run_dir>`.
+        try:
+            from aegir.governance.provenance import emit_corpus_lineage
+            lr = emit_corpus_lineage(Path(self.run_out))
+            print(f"  lineage → aegir_hx: OL run {lr['run_id'][:8]}… · {lr['outputs']} datasets", flush=True)
+        except Exception as e:  # noqa: BLE001
+            print(f"  corpus lineage deferred ({str(e)[:100]}) — backfill: "
+                  f"python -m aegir.governance.provenance {self.run_out}", flush=True)
         self.next(self.end)
 
     @traced_step
