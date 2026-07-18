@@ -36,8 +36,11 @@ class Constraint:
     """One quantified relational restriction: ``property quantifier filler`` (e.g. ``{p} some {Y}``)."""
     property: str          # verb/relation phrase, slot-carrying (e.g. "{p}") or a concrete label
     filler: str            # the filler noun phrase, slot-carrying (e.g. "{Y}") or a concrete label
-    quantifier: str = "some"   # "some" | "only" | ""
+    quantifier: str = "some"   # "some" | "only" | "exactly" | "min" | "max" | ""
     negated: bool = False
+    count: "int | None" = None   # cardinality for exactly/min/max (recovered from Manchester —
+    #                              DeepOnto's cardinality support is incomplete/raising, and its
+    #                              exceptions previously dropped these restrictions entirely)
 
 
 @dataclass
@@ -64,11 +67,32 @@ def _art(noun: str) -> str:
     return "an" if _VOWEL.match(core) else "a"
 
 
-def _count(q: str) -> str:
+_NUMWORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven",
+            8: "eight", 9: "nine"}
+
+
+def _numword(n: "int | None") -> str:
+    return _NUMWORD.get(n or 1, str(n))
+
+
+def _count(c: "Constraint | str") -> str:
+    """Natural count phrase for a constraint (cardinality-aware). Accepts a bare quantifier string
+    for back-compat with pre-cardinality callers."""
+    q = c if isinstance(c, str) else c.quantifier
+    n = None if isinstance(c, str) else c.count
+    if q == "exactly":
+        return f"exactly {_numword(n)}"
+    if q == "min":
+        return f"at least {_numword(n)}"
+    if q == "max":
+        return f"at most {_numword(n)}"
     return {"some": "at least one", "only": "only", "": "a"}.get(q, "a")
 
 
-def _qword(q: str) -> str:
+def _qword(c: "Constraint | str") -> str:
+    q = c if isinstance(c, str) else c.quantifier
+    if q in ("exactly", "min", "max"):
+        return _count(c)                      # cardinalities read as their count phrase in verb frames
     return {"some": "some", "only": "only", "": ""}.get(q, "")
 
 
@@ -86,7 +110,7 @@ def slots_of(text: str) -> set[str]:
 def _verb_rel(c: Constraint, connective: str = "that") -> str:
     """Verb-framing as DeepOnto uses it: '<conn> {p} some {Y}'. Reads given {p} fills as a verb."""
     neg = "does not " if c.negated else ""
-    q = _qword(c.quantifier)
+    q = _qword(c)
     return " ".join(w for w in (connective, neg + c.property, q, c.filler) if w).strip()
 
 
@@ -95,14 +119,14 @@ def _rel_phrase(c: Constraint) -> str:
     'stands ... and stand ...'): 'the {p} relation to at least one {Y}'. Robust to {p}'s filled form."""
     if c.negated:
         return f"no {c.property} relation to any {c.filler}"
-    return f"the {c.property} relation to {_count(c.quantifier)} {c.filler}"
+    return f"the {c.property} relation to {_count(c)} {c.filler}"
 
 
 def _via(c: Constraint) -> str:
     """'to at least one {Y} via {p}' — relational-fronted tail."""
     if c.negated:
         return f"to no {c.filler} via {c.property}"
-    return f"to {_count(c.quantifier)} {c.filler} via {c.property}"
+    return f"to {_count(c)} {c.filler} via {c.property}"
 
 
 def _join(clauses: list[str], conj: str = "and") -> str:
@@ -110,6 +134,50 @@ def _join(clauses: list[str], conj: str = "and") -> str:
     if len(clauses) <= 1:
         return clauses[0] if clauses else ""
     return ", ".join(clauses[:-1]) + f", {conj} " + clauses[-1]
+
+
+# ── Manchester-side recovery (RH 2026-07-19: DeepOnto cardinality is incomplete/raising) ──────
+
+_REL_VERB = {  # curated BFO/CCO-ish relation → verb phrase (de-camel fallback handles the rest)
+    "realizes": "realizes", "realizedIn": "is realized in", "borneBy": "is borne by",
+    "bears": "bears", "hasBearer": "has bearer", "inheresIn": "inheres in",
+    "participatesIn": "participates in", "hasParticipant": "has participant",
+    "isAbout": "is about", "designates": "designates", "prescribes": "prescribes",
+    "hasPart": "has part", "partOf": "is part of",
+}
+_MREST = re.compile(r"(?:[\w-]+:)?(\w+)\s+(some|only|exactly|min|max)\s*(\d+)?\s+\{(\w+):Class\}")
+
+
+def _prop_phrase(local: str) -> str:
+    if local in _REL_VERB:
+        return _REL_VERB[local]
+    words = re.sub(r"(?<!^)(?=[A-Z])", " ", local).lower()
+    return f"is {words}" if words.endswith(" by") else words
+
+
+def merge_manchester_restrictions(parts: VerbalizationParts, manchester: str) -> VerbalizationParts:
+    """Recover what DeepOnto dropped or degraded, from the axiom's own Manchester source (authoritative).
+
+    DeepOnto's verbaliser raises on cardinality restrictions (exactly/min/max N) — the harness's
+    per-expression ``except: continue`` then lost the WHOLE restriction, and 'exactly one' phrasings
+    were lucky outcomes at best (RH). This pure pass re-reads the template's Manchester: an existing
+    walked constraint on the same filler gets its degraded quantifier UPGRADED; a restriction absent
+    from the walk is APPENDED (slot-faithful '{Slot}' filler; property via the curated lexicon with
+    de-camel fallback, participles prefixed 'is')."""
+    for m in _MREST.finditer(manchester or ""):
+        prop, quant, num, slot = m.group(1), m.group(2), m.group(3), m.group(4)
+        count = int(num) if num else None
+        existing = next((c for c in parts.constraints if slot in c.filler), None)
+        if existing is not None:
+            if quant in ("exactly", "min", "max") and existing.quantifier not in ("exactly", "min", "max"):
+                existing.quantifier, existing.count = quant, count
+            # normalize DeepOnto's bare participles ('borne by' → 'is borne by') so verb frames read
+            if existing.property.endswith(" by") and not existing.property.startswith(("is ", "are ")):
+                existing.property = "is " + existing.property
+            continue
+        parts.constraints.append(Constraint(property=_prop_phrase(prop), filler="{" + slot + "}",
+                                            quantifier=quant, count=count))
+    return parts
 
 
 # ── frame composition ─────────────────────────────────────────────────────────
@@ -134,7 +202,10 @@ def _relational_frames(p: VerbalizationParts) -> list[str]:
     # relational-fronted: only clean for a single constraint with a property
     if len(C) == 1 and C[0].property and not C[0].negated:
         c = C[0]
-        frames.append(f"The {c.property} relation connects each {S} to {_count(c.quantifier)} {c.filler}.")
+        frames.append(f"The {c.property} relation connects each {S} to {_count(c)} {c.filler}.")
+    # BFO-aware role framing (RH): roles read best with their bearer/realization fronted
+    if "role" in head.lower() and C:
+        frames.append(f"As a role, {S} is characterised by {_join([_rel_phrase(c) for c in C])}.")
     if is_equiv:
         frames.append(f"{S} is exactly {art_head} {_join([_verb_rel(c, 'that') for c in C])}.")
     return frames

@@ -759,11 +759,17 @@ def extract_parts(template: CatalogTemplate):
         # dedupe; drop the vacuous implicit-subject heads DeepOnto emits
         supers = [s for s in dict.fromkeys(supers)
                   if s and s.lower() not in ("something", "thing", "entity")]
-        if not constraints and not supers:
-            return None
         kind = "equivalence" if list(onto.get_equivalence_axioms("Classes")) else "subsumption"
-        return VerbalizationParts(subject="{" + head + "}", constraints=constraints,
-                                  named_supers=supers, axiom_kind=kind)
+        parts = VerbalizationParts(subject="{" + head + "}", constraints=constraints,
+                                   named_supers=supers, axiom_kind=kind)
+        # Manchester-side recovery (RH 2026-07-19): cardinality restrictions DeepOnto raised on —
+        # and therefore whole dropped restrictions — are re-read from the template's own axiom text.
+        # Runs BEFORE the emptiness check so a cardinality-only template still yields parts.
+        from aegir.ontology.verbalization import merge_manchester_restrictions
+        parts = merge_manchester_restrictions(parts, template.manchester_template or "")
+        if not parts.constraints and not parts.named_supers:
+            return None
+        return parts
     finally:
         if omn_path and omn_path.exists():
             try:
