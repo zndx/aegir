@@ -76,6 +76,20 @@ def themed(model, k: dict):
         cb.background_fill_color = k["bg"]
         cb.major_label_text_color = k["subtle"]
         cb.title_text_color = k["subtle"]
+    # text GLYPHS (hv chord/graph node labels render as Text glyphs, explicit black — sometimes as a
+    # Value('black') spec) + annotations. Only a FIELD spec means deliberate data-driven text color;
+    # None / plain str / scalar Value specs are all theme-owned.
+    from bokeh.models import Label, LabelSet, Text
+
+    def _scalar(spec) -> bool:
+        return spec is None or isinstance(spec, str) or getattr(spec, "field", None) is None
+
+    for tg in model.select(dict(type=Text)):
+        if _scalar(tg.text_color):
+            tg.text_color = k["text"]
+    for lab in list(model.select(dict(type=Label))) + list(model.select(dict(type=LabelSet))):
+        if _scalar(getattr(lab, "text_color", None)):
+            lab.text_color = k["text"]
     return model
 
 
