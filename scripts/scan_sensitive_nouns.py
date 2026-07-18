@@ -125,9 +125,11 @@ def scan_chapters(root: Path) -> "tuple[list, list]":
                 for i in range(len(words) - len(b) + 1))
 
         allowed: "set[str]" = set()
-        # scan line-wise so the hit report carries usable context
+        # scan line-wise so the hit report carries usable context. Match on the FULL line — truncating
+        # BEFORE the match manufactures a word boundary at the cut ('…record of intel|ligence' → \bintel\b
+        # matches at end-of-string; the 2026-07-17 corpus-taxonomy false positives). Truncate only the report.
         for line in text.splitlines():
-            for v, brand in real_entity_hits([line.strip()[:120]]):
+            for v, brand in real_entity_hits([line.strip()]):
                 if _provenanced(brand):        # traceable to explicit GitTables lineage → permitted (RH 2026-07-14)
                     continue
                 if brand in allowed or _domain_initialism(brand):
@@ -142,7 +144,7 @@ def scan_chapters(root: Path) -> "tuple[list, list]":
                         rf"systems|health(?:care)?|cloud|labs?)\b", line):
                     continue
                 (quoted if "FinePDFs" in line else ours).append(
-                    (str(md.relative_to(root)), v, brand))
+                    (str(md.relative_to(root)), v[:120], brand))
     return ours, quoted
 
 
