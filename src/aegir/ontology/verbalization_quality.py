@@ -3,7 +3,7 @@
 Entropy (audit_verbalization_entropy) is NECESSARY but not SUFFICIENT: diverse frames can be diverse
 garbage. This module adds the sufficiency half, three instruments per RH's spec:
 
-  * **Local-LM perplexity** — pythia-160m (cached, offline, spare GPU) scores each verbalization's
+  * **Local-LM perplexity** — Qwen3-1.7B-Base (spare GPU 4, bf16; the CLT bluelightai/clt-qwen3-1.7b-base-20k rides this same base → one scorer, future feature-space instrument) scores each verbalization's
     fluency; reported RELATIVE to the legacy DeepOnto single-string (ratio ≤ 1 = at least as natural).
     Slots are filled deterministically (de-camelCased slot names) before scoring — perplexity on
     ``{Marker}`` text would be meaningless.
@@ -45,13 +45,13 @@ def _ppl_load():
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
     dev = os.environ.get("AEGIR_PPL_DEVICE", "cuda:4" if torch.cuda.is_available() else "cpu")
-    name = os.environ.get("AEGIR_PPL_MODEL", "EleutherAI/pythia-160m")
+    name = os.environ.get("AEGIR_PPL_MODEL", "Qwen/Qwen3-1.7B-Base")
     try:                                   # cache-first (air-gap friendly); one-time fetch fallback
         _PPL["tok"] = AutoTokenizer.from_pretrained(name, local_files_only=True)
-        _PPL["model"] = AutoModelForCausalLM.from_pretrained(name, local_files_only=True)
+        _PPL["model"] = AutoModelForCausalLM.from_pretrained(name, local_files_only=True, dtype="bfloat16")
     except OSError:
         _PPL["tok"] = AutoTokenizer.from_pretrained(name)
-        _PPL["model"] = AutoModelForCausalLM.from_pretrained(name)
+        _PPL["model"] = AutoModelForCausalLM.from_pretrained(name, dtype="bfloat16")
     _PPL["model"] = _PPL["model"].to(dev).eval()
     _PPL["device"] = dev
 

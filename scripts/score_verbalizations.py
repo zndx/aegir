@@ -47,7 +47,7 @@ def main() -> int:
     print(f"{len(rows)} templates with legacy + frames", flush=True)
 
     # 1. perplexity — every template, frames vs legacy
-    print("scoring perplexity (pythia-160m)…", flush=True)
+    print("scoring perplexity (AEGIR_PPL_MODEL, default Qwen3-1.7B-Base @ cuda:4)…", flush=True)
     leg_ppl = Q.perplexity([Q.fill_slots(r["legacy"]) for r in rows])
     frm_ppl = []
     for r in rows:
