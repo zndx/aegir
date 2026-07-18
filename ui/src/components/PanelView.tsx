@@ -53,8 +53,27 @@ export default function PanelView({ app, params, height = 540 }: PanelViewProps)
   // multi-touch reaches the plot. A transient hint chip teaches the modifier.
   const [hint, setHint] = useState(false);
   const hintTimer = useRef<number | undefined>(undefined);
+  // iPadOS Safari does NOT reliably stamp ctrlKey onto trackpad wheel events (hardware keyboard
+  // attached), so the modifier is tracked from KEYBOARD events directly — the wheel gate consults
+  // this state as well as the event flags. Cleared on blur/hide so a missed keyup can't wedge it.
+  const modHeld = useRef(false);
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => { if (e.key === "Control" || e.key === "Meta") modHeld.current = true; };
+    const up = (e: KeyboardEvent) => { if (e.key === "Control" || e.key === "Meta") modHeld.current = false; };
+    const clear = () => { modHeld.current = false; };
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    window.addEventListener("blur", clear);
+    document.addEventListener("visibilitychange", clear);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+      window.removeEventListener("blur", clear);
+      document.removeEventListener("visibilitychange", clear);
+    };
+  }, []);
   const gateWheel = (e: React.WheelEvent) => {
-    if (e.ctrlKey || e.metaKey) return;                 // modifier held → the plot gets the gesture
+    if (e.ctrlKey || e.metaKey || modHeld.current) return;   // modifier held → the plot gets the gesture
     e.stopPropagation();
     setHint(true);
     window.clearTimeout(hintTimer.current);
