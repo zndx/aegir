@@ -92,6 +92,7 @@ function Graph({ ego, onLink }: { ego: Ego; onLink: (id: string) => void }) {
     <ReactFlow
       nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.2 }}
       nodesDraggable={false} nodesConnectable={false} elementsSelectable
+      zoomOnScroll={false} zoomActivationKeyCode="Control"  // same gesture gate as the embeds: plain scroll passes to the page
       onNodeClick={(_, node) => { if (node.id !== fid) onLink(`provenance/${node.id}`); }}
       proOptions={{ hideAttribution: true }}
     >

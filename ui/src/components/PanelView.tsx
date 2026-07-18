@@ -45,6 +45,24 @@ async function ensureBokeh(): Promise<void> {
 export default function PanelView({ app, params, height = 540 }: PanelViewProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // GESTURE GATE (RH): plain scroll must never be trapped by the embed — the page scrolls; the
+  // plot's wheel/pan tools engage only while Ctrl/⌘ is held (the maps-embed idiom). Mechanism:
+  // capture-phase interception on the WRAPPER runs before the bokeh canvas's own listeners —
+  // stopPropagation starves the canvas of the event WITHOUT preventDefault, so native page scroll
+  // proceeds. Hover/click are untouched (tooltips keep working); one-finger touch scrolls the page,
+  // multi-touch reaches the plot. A transient hint chip teaches the modifier.
+  const [hint, setHint] = useState(false);
+  const hintTimer = useRef<number | undefined>(undefined);
+  const gateWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) return;                 // modifier held → the plot gets the gesture
+    e.stopPropagation();
+    setHint(true);
+    window.clearTimeout(hintTimer.current);
+    hintTimer.current = window.setTimeout(() => setHint(false), 1400);
+  };
+  const gateTouch = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) e.stopPropagation();    // one finger = page scroll; two = plot gesture
+  };
   // the live doc theme follows the UI mode (aegir.viz.theme) — mode is part of the session key,
   // so toggling re-embeds the panel with a fresh, matching-theme session
   const mode = useColorMode();
@@ -86,5 +104,18 @@ export default function PanelView({ app, params, height = 540 }: PanelViewProps)
         message={`Live view '${app}' failed to load`} description={error} />
     );
   }
-  return <div ref={hostRef} style={{ minHeight: height, display: "grid", placeItems: "center" }} />;
+  return (
+    <div style={{ position: "relative" }} onWheelCapture={gateWheel} onTouchMoveCapture={gateTouch}>
+      <div ref={hostRef} style={{ minHeight: height, display: "grid", placeItems: "center" }} />
+      <div style={{
+        position: "absolute", top: 10, left: "50%", transform: "translateX(-50%)",
+        padding: "3px 10px", borderRadius: 12, fontSize: 11, whiteSpace: "nowrap",
+        background: "var(--color-kumo-elevated)", border: "1px solid var(--color-kumo-hairline)",
+        color: "var(--text-color-kumo-subtle)", pointerEvents: "none",
+        opacity: hint ? 1 : 0, transition: "opacity 0.25s ease",
+      }}>
+        hold Ctrl to zoom / pan the chart
+      </div>
+    </div>
+  );
 }
