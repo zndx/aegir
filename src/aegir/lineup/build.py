@@ -1369,8 +1369,11 @@ def run(args=None) -> int:
             vw_lines = [f"- {N.wl('relational/view/' + v, v)}"
                         + (f" ({vws[v].get('kind')})" if vws.get(v, {}).get("kind") else "")
                         for v in vw[:8]]
-            sample_lines = [f"- `{c['name']}` — " + " · ".join(f"`{s}`" for s in c["samples"])
-                            for c in e["columns"] if c["samples"]]
+            sample_tables = []
+            for c in e["columns"]:
+                if c["samples"]:
+                    sample_tables.append(f"| `{c['name']}` |\n|---|\n"
+                                         + "\n".join(f"| {s} |" for s in c["samples"]))
             # the first-order ERD payload (rendered by the React panel; bounded neighborhood)
             erd_nodes = [{"id": n, "kind": "junction" if e.get("junction") else "table", "focal": True,
                           "cols": [f"{c['name']}: {c['type']}" for c in e["columns"][:8]]}]
@@ -1410,7 +1413,8 @@ def run(args=None) -> int:
                          + (f"\n- _…{more_ref} more_" if more_ref > 0 else "") + "\n\n" if ref_by else "")
                       + ((f"**Views over this table** ({len(vw)})\n" + "\n".join(vw_lines)
                           + (f"\n- _…{len(vw) - 8} more_" if len(vw) > 8 else "") + "\n\n") if vw else "")
-                      + (("**Samples**\n" + "\n".join(sample_lines) + "\n\n") if sample_lines else "")
+                      + (("**Sample Values**\n\n" + "\n\n".join(sample_tables) + "\n\n")
+                         if sample_tables else "")
                       + f"_Constructs: {prov}_")))
         # VIEW notes (RH 2026-07-18): every view is a first-class panel with the same anatomy as its
         # source tables — ERD header (source tables → the view), output columns (from the view's own

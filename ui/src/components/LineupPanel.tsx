@@ -106,8 +106,12 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
       while (i < lines.length && lines[i].trim().startsWith("|")) { rows.push(lines[i]); i++; }
       const header = cells(rows[0]);
       const data = rows.slice(1).filter((r) => !/^\s*\|[\s:|-]+\|\s*$/.test(r)).map(cells);
+      // single-column tables (Sample Values) flow side-by-side as a SET; wide tables span the panel
+      const single = header.length === 1;
       blocks.push(
-        <table key={`t-${i}`} style={{ borderCollapse: "collapse", fontSize: 12, margin: "6px 0", width: "100%" }}>
+        <table key={`t-${i}`} style={single
+          ? { borderCollapse: "collapse", fontSize: 12, margin: "6px 12px 6px 0", display: "inline-table", verticalAlign: "top" }
+          : { borderCollapse: "collapse", fontSize: 12, margin: "6px 0", width: "100%" }}>
           <thead>
             <tr>{header.map((h, j) => (
               <th key={j} style={{ textAlign: "left", borderBottom: "1px solid var(--color-kumo-line)", padding: "2px 6px", color: "var(--text-color-kumo-subtle)" }}>{h}</th>
