@@ -63,6 +63,16 @@ ObjectProperty: bfo:0000196
 ObjectProperty: bfo:0000197
 """
 
+# #27 move 1 (STAGED ARMING): AEGIR_RELATION_SIGNATURES=1 appends BFO-faithful Domain/Range/InverseOf
+# for the numeric properties + grounds sdg relation coins (SubPropertyOf their nominal BFO parents) —
+# turning the ~39 verified miscasts into UNSAT SIGNALS at realize (Sweep-B doctrine). OFF by default
+# until move 2 re-authors those axioms; verified isolated by scripts/verify_relation_signatures.py
+# (33/33 lint heads + 6 reasoner-only catches).
+import os as _os
+if _os.environ.get("AEGIR_RELATION_SIGNATURES") == "1":
+    from aegir.ontology.relation_signatures import SIGNATURES_OMN as _SIG
+    NUMERIC_BFO = NUMERIC_BFO + _SIG
+
 PROBE_RE = re.compile(re.escape(TEST_NAMESPACE) + r"#T_[A-Za-z0-9_]+")
 LABEL_RE = re.compile(r'"ZZ([A-Za-z0-9_]+)ZZ"')
 # an sdg: domain class as a full IRI (the form render_batch emits after PROBE_RE unification)
