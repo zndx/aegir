@@ -136,7 +136,7 @@ export default function PanelView({ app, params, height = 540 }: PanelViewProps)
         color: "var(--text-color-kumo-subtle)", pointerEvents: "none",
         opacity: hint ? 1 : 0, transition: "opacity 0.25s ease",
       }}>
-        hold Ctrl to zoom / pan the chart
+        hold Ctrl to zoom the chart
       </div>
     </div>
   );
