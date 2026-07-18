@@ -40,17 +40,29 @@ _GT_PROFILES = REPO / "build/gittables/value_profiles.json"
 
 def gittables_provenance_tokens() -> "set[str]":
     """Lowercased tokens (full values + component words) present in the GitTables value pools — the explicit
-    lineage set. A brand/particular whose token is in here is provenance-backed → not a violation."""
+    lineage set. A brand/particular whose token is in here is provenance-backed → not a violation (RH
+    2026-07-18: 'lineage is critical when it comes to admitting nouns, and provable sourcing from gittables
+    is a-ok'). Covers BOTH pool artifacts: the semantic-type pools (value_profiles.json) and the
+    differentia-type pools (differentia_profiles.json — every value carries <sha>:<col> lineage)."""
     toks: "set[str]" = set()
-    try:
-        pools = json.loads(_GT_PROFILES.read_text())
-    except (OSError, ValueError):
-        return toks
-    for _st, rec in pools.items():
-        for pair in rec.get("values", []):
+
+    def _add(values) -> None:
+        for pair in values or []:
             v = str(pair[0] if isinstance(pair, (list, tuple)) else pair).lower()
             toks.add(v)
             toks.update(w for w in re.findall(r"[a-z0-9&]+", v) if len(w) >= 2)
+
+    try:
+        for _st, rec in json.loads(_GT_PROFILES.read_text()).items():
+            _add(rec.get("values"))
+    except (OSError, ValueError):
+        pass
+    try:
+        dp = json.loads((_GT_PROFILES.parent / "differentia_profiles.json").read_text())
+        for _col, rec in (dp.get("pools") or {}).items():
+            _add(rec.get("values"))
+    except (OSError, ValueError):
+        pass
     return toks
 
 
