@@ -246,7 +246,7 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
             <ProvenanceGraph focal={note.ego_focal ?? null} onLink={onLink} />
           </Suspense>
         )}
-        {note?.kind === "relational-table" && note.erd && (
+        {(note?.kind === "relational-table" || note?.kind === "relational-view") && note.erd && (
           <Suspense fallback={<Text type="secondary" style={{ fontSize: 12 }}>loading ERD…</Text>}>
             <RelationalErd erd={note.erd} onLink={onLink} />
           </Suspense>

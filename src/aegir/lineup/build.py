@@ -1354,21 +1354,23 @@ def run(args=None) -> int:
                         f" · `{fk.get('ref_col')}`"
                         for fk in e["fks"]]
             prov = ", ".join(e["constructs"][:4]) + ("…" if len(e["constructs"]) > 4 else "")
-            # the column detail TABLE (RH 2026-07-18 UX pass: types + keys + samples, not a name list)
-            col_rows = ["| column | type | key | samples |", "|---|---|---|---|"]
+            # the column detail TABLE — schema only (RH 2026-07-18: samples move to lists below Views)
+            col_rows = ["| column | type | key |", "|---|---|---|"]
             for c in e["columns"]:
                 key = ("PK" if c["pk"] else "") + ("+" if c["pk"] and c["fk"] else "") + \
                       (f"FK → {N.wl('relational/table/' + c['fk'].split('.')[0], c['fk'])}"
                        if c["fk"] and c["fk"].split(".")[0] in known
                        else (f"FK → `{c['fk']}`" if c["fk"] else ""))
-                col_rows.append(f"| `{c['name']}` | {c['type']} | {key or '—'} | "
-                                + (" · ".join(f"`{s}`" for s in c["samples"]) or "—") + " |")
+                col_rows.append(f"| `{c['name']}` | {c['type']} | {key or '—'} |")
             ref_by = [f"- {N.wl('relational/table/' + r['table'], r['table'])} · `{r['col']}`"
                       for r in e.get("referenced_by", [])[:10] if r["table"] in known]
             more_ref = len(e.get("referenced_by", [])) - len(ref_by)
             vw = e.get("views", [])
-            vw_lines = [f"- `{v}`" + (f" ({vws[v].get('kind')})" if vws.get(v, {}).get("kind") else "")
+            vw_lines = [f"- {N.wl('relational/view/' + v, v)}"
+                        + (f" ({vws[v].get('kind')})" if vws.get(v, {}).get("kind") else "")
                         for v in vw[:8]]
+            sample_lines = [f"- `{c['name']}` — " + " · ".join(f"`{s}`" for s in c["samples"])
+                            for c in e["columns"] if c["samples"]]
             # the first-order ERD payload (rendered by the React panel; bounded neighborhood)
             erd_nodes = [{"id": n, "kind": "junction" if e.get("junction") else "table", "focal": True,
                           "cols": [f"{c['name']}: {c['type']}" for c in e["columns"][:8]]}]
@@ -1408,7 +1410,51 @@ def run(args=None) -> int:
                          + (f"\n- _…{more_ref} more_" if more_ref > 0 else "") + "\n\n" if ref_by else "")
                       + ((f"**Views over this table** ({len(vw)})\n" + "\n".join(vw_lines)
                           + (f"\n- _…{len(vw) - 8} more_" if len(vw) > 8 else "") + "\n\n") if vw else "")
+                      + (("**Samples**\n" + "\n".join(sample_lines) + "\n\n") if sample_lines else "")
                       + f"_Constructs: {prov}_")))
+        # VIEW notes (RH 2026-07-18): every view is a first-class panel with the same anatomy as its
+        # source tables — ERD header (source tables → the view), output columns (from the view's own
+        # SELECT list — the constructs' columns field under-reports), RESULT samples, and the SQL.
+        from aegir.lineup.sources import view_select_cols
+        for vn, v in vws.items():
+            srcs = [t for t in v.get("tables", []) if t in known]
+            headers = view_select_cols(v.get("sql", "")) or v.get("columns", [])
+            rows_ = v.get("rows") or []
+            width = max((len(r) for r in rows_), default=len(headers))
+            if len(headers) < width:
+                headers = headers + [f"col{i + 1}" for i in range(len(headers), width)]
+            headers = headers[:10]
+            vtypes = []
+            for i in range(len(headers)):
+                col_vals = [str(r[i]) for r in rows_ if i < len(r)]
+                vtypes.append(S._infer_sql_type(col_vals) if col_vals else "text")
+            col_tbl = ["| column | type |", "|---|---|"] + \
+                      [f"| `{h}` | {t} |" for h, t in zip(headers, vtypes)]
+            sample_tbl = []
+            if rows_:
+                sample_tbl = ["| " + " | ".join(f"`{h}`" for h in headers) + " |",
+                              "|" + "---|" * len(headers)] + \
+                             ["| " + " | ".join(str(x)[:28] for x in r[:10]) + " |" for r in rows_[:4]]
+            erd_nodes = [{"id": vn, "kind": "view", "focal": True,
+                          "cols": [f"{h}: {t}" for h, t in list(zip(headers, vtypes))[:8]]}]
+            erd_edges = []
+            for t in srcs[:6]:
+                erd_nodes.append({"id": t, "kind": "junction" if tbls.get(t, {}).get("junction")
+                                  else "table", "known": True})
+                erd_edges.append({"source": t, "target": vn, "label": ""})
+            notes.append(N.Note(
+                id=f"relational/view/{vn}", title=vn, kind="relational-view",
+                data_product="relational", root="scratch",
+                frontmatter={"view_kind": v.get("kind"), "n_columns": len(headers),
+                             "erd": {"focal": vn, "nodes": erd_nodes, "edges": erd_edges,
+                                     "more": {"referenced_by": max(0, len(srcs) - 6), "views": 0}}},
+                links=[f"relational/table/{t}" for t in srcs],
+                body=(f"**`{vn}`** — generated view (verbatim; kind **{v.get('kind') or '—'}**) over "
+                      + (" · ".join(N.wl("relational/table/" + t, t) for t in srcs) or "`—`") + ".\n\n"
+                      + "\n".join(col_tbl) + "\n\n"
+                      + (("**Result sample**\n" + "\n".join(sample_tbl) + "\n\n") if sample_tbl else "")
+                      + "```sql\n" + (v.get("sql") or "").strip() + "\n```\n\n"
+                      + f"_Construct: {v.get('construct')}_")))
         print(f"  relational(sdg): {len(tbls)} tables + {len(vws)} views VERBATIM "
               f"from {sc['n_constructs']} constructs", flush=True)
 

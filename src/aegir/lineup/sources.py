@@ -463,6 +463,20 @@ def _infer_sql_type(vals: "list[str]") -> str:
 _VIEW_REFS = re.compile(r"\b(?:FROM|JOIN)\s+([A-Za-z_][A-Za-z0-9_]*)", re.I)
 
 
+def view_select_cols(sql: str) -> "list[str]":
+    """The view's OUTPUT columns from its own SELECT list (the constructs' ``columns`` field can
+    under-report vs the row width — the SQL is authoritative). Alias-aware; top-level commas only."""
+    m = re.search(r"SELECT\s+(.*?)\s+FROM\s", sql, re.S | re.I)
+    if not m:
+        return []
+    out = []
+    for part in re.split(r",(?![^()]*\))", m.group(1)):
+        part = part.strip()
+        am = re.search(r"\s+AS\s+([A-Za-z_][A-Za-z0-9_]*)\s*$", part, re.I)
+        out.append(am.group(1) if am else part.split(".")[-1].strip())
+    return out
+
+
 def sdg_constructs() -> "dict | None":
     """The generated relational product, VERBATIM (RH ruling: the lineup audits what
     `just metaflow` offers up — wrapping names is obfuscation). One entry per unique table
@@ -513,8 +527,9 @@ def sdg_constructs() -> "dict | None":
             vn = v.get("name") if isinstance(v, dict) else None
             if vn and vn not in views:
                 sql = v.get("sql") or ""
-                views[vn] = {"sql": sql[:600], "kind": v.get("kind"), "construct": pid,
-                             "tables": sorted(set(_VIEW_REFS.findall(sql)))}
+                views[vn] = {"sql": sql[:1500], "kind": v.get("kind"), "construct": pid,
+                             "tables": sorted(set(_VIEW_REFS.findall(sql))),
+                             "columns": v.get("columns") or [], "rows": (v.get("rows") or [])[:4]}
     if not tables:
         return None
     # post-pass: reverse FKs, views-over-table, junction shape (composite PK ≡ its two FK cols)
