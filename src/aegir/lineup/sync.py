@@ -11,11 +11,14 @@ ontology SoT (``src/aegir/ontology``), the shared artifacts under ``corpora/``:
   • vocabulary/ — SKOS ConceptScheme + Atelier ReferenceCategory annotations (build_skos_vocab)
   • ddl/        — the ontology→SQL DDL spine (build_ddl_spine)
 
-Gate: TWO ANDed checks — (1) the ontology schema-CI (``check_ontology_schema`` — TTL
+Gate: THREE ANDed checks — (1) the ontology schema-CI (``check_ontology_schema`` — TTL
 well-formedness, labels/definitions, BFO ancestry, SPARQL totality); (2) the OQuaRE
 ontology-quality gate (``ontology_oquare`` — a hard floor on the realized OWL: aggregate
-≥3.5 AND Functional-Adequacy ≥3.0, forcing definitional rigor + BFO discipline). A broken
-or sub-rigor ontology is never published. OQuaRE consumes the upstream HermiT verdict from
+≥3.5 AND Functional-Adequacy ≥3.0, forcing definitional rigor + BFO discipline); (3) the
+SUFFICIENCY gate (task #7) — discriminability + domain-mid-tier + 0-unsat RE-MEASURED at
+gate time from the release-candidate run (``sdg_run_root``), so an insufficient-differentia
+(pre-taxonomy flat) ontology is never published. A broken or sub-rigor ontology is never
+published. OQuaRE consumes the upstream HermiT verdict from
 the realizer's certificate (JVM-free; the consistency gate is applied upstream, at
 hierarchy-authoring time, by ``mediate_hierarchy``).
 
@@ -75,9 +78,35 @@ def _gate() -> bool:
         print(f"   OQuaRE:    ⊘ no realized OWL at {owl.relative_to(REPO)} — run build_realized_ontology.py first")
         oq_ok = False  # the ontology Data Product includes the realized OWL — never publish it ungated
 
-    if not (schema_ok and oq_ok):
+    # 3. SUFFICIENCY (task #7 — the taxonomy release's own floor): RE-MEASURED at gate time from the
+    #    release-candidate run's shipped artifacts (sdg_run_root — never a stale number). Floors:
+    #    type-signature discriminability ≥ 0.95 (v0.6 baseline 0.9944; the pre-taxonomy flat ontology
+    #    fails), a real domain mid-tier (taxonomy_parents_domain ≥ 5 — genus layer present), and the
+    #    run's HermiT certificate clean (0 unsat). Fail-closed when the run artifacts are absent.
+    suff_ok = False
+    try:
+        import json as _json
+        from aegir.lineup.sources import sdg_run_root
+        from aegir.ontology.discriminability import compute
+        root = sdg_run_root()
+        if root and (root / "ontology" / "shapes.ttl").exists() \
+                and (root / "ontology" / "sdg-ontology.omn").exists():
+            m = compute(root / "ontology" / "shapes.ttl", root / "ontology" / "sdg-ontology.omn")
+            cert = _json.loads((root / "ontology" / "certificate.json").read_text()) \
+                if (root / "ontology" / "certificate.json").exists() else {}
+            d, mid = m["discriminability_typesig"], m["structural_adequacy"]["taxonomy_parents_domain"]
+            unsat = len(cert.get("unsat", [None]))          # missing cert reads as dirty — fail-closed
+            suff_ok = d >= 0.95 and mid >= 5 and unsat == 0
+            print(f"   sufficiency: discriminability={d} (≥0.95) · domain mid-tier={mid} (≥5) · "
+                  f"unsat={unsat} (=0) → {'ok' if suff_ok else 'FAILED'}  [{root.name}]")
+        else:
+            print("   sufficiency: ⊘ no release-candidate run artifacts (sdg_run_root) — fail-closed")
+    except Exception as e:  # noqa: BLE001
+        print(f"   sufficiency: FAILED to measure ({str(e)[:120]}) — fail-closed")
+
+    if not (schema_ok and oq_ok and suff_ok):
         print("   GATE FAILED — refusing to publish.")
-    return schema_ok and oq_ok
+    return schema_ok and oq_ok and suff_ok
 
 
 def _mirror_ontology() -> None:
