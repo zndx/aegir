@@ -49,9 +49,49 @@ def _theme(k: dict) -> Theme:
     }})
 
 
+def themed(model, k: dict):
+    """POST-render pass — the piece the Theme cannot do: hv writes EXPLICIT white fills on every
+    figure (`background_fill_color='#ffffff'`, border, outline), and a bokeh Theme only fills unset
+    properties. Walk the rendered tree and re-assert the palette on the explicit ones. Returns the
+    model, so it wraps in place: ``curdoc().add_root(themed(hv.render(...), _K))``."""
+    from bokeh.models import Axis, ColorBar, Legend, Plot, Title
+    for p in model.select(dict(type=Plot)):
+        p.background_fill_color = k["bg"]
+        p.border_fill_color = k["bg"]
+        p.outline_line_color = k["line"]
+    for a in model.select(dict(type=Axis)):
+        a.major_label_text_color = k["subtle"]
+        a.axis_label_text_color = k["subtle"]
+        a.major_tick_line_color = k["line"]
+        a.minor_tick_line_color = k["line"]
+        a.axis_line_color = k["line"]
+    for lg in model.select(dict(type=Legend)):
+        lg.background_fill_color = k["bg"]
+        lg.background_fill_alpha = 0.85
+        lg.label_text_color = k["text"]
+        lg.border_line_color = k["line"]
+    for t in model.select(dict(type=Title)):
+        t.text_color = k["text"]
+    for cb in model.select(dict(type=ColorBar)):
+        cb.background_fill_color = k["bg"]
+        cb.major_label_text_color = k["subtle"]
+        cb.title_text_color = k["subtle"]
+    return model
+
+
 def apply_color_mode(default: str = "dark") -> "tuple[str, dict]":
-    """Set the doc theme for the session's mode; → (mode, kumo palette) for app-specific styling."""
+    """Set the doc AND HoloViews-renderer theme for the session's mode; → (mode, kumo palette).
+
+    Both are required: a bokeh doc Theme only fills UNSET properties, and HoloViews assigns many
+    figure properties explicitly at render time — so hv output ignores the doc theme unless the
+    RENDERER carries it too (hv applies renderer.theme during ``hv.render``). Call BEFORE render."""
     mode = color_mode(default)
     k = KUMO[mode]
-    curdoc().theme = _theme(k)
+    t = _theme(k)
+    curdoc().theme = t
+    try:
+        import holoviews as hv
+        hv.renderer("bokeh").theme = t
+    except Exception:  # noqa: BLE001 — an app without hv still gets the doc theme
+        pass
     return mode, k

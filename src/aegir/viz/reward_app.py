@@ -69,7 +69,7 @@ def _panel():
     return (reward + adv).cols(1).opts(hv.opts.Layout(shared_axes=False))
 
 
-from aegir.viz.theme import apply_color_mode  # noqa: E402
+from aegir.viz.theme import apply_color_mode, themed  # noqa: E402
 
 _MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
-curdoc().add_root(hv.render(_panel(), backend="bokeh"))
+curdoc().add_root(themed(hv.render(_panel(), backend="bokeh"), _K))

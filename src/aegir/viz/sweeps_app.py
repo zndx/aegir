@@ -96,7 +96,7 @@ def _task_arg() -> str:
     return v[0].decode() if v and isinstance(v[0], (bytes, bytearray)) else (v[0] if v else "")
 
 
-from aegir.viz.theme import apply_color_mode  # noqa: E402
+from aegir.viz.theme import apply_color_mode, themed  # noqa: E402
 
 _MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
-curdoc().add_root(hv.render(_pcp(_task_arg()), backend="bokeh"))
+curdoc().add_root(themed(hv.render(_pcp(_task_arg()), backend="bokeh"), _K))

@@ -62,7 +62,7 @@ def _args() -> tuple[str, str]:
 
 
 _rid, _name = _args()
-from aegir.viz.theme import apply_color_mode  # noqa: E402
+from aegir.viz.theme import apply_color_mode, themed  # noqa: E402
 
 _MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
-curdoc().add_root(hv.render(_plot(_rid, _name), backend="bokeh"))
+curdoc().add_root(themed(hv.render(_plot(_rid, _name), backend="bokeh"), _K))
