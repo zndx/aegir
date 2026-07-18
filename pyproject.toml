@@ -86,6 +86,9 @@ dependencies = [
 # matching cu12torchX.Y assets.
 flash = ["flash-attn>=2.8.0"]
 mamba = ["mamba-ssm>=2.3.2", "causal-conv1d>=1.6.2"]
+# interpretability instruments (CLT feature-space faithfulness, task #29): circuit-tracer +
+# BlueLightAI's TransformerLens fork (qwen3-base-support — upstream TL lacks Qwen3-Base)
+interp = ["circuit-tracer", "transformer-lens"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -103,6 +106,16 @@ environments = [
 # resolved environment. See gaius/pyproject.toml for rationale on each
 # entry.
 override-dependencies = [
+    # circuit-tracer pins transformer-lens>=2.16.0; the BlueLightAI qwen3-base-support fork
+    # (our [tool.uv.sources] git pin) reports an older version string — override the constraint,
+    # the fork IS the required TL.
+    "transformer-lens",
+    # the interp extra's resolution tried to drag vllm 0.16→0.14 via numpy: the BlueLightAI TL
+    # fork carries a stale numpy<2 pin while vllm 0.16 needs numpy>=2. Override numpy — the fork's
+    # pin is old-TL caution, not measured incompatibility (adjudicated by the CLT smoke).
+    "vllm>=0.16.0",
+    "numpy>=2",
+
     "peft>=0.18.0",
     # rapidocr wants opencv-python which needs libGL.so.1 (unavailable on Nix).
     # vLLM wants opencv-python-headless (no libGL). Having both installed causes
@@ -128,6 +141,8 @@ gaius = { path = "../gaius", editable = true }
 flash-attn = { url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3%2Bcu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl" }
 mamba-ssm = { url = "https://github.com/state-spaces/mamba/releases/download/v2.3.2.post1/mamba_ssm-2.3.2.post1%2Bcu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl" }
 causal-conv1d = { url = "https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.6.2.post1/causal_conv1d-1.6.2.post1%2Bcu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl" }
+circuit-tracer = { git = "https://github.com/safety-research/circuit-tracer" }
+transformer-lens = { git = "https://github.com/BlueLightAI/TransformerLens", branch = "qwen3-base-support" }
 
 [build-system]
 requires = ["setuptools>=61.0.0", "wheel", "torch", "packaging", "ninja"]
