@@ -58,13 +58,13 @@ def _panel():
         * hv.Curve((df[x], df["rewards_mean"]), label="reward R (mean±std)").opts(color=_K["accent"], line_width=2)
         * hv.Curve((df[x], df["r_a_pass_rate"]), label="R_A pass-rate").opts(color="#13a884", line_width=2)
     ).opts(width=720, height=250, ylabel="reward / pass-rate", xlabel="GRPO iteration",
-           legend_position="bottom_right", tools=["hover"], title="Reward dynamics — the GRPO health monitor")
+           legend_position="bottom_right", tools=["hover"], title="")
 
     adv = (
         hv.Spread((df[x], df["advantage_mean"], df["advantage_std"])).opts(alpha=0.22, color="#d4880b")
         * hv.Curve((df[x], df["advantage_mean"]), label="advantage (mean±std)").opts(color="#a5620b", line_width=2)
     ).opts(width=720, height=160, ylabel="advantage (z)", xlabel="GRPO iteration",
-           legend_position="bottom_right", tools=["hover"], title="Advantage")
+           legend_position="bottom_right", tools=["hover"], title="")
 
     return (reward + adv).cols(1).opts(hv.opts.Layout(shared_axes=False))
 

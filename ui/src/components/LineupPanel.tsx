@@ -234,18 +234,11 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
         {note?.kind === "lens" && note.chord !== false && note.root !== "archive" && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid var(--color-kumo-hairline)", paddingBottom: 6 }}>
             <PanelView app="lineup_app" params={{ lens: note.name ?? note.id, root: note.root ?? "current" }} />
-            <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
-              top collection associations (TF-IDF) — live HoloViews via Panel · drag a node, hover a ribbon
-            </Text>
           </div>
         )}
         {note?.kind === "training" && note.viz_app && note.root !== "archive" && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid var(--color-kumo-hairline)", paddingBottom: 6 }}>
             <PanelView app={note.viz_app} height={460} />
-            <Text type="secondary" style={{ fontSize: 11, display: "block", textAlign: "center", marginTop: 2 }}>
-              live HoloViews via the bokeh server · drag to pan, hover for values
-              {note.viz_app === "provenance_app" && " · tap a node to open its lens"}
-            </Text>
           </div>
         )}
         {note?.kind === "provenance" && (

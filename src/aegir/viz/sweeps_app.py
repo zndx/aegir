@@ -80,7 +80,7 @@ def _pcp(task: str):
         hv.opts.Path(color="metric", cmap="viridis", colorbar=True, line_width=2, alpha=0.75,
                      tools=["hover"], width=720, height=420, yaxis=None, show_frame=False,
                      xticks=[(j, d) for j, d in enumerate(dims)], xrotation=30,
-                     title=f"Sweep: {task or 'all runs'} · {len(df)} runs · color = best {color}"))
+                     title=""))
     guides = hv.Overlay([hv.VLine(j).opts(color=_K["line"], line_width=1) for j in range(len(dims))])
     labels = hv.Labels(
         [(j, 1.05, f"{rng[d][1]:.3g}") for j, d in enumerate(dims)]

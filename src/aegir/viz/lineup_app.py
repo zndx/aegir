@@ -55,7 +55,7 @@ def _chord(lens: str, root: str = "current"):
     return hv.Chord((eds, hv.Dataset(nodes, "index"))).opts(
         hv.opts.Chord(labels="name", node_color="index", edge_color="source", cmap="Category20",
                       width=520, height=520, tools=["hover"],
-                      title=f"{lens} · {label} · live via Bokeh server"))
+                      title=""))
 
 
 def _args() -> "tuple[str, str]":
