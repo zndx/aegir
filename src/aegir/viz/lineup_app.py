@@ -71,4 +71,7 @@ def _args() -> "tuple[str, str]":
     return (lens if lens in D.SIMS else "lens/terms"), root
 
 
+from aegir.viz.theme import apply_color_mode  # noqa: E402
+
+_MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
 curdoc().add_root(hv.render(_chord(*_args()), backend="bokeh"))

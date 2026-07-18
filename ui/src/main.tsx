@@ -2,6 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { initColorMode } from "./theme/colorMode";
+
+initColorMode();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -1,6 +1,9 @@
+import { Moon, Sun } from "@phosphor-icons/react";
 import { Layout as AntLayout, Typography } from "antd";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
+
+import { getColorMode, toggleColorMode, useColorMode } from "../theme/colorMode";
 
 const { Header, Content, Footer } = AntLayout;
 const { Text } = Typography;
@@ -15,6 +18,12 @@ const NAV_ITEMS = [
 interface LayoutProps {
   children: ReactNode;
   fullHeight?: boolean;
+}
+
+// Phosphor per the org norm; re-renders with the live mode so the glyph shows the DESTINATION mode.
+function ModeGlyph() {
+  const mode = useColorMode();
+  return mode === "dark" ? <Sun size={15} weight="bold" /> : <Moon size={15} weight="bold" />;
 }
 
 function Layout({ children, fullHeight }: LayoutProps) {
@@ -40,11 +49,11 @@ function Layout({ children, fullHeight }: LayoutProps) {
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Text
             strong
-            style={{ color: "#fff", fontSize: 20, letterSpacing: 0.5 }}
+            style={{ color: "var(--text-color-kumo-strong)", fontSize: 20, letterSpacing: 0.5 }}
           >
             Ægir
           </Text>
-          <Text style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>
+          <Text style={{ color: "var(--text-color-kumo-subtle)", fontSize: 12 }}>
             v0.2.0 · relational metadata tagging
           </Text>
         </Link>
@@ -56,12 +65,12 @@ function Layout({ children, fullHeight }: LayoutProps) {
                 key={path}
                 to={path}
                 style={{
-                  color: active ? "#fff" : "rgba(255,255,255,0.65)",
+                  color: active ? "var(--text-color-kumo-strong)" : "var(--text-color-kumo-subtle)",
                   padding: "4px 12px",
                   borderRadius: 4,
                   fontSize: 14,
                   textDecoration: "none",
-                  background: active ? "rgba(255,255,255,0.1)" : "transparent",
+                  background: active ? "var(--color-kumo-fill)" : "transparent",
                   transition: "all 0.2s",
                 }}
               >
@@ -70,6 +79,19 @@ function Layout({ children, fullHeight }: LayoutProps) {
             );
           })}
         </nav>
+        <button
+          aria-label="Toggle color mode"
+          title="Toggle color mode"
+          onClick={() => toggleColorMode(getColorMode())}
+          style={{
+            marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center",
+            width: 30, height: 30, borderRadius: 6, cursor: "pointer",
+            background: "transparent", border: "1px solid var(--color-kumo-hairline)",
+            color: "var(--text-color-kumo-subtle)",
+          }}
+        >
+          <ModeGlyph />
+        </button>
       </Header>
       <Content
         style={fullHeight

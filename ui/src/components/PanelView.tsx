@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Alert } from "antd";
 
+import { useColorMode } from "../theme/colorMode";
+
 interface PanelViewProps {
   /** Bokeh app name, served by the bokeh server at /viz/<app> behind the gateway proxy. */
   app: string;
@@ -43,7 +45,10 @@ async function ensureBokeh(): Promise<void> {
 export default function PanelView({ app, params, height = 540 }: PanelViewProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const qs = new URLSearchParams(params ?? {}).toString();
+  // the live doc theme follows the UI mode (aegir.viz.theme) — mode is part of the session key,
+  // so toggling re-embeds the panel with a fresh, matching-theme session
+  const mode = useColorMode();
+  const qs = new URLSearchParams({ ...(params ?? {}), mode }).toString();
 
   useEffect(() => {
     const host = hostRef.current;

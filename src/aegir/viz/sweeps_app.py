@@ -81,11 +81,11 @@ def _pcp(task: str):
                      tools=["hover"], width=720, height=420, yaxis=None, show_frame=False,
                      xticks=[(j, d) for j, d in enumerate(dims)], xrotation=30,
                      title=f"Sweep: {task or 'all runs'} · {len(df)} runs · color = best {color}"))
-    guides = hv.Overlay([hv.VLine(j).opts(color="#d9d9d9", line_width=1) for j in range(len(dims))])
+    guides = hv.Overlay([hv.VLine(j).opts(color=_K["line"], line_width=1) for j in range(len(dims))])
     labels = hv.Labels(
         [(j, 1.05, f"{rng[d][1]:.3g}") for j, d in enumerate(dims)]
         + [(j, -0.05, f"{rng[d][0]:.3g}") for j, d in enumerate(dims)],
-        kdims=["x", "y"], vdims=["Label"]).opts(text_font_size="7pt", text_color="#999")
+        kdims=["x", "y"], vdims=["Label"]).opts(text_font_size="7pt", text_color=_K["subtle"])
     return (guides * pcp * labels).opts(hv.opts.Overlay(show_frame=False))
 
 
@@ -96,4 +96,7 @@ def _task_arg() -> str:
     return v[0].decode() if v and isinstance(v[0], (bytes, bytearray)) else (v[0] if v else "")
 
 
+from aegir.viz.theme import apply_color_mode  # noqa: E402
+
+_MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
 curdoc().add_root(hv.render(_pcp(_task_arg()), backend="bokeh"))

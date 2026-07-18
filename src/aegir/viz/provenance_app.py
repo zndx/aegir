@@ -120,4 +120,7 @@ def _dag():
         hv.opts.Overlay(show_frame=False, xaxis=None, yaxis=None, padding=(0.08, (0.08, 0.2))))
 
 
+from aegir.viz.theme import apply_color_mode  # noqa: E402
+
+_MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
 curdoc().add_root(hv.render(_dag(), backend="bokeh"))

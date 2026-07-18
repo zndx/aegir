@@ -6,6 +6,8 @@ import { Component, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import "@xyflow/react/dist/style.css";
 
+import { useColorMode } from "../theme/colorMode";
+
 // The lineup Provenance panel: a first-order-neighbor EGO-GRAPH of one lineage node, read from
 // /api/provenance/ego. Clicking a neighbor opens ITS ego-graph in a new panel (panel-trail) — the lineage is
 // walked node-by-node, not shown as one static DAG. Built to match Atelier's working ReactFlow pattern:
@@ -46,6 +48,7 @@ function ArtifactNode({ data }: NodeProps) {
 const nodeTypes = { artifact: ArtifactNode };
 
 function Graph({ ego, onLink }: { ego: Ego; onLink: (id: string) => void }) {
+  const dark = useColorMode() === "dark";
   const fid = String(ego.focal!.vid);
   const { nodes, edges } = useMemo<{ nodes: Node[]; edges: Edge[] }>(() => {
     const focal = ego.focal!;
@@ -79,11 +82,11 @@ function Graph({ ego, onLink }: { ego: Ego; onLink: (id: string) => void }) {
       const id = `${source}->${target}:${n.edge}`;
       if (seen.has(id)) continue;
       seen.add(id);
-      es.push({ id, source, target, label: n.edge, style: { stroke: "#3d3d4d" },
-                labelStyle: { fontSize: 9, fill: "#9ca3af" }, labelBgStyle: { fill: "#1a1a25", fillOpacity: 0.9 } });
+      es.push({ id, source, target, label: n.edge, style: { stroke: dark ? "#3d3d4d" : "#c9ced6" },
+                labelStyle: { fontSize: 9, fill: dark ? "#9ca3af" : "#6b7280" }, labelBgStyle: { fill: dark ? "#1a1a25" : "#ffffff", fillOpacity: 0.9 } });
     }
     return { nodes: ns, edges: es };
-  }, [ego, fid]);
+  }, [ego, fid, dark]);
 
   return (
     <ReactFlow
@@ -92,7 +95,7 @@ function Graph({ ego, onLink }: { ego: Ego; onLink: (id: string) => void }) {
       onNodeClick={(_, node) => { if (node.id !== fid) onLink(`provenance/${node.id}`); }}
       proOptions={{ hideAttribution: true }}
     >
-      <Background color="#2e2e3a" gap={16} />
+      <Background color={dark ? "#2e2e3a" : "#e5e7eb"} gap={16} />
       <Controls showInteractive={false} />
     </ReactFlow>
   );

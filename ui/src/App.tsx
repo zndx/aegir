@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Layout from "./components/Layout";
 import Landing from "./pages/Landing";
+import { useColorMode } from "./theme/colorMode";
 
 const Leaderboards = lazy(() => import("./pages/Leaderboards"));
 const Classifications = lazy(() => import("./pages/Classifications"));
@@ -10,13 +11,17 @@ const Ontologies = lazy(() => import("./pages/Ontologies"));
 const Lineup = lazy(() => import("./pages/Lineup"));
 
 function App() {
+  // org norm (cldr-design-template): dark default, toggleable; the antd BRIDGE follows the kumo
+  // data-mode, with neutrals aligned to theme-cloudera.css tokens per mode until Kumo migration completes.
+  const mode = useColorMode();
+  const dark = mode === "dark";
   return (
     <ConfigProvider
       theme={{
-        algorithm: theme.darkAlgorithm,  // org norm: dark default (cldr-design-template); antd bridged until Kumo migration completes
-        token: { colorPrimary: "#6366f1", borderRadius: 6,
-                 // antd neutrals aligned to the Cloudera kumo tokens (theme-cloudera.css) for the bridge
-                 colorBgBase: "#12121a", colorTextBase: "#e5e7eb" },
+        algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: dark
+          ? { colorPrimary: "#6366f1", borderRadius: 6, colorBgBase: "#12121a", colorTextBase: "#e5e7eb" }
+          : { colorPrimary: "#6366f1", borderRadius: 6, colorBgBase: "#ffffff", colorTextBase: "#1f2937" },
       }}
     >
       <BrowserRouter>

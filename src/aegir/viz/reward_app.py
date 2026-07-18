@@ -55,7 +55,7 @@ def _panel():
         hv.Spread((df[x], df["rewards_mean"], df["rewards_std"])).opts(alpha=0.22, color="#4f7cff")
         * hv.Curve((df[x], df["rewards_min"])).opts(color="#9fb0c7", line_dash="dotted", alpha=0.7)
         * hv.Curve((df[x], df["rewards_max"])).opts(color="#9fb0c7", line_dash="dotted", alpha=0.7)
-        * hv.Curve((df[x], df["rewards_mean"]), label="reward R (mean±std)").opts(color="#1f3fae", line_width=2)
+        * hv.Curve((df[x], df["rewards_mean"]), label="reward R (mean±std)").opts(color=_K["accent"], line_width=2)
         * hv.Curve((df[x], df["r_a_pass_rate"]), label="R_A pass-rate").opts(color="#13a884", line_width=2)
     ).opts(width=720, height=250, ylabel="reward / pass-rate", xlabel="GRPO iteration",
            legend_position="bottom_right", tools=["hover"], title="Reward dynamics — the GRPO health monitor")
@@ -69,4 +69,7 @@ def _panel():
     return (reward + adv).cols(1).opts(hv.opts.Layout(shared_axes=False))
 
 
+from aegir.viz.theme import apply_color_mode  # noqa: E402
+
+_MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
 curdoc().add_root(hv.render(_panel(), backend="bokeh"))
