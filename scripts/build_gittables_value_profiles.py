@@ -5,7 +5,8 @@ name — so tables read as nonsense (RH's "essence of values" concern). This gro
 EMPIRICAL distribution of 562k real GitTables tables, WITHOUT sanitizing: real values are admitted because their
 LINEAGE is retained (RH 2026-07-13 — provenance ≻ exclusion for an enterprise-lineage corpus). Each value carries
 its source (table content-hash + column); the SEGMENTATION RULES + run parameters below are emitted as a discrete
-lineage manifest so a published corpus can pin the exact sampling strategy (→ Apache Atlas). [[atlas_age_provenance_graph]]
+lineage manifest so a published corpus can pin the exact sampling strategy, and EMITTED to Apache Atlas/OL
+(aegir_hx) as a gittables_value_harvest run with token-grain value nodes (governance.provenance). [[atlas_age_provenance_graph]]
 
     uv run --no-sync python scripts/build_gittables_value_profiles.py --sample 8000 --seed 13
 
@@ -185,6 +186,18 @@ def main() -> int:
         pii = " [PII]" if st in PII_TYPES else ""
         print(f"  {st:14s} {len(pools[st]):5d} values from {len(prov[st]['tables'])} tables{pii}  e.g. {ex}")
     print(f"→ {OUT}/value_profiles.json + lineage.json (snapshot {lineage['snapshot_sha1']})")
+    # artifact = rebuildable truth; aegir_hx = the queryable Atlas+OL projection (best-effort emit —
+    # a down graph never breaks a build; governance.provenance.backfill() re-projects any time)
+    try:
+        sys.path.insert(0, str(REPO / "src"))
+        from aegir.governance.provenance import emit_pool_lineage
+        r = emit_pool_lineage("gittables_value_harvest",
+                              f"{lineage['snapshot_sha1']}:{SEG_VERSION}", lineage["snapshot_sha1"],
+                              {f"semantic/{st}": vs for st, vs in pools.items()},
+                              {"segmentation": SEG_VERSION})
+        print(f"lineage → aegir_hx: OL run {r['run_id'][:8]}… · {r['outputs']} pool datasets · {r['tokens']} tokens")
+    except Exception as e:  # noqa: BLE001
+        print(f"lineage emission deferred (graph unavailable: {e}) — run governance.provenance.backfill()")
     return 0
 
 

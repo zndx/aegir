@@ -66,12 +66,27 @@ def gittables_provenance_tokens() -> "set[str]":
     return toks
 
 
-_PROV = gittables_provenance_tokens()
+_PROV = gittables_provenance_tokens()   # OFFLINE FALLBACK only — the graph is the authority
+_PROV_SOURCE: "list[str]" = []          # which source actually answered (reported by main)
 
 
 def _provenanced(brand: str) -> bool:
-    """True when the matched brand token is accounted for by the explicit GitTables lineage."""
-    return bool(_PROV) and brand.strip().lower() in _PROV
+    """True when the matched brand token is lineage-backed. The AUTHORITY is the aegir_hx provenance
+    graph — the Atlas+OpenLineage pattern (governance.provenance.provenance_backed: harvest jobs emit
+    OL runs; pooled values land as Token nodes). The local token bag above is the EXPLICIT offline
+    fallback for a down graph (RH 2026-07-18: it was a stopgap, not architecture) — never silent:
+    the report states which source answered."""
+    t = brand.strip().lower()
+    try:
+        from aegir.governance.provenance import provenance_backed
+        g = provenance_backed(t)
+    except Exception:  # noqa: BLE001 — import/driver absence == offline
+        g = None
+    if g is not None:
+        _PROV_SOURCE[:] = ["aegir_hx provenance graph"]
+        return g
+    _PROV_SOURCE[:] = ["local pool artifacts (graph unavailable)"]
+    return bool(_PROV) and t in _PROV
 
 
 def scan_registry(path: Path) -> "list[tuple[str, str, str]]":
@@ -209,6 +224,8 @@ def main() -> int:
             {k: [{"where": w, "value": v, "brand": b} for w, v, b in hs] for k, hs in sections.items()},
             indent=1))
         print(f"→ {a.json_out}")
+    if _PROV_SOURCE:
+        print(f"provenance source: {_PROV_SOURCE[0]}")
     print(f"\nTOTAL: {total} real-particular hit(s) — {'CLEAN' if total == 0 else 'the ABox must be fictional'}")
     return 0 if total == 0 else 1
 

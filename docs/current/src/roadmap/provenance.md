@@ -9,6 +9,25 @@ Verifiable Tasks & Lineage** — the spine the whole pipeline already has. The c
 The **verification overlay** (per-edge gate verdicts) is still absent — that is the increment that turns
 the navigable lineage walk into the thesis artifact (§Maturity, §Dependencies).
 
+## Value-grain provenance — the pattern re-asserted (2026-07-18)
+
+**Ruling (RH): lineage is the deciding factor when admitting real nouns, and the ANSWER comes from the
+graph — Atlas + OpenLineage on `aegir_hx` — not from a local token bag.** The scan-side set scraped from
+`build/gittables/*.json` (f001763) was a stopgap that comments accidentally elevated to architecture; it
+is now demoted to an *explicit offline fallback* (the scan reports which source answered). The pattern in
+practice:
+
+- **Harvest jobs are OL runs.** `build_gittables_value_profiles.py` and `harvest_differentia_values.py`
+  emit `gittables_value_harvest` / `differentia_harvest` RunEvents (GitTables snapshot dataset → run →
+  one dataset per pool), best-effort — the local artifacts remain the rebuildable truth
+  (`governance.provenance.backfill()` re-projects them; Atlas is never a master).
+- **Values are token-grain nodes.** Every pooled value lands as `(:Token)-[:TOKEN_OF]->(:Dataset)`
+  (full value + ≥2-char fragments — scan-compatible semantics), so noun admission is a graph query:
+  `governance.provenance.provenance_backed(token)`.
+- **Known gap (follow-up):** `SdgCorporaFlow.project` does not run `project_atlas_ddl` (the
+  SemanticCorpusFlow-era Atlas/OL emitter) — the corpus main path emits OTel span facets only. Restoring
+  main-path emission is the next increment.
+
 ## What is built (v1.5 — the instance-level ego-graph)
 The panel renders a node's **first-order neighbourhood** as a ReactFlow graph
 (`ui/src/components/ProvenanceGraph.tsx`, `@xyflow/react` 12), read live from the `aegir_hx` Atlas / Apache

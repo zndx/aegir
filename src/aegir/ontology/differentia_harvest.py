@@ -16,7 +16,9 @@ Two harvesters behind one interface (Increment staging per the contract):
 
 Output: build/gittables/differentia_profiles.json — pools keyed by the SPEC's projected snake column
 name, each value ``[value, "<table_sha1>:<column>"]`` (the gtvs lineage shape), consumed at generation
-time by the SAME unified core (rows._gittables_value) ahead of the name-rule semantic types. Floors:
+time by the SAME unified core (rows._gittables_value) ahead of the name-rule semantic types. The harvest
+is EMITTED to aegir_hx as an OpenLineage ``differentia_harvest`` run with token-grain value nodes
+(governance.provenance) — the graph answers noun-admission; the artifact stays the rebuildable truth. Floors:
 min_distinct >= 4 per pool; below-floor specs stay FLAGGED, never fabricated (the same below-frontier
 discipline as the residual differentiae). PII-shaped spec columns are DEFERRED to the sensitivity
 membrane per the gtvs policy. [[gittables_value_realism]] [[differentia_sufficiency_taxonomy]]
@@ -219,4 +221,15 @@ def write_profiles(pools: dict, run_meta: dict, component: dict) -> Path:
            "pools": {c: pools[c] for c in sorted(pools)}}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(doc, indent=1, ensure_ascii=False))
+    # the artifact is the rebuildable TRUTH; the aegir_hx graph is the queryable Atlas+OL projection —
+    # emit best-effort (a down graph never breaks a harvest; provenance.backfill() re-projects later)
+    try:
+        from aegir.governance.provenance import emit_pool_lineage
+        r = emit_pool_lineage("differentia_harvest", f"{run_meta['snapshot_sha1']}:{run_meta['harvester']}",
+                              run_meta["snapshot_sha1"],
+                              {f"differentia/{c}": pools[c]["values"] for c in pools},
+                              {"harvester": run_meta["harvester"]})
+        print(f"lineage → aegir_hx: OL run {r['run_id'][:8]}… · {r['outputs']} pool datasets · {r['tokens']} tokens")
+    except Exception as e:  # noqa: BLE001
+        print(f"lineage emission deferred (graph unavailable: {e}) — run governance.provenance.backfill()")
     return OUT
