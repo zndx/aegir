@@ -55,10 +55,20 @@ def themed(model, k: dict):
     properties. Walk the rendered tree and re-assert the palette on the explicit ones. Returns the
     model, so it wraps in place: ``curdoc().add_root(themed(hv.render(...), _K))``."""
     from bokeh.models import Axis, ColorBar, Legend, Plot, Title
+    from bokeh.models import WheelZoomTool
     for p in model.select(dict(type=Plot)):
         p.background_fill_color = k["bg"]
         p.border_fill_color = k["bg"]
         p.outline_line_color = k["line"]
+        # the panel embeds gate wheel events behind Ctrl (PanelView) — for the passed-through
+        # gesture to DO anything, the wheel tool must be ACTIVE (hv ships it present-but-inactive)
+        wz = next((t for t in p.toolbar.tools if isinstance(t, WheelZoomTool)), None)
+        if wz is not None:
+            p.toolbar.active_scroll = wz
+        # fit the panel: fill the container width, preserve aspect (the chord stays circular)
+        p.sizing_mode = "scale_width"
+    if hasattr(model, "sizing_mode"):                     # a layout root (Column/Row) must agree
+        model.sizing_mode = "scale_width"
     for a in model.select(dict(type=Axis)):
         a.major_label_text_color = k["subtle"]
         a.axis_label_text_color = k["subtle"]
