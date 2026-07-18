@@ -112,17 +112,33 @@ There is no pytest suite; `main.py` and `train.py --smoke-test` are the primary 
 | small | `[256, 384, 384]` | `["w4", ["w4", ["w8"], "w4"], "w4"]` | — |
 | base | `[768, 1024, 1024]` | `["w4", ["w4", ["w12"], "w4"], "w4"]` | — |
 
-## CUDA Extension Build Notes
+## CUDA Extension Notes
 
-flash-attn and (optionally) mamba-ssm/causal-conv1d require patched builds due to CXX11 ABI mismatch between the nix/devenv environment (GCC 15, `_GLIBCXX_USE_CXX11_ABI=1`) and torch's cu124 wheels (`_GLIBCXX_USE_CXX11_ABI=0`).
+**The patched-build era is CLOSED (2026-07-19, verified by kernel smoke).** The historical CXX11-ABI
+mismatch (torch cu124 wheels ABI=0 vs nix GCC-15 ABI=1) that forced hand-patched flash-attn/mamba
+builds no longer exists: torch ≥2.7 ships `_GLIBCXX_USE_CXX11_ABI=1` (current env: torch 2.9.1+cu128,
+ABI=True), so **standard upstream release wheels install and run clean** — same posture as Gaius.
+The old patched wheels in `build/wheels/` are ABI-0 corpses (undefined `…Ss` symbols); never reinstall them.
 
-**To rebuild**: Use `env -i` with system GCC-11, patch setup.py to add explicit `_abi_flag = "-D_GLIBCXX_USE_CXX11_ABI=0"` on both CXX and NVCC args, and set `MAMBA_FORCE_BUILD=TRUE` / `FLASH_ATTENTION_FORCE_BUILD=TRUE` (skips the `CachedWheelsCommand` prebuilt-wheel download). Patched source trees live in `/tmp/mamba_src/`, `/tmp/flash_src/`. See `docs/scratch/2026-03-28/010808_deps_smoke_train.md` for the full procedure.
+**Install (URL wheels matched to torch minor / cu / abi):**
+```bash
+uv pip install --no-deps \
+  "https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3%2Bcu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl" \
+  "https://github.com/state-spaces/mamba/releases/download/v2.3.2.post1/mamba_ssm-2.3.2.post1%2Bcu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl" \
+  "https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.6.2.post1/causal_conv1d-1.6.2.post1%2Bcu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl"
+```
+On a torch minor bump, pick the matching `cu12torchX.Ycxx11abiTRUE` assets from the same releases.
 
-**Prevent clobbering**: Always use `uv run --no-sync`.
+**`--no-sync` status**: still required, but for a smaller reason than the old ABI fear: these wheels are
+URL-installed and not declared in `pyproject.toml`, so a plain `uv sync` would REMOVE them. Remaining
+hygiene step: declare them as direct-URL deps; until then keep `--no-sync`.
 
-**NVIDIA libs**: The devenv venv may need nvidia .so symlinks from the system Python (e.g. libcudnn, libnccl). These are symlinked from `~/.local/lib/python3.10/site-packages/nvidia/*/lib/` to the devenv venv.
+**Still true (unrelated to ABI):** the Nix driver mask — torch's "no NVIDIA driver" needs
+`LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs`. Triton kernels on a non-default GPU need
+`torch.cuda.set_device(...)` first ("Pointer argument cannot be accessed" otherwise). The devenv venv
+may still need nvidia .so symlinks (libcudnn/libnccl) from the system Python.
 
-Working versions: flash-attn 2.8.3, mamba-ssm 2.3.1, causal-conv1d 1.6.1, Python 3.12, CUDA 12.4.
+Working versions: flash-attn 2.8.3(+cu12torch2.9abi1), mamba-ssm 2.3.2.post1, causal-conv1d 1.6.2.post1, Python 3.12, torch 2.9.1+cu128.
 
 ## Runtime Env Knobs
 
