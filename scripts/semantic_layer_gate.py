@@ -35,6 +35,9 @@ from check_value_semantics import score as value_score  # noqa: E402
 # ── PROVISIONAL pre-registered floors (ratchet up/down as the upkeep loop improves; see EVIDENCE.md) ──
 FLOORS = {
     "verbalization": {"min_distinct_skeletons": 90, "max_top5_skeleton_share": 0.55, "min_relational_share": 0.30},
+    # Naturalness/faithfulness (RH step 4): entropy is necessary, this is the sufficiency half.
+    # Registered BEFORE the elaboration batch's post-measurement; winrate is the ratchet target.
+    "quality": {"min_judge_faithful": 4.0, "min_winrate_vs_legacy": 0.50, "max_ppl_ratio": 0.80},
     "value": {"max_placeholder_ratio": 0.30, "min_domain_fraction": 0.40, "max_time_order_violations": 0},
     # De-canning floors on column-name ENTROPY (h_colset) vs SchemaPile p10, NOT raw distinct_ratio.
     # Rationale (Comp 4): ontology-grounded tables legitimately share typed attributes (every cco:ont00000995
@@ -107,6 +110,24 @@ def gate(catalog: Path, spine_run: Path, schemapile_ref: Path, floors: dict) -> 
     else:
         why = "no multi-table anchors" if not anchors else f"no SchemaPile ref at {schemapile_ref}"
         dims["decanning"] = {"checks": [], "skipped": why}
+
+    # 4. naturalness + faithfulness (RH step 4; scripts/score_verbalizations.py) — fail-closed when
+    #    unmeasured: an un-instrumented catalog cannot claim the quality dimension.
+    f = floors["quality"]
+    qp = Path("build/verbalization_quality.json")
+    if qp.exists():
+        q = json.loads(qp.read_text())
+        jd, pp = (q.get("judge") or {}), (q.get("ppl") or {})
+        dims["quality"] = {"checks": [
+            _check("judge_faithful_mean", jd.get("faithful_mean") or 0.0, "≥", f["min_judge_faithful"]),
+            _check("judge_winrate_vs_legacy", jd.get("winrate_vs_legacy") or 0.0, "≥", f["min_winrate_vs_legacy"]),
+            _check("ppl_frames_over_legacy", pp.get("frames_over_legacy_median_ratio") or 9.9, "≤", f["max_ppl_ratio"]),
+        ], "context": {"tag": q.get("tag"), "judge_n": jd.get("n"), "ppl_n": pp.get("n"),
+                       "judge_natural_mean": jd.get("natural_mean"), "human_sheet": q.get("human_sheet")}}
+    else:
+        dims["quality"] = {"checks": [{"metric": "verbalization_quality artifact", "value": "missing",
+                                       "op": "", "floor": "run scripts/score_verbalizations.py",
+                                       "pass": False}]}
 
     all_checks = [c for d in dims.values() for c in d.get("checks", [])]
     dims_with_checks = {k: v for k, v in dims.items() if v.get("checks")}
