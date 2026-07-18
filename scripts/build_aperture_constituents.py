@@ -41,7 +41,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--url", default=DI.DEFAULT_QDRANT_URL)
     ap.add_argument("--top-k", type=int, default=40)
-    ap.add_argument("--tau", type=float, default=0.55, help="MaxSim admission threshold for constituency")
+    ap.add_argument("--alpha", type=float, default=0.6,
+                    help="per-anchor RELATIVE threshold: primary iff score >= alpha * anchor's best "
+                         "(MaxSim sums are unnormalized — an absolute tau is dimensionless here)")
     ap.add_argument("--verify", action="store_true", help="run the per-domain sufficiency check")
     ap.add_argument("--write-payloads", action="store_true", default=True)
     a = ap.parse_args()
@@ -56,16 +58,30 @@ def main() -> int:
     concept_domains: "dict[str, list[str]]" = defaultdict(list)  # concept code → anchor labels
     anchor_points = {p.payload.get("pref_label"): p.id for p in
                      client.scroll(DI.DEFAULT_APERTURE, limit=256, with_payload=True)[0]}
+    anchor_labels = {c.pref_label for c in anchors.values()}
     for lbl, c in sorted(anchors.items(), key=lambda kv: kv[1].pref_label):
         q = enc.encode([c.text()])[0]
         res = client.query_points(collection_name=DI.DEFAULT_COLLECTION, query=q.tolist(),
                                   limit=a.top_k, with_payload=True).points
+        # the anchor's own vocab twin is trivially rank-1 — a domain is not its own constituent
+        res = [p for p in res if p.payload.get("pref_label") != c.pref_label]
+        # α binds against the best CONCEPT-kind score ("primary constituent CONCEPTS" — RH);
+        # sibling domains retrieved alongside are ADJACENCY, kept separately (top-8), never constituency
+        conc = [p for p in res if p.payload.get("pref_label") not in anchor_labels]
+        adj = [p for p in res if p.payload.get("pref_label") in anchor_labels]
+        best = max((float(p.score) for p in conc), default=0.0)
         cons = [{"code": p.payload.get("code"), "label": p.payload.get("pref_label"),
-                 "score": round(float(p.score), 4)}
-                for p in res if float(p.score) >= a.tau]
+                 "score": round(float(p.score), 4),
+                 "rel": round(float(p.score) / best, 3) if best else 0.0, "kind": "concept"}
+                for p in conc if best and float(p.score) >= a.alpha * best]
+        cons += [{"code": p.payload.get("code"), "label": p.payload.get("pref_label"),
+                  "score": round(float(p.score), 4),
+                  "rel": round(float(p.score) / best, 3) if best else 0.0, "kind": "adjacent-domain"}
+                 for p in adj[:8]]
         lattice[c.pref_label] = cons
         for x in cons:
-            concept_domains[x["code"]].append(c.pref_label)
+            if x["kind"] == "concept":
+                concept_domains[x["code"]].append(c.pref_label)
         if a.write_payloads and c.pref_label in anchor_points:
             client.set_payload(collection_name=DI.DEFAULT_APERTURE,
                                payload={"constituents": cons},
@@ -78,7 +94,7 @@ def main() -> int:
     print(f"LATTICE (M:N) confirmed empirically: {len(shared)}/{len(concept_domains)} concepts "
           f"occur in >1 domain")
 
-    out = {"tau": a.tau, "top_k": a.top_k, "anchors": lattice,
+    out = {"alpha": a.alpha, "top_k": a.top_k, "anchors": lattice,
            "concept_domains": dict(concept_domains),
            "n_shared_concepts": len(shared)}
     (REPO / "build/aperture_constituents.json").write_text(json.dumps(out, indent=1))
@@ -90,6 +106,7 @@ def main() -> int:
         report = {}
         n_flag = 0
         for dom, cons in lattice.items():
+            cons = [x for x in cons if x["kind"] == "concept"]
             texts = [vocab[next(k for k, v in vocab.items() if v.code == x["code"])].text()
                      if any(v.code == x["code"] for v in vocab.values()) else x["label"]
                      for x in cons]

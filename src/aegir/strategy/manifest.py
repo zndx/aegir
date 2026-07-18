@@ -52,10 +52,15 @@ def _scroll_snapshot(cl, collection: str) -> dict:
             vec = p.vector if not isinstance(p.vector, dict) else next(iter(p.vector.values()))
             vs = _sha(_np.asarray(vec, dtype="float32").tobytes()) if vec is not None else ""
             pl = p.payload or {}
-            rows.append({"id": str(p.id),
-                         "label": pl.get("pref_label") or pl.get("label") or "",
-                         "path": pl.get("path") or "",
-                         "vector_sha": vs[:16]})
+            row = {"id": str(p.id),
+                   "label": pl.get("pref_label") or pl.get("label") or "",
+                   "path": pl.get("path") or "",
+                   "vector_sha": vs[:16]}
+            if pl.get("constituents"):        # Canonical Aperture anchors carry their lattice (#31)
+                row["constituents"] = [{"label": x.get("label"), "code": x.get("code"),
+                                        "rel": x.get("rel"), "kind": x.get("kind")}
+                                       for x in pl["constituents"]]
+            rows.append(row)
         if off is None:
             break
     rows.sort(key=lambda r: r["id"])
@@ -76,7 +81,7 @@ def collect_lens() -> "dict[str, bytes]":
         }
         from aegir.ontology.domain_index import DEFAULT_OVERLAY, DEFAULT_VOCAB
         for src, dst in ((DEFAULT_VOCAB, "lens/vocab.skos.ttl"),
-                         (DEFAULT_OVERLAY, "lens/aiming.skos.ttl")):
+                         (DEFAULT_OVERLAY, "lens/aperture.skos.ttl")):
             sp = Path(src)
             if sp.exists():
                 out[dst] = sp.read_bytes()
@@ -87,7 +92,7 @@ def collect_lens() -> "dict[str, bytes]":
                                          "materialized_from": "live"}),
         })
         try:
-            out["lens/aiming.snapshot.json"] = _canon(_scroll_snapshot(cl, DEFAULT_APERTURE))
+            out["lens/aperture.snapshot.json"] = _canon(_scroll_snapshot(cl, DEFAULT_APERTURE))
         except Exception as e:  # noqa: BLE001 — aiming collection absent: captured explicitly
             out["lens/aiming.UNAVAILABLE"] = str(e)[:200].encode()
         return out

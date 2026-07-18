@@ -1107,6 +1107,26 @@ def project_lexicon_constructs() -> list[N.Note]:
                  + " · ".join(N.wl(f"lexicon/construct/{x}", x) for x in sibs if x != c)))
     return notes
 
+def _aperture_constituents_md(p0: dict) -> str:
+    """The anchor's lattice, from the snapshot payload: primary concept constituents (α-banded,
+    rel-scored) + adjacent domains typed apart. Honest placeholder when a pre-#31 snapshot lacks it."""
+    cons = p0.get("constituents") or []
+    concepts = [x for x in cons if x.get("kind") == "concept"]
+    adj = [x for x in cons if x.get("kind") == "adjacent-domain"]
+    if not cons:
+        return ("Composites primary constituent concepts; the constituent list is not in this "
+                "strategy snapshot (re-seed after build_aperture_constituents).\n\n")
+    out = f"**Primary constituent concepts** ({len(concepts)}, α-banded, rel to best):\n\n"
+    out += "\n".join(f"- {x.get('label')} · rel {x.get('rel')}" for x in concepts[:16])
+    if len(concepts) > 16:
+        out += f"\n- _…{len(concepts) - 16} more_"
+    if adj:
+        out += ("\n\n**Adjacent domains** (retrieval-adjacent siblings — adjacency, not "
+                "constituency):\n\n"
+                + "\n".join(f"- {x.get('label')} · rel {x.get('rel')}" for x in adj[:8]))
+    return out + "\n\n"
+
+
 def project_aperture_anchors() -> list[N.Note]:
     """The Canonical Aperture's composite anchors as notes (RH 2026-07-19): one per anchor, from the
     strategy lens snapshot (truth flows repo → runtime). Constituent-concept mappings are not yet in
@@ -1114,7 +1134,10 @@ def project_aperture_anchors() -> list[N.Note]:
     try:
         import json as _json
         from aegir.strategy.manifest import read_component
-        pts = _json.loads(read_component("lens/aiming.snapshot.json"))
+        try:
+            pts = _json.loads(read_component("lens/aperture.snapshot.json"))
+        except Exception:  # noqa: BLE001 — pre-rename strategy checkouts
+            pts = _json.loads(read_component("lens/aiming.snapshot.json"))
         pts = pts.get("points", pts) if isinstance(pts, dict) else pts
     except Exception:  # noqa: BLE001
         return []
@@ -1133,9 +1156,8 @@ def project_aperture_anchors() -> list[N.Note]:
             data_product="ontology", root="scratch",
             frontmatter={"vector_sha": p0.get("vector_sha")},
             body=(f"**{label}** — a Canonical Aperture composite anchor (id `{aid}`, vector "
-                  f"`{p0.get('vector_sha')}`). Composites primary constituent concepts; the "
-                  f"constituent list is not yet surfaced in the strategy snapshot (#31 surfaces it, "
-                  f"plus the per-domain sufficiency-of-differentiation verification).\n\n"
+                  f"`{p0.get('vector_sha')}`).\n\n"
+                  + _aperture_constituents_md(p0)
                   + "Part of " + N.wl("lexicon/aperture/index", "the Canonical Aperture") + " · "
                   + N.wl("lexicon/construct/aperture", "aperture (construct)"))))
     return notes
@@ -1154,7 +1176,10 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
         import json as _json
         from aegir.strategy.manifest import read_component
         vocab = _json.loads(read_component("lens/vocab.snapshot.json"))
-        aiming = _json.loads(read_component("lens/aiming.snapshot.json"))
+        try:
+            aiming = _json.loads(read_component("lens/aperture.snapshot.json"))
+        except Exception:  # noqa: BLE001 — pre-rename strategy checkouts
+            aiming = _json.loads(read_component("lens/aiming.snapshot.json"))
         n_c = len(vocab.get("points", vocab) if isinstance(vocab, dict) else vocab)
         n_d = len(aiming.get("points", aiming) if isinstance(aiming, dict) else aiming)
         ap_line = (f"**Canonical Aperture.** {n_d} composite anchors (each compositing primary "
