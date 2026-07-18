@@ -44,7 +44,7 @@ _BRANDS_CLEAR = re.compile(
     r"foxconn|tsmc|asml|cisco|lenovo|toshiba|hitachi|siemens|panasonic|ericsson|nokia|motorola|"
     # 'snowflake' dropped from the unconditional list — star-and-SNOWFLAKE schemas are a CORE DDL concept in
     # this corpus (realize.py generates them), so 'snowflake schema/pattern/dimension' is domain usage, not the co.
-    r"ibm|sap|salesforce|workday|servicenow|databricks|cloudera|teradata|informatica|"
+    r"ibm|sap|salesforce|servicenow|databricks|cloudera|teradata|informatica|"
     r"cerner|meditech|allscripts|athenahealth|epic\s+systems|medtronic|stryker|baxter|danaher|"
     r"agilent|shimadzu|perkinelmer|perkin\s+elmer|bruker|sartorius|mettler[- ]toledo|labware|"
     r"labvantage|starlims|thermo\s+fisher|beckman|biorad|bio-rad|illumina|qiagen|pfizer|novartis|"
@@ -65,7 +65,8 @@ _BRANDS_CLEAR = re.compile(
 # audit tier owns the tail the denylist can't safely cover.
 _BRANDS_AMBIG = ("apple", "oracle", "amazon", "meta", "epic", "waters", "shell", "bp", "ge",
                  "philips", "tesla", "ford", "adobe",
-                 "cadence", "palantir", "anthropic", "openai", "deepmind")
+                 "cadence", "palantir", "anthropic", "openai", "deepmind",
+                 "workday")  # common noun (a working day) — brand only in corporate context
 _AMBIG_CTX = re.compile(
     r"(?i:\b(" + "|".join(_BRANDS_AMBIG) + r")\b)\s+(?:(?i:inc|corp|llc|ltd|plc|group|"
     r"systems|health(?:care)?|cloud|labs?)\b|[A-Z][A-Za-z0-9]+)")
