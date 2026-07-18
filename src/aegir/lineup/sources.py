@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import glob
 import os
+import re
 from pathlib import Path
 
 from aegir.ontology.schema import CatalogTemplate
@@ -440,10 +441,36 @@ def sdg_corpus() -> "dict | None":
     return out
 
 
+def _infer_sql_type(vals: "list[str]") -> str:
+    """A cell-evidence SQL type for a generated column (the constructs carry values, not declarations —
+    the honest label is what the data exhibits). Empty → 'text'."""
+    vs = [v for v in vals if v not in ("", None)]
+    if not vs:
+        return "text"
+    if all(re.fullmatch(r"-?\d+", v) for v in vs):
+        return "integer"
+    if all(re.fullmatch(r"-?\d+(\.\d+)?", v) for v in vs):
+        return "decimal"
+    if all(v.lower() in ("true", "false", "yes", "no", "0", "1") for v in vs):
+        return "boolean"
+    if all(re.match(r"^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}", v) for v in vs):
+        return "timestamp"
+    if all(re.fullmatch(r"\d{4}-\d{2}-\d{2}", v) for v in vs):
+        return "date"
+    return "text"
+
+
+_VIEW_REFS = re.compile(r"\b(?:FROM|JOIN)\s+([A-Za-z_][A-Za-z0-9_]*)", re.I)
+
+
 def sdg_constructs() -> "dict | None":
     """The generated relational product, VERBATIM (RH ruling: the lineup audits what
     `just metaflow` offers up — wrapping names is obfuscation). One entry per unique table
-    name across all constructs; FK targets by real name; provenance = construct pids."""
+    name across all constructs; FK targets by real name; provenance = construct pids.
+
+    Enriched for the ERD-headed panel (RH 2026-07-18 UX pass): per-column inferred type +
+    sample values + PK/FK marks, reverse-FKs (``referenced_by``), junction detection, and
+    the views over each table (from the views' actual FROM/JOIN references)."""
     import json as _json
     root = sdg_run_root()
     if root is None:
@@ -468,15 +495,45 @@ def sdg_constructs() -> "dict | None":
             e = tables.setdefault(name, {"columns": [], "pk": t.get("pk"), "fks": [],
                                          "constructs": [], "pk_kind": pk_kind.get(name)})
             if not e["columns"]:
-                e["columns"] = [c.get("name") for c in t.get("columns") or []]
+                pk = t.get("pk")
+                pk_cols = set(pk if isinstance(pk, list) else [pk] if pk else [])
+                fk_by_col = {fk.get("col"): fk for fk in (t.get("fks") or [])}
+                for c in t.get("columns") or []:
+                    cells = [str(x.get("value", "")) for x in (c.get("cells") or [])]
+                    distinct = list(dict.fromkeys(v for v in cells if v))
+                    fk = fk_by_col.get(c.get("name"))
+                    e["columns"].append({
+                        "name": c.get("name"), "type": _infer_sql_type(cells),
+                        "samples": [v[:40] for v in distinct[:3]],
+                        "pk": c.get("name") in pk_cols,
+                        "fk": f"{fk.get('ref_table')}.{fk.get('ref_col')}" if fk else None})
                 e["fks"] = t.get("fks") or []
             e["constructs"].append(pid)
         for v in d.get("views") or []:
             vn = v.get("name") if isinstance(v, dict) else None
-            if vn:
-                views.setdefault(vn, {"sql": (v.get("sql") or "")[:400], "construct": pid})
+            if vn and vn not in views:
+                sql = v.get("sql") or ""
+                views[vn] = {"sql": sql[:600], "kind": v.get("kind"), "construct": pid,
+                             "tables": sorted(set(_VIEW_REFS.findall(sql)))}
     if not tables:
         return None
+    # post-pass: reverse FKs, views-over-table, junction shape (composite PK ≡ its two FK cols)
+    for name, e in tables.items():
+        e["referenced_by"] = []
+        e["views"] = []
+    for name, e in tables.items():
+        for fk in e["fks"]:
+            ref = fk.get("ref_table")
+            if ref in tables:
+                tables[ref]["referenced_by"].append({"table": name, "col": fk.get("col")})
+        pk = e.get("pk")
+        pk_set = set(pk if isinstance(pk, list) else [pk] if pk else [])
+        fk_cols = {fk.get("col") for fk in e["fks"]}
+        e["junction"] = len(pk_set) == 2 and pk_set == fk_cols
+    for vn, v in views.items():
+        for tn in v["tables"]:
+            if tn in tables:
+                tables[tn]["views"].append(vn)
     return {"tables": tables, "views": views, "n_constructs": len(list(cdir.glob("*.json")))}
 
 

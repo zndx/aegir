@@ -8,6 +8,7 @@ import PanelView from "./PanelView";
 // Lazy so @xyflow/react is code-split off the main lineup path — the heavy graph lib loads only when a
 // Provenance panel opens, so it can never break the rest of the lineup (and the dev server pulls it on demand).
 const ProvenanceGraph = lazy(() => import("./ProvenanceGraph"));
+const RelationalErd = lazy(() => import("./RelationalErd"));
 
 const { Text } = Typography;
 
@@ -27,6 +28,8 @@ export interface KBNote {
   ego_focal?: number | null;
   // Lens notes may opt out of the live chord embed (trunk lenses — the chords are release-era).
   chord?: boolean;
+  // Relational-table notes carry their precomputed first-order ERD (rendered by RelationalErd).
+  erd?: import("./RelationalErd").ErdData;
 }
 
 // Flag accent per Data Product — the FedWiki "flag" reinterpreted as a lens color.
@@ -248,6 +251,11 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
         {note?.kind === "provenance" && (
           <Suspense fallback={<Text type="secondary" style={{ fontSize: 12 }}>loading graph…</Text>}>
             <ProvenanceGraph focal={note.ego_focal ?? null} onLink={onLink} />
+          </Suspense>
+        )}
+        {note?.kind === "relational-table" && note.erd && (
+          <Suspense fallback={<Text type="secondary" style={{ fontSize: 12 }}>loading ERD…</Text>}>
+            <RelationalErd erd={note.erd} onLink={onLink} />
           </Suspense>
         )}
         {note ? renderBody(note.body, onLink)

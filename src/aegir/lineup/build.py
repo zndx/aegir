@@ -1354,17 +1354,60 @@ def run(args=None) -> int:
                         f" · `{fk.get('ref_col')}`"
                         for fk in e["fks"]]
             prov = ", ".join(e["constructs"][:4]) + ("…" if len(e["constructs"]) > 4 else "")
+            # the column detail TABLE (RH 2026-07-18 UX pass: types + keys + samples, not a name list)
+            col_rows = ["| column | type | key | samples |", "|---|---|---|---|"]
+            for c in e["columns"]:
+                key = ("PK" if c["pk"] else "") + ("+" if c["pk"] and c["fk"] else "") + \
+                      (f"FK → {N.wl('relational/table/' + c['fk'].split('.')[0], c['fk'])}"
+                       if c["fk"] and c["fk"].split(".")[0] in known
+                       else (f"FK → `{c['fk']}`" if c["fk"] else ""))
+                col_rows.append(f"| `{c['name']}` | {c['type']} | {key or '—'} | "
+                                + (" · ".join(f"`{s}`" for s in c["samples"]) or "—") + " |")
+            ref_by = [f"- {N.wl('relational/table/' + r['table'], r['table'])} · `{r['col']}`"
+                      for r in e.get("referenced_by", [])[:10] if r["table"] in known]
+            more_ref = len(e.get("referenced_by", [])) - len(ref_by)
+            vw = e.get("views", [])
+            vw_lines = [f"- `{v}`" + (f" ({vws[v].get('kind')})" if vws.get(v, {}).get("kind") else "")
+                        for v in vw[:8]]
+            # the first-order ERD payload (rendered by the React panel; bounded neighborhood)
+            erd_nodes = [{"id": n, "kind": "junction" if e.get("junction") else "table", "focal": True,
+                          "cols": [f"{c['name']}: {c['type']}" for c in e["columns"][:8]]}]
+            erd_edges = []
+            for fk in e["fks"][:6]:
+                rt = fk.get("ref_table")
+                if rt and rt != n:
+                    erd_nodes.append({"id": rt, "kind": "junction" if tbls.get(rt, {}).get("junction")
+                                      else "table", "known": rt in known})
+                    erd_edges.append({"source": n, "target": rt, "label": fk.get("col")})
+            for r in e.get("referenced_by", [])[:6]:
+                if r["table"] != n and not any(x["id"] == r["table"] for x in erd_nodes):
+                    erd_nodes.append({"id": r["table"], "kind": "junction"
+                                      if tbls.get(r["table"], {}).get("junction") else "table",
+                                      "known": r["table"] in known})
+                    erd_edges.append({"source": r["table"], "target": n, "label": r["col"]})
+            for v in vw[:4]:
+                erd_nodes.append({"id": v, "kind": "view"})
+                erd_edges.append({"source": n, "target": v, "label": "view"})
             notes.append(N.Note(
                 id=f"relational/table/{n}", title=n, kind="relational-table",
                 data_product="relational", root="scratch",
                 frontmatter={"pk": e.get("pk"), "pk_kind": e.get("pk_kind"),
-                             "n_columns": len(e["columns"]), "constructs": len(e["constructs"])},
+                             "n_columns": len(e["columns"]), "constructs": len(e["constructs"]),
+                             "junction": bool(e.get("junction")),
+                             "erd": {"focal": n, "nodes": erd_nodes, "edges": erd_edges,
+                                     "more": {"referenced_by": max(0, len(e.get("referenced_by", [])) - 6),
+                                              "views": max(0, len(vw) - 4)}}},
                 links=[f"relational/table/{fk.get('ref_table')}" for fk in e["fks"]
                        if fk.get("ref_table") in known],
-                body=(f"**`{n}`** — generated table (verbatim; pk kind "
-                      f"**{e.get('pk_kind') or '—'}**, pk `{e.get('pk') or '—'}`).\n\n"
-                      f"Columns: " + " · ".join(f"`{c}`" for c in e["columns"]) + "\n\n"
+                body=(f"**`{n}`** — generated {'junction ' if e.get('junction') else ''}table "
+                      f"(verbatim; pk kind **{e.get('pk_kind') or ('composite' if e.get('junction') else '—')}**, "
+                      f"pk `{e.get('pk') or '—'}`).\n\n"
+                      + "\n".join(col_rows) + "\n\n"
                       + ("**Foreign keys**\n" + "\n".join(fk_lines) + "\n\n" if fk_lines else "")
+                      + ("**Referenced by**\n" + "\n".join(ref_by)
+                         + (f"\n- _…{more_ref} more_" if more_ref > 0 else "") + "\n\n" if ref_by else "")
+                      + ((f"**Views over this table** ({len(vw)})\n" + "\n".join(vw_lines)
+                          + (f"\n- _…{len(vw) - 8} more_" if len(vw) > 8 else "") + "\n\n") if vw else "")
                       + f"_Constructs: {prov}_")))
         print(f"  relational(sdg): {len(tbls)} tables + {len(vws)} views VERBATIM "
               f"from {sc['n_constructs']} constructs", flush=True)
