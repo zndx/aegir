@@ -1,0 +1,124 @@
+#!/usr/bin/env python
+"""build_aperture_constituents — make the Canonical Aperture's constituent mapping EXPLICIT (#31 legs 1+2).
+
+The aperture's 29 anchors are textually composite (rich authored domain concepts) but the
+domain→constituent mapping was implicit. This derives it by the aperture's OWN semantics — each
+anchor's ColBERT multivector queries the VOCAB collection (MaxSim, the same procedure that admits
+items) — yielding the M:N LATTICE by construction: a concept may clear the threshold under several
+anchors (RH 2026-07-19: domain⇄concept is many-to-many). Results are written three ways:
+
+  * qdrant: each aperture point's payload gains ``constituents`` (code · label · score)
+  * artifact: build/aperture_constituents.json (the full lattice, both directions)
+  * the strategy lens snapshot picks the payloads up on the next ``manifest seed``
+
+``--verify`` runs the SUFFICIENCY-OF-DIFFERENTIATION check (leg 2): within each domain, the primary
+constituents must be mutually differentiated — measured with the SAME margin machinery as the taxonomy
+(genus_induction.embed → pairwise cosine); a pair above the pre-registered ceiling is flagged as an
+insufficient-differentia candidate for that domain specification. Re-run under any domain refinement
+(in situ — novel physical compute environments included). → build/aperture_sufficiency.json
+
+    uv run python scripts/build_aperture_constituents.py --top-k 40 --tau 0.55 --verify
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from collections import defaultdict
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO / "src"))
+
+from aegir.ontology import domain_index as DI  # noqa: E402
+
+# pre-registered (before first measurement): intra-domain constituent pairs with cosine above this
+# are insufficient-differentia candidates under that domain specification.
+PAIR_COSINE_CEILING = 0.90
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--url", default=DI.DEFAULT_QDRANT_URL)
+    ap.add_argument("--top-k", type=int, default=40)
+    ap.add_argument("--tau", type=float, default=0.55, help="MaxSim admission threshold for constituency")
+    ap.add_argument("--verify", action="store_true", help="run the per-domain sufficiency check")
+    ap.add_argument("--write-payloads", action="store_true", default=True)
+    a = ap.parse_args()
+
+    anchors = DI.load_skos(str(DI.DEFAULT_OVERLAY))
+    vocab = DI.load_skos()                                   # full vocab (defaults)
+    client = DI._client(a.url)
+    from aegir.ontology.colbert_encoder import get_encoder
+    enc = get_encoder()
+
+    lattice: "dict[str, list[dict]]" = {}                    # anchor label → constituents
+    concept_domains: "dict[str, list[str]]" = defaultdict(list)  # concept code → anchor labels
+    anchor_points = {p.payload.get("pref_label"): p.id for p in
+                     client.scroll(DI.DEFAULT_APERTURE, limit=256, with_payload=True)[0]}
+    for lbl, c in sorted(anchors.items(), key=lambda kv: kv[1].pref_label):
+        q = enc.encode([c.text()])[0]
+        res = client.query_points(collection_name=DI.DEFAULT_COLLECTION, query=q.tolist(),
+                                  limit=a.top_k, with_payload=True).points
+        cons = [{"code": p.payload.get("code"), "label": p.payload.get("pref_label"),
+                 "score": round(float(p.score), 4)}
+                for p in res if float(p.score) >= a.tau]
+        lattice[c.pref_label] = cons
+        for x in cons:
+            concept_domains[x["code"]].append(c.pref_label)
+        if a.write_payloads and c.pref_label in anchor_points:
+            client.set_payload(collection_name=DI.DEFAULT_APERTURE,
+                               payload={"constituents": cons},
+                               points=[anchor_points[c.pref_label]])
+
+    shared = {k: v for k, v in concept_domains.items() if len(v) > 1}
+    print(f"{len(lattice)} anchors · constituents per anchor "
+          f"min/med/max = {min(map(len, lattice.values()))}/"
+          f"{sorted(map(len, lattice.values()))[len(lattice)//2]}/{max(map(len, lattice.values()))}")
+    print(f"LATTICE (M:N) confirmed empirically: {len(shared)}/{len(concept_domains)} concepts "
+          f"occur in >1 domain")
+
+    out = {"tau": a.tau, "top_k": a.top_k, "anchors": lattice,
+           "concept_domains": dict(concept_domains),
+           "n_shared_concepts": len(shared)}
+    (REPO / "build/aperture_constituents.json").write_text(json.dumps(out, indent=1))
+    print(f"→ build/aperture_constituents.json (+ payloads written to {DI.DEFAULT_APERTURE})")
+
+    if a.verify:
+        # leg 2 — the same margin machinery as the taxonomy (genus_induction.embed)
+        from aegir.ontology.genus_induction import embed
+        report = {}
+        n_flag = 0
+        for dom, cons in lattice.items():
+            texts = [vocab[next(k for k, v in vocab.items() if v.code == x["code"])].text()
+                     if any(v.code == x["code"] for v in vocab.values()) else x["label"]
+                     for x in cons]
+            if len(texts) < 2:
+                report[dom] = {"n": len(texts), "flagged_pairs": []}
+                continue
+            E = embed(texts)
+            import numpy as np
+            S = E @ E.T
+            flags = []
+            for i in range(len(texts)):
+                for j in range(i + 1, len(texts)):
+                    if float(S[i, j]) > PAIR_COSINE_CEILING:
+                        flags.append({"a": cons[i]["label"], "b": cons[j]["label"],
+                                      "cosine": round(float(S[i, j]), 4)})
+            n_flag += len(flags)
+            iu = np.triu_indices(len(texts), 1)
+            report[dom] = {"n": len(texts), "max_pair_cosine": round(float(S[iu].max()), 4),
+                           "flagged_pairs": flags[:8]}
+        (REPO / "build/aperture_sufficiency.json").write_text(json.dumps(
+            {"ceiling": PAIR_COSINE_CEILING, "domains": report,
+             "total_flagged_pairs": n_flag}, indent=1))
+        worst = sorted(report.items(), key=lambda kv: -kv[1].get("max_pair_cosine", 0))[:4]
+        print(f"SUFFICIENCY: {n_flag} intra-domain pairs above ceiling {PAIR_COSINE_CEILING}")
+        for d, r in worst:
+            print(f"  · {d}: n={r['n']} max_pair_cosine={r.get('max_pair_cosine')}")
+        print("→ build/aperture_sufficiency.json")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1175,9 +1175,9 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
               + "**Ontology stratum.** The LIVE derived catalog, by axiom-pattern category:\n\n"
               + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in categories)
               + "\n\n**Topics.** Anchor-topics per the inverted layer (one passage → one concept "
-                "anchor, margin-gated): " + N.wl("topic/index", "topic index") + ". _De novo_ "
-                "spectral topics (CLT/SAE feature co-activation over items AND chapters — "
-                "commensurable across input/output) are STAGED (#30); BERTopic is vestigial.\n\n"
+                "anchor, margin-gated): " + N.wl("topic/index", "topic index") + ". LATENT-topics "
+                "(CLT/SAE spectral communities over items, input AND output — content-addressed "
+                "until christened) are STAGED (#30); BERTopic is vestigial.\n\n"
               + "**Collections.** Output-side bundles (connected DDL components): "
               + N.wl("collection/index", "collection index") + ".\n\n"
               + "**Constructs (the meta-vocabulary).** "
