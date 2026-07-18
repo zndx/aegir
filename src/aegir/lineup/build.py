@@ -1000,6 +1000,77 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
     return [terms, schema, content]
 
 
+
+
+def project_lexicon_constructs() -> list[N.Note]:
+    """The Lexicon's META-VOCABULARY as definitional notes (RH 2026-07-19): each construct carries its
+    CURRENT operational definition + the machinery that enforces it + its relations — definitions that
+    compile, not essays. Root=scratch (trunk): these are live definitions under refinement; the lens
+    guard is that refinement lands HERE (and in the modules), keeping the lineup a Cunningham primitive,
+    not a wiki."""
+    C = {
+        "domain": ("A DOMAIN is a region of admissible input meaning, operationalized as the AIMING "
+                   "collection's admission rule: a raw-stream passage enters iff its ColBERT/MaxSim "
+                   "score against the domain's anchor documents clears the aperture threshold. Domains "
+                   "are the SKOS top-concepts of the ontology-derived vocabulary.\n\n"
+                   "Operationalization: `aegir.ontology.domain_index` (aiming collection); the strategy "
+                   "`lens/` pillar pins the snapshot. Relations: a domain COMPRISES concepts; the "
+                   "aperture = domain anchors × the admission rule; SysMLv2 extends domains additively."),
+        "concept": ("A CONCEPT is one anchor point in the vocab collection — an ontology-derived SKOS "
+                    "concept embedded in qdrant: the unit of classification and the identity-bearer "
+                    "for anchor-topics.\n\nOperationalization: `domain_index` vocab collection; "
+                    "strategy `lens/vocab.snapshot`. Relations: belongs to ≥1 domain; a topic IS a "
+                    "concept once passages accumulate on it; spectral analysis may PROPOSE new "
+                    "concepts (the aperture-refinement loop)."),
+        "topic": ("A TOPIC is a concept anchor with accumulated evidence: each passage assigns to its "
+                  "nearest concept anchor, margin-gated — ONE passage, ONE topic (ratified 2026-07-07; "
+                  "collection-state pinned; BERTopic vestigial).\n\n_De novo_ topics (STAGED, #30): "
+                  "CLT/SAE spectral communities over feature co-activation across input ITEMS and "
+                  "output CHAPTERS — model-native semantic units, commensurable across input/output "
+                  "because one encoder sees both. Reconciliation with anchor-topics may propose new "
+                  "concepts → aperture refinement. Operationalization: the inverted topic layer; "
+                  "instruments: clt-qwen3-1.7b (live) + SAE-Res-Qwen3.5-27B."),
+        "collection": ("A COLLECTION is an output-side bundle: the documents whose tables/views form "
+                       "one connected DDL graph (FK + view-composition edges) after infrastructure-hub "
+                       "removal — the Barabási-calibrated operating point.\n\nOperationalization: "
+                       "`targets/collections_unit` (strategy) + `scripts/relational_collections.py`. "
+                       "Relations: realizes terms; threaded by topics; the chapter's relational home."),
+        "term": ("A TERM is a catalog lexeme: a template head with its Manchester axiom skeleton, "
+                 "verbalized via the frame set; in Atlas-glossary organization a Term under a Category "
+                 "under the Lexicon.\n\nOperationalization: `catalog.json` + verbalization frames. "
+                 "Relations: grounded to a BFO/CCO anchor; realized by collections; the aggregate "
+                 "lexicon's DISCRIMINATING POTENTIAL calibrates taxonomy depth (the NHSVM "
+                 "rate-distortion constraint)."),
+        "genus": ("A GENUS is an induced mid-tier class at the rate-distortion FRONTIER (frontier_k "
+                  "from the lexicon's discriminating potential): the precondition for differentia — "
+                  "a genus alone is a bag; a taxonomy is genus + differentiated species.\n\n"
+                  "Operationalization: `aegir.ontology.genus_induction` (frontier detection) + the "
+                  "authoring CAS loop. Relations: species SubClassOf genus; disjointness within."),
+        "differentia": ("A DIFFERENTIA is the OBSERVABLE discriminating restriction a species earns "
+                        "under its genus (propose → membranes → HermiT), projecting to a data column "
+                        "or FK join: authentic-taxonomy ≡ sufficient-differentia ≡ elucidable.\n\n"
+                        "Operationalization: `aegir.ontology.differentia_authoring`; the SHACL shapes "
+                        "carry it (sh:in domains render as table Constraints in the lineup)."),
+    }
+    sibs = list(C)
+    notes = [N.Note(
+        id="lexicon/constructs", title="Lexicon constructs", kind="lexicon-construct",
+        data_product="ontology", root="scratch",
+        body=("**The meta-vocabulary of the pipeline** — refined here, enforced in the modules.\n\n"
+              "The chain: the APERTURE (domains · concepts) admits ITEMS → TOPICS accumulate on "
+              "concept anchors → CHAPTERS generate against terms → COLLECTIONS bundle the relational "
+              "output. The ontology stratum (TERMS · GENERA · DIFFERENTIAE) threads every step — "
+              "and the refinement loop closes when spectral topics propose new concepts.\n\n"
+              + "\n".join(f"- {N.wl(f'lexicon/construct/{c}', c)}" for c in sibs)))]
+    for c, body in C.items():
+        notes.append(N.Note(
+            id=f"lexicon/construct/{c}", title=c, kind="lexicon-construct",
+            data_product="ontology", root="scratch",
+            links=[f"lexicon/construct/{x}" for x in sibs if x != c],
+            body=body + "\n\nSiblings: "
+                 + " · ".join(N.wl(f"lexicon/construct/{x}", x) for x in sibs if x != c)))
+    return notes
+
 def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bool,
                          zettel_head: str | None = None,
                          items_report: dict | None = None) -> list[N.Note]:
@@ -1007,12 +1078,39 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
     root-resolved (roots are refs, git-style). These browse the LIVE state: the derived
     catalog by pattern, the grounds-shape spine + the earned generated web, and the
     accreting corpus. ``chord: false`` — the collection chords are release-era."""
+    # Aperture counts read THROUGH the strategy (truth flows repo → runtime); absent → omitted.
+    ap_line = ""
+    try:
+        import json as _json
+        from aegir.strategy.manifest import read_component
+        vocab = _json.loads(read_component("lens/vocab.snapshot.json"))
+        aiming = _json.loads(read_component("lens/aiming.snapshot.json"))
+        n_c = len(vocab.get("points", vocab) if isinstance(vocab, dict) else vocab)
+        n_d = len(aiming.get("points", aiming) if isinstance(aiming, dict) else aiming)
+        ap_line = (f"**Aperture.** {n_d} domain anchors (aiming) · {n_c} concepts (vocab) — "
+                   f"the admission surface, pinned by the strategy lens pillar.\n\n")
+    except Exception:  # noqa: BLE001 — strategy snapshots optional at build time
+        ap_line = ("**Aperture.** domains (aiming) + concepts (vocab) — the admission surface, "
+                   "pinned by the strategy lens pillar (snapshots not readable at build).\n\n")
     terms = N.Note(
         id="lens/terms", title="Lexicon (trunk)", kind="lens", data_product="ontology",
         root="scratch", frontmatter={"lens": "terms", "lexicon": LEXICON, "chord": False},
-        body=("**Lexicon** `" + LEXICON + "` — the LIVE derived catalog (trunk). Browse by "
-              "axiom-pattern category:\n\n"
-              + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in categories)))
+        body=("**Lexicon** `" + LEXICON + "` — the full SIGN-SYSTEM of the pipeline (RH 2026-07-19: "
+              "the lens subsumes the aperture's domains+concepts, the catalog terms, the induced "
+              "genera/differentiae, topics, and collections; it is where the meta-vocabulary itself "
+              "is refined — see " + N.wl("lexicon/constructs", "the constructs") + ").\n\n"
+              + ap_line
+              + "**Ontology stratum.** The LIVE derived catalog, by axiom-pattern category:\n\n"
+              + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in categories)
+              + "\n\n**Topics.** Anchor-topics per the inverted layer (one passage → one concept "
+                "anchor, margin-gated): " + N.wl("topic/index", "topic index") + ". _De novo_ "
+                "spectral topics (CLT/SAE feature co-activation over items AND chapters — "
+                "commensurable across input/output) are STAGED (#30); BERTopic is vestigial.\n\n"
+              + "**Collections.** Output-side bundles (connected DDL components): "
+              + N.wl("collection/index", "collection index") + ".\n\n"
+              + "**Constructs (the meta-vocabulary).** "
+              + " · ".join(N.wl(f"lexicon/construct/{c}", c) for c in
+                           ("domain", "concept", "topic", "collection", "term", "genus", "differentia"))))
     schema_body = ("**Schema (trunk).** The live relational surfaces.\n")
     if has_sdg:
         schema_body += (f"\n**The generated web (earned).** {N.wl('relational/sdg-schema', 'SDG schema')} — "
@@ -1596,6 +1694,7 @@ def run(args=None) -> int:
             print(f"  corpus: {len(zs)} run-zettels (chain head {zs[-1]['id']}; citizenship {by_r})")
 
     # Trunk lenses (scratch) — same lens ids as the release kasten, root-resolved.
+    notes += project_lexicon_constructs()
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
                                   zettel_head=zs[-1]["id"] if zs else None,
                                   items_report=(assoc or {}).get("report"))
