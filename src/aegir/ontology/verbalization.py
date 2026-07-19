@@ -193,16 +193,10 @@ def _relational_frames(p: VerbalizationParts) -> list[str]:
         # definitional (verb-framing, 'which' → distinct skeleton; 'Each' avoids an unknown-article '{S}')
         f"Each {S} is defined as {art_head} {_join([_verb_rel(c, 'which') for c in C])}.",
         # necessary-condition (procedural; one fronted verb governs the relation-phrase list)
-        f"For an entity to count as {S}, it must bear {_join([_rel_phrase(c) for c in C])}.",
+        f"For {_art(head)} {head} to count as {S}, it must bear {_join([_rel_phrase(c) for c in C])}.",
         # normative (every-stands; single fronted 'stands in')
         f"Every {S} stands in {_join([_rel_phrase(c) for c in C])}.",
-        # necessary, via-fronted (no verb to conjugate across clauses)
-        f"Any {S} necessarily relates {_join([_via(c) for c in C])}.",
     ]
-    # relational-fronted: only clean for a single constraint with a property
-    if len(C) == 1 and C[0].property and not C[0].negated:
-        c = C[0]
-        frames.append(f"The {c.property} relation connects each {S} to {_count(c)} {c.filler}.")
     # BFO-aware role framing (RH): roles read best with their bearer/realization fronted
     if "role" in head.lower() and C:
         frames.append(f"As a role, {S} is characterised by {_join([_rel_phrase(c) for c in C])}.")
@@ -219,8 +213,6 @@ def _bare_frames(p: VerbalizationParts) -> list[str]:
         f"{S} is a kind of {sup}.",
         f"{S} is a type of {sup}.",
         f"Every {S} is {art_sup}.",
-        f"{S} denotes {art_sup}.",
-        f"Any {S} qualifies as {art_sup}.",
     ]
 
 

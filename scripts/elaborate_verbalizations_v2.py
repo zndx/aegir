@@ -77,6 +77,22 @@ def m_parse(cand: str, base_slots: "set[str]") -> "tuple[bool, str]":
     return True, ""
 
 
+_OPENERS = re.compile(r"^(?:a|an|the|each|every|any|all)\s+", re.I)
+
+
+def subject_drift(base: str, cand: str) -> bool:
+    """True when the candidate does not OPEN with the base's head slot — the signature of a
+    relation-direction flip or head demotion (the judged failure mode: CLT feature overlap is
+    direction-blind, so 'A requested-by B' and 'B requests A' both clear the floor). Drifted
+    candidates are not rejected — they are ROUTED TO THE JUDGE regardless of CLT margin."""
+    heads = _SLOT_RE.findall(base)
+    if not heads:
+        return False
+    head = heads[0]
+    c = _OPENERS.sub("", cand.strip())
+    return not c.startswith(head)
+
+
 class CltMembrane:
     """Feature-overlap floor (judge-free). Loads lazily on cuda (CUDA_VISIBLE_DEVICES pins the GPU)."""
 
@@ -160,6 +176,8 @@ def elaborate(template_id: str, base: str, n: int, rounds: int, clt: CltMembrane
                 reasons.append(f"too far from the axiom in feature space (J={j:.2f} < τ={clt.tau}) — "
                                f"likely added/omitted claims")
                 continue
+            if verdict == "pass" and subject_drift(base, cand):
+                verdict = "margin"                # direction-blindness guard: the judge disposes
             if verdict == "margin":
                 ok, why = m_judge(base, cand)
                 if not ok:

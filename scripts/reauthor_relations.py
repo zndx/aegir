@@ -38,6 +38,14 @@ sys.path.insert(0, str(REPO / "src"))
 from aegir.ontology.relation_signatures import SIGNATURES_OMN, grounding_frames  # noqa: E402
 from aegir.ontology.verbalization import (VerbalizationParts, compose_frames,  # noqa: E402
                                           merge_manchester_restrictions)
+from aegir.ontology.deeponto_harness import PUBLIC_LABELS  # noqa: E402
+
+
+def _genus_of(manchester: str) -> "list[str]":
+    # the bare bfo anchor (no quantifier after it) → its public label as the genus word,
+    # so recovered verbal bases read 'is a process that …', never 'is an entity that …'
+    m = re.search(r"SubClassOf:\s*(bfo:\d{7})\s*(?:,|$)", manchester, re.M)
+    return [PUBLIC_LABELS[m.group(1)]] if m and m.group(1) in PUBLIC_LABELS else []
 
 PROMPT_VERSION = "reauthor-relations-2026-07-19"
 _REST = re.compile(r"(sdg:\w+|bfo:\d{7})\s+(some|only|min \d+|max \d+|exactly \d+)\s+\{(\w+):Class\}")
@@ -282,7 +290,8 @@ def main() -> int:
             prov["previous_axiom"] = old
             # scrub stale verbalizations → regenerate from the pure recovery path
             parts = merge_manchester_restrictions(
-                VerbalizationParts(subject="{" + heads_in[0] + "}"), mans[0])
+                VerbalizationParts(subject="{" + heads_in[0] + "}",
+                                   named_supers=_genus_of(mans[0])), mans[0])
             frames = compose_frames(parts)
             t["verbal_template"] = frames[0] if frames else ""
             t["verbal_templates"] = frames
@@ -306,7 +315,8 @@ def main() -> int:
     # regenerate verbal for the new intermediate templates
     for nt in new_templates:
         parts = merge_manchester_restrictions(
-            VerbalizationParts(subject="{" + re.search(r"\{(\w+):Class\}", nt["manchester_template"]).group(1) + "}"),
+            VerbalizationParts(subject="{" + re.search(r"\{(\w+):Class\}", nt["manchester_template"]).group(1) + "}",
+                               named_supers=_genus_of(nt["manchester_template"])),
             nt["manchester_template"])
         fr = compose_frames(parts)
         nt["verbal_template"] = fr[0] if fr else ""

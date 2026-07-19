@@ -101,7 +101,9 @@ Score verbalization A:
 - faithful (1-5): 5 = every claim in A is entailed by the axiom and no axiom conjunct is missing;
   deduct for invented claims, dropped restrictions, or wrong quantifiers/cardinalities. A PARAPHRASE
   that preserves the axiom's meaning is fully faithful — do not reward surface similarity to the
-  axiom's wording.
+  axiom's wording. Check relation DIRECTION explicitly: who bears/does/undergoes what must match the
+  axiom (its subject is the class being defined); a reversed direction ("X requests Y" for an axiom
+  saying X is requested BY Y) is a wrong claim — faithful ≤ 2, even if every entity is mentioned.
 - natural (1-5): 5 = fluent, idiomatic technical English a textbook would print.
 - prefer: which verbalization is better OVERALL (faithfulness first, then naturalness) — "a", "b",
   or "tie".
