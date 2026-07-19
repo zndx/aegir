@@ -11,8 +11,8 @@ const Ontologies = lazy(() => import("./pages/Ontologies"));
 const Lineup = lazy(() => import("./pages/Lineup"));
 
 function App() {
-  // org norm (cldr-design-template): dark default, toggleable; the antd BRIDGE follows the kumo
-  // data-mode, with neutrals aligned to theme-cloudera.css tokens per mode until Kumo migration completes.
+  // org norm: dark default, toggleable; the antd BRIDGE follows the kumo data-mode, with
+  // neutrals aligned to theme-keiretsu.css tokens per mode until Kumo migration completes.
   const mode = useColorMode();
   const dark = mode === "dark";
   return (
@@ -20,8 +20,8 @@ function App() {
       theme={{
         algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
         token: dark
-          ? { colorPrimary: "#6366f1", borderRadius: 6, colorBgBase: "#12121a", colorTextBase: "#e5e7eb" }
-          : { colorPrimary: "#6366f1", borderRadius: 6, colorBgBase: "#ffffff", colorTextBase: "#1f2937" },
+          ? { colorPrimary: "#96a2fc", borderRadius: 6, colorBgBase: "#101418", colorTextBase: "#d4d8dd" }
+          : { colorPrimary: "#4338ca", borderRadius: 6, colorBgBase: "#f8f9fb", colorTextBase: "#25292f" },
       }}
     >
       <BrowserRouter>

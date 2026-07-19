@@ -1,6 +1,9 @@
 /**
  * Cloudera theme overrides for @cloudflare/kumo tokens.
  *
+ * RESERVED (2026-07-19): superseded by theme-keiretsu.css as the site theme; kept
+ * unimported for a future settings page offering site-theme selection.
+ *
  * Phase A: local consumer theme (this file).
  * Phase B: upstream as data-theme="cloudera" in Kumo THEME_CONFIG.
  *

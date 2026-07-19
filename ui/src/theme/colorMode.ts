@@ -1,7 +1,7 @@
 /**
  * Cloudera app color mode: flips `data-mode` on <html> (cldr-design-template, verbatim mechanism —
  * same storage key + attrs, so preference carries across org apps). Theme stays
- * `data-theme="cloudera"`; tokens adapt via theme-cloudera.css.
+ * `data-theme="keiretsu"`; tokens adapt via theme-keiretsu.css (theme-cloudera.css reserved for a future settings page).
  *
  * Aegir extension: `applyColorMode` also dispatches `cldr:color-mode` and `useColorMode()` exposes
  * the mode to React via useSyncExternalStore — several consumers react independently (antd

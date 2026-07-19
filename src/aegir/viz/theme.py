@@ -17,10 +17,12 @@ from bokeh.themes import Theme
 
 # the kumo token values, verbatim from ui/src/styles/theme-cloudera.css (dark block / light block)
 KUMO = {
-    "dark": {"bg": "#12121a", "canvas": "#0a0a0f", "text": "#e5e7eb", "subtle": "#9ca3af",
-             "inactive": "#6b7280", "line": "#2e2e3a", "accent": "#818cf8", "brand": "#6366f1"},
-    "light": {"bg": "#ffffff", "canvas": "#f4f4f8", "text": "#1f2937", "subtle": "#6b7280",
-              "inactive": "#9ca3af", "line": "#e5e7eb", "accent": "#4338ca", "brand": "#6366f1"},
+    # keiretsu chrome (RH 2026-07-19): the k-ramp for viz surfaces/axes/text; the scientific
+    # DATA palette (glyph colormaps) is a SEPARATE selector and untouched here.
+    "dark": {"bg": "#101418", "canvas": "#090b0e", "text": "#d4d8dd", "subtle": "#9fa5ac",
+             "inactive": "#7b8187", "line": "#30363c", "accent": "#96a2fc", "brand": "#96a2fc"},
+    "light": {"bg": "#f8f9fb", "canvas": "#eef1f4", "text": "#25292f", "subtle": "#5d646b",
+              "inactive": "#8a9098", "line": "#d3d9df", "accent": "#4338ca", "brand": "#4338ca"},
 }
 
 
