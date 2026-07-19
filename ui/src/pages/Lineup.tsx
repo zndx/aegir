@@ -73,7 +73,7 @@ function Lineup() {
   const seed = params.get("open") || LENSES.find((l) => l.key === lensKey)?.seed || "lens/terms";
 
   const [root, setRoot] = useState("current");
-  const [index, setIndex] = useState<KBIndex | null>(null);
+  const [index, setIndex] = useState<KBIndex | null | undefined>(undefined);
   const [trail, setTrail] = useState<string[]>([]);
   const [cache, setCache] = useState<Record<string, KBNote | null>>({});
   const requested = useRef<Set<string>>(new Set());
@@ -101,7 +101,9 @@ function Lineup() {
         .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
         .then((j) => { if (!cancelled) setIndex(j); })
         .catch(() => {
-          if (!cancelled && attempt < 5) timer = setTimeout(() => load(attempt + 1), 1500 * (attempt + 1));
+          if (cancelled) return;
+          if (attempt < 5) timer = setTimeout(() => load(attempt + 1), 1500 * (attempt + 1));
+          else setIndex(null);              // exhausted — surface 'unreachable', never fake 'empty'
         });
     };
     load(0);
@@ -215,7 +217,18 @@ function Lineup() {
             ))}
           </Group>
         )}
-        {!lenses.length && !training.length && (
+        {index === undefined && (
+          <Text type="secondary" style={{ fontSize: 12, display: "block", marginTop: 16 }}>
+            loading index…
+          </Text>
+        )}
+        {index === null && (
+          <Text type="secondary" style={{ fontSize: 12, display: "block", marginTop: 16 }}>
+            index unreachable — gateway down or zero-trust session expired.{" "}
+            <a onClick={() => window.location.reload()}>reload</a>
+          </Text>
+        )}
+        {index && !lenses.length && !training.length && (
           <Text type="secondary" style={{ fontSize: 12, display: "block", marginTop: 16 }}>
             empty — populates via the release lifecycle
           </Text>
