@@ -152,7 +152,7 @@
    "slot_types": {
     "YoungResearcherRole": "Class",
     "IndependentContinuant": "Class",
-    "ResearchActivity": "Class"
+    "YoungResearcherResearchProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{YoungResearcherRole} is a role that is borne by exactly one {IndependentContinuant}, and that is realized in some {YoungResearcherResearchProcess}",
@@ -268,7 +268,7 @@
    "slot_types": {
     "IndigenousChildRole": "Class",
     "IndependentContinuant": "Class",
-    "RightsExercise": "Class"
+    "RightsExerciseProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{IndigenousChildRole} is a role that is borne by exactly one {IndependentContinuant}, and that is realized in some {RightsExerciseProcess}",
@@ -313,7 +313,7 @@
    "slot_types": {
     "PoliceOfficerRole": "Class",
     "LawEnforcementAgency": "Class",
-    "OperationalUnit": "Class"
+    "PolicePatrolProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{PoliceOfficerRole} is a role that is borne by exactly one {LawEnforcementAgency}, and that is realized in some {PolicePatrolProcess}",
@@ -967,7 +967,7 @@
    "slot_types": {
     "ChiefComplianceOfficerRole": "Class",
     "Person": "Class",
-    "CollegeAdministration": "Class"
+    "ChiefComplianceOfficerServiceDeliveryProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{ChiefComplianceOfficerRole} is a role that is borne by exactly one {Person}, and that is realized in some {ChiefComplianceOfficerServiceDeliveryProcess}",
@@ -1073,7 +1073,7 @@
    "slot_types": {
     "CollegeOfficialRole": "Class",
     "Person": "Class",
-    "CollegeAdministration": "Class"
+    "CollegeAdministrationProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{CollegeOfficialRole} is a role that inheres in exactly one {Person}, and that is realized in some {CollegeAdministrationProcess}",
@@ -1748,7 +1748,7 @@
    "slot_types": {
     "CommunityLearningDisabilityNurse": "Class",
     "HealthcareAgent": "Class",
-    "CommunityHealthcareSetting": "Class"
+    "CommunityHealthcareServiceDeliveryProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{CommunityLearningDisabilityNurse} is a role that is borne by exactly one {HealthcareAgent}, and that is realized in some {CommunityHealthcareServiceDeliveryProcess}",
@@ -1883,7 +1883,7 @@
    "slot_types": {
     "GeneralManagerRole": "Class",
     "HumanAgent": "Class",
-    "OrganizationalFunction": "Class"
+    "GeneralManagerFunctionExecution": "Class"
    },
    "is_complex": true,
    "verbal_template": "{GeneralManagerRole} is a role that is borne by exactly one {HumanAgent}, and that is realized in some {GeneralManagerFunctionExecution}",
@@ -2500,7 +2500,7 @@
    "slot_types": {
     "SocialMediaAccountAdministrator": "Class",
     "DistrictEmployee": "Class",
-    "AccountManagementFunction": "Class"
+    "SocialMediaAccountManagementProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{SocialMediaAccountAdministrator} is a role that is borne by exactly one {DistrictEmployee}, and that is realized in some {SocialMediaAccountManagementProcess}",
@@ -2726,7 +2726,7 @@
    "slot_types": {
     "QualifiedSourceTestingIndividual": "Class",
     "Person": "Class",
-    "SourceTestingCertification": "Class"
+    "QualifiedSourceTestingProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{QualifiedSourceTestingIndividual} is a role that is borne by exactly one {Person}, and that is realized in some {QualifiedSourceTestingProcess}",
@@ -3898,7 +3898,7 @@
    "slot_types": {
     "LegalTechServiceProvision": "Class",
     "ServiceProvider": "Class",
-    "LegalTechSolutionLab": "Class"
+    "LegalTechServiceDeliveryProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{LegalTechServiceProvision} is a role that is borne by exactly one {ServiceProvider}, and that is realized in some {LegalTechServiceDeliveryProcess}",
@@ -3976,7 +3976,7 @@
    "slot_types": {
     "AuthorizedRepresentativeRole": "Class",
     "FinancialServicesEntity": "Class",
-    "AuthorizedEntity": "Class"
+    "AuthorizedEntityAuthorizationProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{AuthorizedRepresentativeRole} is a role that is borne by exactly one {FinancialServicesEntity}, and that is realized in some {AuthorizedEntityAuthorizationProcess}",
@@ -4625,7 +4625,7 @@
    "slot_types": {
     "YoungPhysicianAmbassadorRole": "Class",
     "PhysicianMember": "Class",
-    "OrganizationalLeadershipRole": "Class"
+    "OrganizationalLeadershipProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{YoungPhysicianAmbassadorRole} is a role that inheres in exactly one {PhysicianMember}, and that is realized in some {OrganizationalLeadershipProcess}",
@@ -5096,7 +5096,7 @@
    "slot_types": {
     "TraditionalReligiousHealerRole": "Class",
     "HumanAgent": "Class",
-    "HealerFunction": "Class"
+    "TraditionalReligiousHealingProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{TraditionalReligiousHealerRole} is a role that is borne by exactly one {HumanAgent}, and that is realized in some {TraditionalReligiousHealingProcess}",
@@ -5208,7 +5208,7 @@
    "slot_types": {
     "DisabledAdultParentRole": "Class",
     "Adult": "Class",
-    "ParentingFunction": "Class"
+    "ParentingProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{DisabledAdultParentRole} is a role that is borne by exactly one {Adult}, and that is realized in some {ParentingProcess}",
@@ -6163,7 +6163,7 @@
    "slot_types": {
     "JointBoardChairRole": "Class",
     "IndependentContinuantAgent": "Class",
-    "GovernanceFunction": "Class"
+    "JointBoardChairServiceDeliveryProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{JointBoardChairRole} is a role that designates exactly one {IndependentContinuantAgent}, and that is realized in some {JointBoardChairServiceDeliveryProcess}",
@@ -6545,7 +6545,7 @@
    "slot_types": {
     "PerformanceBasedCareProviderRole": "Class",
     "HealthcareOrganization": "Class",
-    "PatientPopulation": "Class"
+    "PerformanceBasedCareDeliveryProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{PerformanceBasedCareProviderRole} is a role that is borne by exactly one {HealthcareOrganization}, and that is realized in some {PerformanceBasedCareDeliveryProcess}",
@@ -7158,7 +7158,7 @@
    "slot_types": {
     "BoardMemberRole": "Class",
     "IndependentContinuant": "Class",
-    "BoardOfAssessorsMeeting": "Class"
+    "BoardMemberRoleRealization": "Class"
    },
    "is_complex": true,
    "verbal_template": "{BoardMemberRole} is a role that has borne agent exactly one {IndependentContinuant}, and that is realized in some {BoardMemberRoleRealization}",
@@ -7535,7 +7535,7 @@
    "slot_types": {
     "ClearingBrokerRole": "Class",
     "CustomerAccount": "Class",
-    "ClearingProcess": "Class"
+    "ClearingBrokerServiceDeliveryProcess": "Class"
    },
    "is_complex": true,
    "verbal_template": "{ClearingBrokerRole} is a role that inheres in exactly one {CustomerAccount}, and that is realized in some {ClearingBrokerServiceDeliveryProcess}",

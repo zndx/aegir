@@ -285,6 +285,11 @@ def main() -> int:
             # apply: first axiom replaces the template; extra axioms become new templates
             old = t["manchester_template"]
             t["manchester_template"] = mans[0]
+            # the new axiom may reference NEW filler slots (named intermediates) — slot_types must
+            # track the manchester or the realizer leaves the placeholder un-lowered (parse error)
+            _present = set(re.findall(r"\{(\w+):Class\}", mans[0]))
+            t["slot_types"] = {**{k: v for k, v in (t.get("slot_types") or {}).items() if k in _present},
+                               **{nm: "Class" for nm in _present if nm not in (t.get("slot_types") or {})}}
             prov = t.setdefault("provenance", {})
             prov["reauthored"] = PROMPT_VERSION
             prov["previous_axiom"] = old
