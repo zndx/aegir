@@ -520,11 +520,14 @@ def sdg_constructs() -> "dict | None":
                         "name": c.get("name"), "type": _infer_sql_type(cells),
                         "samples": [v[:40] for v in distinct[:3]],
                         "pk": c.get("name") in pk_cols,
+                        "concept": c.get("concept"),
                         "fk": f"{fk.get('ref_table')}.{fk.get('ref_col')}" if fk else None})
                 e["fks"] = t.get("fks") or []
             e["constructs"].append(pid)
         for v in d.get("views") or []:
             vn = v.get("name") if isinstance(v, dict) else None
+            if vn and vn in views:
+                views[vn].setdefault("constructs", [views[vn].get("construct")]).append(pid)
             if vn and vn not in views:
                 sql = v.get("sql") or ""
                 views[vn] = {"sql": sql[:1500], "kind": v.get("kind"), "construct": pid,

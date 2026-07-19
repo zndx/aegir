@@ -81,7 +81,14 @@ def snapshot(kb_dir: str | Path | None = None, key: str | None = None,
     # The quarter is the enclosing dir; each day is its own snapshot, so multiple snapshots coexist and the
     # rmtree below only clears that day's (never the whole quarter / the existing archive). An explicit
     # --key (e.g. 2026Q3) overrides for a quarter-level snapshot.
-    key = key or f"{now.year}Q{_quarter(now.date())}/{now.strftime('%Y-%m-%d')}"
+    # RH UXR 2026-07-19: archive top-level is ALWAYS temporal, artifact-id second —
+    # archive/<year>Q<n>/<artifact-id> ages well as a perma-link. An explicit key is the
+    # artifact-id and NESTS under the quarter (unless it already leads with one).
+    quarter = f"{now.year}Q{_quarter(now.date())}"
+    if key is None:
+        key = f"{quarter}/{now.strftime('%Y-%m-%d')}"
+    elif not re.match(r"^\d{4}Q\d(/|$)", key):
+        key = f"{quarter}/{key}"
     dest = kb / "archive" / key
     if dest.exists():
         shutil.rmtree(dest)

@@ -831,7 +831,8 @@ def assign_topic_threads(corpus: list[dict], coverage: list[dict]) -> "dict[str,
 
 
 def project_collections(recs: list[dict], coverage: list[dict],
-                         live_terms: set | None = None) -> tuple[list[N.Note], dict]:
+                         live_terms: set | None = None,
+                         cgraph: "dict | None" = None) -> tuple[list[N.Note], dict]:
     """De-flattened, many-to-many collections — the unit the landing pivots. A collection's
     DOCUMENTS (chapters) are the hub: it relates to MANY topics (target ∪ style across its
     chapters) and many terms/tables, and each terminal recurs across collections. Returns
@@ -847,6 +848,7 @@ def project_collections(recs: list[dict], coverage: list[dict],
     coll_terms: dict[str, list[str]] = {}
     coll_topics: dict[str, list[int]] = {}
     coll_chapters: dict[str, list[str]] = {}
+    coll_tables: dict[str, list[str]] = {}
     notes: list[N.Note] = []
     for tid in sorted(by_coll):
         chs = by_coll[tid]
@@ -855,6 +857,11 @@ def project_collections(recs: list[dict], coverage: list[dict],
         topics = sorted({tid} | {int(s) for _, r in chs for s in _idlist(r.get("style_topic_ids"))})
         terms = sorted({str(x) for _, r in chs for x in _idlist(r.get("template_ids"))})
         coll_terms[cid], coll_topics[cid], coll_chapters[cid] = terms, topics, cids
+        ctables: "list[str]" = []
+        if cgraph:
+            h6s = {m.group(1) for c in cids if (m := re.search(r"_([0-9a-f]{6})\.", c))}
+            ctables = sorted({t for h in h6s for t in cgraph.get("h6_tables", {}).get(h, ())})
+        coll_tables[cid] = ctables
         gist = re.sub(r"\s+", " ", (cov.get(tid, {}).get("topic_repr_text") or "")).strip()[:280]
         body = (
             f"**Topic-grounded collection** — anchored at {N.wl(f'topic/{tid}', f'topic {tid}')}, "
@@ -865,14 +872,49 @@ def project_collections(recs: list[dict], coverage: list[dict],
                                               for (_, r), c in zip(chs[:12], cids[:12])) or "—") + "\n\n"
             + "**Topics.** " + (" · ".join(N.wl(f"topic/{t}", f"topic {t}") for t in topics[:18]) or "—") + "\n\n"
             + "**Realizes terms.** " + (" · ".join(N.wl(f"ontology/term/{x}", x) for x in terms[:24]) or "—") + "\n\n"
-            + "**Underlying tables.** " + (" · ".join(
+            + "**Underlying tables.** " + ((" · ".join(
+                N.wl(f"relational/table/{t}", t) for t in ctables[:24]))
+                if ctables else (" · ".join(
                 N.wl(f"relational/table/{_table_id(x)}", x)
                 for x in (terms if live_terms is None else [t for t in terms if t in live_terms])[:24])
-                or "— _(retired-catalog terms carry no live spine table)_") + "\n")
+                or "— _(retired-catalog terms carry no live spine table)_"))
+            + "\n\n" + f"**Cross-reference.** {N.wl(cid + '/terms', 'tables × data-elements')} "
+            + "(each table's columns as ontology-terms).\n")
         notes.append(N.Note(id=cid, title=f"collection · topic {tid}", kind="collection",
                             data_product="content", body=body, frontmatter={
                                 "topic_id": tid, "n_topics": len(topics), "n_terms": len(terms),
                                 "n_chapters": len(cids), "topics": topics}))
+    if cgraph:
+        tcols = cgraph.get("table_cols", {})
+        telems = cgraph.get("term_elements", {})
+        for cid in coll_tables:
+            ctabs, terms_ = coll_tables[cid], coll_terms.get(cid, [])
+            tid = int(cid.rsplit("-", 1)[1])
+            rows = ["| table | data-elements (ontology-terms) |", "|---|---|"]
+            if ctabs:                                   # construct-era: live spine tables
+                for t in ctabs[:30]:
+                    cons = sorted({c for _, c in tcols.get(t, ()) if c})
+                    cell = " · ".join(N.wl(f"ontology/term/{c}", c) for c in cons[:10]) or "—"
+                    rows.append(f"| {N.wl(f'relational/table/{t}', t)} | {cell} |")
+                caveat = ""
+            else:                                       # refined-era: tables were template-derived (retired)
+                for x in terms_[:30]:
+                    els = telems.get(x, [])
+                    cell = " · ".join(f"`{e}`" for e in els[:10]) or "—"
+                    rows.append(f"| `{x}` _(retired gen.)_ · {N.wl(f'ontology/term/{x}', 'term')} | {cell} |")
+                caveat = ("\n_This collection's chapters embed retired-generation tables "
+                          "(template-derived); names shown are term-shaped, data-elements are the "
+                          "terms' slot types._\n")
+            if len(rows) <= 2:
+                continue
+            notes.append(N.Note(
+                id=f"{cid}/terms", title=f"collection · topic {tid} — terms",
+                kind="collection-terms", data_product="content",
+                frontmatter={"topic_id": tid, "n_tables": len(ctabs) or len(terms_)},
+                links=[cid] + [f"relational/table/{t}" for t in ctabs[:30]],
+                body=(f"**Tables × data-elements** for {N.wl(cid, f'collection topic {tid}')} — "
+                      "each embedded table's columns, embodied as ontology-terms.\n\n"
+                      + "\n".join(rows) + "\n" + caveat)))
     topic_colls: dict[int, list[str]] = {}
     term_colls: dict[str, list[str]] = {}
     for cid, tps in coll_topics.items():
@@ -888,8 +930,13 @@ def project_collections(recs: list[dict], coverage: list[dict],
                        f"{len(coll_terms[f'collection/topic-{t:03d}'])} terms)" for t in sorted(by_coll)))
     notes.append(N.Note(id="collection/index", title="Collections", kind="collection-index",
                         data_product="content", body=idx, frontmatter={"n_collections": len(by_coll)}))
+    table_colls: dict[str, list[str]] = {}
+    for cid, ctabs in coll_tables.items():
+        for t in ctabs:
+            table_colls.setdefault(t, []).append(cid)
     return notes, {"collections": sorted(by_coll), "coll_terms": coll_terms,
-                   "coll_topics": coll_topics, "topic_colls": topic_colls, "term_colls": term_colls}
+                   "coll_topics": coll_topics, "topic_colls": topic_colls, "term_colls": term_colls,
+                   "coll_tables": coll_tables, "table_colls": table_colls}
 
 
 # ── lenses (the landing pivot: collections × the lens-selected axis) ──────────
@@ -1126,6 +1173,51 @@ def _aperture_constituents_md(p0: dict) -> str:
                 + "\n".join(f"- {x.get('label')} · rel {x.get('rel')}" for x in adj[:8]))
     return out + "\n\n"
 
+
+
+
+def project_release_chapters(sc: "dict | None") -> "tuple[list[N.Note], dict]":
+    """The RELEASED corpus's chapters as current-root content notes (RH UXR fold-in): current is
+    the latest release kasten, so the release's own prose belongs there — and it is the generation
+    that actually embeds the live relational spine (construct-hash join), which the refined path-a
+    corpus cannot (different generation, retired tables). Returns (notes, pid→[note ids])."""
+    root = S.sdg_run_root()
+    if root is None or not (root / "chapters").exists():
+        return [], {}
+    notes: "list[N.Note]" = []
+    by_pid: "dict[str, list[str]]" = {}
+    for cdir in sorted((root / "chapters").iterdir()):
+        if not cdir.is_dir():
+            continue
+        pid = cdir.name
+        for reg in ("natural", "semantic"):
+            f = cdir / f"{reg}.md"
+            if not f.exists():
+                continue
+            try:
+                text = f.read_text()
+            except Exception:  # noqa: BLE001
+                continue
+            m = re.search(r"^#\s+(.+)$", text, re.M)
+            title = (m.group(1).strip()[:80] if m else pid[:12]) + f" · {reg}"
+            nid = f"content/chapter/rel_{pid[:12]}.{reg}"
+            excerpt = re.sub(r"\s+", " ", text[:600]).strip()
+            notes.append(N.Note(
+                id=nid, title=title, kind="content-chapter", data_product="content",
+                root="current", frontmatter={"register": reg, "construct": pid, "release": True},
+                body=(f"**Release chapter** ({reg} register) — construct `{pid[:12]}`.\n\n"
+                      f"> {excerpt} …\n\n_Full text ships in the corpora release "
+                      f"(`corpus/chapters/{pid}/{reg}.md`)._")))
+            by_pid.setdefault(pid, []).append(nid)
+    if notes:
+        idx_body = (f"**Release chapters** — {len(notes)} notes over {len(by_pid)} constructs "
+                    "(both registers). Each embeds the live spine; view panels backlink here.\n\n"
+                    + "\n".join(f"- {N.wl(n.id, n.title)}" for n in notes[:60])
+                    + (f"\n- _…{len(notes) - 60} more_" if len(notes) > 60 else ""))
+        notes.append(N.Note(id="content/release-chapters", title="Release chapters",
+                            kind="content-index", data_product="content", root="current",
+                            frontmatter={"n_chapters": len(notes)}, body=idx_body))
+    return notes, by_pid
 
 
 def project_escalation_channel() -> "list[N.Note]":
@@ -1459,8 +1551,26 @@ def run(args=None) -> int:
     # Collections (the de-flattened many-to-many graph the landing pivots) + transpose maps.
     coll_notes: list[N.Note] = []
     maps: dict = {}
+    cgraph: dict = {}
+    if sc:
+        h6_tables: dict = {}
+        table_cols: dict = {}
+        for tn, te in (sc.get("tables") or {}).items():
+            table_cols[tn] = [(c["name"], c.get("concept")) for c in te.get("columns", [])]
+            for pid in te.get("constructs", []):
+                h6_tables.setdefault(pid[:6], set()).add(tn)
+        view_pids: dict = {}
+        for vn, ve in (sc.get("views") or {}).items():
+            for pid in (ve.get("constructs") or [ve.get("construct")]):
+                if pid:
+                    view_pids.setdefault(vn, set()).add(pid)
+        cgraph = {"h6_tables": h6_tables, "table_cols": table_cols, "view_pids": view_pids,
+                  "term_elements": {t.template_id: sorted((t.slot_types or {}).keys())
+                                    for _, t in rows}}
     if corpus and coverage:
-        coll_notes, maps = project_collections(corpus, coverage, live_terms=set(tid2cat))
+        coll_notes, maps = project_collections(corpus, coverage, live_terms=set(tid2cat),
+                                               cgraph=cgraph)
+    rel_ch_notes, rel_by_pid = project_release_chapters(sc)
 
     # TRUNK (scratch): the live catalog's lexicon + its deterministic spine — where new
     # work lands, git-trunk-style. The whole live projection is a scratch citizen.
@@ -1682,6 +1792,10 @@ def run(args=None) -> int:
                           + (f"\n- _…{len(vw) - 8} more_" if len(vw) > 8 else "") + "\n\n") if vw else "")
                       + (("**Sample Values**\n\n" + "\n\n".join(sample_tables) + "\n\n")
                          if sample_tables else "")
+                      + (("**Collections** (" + str(len(maps.get("table_colls", {}).get(n, []))) + ")\n"
+                          + "\n".join(f"- {N.wl(c + '/terms', c.split('/')[-1] + ' · terms')}"
+                                       for c in maps.get("table_colls", {}).get(n, [])[:10]) + "\n\n")
+                         if maps.get("table_colls", {}).get(n) else "")
                       + f"_Constructs: {prov}_")))
         # VIEW notes (RH 2026-07-18): every view is a first-class panel with the same anatomy as its
         # source tables — ERD header (source tables → the view), output columns (from the view's own
@@ -1726,6 +1840,12 @@ def run(args=None) -> int:
                       + (("**Sample Values**\n\n" + "\n\n".join(sample_tbls) + "\n\n")
                          if sample_tbls else "")
                       + "```sql\n" + (v.get("sql") or "").strip() + "\n```\n\n"
+                      + (("**Embedded in documents**\n" + "\n".join(
+                            f"- {N.wl(c, pid_[:12] + ' · ' + c.rsplit('.', 1)[-1])}"
+                            for pid_ in sorted(cgraph.get("view_pids", {}).get(vn, ()))
+                            for c in rel_by_pid.get(pid_, [])[:2]) + "\n\n")
+                         if any(rel_by_pid.get(p_) for p_ in cgraph.get("view_pids", {}).get(vn, ()))
+                         else "")
                       + f"_Construct: {v.get('construct')}_")))
         print(f"  relational(sdg): {len(tbls)} tables + {len(vws)} views VERBATIM "
               f"from {sc['n_constructs']} constructs", flush=True)
@@ -1831,6 +1951,7 @@ def run(args=None) -> int:
     # Trunk lenses (scratch) — same lens ids as the release kasten, root-resolved.
     notes += project_lexicon_constructs()
     notes += project_aperture_anchors()
+    notes += rel_ch_notes
     notes += project_escalation_channel()
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
                                   zettel_head=zs[-1]["id"] if zs else None,

@@ -1,3 +1,4 @@
+import { CaretDoubleLeft, CaretDoubleRight } from "@phosphor-icons/react";
 import { Select, Typography } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -129,9 +130,50 @@ function Lineup() {
   const lenses = LENSES.filter((l) => rootNotes.some((n) => n.id === prefix + l.seed));
   const training = TRAINING.filter((t) => rootNotes.some((n) => n.id === prefix + t.seed));
 
+  // UXR 2026-07-19: collapsible left-nav — the close control lives at the BOTTOM of the rail.
+  const [navClosed, setNavClosed] = useState<boolean>(() => {
+    try { return sessionStorage.getItem("lineup:nav-closed") === "1"; } catch { return false; }
+  });
+  const toggleNav = () => setNavClosed((c) => {
+    try { sessionStorage.setItem("lineup:nav-closed", c ? "0" : "1"); } catch { /* ignore */ }
+    return !c;
+  });
+  const navToggle = (closed: boolean) => (
+    <a
+      onClick={toggleNav}
+      title={closed ? "open navigation" : "close navigation"}
+      style={{ marginTop: "auto", paddingTop: 10, display: "flex", alignItems: "center", gap: 6,
+               justifyContent: closed ? "center" : "flex-start", cursor: "pointer", fontSize: 12,
+               color: "var(--text-color-kumo-inactive)" }}
+    >
+      {closed ? <CaretDoubleRight size={14} /> : <><CaretDoubleLeft size={14} /> close</>}
+    </a>
+  );
+
+  if (navClosed) {
+    return (
+      <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
+        <div style={{ flex: "0 0 30px", borderRight: "1px solid var(--color-kumo-hairline)", padding: "14px 4px", display: "flex", flexDirection: "column", background: "var(--color-kumo-base)" }}>
+          {navToggle(true)}
+        </div>
+        <div style={{ flex: 1, display: "flex", overflowX: "auto", padding: 14, background: "var(--color-kumo-canvas)" }}>
+          {trail.map((id, i) => (
+            <LineupPanel
+              key={`${root}-${id}-${i}`}
+              note={cache[ck(id)] ?? null}
+              loading={!(ck(id) in cache)}
+              onLink={openFrom(i)}
+              onClose={() => setTrail((t) => (t.length > 1 ? t.slice(0, Math.max(1, i)) : t))}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
-      <div style={{ flex: "0 0 210px", borderRight: "1px solid var(--color-kumo-hairline)", padding: "14px 12px", overflowY: "auto", background: "var(--color-kumo-base)" }}>
+      <div style={{ flex: "0 0 210px", borderRight: "1px solid var(--color-kumo-hairline)", padding: "14px 12px", overflowY: "auto", background: "var(--color-kumo-base)", display: "flex", flexDirection: "column" }}>
         <Text strong style={{ fontSize: 11, color: "var(--text-color-kumo-inactive)", letterSpacing: 0.5 }}>SECTION</Text>
         <Select
           value={root}
@@ -171,6 +213,7 @@ function Lineup() {
             {Object.entries(index.counts.by_data_product).map(([k, v]) => `${v} ${k}`).join(" · ")}
           </div>
         )}
+        {navToggle(false)}
       </div>
 
       <div style={{ flex: 1, display: "flex", overflowX: "auto", padding: 14, background: "var(--color-kumo-canvas)" }}>
