@@ -91,8 +91,21 @@ function Lineup() {
   const prefix = K ? `${K}/` : "";
   const layer = K ? `${root}:${K}` : root;
 
+  // A single failed index fetch must not latch an empty nav (e.g. a rebuild mid-write):
+  // retry with backoff until it lands.
   useEffect(() => {
-    fetch("/api/kb/index").then((r) => (r.ok ? r.json() : null)).then(setIndex).catch(() => setIndex(null));
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const load = (attempt: number) => {
+      fetch("/api/kb/index")
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+        .then((j) => { if (!cancelled) setIndex(j); })
+        .catch(() => {
+          if (!cancelled && attempt < 5) timer = setTimeout(() => load(attempt + 1), 1500 * (attempt + 1));
+        });
+    };
+    load(0);
+    return () => { cancelled = true; if (timer) clearTimeout(timer); };
   }, []);
 
   const fetchNote = useCallback((id: string) => {

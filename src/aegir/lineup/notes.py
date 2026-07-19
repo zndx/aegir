@@ -138,6 +138,10 @@ def write_index(kb_dir: Path, entries: list[dict]) -> Path:
         by_root[e["root"]] = by_root.get(e["root"], 0) + 1
     payload = {"counts": {"total": len(entries), "by_data_product": by_dp, "by_root": by_root},
                "notes": entries}
+    # atomic replace: the gateway serves this file live — a reader landing mid-write got a
+    # truncated JSON → 500 → the UI latched an empty nav until hard-refresh
     p = Path(kb_dir) / "index.json"
-    p.write_text(json.dumps(payload, indent=2) + "\n")
+    tmp = p.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(payload, indent=2) + "\n")
+    tmp.replace(p)
     return p
