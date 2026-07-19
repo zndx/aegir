@@ -874,10 +874,10 @@ def project_collections(recs: list[dict], coverage: list[dict],
             + "**Realizes terms.** " + (" · ".join(N.wl(f"ontology/term/{x}", x) for x in terms[:24]) or "—") + "\n\n"
             + "**Underlying tables.** " + ((" · ".join(
                 N.wl(f"relational/table/{t}", t) for t in ctables[:24]))
-                if ctables else (" · ".join(
-                N.wl(f"relational/table/{_table_id(x)}", x)
-                for x in (terms if live_terms is None else [t for t in terms if t in live_terms])[:24])
-                or "— _(retired-catalog terms carry no live spine table)_"))
+                if ctables else ((" · ".join(
+                N.wl((cgraph or {}).get("archived_terms", {}).get(x, f"relational/table/{_table_id(x)}"), x)
+                for x in terms[:24]) + " _(archived kasten)_")
+                if (cgraph or {}).get("archived_terms") else "—"))
             + "\n\n" + f"**Cross-reference.** {N.wl(cid + '/terms', 'tables × data-elements')} "
             + "(each table's columns as ontology-terms).\n")
         notes.append(N.Note(id=cid, title=f"collection · topic {tid}", kind="collection",
@@ -897,14 +897,17 @@ def project_collections(recs: list[dict], coverage: list[dict],
                     cell = " · ".join(N.wl(f"ontology/term/{c}", c) for c in cons[:10]) or "—"
                     rows.append(f"| {N.wl(f'relational/table/{t}', t)} | {cell} |")
                 caveat = ""
-            else:                                       # refined-era: tables were template-derived (retired)
+            else:                                       # refined-era: tables were template-derived
+                arch = cgraph.get("archived_terms", {}) if cgraph else {}
+                era = next(iter(arch.values())).split("/ontology/")[0] if arch else None
                 for x in terms_[:30]:
                     els = telems.get(x, [])
                     cell = " · ".join(f"`{e}`" for e in els[:10]) or "—"
-                    rows.append(f"| `{x}` _(retired gen.)_ · {N.wl(f'ontology/term/{x}', 'term')} | {cell} |")
-                caveat = ("\n_This collection's chapters embed retired-generation tables "
-                          "(template-derived); names shown are term-shaped, data-elements are the "
-                          "terms' slot types._\n")
+                    tcell = (N.wl(arch[x], x) + f" _({era} kasten)_" if x in arch else f"`{x}`")
+                    rows.append(f"| {tcell} · {N.wl(f'ontology/term/{x}', 'term')} | {cell} |")
+                caveat = ((f"\n_These chapters embed template-derived tables from the "
+                           f"{era} era — table links open that kasten's archived term panels; "
+                           "data-elements are the terms' slot types._\n") if era else "")
             if len(rows) <= 2:
                 continue
             notes.append(N.Note(
@@ -1567,6 +1570,15 @@ def run(args=None) -> int:
         cgraph = {"h6_tables": h6_tables, "table_cols": table_cols, "view_pids": view_pids,
                   "term_elements": {t.template_id: sorted((t.slot_types or {}).keys())
                                     for _, t in rows}}
+    # era-correct archive targets (RH: link archive resources, never dead-end on 'retired'):
+    # the NEWEST archived kasten's term panels — the term as it stood in that freeze.
+    arch_root = Path(S.kb_dir()) / "archive"
+    kastens = sorted(arch_root.glob("*/*/ontology/term"), key=lambda d: d.as_posix())
+    if kastens:
+        kd = kastens[-1]
+        prefix = kd.parent.parent.relative_to(arch_root).as_posix()
+        cgraph["archived_terms"] = {f.stem: f"{prefix}/ontology/term/{f.stem}"
+                                    for f in kd.glob("*.md")}
     if corpus and coverage:
         coll_notes, maps = project_collections(corpus, coverage, live_terms=set(tid2cat),
                                                cgraph=cgraph)
