@@ -110,6 +110,9 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     harvest_target = Parameter("harvest-target", default=0, type=int,
                                help="ADVANCE THE INPUT WINDOW: stream FinePDFs until this many "
                                     "new in-domain docs land (0 = use the harvest as-is)")
+    refine_budget = Parameter("refine-budget", default=24, type=int,
+                              help="max escalation-worklist entries triaged per run (the "
+                                   "refine_escalations organ; 0 disables the pass)")
     corpus_mode = Parameter("corpus", default=True, type=bool,
                             help="accrete into the persistent corpus dir (idempotent top-up per "
                                  "input window) instead of a fresh per-run dir")
@@ -214,7 +217,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                                  "n": len(list(src.glob('*.json')))}
             self.derive_reports = {}
             print(f"  reused {self.derive_stats['n']} derived passages from {src}", flush=True)
-            self.next(self.realize)
+            self.next(self.refine_escalations)
             return
         self._arm_strategy_env()
         self.engine_owned = _engine_up()
@@ -268,6 +271,29 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                   f"verdict={report.final_verdict} (round {report.accepted_round})", flush=True)
         self.derive_stats = stats
         self.emit_event("derive.done", stats)
+        self.next(self.refine_escalations)
+
+    @traced_step
+    @step
+    def refine_escalations(self):
+        """Semantic-upkeep organ (#32, RH-ratified): the standing consumer of the elaboration ACP
+        worklist. Bounded, stratified, aged; the agent proposes over the fork ACP channel with the
+        FULL membrane dialogue; the same membranes dispose. Success = processed, not emptied —
+        residue persisting is green. Engine down → held, no attempts burned."""
+        from aegir.refine.elaboration import triage
+        if not self.engine_owned or int(self.refine_budget) <= 0:
+            self.refine_kpis = {"skipped": "engine down — worklist held, no attempts burned"
+                                if not self.engine_owned else "refine-budget 0"}
+            print("  refine_escalations: engine down → held", flush=True)
+            self.next(self.realize)
+            return
+        self.refine_kpis = triage(budget=int(self.refine_budget), run_key=current.run_id)
+        k = self.refine_kpis
+        print(f"  refine_escalations: in={k.get('worklist_in')} processed={k.get('processed')} "
+              f"accepted={k.get('accepted')} cleared={k.get('cleared')} "
+              f"aged_to_review={k.get('aged_to_review')} residual={k.get('residual')}", flush=True)
+        self.emit_event("refine_escalations.done", {kk: vv for kk, vv in k.items()
+                                                    if kk not in ("lineage", "age_histogram")})
         self.next(self.realize)
 
     @traced_step
@@ -488,6 +514,8 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             "payload": self.payload_gate,
             "prose_chars_median": sorted(r["chars"] for r in rows)[len(rows) // 2] if rows else 0,
             "n_chapters": sum(1 for r in rows if r["chars"]),
+            # the standing organ's health: worklist size + age histogram = "is the channel silting?"
+            "refine_escalations": getattr(self, "refine_kpis", {}),
         }
         Path(self.run_out, "metrics.json").write_text(json.dumps(self.metrics, indent=2, default=str))
         print(json.dumps(self.metrics, indent=2, default=str), flush=True)

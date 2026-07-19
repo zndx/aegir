@@ -70,8 +70,19 @@ def slots_of(text: str) -> "set[str]":
 def m_parse(cand: str, base_slots: "set[str]") -> "tuple[bool, str]":
     if _META.search(cand):
         return False, "reads as reasoning/meta text, not a rephrasing"
-    if slots_of(cand) != base_slots:
-        return False, (f"placeholder set mismatch: expected exactly {sorted(base_slots)}")
+    cand_slots = slots_of(cand)
+    if cand_slots != base_slots:
+        # the reason must carry enough for the proposer to FIX it (inform-and-refine): name the
+        # offending tokens each way; the empty-base case says plainly "no braces at all".
+        extra, missing = sorted(cand_slots - base_slots), sorted(base_slots - cand_slots)
+        parts = []
+        if extra:
+            parts.append(f"remove braces from {extra} — " +
+                         ("this base has NO placeholders; write all class names as plain words"
+                          if not base_slots else "only the base's own placeholders may appear"))
+        if missing:
+            parts.append(f"missing required placeholders {missing} (must appear exactly as written)")
+        return False, "placeholder set mismatch: " + "; ".join(parts)
     if not (30 <= len(cand) <= 400):
         return False, "length out of bounds for a single-sentence rephrasing"
     return True, ""

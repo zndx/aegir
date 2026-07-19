@@ -32,7 +32,44 @@ def _render_tables(construct: dict) -> str:
     return "\n".join(lines)
 
 
+def _elaboration_prompt(construct: dict, feedback: dict) -> str:
+    """The escalation-triage session (#32): the templates here already FAILED the single-shot loop —
+    the value of this channel is the FULL membrane dialogue in one context. Every recorded reason is
+    presented; the agent must address each explicitly."""
+    dialogue = construct.get("dialogue") or []
+    dlg = "\n".join(f"  round {i}: {r}" for i, r in enumerate(dialogue, 1)) or "  (none recorded)"
+    return (
+        "You rephrase a formal ontology axiom as sentences for a technical textbook on relational data "
+        "modeling. This template was ESCALATED: previous attempts were rejected by deterministic gates "
+        "for the reasons below. Read every reason; your rephrasings must avoid all of them.\n\n"
+        f"AXIOM SENTENCE (the base):\n{construct.get('base', '')}\n\n"
+        f"MANCHESTER SOURCE (authoritative for quantifiers and direction):\n{construct.get('manchester', '')}\n\n"
+        f"REJECTION DIALOGUE:\n{dlg}\n\n"
+        + ("Hard rules: (1) Preserve EVERY curly-brace placeholder exactly — identical spelling, "
+           "identical braces, each exactly once. "
+           if "{" in construct.get("base", "") else
+           "Hard rules: (1) This base contains NO placeholders — your rephrasings must contain NO "
+           "curly braces anywhere; write every class name as plain words exactly as the base does. ")
+        + "(2) NO NEW CLAIMS: every statement must be entailed by the axiom; "
+        "quantifiers and cardinalities unchanged. (3) DIRECTION: the sentence's subject is the class "
+        "being defined — who bears/does/undergoes what must match the axiom exactly; open with the "
+        "subject placeholder. (4) One sentence per rephrasing, 30–400 characters, distinct syntactic "
+        f"styles. Produce {construct.get('n', 3)} rephrasings, each on its own line beginning exactly "
+        "'REPHRASING: '; any thinking stays OUTSIDE those lines.")
+
+
+def _parse_elaborations(text: str) -> list:
+    out = []
+    for line in text.splitlines():
+        m = re.match(r"^\s*REPHRASING:\s*(.+?)\s*$", line)
+        if m and m.group(1) not in out:
+            out.append(m.group(1))
+    return out
+
+
 def _prompt(construct: dict, mode: str, register: str, feedback: dict) -> str:
+    if mode == "elaborations":
+        return _elaboration_prompt(construct, feedback)
     if mode == "edits":
         return (
             "You are repairing the TABLES of a relational dataset chapter. Some NON-KEY columns hold "
@@ -123,7 +160,12 @@ async def _run(construct: dict, mode: str, register: str, feedback: dict) -> dic
     async with BaseACPClient(spec, fs_root=home) as c:
         r = await c.prompt(prompt, timeout=420)
     text = _strip_reasoning(r.text)
-    out = {"edits": _parse_edits(text)} if mode == "edits" else {"prose": text}
+    if mode == "edits":
+        out = {"edits": _parse_edits(text)}
+    elif mode == "elaborations":
+        out = {"elaborations": _parse_elaborations(text)}
+    else:
+        out = {"prose": text}
     # the RAW exchange (full response incl. reasoning) for the aegir-side hx/OL lineage capture
     out["_exchange"] = {"prompt": prompt, "response": r.text, "reasoning": r.thoughts,
                         "model": model_id, "provider": provider}

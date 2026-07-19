@@ -241,7 +241,12 @@
    },
    "is_complex": true,
    "verbal_template": "A CondimentStation is a material entity that offers at least one AvailableTopping and is located at at least one StationLocation.",
-   "verbal_templates": [],
+   "verbal_templates": [
+    "A CondimentStation is a material entity that offers at least one AvailableTopping and is located at at least one StationLocation.",
+    "A CondimentStation is a material entity that provides at least one AvailableTopping and occupies at least one StationLocation.",
+    "Each CondimentStation, as a material entity, supplies at least one AvailableTopping and is situated at a minimum of one StationLocation.",
+    "As a material entity, a CondimentStation must offer at least one AvailableTopping and be positioned at at least one StationLocation."
+   ],
    "mean_verbal_length": 0.0,
    "bfo_anchor_path": [
     "bfo:0000004"
@@ -257,7 +262,8 @@
      "rel_margin": 0.103,
      "hash": "06a002769008a33b79466ba524f1ba48ca628809524b46c6115ac8544c5dc305"
     },
-    "source_span": "Available:  Lettuce, Tomato, Raw Onion and Condiments at a Station"
+    "source_span": "Available:  Lettuce, Tomato, Raw Onion and Condiments at a Station",
+    "refined": "refine-escalations/smoke-32b"
    },
    "alt_labels": [],
    "scope_note": ""

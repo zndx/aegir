@@ -1127,6 +1127,44 @@ def _aperture_constituents_md(p0: dict) -> str:
     return out + "\n\n"
 
 
+
+def project_escalation_channel() -> "list[N.Note]":
+    """The elaboration escalation channel's health as ONE lineup note (#32): the standing organ's
+    KPIs (size, age histogram) + the REVIEW stratum enumerated — aged-out entries are a human
+    worklist and must be visible in the lineup, not buried in a build artifact."""
+    wl_path = Path("build/elaboration_acp_worklist.json")
+    if not wl_path.exists():
+        return []
+    try:
+        wl = json.loads(wl_path.read_text())
+    except Exception:  # noqa: BLE001
+        return []
+    ages: "dict[str, int]" = {}
+    review = []
+    for key, e in wl.items():
+        a = str(e.get("attempts") or 0)
+        ages[a] = ages.get(a, 0) + 1
+        if e.get("stratum") == "review" or int(e.get("attempts") or 0) >= 3:
+            review.append((e.get("template_id") or key.split("::")[0],
+                           str(e.get("reasons") or "")[:110]))
+    age_line = " · ".join(f"{n}× attempts={a}" for a, n in sorted(ages.items())) or "empty"
+    body = [
+        f"**{len(wl)} entries** in the standing elaboration worklist "
+        f"(never-drop: every membrane run exhales here; the `refine_escalations` flow organ "
+        f"consumes it each run). Age histogram: {age_line}.",
+        "",
+        f"**Review stratum ({len(review)})** — aged past the engine path (≥3 triage passes); "
+        "these need a human or a richer proposer:" if review else
+        "**Review stratum: empty** — nothing has aged out of the engine path.",
+    ]
+    body += [f"- `{tid}` — {r}" for tid, r in sorted(review)[:40]]
+    return [N.Note(
+        id="lexicon/escalation-channel", title="Elaboration escalation channel",
+        kind="lexicon-construct", data_product="ontology", root="scratch",
+        frontmatter={"lens": "lexicon", "worklist_n": len(wl), "review_n": len(review)},
+        body="\n".join(body))]
+
+
 def project_aperture_anchors() -> list[N.Note]:
     """The Canonical Aperture's composite anchors as notes (RH 2026-07-19): one per anchor, from the
     strategy lens snapshot (truth flows repo → runtime). Constituent-concept mappings are not yet in
@@ -1793,6 +1831,7 @@ def run(args=None) -> int:
     # Trunk lenses (scratch) — same lens ids as the release kasten, root-resolved.
     notes += project_lexicon_constructs()
     notes += project_aperture_anchors()
+    notes += project_escalation_channel()
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
                                   zettel_head=zs[-1]["id"] if zs else None,
                                   items_report=(assoc or {}).get("report"))
