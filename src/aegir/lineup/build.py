@@ -875,7 +875,7 @@ def project_collections(recs: list[dict], coverage: list[dict],
             + "**Underlying tables.** " + ((" · ".join(
                 N.wl(f"relational/table/{t}", t) for t in ctables[:24]))
                 if ctables else ((" · ".join(
-                N.wl((cgraph or {}).get("archived_terms", {}).get(x, f"relational/table/{_table_id(x)}"), x)
+                N.wl(((cgraph or {}).get("archived_terms", {}).get(x) or {}).get("id", f"relational/table/{_table_id(x)}"), x)
                 for x in terms[:24]) + " _(archived kasten)_")
                 if (cgraph or {}).get("archived_terms") else "—"))
             + "\n\n" + f"**Cross-reference.** {N.wl(cid + '/terms', 'tables × data-elements')} "
@@ -899,11 +899,11 @@ def project_collections(recs: list[dict], coverage: list[dict],
                 caveat = ""
             else:                                       # refined-era: tables were template-derived
                 arch = cgraph.get("archived_terms", {}) if cgraph else {}
-                era = next(iter(arch.values())).split("/ontology/")[0] if arch else None
+                era = next(iter(arch.values()))["id"].split("/ontology/")[0] if arch else None
                 for x in terms_[:30]:
-                    els = telems.get(x, [])
+                    els = telems.get(x) or (arch.get(x) or {}).get("slots") or []
                     cell = " · ".join(f"`{e}`" for e in els[:10]) or "—"
-                    tcell = (N.wl(arch[x], x) + f" _({era} kasten)_" if x in arch else f"`{x}`")
+                    tcell = (N.wl(arch[x]["id"], x) + f" _({era} kasten)_" if x in arch else f"`{x}`")
                     rows.append(f"| {tcell} · {N.wl(f'ontology/term/{x}', 'term')} | {cell} |")
                 caveat = ((f"\n_These chapters embed template-derived tables from the "
                            f"{era} era — table links open that kasten's archived term panels; "
@@ -1577,8 +1577,15 @@ def run(args=None) -> int:
     if kastens:
         kd = kastens[-1]
         prefix = kd.parent.parent.relative_to(arch_root).as_posix()
-        cgraph["archived_terms"] = {f.stem: f"{prefix}/ontology/term/{f.stem}"
-                                    for f in kd.glob("*.md")}
+        at: dict = {}
+        for f in kd.glob("*.md"):
+            try:
+                meta, _b = N.parse_markdown(f.read_text())
+            except Exception:  # noqa: BLE001
+                meta = {}
+            at[f.stem] = {"id": f"{prefix}/ontology/term/{f.stem}",
+                          "slots": sorted((meta.get("slot_types") or {}).keys())}
+        cgraph["archived_terms"] = at
     if corpus and coverage:
         coll_notes, maps = project_collections(corpus, coverage, live_terms=set(tid2cat),
                                                cgraph=cgraph)
