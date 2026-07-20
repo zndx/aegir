@@ -1551,7 +1551,8 @@ def project_shape_surfaces() -> "tuple[list[N.Note], str]":
             id=nid, title=f"{tag.upper()} — foreign ontology under management",
             kind="lexicon-construct", data_product="ontology", root="scratch",
             frontmatter={"tag": tag, "tbox_coverage": round(pct, 1),
-                         "n_logical": cov.get("n_logical_axioms")},
+                         "n_logical": cov.get("n_logical_axioms"),
+                         "viz_view": "pathways", "viz_onto": tag},
             body=(f"**{tag.upper()}** under management — censused by the shape grammar "
                   f"({cov.get('n_logical_axioms', 0):,} logical axioms).\n\n"
                   f"**Schema expressibility: {tb_cov:,}/{tb_tot:,} = {pct:.1f}%** of TBox+RBox "
@@ -1604,26 +1605,24 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
                    "pinned by the strategy lens pillar (snapshots not readable at build).\n\n")
     terms = N.Note(
         id="lens/terms", title="Lexicon (trunk)", kind="lens", data_product="ontology",
-        root="scratch", frontmatter={"lens": "terms", "lexicon": LEXICON, "chord": False},
-        body=("**Lexicon** `" + LEXICON + "` — the full SIGN-SYSTEM of the pipeline (RH 2026-07-19: "
-              "the lens subsumes the aperture's domains+concepts, the catalog terms, the induced "
-              "genera/differentiae, topics, and collections; it is where the meta-vocabulary itself "
-              "is refined — see " + N.wl("lexicon/constructs", "the constructs") + ").\n\n"
-              + ap_line
+        root="scratch", frontmatter={"lens": "terms", "lexicon": LEXICON, "chord": False,
+                                     "viz_view": "pathways", "viz_onto": "sdg"},
+        body=("*The chord above is the ontology's INHERENT navigable structure — its own "
+              "discriminating ancestors, its restriction web and property lattice. Universally "
+              "available for any ontology under management; maxsim/aperture is ONE further view, "
+              "not the organizer.*\n\n"
               + shapes_line
-              + "**Generative coverage (pattern categories).** The LIVE derived catalog by the "
-                "patterns we can GENERATE — an overlay on the shape space, demonstrably "
-                "incomplete against foreign ontologies (see Under management):\n\n"
-              + "\n".join(f"- {N.wl(f'ontology/category/{c}', c)}" for c in categories)
-              + "\n\n**Topics.** Anchor-topics per the inverted layer (one passage → one concept "
-                "anchor, margin-gated): " + N.wl("topic/index", "topic index") + ". LATENT-topics "
-                "(CLT/SAE spectral communities over items, input AND output — content-addressed "
-                "until christened) are STAGED (#30); BERTopic is vestigial.\n\n"
-              + "**Collections.** Output-side bundles (connected DDL components): "
-              + N.wl("collection/index", "collection index") + ".\n\n"
-              + "**Constructs (the meta-vocabulary).** "
+              + ap_line
+              + "**Generative coverage.** The live catalog by pattern category (the overlay, "
+                "demonstrably incomplete against foreign ontologies): "
+              + " · ".join(N.wl(f"ontology/category/{c}", c) for c in categories[:10])
+              + (f" _…+{len(categories) - 10}_" if len(categories) > 10 else "") + "\n\n"
+              + "**Topics.** " + N.wl("topic/index", "anchor-topics") + " (inverted layer; "
+                "latent-topics staged #30) · **Collections.** " + N.wl("collection/index", "index")
+              + " · **Constructs.** "
               + " · ".join(N.wl(f"lexicon/construct/{c}", c) for c in
-                           ("domain", "concept", "topic", "collection", "term", "genus", "differentia"))))
+                           ("domain", "concept", "topic", "collection", "term", "genus",
+                            "differentia")) + "\n"))
     schema_body = ("**Schema (trunk).** The live relational surfaces.\n")
     if has_sdg:
         schema_body += (f"\n**The generated web (earned).** {N.wl('relational/sdg-schema', 'SDG schema')} — "

@@ -28,6 +28,8 @@ export interface KBNote {
   ego_focal?: number | null;
   // Lens notes may opt out of the live chord embed (trunk lenses — the chords are release-era).
   chord?: boolean;
+  viz_view?: string;
+  viz_onto?: string;
   // Relational-table notes carry their precomputed first-order ERD (rendered by RelationalErd).
   erd?: import("./RelationalErd").ErdData;
 }
@@ -240,7 +242,15 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
       </div>
       <div style={{ padding: "8px 16px 16px", fontSize: 13.5, color: "var(--text-color-kumo-default)" }}>
         {/* live embeds render for current/scratch only — archive kastens are frozen */}
-        {note?.kind === "lens" && note.chord !== false && note.root !== "archive" && (
+        {/* instrument-first (RH 2026-07-20): any note may carry a viz_view — the universal
+            pathways chord for ontologies under management; lens notes keep the collection
+            chord unless a viz_view supersedes it */}
+        {note?.viz_view && note.root !== "archive" && (
+          <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid var(--color-kumo-hairline)", paddingBottom: 6 }}>
+            <PanelView app="lineup_app" params={{ view: note.viz_view, onto: note.viz_onto ?? "sdg", root: note.root ?? "current" }} />
+          </div>
+        )}
+        {note?.kind === "lens" && !note.viz_view && note.chord !== false && note.root !== "archive" && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid var(--color-kumo-hairline)", paddingBottom: 6 }}>
             <PanelView app="lineup_app" params={{ lens: note.name ?? note.id, root: note.root ?? "current" }} />
           </div>

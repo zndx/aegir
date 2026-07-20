@@ -58,7 +58,43 @@ def _chord(lens: str, root: str = "current"):
                       title=""))
 
 
-def _args() -> "tuple[str, str]":
+
+
+def _pathways(onto: str = "sdg"):
+    """The INHERENT navigable-pathways chord (RH 2026-07-20): groups = the ontology's own
+    discriminating ancestors, edges = its restriction web + property lattice — universally
+    available for ANY ontology under management (native or foreign), no maxsim, no topics.
+    Substrate: build/<onto>_coverage.json (foreign_ontology_coverage.py)."""
+    import json as _json
+    from pathlib import Path as _P
+    cov = _P(__file__).resolve().parents[3] / "build" / f"{onto}_coverage.json"
+    try:
+        pw = _json.loads(cov.read_text()).get("pathways") or {}
+    except Exception:  # noqa: BLE001
+        pw = {}
+    groups = pw.get("groups") or []
+    edges_in = pw.get("edges") or []
+    names = [g["group"][:28] for g in groups] + ["(other)"]
+    idx = {n: i for i, n in enumerate(names)}
+    rows = []
+    for e in edges_in:
+        a, b = e["src"][:28], e["dst"][:28]
+        if a not in idx:
+            idx[a] = len(names); names.append(a)
+        if b not in idx:
+            idx[b] = len(names); names.append(b)
+        rows.append((idx[a], idx[b], int(e["n"]), " · ".join(e.get("props", [])[:3])))
+    present = sorted({r[0] for r in rows} | {r[1] for r in rows})
+    local = {gi: k for k, gi in enumerate(present)}
+    nodes = pd.DataFrame([{"index": local[gi], "name": names[gi]} for gi in present])
+    eds = pd.DataFrame([(local[a], local[b], v, pr) for a, b, v, pr in rows],
+                       columns=["source", "target", "value", "props"])
+    return hv.Chord((eds, hv.Dataset(nodes, "index")), vdims=["value", "props"]).opts(
+        hv.opts.Chord(labels="name", node_color="index", edge_color="source", cmap="Category20",
+                      width=560, height=560, tools=["hover"], title=""))
+
+
+def _args() -> "tuple[str, str, str, str]":
     sc = curdoc().session_context
     args = sc.request.arguments if (sc and sc.request) else {}
 
@@ -68,10 +104,12 @@ def _args() -> "tuple[str, str]":
 
     lens = _get("lens", "lens/terms")
     root = _get("root", "current")
-    return (lens if lens in D.SIMS else "lens/terms"), root
+    return (lens if lens in D.SIMS else "lens/terms"), root, _get("view", ""), _get("onto", "sdg")
 
 
 from aegir.viz.theme import apply_color_mode, themed  # noqa: E402
 
 _MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
-curdoc().add_root(themed(hv.render(_chord(*_args()), backend="bokeh"), _K))
+_lens, _root, _view, _onto = _args()
+_plot = _pathways(_onto) if _view == "pathways" else _chord(_lens, _root)
+curdoc().add_root(themed(hv.render(_plot, backend="bokeh"), _K))

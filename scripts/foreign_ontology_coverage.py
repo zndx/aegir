@@ -198,12 +198,42 @@ def _normalize_foreign(s_: str) -> str:
 
 # ── foreign ontology sweep ────────────────────────────────────────────────────
 
-def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict]":
-    files = [p for p in sorted(root.rglob("*.rdf")) if not re.search(skip_pat, p.name)]
+def _rest_edges(g: Graph, e, depth: int = 0) -> "list[tuple[str, URIRef]]":
+    """(property-local, named-filler) pairs reachable in a class expression — the NAVIGABLE
+    PATHWAYS a restriction asserts (some/only/QCR; recursing through and/or)."""
+    if depth > 5 or not isinstance(e, BNode):
+        return []
+    out: "list[tuple[str, URIRef]]" = []
+    for coll in (OWL.intersectionOf, OWL.unionOf):
+        lst = _first(g, e, coll)
+        if lst is not None:
+            for m in _members(g, lst):
+                out += _rest_edges(g, m, depth + 1)
+            return out
+    on_p = _first(g, e, OWL.onProperty)
+    if on_p is None or not isinstance(on_p, URIRef):
+        return out
+    pl = str(on_p).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+    for pred in (OWL.someValuesFrom, OWL.allValuesFrom, OWL.onClass):
+        f = _first(g, e, pred)
+        if isinstance(f, URIRef) and not _is_datatype(g, f):
+            out.append((pl, f))
+        elif isinstance(f, BNode):
+            out += _rest_edges(g, f, depth + 1)
+    return out
+
+
+def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict, dict]":
+    files = ([root] if root.is_file() else
+             [p for p in sorted(root.rglob("*.rdf")) if not re.search(skip_pat, p.name)])
     ax = Counter()
     examples: "dict[str, list]" = defaultdict(list)
     meta = Counter()
     per_module = Counter()
+    parents: "dict[str, set]" = defaultdict(set)        # named subclass spine (class → named supers)
+    labels: "dict[str, str]" = {}
+    path_edges: "list[tuple[str, str, str]]" = []       # (src class, prop, dst class) — restrictions
+    dr: "dict[str, list]" = defaultdict(list)           # prop → [domain..., range...] named pairs
     for i, f in enumerate(files):
         g = Graph()
         try:
@@ -211,7 +241,7 @@ def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict]":
         except Exception as e:  # noqa: BLE001
             meta["parse_errors"] += 1
             continue
-        module = f.relative_to(root).parts[0]
+        module = f.relative_to(root).parts[0] if not root.is_file() else root.stem
         ann_props = {s for s in g.subjects(RDF.type, OWL.AnnotationProperty)}
         obj_props = set(g.subjects(RDF.type, OWL.ObjectProperty))
         dat_props = set(g.subjects(RDF.type, OWL.DatatypeProperty))
@@ -224,6 +254,8 @@ def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict]":
                 examples[kind].append(f"{module}: {str(subj).rsplit('/', 1)[-1][:70]}")
 
         for s, p, o in g:
+            if p == RDFS.label and isinstance(s, URIRef):
+                labels.setdefault(str(s), str(o))
             if p in ANNOT_P or p in ann_props or any(str(p).startswith(ns) for ns in ANNOT_NS):
                 meta["annotations"] += 1
                 continue
@@ -247,6 +279,11 @@ def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict]":
                     _rec("GCI", s)
                 else:
                     _rec(f"Sub[{sig(g, o)}]", s)
+                    if isinstance(o, URIRef):
+                        parents[str(s)].add(str(o))
+                    else:
+                        for pl, f in _rest_edges(g, o):
+                            path_edges.append((str(s), pl, str(f)))
             elif p == OWL.equivalentClass:
                 if isinstance(s, URIRef) and _is_datatype(g, s):
                     _rec("datatypeDef", s)
@@ -262,8 +299,12 @@ def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict]":
                 _rec("rbox:subProp", s)
             elif p == RDFS.domain:
                 _rec(f"rbox:domain[{sig(g, o)}]" if isinstance(o, BNode) else "rbox:domain", s)
+                if isinstance(o, URIRef) and isinstance(s, URIRef):
+                    dr[str(s)].append(("d", str(o)))
             elif p == RDFS.range:
                 _rec(f"rbox:range[{sig(g, o)}]" if isinstance(o, BNode) else "rbox:range", s)
+                if isinstance(o, URIRef) and isinstance(s, URIRef) and not _is_datatype(g, o):
+                    dr[str(s)].append(("r", str(o)))
             elif p == OWL.inverseOf and isinstance(s, URIRef):
                 _rec("rbox:inverse", s)
             elif p == OWL.propertyChainAxiom:
@@ -293,12 +334,98 @@ def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict]":
                 meta["other_triples"] += 1
         if (i + 1) % 50 == 0:
             print(f"  …{i + 1}/{len(files)} files", flush=True)
-    return ax, dict(examples), meta, per_module
+    structure = {"parents": {k: sorted(v) for k, v in parents.items()},
+                 "rest_edges": path_edges, "dr": dict(dr), "labels": labels}
+    return ax, dict(examples), meta, per_module, structure
+
+
+_BFO_LABELS = {  # numeric backbone fallbacks (our realized owl declares them label-less)
+    "BFO_0000001": "entity", "BFO_0000002": "continuant", "BFO_0000003": "occurrent",
+    "BFO_0000004": "independent continuant", "BFO_0000015": "process",
+    "BFO_0000017": "realizable entity", "BFO_0000019": "quality", "BFO_0000020": "sdc",
+    "BFO_0000023": "role", "BFO_0000031": "gdc", "BFO_0000040": "material entity"}
+
+
+def _local(iri: str) -> str:
+    loc = iri.rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+    return _BFO_LABELS.get(loc, loc)
+
+
+def build_pathways(structure: dict, cap_groups: int = 22, cap_edges: int = 64) -> dict:
+    """The INHERENT navigable structure, grouped for the chord: every class maps to its TOP named
+    ancestor; edges aggregate restriction pathways + property domain→range between groups. This is
+    the universally-available organizer — no maxsim, no topic model, just the ontology's own spine."""
+    parents = structure["parents"]
+    labels = structure.get("labels", {})
+    children: "dict[str, set]" = defaultdict(set)
+    for c, ps in parents.items():
+        for p_ in ps:
+            if not p_.startswith("http://www.w3.org/2002/07/owl"):
+                children[p_].add(c)
+    desc: "dict[str, int]" = {}
+
+    def ndesc(a: str, seen: "frozenset" = frozenset()) -> int:
+        if a in desc:
+            return desc[a]
+        if a in seen:
+            return 0
+        n_ = len(children.get(a, ())) + sum(ndesc(k, seen | {a}) for k in children.get(a, ()))
+        desc[a] = n_
+        return n_
+
+    n_all = max(1, len(parents))
+    cap = max(5, int(0.35 * n_all))
+
+    memo: "dict[str, str]" = {}
+
+    def top(c: str, seen: "frozenset" = frozenset()) -> str:
+        """Highest ancestor that still DISCRIMINATES (subtree ≤ cap) — a group over 35% of the
+        ontology organizes nothing (the BFO-entity collapse on fully-grounded ontologies)."""
+        if c in memo:
+            return memo[c]
+        if c in seen:
+            return c
+        ps = sorted(p_ for p_ in parents.get(c, [])
+                    if not p_.startswith("http://www.w3.org/2002/07/owl"))
+        r = c
+        if ps and ndesc(ps[0]) <= cap:
+            r = top(ps[0], seen | {c})
+        memo[c] = r
+        return r
+
+    sizes = Counter()
+    for c in parents:
+        sizes[top(c)] += 1
+    groups = [g_ for g_, _ in sizes.most_common(cap_groups)]
+    gset = set(groups)
+
+    def grp(c: str) -> str:
+        t = top(c)
+        return t if t in gset else "(other)"
+
+    agg: "dict[tuple, Counter]" = defaultdict(Counter)
+    for src, pl, dst in structure["rest_edges"]:
+        agg[(grp(src), grp(dst))][pl] += 1
+    for prop, pairs in structure["dr"].items():
+        ds = [x for k, x in pairs if k == "d"]
+        rs = [x for k, x in pairs if k == "r"]
+        for d_ in ds:
+            for r_ in rs:
+                agg[(grp(d_), grp(r_))][_local(prop)] += 1
+    def _name(iri: str) -> str:
+        return labels.get(iri) or _local(iri)
+
+    edges = sorted(({"src": _name(a), "dst": _name(b),
+                     "src_iri": a, "dst_iri": b, "n": sum(props.values()),
+                     "props": [p_ for p_, _ in props.most_common(4)]}
+                    for (a, b), props in agg.items()), key=lambda e: -e["n"])[:cap_edges]
+    return {"groups": [{"group": _name(g_), "iri": g_, "n_classes": sizes[g_]} for g_ in groups],
+            "edges": edges}
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--root", required=True)
+    ap.add_argument("--root", required=True, help="ontology dir (rglob *.rdf) or a single owl/rdf FILE")
     ap.add_argument("--tag", default="foreign")
     ap.add_argument("--skip", default=r"^(About|All|Metadata)")
     a = ap.parse_args()
@@ -323,7 +450,8 @@ def main() -> int:
             return _kinds_of(s_) <= equiv_kinds
         return False
 
-    ax, examples, meta, per_module = sweep(root, a.skip)
+    ax, examples, meta, per_module, structure = sweep(root, a.skip)
+    pathways = build_pathways(structure)
     total = sum(ax.values())
 
     covered = Counter()
@@ -353,6 +481,7 @@ def main() -> int:
            "blocked": {k: v for k, v in blocked.most_common()},
            "blocked_examples": {k: examples.get(k, []) for k, _ in blocked.most_common(30)},
            "pattern_load": pattern_load,
+           "pathways": pathways,
            "catalog_signatures": sorted(ours)}
     dest = REPO / f"build/{a.tag}_coverage.json"
     dest.write_text(json.dumps(out, indent=1))
