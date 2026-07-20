@@ -67,12 +67,12 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 }
 
 function Lineup() {
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const lensKey = params.get("lens") || "terms";
   // ?open=<note id> deep-links a specific note (e.g. training/sweeps from the Landing card); else the lens.
   const seed = params.get("open") || LENSES.find((l) => l.key === lensKey)?.seed || "lens/terms";
 
-  const [root, setRoot] = useState("current");
+  const [root, setRoot] = useState(ROOTS.includes(params.get("root") || "") ? params.get("root")! : "current");
   const [index, setIndex] = useState<KBIndex | null | undefined>(undefined);
   const [trail, setTrail] = useState<string[]>([]);
   const [cache, setCache] = useState<Record<string, KBNote | null>>({});
@@ -134,6 +134,14 @@ function Lineup() {
     setTrail(first ? [first.id] : []);
   }, [seed, root, index, layer, prefix]);
   useEffect(() => { saveTrail(layer, seed, trail); }, [trail, seed, layer]);
+  // shareable URLs: the focused (last) panel + root ride the query string
+  useEffect(() => {
+    if (!trail.length) return;
+    const q = new URLSearchParams(params);
+    q.set("open", trail[trail.length - 1]);
+    q.set("root", root);
+    if (q.toString() !== params.toString()) setParams(q, { replace: true });
+  }, [trail, root]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const openFrom = (fromIdx: number) => (targetId: string) =>
     setTrail((t) => [...t.slice(0, fromIdx + 1), targetId]);

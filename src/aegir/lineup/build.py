@@ -986,7 +986,8 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
                    maps: dict | None = None, rd: dict | None = None,
                    live_terms: set | None = None,
                    latest_release: str | None = None,
-                   rel_colls: "list[tuple[str, str, int]] | None" = None) -> list[N.Note]:
+                   rel_colls: "list[tuple[str, str, int]] | None" = None,
+                   rel_schema: "dict[str, list[str]] | None" = None) -> list[N.Note]:
     """The RELEASE kasten's lenses (current root) — the lens surfaces over the released
     corpus, its era lexicon, and the released DDL spine. The trunk (scratch) gets its own
     lens set from :func:`project_trunk_lenses` — same ids, root-resolved (roots are refs)."""
@@ -1023,17 +1024,36 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
         terms = N.Note(id="lens/terms", title="Lexicon × Collections" if colls else "Lexicon",
                        kind="lens", data_product="ontology",
                        frontmatter={"lens": "terms", "lexicon": LEXICON}, body=terms_body)
-    # schema: the RELEASED DDL spine (corpora/ddl — the SHARE record), by release-era family.
+    # schema: the RELEASE's relational surface — collections × their live tables (the promised
+    # pivot), the spine record, and the most-shared tables as entry points (RH 2026-07-20: the
+    # lens must carry ACTUAL schema, not a pointer at a pointer).
     schema_body = ("**Schema × Collections.** The released relational footprint — a base table is "
                    "shared across the collections whose chapters embed views over it.\n")
+    rel_schema = rel_schema or {}
+    if rel_schema:
+        rows = ["| collection | live tables |", "|---|---|"]
+        for cid_, label_, _n in (rel_colls or [])[:20]:
+            tabs_ = rel_schema.get(cid_, [])
+            cell = " · ".join(N.wl(f"relational/table/{t}", t) for t in tabs_[:8]) \
+                   + (f" _…+{len(tabs_) - 8}_" if len(tabs_) > 8 else "")
+            rows.append(f"| {N.wl(cid_, label_[:48])} | {cell or '—'} |")
+        schema_body += "\n" + "\n".join(rows) + "\n"
+        shared: dict = {}
+        for cid_, tabs_ in rel_schema.items():
+            for t in tabs_:
+                shared[t] = shared.get(t, 0) + 1
+        hubs = sorted(shared.items(), key=lambda kv: -kv[1])[:12]
+        if hubs:
+            schema_body += ("\n**Most-shared tables** (collection count): "
+                            + " · ".join(f"{N.wl(f'relational/table/{t}', t)} ({n_})"
+                                         for t, n_ in hubs) + "\n")
     if rd:
-        fams = sorted({r.get("family") or "released" for r in rd["rows"]})
-        schema_body += (f"\n**The released DDL spine** (corpora/ddl `{rd['run']}`, "
-                        f"{len(rd['rows'])} tables), by family:\n\n"
-                        + "\n".join(f"- {N.wl(f'relational/category/{c}', c)}" for c in fams))
+        schema_body += (f"\n**The released DDL spine**: corpora/ddl `{rd['run']}` — "
+                        f"{len(rd['rows'])} tables, gate-certified "
+                        f"({N.wl('release/v' + (latest_release or ''), 'release record') if latest_release else 'release record'}).\n")
     else:
-        schema_body += "\n_No released DDL spine on disk (corpora submodule absent)._"
-    schema_body += "\n\n_Trunk schema work (the generated web + the live spine) lives in `scratch`._"
+        schema_body += "\n_No released DDL spine on disk (corpora submodule absent)._\n"
+    schema_body += "\n_Trunk schema work (the generated web + the live spine) lives in `scratch`._"
     schema = N.Note(id="lens/schema", title="Schema × Collections" if colls else "Schema", kind="lens",
                     data_product="relational", frontmatter={"lens": "schema", "lexicon": LEXICON},
                     body=schema_body)
@@ -1207,7 +1227,8 @@ def _slug(label: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")[:48]
 
 
-def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[str]]"
+def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[str]]",
+                                live_ids: "set[str] | None" = None
                                 ) -> "tuple[list[N.Note], dict[str, list[str]]]":
     """The RELEASE's collections (current root), keyed by ANCHOR CONCEPTS — the inverted
     topic layer made structural (RH: topics ≡ qdrant concept anchors; one passage → one
@@ -1258,6 +1279,10 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
         for t in tabs:
             table_colls.setdefault(t, []).append(cid)
         chs = [c for p in sorted(pids) for c in rel_by_pid.get(p, [])]
+        live_ids = live_ids or set()
+        def _term(x: str) -> str:
+            sn = re.sub(r"(?<!^)(?=[A-Z])", "_", x).lower()
+            return N.wl(f"ontology/term/{sn}", x) if sn in live_ids else f"`{x}`"
         terms = sorted({c for t in tabs for c in table_concepts.get(t, ())} | set(tabs))
         body = (
             f"**Anchor-concept collection** — {N.wl('lexicon/construct/topic', 'anchor-topic')} "
@@ -1268,8 +1293,7 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
             + (f" _…+{len(chs) - 16}_" if len(chs) > 16 else "") + "\n\n"
             "**Underlying tables.** " + (" · ".join(
                 N.wl(f"relational/table/{t}", t) for t in tabs[:18]) or "—") + "\n\n"
-            "**Realizes terms.** " + (" · ".join(
-                N.wl(f"ontology/term/{x}", x) for x in terms[:18]) or "—")
+            "**Realizes terms.** " + (" · ".join(_term(x) for x in terms[:18]) or "—")
             + (f" _…+{len(terms) - 18}_" if len(terms) > 18 else "") + "\n\n"
             f"**Cross-reference.** {N.wl(cid + '/terms', 'tables × data-elements')}\n")
         notes.append(N.Note(id=cid, title=f"collection · {label[:60]}", kind="collection",
@@ -1279,8 +1303,7 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
                                                     "n_chapters": len(chs), "n_tables": len(tabs)}))
         rows = ["| table | data-elements (ontology-terms) |", "|---|---|"]
         for t in tabs[:30]:
-            cell = " · ".join(N.wl(f"ontology/term/{c}", c)
-                              for c in table_concepts.get(t, [])[:10]) or "—"
+            cell = " · ".join(_term(c) for c in table_concepts.get(t, [])[:10]) or "—"
             rows.append(f"| {N.wl(f'relational/table/{t}', t)} | {cell} |")
         if len(rows) > 2:
             notes.append(N.Note(
@@ -1308,6 +1331,17 @@ def project_release_chapters(sc: "dict | None") -> "tuple[list[N.Note], dict]":
     root = S.sdg_run_root()
     if root is None or not (root / "chapters").exists():
         return [], {}
+    # per-construct link context: the chapter panel sits on the graph's richest join point
+    pid_tables: "dict[str, list[str]]" = {}
+    for tn, te in (sc.get("tables") or {}).items():
+        for pid_ in te.get("constructs", []):
+            pid_tables.setdefault(pid_, []).append(tn)
+    pid_views: "dict[str, list[str]]" = {}
+    for vn, ve in (sc.get("views") or {}).items():
+        for pid_ in (ve.get("constructs") or [ve.get("construct")]):
+            if pid_:
+                pid_views.setdefault(pid_, []).append(vn)
+
     notes: "list[N.Note]" = []
     by_pid: "dict[str, list[str]]" = {}
     for cdir in sorted((root / "chapters").iterdir()):
@@ -1322,16 +1356,45 @@ def project_release_chapters(sc: "dict | None") -> "tuple[list[N.Note], dict]":
                 text = f.read_text()
             except Exception:  # noqa: BLE001
                 continue
-            m = re.search(r"^#\s+(.+)$", text, re.M)
-            title = (m.group(1).strip()[:80] if m else pid[:12]) + f" · {reg}"
+            # title: H1, else the first section heading, else the opening sentence — never a bare hash
+            m = (re.search(r"^#\s+(.+)$", text, re.M)
+                 or re.search(r"^##\s+(.+)$", text, re.M)
+                 or re.search(r"^([A-Z][^.\n]{10,90})[.\n]", text, re.M))
+            _tabs0 = sorted(pid_tables.get(pid, []))
+            fallback = (_tabs0[0].replace("_", " ") + " (chapter)") if _tabs0 else pid[:12]
+            title = (m.group(1).strip()[:72] if m else fallback) + f" · {reg}"
             nid = f"content/chapter/rel_{pid[:12]}.{reg}"
-            excerpt = re.sub(r"\s+", " ", text[:600]).strip()
+            twin = f"content/chapter/rel_{pid[:12]}.{'natural' if reg == 'semantic' else 'semantic'}"
+            tabs = sorted(pid_tables.get(pid, []))
+            vws = sorted(pid_views.get(pid, []))
+            head = (f"*Release chapter — **{reg}** register · construct `{pid[:12]}` · "
+                    f"{N.wl(twin, ('natural' if reg == 'semantic' else 'semantic') + ' register')}*\n\n"
+                    + (("**Tables.** " + " · ".join(N.wl(f"relational/table/{t}", t) for t in tabs[:10])
+                        + (f" _…+{len(tabs) - 10}_" if len(tabs) > 10 else "") + "\n\n") if tabs else "")
+                    + (("**Views.** " + " · ".join(N.wl(f"relational/view/{v}", v) for v in vws[:6])
+                        + (f" _…+{len(vws) - 6}_" if len(vws) > 6 else "") + "\n\n") if vws else ""))
+            wins = [w + ("\n```" if w.count("```") % 2 else "") for w in _windows(text, 12000)]
+            n = len(wins)
+            body0 = head + wins[0]
+            if n > 1:
+                body0 += f"\n\n→ {N.wl(nid + '__w2', f'continue — window 2 of {n}')}"
             notes.append(N.Note(
-                id=nid, title=title, kind="content-chapter", data_product="content",
-                root="current", frontmatter={"register": reg, "construct": pid, "release": True},
-                body=(f"**Release chapter** ({reg} register) — construct `{pid[:12]}`.\n\n"
-                      f"> {excerpt} …\n\n_Full text ships in the corpora release "
-                      f"(`corpus/chapters/{pid}/{reg}.md`)._")))
+                id=nid, title=title + (f" (1/{n})" if n > 1 else ""), kind="content-chapter",
+                data_product="content", root="current",
+                links=[twin] + [f"relational/table/{t}" for t in tabs[:10]]
+                      + [f"relational/view/{v}" for v in vws[:6]],
+                frontmatter={"register": reg, "construct": pid, "release": True, "windows": n},
+                body=body0 + "\n"))
+            for k in range(1, n):
+                prev = nid if k == 1 else f"{nid}__w{k}"
+                nav = f"← {N.wl(prev, f'window {k} of {n}')}"
+                if k + 1 < n:
+                    nav += f" · → {N.wl(f'{nid}__w{k + 2}', f'window {k + 2} of {n}')}"
+                notes.append(N.Note(
+                    id=f"{nid}__w{k + 1}", title=f"{title} ({k + 1}/{n})", kind="content-chapter",
+                    data_product="content", root="current",
+                    frontmatter={"register": reg, "construct": pid, "release": True},
+                    body=f"{nav}\n\n{wins[k]}\n"))
             by_pid.setdefault(pid, []).append(nid)
     if notes:
         idx_body = (f"**Release chapters** — {len(notes)} notes over {len(by_pid)} constructs "
@@ -1711,7 +1774,8 @@ def run(args=None) -> int:
         coll_notes, maps = project_collections(corpus, coverage, live_terms=set(tid2cat),
                                                cgraph=cgraph)
     rel_ch_notes, rel_by_pid = project_release_chapters(sc)
-    rel_coll_notes, rel_table_colls = project_release_collections(sc, rel_by_pid)
+    rel_coll_notes, rel_table_colls = project_release_collections(
+        sc, rel_by_pid, live_ids={t.template_id for _, t in rows})
     for t_, cids_ in rel_table_colls.items():
         maps.setdefault("table_colls", {}).setdefault(t_, []).extend(cids_)
 
@@ -1794,7 +1858,12 @@ def run(args=None) -> int:
     era_fams = sorted({f for f, _ in retired})
     _rc = [(n_.id, n_.frontmatter.get("label", n_.title), n_.frontmatter.get("n_chapters", 0))
            for n_ in rel_coll_notes if n_.kind == "collection"]
+    _rs: dict = {}
+    for t_, cids_ in rel_table_colls.items():
+        for c_ in cids_:
+            _rs.setdefault(c_, []).append(t_)
     notes += project_lenses(era_fams, bool(corpus), bool(coverage), maps, rd=rd, rel_colls=_rc,
+                            rel_schema=_rs,
                             live_terms=set(tid2cat),
                             latest_release=latest_rel["version"] if latest_rel else None)
     tr = project_training() + project_metrics()

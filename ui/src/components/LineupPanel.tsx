@@ -108,10 +108,13 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
       const data = rows.slice(1).filter((r) => !/^\s*\|[\s:|-]+\|\s*$/.test(r)).map(cells);
       // single-column tables (Sample Values) flow side-by-side as a SET; wide tables span the panel
       const single = header.length === 1;
-      blocks.push(
+      // wide tables scroll INSIDE their own container (RH 2026-07-20: loose wide tables were
+      // blowing out the panel basis and breaking trail navigation — same containment law as
+      // the viz panels: the panel never scrolls horizontally, its content does)
+      const tableEl = (
         <table key={`t-${i}`} style={single
           ? { borderCollapse: "collapse", fontSize: 12, margin: "6px 12px 6px 0", display: "inline-table", verticalAlign: "top" }
-          : { borderCollapse: "collapse", fontSize: 12, margin: "6px 0", width: "100%" }}>
+          : { borderCollapse: "collapse", fontSize: 12, margin: "6px 0", minWidth: "100%" }}>
           <thead>
             <tr>{header.map((h, j) => (
               <th key={j} style={{ textAlign: "left", borderBottom: "1px solid var(--color-kumo-line)", padding: "2px 6px", color: "var(--text-color-kumo-subtle)" }}>{h}</th>
@@ -124,8 +127,10 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
               ))}</tr>
             ))}
           </tbody>
-        </table>,
+        </table>
       );
+      blocks.push(single ? tableEl
+        : <div key={`tw-${i}`} style={{ overflowX: "auto", maxWidth: "100%" }}>{tableEl}</div>);
       continue;
     }
     if (ln.trim().startsWith("- ")) {
