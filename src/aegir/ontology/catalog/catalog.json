@@ -16900,6 +16900,60 @@
     "seeded": "gap-closure-2026-07-20",
     "rationale": "FIBO census gap closure (RH-ratified): data QCRs beyond d-some — 1.5%"
    }
+  },
+  {
+   "template_id": "restricted_participation_review",
+   "manchester_template": "Class: {AccreditedReviewProcess:Class}\n    SubClassOf: bfo:0000015, sdg:hasParticipant only {CredentialedReviewer:Class}",
+   "slot_types": {
+    "AccreditedReviewProcess": "Class",
+    "CredentialedReviewer": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "An {AccreditedReviewProcess} admits only {CredentialedReviewer} participants — the universal typing carries the constraint, membership stays open.",
+   "verbal_templates": [
+    "An {AccreditedReviewProcess} admits only {CredentialedReviewer} participants — the universal typing carries the constraint, membership stays open."
+   ],
+   "provenance": {
+    "pattern": "element_typing",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FHIR census: only-typing = 42% of FHIR schema (element idiom)"
+   }
+  },
+  {
+   "template_id": "typed_realization_channel",
+   "manchester_template": "Class: {OnCallCoverageRole:Class}\n    SubClassOf: bfo:0000023, sdg:realizedIn only {ScheduledShiftProcess:Class}",
+   "slot_types": {
+    "OnCallCoverageRole": "Class",
+    "ScheduledShiftProcess": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "An {OnCallCoverageRole} is realized only in a {ScheduledShiftProcess} — every realization event is of that kind.",
+   "verbal_templates": [
+    "An {OnCallCoverageRole} is realized only in a {ScheduledShiftProcess} — every realization event is of that kind."
+   ],
+   "provenance": {
+    "pattern": "element_typing",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FHIR census: only-typing = 42% of FHIR schema (element idiom)"
+   }
+  },
+  {
+   "template_id": "custody_scope_typing",
+   "manchester_template": "Class: {ArchivalCustodyProcess:Class}\n    SubClassOf: bfo:0000015, sdg:hasParticipant only {AccessionedRecord:Class}, sdg:hasParticipant min 1 {AccessionedRecord:Class}",
+   "slot_types": {
+    "ArchivalCustodyProcess": "Class",
+    "AccessionedRecord": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "An {ArchivalCustodyProcess} involves at least one {AccessionedRecord} and nothing but {AccessionedRecord}s — the only+min pairing FHIR renders as typed required elements.",
+   "verbal_templates": [
+    "An {ArchivalCustodyProcess} involves at least one {AccessionedRecord} and nothing but {AccessionedRecord}s — the only+min pairing FHIR renders as typed required elements."
+   ],
+   "provenance": {
+    "pattern": "element_typing",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FHIR census: only-typing = 42% of FHIR schema (element idiom)"
+   }
   }
  ],
  "null_stats": {}

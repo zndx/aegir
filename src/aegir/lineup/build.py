@@ -1546,9 +1546,11 @@ def project_shape_surfaces() -> "tuple[list[N.Note], str]":
             crows.append(f"| `{k}` | {v} |")
         mods = sorted((cov.get("per_module") or {}).items(), key=lambda kv: -kv[1])[:8]
         opa = blocked.get("abox:opa", 0)
-        nid = f"ontology/foreign/{tag}"
+        native = tag == "sdg"
+        nid = "ontology/self-census" if native else f"ontology/foreign/{tag}"
         notes.append(N.Note(
-            id=nid, title=f"{tag.upper()} — foreign ontology under management",
+            id=nid, title=("SDG — native self-census" if native else
+                           f"{tag.upper()} — foreign ontology under management"),
             kind="lexicon-construct", data_product="ontology", root="scratch",
             frontmatter={"tag": tag, "tbox_coverage": round(pct, 1),
                          "n_logical": cov.get("n_logical_axioms"),
@@ -1567,8 +1569,8 @@ def project_shape_surfaces() -> "tuple[list[N.Note], str]":
                   f"`scripts/foreign_ontology_coverage.py --root <checkout> --tag {tag}`_\n")))
         fentries.append((nid, tag, pct))
     lens_line = ("**Under management.** " + N.wl("ontology/shapes", "axiom shapes (universal)")
-                 + " organize every ontology here — ours and foreign: native `sdg` (the live "
-                   "catalog below)"
+                 + " organize every ontology here — ours and foreign: native "
+                 + N.wl("ontology/self-census", "sdg")
                  + ("".join(f" · {N.wl(nid, tag.upper())} ({pct:.0f}% expressible)"
                             for nid, tag, pct in fentries))
                  + ". The pattern categories are the GENERATIVE COVERAGE overlay on that space, "

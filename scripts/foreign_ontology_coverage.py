@@ -225,7 +225,9 @@ def _rest_edges(g: Graph, e, depth: int = 0) -> "list[tuple[str, URIRef]]":
 
 def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict, dict]":
     files = ([root] if root.is_file() else
-             [p for p in sorted(root.rglob("*.rdf")) if not re.search(skip_pat, p.name)])
+             [p for p in sorted(list(root.rglob("*.rdf")) + list(root.rglob("*.ttl"))
+                                + list(root.rglob("*.owl")))
+              if not re.search(skip_pat, p.name)])
     ax = Counter()
     examples: "dict[str, list]" = defaultdict(list)
     meta = Counter()
