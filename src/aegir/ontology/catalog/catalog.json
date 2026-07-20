@@ -16719,6 +16719,187 @@
    },
    "alt_labels": [],
    "scope_note": ""
+  },
+  {
+   "template_id": "review_panel_quorum",
+   "manchester_template": "Class: {ReviewPanelSession:Class}\n    SubClassOf: bfo:0000015, sdg:hasParticipant min 3 {PanelReviewer:Class}",
+   "slot_types": {
+    "ReviewPanelSession": "Class",
+    "PanelReviewer": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {ReviewPanelSession} is a process that has at least three {PanelReviewer} participants — quorum is structural, not procedural.",
+   "verbal_templates": [
+    "A {ReviewPanelSession} is a process that has at least three {PanelReviewer} participants — quorum is structural, not procedural."
+   ],
+   "provenance": {
+    "pattern": "cardinality_bounds",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): min/max cardinality — 4.7% of FIBO schema"
+   }
+  },
+  {
+   "template_id": "capacity_bounded_enrollment",
+   "manchester_template": "Class: {CohortEnrollmentProcess:Class}\n    SubClassOf: bfo:0000015, sdg:hasParticipant max 24 {EnrolledParticipant:Class}",
+   "slot_types": {
+    "CohortEnrollmentProcess": "Class",
+    "EnrolledParticipant": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {CohortEnrollmentProcess} is a process that has at most twenty-four {EnrolledParticipant} participants.",
+   "verbal_templates": [
+    "A {CohortEnrollmentProcess} is a process that has at most twenty-four {EnrolledParticipant} participants."
+   ],
+   "provenance": {
+    "pattern": "cardinality_bounds",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): min/max cardinality — 4.7% of FIBO schema"
+   }
+  },
+  {
+   "template_id": "dual_custody_signoff",
+   "manchester_template": "Class: {DualCustodySignoffProcess:Class}\n    SubClassOf: bfo:0000015, sdg:hasParticipant min 2 {AuthorizedSignatory:Class}, sdg:realizes some {CustodyControlRole:Class}",
+   "slot_types": {
+    "DualCustodySignoffProcess": "Class",
+    "AuthorizedSignatory": "Class",
+    "CustodyControlRole": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {DualCustodySignoffProcess} is a process realizing some {CustodyControlRole} with no fewer than two {AuthorizedSignatory} participants.",
+   "verbal_templates": [
+    "A {DualCustodySignoffProcess} is a process realizing some {CustodyControlRole} with no fewer than two {AuthorizedSignatory} participants."
+   ],
+   "provenance": {
+    "pattern": "cardinality_bounds",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): min/max cardinality — 4.7% of FIBO schema"
+   }
+  },
+  {
+   "template_id": "bounded_committee_membership",
+   "manchester_template": "Class: {StandingCommitteeAssembly:Class}\n    SubClassOf: bfo:0000015, sdg:hasParticipant min 5 {CommitteeMember:Class}, sdg:hasParticipant max 15 {CommitteeMember:Class}",
+   "slot_types": {
+    "StandingCommitteeAssembly": "Class",
+    "CommitteeMember": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {StandingCommitteeAssembly} is a process with between five and fifteen {CommitteeMember} participants — both bounds carried by the class itself.",
+   "verbal_templates": [
+    "A {StandingCommitteeAssembly} is a process with between five and fifteen {CommitteeMember} participants — both bounds carried by the class itself."
+   ],
+   "provenance": {
+    "pattern": "cardinality_bounds",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): min/max cardinality — 4.7% of FIBO schema"
+   }
+  },
+  {
+   "template_id": "identifier_bearer_union",
+   "manchester_template": "Class: {RegisteredIdentifierBearer:Class}\n    SubClassOf: ({NaturalPersonRegistrant:Class} or {RegisteredOrganization:Class})",
+   "slot_types": {
+    "RegisteredIdentifierBearer": "Class",
+    "NaturalPersonRegistrant": "Class",
+    "RegisteredOrganization": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "Every {RegisteredIdentifierBearer} is a {NaturalPersonRegistrant} or a {RegisteredOrganization} — the union is the superclass, disjunction asserted, not enumerated.",
+   "verbal_templates": [
+    "Every {RegisteredIdentifierBearer} is a {NaturalPersonRegistrant} or a {RegisteredOrganization} — the union is the superclass, disjunction asserted, not enumerated."
+   ],
+   "provenance": {
+    "pattern": "union_subsumption",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): Sub-position unions — 2.5%"
+   }
+  },
+  {
+   "template_id": "notification_target_union",
+   "manchester_template": "Class: {ComplianceNotificationProcess:Class}\n    SubClassOf: bfo:0000015, sdg:hasParticipant some ({ResponsibleOfficer:Class} or {DelegatedAgent:Class})",
+   "slot_types": {
+    "ComplianceNotificationProcess": "Class",
+    "ResponsibleOfficer": "Class",
+    "DelegatedAgent": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {ComplianceNotificationProcess} is a process with at least one participant that is a {ResponsibleOfficer} or a {DelegatedAgent}.",
+   "verbal_templates": [
+    "A {ComplianceNotificationProcess} is a process with at least one participant that is a {ResponsibleOfficer} or a {DelegatedAgent}."
+   ],
+   "provenance": {
+    "pattern": "union_subsumption",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): Sub-position unions — 2.5%"
+   }
+  },
+  {
+   "template_id": "escalation_channel_union",
+   "manchester_template": "Class: {IncidentEscalationProcess:Class}\n    SubClassOf: bfo:0000015, sdg:realizedIn only ({SupervisoryReview:Class} or {ExternalAuditReview:Class})",
+   "slot_types": {
+    "IncidentEscalationProcess": "Class",
+    "SupervisoryReview": "Class",
+    "ExternalAuditReview": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "An {IncidentEscalationProcess} is realized only in a {SupervisoryReview} or an {ExternalAuditReview} — no other realization channel exists.",
+   "verbal_templates": [
+    "An {IncidentEscalationProcess} is realized only in a {SupervisoryReview} or an {ExternalAuditReview} — no other realization channel exists."
+   ],
+   "provenance": {
+    "pattern": "union_subsumption",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): Sub-position unions — 2.5%"
+   }
+  },
+  {
+   "template_id": "scored_assessment_bounds",
+   "manchester_template": "Class: {ScoredAssessmentRecord:Class}\n    SubClassOf: bfo:0000031, sdg:hasConfidenceScore exactly 1 xsd:decimal",
+   "slot_types": {
+    "ScoredAssessmentRecord": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {ScoredAssessmentRecord} carries exactly one decimal confidence score — single-valued by definition.",
+   "verbal_templates": [
+    "A {ScoredAssessmentRecord} carries exactly one decimal confidence score — single-valued by definition."
+   ],
+   "provenance": {
+    "pattern": "data_quantified",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): data QCRs beyond d-some — 1.5%"
+   }
+  },
+  {
+   "template_id": "versioned_form_lineage",
+   "manchester_template": "Class: {VersionedIntakeForm:Class}\n    SubClassOf: bfo:0000031, sdg:formVersion min 1 xsd:string",
+   "slot_types": {
+    "VersionedIntakeForm": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {VersionedIntakeForm} bears at least one version designation string.",
+   "verbal_templates": [
+    "A {VersionedIntakeForm} bears at least one version designation string."
+   ],
+   "provenance": {
+    "pattern": "data_quantified",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): data QCRs beyond d-some — 1.5%"
+   }
+  },
+  {
+   "template_id": "bounded_metric_series",
+   "manchester_template": "Class: {BoundedMetricSeries:Class}\n    SubClassOf: bfo:0000031, sdg:hasEngagementMetric max 12 xsd:decimal",
+   "slot_types": {
+    "BoundedMetricSeries": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {BoundedMetricSeries} carries at most twelve decimal engagement metrics.",
+   "verbal_templates": [
+    "A {BoundedMetricSeries} carries at most twelve decimal engagement metrics."
+   ],
+   "provenance": {
+    "pattern": "data_quantified",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "FIBO census gap closure (RH-ratified): data QCRs beyond d-some — 1.5%"
+   }
   }
  ],
  "null_stats": {}
