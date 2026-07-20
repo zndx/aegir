@@ -69,8 +69,11 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 function Lineup() {
   const [params, setParams] = useSearchParams();
   const lensKey = params.get("lens") || "terms";
-  // ?open=<note id> deep-links a specific note (e.g. training/sweeps from the Landing card); else the lens.
-  const seed = params.get("open") || LENSES.find((l) => l.key === lensKey)?.seed || "lens/terms";
+  // ?open=<note id> deep-links a specific note; captured ONCE at mount — the URL-sync effect
+  // below WRITES ?open as you browse, and a reactive seed would feed back into the trail-restore
+  // effect and reset the trail to a single panel on every click (the direct-linking regression).
+  const [initialOpen] = useState(() => params.get("open"));
+  const seed = initialOpen || LENSES.find((l) => l.key === lensKey)?.seed || "lens/terms";
 
   const [root, setRoot] = useState(ROOTS.includes(params.get("root") || "") ? params.get("root")! : "current");
   const [index, setIndex] = useState<KBIndex | null | undefined>(undefined);
@@ -137,11 +140,13 @@ function Lineup() {
   // shareable URLs: the focused (last) panel + root ride the query string
   useEffect(() => {
     if (!trail.length) return;
-    const q = new URLSearchParams(params);
-    q.set("open", trail[trail.length - 1]);
-    q.set("root", root);
-    if (q.toString() !== params.toString()) setParams(q, { replace: true });
-  }, [trail, root]);  // eslint-disable-line react-hooks/exhaustive-deps
+    setParams((prev) => {
+      const q = new URLSearchParams(prev);
+      q.set("open", trail[trail.length - 1]);
+      q.set("root", root);
+      return q.toString() === prev.toString() ? prev : q;
+    }, { replace: true });
+  }, [trail, root, setParams]);
 
   const openFrom = (fromIdx: number) => (targetId: string) =>
     setTrail((t) => [...t.slice(0, fromIdx + 1), targetId]);
