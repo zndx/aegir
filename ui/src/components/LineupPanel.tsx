@@ -247,7 +247,7 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
             chord unless a viz_view supersedes it */}
         {note?.viz_view && note.root !== "archive" && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid var(--color-kumo-hairline)", paddingBottom: 6 }}>
-            <PanelView app="lineup_app" params={{ view: note.viz_view, onto: note.viz_onto ?? "sdg", root: note.root ?? "current" }} />
+            <PanelView app="lineup_app" params={{ view: note.viz_view, onto: note.viz_onto ?? "sdg", root: note.root ?? "current" }} onOpen={onLink} />
           </div>
         )}
         {note?.kind === "lens" && !note.viz_view && note.chord !== false && note.root !== "archive" && (

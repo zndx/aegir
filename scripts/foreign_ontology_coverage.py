@@ -253,7 +253,8 @@ def sweep(root: Path, skip_pat: str) -> "tuple[Counter, dict, Counter, dict, dic
             ax[kind] += 1
             per_module[module] += 1
             if len(examples[kind]) < 3:
-                examples[kind].append(f"{module}: {str(subj).rsplit('/', 1)[-1][:70]}")
+                loc = str(subj).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+                examples[kind].append({"module": module, "local": loc[:70]})
 
         for s, p, o in g:
             if p == RDFS.label and isinstance(s, URIRef):
@@ -421,8 +422,17 @@ def build_pathways(structure: dict, cap_groups: int = 22, cap_edges: int = 64) -
                      "src_iri": a, "dst_iri": b, "n": sum(props.values()),
                      "props": [p_ for p_, _ in props.most_common(4)]}
                     for (a, b), props in agg.items()), key=lambda e: -e["n"])[:cap_edges]
-    return {"groups": [{"group": _name(g_), "iri": g_, "n_classes": sizes[g_]} for g_ in groups],
-            "edges": edges}
+    members: "dict[str, list]" = defaultdict(list)
+    for c in parents:
+        g_ = top(c)
+        if g_ in gset and len(members[g_]) < 60:
+            members[g_].append({"label": _name(c), "local": _local(c).rsplit("#", 1)[-1]})
+    def _slug(txt: str) -> str:
+        return re.sub(r"[^a-z0-9]+", "-", txt.lower()).strip("-")[:44]
+    return {"groups": [{"group": _name(g_), "iri": g_, "slug": _slug(_name(g_)),
+                        "n_classes": sizes[g_], "members": members.get(g_, [])}
+                       for g_ in groups],
+            "edges": [dict(e, src_slug=_slug(e["src"]), dst_slug=_slug(e["dst"])) for e in edges]}
 
 
 def main() -> int:
@@ -440,6 +450,7 @@ def main() -> int:
         x.startswith("Sub[") for x in ours) else set()
     equiv_kinds = set().union(*[_kinds_of(x) for x in ours if x.startswith("Equiv[")]) if any(
         x.startswith("Equiv[") for x in ours) else set()
+    equiv_kinds |= sub_kinds        # library machinery: evolve_rigor.to_equivalent lifts Sub→≡
     print(f"catalog: {len(ours)} whole signatures · Sub kinds {sorted(sub_kinds)} · "
           f"Equiv kinds {sorted(equiv_kinds)}")
 

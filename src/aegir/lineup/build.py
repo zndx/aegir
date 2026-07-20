@@ -1481,7 +1481,7 @@ def project_aperture_anchors() -> list[N.Note]:
 
 
 
-def project_shape_surfaces() -> "tuple[list[N.Note], str]":
+def project_shape_surfaces(live_ids: "set | None" = None) -> "tuple[list[N.Note], str]":
     """The UNIVERSAL organizing construct for ontologies under management (RH 2026-07-20): the
     axiom-SHAPE space. Every axiom of ANY OWL ontology classifies into it — including shapes our
     pattern library cannot yet generate — so navigation stops steering users through our (measured
@@ -1524,50 +1524,107 @@ def project_shape_surfaces() -> "tuple[list[N.Note], str]":
               + "\n".join(rows) + "\n")))
     # foreign ontologies under management: one panel per census artifact
     fentries = []
+    live_ids = live_ids or set()
+
+    def _snake(x: str) -> str:
+        return re.sub(r"(?<!^)(?=[A-Z])", "_", x).replace("-", "_").lower()
+
     for cov_p in sorted(Path("build").glob("*_coverage.json")):
         try:
             cov = json.loads(cov_p.read_text())
         except Exception:  # noqa: BLE001
             continue
         tag = cov.get("tag", cov_p.stem.replace("_coverage", ""))
+        native = tag == "sdg"
+        base = "ontology/self-census" if native else f"ontology/foreign/{tag}"
         tb_tot, tb_cov = cov.get("tbox_rbox_total", 0), cov.get("tbox_rbox_covered", 0)
         pct = 100 * tb_cov / max(1, tb_tot)
         blocked = cov.get("blocked", {})
         covered = cov.get("covered", {})
         ex = cov.get("blocked_examples", {})
+        pw = cov.get("pathways") or {}
+        groups_ = pw.get("groups") or []
+        edges_ = pw.get("edges") or []
+        # local class name → its group slug (for example-linking on foreign ontologies)
+        local_slug = {m.get("local"): g["slug"] for g in groups_ for m in g.get("members", [])}
+
+        def _ex_cell(e0) -> str:
+            if isinstance(e0, str):                      # pre-upgrade artifact
+                return e0[:60]
+            loc = e0.get("local", "")
+            if native and _snake(loc) in live_ids:
+                return N.wl(f"ontology/term/{_snake(loc)}", loc[:46])
+            if loc in local_slug:
+                return N.wl(f"{base}/group/{local_slug[loc]}", loc[:46])
+            return loc[:60]
+
         brows = ["| blocked shape | n | example |", "|---|---|---|"]
         for k, v in list(blocked.items())[:16]:
             if k.startswith("abox:"):
                 continue
-            e0 = (ex.get(k) or [""])[0]
-            brows.append(f"| `{k}` | {v} | {e0[:60]} |")
+            brows.append(f"| {N.wl('ontology/shapes', k)} | {v} | {_ex_cell((ex.get(k) or [''])[0])} |")
         crows = ["| covered shape | n |", "|---|---|"]
         for k, v in list(covered.items())[:10]:
-            crows.append(f"| `{k}` | {v} |")
+            crows.append(f"| {N.wl('ontology/shapes', k)} | {v} |")
+        grp_line = " · ".join(
+            N.wl(f"{base}/group/{g['slug']}", f"{g['group'][:28]} ({g['n_classes']})")
+            for g in groups_[:14]) or "—"
         mods = sorted((cov.get("per_module") or {}).items(), key=lambda kv: -kv[1])[:8]
         opa = blocked.get("abox:opa", 0)
-        native = tag == "sdg"
-        nid = "ontology/self-census" if native else f"ontology/foreign/{tag}"
         notes.append(N.Note(
-            id=nid, title=("SDG — native self-census" if native else
-                           f"{tag.upper()} — foreign ontology under management"),
+            id=base, title=("SDG — native self-census" if native else
+                            f"{tag.upper()} — foreign ontology under management"),
             kind="lexicon-construct", data_product="ontology", root="scratch",
             frontmatter={"tag": tag, "tbox_coverage": round(pct, 1),
                          "n_logical": cov.get("n_logical_axioms"),
                          "viz_view": "pathways", "viz_onto": tag},
+            links=[f"{base}/group/{g['slug']}" for g in groups_[:14]] + ["ontology/shapes"],
             body=(f"**{tag.upper()}** under management — censused by the shape grammar "
                   f"({cov.get('n_logical_axioms', 0):,} logical axioms).\n\n"
-                  f"**Schema expressibility: {tb_cov:,}/{tb_tot:,} = {pct:.1f}%** of TBox+RBox "
-                  "axioms are generable by the current pattern library; the remainder are "
-                  "first-class GAPS (each is pattern-mint work, not invisible residue).\n\n"
+                  f"**Groups (the chord's arcs — click through).** {grp_line}\n\n"
+                  f"**Schema expressibility: {tb_cov:,}/{tb_tot:,} = {pct:.1f}%** generable by the "
+                  "current pattern library; the remainder are first-class GAPS (pattern-mint work, "
+                  "not invisible residue).\n\n"
                   + "\n".join(crows) + "\n\n" + "\n".join(brows) + "\n\n"
-                  + (f"**Reference-data layer.** {opa:,} individual-to-individual assertions "
-                     "(e.g. ACTUS) — our architecture routes this layer to the RELATIONAL "
-                     "product with lineage, not OWL ABox.\n\n" if opa else "")
+                  + (f"**Reference-data layer.** {opa:,} individual-to-individual assertions — "
+                     "our architecture routes this layer to the RELATIONAL product with lineage, "
+                     "not OWL ABox.\n\n" if opa else "")
                   + "**Module loads.** " + " · ".join(f"`{m}` {n}" for m, n in mods) + "\n\n"
                   + f"_Census artifact: `build/{tag}_coverage.json` · re-run: "
                   f"`scripts/foreign_ontology_coverage.py --root <checkout> --tag {tag}`_\n")))
-        fentries.append((nid, tag, pct))
+        # ── group panels: the NAVIGABLE pathways at panel grain ──
+        for g in groups_:
+            slug = g["slug"]
+            out_e = [e for e in edges_ if e.get("src_slug") == slug][:10]
+            in_e = [e for e in edges_ if e.get("dst_slug") == slug and e.get("src_slug") != slug][:8]
+            mem_cells = []
+            for m in g.get("members", [])[:40]:
+                loc = m.get("local", "")
+                if native and _snake(loc) in live_ids:
+                    mem_cells.append(N.wl(f"ontology/term/{_snake(loc)}", m.get("label", loc)[:34]))
+                else:
+                    mem_cells.append(f"`{m.get('label', loc)[:34]}`")
+            body_g = (
+                f"**{g['group']}** — a pathway group of {N.wl(base, tag.upper())} "
+                f"({g['n_classes']} classes; the chord arc).\n\n"
+                + "**Outbound.** " + ("\n".join(
+                    f"- →[`{' · '.join(e.get('props', [])[:3])}`] "
+                    + N.wl(f"{base}/group/{e['dst_slug']}", e["dst"][:34]) + f" ({e['n']})"
+                    for e in out_e) or "—") + "\n\n"
+                + "**Inbound.** " + (" · ".join(
+                    N.wl(f"{base}/group/{e['src_slug']}", e["src"][:30]) + f" ({e['n']})"
+                    for e in in_e) or "—") + "\n\n"
+                + "**Members.** " + (" · ".join(mem_cells) or "—")
+                + (f" _…+{g['n_classes'] - len(mem_cells)}_" if g["n_classes"] > len(mem_cells) else "")
+                + "\n")
+            notes.append(N.Note(
+                id=f"{base}/group/{slug}", title=f"{g['group'][:52]} · {tag}",
+                kind="lexicon-construct", data_product="ontology", root="scratch",
+                links=[base] + [f"{base}/group/{e['dst_slug']}" for e in out_e],
+                frontmatter={"tag": tag, "n_classes": g["n_classes"]},
+                body=body_g))
+        if not native:
+            fentries.append((base, tag, pct))
     lens_line = ("**Under management.** " + N.wl("ontology/shapes", "axiom shapes (universal)")
                  + " organize every ontology here — ours and foreign: native "
                  + N.wl("ontology/self-census", "sdg")
@@ -2271,7 +2328,7 @@ def run(args=None) -> int:
             print(f"  corpus: {len(zs)} run-zettels (chain head {zs[-1]['id']}; citizenship {by_r})")
 
     # Trunk lenses (scratch) — same lens ids as the release kasten, root-resolved.
-    shape_notes, shapes_line = project_shape_surfaces()
+    shape_notes, shapes_line = project_shape_surfaces(live_ids=set(tid2cat))
     notes += shape_notes
     notes += project_lexicon_constructs()
     notes += project_aperture_anchors()

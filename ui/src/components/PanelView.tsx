@@ -9,6 +9,9 @@ interface PanelViewProps {
   /** Query args forwarded to the app's session (e.g. {lens: "lens/terms"}). */
   params?: Record<string, string>;
   height?: number | string;
+  /** Chord tap-to-open: the viz calls window.__lineupOpen(noteId) (same-document script embed);
+      when provided, this forwards it into the lineup trail. */
+  onOpen?: (id: string) => void;
 }
 
 // BokehJS bundles served by the bokeh server (same-origin via the /viz proxy → air-gapped, and the
@@ -42,7 +45,14 @@ async function ensureBokeh(): Promise<void> {
  * and renders immediately. Everything is same-origin (air-gapped); no npm `@bokeh/bokehjs`, no iframe.
  * StrictMode-safe: dedupe per `app|params` via a data-attr on the persistent host, no mid-load teardown.
  */
-export default function PanelView({ app, params, height = 540 }: PanelViewProps) {
+export default function PanelView({ app, params, height = 540, onOpen }: PanelViewProps) {
+  // register the same-document open hook the chord's TapTool CustomJS calls
+  useEffect(() => {
+    if (!onOpen) return;
+    (window as any).__lineupOpen = (id: string) => onOpen(id);
+    return () => { if ((window as any).__lineupOpen) delete (window as any).__lineupOpen; };
+  }, [onOpen]);
+
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
   // GESTURE GATE (RH): plain scroll must never be trapped by the embed — the page scrolls; the

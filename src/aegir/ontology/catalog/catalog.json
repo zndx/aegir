@@ -16954,6 +16954,23 @@
     "seeded": "gap-closure-2026-07-20",
     "rationale": "FHIR census: only-typing = 42% of FHIR schema (element idiom)"
    }
+  },
+  {
+   "template_id": "measured_series_reading",
+   "manchester_template": "Class: {MeasuredSeriesReading:Class}\n    SubClassOf: bfo:0000031, sdg:hasMeasuredValue some xsd:decimal",
+   "slot_types": {
+    "MeasuredSeriesReading": "Class"
+   },
+   "is_complex": false,
+   "verbal_template": "A {MeasuredSeriesReading} carries some decimal measured value.",
+   "verbal_templates": [
+    "A {MeasuredSeriesReading} carries some decimal measured value."
+   ],
+   "provenance": {
+    "pattern": "data_quantified",
+    "seeded": "gap-closure-2026-07-20",
+    "rationale": "self-census: realized artifact carries d-some the catalog could not generate"
+   }
   }
  ],
  "null_stats": {}

@@ -89,9 +89,34 @@ def _pathways(onto: str = "sdg"):
     nodes = pd.DataFrame([{"index": local[gi], "name": names[gi]} for gi in present])
     eds = pd.DataFrame([(local[a], local[b], v, pr) for a, b, v, pr in rows],
                        columns=["source", "target", "value", "props"])
+    # tap-to-open: node tap posts the group-panel id to the host page (script embed — same
+    # document), which the React PanelView forwards into the lineup trail. Navigation, not
+    # just orientation (RH 2026-07-20).
+    base = "ontology/self-census/group/" if onto == "sdg" else f"ontology/foreign/{onto}/group/"
+    slug_by_name = {g["group"][:28]: g.get("slug", "") for g in groups}
+    idmap = {n: base + slug_by_name[n] for n in slug_by_name if slug_by_name[n]}
+
+    def _tap_hook(plot, element):  # noqa: ANN001
+        try:
+            from bokeh.models import CustomJS, TapTool
+            st = plot.state
+            if not any(isinstance(t, TapTool) for t in st.tools):
+                st.add_tools(TapTool())
+            for r in st.renderers:
+                ds = getattr(r, "data_source", None)
+                if ds is not None and "name" in getattr(ds, "data", {}):
+                    ds.selected.js_on_change("indices", CustomJS(
+                        args={"ds": ds, "idmap": idmap},
+                        code="const i=ds.selected.indices[0];"
+                             "if(i!=null){const n=ds.data['name'][i];"
+                             "if(idmap[n]&&window.__lineupOpen)window.__lineupOpen(idmap[n]);}"))
+        except Exception:  # noqa: BLE001 — navigation is an enhancement, never a crash
+            pass
+
     return hv.Chord((eds, hv.Dataset(nodes, "index")), vdims=["value", "props"]).opts(
         hv.opts.Chord(labels="name", node_color="index", edge_color="source", cmap="Category20",
-                      width=560, height=560, tools=["hover"], title=""))
+                      width=560, height=560, tools=["hover", "tap"], title="",
+                      hooks=[_tap_hook]))
 
 
 def _args() -> "tuple[str, str, str, str]":
