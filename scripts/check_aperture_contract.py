@@ -67,9 +67,41 @@ def main() -> int:
         if flags or not r["in_vocab"]:
             print(f"  ✘ {r['fragment'][:44]:<44} missing: "
                   f"{', '.join(flags) or 'NOT IN VOCAB'}")
+    # ── META-LEVEL well-formedness (S2–S9; RH 2026-07-21): the SKOS vocabulary's OWN
+    # axiomatization over our scheme expressions — distinct from the OBJECT-level rdfs:domain
+    # we create on sdg properties. hasTopConcept: domain ConceptScheme (S5), range Concept
+    # (S6); topConceptOf inverse (S7/S8); inScheme range ConceptScheme (S4); S9 disjointness.
+    import re as _re
+    t_all = "\n".join(Path(f).read_text() for f in
+                       (DI.DEFAULT_OVERLAY, REPO / "corpora/vocabulary/vocabulary.ttl")
+                       if Path(f).exists())
+    _schemes = set(_re.findall(r"<([^>]+)> a skos:ConceptScheme", t_all))
+    _concepts = set(_re.findall(r"<([^>]+)> a skos:Concept\b", t_all))
+    s_viol = []
+    if _schemes & _concepts:
+        s_viol.append(f"S9: {len(_schemes & _concepts)} IRIs typed both Concept and ConceptScheme")
+    for m in _re.finditer(r"<([^>]+)>[^.]*?skos:hasTopConcept((?:\s*<[^>]+>\s*,?)+)", t_all, _re.S):
+        if m.group(1) not in _schemes:
+            s_viol.append(f"S5: hasTopConcept subject not a scheme: {m.group(1)}")
+        s_viol += [f"S6: hasTopConcept object not a concept: {o}"
+                   for o in _re.findall(r"<([^>]+)>", m.group(2)) if o not in _concepts]
+    for m in _re.finditer(r"<([^>]+)> a skos:Concept\b(.*?)(?=\n<|\Z)", t_all, _re.S):
+        s_viol += [f"S8: topConceptOf object not a scheme: {m.group(1)} → {o}"
+                   for o in _re.findall(r"skos:topConceptOf <([^>]+)>", m.group(2))
+                   if o not in _schemes]
+        s_viol += [f"S4: inScheme object not a scheme: {m.group(1)} → {o}"
+                   for o in _re.findall(r"skos:inScheme <([^>]+)>", m.group(2))
+                   if o not in _schemes]
+    print(f"meta-structure (S2–S9): schemes {len(_schemes)} · concepts {len(_concepts)} · "
+          f"violations {len(s_viol)}")
+    for v in s_viol[:8]:
+        print(f"  ✘ {v}")
+
     (REPO / "build/aperture_contract.json").write_text(json.dumps(
         {"n": n, "broader_ok": ok_b, "narrower_ok": ok_n, "altlabel_ok": ok_a,
-         "top_concept_candidates": n_top, "quality_drivers": True, "rows": rows}, indent=1))
+         "top_concept_candidates": n_top, "quality_drivers": True,
+         "meta_s2_s9": {"schemes": len(_schemes), "concepts": len(_concepts),
+                        "violations": s_viol}, "rows": rows}, indent=1))
     print("→ build/aperture_contract.json")
 
     if a.fix_mechanical:
