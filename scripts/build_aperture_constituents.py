@@ -48,7 +48,8 @@ def main() -> int:
     ap.add_argument("--write-payloads", action="store_true", default=True)
     a = ap.parse_args()
 
-    anchors = DI.load_skos(str(DI.DEFAULT_OVERLAY))
+    anchors = {k: c for k, c in DI.load_skos(str(DI.DEFAULT_OVERLAY)).items()
+               if not getattr(c, "deprecated", False)}   # bridges are resolution aids, never anchors
     vocab = DI.load_skos()                                   # full vocab (defaults)
     client = DI._client(a.url)
     from aegir.ontology.colbert_encoder import get_encoder

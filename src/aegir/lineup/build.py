@@ -1848,6 +1848,37 @@ def project_shape_surfaces(live_ids: "set | None" = None) -> "tuple[list[N.Note]
     return notes, lens_line
 
 
+def _aperture_quality_line() -> str:
+    """The fiat SKOS contract as QUALITY DRIVERS (RH 2026-07-21): measured + surfaced, never
+    gated in this ontology version — the hierarchy evolves generatio aequivoca with the SDG
+    domains, toward scheme-predicated chord structure (SKOS S2-S9)."""
+    try:
+        d = json.loads(Path("build/aperture_contract.json").read_text())
+        return (f"**Aperture SKOS quality (drivers).** hierarchy-position "
+                f"{d['hierarchy_ok']}/{d['n']} · narrower {d['narrower_ok']}/{d['n']} · "
+                f"altLabel≡fragment {d['altlabel_ok']}/{d['n']} — toward scheme-predicated "
+                "chords (S2–S9).\n\n")
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _aperture_quality_line() -> str:
+    """The fiat SKOS contract as QUALITY DRIVERS (RH 2026-07-21): measured + surfaced, never
+    gated in this ontology version. Top-concept declarations are CANDIDATES pending rdfs:domain
+    → ConceptScheme confirmation (S9 may retire true tops from aperture membership); the
+    settled membership condition is skos:broader proper. The hierarchy evolves generatio
+    aequivoca with the SDG domains toward scheme-predicated chord structure (S2–S9)."""
+    try:
+        d = json.loads(Path("build/aperture_contract.json").read_text())
+        return (f"**Aperture SKOS quality (drivers).** broader {d['broader_ok']}/{d['n']} · "
+                f"narrower {d['narrower_ok']}/{d['n']} · altLabel≡fragment "
+                f"{d['altlabel_ok']}/{d['n']} · top-concept candidates "
+                f"{d.get('top_concept_candidates', 0)} — toward scheme-predicated chords "
+                "(S2–S9).\n\n")
+    except Exception:  # noqa: BLE001
+        return ""
+
+
 def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bool,
                          zettel_head: str | None = None,
                          items_report: dict | None = None,
@@ -1887,6 +1918,8 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
               "on each ontology's census panel under Under-management.*\n\n"
               + shapes_line
               + ap_line
+              + _aperture_quality_line()
+              + _aperture_quality_line()
               + "**Generative coverage.** The live catalog by pattern category (the overlay, "
                 "demonstrably incomplete against foreign ontologies): "
               + " · ".join(N.wl(f"ontology/category/{c}", c) for c in categories[:10])

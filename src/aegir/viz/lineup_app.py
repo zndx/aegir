@@ -141,6 +141,20 @@ def _aperture_chord():
     except Exception:  # noqa: BLE001
         return hv.Chord(([], hv.Dataset(pd.DataFrame({"index": [], "name": []}), "index")))
     anchors = d.get("anchors") or {}
+    # scheme-aware ring order (SKOS S5-S8): arcs group by TOP-CONCEPT family — the ring
+    # itself reads as the ConceptScheme's structure; edges stay the constituent lattice
+    fam = {}
+    try:
+        from aegir.ontology import domain_index as DI
+        ov = {k: c for k, c in DI.load_skos(str(DI.DEFAULT_OVERLAY)).items()
+              if not getattr(c, "deprecated", False)}
+        def _root(k, seen=frozenset()):
+            c = ov.get(k)
+            b = (getattr(c, "broader", "") or "") if c else ""
+            return k if not b or b in seen or b not in ov else _root(b, seen | {k})
+        fam = {str(k).rsplit("#", 1)[-1]: str(_root(str(k))).rsplit("#", 1)[-1] for k in ov}
+    except Exception:  # noqa: BLE001
+        pass
     rows_ = []
     for lbl, e in anchors.items():
         if not isinstance(e, dict):
@@ -149,6 +163,7 @@ def _aperture_chord():
         cons = {x.get("iri") for x in e.get("constituents", [])
                 if x.get("kind") == "concept" and x.get("iri")}
         rows_.append({"frag": frag, "pid": e.get("point_id"), "cons": cons})
+    rows_.sort(key=lambda r: (fam.get(r["frag"], r["frag"]), r["frag"]))
     idx = {r["frag"]: i for i, r in enumerate(rows_)}
     eds_rows = []
     for a, b in combinations(rows_, 2):

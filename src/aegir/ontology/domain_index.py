@@ -46,6 +46,8 @@ class SkosConcept:
     broader: str = ""           # parent IRI
     deprecated: bool = False    # renamed-id bridge: owl:deprecated true
     replaced_by: str = ""       # dct:isReplacedBy target IRI (the CURRENT concept)
+    top_concept_of: str = ""    # skos:topConceptOf — S7/S8: declared scheme roots
+    in_scheme: str = ""
 
     def text(self) -> str:
         """The text encoded into the concept's ColBERT multi-vector. ALL descriptive content is included —
@@ -72,6 +74,8 @@ _SCOPE = re.compile(r'skos:scopeNote\s+"((?:[^"\\]|\\.)*)"')
 _COMMENT = re.compile(r'rdfs:comment\s+"((?:[^"\\]|\\.)*)"')
 _NOTE = re.compile(r'skos:notation\s+"((?:[^"\\]|\\.)*)"')
 _REPL = re.compile(r'dct:isReplacedBy <([^>]+)>')
+_TOPOF = re.compile(r'skos:topConceptOf <([^>]+)>')
+_INSCH = re.compile(r'skos:inScheme <([^>]+)>')
 _BROADER = re.compile(r"skos:broader\s+<([^>]+)>")
 
 
@@ -95,7 +99,8 @@ def load_skos(path: "str | Path" = DEFAULT_VOCAB,
                                    definition=_g(_DEF), scope_note=_g(_SCOPE), comment=_g(_COMMENT),
                                    broader=_g(_BROADER),
                                    deprecated="owl:deprecated true" in body,
-                                   replaced_by=_g(_REPL))
+                                   replaced_by=_g(_REPL),
+                                   top_concept_of=_g(_TOPOF), in_scheme=_g(_INSCH))
     return out
 
 

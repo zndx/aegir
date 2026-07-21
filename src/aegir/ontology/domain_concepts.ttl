@@ -29,6 +29,7 @@
 @prefix sdg:     <https://signals.zndx.org/sdg#> .
 
 <https://signals.zndx.org/sdg#LIMS> a skos:Concept ;
+    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
     skos:narrower <https://signals.zndx.org/sdg#LIMS_SPECIMEN_LIFECYCLE> ,
         <https://signals.zndx.org/sdg#LIMS_ASSAY_EXECUTION> ,
         <https://signals.zndx.org/sdg#LIMS_RESULT_INTERPRETATION> ,
@@ -93,6 +94,7 @@
 ## ----------------------------------------------------------------------
 
 <https://signals.zndx.org/sdg#MFG> a skos:Concept ;
+    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
     skos:narrower <https://signals.zndx.org/sdg#MFG_STRUCTURE> ,
         <https://signals.zndx.org/sdg#MFG_INTERFACE> ,
         <https://signals.zndx.org/sdg#MFG_REQUIREMENT> ,
@@ -148,6 +150,7 @@
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#ENERGY> a skos:Concept ;
+    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
     skos:narrower <https://signals.zndx.org/sdg#ENERGY_WELLBORE> ,
         <https://signals.zndx.org/sdg#ENERGY_LOGGING> ,
         <https://signals.zndx.org/sdg#ENERGY_TRAJECTORY> ,
@@ -203,6 +206,7 @@
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#CSG> a skos:Concept ;
+    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
     skos:narrower <https://signals.zndx.org/sdg#CSG_PRIMITIVE> ,
         <https://signals.zndx.org/sdg#CSG_BOOLEAN> ,
         <https://signals.zndx.org/sdg#CSG_BREP> ,
@@ -270,6 +274,7 @@
 ## ----------------------------------------------------------------------
 
 <https://signals.zndx.org/sdg#UTILITY> a skos:Concept ;
+    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
     skos:narrower <https://signals.zndx.org/sdg#UTILITY_POWER> ,
         <https://signals.zndx.org/sdg#UTILITY_WATER> ,
         <https://signals.zndx.org/sdg#UTILITY_TELECOM> ;
@@ -314,6 +319,7 @@
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#DATAENG> a skos:Concept ;
+    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
     skos:narrower <https://signals.zndx.org/sdg#DATAENG_MODELING> ,
         <https://signals.zndx.org/sdg#DATAENG_LINEAGE> ,
         <https://signals.zndx.org/sdg#DATAENG_CATALOG> ,
@@ -514,3 +520,15 @@
     owl:deprecated true ;
     dct:isReplacedBy <https://signals.zndx.org/sdg#UTILITY_WATER> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+# ── CANDIDATE top-concept declarations (RH 2026-07-21): rdfs:domain specification is
+# unconfirmed → ConceptScheme candidates unconfirmed → these topConceptOf/hasTopConcept
+# triples are PROVISIONAL; the aperture's settled condition is skos:broader proper, and
+# S9 (scheme ⊥ concept) may ultimately retire true tops from aperture membership. ──
+<https://signals.zndx.org/sdg/scheme> a skos:ConceptScheme ;
+    skos:hasTopConcept <https://signals.zndx.org/sdg#LIMS> ,
+        <https://signals.zndx.org/sdg#MFG> ,
+        <https://signals.zndx.org/sdg#ENERGY> ,
+        <https://signals.zndx.org/sdg#CSG> ,
+        <https://signals.zndx.org/sdg#UTILITY> ,
+        <https://signals.zndx.org/sdg#DATAENG> .

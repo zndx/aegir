@@ -43,19 +43,25 @@ def main() -> int:
         frag = iri.rsplit("#", 1)[-1]
         c = vocab.get(iri)
         has_broader = bool(getattr(c, "broader", "")) if c else False
+        is_top = bool(getattr(c, "top_concept_of", "")) if c else False
         has_narrower = bool(narrower.get(iri))
         alt = (getattr(c, "alt_label", "") or "") if c else ""
         alt_ok = alt == frag
         rows.append({"point": p.id, "iri": iri, "fragment": frag,
                      "in_vocab": c is not None, "broader": has_broader,
+                     "top_concept": is_top,
+                     "hierarchy_position": has_broader or is_top,
                      "narrower": has_narrower, "altLabel_eq_fragment": alt_ok,
                      "altLabel": alt})
     n = len(rows)
     ok_b = sum(r["broader"] for r in rows)
+    n_top = sum(r["top_concept"] for r in rows)
     ok_n = sum(r["narrower"] for r in rows)
     ok_a = sum(r["altLabel_eq_fragment"] for r in rows)
-    print(f"aperture contract: {n} points · broader {ok_b}/{n} · narrower {ok_n}/{n} · "
-          f"altLabel==fragment {ok_a}/{n}")
+    print(f"aperture contract (QUALITY DRIVERS, not gates — RH 2026-07-21): {n} points · "
+          f"broader {ok_b}/{n} · narrower {ok_n}/{n} · altLabel≡fragment {ok_a}/{n} · "
+          f"top-concept CANDIDATES {n_top} (pending rdfs:domain → ConceptScheme confirmation; "
+          f"S9 disjointness may retire them from the aperture)")
     for r in rows:
         flags = [k for k in ("broader", "narrower", "altLabel_eq_fragment") if not r[k]]
         if flags or not r["in_vocab"]:
@@ -63,7 +69,7 @@ def main() -> int:
                   f"{', '.join(flags) or 'NOT IN VOCAB'}")
     (REPO / "build/aperture_contract.json").write_text(json.dumps(
         {"n": n, "broader_ok": ok_b, "narrower_ok": ok_n, "altlabel_ok": ok_a,
-         "rows": rows}, indent=1))
+         "top_concept_candidates": n_top, "quality_drivers": True, "rows": rows}, indent=1))
     print("→ build/aperture_contract.json")
 
     if a.fix_mechanical:
