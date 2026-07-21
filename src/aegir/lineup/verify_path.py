@@ -53,7 +53,9 @@ def _extract_foreign(tag: str) -> dict:
     cached; the verify step then composes per-group fragments in O(1)."""
     cache = FRAG_CACHE / f"{tag}.json"
     if cache.exists():
-        return json.loads(cache.read_text())
+        d = json.loads(cache.read_text())
+        if d.get("v") == 2:                      # v2: + equivalentClass frames
+            return d
     cov = json.loads((REPO / "build" / f"{tag}_coverage.json").read_text())
     root = Path(cov["root"]).expanduser()
     from rdflib import BNode, Graph, URIRef
@@ -105,6 +107,7 @@ def _extract_foreign(tag: str) -> dict:
         return None                                      # hasValue / data / card-u → degrade
 
     frames: "dict[str, list]" = {}
+    equiv: "dict[str, list]" = {}
     props: set = set()
     files = ([root] if root.is_file() else
              sorted(list(root.rglob("*.rdf")) + list(root.rglob("*.ttl"))))
@@ -124,8 +127,13 @@ def _extract_foreign(tag: str) -> dict:
                 if r:
                     frames.setdefault(str(s), []).append(r)
                     props |= {m.group(1) for m in re.finditer(r"<([^>]+)> (?:some|only|exactly|min|max)", r)}
+            for o in g.objects(s, OWL.equivalentClass):
+                r = _render(g, o)
+                if r:
+                    equiv.setdefault(str(s), []).append(r)
+                    props |= {m.group(1) for m in re.finditer(r"<([^>]+)> (?:some|only|exactly|min|max)", r)}
     FRAG_CACHE.mkdir(parents=True, exist_ok=True)
-    out = {"frames": frames, "props": sorted(props)}
+    out = {"v": 2, "frames": frames, "equiv": equiv, "props": sorted(props)}
     cache.write_text(json.dumps(out))
     return out
 

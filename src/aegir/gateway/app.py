@@ -187,9 +187,36 @@ def _register_api_routes(app: FastAPI) -> None:
                 except Exception as e:  # noqa: BLE001
                     raise HTTPException(503, f"fragment cache for {tag!r} unavailable: {e}") from e
             frag = _json.loads(frag_p.read_text())
-            iri = next((k for k in frag["frames"]
+            iri = next((k for k in list(frag["frames"]) + list(frag.get("equiv") or {})
                         if k.rsplit("/", 1)[-1].rsplit("#", 1)[-1] == local), None)
             frames = frag["frames"].get(iri or "", [])
+            equivs = (frag.get("equiv") or {}).get(iri or "", [])
+            # catalog maps, built once: head→tid, tid→(manchester, verbal), reverse USAGE,
+            # and tid→SKOS concept local (the reverse of the concept panel's binding)
+            cm = getattr(app.state, "class_maps", None)
+            if cm is None:
+                cm = {"head_tid": {}, "tid_art": {}, "usage": {}, "tid_concept": {}}
+                try:
+                    _cat = _json.loads(_P("src/aegir/ontology/catalog/catalog.json").read_text())
+                    for _t in _cat.get("templates", []):
+                        _mt = _t.get("manchester_template") or ""
+                        _h = re.search(r"Class:\s*\{(\w+):Class\}", _mt)
+                        if _h:
+                            cm["head_tid"][_h.group(1)] = _t["template_id"]
+                        cm["tid_art"][_t["template_id"]] = (
+                            _mt, (_t.get("verbal_template") or ""))
+                        for _f in set(re.findall(r"\{(\w+):Class\}", _mt)):
+                            if not (_h and _f == _h.group(1)):
+                                cm["usage"].setdefault(_f, []).append(_t["template_id"])
+                    from aegir.ontology import domain_index as DI
+                    for _k in DI.load_skos():
+                        _loc2 = str(_k).rsplit("#", 1)[-1]
+                        for _i, _ch in enumerate(_loc2):
+                            if _ch == "_":
+                                cm["tid_concept"].setdefault(_loc2[_i + 1:].lower(), _loc2)
+                except Exception:  # noqa: BLE001
+                    pass
+                app.state.class_maps = cm
             cov = _json.loads(_P(f"build/{tag}_coverage.json").read_text())
             grp = next((g for g in cov.get("pathways", {}).get("groups", [])
                         if any(m.get("local") == local for m in g.get("members", []))), None)
@@ -203,14 +230,36 @@ def _register_api_routes(app: FastAPI) -> None:
                     return f"[[{base_id}/class/{loc}|{loc[:40]}]]"
                 return re.sub(r"<([^>]+)>", _one, txt)
 
-            ax_rows = "\n".join(f"- SubClassOf {_wl_iris(f)}" for f in frames[:24]) or \
+            ax_parts = ([f"- EquivalentTo {_wl_iris(f)}" for f in equivs[:12]]
+                        + [f"- SubClassOf {_wl_iris(f)}" for f in frames[:24]])
+            ax_rows = "\n".join(ax_parts) or \
                       "- _(no extracted axioms — outside the renderer's construct family)_"
+            tid2 = cm["head_tid"].get(local)
+            catalog_md = ""
+            if tid2:
+                mt2, vt2 = cm["tid_art"].get(tid2, ("", ""))
+                vfill = re.sub(r"\{(\w+)\}",
+                               lambda m: re.sub(r"(?<!^)(?=[A-Z])", " ", m.group(1)).lower(), vt2)
+                conc = cm["tid_concept"].get(tid2.lower())
+                catalog_md = (
+                    "**Defining template.** "
+                    + f"[[ontology/term/{tid2}|{tid2}]]"
+                    + (f" · SKOS concept [[lexicon/concept/{conc}|{conc}]]" if conc else "")
+                    + "\n\n"
+                    + (f"> {vfill}\n\n" if vfill else "")
+                    + (f"```manchester\n{mt2.strip()}\n```\n\n" if mt2 else ""))
+            used_by = cm["usage"].get(local, [])
+            usage_md = ""
+            if used_by:
+                usage_md = ("**Referenced by** (as a restriction filler): " + " · ".join(
+                    f"[[ontology/term/{u}|{u}]]" for u in sorted(used_by)[:10])
+                    + (f" _…+{len(used_by) - 10}_" if len(used_by) > 10 else "") + "\n\n")
             grp_line = ""
             if grp:
                 gid = f"{base_id}/group/{grp['slug']}"
                 grp_line = f" (group [[{gid}|{grp.get('group', '')[:36]}]])"
             term_line = ""
-            if tag == "sdg":
+            if False and tag == "sdg":
                 # head → template_id (the move-2 lesson: heads are NOT always snake(template_id))
                 hm = getattr(app.state, "head_map", None)
                 if hm is None:
@@ -229,8 +278,10 @@ def _register_api_routes(app: FastAPI) -> None:
                 if tid and (_P("build/dev/scratch/ontology/term") / f"{tid}.md").exists():
                     term_line = (f"**Live term.** [[ontology/term/{tid}|{tid}]] — the catalog "
                                  "template surface for this class.\n\n")
-            body = (f"**`{local}`** — a class of {tag.upper()}{grp_line}.\n\n" + term_line
-                    + "**Axioms (extracted).**\n" + ax_rows + "\n\n"
+            body = (f"**`{local}`** — a class of {tag.upper()}{grp_line}.\n\n"
+                    + (catalog_md if tag == "sdg" else "")
+                    + "**Axioms (realized OWL, extracted).**\n" + ax_rows + "\n\n"
+                    + (usage_md if tag == "sdg" else "")
                     + f"_Source: build/foreign_fragments/{tag}.json (census extraction; "
                     "constructs outside the renderer degrade honestly)._\n")
             return {"id": note_id, "name": note_id, "title": f"{local[:52]} · {tag}",
