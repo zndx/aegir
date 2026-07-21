@@ -173,6 +173,28 @@ function Lineup() {
   const openFrom = (fromIdx: number) => (targetId: string) =>
     setTrail((t) => [...t.slice(0, fromIdx + 1), targetId]);
 
+  // the path-aware HermiT step: the verification result joins the lineup rightmost
+  const [verifying, setVerifying] = useState(false);
+  const verifyPath = () => {
+    if (verifying) return;
+    setVerifying(true);
+    fetch("/api/kb/verify-path", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trail }),
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((j: { note_id: string }) => { if (j.note_id) openFrom(trail.length - 1)(j.note_id); })
+      .catch(() => { /* verdictless — the panel simply doesn't open */ })
+      .finally(() => setVerifying(false));
+  };
+  const verifyBar = trail.length > 1 ? (
+    <div style={{ position: "absolute", top: 6, right: 18, zIndex: 3, fontSize: 12 }}>
+      <a onClick={verifyPath} style={{ color: "var(--text-color-kumo-link)", cursor: "pointer" }}>
+        {verifying ? "verifying path…" : "⚖ verify path"}
+      </a>
+    </div>
+  ) : null;
+
   // The SAME group structure for every root (LENS / TRAINING); entries resolve through the
   // layer's prefix (empty for current/scratch; the newest kasten key for archive). Corpus
   // surfaces are reached through the content/schema lenses, not a sidebar group.
@@ -206,7 +228,8 @@ function Lineup() {
         <div style={{ flex: "0 0 30px", borderRight: "1px solid var(--color-kumo-hairline)", padding: "14px 4px", display: "flex", flexDirection: "column", background: "var(--color-kumo-base)" }}>
           {navToggle(true)}
         </div>
-        <div style={{ flex: 1, display: "flex", overflowX: "auto", padding: 14, background: "var(--color-kumo-canvas)" }}>
+        <div style={{ flex: 1, position: "relative", display: "flex", overflowX: "auto", padding: 14, background: "var(--color-kumo-canvas)" }}>
+          {verifyBar}
           {trail.map((id, i) => (
             <LineupPanel
               key={`${root}-${id}-${i}`}
@@ -277,7 +300,8 @@ function Lineup() {
         {navToggle(false)}
       </div>
 
-      <div style={{ flex: 1, display: "flex", overflowX: "auto", padding: 14, background: "var(--color-kumo-canvas)" }}>
+      <div style={{ flex: 1, position: "relative", display: "flex", overflowX: "auto", padding: 14, background: "var(--color-kumo-canvas)" }}>
+        {verifyBar}
         {trail.map((id, i) => (
           <LineupPanel
             key={`${root}-${id}-${i}`}

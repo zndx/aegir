@@ -148,10 +148,54 @@ def _register_api_routes(app: FastAPI) -> None:
             raise HTTPException(404, "KB projection not built — run `just kb-build`")
         return _json.loads(p.read_text())
 
+    @app.post("/api/kb/verify-path")
+    def kb_verify_path(payload: dict) -> dict:
+        """Path-aware HermiT step (RH 2026-07-21): verify the lineup's axiom universe on the
+        fly — the adoption use-case (user-provided ontologies, incremental spec adaptation in
+        scratch) verified at the speed of browsing."""
+        trail = payload.get("trail") or []
+        if not trail:
+            raise HTTPException(400, "empty trail")
+        try:
+            from aegir.lineup.verify_path import verify
+            r = verify(trail, budget_s=int(payload.get("budget", 180)))
+        except KeyError as e:
+            raise HTTPException(422, str(e)) from e
+        except Exception as e:  # noqa: BLE001
+            raise HTTPException(503, f"verification unavailable: {e}") from e
+        return {"note_id": f"path/{r['path_id']}", "verdict": r["verdict"]}
+
     @app.get("/api/kb/note/{note_id:path}")
     def kb_note(note_id: str, root: str | None = None) -> dict:
         # provenance/<vid> ids are synthetic (the live AGE graph, not a projected file) — resolve them to a
         # provenance-kind note the React panel renders as a ReactFlow ego-graph centered on that node.
+        if note_id.startswith("path/"):
+            # synthetic path-run note (RH 2026-07-21): verification results join the lineup
+            # WITHOUT waiting for a projection rebuild — resolved straight from build/path_runs.
+            import json as _json
+            from pathlib import Path as _P
+            rp = _P("build/path_runs") / (note_id.split("/", 1)[1] + ".json")
+            if not rp.exists():
+                raise HTTPException(404, f"no path run {note_id!r}")
+            r = _json.loads(rp.read_text())
+            vd = r.get("verdict", {})
+            ok = vd.get("consistent")
+            body = (f"**Path verification** — HermiT over the axioms found before this panel "
+                    f"in the lineup (armed signature backbone; isolated, never production).\n\n"
+                    f"**Verdict: {'CONSISTENT ✓' if ok else 'INCONSISTENT ✗'}** · "
+                    f"unsat {len(vd.get('unsat') or [])} · path `{r['path_id']}` · "
+                    f"kasten `{r['version']}`\n\n"
+                    + ("**Unsatisfiable.** " + " · ".join(f"`{u}`" for u in vd.get("unsat") or [])
+                       + "\n\n" if vd.get("unsat") else "")
+                    + "**Inputs (left of me).**\n"
+                    + "\n".join(f"- [[{t}]]" for t in r.get("trail", [])) + "\n\n"
+                    + f"_native templates {r['inputs'].get('native_templates', 0)} · foreign "
+                    + ", ".join(f"{k}:{v}" for k, v in (r['inputs'].get('foreign') or {}).items())
+                    + f" · {r['inputs'].get('foreign_axioms', 0)} foreign axioms · lineage "
+                    + f"{r.get('lineage')}_\n")
+            return {"id": note_id, "name": note_id, "title": f"path verify · {r['path_id'][:8]}",
+                    "kind": "path-run", "data_product": "ontology", "root": "scratch",
+                    "body": body, "links": r.get("trail", [])}
         if note_id.startswith("provenance/"):
             rest = note_id.split("/", 1)[1]
             return {"id": note_id, "name": note_id, "title": "Provenance", "kind": "provenance",
