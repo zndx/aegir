@@ -118,6 +118,10 @@ def main() -> int:
         # unclosed fences
         if body.count("```") % 2 == 1:
             D["unclosed_fence"].append(f"{n['root']}:{n['id']}")
+        # broken references (RH 2026-07-21: a reference resolving nowhere is FAILED LOGIC,
+        # never a state — any marker surviving to the projection is a hard defect)
+        if "BROKEN REFERENCE" in body:
+            D["broken_reference"].append(f"{n['root']}:{n['id']}")
     # orphans (inbound counted across ALL roots — roots are refs)
     for key, n in notes.items():
         if n["kind"] in _ENTRY_KINDS_EXEMPT_ORPHAN or "/" in n["id"] and n["id"].endswith("/terms"):
