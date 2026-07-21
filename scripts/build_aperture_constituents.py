@@ -70,12 +70,15 @@ def main() -> int:
         conc = [p for p in res if p.payload.get("pref_label") not in anchor_labels]
         adj = [p for p in res if p.payload.get("pref_label") in anchor_labels]
         best = max((float(p.score) for p in conc), default=0.0)
-        cons = [{"code": p.payload.get("code"), "label": p.payload.get("pref_label"),
-                 "score": round(float(p.score), 4),
+        # IRI is the reference; code/label are display (RH 2026-07-21: the ontology's own
+        # discipline — labels mutate freely, references never break, stale IRIs degrade to
+        # the archive root's frozen kasten rather than to string forensics)
+        cons = [{"iri": p.payload.get("iri"), "code": p.payload.get("code"),
+                 "label": p.payload.get("pref_label"), "score": round(float(p.score), 4),
                  "rel": round(float(p.score) / best, 3) if best else 0.0, "kind": "concept"}
                 for p in conc if best and float(p.score) >= a.alpha * best]
-        cons += [{"code": p.payload.get("code"), "label": p.payload.get("pref_label"),
-                  "score": round(float(p.score), 4),
+        cons += [{"iri": p.payload.get("iri"), "code": p.payload.get("code"),
+                  "label": p.payload.get("pref_label"), "score": round(float(p.score), 4),
                   "rel": round(float(p.score) / best, 3) if best else 0.0, "kind": "adjacent-domain"}
                  for p in adj[:8]]
         lattice[c.pref_label] = cons

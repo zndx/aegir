@@ -1229,13 +1229,26 @@ def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = 
     out = f"**Primary constituent concepts** ({len(concepts)}, α-banded, rel to best):\n\n"
     rows_ = []
     for x in concepts[:16]:
-        loc = label_local.get(_lnorm(x.get("label") or ""))
-        if loc:                                          # display TODAY's name for the same concept
-            lbl = (label_pref.get(loc) or x.get("label") or "")[:52]
-            rows_.append(f"- {N.wl('lexicon/concept/' + loc, lbl)} · rel {x.get('rel')}")
+        # THE REFERENCE IS THE IRI (RH 2026-07-21) — labels are display; the normalized-label
+        # bridge below is LEGACY fallback for pre-IRI payload generations only.
+        loc = (str(x.get("iri")).rsplit("#", 1)[-1].rsplit("/", 1)[-1]
+               if x.get("iri") else None) or label_local.get(_lnorm(x.get("label") or ""))
+        if loc and loc in label_pref:                    # live: display TODAY's name
+            rows_.append(f"- {N.wl('lexicon/concept/' + loc, (label_pref[loc] or '')[:52])} "
+                         f"· rel {x.get('rel')}")
+        elif loc:                                        # at the limit: the archive root holds it
+            arch = sorted(Path("build/dev/archive").glob(f"*/*/lexicon/concept/{loc}.md"),
+                          reverse=True)
+            if arch:
+                kasten = "/".join(arch[0].parts[-5:-3])
+                rows_.append(f"- {N.wl(f'{kasten}/lexicon/concept/{loc}', (x.get('label') or loc)[:52])}"
+                             f" · rel {x.get('rel')} _({kasten} kasten)_")
+            else:
+                rows_.append(f"- `{loc}` · rel {x.get('rel')} _(IRI departed; no archived kasten "
+                             "carries it yet)_")
         else:
             rows_.append(f"- {(x.get('label') or '')[:52]} · rel {x.get('rel')} "
-                         "_(concept departed the vocabulary)_")
+                         "_(pre-IRI payload; label unresolvable)_")
     out += "\n".join(rows_)
     if len(concepts) > 16:
         out += f"\n- _…{len(concepts) - 16} more_"
@@ -1494,8 +1507,12 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
     in_anchors: "dict[str, list]" = {}
     for p0 in pts:
         for x in p0.get("constituents") or []:
-            if x.get("kind") == "concept" and x.get("label"):
-                in_anchors.setdefault(_lnorm2(str(x["label"])), []).append(
+            if x.get("kind") != "concept":
+                continue
+            key = (str(x.get("iri")).rsplit("#", 1)[-1].rsplit("/", 1)[-1]
+                   if x.get("iri") else _lnorm2(str(x.get("label") or "")))
+            if key:
+                in_anchors.setdefault(key, []).append(
                     (str(p0.get("id")), p0.get("label") or "", x.get("rel")))
     notes: "list[N.Note]" = []
     for key, c in sorted(vocab.items()):
@@ -1513,7 +1530,7 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
             cross = f"**Term.** {N.wl(f'ontology/term/{snake}', snake)}\n\n"
         anchors_md = ""
         hit = next((in_anchors[k] for k in
-                    (_lnorm2(label), _lnorm2(code), _lnorm2(code.split("_", 2)[-1]))
+                    (code, _lnorm2(label), _lnorm2(code))          # IRI-local first; legacy after
                     if k in in_anchors), None)
         if hit:
             anchors_md = ("**Constituent of.** " + " · ".join(
