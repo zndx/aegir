@@ -103,6 +103,7 @@ _restore-patched-wheels:
 
 check-ontology-schema:
     uv run --no-sync python scripts/check_ontology_schema.py
+    uv run --no-sync python scripts/check_triad_entailment.py
 
 # External-namespace integrity: every cco:/bfo: ref on the live surface (code + current docs + cards)
 # must EXIST in the authority, and the named …ICE / InformationContentEntity hallucinations are banned
