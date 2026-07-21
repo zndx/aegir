@@ -156,6 +156,7 @@ def _aperture_chord():
     except Exception:  # noqa: BLE001
         pass
     rows_ = []
+    df = {}
     for lbl, e in anchors.items():
         if not isinstance(e, dict):
             continue
@@ -163,11 +164,18 @@ def _aperture_chord():
         cons = {x.get("iri") for x in e.get("constituents", [])
                 if x.get("kind") == "concept" and x.get("iri")}
         rows_.append({"frag": frag, "pid": e.get("point_id"), "cons": cons})
+        for c in cons:
+            df[c] = df.get(c, 0) + 1
     rows_.sort(key=lambda r: (fam.get(r["frag"], r["frag"]), r["frag"]))
     idx = {r["frag"]: i for i, r in enumerate(rows_)}
+    # SELECTIVE edges (RH 2026-07-21 sanity check): promiscuous constituents (df≥4 across
+    # anchors) carry no discrimination and made the chord a 91%-dense hairball; counting only
+    # df≤3 shares yields 12% density with 58% intra-family edge mass — nameable bridges,
+    # scheme structure visible. The df distribution doubles as the MaxSim selectivity-dilution
+    # watchlist for aperture extensions.
     eds_rows = []
     for a, b in combinations(rows_, 2):
-        n = len(a["cons"] & b["cons"])
+        n = sum(1 for c in a["cons"] & b["cons"] if df.get(c, 9) <= 3)
         if n:
             eds_rows.append((idx[a["frag"]], idx[b["frag"]], n))
     nodes = pd.DataFrame([{"index": i, "name": r["frag"][:30],
