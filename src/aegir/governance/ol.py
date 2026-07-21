@@ -96,6 +96,12 @@ def ingest_run_event(event: dict) -> dict:
             G.merge_edge(conn, "Run", {"run_id": run_id}, "OUTPUTS", "Dataset", {"qualifiedName": qn})
             n_out += 1
             n_cols += _ingest_column_lineage(conn, ds, qn)
+    try:
+        # keep the Lineage panel's materialized views near-live (throttled; never raises)
+        from aegir.governance import lineage_views as _LV
+        _LV.refresh_throttled_async()
+    except Exception:  # noqa: BLE001
+        pass
     return {"run_id": run_id, "eventType": state, "inputs": n_in, "outputs": n_out, "columns": n_cols}
 
 

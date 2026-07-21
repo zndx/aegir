@@ -145,16 +145,27 @@ def reproject() -> dict:
 
 
 # task_type → handler (payload dict → result dict). The processor dispatches on these.
+def lineage_refresh() -> dict:
+    """Rebuild the panel-shaped lineage views (aegir.governance.lineage_views) — the
+    Lineage panel's materialized substrate; scheduled via pg_cron → scheduled_tasks."""
+    from aegir.governance import lineage_views as LV
+    r = LV.refresh()
+    return {"op": "lineage_refresh", **r}
+
+
 HANDLERS = {
     "kb_archive": lambda payload: upkeep(),
     "kb_snapshot": lambda payload: snapshot(),
     "kb_reproject": lambda payload: reproject(),
+    "lineage_refresh": lambda payload: lineage_refresh(),
 }
 
 
 def run(op: str, **kw) -> dict:
     if op == "upkeep":
         return upkeep(**kw)
+    if op in ("lineage-refresh", "lineage_refresh"):
+        return lineage_refresh()
     if op == "snapshot":
         return snapshot(**kw)
     if op == "reproject":

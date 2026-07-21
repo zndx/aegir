@@ -386,6 +386,17 @@ def _register_api_routes(app: FastAPI) -> None:
         OWN ego-graph on click (panel-trail). Degrades gracefully if aegir_hx is down."""
         from aegir.governance import graph as G
         cap = 40
+        # MATERIALIZED-FIRST (RH 2026-07-21): panel-shaped lineage views make the ego two
+        # indexed selects; live cypher is the fallback (fresh DB / mid-refresh), which also
+        # kicks a background ensure+refresh so the next click is fast.
+        try:
+            from aegir.governance import lineage_views as LV
+            mv = LV.ego(focal, cap=cap)
+            if mv is not None:
+                return mv
+            LV.refresh_throttled_async()
+        except Exception:  # noqa: BLE001
+            pass
 
         def _disp(label: str, mp: dict | None) -> str:
             mp = mp or {}
