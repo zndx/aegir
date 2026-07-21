@@ -44,6 +44,8 @@ class SkosConcept:
     scope_note: str = ""
     comment: str = ""
     broader: str = ""           # parent IRI
+    deprecated: bool = False    # renamed-id bridge: owl:deprecated true
+    replaced_by: str = ""       # dct:isReplacedBy target IRI (the CURRENT concept)
 
     def text(self) -> str:
         """The text encoded into the concept's ColBERT multi-vector. ALL descriptive content is included —
@@ -69,6 +71,7 @@ _DEF = re.compile(r'skos:definition\s+"((?:[^"\\]|\\.)*)"')
 _SCOPE = re.compile(r'skos:scopeNote\s+"((?:[^"\\]|\\.)*)"')
 _COMMENT = re.compile(r'rdfs:comment\s+"((?:[^"\\]|\\.)*)"')
 _NOTE = re.compile(r'skos:notation\s+"((?:[^"\\]|\\.)*)"')
+_REPL = re.compile(r'dct:isReplacedBy <([^>]+)>')
 _BROADER = re.compile(r"skos:broader\s+<([^>]+)>")
 
 
@@ -90,20 +93,32 @@ def load_skos(path: "str | Path" = DEFAULT_VOCAB,
                 return mm.group(1) if mm else ""
             out[iri] = SkosConcept(iri=iri, code=_g(_NOTE), pref_label=_g(_PREF), alt_label=_g(_ALT),
                                    definition=_g(_DEF), scope_note=_g(_SCOPE), comment=_g(_COMMENT),
-                                   broader=_g(_BROADER))
+                                   broader=_g(_BROADER),
+                                   deprecated="owl:deprecated true" in body,
+                                   replaced_by=_g(_REPL))
     return out
 
 
 def subtree_codes(concepts: "dict[str, SkosConcept]", root: str) -> "set[str]":
-    """All notation codes in the subtree rooted at ``root`` (a notation code OR a prefLabel, case-insensitive).
-    Uses dotted-notation prefixing (robust) + broader as a fallback."""
+    """All notation codes in the subtree rooted at ``root`` — an IDENTITY selector only:
+    a notation code, an IRI, or an IRI-local. Labels are display, never structure
+    (RH 2026-07-21); a label passed here raises with the matching identities named,
+    so callers migrate instead of silently depending on name resolution."""
     root_code = root
-    if not re.fullmatch(r"[0-9.]+", root):  # given a label → resolve to its code
-        rl = root.strip().lower()
-        match = next((c for c in concepts.values() if c.pref_label.lower() == rl or c.alt_label.lower() == rl), None)
-        if not match:
-            return set()
-        root_code = match.code
+    if not re.fullmatch(r"[0-9.]+", root):
+        hit = concepts.get(root) or next(
+            (c for c in concepts.values()
+             if c.iri == root or c.iri.rsplit("#", 1)[-1] == root), None)
+        if hit is None:
+            rl = root.strip().lower()
+            named = [c for c in concepts.values()
+                     if c.pref_label.lower() == rl or c.alt_label.lower() == rl]
+            raise KeyError(
+                f"subtree_codes takes an identity (notation code / IRI / IRI-local), got {root!r}"
+                + (f" — did you mean: " + ", ".join(
+                    f"{c.iri.rsplit('#', 1)[-1]} (code {c.code})" for c in named[:3])
+                   if named else ""))
+        root_code = hit.code
     return {c.code for c in concepts.values()
             if c.code == root_code or c.code.startswith(root_code + ".")}
 
@@ -135,7 +150,9 @@ def build_index(*, vocab: "str | Path" = DEFAULT_VOCAB, url: str = DEFAULT_QDRAN
                 size=enc.dim, distance=models.Distance.COSINE,
                 multivector_config=models.MultiVectorConfig(comparator=models.MultiVectorComparator.MAX_SIM)),
         )
-    items = [c for c in concepts.values() if c.text()]
+    items = [c for c in concepts.values() if c.text() and not c.deprecated]
+    # deprecated bridge concepts NEVER enter the admission surface: same-label twins would
+    # duplicate MaxSim anchors; bridges exist for REFERENCE RESOLUTION, not retrieval
     texts = [c.text() for c in items]
     vecs = enc.encode(texts)
     points = []

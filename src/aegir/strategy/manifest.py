@@ -53,12 +53,14 @@ def _scroll_snapshot(cl, collection: str) -> dict:
             vs = _sha(_np.asarray(vec, dtype="float32").tobytes()) if vec is not None else ""
             pl = p.payload or {}
             row = {"id": str(p.id),
+                   "iri": pl.get("iri") or "",
                    "label": pl.get("pref_label") or pl.get("label") or "",
                    "path": pl.get("path") or "",
                    "vector_sha": vs[:16]}
             if pl.get("constituents"):        # Canonical Aperture anchors carry their lattice (#31)
-                row["constituents"] = [{"label": x.get("label"), "code": x.get("code"),
-                                        "rel": x.get("rel"), "kind": x.get("kind")}
+                row["constituents"] = [{"iri": x.get("iri"), "label": x.get("label"),
+                                        "code": x.get("code"), "rel": x.get("rel"),
+                                        "kind": x.get("kind")}
                                        for x in pl["constituents"]]
             rows.append(row)
         if off is None:

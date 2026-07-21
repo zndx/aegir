@@ -1214,8 +1214,7 @@ _reflog = _logging.getLogger("aegir.lineup.reference_integrity")
 REF_DEFECTS: "list[dict]" = []       # referential-integrity failures — DEFECTS, never states
 
 
-def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = None,
-                              label_local: "dict[str, str] | None" = None,
+def _aperture_constituents_md(p0: dict, iri_to_aid: "dict[str, str] | None" = None,
                               label_pref: "dict[str, str] | None" = None) -> str:
     """The anchor's lattice, from the snapshot payload: primary concept constituents (α-banded,
     rel-scored) + adjacent domains typed apart. Honest placeholder when a pre-#31 snapshot lacks it."""
@@ -1225,24 +1224,18 @@ def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = 
     if not cons:
         return ("Composites primary constituent concepts; the constituent list is not in this "
                 "strategy snapshot (re-seed after build_aperture_constituents).\n\n")
-    label_to_aid = label_to_aid or {}
-    label_local = label_local or {}
+    iri_to_aid = iri_to_aid or {}
     label_pref = label_pref or {}
-
-    def _lnorm(x: str) -> str:
-        return re.sub(r"[^a-z0-9]", "", (x or "").lower())
 
     out = f"**Primary constituent concepts** ({len(concepts)}, α-banded, rel to best):\n\n"
     rows_ = []
     for x in concepts[:16]:
-        # THE REFERENCE IS THE IRI (RH 2026-07-21) — labels are display; the normalized-label
-        # bridge below is LEGACY fallback for pre-IRI payload generations only.
-        loc = (str(x.get("iri")).rsplit("#", 1)[-1].rsplit("/", 1)[-1]
-               if x.get("iri") else None) or label_local.get(_lnorm(x.get("label") or ""))
-        if loc and loc in label_pref:                    # live: display TODAY's name
+        iri = x.get("iri")
+        loc = str(iri).rsplit("#", 1)[-1].rsplit("/", 1)[-1] if iri else None
+        if loc and loc in label_pref:
             rows_.append(f"- {N.wl('lexicon/concept/' + loc, (label_pref[loc] or '')[:52])} "
                          f"· rel {x.get('rel')}")
-        elif loc:                                        # at the limit: the archive root holds it
+        elif loc:
             arch = sorted(Path("build/dev/archive").glob(f"*/*/lexicon/concept/{loc}.md"),
                           reverse=True)
             if arch:
@@ -1250,12 +1243,8 @@ def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = 
                 rows_.append(f"- {N.wl(f'{kasten}/lexicon/concept/{loc}', (x.get('label') or loc)[:52])}"
                              f" · rel {x.get('rel')} _({kasten} kasten)_")
             else:
-                # NOT a state of the world — failed logic (mis-minted join / identity-
-                # destroying regeneration / freeze gap). RH 2026-07-21: the INTERFACE stays
-                # calm ('unresolved', no drama); the STRUCTURAL failure surfaces at ERROR
-                # level internally for remediation (+ artifact + audit floor).
                 d = {"panel": f"lexicon/aperture/{p0.get('id')}", "reference": loc,
-                     "iri": x.get("iri"), "payload_label": x.get("label"),
+                     "iri": iri, "payload_label": x.get("label"),
                      "attempted": ["current-vocab", "archive-kastens"]}
                 REF_DEFECTS.append(d)
                 _reflog.error("reference integrity: %(panel)s → %(reference)r resolves nowhere "
@@ -1263,21 +1252,19 @@ def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = 
                 rows_.append(f"- `{loc}` · rel {x.get('rel')} _(unresolved)_")
         else:
             d = {"panel": f"lexicon/aperture/{p0.get('id')}", "reference": None, "iri": None,
-                 "payload_label": x.get("label"), "attempted": ["legacy-label-bridge"]}
+                 "payload_label": x.get("label"), "attempted": ["payload-iri"]}
             REF_DEFECTS.append(d)
-            _reflog.error("reference integrity: %(panel)s → pre-IRI payload label "
-                          "%(payload_label)r unresolvable (attempted=%(attempted)s)", d)
+            _reflog.error("reference integrity: %(panel)s → payload lacks an IRI "
+                          "(label=%(payload_label)r)", d)
             rows_.append(f"- {(x.get('label') or '')[:52]} · rel {x.get('rel')} _(unresolved)_")
     out += "\n".join(rows_)
-    if len(concepts) > 16:
-        out += f"\n- _…{len(concepts) - 16} more_"
     if adj:
         out += ("\n\n**Adjacent domains** (retrieval-adjacent siblings — adjacency, not "
                 "constituency):\n\n"
                 + "\n".join(
-                    (f"- {N.wl('lexicon/aperture/' + label_to_aid[x.get('label')], x.get('label'))} "
-                     f"· rel {x.get('rel')}") if x.get("label") in label_to_aid
-                    else f"- {x.get('label')} · rel {x.get('rel')}"
+                    (f"- {N.wl('lexicon/aperture/' + iri_to_aid[x.get('iri')], x.get('label'))} "
+                     f"· rel {x.get('rel')}") if x.get("iri") in iri_to_aid
+                    else f"- {x.get('label')} · rel {x.get('rel')} _(unresolved)_"
                     for x in adj[:8]))
     return out + "\n\n"
 
@@ -1537,7 +1524,7 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
             if x.get("kind") != "concept":
                 continue
             key = (str(x.get("iri")).rsplit("#", 1)[-1].rsplit("/", 1)[-1]
-                   if x.get("iri") else _lnorm2(str(x.get("label") or "")))
+                   if x.get("iri") else None)
             if key:
                 in_anchors.setdefault(key, []).append(
                     (str(p0.get("id")), p0.get("label") or "", x.get("rel")))
@@ -1551,6 +1538,21 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
     notes: "list[N.Note]" = []
     for key, c in sorted(vocab.items()):
         code = str(key).rsplit("#", 1)[-1].rsplit("/", 1)[-1]     # IRI-local — STABLE
+        if getattr(c, "deprecated", False):
+            # a renamed-id BRIDGE: a slim redirect note — the resolution aid the bridge exists
+            # for, never a duplicate concept (same-label twins would double the lexicon)
+            rb = str(getattr(c, "replaced_by", "") or "")
+            rl = rb.rsplit("#", 1)[-1]
+            notes.append(N.Note(
+                id=f"lexicon/concept/{code}", title=getattr(c, "pref_label", code)[:64],
+                kind="lexicon-construct", data_product="ontology", root="scratch",
+                frontmatter={"deprecated": True, "replaced_by": rb},
+                links=([f"lexicon/concept/{rl}"] if rl else []),
+                body=(f"_Deprecated identifier (renamed-id bridge)._ Replaced by "
+                      + (N.wl(f"lexicon/concept/{rl}", rl) if rl else "—")
+                      + f".\n\n| skos property | value |\n|---|---|\n| IRI | `{key}` |\n"
+                      + (f"| `dct:isReplacedBy` | `{rb}` |\n" if rb else ""))))
+            continue
         label = getattr(c, "pref_label", key)
         # the DEFINITION is the display content; c.text() is the RETRIEVAL SERIALIZATION
         # (label+abbrev+definition+scope concatenated for ColBERT encoding — the qdrant
@@ -1580,9 +1582,7 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
                          + N.wl(f"ontology/self-census/class/{head}", head)) if head else "")
                      + "\n\n")
         anchors_md = ""
-        hit = next((in_anchors[k] for k in
-                    (code, _lnorm2(label), _lnorm2(code))          # IRI-local first; legacy after
-                    if k in in_anchors), None)
+        hit = in_anchors.get(code)                     # identity join only
         if hit:
             anchors_md = ("**Constituent of.** " + " · ".join(
                 N.wl(f"lexicon/aperture/{aid}", albl[:40]) + (f" (rel {rel})" if rel else "")
@@ -1656,31 +1656,21 @@ def project_aperture_anchors() -> list[N.Note]:
               + "). domain⇄concept is many-to-many; anchors are the admission surface.\n\n"
               + "\n".join(f"- {N.wl('lexicon/aperture/' + str(p0.get('id')), p0.get('label') or str(p0.get('id')))}"
                            for p0 in pts)))]
-    label_to_aid = {(p0.get("label") or ""): str(p0.get("id")) for p0 in pts}
-    # generation-bridging label→local map (RH 2026-07-21): payload labels are PAST-vocab
-    # prefLabels; renames are deterministic (old = humanized template_id, whose normalized
-    # form ≡ the stable local's suffix) — so index by normalized pref AND normalized local,
-    # and a renamed concept resolves to today's identity instead of "(label absent)".
-    label_local: "dict[str, str]" = {}
+    # IRI → aperture note id, from the derivation artifact (identity join — labels never)
+    iri_to_aid: "dict[str, str]" = {}
+    try:
+        _art = json.loads(Path("build/aperture_constituents.json").read_text())
+        for _lbl, _e in (_art.get("anchors") or {}).items():
+            if isinstance(_e, dict) and _e.get("iri") and _e.get("point_id") is not None:
+                iri_to_aid[_e["iri"]] = str(_e["point_id"])
+    except Exception:  # noqa: BLE001
+        pass
+    # DISPLAY-ONLY map: stable local → today's prefLabel (labels never join — RH 2026-07-21)
     label_pref: "dict[str, str]" = {}
-    def _lnorm(x: str) -> str:
-        return re.sub(r"[^a-z0-9]", "", (x or "").lower())
     try:
         from aegir.ontology import domain_index as DI
         for _k, _c in DI.load_skos().items():
-            _loc = str(_k).rsplit("#", 1)[-1]
-            _pref = getattr(_c, "pref_label", "")
-            _keys = [_lnorm(_pref), _lnorm(_loc)]
-            _parts = _loc.split("_")
-            _keys += [_lnorm("".join(_parts[i:])) for i in range(1, len(_parts))]
-            # every suffix of the local — the template_id (any parent depth) and the FILLER_
-            # form both live in there, so ALL past label generations normalize onto it
-            for _alt in (getattr(_c, "alt_label", None) or []):
-                _keys.append(_lnorm(_alt))              # abbrev rides as an altLabel — the bridge
-            for _key in _keys:
-                if _key:
-                    label_local.setdefault(_key, _loc)
-            label_pref[_loc] = _pref
+            label_pref[str(_k).rsplit("#", 1)[-1]] = getattr(_c, "pref_label", "")
     except Exception:  # noqa: BLE001
         pass
     for p0 in pts:
@@ -1691,7 +1681,7 @@ def project_aperture_anchors() -> list[N.Note]:
             frontmatter={"vector_sha": p0.get("vector_sha")},
             body=(f"**{label}** — a Canonical Aperture composite anchor (id `{aid}`, vector "
                   f"`{p0.get('vector_sha')}`).\n\n"
-                  + _aperture_constituents_md(p0, label_to_aid, label_local, label_pref)
+                  + _aperture_constituents_md(p0, iri_to_aid, label_pref)
                   + "Part of " + N.wl("lexicon/aperture/index", "the Canonical Aperture") + " · "
                   + N.wl("lexicon/construct/aperture", "aperture (construct)"))))
     notes += project_vocab_concepts(pts, live_ids=getattr(project_aperture_anchors, "_live_ids", None),

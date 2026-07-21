@@ -103,6 +103,7 @@ def build_records() -> list[dict]:
     code2notation = {a[0]: a[1] for a in [*ANCHORS.values(), GENERIC]}
 
     # 2) one leaf concept per template, under its anchor
+    bridges: list = []          # (old_code, new_code, label) — renamed ids keep resolving
     counters: dict[str, int] = {}
     for path in files:
         family = Path(path).stem
@@ -140,6 +141,10 @@ def build_records() -> list[dict]:
             alts = list(getattr(t, "alt_labels", None) or [])
             common = ", ".join(alts) if alts else ", ".join(
                 s.replace("_", " ") for s in class_slots)
+            old_tid = ((getattr(t, "provenance", None) or {}) or {}).get("renamed_from")
+            if old_tid:
+                bridges.append((f"{parent_code}.{old_tid.upper()}",
+                                f"{parent_code}.{t.template_id.upper()}", label))
             records.append({
                 "code": f"{parent_code}.{t.template_id.upper()}",
                 "label": label,
@@ -186,6 +191,7 @@ def build_records() -> list[dict]:
                                 "notation": f"{a_notation}.D{hi}.{mi}", "parent_code": hyp_code,
                                 "taxonomy": "sdg", "description": f"Domain concept under {t['hypernym']}.",
                                 "common_names": "domain_member", "example_values": ""})
+    build_records.bridges = bridges
     return records
 
 
@@ -213,7 +219,9 @@ def write_ttl(records: list[dict], path: Path) -> None:
         return s.replace("\\", "\\\\").replace('"', '\\"')
     lines = [
         "@prefix skos: <http://www.w3.org/2004/02/skos/core#> .",
-        "@prefix sdg:  <https://signals.zndx.org/sdg#> .", "",
+        "@prefix sdg:  <https://signals.zndx.org/sdg#> .",
+        "@prefix owl:  <http://www.w3.org/2002/07/owl#> .",
+        "@prefix dct:  <http://purl.org/dc/terms/> .", "",
         f"<{SCHEME_IRI}> a skos:ConceptScheme ;",
         '    skos:prefLabel "SDG column-type vocabulary (ontology-derived)" .', "",
     ]
@@ -231,6 +239,12 @@ def write_ttl(records: list[dict], path: Path) -> None:
             lines.append(f"    skos:broader <{_iri(r['parent_code'])}> ;")
         lines.append(f"    skos:inScheme <{SCHEME_IRI}> .")
         lines.append("")
+    for old_code, new_code, label in getattr(build_records, "bridges", []):
+        lines += [f"<{_iri(old_code)}> a skos:Concept ;",
+                  f'    skos:prefLabel "{esc(label)}" ;',
+                  "    owl:deprecated true ;",
+                  f"    dct:isReplacedBy <{_iri(new_code)}> ;",
+                  f"    skos:inScheme <{SCHEME_IRI}> .", ""]
     path.write_text("\n".join(lines))
 
 

@@ -7910,7 +7910,7 @@
    "scope_note": ""
   },
   {
-   "template_id": "filler_businessactivityprocess",
+   "template_id": "business_activity_process",
    "manchester_template": "Class: {BusinessActivityProcess:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:ont00000958",
    "slot_types": {
     "BusinessActivityProcess": "Class"
@@ -7933,13 +7933,15 @@
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08",
      "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
-    }
+    },
+    "renamed_from": "filler_businessactivityprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_businessdecision",
+   "template_id": "business_decision",
    "manchester_template": "Class: {BusinessDecision:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:ont00000958",
    "slot_types": {
     "BusinessDecision": "Class"
@@ -7962,7 +7964,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_businessdecision",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "business decision process",
@@ -7973,7 +7977,7 @@
    "scope_note": "A planned process that involves a business entity as its object. This entity represents a decision-making event focused on a business entity."
   },
   {
-   "template_id": "filler_businessentity",
+   "template_id": "business_entity",
    "manchester_template": "Class: {BusinessEntity:Class} EquivalentTo: bfo:0000040 and sdg:involved_in some sdg:BusinessActivityProcess",
    "slot_types": {
     "BusinessEntity": "Class"
@@ -7996,7 +8000,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_businessentity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Business Entity",
@@ -8007,7 +8013,7 @@
    "scope_note": "A business entity is a material entity that is involved in a business activity process. This entity engages in commercial activities."
   },
   {
-   "template_id": "filler_businessinitiative",
+   "template_id": "business_initiative",
    "manchester_template": "Class: {BusinessInitiative:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some cco:ont00000253",
    "slot_types": {
     "BusinessInitiative": "Class"
@@ -8030,7 +8036,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_businessinitiative",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Business Strategic Initiative",
@@ -8043,7 +8051,7 @@
    "scope_note": "A planned business process that involves a business entity as its primary object of execution."
   },
   {
-   "template_id": "filler_calendarproductspecification",
+   "template_id": "calendar_product_specification",
    "manchester_template": "Class: {CalendarProductSpecification:Class} EquivalentTo: cco:ont00000891 and sdg:relates_to some sdg:CalendarProduct",
    "slot_types": {
     "CalendarProductSpecification": "Class"
@@ -8063,7 +8071,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_calendarproductspecification",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Calendar System Spec",
@@ -8074,7 +8084,7 @@
    "scope_note": "Used when documenting the functional requirements, release schedule, or feature set for a specific calendar software application or digital scheduling tool."
   },
   {
-   "template_id": "filler_callvolumemetric",
+   "template_id": "call_volume_metric",
    "manchester_template": "Class: {CallVolumeMetric:Class} EquivalentTo: cco:ont00001317 and sdg:measures some sdg:CallVolume",
    "slot_types": {
     "CallVolumeMetric": "Class"
@@ -8097,7 +8107,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_callvolumemetric",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Call Volume Metric",
@@ -8109,7 +8121,7 @@
    "scope_note": "Tracks the volume of calls received or made. Used to monitor call center performance."
   },
   {
-   "template_id": "filler_cancerpatient",
+   "template_id": "cancer_patient",
    "manchester_template": "Class: {CancerPatient:Class} EquivalentTo: cco:ont00001262 and sdg:has_disease some cco:ont00000318",
    "slot_types": {
     "CancerPatient": "Class"
@@ -8132,7 +8144,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_cancerpatient",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "cancer recipient",
@@ -8143,7 +8157,7 @@
    "scope_note": "A person who has a disease. This entity experiences the presence of a disease within their biological system."
   },
   {
-   "template_id": "filler_carequalityassessment",
+   "template_id": "care_quality_assessment",
    "manchester_template": "Class: {CareQualityAssessment:Class} EquivalentTo: cco:ont00000575 and sdg:assesses_quality_of some sdg:ClinicalCare",
    "slot_types": {
     "CareQualityAssessment": "Class"
@@ -8163,7 +8177,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_carequalityassessment",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Clinical Care Quality Review",
@@ -8175,7 +8191,7 @@
    "scope_note": "A care quality assessment evaluates clinical care standards through systematic measurement of healthcare delivery outcomes. This evaluation process measures clinical interventions, patient outcomes, and service effectiveness against established quality benchmarks."
   },
   {
-   "template_id": "filler_certificationtime",
+   "template_id": "certification_time",
    "manchester_template": "Class: {CertificationTime:Class} EquivalentTo: cco:ont00001058 and sdg:relates_to some cco:ont00002002",
    "slot_types": {
     "CertificationTime": "Class"
@@ -8198,7 +8214,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_certificationtime",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "certification hour",
@@ -8209,7 +8227,7 @@
    "scope_note": "An hour that relates to a certificate. This entity represents a temporal measure connected to a certificate."
   },
   {
-   "template_id": "filler_certifiedinternalauditor",
+   "template_id": "certified_internal_auditor",
    "manchester_template": "Class: {CertifiedInternalAuditor:Class} EquivalentTo: bfo:0000040 and sdg:has_certification some cco:ont00002002",
    "slot_types": {
     "CertifiedInternalAuditor": "Class"
@@ -8232,7 +8250,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_certifiedinternalauditor",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Certified auditor",
@@ -8244,7 +8264,7 @@
    "scope_note": "A CertifiedInternalAuditor is a material entity that has a certificate."
   },
   {
-   "template_id": "filler_chemicalinstallation",
+   "template_id": "chemical_installation",
    "manchester_template": "Class: {ChemicalInstallation:Class} EquivalentTo: cco:ont00000248 and sdg:involves_object some sdg:Chemical",
    "slot_types": {
     "ChemicalInstallation": "Class"
@@ -8264,7 +8284,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_chemicalinstallation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Chemical processing plant",
@@ -8275,7 +8297,7 @@
    "scope_note": "A physical facility designed for the processing or manufacturing of chemical substances."
   },
   {
-   "template_id": "filler_childprotectionteam",
+   "template_id": "child_protection_team",
    "manchester_template": "Class: {ChildProtectionTeam:Class} EquivalentTo: cco:ont00001180 and sdg:protects some sdg:Child",
    "slot_types": {
     "ChildProtectionTeam": "Class"
@@ -8291,13 +8313,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_childprotectionteam",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_clearingprocess",
+   "template_id": "clearing_process",
    "manchester_template": "Class: {ClearingProcess:Class} EquivalentTo: bfo:0000015 and sdg:involves_object some {FinancialProduct:Class}",
    "slot_types": {
     "ClearingProcess": "Class",
@@ -8318,7 +8342,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_clearingprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "settlement process",
@@ -8331,7 +8357,7 @@
    "scope_note": "Applies to financial workflows where instruments are validated, reconciled, and finalized for settlement."
   },
   {
-   "template_id": "filler_client",
+   "template_id": "client",
    "manchester_template": "Class: {Client:Class} EquivalentTo: cco:ont00001017 and sdg:receives_financial_advice some cco:ont00000509",
    "slot_types": {
     "Client": "Class"
@@ -8354,7 +8380,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_client",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "service recipient",
@@ -8365,7 +8393,7 @@
    "scope_note": "An agent that receives a financial product advice service. This entity engages in the consumption of advisory services provided by financial professionals."
   },
   {
-   "template_id": "filler_clientprofile",
+   "template_id": "client_profile",
    "manchester_template": "Class: {ClientProfile:Class} EquivalentTo: cco:ont00001309 and sdg:relatesTo some sdg:NetworkUser",
    "slot_types": {
     "ClientProfile": "Class"
@@ -8388,7 +8416,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_clientprofile",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Client Profile",
@@ -8401,7 +8431,7 @@
    "scope_note": "Applies to process profiles that document and represent information about specific network users or clients. This term encompasses structured information records used by organizations to manage client relationships and service delivery."
   },
   {
-   "template_id": "filler_clinicalperformancedata",
+   "template_id": "clinical_performance_data",
    "manchester_template": "Class: {ClinicalPerformanceData:Class} EquivalentTo: sdg:ClinicalQualityData and sdg:measures some sdg:HealthOutcomeMetric",
    "slot_types": {
     "ClinicalPerformanceData": "Class"
@@ -8424,7 +8454,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_clinicalperformancedata",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Clinical Performance Metrics",
@@ -8435,7 +8467,7 @@
    "scope_note": "Applied to datasets used by hospital administrators, clinical directors, and quality assurance teams to evaluate staff efficiency, patient recovery rates, and treatment success."
   },
   {
-   "template_id": "filler_clinicalsystem",
+   "template_id": "clinical_system",
    "manchester_template": "Class: {ClinicalSystem:Class} EquivalentTo: cco:ont00000870 and sdg:providesService some sdg:ClinicalCare",
    "slot_types": {
     "ClinicalSystem": "Class"
@@ -8455,7 +8487,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_clinicalsystem",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Clinical System",
@@ -8468,7 +8502,7 @@
    "scope_note": "Used to describe infrastructure systems dedicated to delivering clinical care services and supporting medical operations."
   },
   {
-   "template_id": "filler_cloudstoragevolume",
+   "template_id": "cloud_storage_volume",
    "manchester_template": "Class: {CloudStorageVolume:Class} EquivalentTo: cco:ont00001179 and sdg:usedForStorage some sdg:DatabaseContainer",
    "slot_types": {
     "CloudStorageVolume": "Class"
@@ -8491,7 +8525,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_cloudstoragevolume",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Cloud Storage Volume",
@@ -8503,7 +8539,7 @@
    "scope_note": "Applies to cloud infrastructure configurations where database containers are stored on virtualized storage disks."
   },
   {
-   "template_id": "filler_collateralexchangeprocess",
+   "template_id": "collateral_exchange_process",
    "manchester_template": "Class: {CollateralExchangeProcess:Class} EquivalentTo: cco:ont00000137 and sdg:involves some cco:ont00000501",
    "slot_types": {
     "CollateralExchangeProcess": "Class"
@@ -8526,7 +8562,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_collateralexchangeprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "collateral exchange process",
@@ -8538,7 +8576,7 @@
    "scope_note": "A financial deposit process that involves the corresponding withdrawal or exchange of collateral assets. This process manages the movement of pledged assets between parties to maintain required collateral levels."
   },
   {
-   "template_id": "filler_collegeadministration",
+   "template_id": "college_administration",
    "manchester_template": "Class: {CollegeAdministration:Class} EquivalentTo: cco:ont00001180 and sdg:manages some sdg:HigherEducationInstitution",
    "slot_types": {
     "CollegeAdministration": "Class"
@@ -8561,7 +8599,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_collegeadministration",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "higher education administration",
@@ -8574,7 +8614,7 @@
    "scope_note": "An organizational body responsible for the management and governance of a higher education institution. This structure oversees institutional operations, policy implementation, and academic standards."
   },
   {
-   "template_id": "filler_collegecommunitymember",
+   "template_id": "college_community_member",
    "manchester_template": "Class: {CollegeCommunityMember:Class} EquivalentTo: cco:ont00000647 and sdg:memberOf some cco:ont00000564",
    "slot_types": {
     "CollegeCommunityMember": "Class"
@@ -8597,7 +8637,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_collegecommunitymember",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "College Community Member",
@@ -8609,7 +8651,7 @@
    "scope_note": "This term denotes an organization member who holds membership within an educational organization or college community."
   },
   {
-   "template_id": "filler_collegeofficial",
+   "template_id": "college_official",
    "manchester_template": "Class: {CollegeOfficial:Class} EquivalentTo: sdg:StaffMember and sdg:holdsPositionIn some sdg:HigherEducationInstitution",
    "slot_types": {
     "CollegeOfficial": "Class"
@@ -8632,7 +8674,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_collegeofficial",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "College Official",
@@ -8645,7 +8689,7 @@
    "scope_note": "Applies to staff members holding administrative or academic positions within higher education institutions. This term encompasses individuals occupying official roles in college governance, administration, or academic leadership."
   },
   {
-   "template_id": "filler_communityhealthcaresetting",
+   "template_id": "community_healthcare_setting",
    "manchester_template": "Class: {CommunityHealthcareSetting:Class} EquivalentTo: cco:ont00000055 and sdg:providesService some sdg:ClinicalCare",
    "slot_types": {
     "CommunityHealthcareSetting": "Class"
@@ -8668,7 +8712,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_communityhealthcaresetting",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Community Healthcare Setting",
@@ -8680,7 +8726,7 @@
    "scope_note": "This term describes a healthcare facility that delivers clinical care services within a community-based environment."
   },
   {
-   "template_id": "filler_continuousemissionsmonitoringsystem",
+   "template_id": "continuous_emissions_monitoring_system",
    "manchester_template": "Class: {ContinuousEmissionsMonitoringSystem:Class} EquivalentTo: cco:ont00000453 and bfo:0000056 some sdg:ContinuousEmissionsMonitoringProcess",
    "slot_types": {
     "ContinuousEmissionsMonitoringSystem": "Class"
@@ -8703,7 +8749,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_continuousemissionsmonitoringsystem",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Continuous Emissions Monitoring System",
@@ -8715,7 +8763,7 @@
    "scope_note": "Used for systems that continuously monitor emissions, typically in industrial or environmental contexts, to ensure compliance with regulatory standards."
   },
   {
-   "template_id": "filler_copieddocument",
+   "template_id": "copied_document",
    "manchester_template": "Class: {CopiedDocument:Class} EquivalentTo: cco:ont00001298 and cco:ont00001824 some cco:ont00000253",
    "slot_types": {
     "CopiedDocument": "Class"
@@ -8738,7 +8786,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_copieddocument",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Material Copy of Document",
@@ -8750,7 +8800,7 @@
    "scope_note": "Applies to physical or digital document instances that replicate the information content of an original source document. Used when tracking document lineage through material replication events."
   },
   {
-   "template_id": "filler_corporateagent",
+   "template_id": "corporate_agent",
    "manchester_template": "Class: {CorporateAgent:Class} EquivalentTo: cco:ont00000443 and bfo:0000056 some sdg:CorporateActivity",
    "slot_types": {
     "CorporateAgent": "Class"
@@ -8773,7 +8823,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_corporateagent",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Corporate Agent",
@@ -8785,7 +8837,7 @@
    "scope_note": "Applies when a registered business entity engages in commercial transactions, regulatory compliance, or corporate governance activities. This term covers corporations, LLCs, or partnerships operating within a market."
   },
   {
-   "template_id": "filler_corporateauditfunction",
+   "template_id": "corporate_audit_function",
    "manchester_template": "Class: {CorporateAuditFunction:Class} EquivalentTo: cco:ont00000938 and bfo:0000056 some sdg:CorporateAuditProcess",
    "slot_types": {
     "CorporateAuditFunction": "Class"
@@ -8808,7 +8860,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_corporateauditfunction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "corporate audit function",
@@ -8820,7 +8874,7 @@
    "scope_note": "Operational roles within corporate structures responsible for verifying financial records and ensuring regulatory compliance. The term applies to functions performed by internal audit teams or external auditors examining financial statements and operational procedures."
   },
   {
-   "template_id": "filler_corporatecoalition",
+   "template_id": "corporate_coalition",
    "manchester_template": "Class: {CorporateCoalition:Class} EquivalentTo: cco:ont00001239 and bfo:0000178 some cco:ont00000443",
    "slot_types": {
     "CorporateCoalition": "Class"
@@ -8843,7 +8897,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_corporatecoalition",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Corporate Coalition",
@@ -8855,7 +8911,7 @@
    "scope_note": "Applies to organizational structures formed by multiple commercial entities working together toward shared objectives. Used when documenting collaborative business arrangements involving multiple corporations."
   },
   {
-   "template_id": "filler_corporateemployee",
+   "template_id": "corporate_employee",
    "manchester_template": "Class: {CorporateEmployee:Class} EquivalentTo: cco:ont00000647 and bfo:0000056 some sdg:CorporateEmploymentProcess",
    "slot_types": {
     "CorporateEmployee": "Class"
@@ -8878,7 +8934,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_corporateemployee",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Corporate Employee",
@@ -8889,7 +8947,7 @@
    "scope_note": "A corporate employee is an organization member that participates in a corporate employment process. This member works within a corporate structure."
   },
   {
-   "template_id": "filler_corporatereputationmetric",
+   "template_id": "corporate_reputation_metric",
    "manchester_template": "Class: {CorporateReputationMetric:Class} EquivalentTo: bfo:0000056 some sdg:CorporateReputationMeasurement",
    "slot_types": {
     "CorporateReputationMetric": "Class"
@@ -8912,7 +8970,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_corporatereputationmetric",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Corporate Reputation Measurement",
@@ -8925,7 +8985,7 @@
    "scope_note": "A measurement information content entity that quantifies corporate reputation through structured data collection and analysis."
   },
   {
-   "template_id": "filler_courseselectionset",
+   "template_id": "course_selection_set",
    "manchester_template": "Class: {CourseSelectionSet:Class} EquivalentTo: bfo:0000031",
    "slot_types": {
     "CourseSelectionSet": "Class"
@@ -8948,7 +9008,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_courseselectionset",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Course Selection Set",
@@ -8960,7 +9022,7 @@
    "scope_note": "Refers to a collection of courses that have been selected for a specific educational track or program, often used in academic planning or curriculum design."
   },
   {
-   "template_id": "filler_courtdocument",
+   "template_id": "court_document",
    "manchester_template": "Class: {CourtDocument:Class} EquivalentTo: cco:ont00002044 and bfo:0000056 some sdg:LegalProceeding",
    "slot_types": {
     "CourtDocument": "Class"
@@ -8983,7 +9045,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_courtdocument",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Court Record",
@@ -8995,7 +9059,7 @@
    "scope_note": "Applies to formal written records submitted to or generated by a court during legal proceedings. Practitioners use this term when cataloging evidence, motions, or judgments in litigation, compliance, or archival workflows."
   },
   {
-   "template_id": "filler_criminaljusticesystem",
+   "template_id": "criminal_justice_system",
    "manchester_template": "Class: {CriminalJusticeSystem:Class} EquivalentTo: cco:ont00000870 and bfo:0000056 some sdg:CriminalJusticeProcess",
    "slot_types": {
     "CriminalJusticeSystem": "Class"
@@ -9018,7 +9082,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_criminaljusticesystem",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Criminal Justice System",
@@ -9030,7 +9096,7 @@
    "scope_note": "The Criminal Justice System encompasses the network of agencies and processes that enforce criminal law. This infrastructure supports law enforcement, courts, and corrections in maintaining public safety. The system coordinates investigations, prosecutions, and rehabilitation efforts."
   },
   {
-   "template_id": "filler_culturalattribute",
+   "template_id": "cultural_attribute",
    "manchester_template": "Class: {CulturalAttribute:Class} EquivalentTo: bfo:0000019 and bfo:0000197 some sdg:OrganizationalCulture",
    "slot_types": {
     "CulturalAttribute": "Class"
@@ -9053,7 +9119,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_culturalattribute",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Cultural Quality",
@@ -9064,7 +9132,7 @@
    "scope_note": "A cultural attribute describes the quality of an organizational culture. This quality inheres in the culture."
   },
   {
-   "template_id": "filler_curriculum",
+   "template_id": "curriculum",
    "manchester_template": "Class: {Curriculum:Class} EquivalentTo: bfo:0000031 and bfo:0000178 some sdg:Course",
    "slot_types": {
     "Curriculum": "Class"
@@ -9084,7 +9152,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_curriculum",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "educational course plan",
@@ -9097,7 +9167,7 @@
    "scope_note": "A structured set of courses comprising an educational program. This entity organizes individual courses into a coherent sequence for educational instruction."
   },
   {
-   "template_id": "filler_customernetwork",
+   "template_id": "customer_network",
    "manchester_template": "Class: {CustomerNetwork:Class} EquivalentTo: cco:ont00000700 and bfo:0000178 some sdg:CustomerDevice",
    "slot_types": {
     "CustomerNetwork": "Class"
@@ -9120,7 +9190,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_customernetwork",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Customer Network",
@@ -9132,7 +9204,7 @@
    "scope_note": "Applies when tracking interactions between a business and its customers through digital devices. This term covers networks used for customer engagement, loyalty programs, or service delivery via mobile or web platforms."
   },
   {
-   "template_id": "filler_dish",
+   "template_id": "dish",
    "manchester_template": "Class: {Dish:Class} EquivalentTo: cco:ont00000307 and sdg:servedIn some cco:ont00001223",
    "slot_types": {
     "Dish": "Class"
@@ -9155,7 +9227,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_dish",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "served food portion",
@@ -9168,7 +9242,7 @@
    "scope_note": "Applies to food servings that are presented on specific receivers for consumption."
   },
   {
-   "template_id": "filler_districtemployee",
+   "template_id": "district_employee",
    "manchester_template": "Class: {DistrictEmployee:Class} EquivalentTo: cco:ont00000175 and sdg:memberOf some cco:ont00000545",
    "slot_types": {
     "DistrictEmployee": "Class"
@@ -9191,7 +9265,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_districtemployee",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "District Government Worker",
@@ -9203,7 +9279,7 @@
    "scope_note": "This organization member role held by an individual affiliated with a seat of local government applies to workers within district administrative structures. The role appears in local governance, public service, and administrative operations."
   },
   {
-   "template_id": "filler_domesticviolencevictimclient",
+   "template_id": "domestic_violence_victim_client",
    "manchester_template": "Class: {DomesticViolenceVictimClient:Class} EquivalentTo: sdg:DomesticViolenceSurvivor and sdg:involvedIn some sdg:LegalProceeding",
    "slot_types": {
     "DomesticViolenceVictimClient": "Class"
@@ -9226,7 +9302,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_domesticviolencevictimclient",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Domestic Violence Victim Client",
@@ -9238,7 +9316,7 @@
    "scope_note": "Applies to individuals who are survivors of domestic violence and are involved in legal proceedings, seeking legal advocacy or relief."
   },
   {
-   "template_id": "filler_donor",
+   "template_id": "donor",
    "manchester_template": "Class: {Donor:Class} EquivalentTo: cco:ont00000839 and sdg:involves some cco:ont00001098",
    "slot_types": {
     "Donor": "Class"
@@ -9261,7 +9339,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_donor",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Hospital Donor",
@@ -9274,7 +9354,7 @@
    "scope_note": "A donor entity participating in an act of donation where the hospital serves as the direct recipient of the donated goods or funds."
   },
   {
-   "template_id": "filler_donoragent",
+   "template_id": "donor_agent",
    "manchester_template": "Class: {DonorAgent:Class} EquivalentTo: cco:ont00001017 and sdg:participatesIn some cco:ont00000839",
    "slot_types": {
     "DonorAgent": "Class"
@@ -9297,7 +9377,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_donoragent",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Donation participant agent",
@@ -9308,7 +9390,7 @@
    "scope_note": "An agent that takes an active role in the act of donating."
   },
   {
-   "template_id": "filler_earthobservationdata",
+   "template_id": "earth_observation_data",
    "manchester_template": "Class: {EarthObservationData:Class} EquivalentTo: sdg:EnvironmentalData and sdg:collectedBy some cco:ont00000352",
    "slot_types": {
     "EarthObservationData": "Class"
@@ -9331,7 +9413,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_earthobservationdata",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "satellite environmental data",
@@ -9344,7 +9428,7 @@
    "scope_note": "Environmental data gathered from orbit by satellite artifacts equipped with remote sensing instruments. This data supports atmospheric monitoring, land surface tracking, and oceanographic studies."
   },
   {
-   "template_id": "filler_economicgoodsandservices",
+   "template_id": "economic_goods_and_services",
    "manchester_template": "Class: {EconomicGoodsAndServices:Class} EquivalentTo: sdg:ServiceFunction and sdg:tradedIn some sdg:TariffStructure",
    "slot_types": {
     "EconomicGoodsAndServices": "Class"
@@ -9365,7 +9449,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_economicgoodsandservices",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Economic Goods and Services",
@@ -9377,7 +9463,7 @@
    "scope_note": "Applies to service functions traded within specific tariff structures. Used when documenting economic functions that participate in structured trade arrangements and tariff-based transactions."
   },
   {
-   "template_id": "filler_energysavingcomponent",
+   "template_id": "energy_saving_component",
    "manchester_template": "Class: {EnergySavingComponent:Class} EquivalentTo: cco:ont00000288 and sdg:usedIn some cco:ont00000849",
    "slot_types": {
     "EnergySavingComponent": "Class"
@@ -9400,7 +9486,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_energysavingcomponent",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Energy Efficiency Part",
@@ -9411,7 +9499,7 @@
    "scope_note": "Applies to hardware parts installed in heating systems to reduce power consumption and improve thermal efficiency. These components operate continuously to maintain optimized temperature settings."
   },
   {
-   "template_id": "filler_ethicalinvestmentasset",
+   "template_id": "ethical_investment_asset",
    "manchester_template": "Class: {EthicalInvestmentAsset:Class} EquivalentTo: cco:ont00000537 and sdg:hasPurpose some sdg:EthicalInvestment",
    "slot_types": {
     "EthicalInvestmentAsset": "Class"
@@ -9434,7 +9522,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_ethicalinvestmentasset",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Ethical investment asset",
@@ -9446,7 +9536,7 @@
    "scope_note": "Applies to a financial instrument designated for ethical investment strategies."
   },
   {
-   "template_id": "filler_ethicalrequirement",
+   "template_id": "ethical_requirement",
    "manchester_template": "Class: {EthicalRequirement:Class} EquivalentTo: cco:ont00001224 and sdg:hasStandard some sdg:EthicalStandard",
    "slot_types": {
     "EthicalRequirement": "Class"
@@ -9469,7 +9559,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_ethicalrequirement",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Ethical Standard Requirement",
@@ -9481,7 +9573,7 @@
    "scope_note": "Ethical requirement entities specify adherence to ethical principles or standards within research or professional contexts. Institutional review boards and compliance offices document these requirements to ensure ethical conduct during study implementation."
   },
   {
-   "template_id": "filler_evaluationoutcome",
+   "template_id": "evaluation_outcome",
    "manchester_template": "Class: {EvaluationOutcome:Class} EquivalentTo: cco:ont00001068 and sdg:resultsFrom some sdg:TeamAssessmentEvent",
    "slot_types": {
     "EvaluationOutcome": "Class"
@@ -9504,7 +9596,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_evaluationoutcome",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Evaluation Result",
@@ -9516,7 +9610,7 @@
    "scope_note": "An evaluation outcome represents the measurable result produced through systematic team assessment activities. This artifact captures quality improvements, performance metrics, and identified strengths derived from structured evaluation processes."
   },
   {
-   "template_id": "filler_executivedirectorfunction",
+   "template_id": "executive_director_function",
    "manchester_template": "Class: {ExecutiveDirectorFunction:Class} EquivalentTo: cco:ont00000175 and sdg:hasResponsibility some sdg:ExecutiveDirection",
    "slot_types": {
     "ExecutiveDirectorFunction": "Class"
@@ -9539,13 +9633,15 @@
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08",
      "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
-    }
+    },
+    "renamed_from": "filler_executivedirectorfunction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_executiveexecutionfunction",
+   "template_id": "executive_execution_function",
    "manchester_template": "Class: {ExecutiveExecutionFunction:Class} EquivalentTo: sdg:ExecutiveLeadershipProcess and sdg:hasPurpose some sdg:ExecutiveImplementation",
    "slot_types": {
     "ExecutiveExecutionFunction": "Class"
@@ -9565,7 +9661,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_executiveexecutionfunction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "executive execution function",
@@ -9578,7 +9676,7 @@
    "scope_note": "Applies to the active phase of leadership where strategic plans are translated into concrete actions, operational steps, or organizational changes."
   },
   {
-   "template_id": "filler_executiveteam",
+   "template_id": "executive_team",
    "manchester_template": "Class: {ExecutiveTeam:Class} EquivalentTo: cco:ont00001180 and sdg:hasMember some sdg:ExecutiveLeadershipProcess",
    "slot_types": {
     "ExecutiveTeam": "Class"
@@ -9601,7 +9699,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_executiveteam",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Executive Board",
@@ -9613,7 +9713,7 @@
    "scope_note": "Applies to groups of individuals holding executive leadership roles within an organization. Practitioners use this term when describing governance structures, strategic decision-making bodies, or executive committees in corporate or institutional contexts."
   },
   {
-   "template_id": "filler_executiveteammember",
+   "template_id": "executive_team_member",
    "manchester_template": "Class: {ExecutiveTeamMember:Class} EquivalentTo: cco:ont00000647 and sdg:servesOn some sdg:ExecutiveLeadershipProcess",
    "slot_types": {
     "ExecutiveTeamMember": "Class"
@@ -9633,7 +9733,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_executiveteammember",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Executive Team Member",
@@ -9646,7 +9748,7 @@
    "scope_note": "Applies to individuals serving in senior leadership roles as part of an organization's executive team."
   },
   {
-   "template_id": "filler_expeditionequipment",
+   "template_id": "expedition_equipment",
    "manchester_template": "Class: {ExpeditionEquipment:Class} EquivalentTo: cco:ont00001042 and sdg:usedFor some sdg:ArcticExpedition",
    "slot_types": {
     "ExpeditionEquipment": "Class"
@@ -9669,7 +9771,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_expeditionequipment",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Expedition Equipment",
@@ -9682,7 +9786,7 @@
    "scope_note": "Used to document equipment designed or utilized for polar research, logistics, and support missions."
   },
   {
-   "template_id": "filler_expeditionparticipant",
+   "template_id": "expedition_participant",
    "manchester_template": "Class: {ExpeditionParticipant:Class} EquivalentTo: cco:ont00001284 and sdg:participatesIn some sdg:ArcticExpedition",
    "slot_types": {
     "ExpeditionParticipant": "Class"
@@ -9705,7 +9809,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_expeditionparticipant",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "expedition crew member",
@@ -9718,7 +9824,7 @@
    "scope_note": "Applies to crew members who are part of arctic expedition teams."
   },
   {
-   "template_id": "filler_experiencedmentor",
+   "template_id": "experienced_mentor",
    "manchester_template": "Class: {ExperiencedMentor:Class} EquivalentTo: cco:ont00000599 and sdg:hasExperience some sdg:ProfessionalExperience",
    "slot_types": {
     "ExperiencedMentor": "Class"
@@ -9741,7 +9847,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08"
-    }
+    },
+    "renamed_from": "filler_experiencedmentor",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Experienced mentor",
@@ -9753,7 +9861,7 @@
    "scope_note": "Use this term for individuals with substantial professional experience who provide mentorship. It applies to the role of mentorship, not to mentorship programs, external agencies, or petitioners."
   },
   {
-   "template_id": "filler_exportexecution",
+   "template_id": "export_execution",
    "manchester_template": "Class: {ExportExecution:Class} EquivalentTo: cco:ont00001309 and sdg:realizes some sdg:PdfExportProcess",
    "slot_types": {
     "ExportExecution": "Class"
@@ -9776,7 +9884,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_exportexecution",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "PDF export execution profile",
@@ -9787,7 +9897,7 @@
    "scope_note": "A process profile that governs the execution parameters for the specific act of exporting data to a PDF format."
   },
   {
-   "template_id": "filler_exporteddataartifact",
+   "template_id": "exported_data_artifact",
    "manchester_template": "Class: {ExportedDataArtifact:Class} EquivalentTo: cco:ont00000995 and sdg:producedBy some sdg:DataExportProcess",
    "slot_types": {
     "ExportedDataArtifact": "Class"
@@ -9810,7 +9920,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_exporteddataartifact",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Exported Data Artifact",
@@ -9822,7 +9934,7 @@
    "scope_note": "Applies to material artifacts produced through data export processes. Used when tracking information artifacts that result from systematic data export operations."
   },
   {
-   "template_id": "filler_externalagency",
+   "template_id": "external_agency",
    "manchester_template": "Class: {ExternalAgency:Class} EquivalentTo: cco:ont00001017 and sdg:hasRelationship some sdg:ExternalBusinessPartner",
    "slot_types": {
     "ExternalAgency": "Class"
@@ -9845,7 +9957,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_externalagency",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "External Agency",
@@ -9857,7 +9971,7 @@
    "scope_note": "Identifies an agent that maintains an external business partner relationship with an organization. Used to distinguish external entities from internal staff."
   },
   {
-   "template_id": "filler_industrialemissionsource",
+   "template_id": "industrial_emission_source",
    "manchester_template": "Class: {IndustrialEmissionSource:Class} EquivalentTo: cco:ont00000288 and sdg:emitsIndustrialEmission some bfo:0000040",
    "slot_types": {
     "IndustrialEmissionSource": "Class"
@@ -9880,7 +9994,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_industrialemissionsource",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "industrial emission source",
@@ -9892,7 +10008,7 @@
    "scope_note": "Used when identifying the physical power source or facility component that releases industrial pollutants into the environment."
   },
   {
-   "template_id": "filler_informationcapability",
+   "template_id": "information_capability",
    "manchester_template": "Class: {InformationCapability:Class} EquivalentTo: cco:ont00000568 and sdg:conveysInformationContent some cco:ont00000958",
    "slot_types": {
     "InformationCapability": "Class"
@@ -9915,7 +10031,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_informationcapability",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "information capability",
@@ -9927,7 +10045,7 @@
    "scope_note": "Used in organizational studies and information systems to describe an organization's inherent capacity to transmit, process, or manage information content effectively, often involving specific technologies, protocols, or workflows."
   },
   {
-   "template_id": "filler_informationitem",
+   "template_id": "information_item",
    "manchester_template": "Class: {InformationItem:Class} EquivalentTo: cco:ont00000958 and sdg:encodesTaggingMetadata some bfo:0000040",
    "slot_types": {
     "InformationItem": "Class"
@@ -9950,7 +10068,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_informationitem",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Tagging metadata record",
@@ -9962,7 +10082,7 @@
    "scope_note": "Applies to data structures that store and represent metadata generated during social tagging activities."
   },
   {
-   "template_id": "filler_informationsystem",
+   "template_id": "information_system",
    "manchester_template": "Class: {InformationSystem:Class} EquivalentTo: cco:ont00001036 and sdg:managesClinicalDocumentationData some cco:ont00000958",
    "slot_types": {
     "InformationSystem": "Class"
@@ -9985,7 +10105,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_informationsystem",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Clinical Data Platform",
@@ -9997,7 +10119,7 @@
    "scope_note": "Software systems designed to store, retrieve, and manage electronic patient records, clinical notes, and diagnostic data within healthcare environments."
   },
   {
-   "template_id": "filler_inspectionevent",
+   "template_id": "inspection_event",
    "manchester_template": "Class: {InspectionEvent:Class} EquivalentTo: cco:ont00000037 and sdg:recordsInspectionOutcome some cco:ont00000958",
    "slot_types": {
     "InspectionEvent": "Class"
@@ -10019,7 +10141,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_inspectionevent",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Inspection Event",
@@ -10031,7 +10155,7 @@
    "scope_note": "Applies to formal inspection activities conducted to verify compliance, safety, or operational conditions."
   },
   {
-   "template_id": "filler_intelligenceoutput",
+   "template_id": "intelligence_output",
    "manchester_template": "Class: {IntelligenceOutput:Class} EquivalentTo: cco:ont00000117 and sdg:resultsFromHealthcareAnalytics some bfo:0000015",
    "slot_types": {
     "IntelligenceOutput": "Class"
@@ -10054,7 +10178,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_intelligenceoutput",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Intelligence Output",
@@ -10066,7 +10192,7 @@
    "scope_note": "This term describes an information processing artifact generated from healthcare analytics, representing the results of analyzing healthcare data. It includes the outputs produced by processes that transform raw data into actionable insights, supporting decision-making and operational improvements."
   },
   {
-   "template_id": "filler_interdisciplinaryeducation",
+   "template_id": "interdisciplinary_education",
    "manchester_template": "Class: {InterdisciplinaryEducation:Class} EquivalentTo: cco:ont00001266 and sdg:integratesMultipleDisciplines some bfo:0000040",
    "slot_types": {
     "InterdisciplinaryEducation": "Class"
@@ -10089,7 +10215,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_interdisciplinaryeducation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Interdisciplinary Education",
@@ -10101,7 +10229,7 @@
    "scope_note": "This term describes an instructional process that integrates knowledge and methodologies from multiple academic disciplines. It involves the combination of content, methods, and perspectives from different fields to provide a comprehensive and cohesive learning experience."
   },
   {
-   "template_id": "filler_investmentchoicedecision",
+   "template_id": "investment_choice_decision",
    "manchester_template": "Class: {InvestmentChoiceDecision:Class} EquivalentTo: cco:ont00000366 and sdg:selectsInvestmentOption some cco:ont00000608",
    "slot_types": {
     "InvestmentChoiceDecision": "Class"
@@ -10124,7 +10252,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_investmentchoicedecision",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "investment choice decision",
@@ -10136,7 +10266,7 @@
    "scope_note": "An information processing act where an investor or advisor selects a specific financial investment option from a set of available alternatives. This process involves evaluating risk profiles, return expectations, and portfolio constraints to determine the final investment allocation."
   },
   {
-   "template_id": "filler_investorfundingsituation",
+   "template_id": "investor_funding_situation",
    "manchester_template": "Class: {InvestorFundingSituation:Class} EquivalentTo: cco:ont00000322 and sdg:providedByInvestor some sdg:InstitutionalInvestor",
    "slot_types": {
     "InvestorFundingSituation": "Class"
@@ -10159,7 +10289,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_investorfundingsituation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Investor Funding Situation",
@@ -10171,7 +10303,7 @@
    "scope_note": "Applies to financial transactions where an institutional investor provides capital to a business venture."
   },
   {
-   "template_id": "filler_investorrelationsactivity",
+   "template_id": "investor_relations_activity",
    "manchester_template": "Class: {InvestorRelationsActivity:Class} EquivalentTo: sdg:OrganizationalActivity and sdg:managesInvestorCommunication some sdg:InstitutionalInvestor",
    "slot_types": {
     "InvestorRelationsActivity": "Class"
@@ -10194,7 +10326,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "400fcc1ac0c6bdf6"
-    }
+    },
+    "renamed_from": "filler_investorrelationsactivity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Investor Relations",
@@ -10207,7 +10341,7 @@
    "scope_note": "Applies to organizational activities managing communication channels between a company and its institutional investors."
   },
   {
-   "template_id": "filler_keyframetimeline",
+   "template_id": "keyframe_timeline",
    "manchester_template": "Class: {KeyframeTimeline:Class} EquivalentTo: bfo:0000040 and sdg:hasKeyframe some bfo:0000040",
    "slot_types": {
     "KeyframeTimeline": "Class"
@@ -10230,7 +10364,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_keyframetimeline",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "keyframe timeline",
@@ -10242,7 +10378,7 @@
    "scope_note": "Used in animation and video editing to define the temporal interval that marks specific time points for keyframes in a sequence."
   },
   {
-   "template_id": "filler_lateralrestraintstrap",
+   "template_id": "lateral_restraint_strap",
    "manchester_template": "Class: {LateralRestraintStrap:Class} EquivalentTo: cco:ont00000715 and sdg:providesLateralRestraint some bfo:0000040",
    "slot_types": {
     "LateralRestraintStrap": "Class"
@@ -10265,7 +10401,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_lateralrestraintstrap",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "lateral restraint strap",
@@ -10277,7 +10415,7 @@
    "scope_note": "A prosthetic component designed to provide lateral restraint and stabilization during use. This material entity attaches to the prosthetic device to maintain alignment and prevent unwanted side-to-side movement of the residual limb or socket."
   },
   {
-   "template_id": "filler_lawenforcementagency",
+   "template_id": "law_enforcement_agency",
    "manchester_template": "Class: {LawEnforcementAgency:Class} EquivalentTo: cco:ont00000408 and sdg:enforcesLaws some bfo:0000040",
    "slot_types": {
     "LawEnforcementAgency": "Class"
@@ -10300,7 +10438,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_lawenforcementagency",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Law Enforcement Agency",
@@ -10311,7 +10451,7 @@
    "scope_note": "A government organization empowered to enforce laws."
   },
   {
-   "template_id": "filler_maritalstate",
+   "template_id": "marital_state",
    "manchester_template": "Class: {MaritalState:Class} EquivalentTo: cco:ont00000934 and sdg:indicatesMaritalStatus some cco:ont00000895",
    "slot_types": {
     "MaritalState": "Class"
@@ -10334,7 +10474,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_maritalstate",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "marital condition",
@@ -10347,7 +10489,7 @@
    "scope_note": "A constituent state that indicates the marital condition of a person. This state captures the formal relationship status between individuals in a marriage."
   },
   {
-   "template_id": "filler_marketdemand",
+   "template_id": "market_demand",
    "manchester_template": "Class: {MarketDemand:Class} EquivalentTo: cco:ont00000608 and sdg:quantifiesDesireFor some cco:ont00001278",
    "slot_types": {
     "MarketDemand": "Class"
@@ -10370,7 +10512,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_marketdemand",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Market Demand",
@@ -10382,7 +10526,7 @@
    "scope_note": "Applies to financial markets where the desire for a specific stock or commodity is quantified."
   },
   {
-   "template_id": "filler_markettrend",
+   "template_id": "market_trend",
    "manchester_template": "Class: {MarketTrend:Class} EquivalentTo: cco:ont00000608 and sdg:indicatesDirectionalChangeIn some cco:ont00001278",
    "slot_types": {
     "MarketTrend": "Class"
@@ -10405,7 +10549,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_markettrend",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Stock Movement Pattern",
@@ -10416,7 +10562,7 @@
    "scope_note": "Applies to financial data points that track the directional change or pattern of a stock over time. Analysts use these indicators to identify long-term growth or decline patterns."
   },
   {
-   "template_id": "filler_marketingplan",
+   "template_id": "marketing_plan",
    "manchester_template": "Class: {MarketingPlan:Class} EquivalentTo: cco:ont00000974 and sdg:outlinesPromotionalStrategy some bfo:0000015",
    "slot_types": {
     "MarketingPlan": "Class"
@@ -10439,7 +10585,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_marketingplan",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Promotional Strategy Plan",
@@ -10451,7 +10599,7 @@
    "scope_note": "A marketing plan outlines promotional strategies and commercial activities designed to achieve specific business objectives. This strategic document coordinates advertising campaigns, market positioning, and customer engagement initiatives to drive commercial success."
   },
   {
-   "template_id": "filler_mathematicalconcept",
+   "template_id": "mathematical_concept",
    "manchester_template": "Class: {MathematicalConcept:Class} EquivalentTo: sdg:SubjectConcept and sdg:underpinsMathematicalReasoning some cco:ont00000653",
    "slot_types": {
     "MathematicalConcept": "Class"
@@ -10474,7 +10622,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_mathematicalconcept",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Mathematical Concept",
@@ -10486,7 +10636,7 @@
    "scope_note": "A mathematical concept represents an abstract principle that underpins mathematical reasoning and quantitative analysis. These foundational ideas enable systematic problem-solving and support the development of algorithms and computational models."
   },
   {
-   "template_id": "filler_measurementparameter",
+   "template_id": "measurement_parameter",
    "manchester_template": "Class: {MeasurementParameter:Class} EquivalentTo: cco:ont00000120 and sdg:quantifiesPhysicalProperty some bfo:0000019",
    "slot_types": {
     "MeasurementParameter": "Class"
@@ -10509,7 +10659,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_measurementparameter",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "measurement parameter",
@@ -10521,7 +10673,7 @@
    "scope_note": "Used in metrology and physical sciences to denote a specific property or dimension being measured, such as temperature, mass, or length, along with its associated unit and quantification method."
   },
   {
-   "template_id": "filler_member",
+   "template_id": "member",
    "manchester_template": "Class: {Member:Class} EquivalentTo: cco:ont00000175 and sdg:participatesInGroup some cco:ont00000914",
    "slot_types": {
     "Member": "Class"
@@ -10544,7 +10696,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_member",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Group Member",
@@ -10556,7 +10710,7 @@
    "scope_note": "Member entities confer participation and benefit eligibility within groups or organizations. Membership rosters and access control systems record these participations to manage group privileges and organizational resources."
   },
   {
-   "template_id": "filler_membership",
+   "template_id": "membership",
    "manchester_template": "Class: {Membership:Class} EquivalentTo: cco:ont00000744 and sdg:establishesOrganizationalAffiliation some cco:ont00001180",
    "slot_types": {
     "Membership": "Class"
@@ -10579,7 +10733,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_membership",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Organizational affiliation",
@@ -10591,7 +10747,7 @@
    "scope_note": "Applies to records and statuses that formalize an individual's connection to an organization or group."
   },
   {
-   "template_id": "filler_minorperson",
+   "template_id": "minor_person",
    "manchester_template": "Class: {MinorPerson:Class} EquivalentTo: cco:ont00001262 and sdg:hasAgeBelowLegalMajority some bfo:0000019",
    "slot_types": {
     "MinorPerson": "Class"
@@ -10614,7 +10770,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_minorperson",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Young person",
@@ -10626,7 +10784,7 @@
    "scope_note": "Applies to individuals who have not reached the legal age of majority and are subject to specific legal protections."
   },
   {
-   "template_id": "filler_patient",
+   "template_id": "patient",
    "manchester_template": "Class: {Patient:Class} EquivalentTo: cco:ont00001262 and sdg:participates_in some sdg:ClinicalCare",
    "slot_types": {
     "Patient": "Class"
@@ -10647,7 +10805,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_patient",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "clinical care recipient",
@@ -10658,7 +10818,7 @@
    "scope_note": "A person who is receiving or has received clinical care. This entity engages in the consumption of clinical care services."
   },
   {
-   "template_id": "filler_pdfdocument",
+   "template_id": "pdf_document",
    "manchester_template": "Class: {PdfDocument:Class} EquivalentTo: cco:ont00002039 and sdg:hasFormat some sdg:PdfFormat",
    "slot_types": {
     "PdfDocument": "Class"
@@ -10681,7 +10841,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_pdfdocument",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Portable Document Format file",
@@ -10692,7 +10854,7 @@
    "scope_note": "A document content entity that is encoded using the Portable Document Format."
   },
   {
-   "template_id": "filler_personaldatarecord",
+   "template_id": "personal_data_record",
    "manchester_template": "Class: {PersonalDataRecord:Class} EquivalentTo: cco:ont00002039 and sdg:contains some sdg:PersonallyIdentifiableInformation",
    "slot_types": {
     "PersonalDataRecord": "Class"
@@ -10715,7 +10877,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_personaldatarecord",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "personal information record",
@@ -10728,7 +10892,7 @@
    "scope_note": "A document content entity that contains personally identifiable information about an individual. This record holds specific data points that identify a person."
   },
   {
-   "template_id": "filler_policyviolation",
+   "template_id": "policy_violation",
    "manchester_template": "Class: {PolicyViolation:Class} EquivalentTo: cco:ont00000228 and sdg:violates some sdg:SchoolSecurityPolicy",
    "slot_types": {
     "PolicyViolation": "Class"
@@ -10751,7 +10915,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_policyviolation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Planned Policy Breach",
@@ -10764,7 +10930,7 @@
    "scope_note": "A deliberate act that contravenes a specified institutional policy or regulation."
   },
   {
-   "template_id": "filler_practicemanagementtopic",
+   "template_id": "practice_management_topic",
    "manchester_template": "Class: {PracticeManagementTopic:Class} EquivalentTo: cco:ont00001075 and sdg:addresses some sdg:RiskManagementActivity",
    "slot_types": {
     "PracticeManagementTopic": "Class"
@@ -10784,7 +10950,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_practicemanagementtopic",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Practice Management Topic",
@@ -10796,7 +10964,7 @@
    "scope_note": "Applies to training instruction acts focused on managing professional practice operations. Used when documenting educational content related to practice management procedures and operational guidelines."
   },
   {
-   "template_id": "filler_practicesession",
+   "template_id": "practice_session",
    "manchester_template": "Class: {PracticeSession:Class} EquivalentTo: cco:ont00000234 and sdg:hasPurpose some sdg:SkillImprovement",
    "slot_types": {
     "PracticeSession": "Class"
@@ -10816,7 +10984,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_practicesession",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Skill improvement training session",
@@ -10827,7 +10997,7 @@
    "scope_note": "An act of training specifically designed to improve professional skills."
   },
   {
-   "template_id": "filler_predicateconcept",
+   "template_id": "predicate_concept",
    "manchester_template": "Class: {PredicateConcept:Class} EquivalentTo: cco:ont00001069 and sdg:expresses some sdg:ConstructedPredicate",
    "slot_types": {
     "PredicateConcept": "Class"
@@ -10850,7 +11020,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_predicateconcept",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Predicate Concept",
@@ -10862,7 +11034,7 @@
    "scope_note": "Representational information content entities that express constructed predicates to define relationships and properties within knowledge systems."
   },
   {
-   "template_id": "filler_prevalencerate",
+   "template_id": "prevalence_rate",
    "manchester_template": "Class: {PrevalenceRate:Class} EquivalentTo: cco:ont00001047 and sdg:appliesToPopulation some sdg:Population",
    "slot_types": {
     "PrevalenceRate": "Class"
@@ -10884,7 +11056,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_prevalencerate",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Prevalence Frequency",
@@ -10896,7 +11070,7 @@
    "scope_note": "This rate represents the proportion of individuals in a specified population who have a particular condition or characteristic at a given time. It is used in epidemiology and public health to assess the burden of disease or the distribution of traits. The rate provides a snapshot of health status within the population."
   },
   {
-   "template_id": "filler_programofstudy",
+   "template_id": "program_of_study",
    "manchester_template": "Class: {ProgramOfStudy:Class} EquivalentTo: cco:ont00000463 and sdg:leadsToAcademicDegree some sdg:AcademicDegree",
    "slot_types": {
     "ProgramOfStudy": "Class"
@@ -10918,7 +11092,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_programofstudy",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "program of study",
@@ -10930,7 +11106,7 @@
    "scope_note": "A structured course of educational instruction designed to lead to the attainment of an academic degree. This educational framework outlines the required coursework, credit hours, and milestones necessary for degree completion."
   },
   {
-   "template_id": "filler_propertyowner",
+   "template_id": "property_owner",
    "manchester_template": "Class: {PropertyOwner:Class} EquivalentTo: cco:ont00000984 and sdg:holdsOwnershipOf some cco:ont00001336",
    "slot_types": {
     "PropertyOwner": "Class"
@@ -10952,7 +11128,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_propertyowner",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "property owner",
@@ -10964,7 +11142,7 @@
    "scope_note": "Used when identifying the individual or entity that legally possesses rights to a specific property or asset."
   },
   {
-   "template_id": "filler_publicinformationofficer",
+   "template_id": "public_information_officer",
    "manchester_template": "Class: {PublicInformationOfficer:Class} EquivalentTo: cco:ont00000408 and sdg:managesPublicInformation some cco:ont00000366",
    "slot_types": {
     "PublicInformationOfficer": "Class"
@@ -10980,13 +11158,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_publicinformationofficer",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_qosconstraint",
+   "template_id": "qo_s_constraint",
    "manchester_template": "Class: {QoSConstraint:Class} EquivalentTo: bfo:0000019 and sdg:constrainsServicePerformance some sdg:ServiceMetric",
    "slot_types": {
     "QoSConstraint": "Class"
@@ -11007,7 +11187,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_qosconstraint",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Quality Constraint",
@@ -11018,7 +11200,7 @@
    "scope_note": "A quality specification that defines acceptable performance limits for a service."
   },
   {
-   "template_id": "filler_qualityimprovementframework",
+   "template_id": "quality_improvement_framework",
    "manchester_template": "Class: {QualityImprovementFramework:Class} EquivalentTo: cco:ont00000575 and sdg:structuresQualityImprovement some cco:ont00000131",
    "slot_types": {
     "QualityImprovementFramework": "Class"
@@ -11034,13 +11216,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_qualityimprovementframework",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_quantitativeanalytictool",
+   "template_id": "quantitative_analytic_tool",
    "manchester_template": "Class: {QuantitativeAnalyticTool:Class} EquivalentTo: cco:ont00000581 and sdg:usedForQuantitativeAnalysis some cco:ont00000353",
    "slot_types": {
     "QuantitativeAnalyticTool": "Class"
@@ -11063,7 +11247,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_quantitativeanalytictool",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Numerical Analysis Instrument",
@@ -11075,7 +11261,7 @@
    "scope_note": "This term applies to instruments designed for performing numerical analysis and data interpretation within clinical or research settings."
   },
   {
-   "template_id": "filler_raffleconductingactivity",
+   "template_id": "raffle_conducting_activity",
    "manchester_template": "Class: {RaffleConductingActivity:Class} EquivalentTo: sdg:OrganizationalActivity and sdg:conductsRaffle some sdg:Raffle",
    "slot_types": {
     "RaffleConductingActivity": "Class"
@@ -11097,7 +11283,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_raffleconductingactivity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Raffle Conducting Activity",
@@ -11109,7 +11297,7 @@
    "scope_note": "Used for organizational activities that involve organizing and executing a raffle, often for fundraising or promotional purposes."
   },
   {
-   "template_id": "filler_receivingfacilitystaff",
+   "template_id": "receiving_facility_staff",
    "manchester_template": "Class: {ReceivingFacilityStaff:Class} EquivalentTo: cco:ont00000192 and sdg:employedByFacility some cco:ont00000055",
    "slot_types": {
     "ReceivingFacilityStaff": "Class"
@@ -11129,7 +11317,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_receivingfacilitystaff",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Receiving Center Personnel",
@@ -11141,7 +11331,7 @@
    "scope_note": "This term applies to personnel employed by healthcare facilities who manage the intake and processing of incoming communicable disease notifications."
   },
   {
-   "template_id": "filler_recoveredstate",
+   "template_id": "recovered_state",
    "manchester_template": "Class: {RecoveredState:Class} EquivalentTo: cco:ont00000934 and sdg:indicatesRecoveryFrom some sdg:VulnerabilityState",
    "slot_types": {
     "RecoveredState": "Class"
@@ -11161,7 +11351,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_recoveredstate",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Post-Deficiency Recovery State",
@@ -11173,7 +11365,7 @@
    "scope_note": "This state marks the point where health metrics or nutritional indicators return to baseline levels after a prior deficiency or illness. The constituent state appears in clinical monitoring, public health tracking, and nutritional rehabilitation programs where recovery is measured against prior vulnerable conditions."
   },
   {
-   "template_id": "filler_servicemanagementprocess",
+   "template_id": "service_management_process",
    "manchester_template": "Class: {ServiceManagementProcess:Class} EquivalentTo: cco:ont00001330 and sdg:coordinatesServiceProvision some sdg:ServiceType",
    "slot_types": {
     "ServiceManagementProcess": "Class"
@@ -11196,7 +11388,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_servicemanagementprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Service Management Process",
@@ -11208,7 +11402,7 @@
    "scope_note": "Applies to processes that coordinate the delivery and management of services within an organization."
   },
   {
-   "template_id": "filler_serviceperformancemetric",
+   "template_id": "service_performance_metric",
    "manchester_template": "Class: {ServicePerformanceMetric:Class} EquivalentTo: cco:ont00000127 and sdg:measuresServicePerformance some sdg:ServiceType",
    "slot_types": {
     "ServicePerformanceMetric": "Class"
@@ -11231,7 +11425,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08"
-    }
+    },
+    "renamed_from": "filler_serviceperformancemetric",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Service performance metric",
@@ -11243,7 +11439,7 @@
    "scope_note": "Use this term for specifications that quantify how a service type performs against established criteria. It applies when the focus is on measuring service quality or efficiency, not on general performance constraints or clinical data."
   },
   {
-   "template_id": "filler_serviceprovider",
+   "template_id": "service_provider",
    "manchester_template": "Class: {ServiceProvider:Class} EquivalentTo: bfo:0000040 and sdg:providesServiceFunction some sdg:ServiceFunction",
    "slot_types": {
     "ServiceProvider": "Class"
@@ -11266,13 +11462,15 @@
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08",
      "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
-    }
+    },
+    "renamed_from": "filler_serviceprovider",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_serviceprovisionactivity",
+   "template_id": "service_provision_activity",
    "manchester_template": "Class: {ServiceProvisionActivity:Class} EquivalentTo: bfo:0000015 and sdg:deliversServiceType some sdg:ServiceType",
    "slot_types": {
     "ServiceProvisionActivity": "Class"
@@ -11295,7 +11493,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_serviceprovisionactivity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Service Provision Activity",
@@ -11307,7 +11507,7 @@
    "scope_note": "Tracks the delivery of a service type to a client. Used to document the execution of service agreements."
   },
   {
-   "template_id": "filler_servicerequest",
+   "template_id": "service_request",
    "manchester_template": "Class: {ServiceRequest:Class} EquivalentTo: cco:ont00000769 and sdg:requestsServiceFunction some sdg:ServiceFunction",
    "slot_types": {
     "ServiceRequest": "Class"
@@ -11330,7 +11530,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_servicerequest",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Service function request",
@@ -11341,7 +11543,7 @@
    "scope_note": "An act of requesting that seeks a service function."
   },
   {
-   "template_id": "filler_significancelevel",
+   "template_id": "significance_level",
    "manchester_template": "Class: {SignificanceLevel:Class} EquivalentTo: cco:ont00001022 and sdg:indicatesStatisticalSignificance some sdg:QualificationLevel",
    "slot_types": {
     "SignificanceLevel": "Class"
@@ -11364,7 +11566,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_significancelevel",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Significance Level",
@@ -11376,7 +11580,7 @@
    "scope_note": "Applies to statistical analysis where the probability of observing a result by chance is quantified."
   },
   {
-   "template_id": "filler_simulationsoftware",
+   "template_id": "simulation_software",
    "manchester_template": "Class: {SimulationSoftware:Class} EquivalentTo: cco:ont00000932 and sdg:executesSimulation some cco:ont00001045",
    "slot_types": {
     "SimulationSoftware": "Class"
@@ -11399,7 +11603,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "400fcc1ac0c6bdf6"
-    }
+    },
+    "renamed_from": "filler_simulationsoftware",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Simulation Software",
@@ -11411,7 +11617,7 @@
    "scope_note": "Applies to the computing artifact function that runs mathematical models to replicate the behavior of complex systems under varying conditions."
   },
   {
-   "template_id": "filler_slaviclinguisticroot",
+   "template_id": "slavic_linguistic_root",
    "manchester_template": "Class: {SlavicLinguisticRoot:Class} EquivalentTo: cco:ont00001175 and sdg:constitutesHistoricalRoot some cco:ont00001175",
    "slot_types": {
     "SlavicLinguisticRoot": "Class"
@@ -11434,7 +11640,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_slaviclinguisticroot",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Slavic linguistic root",
@@ -11446,7 +11654,7 @@
    "scope_note": "Applied in historical linguistics and philology to identify the ancestral linguistic forms or roots that serve as the foundation for the development of Slavic languages and their dialects."
   },
   {
-   "template_id": "filler_socialharmonyrestoration",
+   "template_id": "social_harmony_restoration",
    "manchester_template": "Class: {SocialHarmonyRestoration:Class} EquivalentTo: cco:ont00001327 and sdg:restoresSocialHarmony some cco:ont00001183",
    "slot_types": {
     "SocialHarmonyRestoration": "Class"
@@ -11469,7 +11677,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_socialharmonyrestoration",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Social harmony restoration",
@@ -11481,7 +11691,7 @@
    "scope_note": "Applies to a social act that restores harmony within a social network."
   },
   {
-   "template_id": "filler_socialmediaaccountmanagementprocess",
+   "template_id": "social_media_account_management_process_definition",
    "manchester_template": "Class: {SocialMediaAccountManagementProcess:Class} EquivalentTo: bfo:0000015 and sdg:managesAccountAuthorizationRecord some sdg:AccountAuthorizationRecord",
    "slot_types": {
     "SocialMediaAccountManagementProcess": "Class"
@@ -11497,13 +11707,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_socialmediaaccountmanagementprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_socialnetworkingservicetype",
+   "template_id": "social_networking_service_type",
    "manchester_template": "Class: {SocialNetworkingServiceType:Class} EquivalentTo: sdg:ServiceType and sdg:coversSocialNetworkingServiceUsage some sdg:SocialNetworkingServiceUsage",
    "slot_types": {
     "SocialNetworkingServiceType": "Class"
@@ -11519,13 +11731,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_socialnetworkingservicetype",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_socialservicesdepartment",
+   "template_id": "social_services_department",
    "manchester_template": "Class: {SocialServicesDepartment:Class} EquivalentTo: cco:ont00000408 and sdg:administersSocialServices some sdg:ServiceUsageCategory",
    "slot_types": {
     "SocialServicesDepartment": "Class"
@@ -11548,7 +11762,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08"
-    }
+    },
+    "renamed_from": "filler_socialservicesdepartment",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Social services department",
@@ -11560,7 +11776,7 @@
    "scope_note": "Use this term for government organizations responsible for administering social services. It applies to administrative bodies managing social welfare, not to legislative departments, social networking services, or membership transfer requests."
   },
   {
-   "template_id": "filler_socialtag",
+   "template_id": "social_tag",
    "manchester_template": "Class: {SocialTag:Class} EquivalentTo: cco:ont00000958 and sdg:labelsSocialNetworkingServiceUsage some sdg:SocialNetworkingServiceUsage",
    "slot_types": {
     "SocialTag": "Class"
@@ -11580,7 +11796,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_socialtag",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Social Media Tag",
@@ -11592,7 +11810,7 @@
    "scope_note": "Social tag entities label social networking service usage through user-generated metadata. Social networking platforms and digital archives capture these tags to organize user content and track social media activity patterns."
   },
   {
-   "template_id": "filler_softwareinterface",
+   "template_id": "software_interface",
    "manchester_template": "Class: {SoftwareInterface:Class} EquivalentTo: bfo:0000031 and sdg:enablesDataExport some cco:ont00002006",
    "slot_types": {
     "SoftwareInterface": "Class"
@@ -11615,7 +11833,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_softwareinterface",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "software interface",
@@ -11627,7 +11847,7 @@
    "scope_note": "A generically dependent continuant that enables data export to a database. This interface facilitates the structured transmission of information from the software system to external storage locations."
   },
   {
-   "template_id": "filler_subjectconcept",
+   "template_id": "subject_concept",
    "manchester_template": "Class: {SubjectConcept:Class} EquivalentTo: cco:ont00000686 and sdg:has_denotation some bfo:0000002",
    "slot_types": {
     "SubjectConcept": "Class"
@@ -11650,7 +11870,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_subjectconcept",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "subject concept",
@@ -11662,7 +11884,7 @@
    "scope_note": "Used when documenting the specific object, entity, or target that an information artifact, such as a label, tag, or metadata field, refers to or identifies within a system."
   },
   {
-   "template_id": "filler_targetmaterial",
+   "template_id": "target_material",
    "manchester_template": "Class: {TargetMaterial:Class} EquivalentTo: cco:ont00000457 and sdg:is_target_of some cco:ont00000741",
    "slot_types": {
     "TargetMaterial": "Class"
@@ -11685,7 +11907,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_targetmaterial",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Target Substance",
@@ -11697,7 +11921,7 @@
    "scope_note": "This material serves as the target of a targeting act, such as in medical treatments or industrial processes. It is the specific portion of material that receives the directed energy or action. The term applies to contexts where precise targeting is required for effective outcomes."
   },
   {
-   "template_id": "filler_taxirideprocess",
+   "template_id": "taxi_ride_process",
    "manchester_template": "Class: {TaxiRideProcess:Class} EquivalentTo: cco:ont00000890 and sdg:participates_in some cco:ont00000515",
    "slot_types": {
     "TaxiRideProcess": "Class"
@@ -11718,7 +11942,9 @@
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91",
      "m7_disposition": "accepted 2026-07-07 — 10/10 flagged items from one traffic-ordinance doc (048d27a5); topical concentration, not basin pathology"
-    }
+    },
+    "renamed_from": "filler_taxirideprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Taxi Passenger Transport",
@@ -11730,7 +11956,7 @@
    "scope_note": "This act of travel involves the use of a vehicle for passenger transport where the taxi ride process participates in the broader travel activity. The process applies in urban transportation, ride-sharing, and taxi services where passengers are transported via taxi."
   },
   {
-   "template_id": "filler_teamfunction",
+   "template_id": "team_function",
    "manchester_template": "Class: {TeamFunction:Class} EquivalentTo: bfo:0000034 and sdg:realized_in some cco:ont00001284",
    "slot_types": {
     "TeamFunction": "Class"
@@ -11750,7 +11976,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_teamfunction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Team Function",
@@ -11762,7 +11990,7 @@
    "scope_note": "A Team Function describes the specific role or activity performed by a crew or team organization. This function contributes to the overall objectives of the team. The activity is realized through the coordinated efforts of team members."
   },
   {
-   "template_id": "filler_telesalesactivity",
+   "template_id": "tele_sales_activity",
    "manchester_template": "Class: {TeleSalesActivity:Class} EquivalentTo: bfo:0000015 and sdg:uses_communication_medium some cco:ont00000907",
    "slot_types": {
     "TeleSalesActivity": "Class"
@@ -11785,7 +12013,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_telesalesactivity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Telesales Activity",
@@ -11798,7 +12028,7 @@
    "scope_note": "Applies to commercial sales processes conducted through telephone communication channels. This term covers sales interactions initiated or completed via telephone networks including outbound calling campaigns and inbound sales calls."
   },
   {
-   "template_id": "filler_telescopeinstrumentartifact",
+   "template_id": "telescope_instrument_artifact",
    "manchester_template": "Class: {TelescopeInstrumentArtifact:Class} EquivalentTo: cco:ont00000547 and sdg:has_function some sdg:ObservationFunction",
    "slot_types": {
     "TelescopeInstrumentArtifact": "Class"
@@ -11820,7 +12050,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_telescopeinstrumentartifact",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Telescope Instrument",
@@ -11832,7 +12064,7 @@
    "scope_note": "Telescope artifacts functionally configured for astronomical observation to capture and analyze celestial phenomena."
   },
   {
-   "template_id": "filler_teststatistic",
+   "template_id": "test_statistic",
    "manchester_template": "Class: {TestStatistic:Class} EquivalentTo: cco:ont00000692 and sdg:is_result_of some sdg:HypothesisTest",
    "slot_types": {
     "TestStatistic": "Class"
@@ -11855,7 +12087,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_teststatistic",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "hypothesis test result",
@@ -11868,7 +12102,7 @@
    "scope_note": "A probability measurement information content entity that results from a hypothesis test. This value quantifies the outcome of a statistical evaluation."
   },
   {
-   "template_id": "filler_threatinformation",
+   "template_id": "threat_information",
    "manchester_template": "Class: {ThreatInformation:Class} EquivalentTo: cco:ont00000253 and sdg:describes some cco:ont00000548",
    "slot_types": {
     "ThreatInformation": "Class"
@@ -11891,7 +12125,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_threatinformation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Threat Information",
@@ -11904,7 +12140,7 @@
    "scope_note": "Applies to information entities describing potential security threats, vulnerabilities, or risk states affecting systems and organizations. This term encompasses data used for threat analysis and risk assessment in security operations."
   },
   {
-   "template_id": "filler_agendasubject",
+   "template_id": "agenda_subject",
    "manchester_template": "Class: {AgendaSubject:Class} EquivalentTo: sdg:SubjectConcept and sdg:subjectOf some sdg:BoardMeetingAgendaItem",
    "slot_types": {
     "AgendaSubject": "Class"
@@ -11927,7 +12163,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_agendasubject",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Meeting topic",
@@ -11939,7 +12177,7 @@
    "scope_note": "An AgendaSubject represents the specific topic or theme that a BoardMeetingAgendaItem addresses during a board meeting."
   },
   {
-   "template_id": "filler_approvalrecommendation",
+   "template_id": "approval_recommendation",
    "manchester_template": "Class: {ApprovalRecommendation:Class} EquivalentTo: cco:ont00000024 and sdg:concernsPropertyAssessment some cco:ont00000024",
    "slot_types": {
     "ApprovalRecommendation": "Class"
@@ -11960,7 +12198,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "400fcc1ac0c6bdf6"
-    }
+    },
+    "renamed_from": "filler_approvalrecommendation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "approval recommendation",
@@ -11973,7 +12213,7 @@
    "scope_note": "This term applies in administrative and property management contexts where an official advises on the assessment and approval of property-related matters."
   },
   {
-   "template_id": "filler_assessmentmethod",
+   "template_id": "assessment_method",
    "manchester_template": "Class: {AssessmentMethod:Class} EquivalentTo: cco:ont00000636 and sdg:usedForStandardizedEvaluation some cco:ont00000636",
    "slot_types": {
     "AssessmentMethod": "Class"
@@ -11996,7 +12236,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "400fcc1ac0c6bdf6"
-    }
+    },
+    "renamed_from": "filler_assessmentmethod",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Assessment Method",
@@ -12009,7 +12251,7 @@
    "scope_note": "Applies to structured appraisal procedures used for standardized evaluation in professional or organizational contexts."
   },
   {
-   "template_id": "filler_assessmentparticipant",
+   "template_id": "assessment_participant",
    "manchester_template": "Class: {AssessmentParticipant:Class} EquivalentTo: sdg:ParticipantGroup and sdg:involvedInTeamAssessment some sdg:ParticipantGroup",
    "slot_types": {
     "AssessmentParticipant": "Class"
@@ -12032,7 +12274,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_assessmentparticipant",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Team assessment member",
@@ -12044,7 +12288,7 @@
    "scope_note": "An AssessmentParticipant represents a group of individuals who participate together in a team assessment."
   },
   {
-   "template_id": "filler_athleticmonitoringactivity",
+   "template_id": "athletic_monitoring_activity",
    "manchester_template": "Class: {AthleticMonitoringActivity:Class} EquivalentTo: sdg:VideoSurveillanceActivity and sdg:tracksAthletePerformance some sdg:VideoSurveillanceActivity",
    "slot_types": {
     "AthleticMonitoringActivity": "Class"
@@ -12067,7 +12311,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_athleticmonitoringactivity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Athletic Monitoring Activity",
@@ -12080,7 +12326,7 @@
    "scope_note": "Applies to video surveillance activities specifically designed to monitor and track athlete performance metrics during training and competition. This term covers monitoring systems used by sports organizations and athletic programs."
   },
   {
-   "template_id": "filler_auditobjective",
+   "template_id": "audit_objective",
    "manchester_template": "Class: {AuditObjective:Class} EquivalentTo: cco:ont00000476 and sdg:guidesInternalAudit some cco:ont00000476",
    "slot_types": {
     "AuditObjective": "Class"
@@ -12100,7 +12346,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_auditobjective",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "audit goal",
@@ -12113,7 +12361,7 @@
    "scope_note": "Applies to specific goals that direct the scope and focus of internal audit activities."
   },
   {
-   "template_id": "filler_authorizedentity",
+   "template_id": "authorized_entity",
    "manchester_template": "Class: {AuthorizedEntity:Class} EquivalentTo: cco:ont00000647 and sdg:holdsAuthorization some cco:ont00000647",
    "slot_types": {
     "AuthorizedEntity": "Class"
@@ -12136,7 +12384,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_authorizedentity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Authorized Actor",
@@ -12148,7 +12398,7 @@
    "scope_note": "Applies to organizational members or roles that possess formal authorization to act on behalf of an organization. Practitioners use this term when documenting access rights, signatory authority, or compliance responsibilities within corporate governance."
   },
   {
-   "template_id": "filler_autohemotherapyprocedure",
+   "template_id": "autohemotherapy_procedure",
    "manchester_template": "Class: {AutohemotherapyProcedure:Class} EquivalentTo: bfo:0000015 and sdg:involvesAutotransfusion some bfo:0000015",
    "slot_types": {
     "AutohemotherapyProcedure": "Class"
@@ -12171,7 +12421,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "400fcc1ac0c6bdf6"
-    }
+    },
+    "renamed_from": "filler_autohemotherapyprocedure",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Autohemotherapy Procedure",
@@ -12183,7 +12435,7 @@
    "scope_note": "Applies to the clinical procedure where a patient's own blood is drawn, processed, and reinfused to treat specific conditions."
   },
   {
-   "template_id": "filler_automatedsystem",
+   "template_id": "automated_system",
    "manchester_template": "Class: {AutomatedSystem:Class} EquivalentTo: cco:ont00000781 and sdg:operatesWithoutHumanIntervention some cco:ont00000781",
    "slot_types": {
     "AutomatedSystem": "Class"
@@ -12206,7 +12458,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_automatedsystem",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "autonomous control system",
@@ -12219,7 +12473,7 @@
    "scope_note": "A control system that operates without human intervention. This system manages its own operations and decision-making processes."
   },
   {
-   "template_id": "filler_availabletopping",
+   "template_id": "available_topping",
    "manchester_template": "Class: {AvailableTopping:Class} EquivalentTo: cco:ont00000307 and sdg:availableForConsumption some cco:ont00000307",
    "slot_types": {
     "AvailableTopping": "Class"
@@ -12241,7 +12495,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_availabletopping",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "available food topping",
@@ -12254,7 +12510,7 @@
    "scope_note": "Applies to food portions that are prepared and ready for addition to other dishes."
   },
   {
-   "template_id": "filler_boardmember",
+   "template_id": "board_member",
    "manchester_template": "Class: {BoardMember:Class} EquivalentTo: cco:ont00000175 and sdg:holdsSeatOnBoard some cco:ont00000175",
    "slot_types": {
     "BoardMember": "Class"
@@ -12277,7 +12533,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_boardmember",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Board seat holder",
@@ -12289,7 +12547,7 @@
    "scope_note": "A BoardMember represents an OrganizationMemberRole that holds a seat on a board."
   },
   {
-   "template_id": "filler_boardofassessorsmeeting",
+   "template_id": "board_of_assessors_meeting",
    "manchester_template": "Class: {BoardOfAssessorsMeeting:Class} EquivalentTo: cco:ont00000144 and sdg:conductedByAssessors some cco:ont00000144",
    "slot_types": {
     "BoardOfAssessorsMeeting": "Class"
@@ -12312,7 +12570,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_boardofassessorsmeeting",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Board of Assessors Meeting",
@@ -12323,7 +12583,7 @@
    "scope_note": "The specific gathering of assessors to deliberate on property valuations and related duties."
   },
   {
-   "template_id": "filler_boardofequalization",
+   "template_id": "board_of_equalization",
    "manchester_template": "Class: {BoardOfEqualization:Class} EquivalentTo: sdg:Board and sdg:handlesTaxAppeals some sdg:Board",
    "slot_types": {
     "BoardOfEqualization": "Class"
@@ -12346,7 +12606,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_boardofequalization",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Tax Equalization Board",
@@ -12357,7 +12619,7 @@
    "scope_note": "A board of equalization handles tax appeals. This board reviews tax assessment disputes."
   },
   {
-   "template_id": "filler_buildingfloorstructure",
+   "template_id": "building_floor_structure",
    "manchester_template": "Class: {BuildingFloorStructure:Class} EquivalentTo: sdg:IntermediateFloorAssembly and sdg:constitutesLevelOfBuilding some sdg:IntermediateFloorAssembly",
    "slot_types": {
     "BuildingFloorStructure": "Class"
@@ -12378,7 +12640,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_buildingfloorstructure",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Building Floor Level",
@@ -12389,7 +12653,7 @@
    "scope_note": "Referenced in architectural blueprints, construction contracts, and building safety codes to specify the physical layout and structural integrity of multi-story facilities."
   },
   {
-   "template_id": "filler_cybersecurityincident",
+   "template_id": "cyber_security_incident",
    "manchester_template": "Class: {CyberSecurityIncident:Class} EquivalentTo: bfo:0000015 and bfo:0000056 some cco:ont00000700 and bfo:0000056 some sdg:CommunicationSecurityAspect",
    "slot_types": {
     "CyberSecurityIncident": "Class"
@@ -12412,7 +12676,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_cybersecurityincident",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Security Breach Event",
@@ -12424,7 +12690,7 @@
    "scope_note": "Active security events occurring within computer networks that involve unauthorized access, data theft, or system compromise requiring immediate digital response."
   },
   {
-   "template_id": "filler_datacollectionprocess",
+   "template_id": "data_collection_process",
    "manchester_template": "Class: {DataCollectionProcess:Class} EquivalentTo: bfo:0000055 some sdg:MonitoringProtocol and bfo:0000057 some cco:ont00002006",
    "slot_types": {
     "DataCollectionProcess": "Class"
@@ -12444,7 +12710,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_datacollectionprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Information Gathering Activity",
@@ -12456,7 +12724,7 @@
    "scope_note": "This term applies to information processing activities that accomplish monitoring protocols while utilizing databases as primary participants in the data gathering workflow."
   },
   {
-   "template_id": "filler_datainput",
+   "template_id": "data_input",
    "manchester_template": "Class: {DataInput:Class} EquivalentTo: bfo:0000057 some bfo:0000054 and bfo:0000056 some bfo:0000055",
    "slot_types": {
     "DataInput": "Class"
@@ -12479,7 +12747,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_datainput",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "data input",
@@ -12491,7 +12761,7 @@
    "scope_note": "Used in data integration workflows to describe the step where information is entered via a form document into a target database system."
   },
   {
-   "template_id": "filler_decisionmakingprocess",
+   "template_id": "decision_making_process_definition",
    "manchester_template": "Class: sdg:DecisionMakingProcess EquivalentTo: cco:ont00000511 and bfo:0000117 some sdg:DecisionAction and bfo:0000117 some sdg:DecisionTransitionAction",
    "slot_types": {},
    "is_complex": true,
@@ -12509,7 +12779,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_decisionmakingprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Planning Decision Process",
@@ -12521,7 +12793,7 @@
    "scope_note": "This process structures the sequence of planning actions where decision actions and decision transition actions occur as integral parts. The process applies in governance frameworks, project management, and operational planning where discrete choice points and their transitions are formally documented."
   },
   {
-   "template_id": "filler_degradedsystemcondition",
+   "template_id": "degraded_system_condition",
    "manchester_template": "Class: {DegradedSystemCondition:Class} EquivalentTo: cco:ont00000982 and bfo:0000197 some sdg:DegradedStateAction and cco:ont00001907 some cco:ont00000876",
    "slot_types": {
     "DegradedSystemCondition": "Class"
@@ -12537,13 +12809,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_degradedsystemcondition",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_departingemployee",
+   "template_id": "departing_employee",
    "manchester_template": "Class: {DepartingEmployee:Class} EquivalentTo: cco:ont00001787 some cco:ont00000520 and sdg:has_departure_status some cco:ont00001226",
    "slot_types": {
     "DepartingEmployee": "Class"
@@ -12559,13 +12833,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_departingemployee",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_geographicregion",
+   "template_id": "geographic_region",
    "manchester_template": "Class: {GeographicRegion:Class} EquivalentTo: cco:ont00000472 and sdg:has_geospatial_boundary some cco:ont00000487",
    "slot_types": {
     "GeographicRegion": "Class"
@@ -12588,7 +12864,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_geographicregion",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Administrative Zone",
@@ -12600,7 +12878,7 @@
    "scope_note": "Defined spatial areas bounded by physical or political boundaries used for administrative, statistical, or operational planning purposes."
   },
   {
-   "template_id": "filler_governancefunction",
+   "template_id": "governance_function",
    "manchester_template": "Class: {GovernanceFunction:Class} EquivalentTo: cco:ont00000419 and sdg:exercises_governance some cco:ont00000408",
    "slot_types": {
     "GovernanceFunction": "Class"
@@ -12620,7 +12898,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_governancefunction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Governance function",
@@ -12632,7 +12912,7 @@
    "scope_note": "Applies to entities holding the authority to direct, manage, and oversee the operations of an organization or specific domain."
   },
   {
-   "template_id": "filler_hssseq_situation",
+   "template_id": "h_s_s_s_e_q__situation",
    "manchester_template": "Class: {HSSSEQ_Situation:Class} EquivalentTo: cco:ont00000819 and sdg:represents_operational_stasis some cco:ont00001191",
    "slot_types": {
     "HSSSEQ_Situation": "Class"
@@ -12655,7 +12935,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_hssseq_situation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Operational Stasis State",
@@ -12667,7 +12949,7 @@
    "scope_note": "This term applies to documentation that captures the current operational readiness or stasis condition of a specific system, unit, or equipment set."
   },
   {
-   "template_id": "filler_healthcaresummary",
+   "template_id": "health_care_summary",
    "manchester_template": "Class: {HealthCareSummary:Class} EquivalentTo: cco:ont00000958 and sdg:summarizes_clinical_care some sdg:ClinicalCare",
    "slot_types": {
     "HealthCareSummary": "Class"
@@ -12690,7 +12972,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_healthcaresummary",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Healthcare Summary",
@@ -12702,7 +12986,7 @@
    "scope_note": "Used for documents or records that summarize clinical care and outcome data for a patient, often used for continuity of care or patient education."
   },
   {
-   "template_id": "filler_healthstandardcompliance",
+   "template_id": "health_standard_compliance",
    "manchester_template": "Class: {HealthStandardCompliance:Class} EquivalentTo: cco:ont00000575 and sdg:verifies_compliance some cco:ont00000575",
    "slot_types": {
     "HealthStandardCompliance": "Class"
@@ -12725,7 +13009,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_healthstandardcompliance",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Health Standard Compliance",
@@ -12737,7 +13023,7 @@
    "scope_note": "Applies to documented evidence or verified states demonstrating adherence to established health, safety, or quality benchmarks in clinical, industrial, or regulatory contexts."
   },
   {
-   "template_id": "filler_healthcareagent",
+   "template_id": "healthcare_agent",
    "manchester_template": "Class: {HealthcareAgent:Class} EquivalentTo: cco:ont00001017 and sdg:provides_healthcare some cco:ont00000055",
    "slot_types": {
     "HealthcareAgent": "Class"
@@ -12760,7 +13046,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_healthcareagent",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "healthcare service provider",
@@ -12773,7 +13061,7 @@
    "scope_note": "An agent that delivers or coordinates healthcare services within a medical facility or community. This entity provides direct medical care or health services."
   },
   {
-   "template_id": "filler_lawenforcementpersonnel",
+   "template_id": "law_enforcement_personnel",
    "manchester_template": "Class: {LawEnforcementPersonnel:Class} EquivalentTo: cco:ont00000173 and sdg:performsLawEnforcementDuties some bfo:0000015",
    "slot_types": {
     "LawEnforcementPersonnel": "Class"
@@ -12796,7 +13084,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_lawenforcementpersonnel",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Law Enforcement Officer",
@@ -12808,7 +13098,7 @@
    "scope_note": "This civilian role filled by an individual who performs law enforcement duties applies to personnel engaged in public safety and order maintenance. The role operates within law enforcement agencies and community safety frameworks."
   },
   {
-   "template_id": "filler_lecturenotes",
+   "template_id": "lecture_notes",
    "manchester_template": "Class: {LectureNotes:Class} EquivalentTo: cco:ont00000069 and sdg:recordsLectureContent some bfo:0000015",
    "slot_types": {
     "LectureNotes": "Class"
@@ -12831,7 +13121,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_lecturenotes",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Lecture Notes",
@@ -12843,7 +13135,7 @@
    "scope_note": "This term represents a material copy of a transcript recording the content of a lecture session."
   },
   {
-   "template_id": "filler_legaladvertisementactivity",
+   "template_id": "legal_advertisement_activity",
    "manchester_template": "Class: {LegalAdvertisementActivity:Class} EquivalentTo: cco:ont00001314 and sdg:promotesLegalServices some bfo:0000015",
    "slot_types": {
     "LegalAdvertisementActivity": "Class"
@@ -12866,13 +13158,15 @@
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08",
      "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
-    }
+    },
+    "renamed_from": "filler_legaladvertisementactivity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_legalentityorperson",
+   "template_id": "legal_entity_or_person",
    "manchester_template": "Class: {LegalEntityOrPerson:Class} EquivalentTo: bfo:0000040 and sdg:hasLegalPersonhood some bfo:0000019",
    "slot_types": {
     "LegalEntityOrPerson": "Class"
@@ -12895,7 +13189,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_legalentityorperson",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Legal entity",
@@ -12907,7 +13203,7 @@
    "scope_note": "Applies to material entities that hold formal legal personhood status recognized by law."
   },
   {
-   "template_id": "filler_legalprofessional",
+   "template_id": "legal_professional",
    "manchester_template": "Class: {LegalProfessional:Class} EquivalentTo: sdg:LegalAdvocateRole and sdg:possessesLegalQualifications some bfo:0000019",
    "slot_types": {
     "LegalProfessional": "Class"
@@ -12930,7 +13226,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_legalprofessional",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "legal professional",
@@ -12942,7 +13240,7 @@
    "scope_note": "Used in legal practice and regulatory contexts to identify individuals who hold formal qualifications and actively engage in legal advocacy, such as attorneys, barristers, or solicitors, within a jurisdiction."
   },
   {
-   "template_id": "filler_legaltechsolutionlab",
+   "template_id": "legal_tech_solution_lab",
    "manchester_template": "Class: {LegalTechSolutionLab:Class} EquivalentTo: cco:ont00000443 and sdg:fostersLegalTechnologyInnovation some bfo:0000015",
    "slot_types": {
     "LegalTechSolutionLab": "Class"
@@ -12964,7 +13262,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_legaltechsolutionlab",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Legal Tech Innovation Hub",
@@ -12975,7 +13275,7 @@
    "scope_note": "Applies to commercial organizations dedicated to developing and testing new legal technology tools. The facility fosters innovation through research, development, and collaboration."
   },
   {
-   "template_id": "filler_legislativedepartment",
+   "template_id": "legislative_department",
    "manchester_template": "Class: {LegislativeDepartment:Class} EquivalentTo: cco:ont00000408 and sdg:handlesLegislativeAffairs some bfo:0000015",
    "slot_types": {
     "LegislativeDepartment": "Class"
@@ -12998,7 +13298,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_legislativedepartment",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Legislative Department",
@@ -13010,7 +13312,7 @@
    "scope_note": "Applies to government organizations responsible for handling legislative affairs and processes. Used when documenting institutional structures that manage legislative workflows and procedures."
   },
   {
-   "template_id": "filler_lifeguardstaff",
+   "template_id": "lifeguard_staff",
    "manchester_template": "Class: {LifeguardStaff:Class} EquivalentTo: cco:ont00000175 and sdg:ensuresAquaticSafety some bfo:0000015",
    "slot_types": {
     "LifeguardStaff": "Class"
@@ -13031,7 +13333,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08"
-    }
+    },
+    "renamed_from": "filler_lifeguardstaff",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Lifeguard staff",
@@ -13043,7 +13347,7 @@
    "scope_note": "Use this term for staff members whose role is to ensure aquatic safety. It applies to individuals performing lifeguard duties, not to municipal pool management activities, board members, or law enforcement personnel."
   },
   {
-   "template_id": "filler_localauthority",
+   "template_id": "local_authority",
    "manchester_template": "Class: {LocalAuthority:Class} EquivalentTo: cco:ont00000187 and sdg:exercisesLocalJurisdiction some bfo:0000015",
    "slot_types": {
     "LocalAuthority": "Class"
@@ -13066,7 +13370,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_localauthority",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "local government body",
@@ -13078,7 +13384,7 @@
    "scope_note": "An authority role exercising jurisdiction over a local administrative region."
   },
   {
-   "template_id": "filler_logincredentials",
+   "template_id": "login_credentials",
    "manchester_template": "Class: {LoginCredentials:Class} EquivalentTo: sdg:AccountAuthorizationRecord and sdg:authenticatesDigitalAccess some bfo:0000015",
    "slot_types": {
     "LoginCredentials": "Class"
@@ -13101,7 +13407,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_logincredentials",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Authentication Credential Record",
@@ -13113,7 +13421,7 @@
    "scope_note": "Authentication Credential Record"
   },
   {
-   "template_id": "filler_machinelearningmodel",
+   "template_id": "machine_learning_model",
    "manchester_template": "Class: {MachineLearningModel:Class} EquivalentTo: cco:ont00000653 and sdg:learnsFromDataPatterns some bfo:0000015",
    "slot_types": {
     "MachineLearningModel": "Class"
@@ -13136,7 +13444,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_machinelearningmodel",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Data Pattern Learning Algorithm",
@@ -13148,7 +13458,7 @@
    "scope_note": "This model applies when an algorithm learns from data patterns to generate predictions or classifications. The model operates in computational environments where training data feeds into learning processes that produce actionable outputs."
   },
   {
-   "template_id": "filler_maildroplocation",
+   "template_id": "mail_drop_location",
    "manchester_template": "Class: {MailDropLocation:Class} EquivalentTo: cco:ont00000655 and sdg:acceptsMailForDispatch some bfo:0000015",
    "slot_types": {
     "MailDropLocation": "Class"
@@ -13171,7 +13481,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_maildroplocation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Mail Drop Location",
@@ -13183,7 +13495,7 @@
    "scope_note": "Mailing facilities that accept mail for dispatch to facilitate mail collection and distribution processes."
   },
   {
-   "template_id": "filler_malnourishedchild",
+   "template_id": "malnourished_child",
    "manchester_template": "Class: {MalnourishedChild:Class} EquivalentTo: bfo:0000040 and sdg:suffersFromNutritionalDeficiency some cco:ont00000318",
    "slot_types": {
     "MalnourishedChild": "Class"
@@ -13206,7 +13518,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_malnourishedchild",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "malnourished child",
@@ -13218,7 +13532,7 @@
    "scope_note": "A material entity in the developmental stage of childhood that suffers from a nutritional deficiency. This condition affects physical growth, cognitive development, and overall health during the critical childhood period."
   },
   {
-   "template_id": "filler_monetaryamount",
+   "template_id": "monetary_amount",
    "manchester_template": "Class: {MonetaryAmount:Class} EquivalentTo: cco:ont00000768 and sdg:denominatedInCurrency some cco:ont00000518",
    "slot_types": {
     "MonetaryAmount": "Class"
@@ -13241,7 +13555,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_monetaryamount",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "monetary amount",
@@ -13253,7 +13569,7 @@
    "scope_note": "Used when recording a specific sum of money tied to a particular currency unit, such as USD, EUR, or JPY."
   },
   {
-   "template_id": "filler_monitoringprotocol",
+   "template_id": "monitoring_protocol",
    "manchester_template": "Class: {MonitoringProtocol:Class} EquivalentTo: sdg:ClientStatisticalInformation and sdg:specifiesMonitoringProcedure some cco:ont00000569",
    "slot_types": {
     "MonitoringProtocol": "Class"
@@ -13276,7 +13592,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_monitoringprotocol",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Monitoring Protocol",
@@ -13288,7 +13606,7 @@
    "scope_note": "This term specifies a monitoring procedure for a sensor using client statistical information."
   },
   {
-   "template_id": "filler_municipalpoolfacility",
+   "template_id": "municipal_pool_facility",
    "manchester_template": "Class: {MunicipalPoolFacility:Class} EquivalentTo: cco:ont00000192 and sdg:servesMunicipalRecreation some bfo:0000015",
    "slot_types": {
     "MunicipalPoolFacility": "Class"
@@ -13311,7 +13629,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_municipalpoolfacility",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Public Swimming Pool Complex",
@@ -13323,7 +13643,7 @@
    "scope_note": "This facility serves municipal recreation by providing aquatic spaces for community use. The facility operates in public parks, community centers, or dedicated municipal sites where swimming and water activities support local recreation."
   },
   {
-   "template_id": "filler_networkinfrastructure",
+   "template_id": "network_infrastructure",
    "manchester_template": "Class: {NetworkInfrastructure:Class} EquivalentTo: cco:ont00000954 and sdg:supportsDataTransmission some cco:ont00000700",
    "slot_types": {
     "NetworkInfrastructure": "Class"
@@ -13346,7 +13666,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_networkinfrastructure",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Data Transmission Network",
@@ -13358,7 +13680,7 @@
    "scope_note": "This term applies to telecommunication systems that provide the underlying framework for data transmission across computer networks."
   },
   {
-   "template_id": "filler_networkprovider",
+   "template_id": "network_provider",
    "manchester_template": "Class: {NetworkProvider:Class} EquivalentTo: cco:ont00000509 and sdg:providesNetworkAccess some cco:ont00000700",
    "slot_types": {
     "NetworkProvider": "Class"
@@ -13380,7 +13702,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_networkprovider",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Network access provider",
@@ -13392,7 +13716,7 @@
    "scope_note": "Applies to entities that supply network access and connectivity services to end-users or organizations."
   },
   {
-   "template_id": "filler_networkresource",
+   "template_id": "network_resource",
    "manchester_template": "Class: {NetworkResource:Class} EquivalentTo: cco:ont00000740 and sdg:allocatedToNetwork some cco:ont00000700",
    "slot_types": {
     "NetworkResource": "Class"
@@ -13415,7 +13739,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_networkresource",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Network Resource",
@@ -13427,7 +13753,7 @@
    "scope_note": "Applies to hardware, software, or data assets assigned to a computer network for operational use, such as servers, bandwidth, or storage within enterprise or cloud infrastructures."
   },
   {
-   "template_id": "filler_networkscrubbingcenter",
+   "template_id": "network_scrubbing_center",
    "manchester_template": "Class: {NetworkScrubbingCenter:Class} EquivalentTo: cco:ont00000918 and sdg:performsTrafficCleaning some cco:ont00000665",
    "slot_types": {
     "NetworkScrubbingCenter": "Class"
@@ -13442,13 +13768,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_networkscrubbingcenter",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_nondieselpoweredvehicle",
+   "template_id": "non_diesel_powered_vehicle",
    "manchester_template": "Class: {NonDieselPoweredVehicle:Class} EquivalentTo: cco:ont00000053 and sdg:usesNonDieselPowerSource some cco:ont00000477",
    "slot_types": {
     "NonDieselPoweredVehicle": "Class"
@@ -13464,13 +13792,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_nondieselpoweredvehicle",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_nonprofitorganization",
+   "template_id": "nonprofit_organization",
    "manchester_template": "Class: {NonprofitOrganization:Class} EquivalentTo: cco:ont00001180 and sdg:operatesForPublicBenefit some bfo:0000015",
    "slot_types": {
     "NonprofitOrganization": "Class"
@@ -13493,7 +13823,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_nonprofitorganization",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Nonprofit Organization",
@@ -13504,7 +13836,7 @@
    "scope_note": "An organization that operates for public benefit."
   },
   {
-   "template_id": "filler_referralprocess",
+   "template_id": "referral_process",
    "manchester_template": "Class: {ReferralProcess:Class} EquivalentTo: cco:ont00000769 and sdg:involvesReferral some sdg:ReferralSourceRole",
    "slot_types": {
     "ReferralProcess": "Class"
@@ -13524,7 +13856,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "400fcc1ac0c6bdf6"
-    }
+    },
+    "renamed_from": "filler_referralprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Referral Process",
@@ -13536,7 +13870,7 @@
    "scope_note": "Applies to activities that involve requesting services or resources through a referral source role, including client intake and service coordination."
   },
   {
-   "template_id": "filler_regulatoryauthority",
+   "template_id": "regulatory_authority",
    "manchester_template": "Class: {RegulatoryAuthority:Class} EquivalentTo: cco:ont00000187 and sdg:exercisesRegulation some cco:ont00001324",
    "slot_types": {
     "RegulatoryAuthority": "Class"
@@ -13559,13 +13893,15 @@
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08",
      "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
-    }
+    },
+    "renamed_from": "filler_regulatoryauthority",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_regulatorybody",
+   "template_id": "regulatory_body",
    "manchester_template": "Class: {RegulatoryBody:Class} EquivalentTo: bfo:0000040 and sdg:enforcesRegulation some cco:ont00001324",
    "slot_types": {
     "RegulatoryBody": "Class"
@@ -13588,7 +13924,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_regulatorybody",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Regulatory Body",
@@ -13599,7 +13937,7 @@
    "scope_note": "A regulatory body is a material entity that enforces a process regulation. This body ensures compliance with regulations."
   },
   {
-   "template_id": "filler_renderingengine",
+   "template_id": "rendering_engine",
    "manchester_template": "Class: {RenderingEngine:Class} EquivalentTo: cco:ont00000210 and sdg:rendersAnimation some sdg:AnimationSequenceCreation",
    "slot_types": {
     "RenderingEngine": "Class"
@@ -13622,7 +13960,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_renderingengine",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Animation Rendering Engine",
@@ -13635,7 +13975,7 @@
    "scope_note": "A computational engine that processes and renders animation sequence creation data into visual output."
   },
   {
-   "template_id": "filler_renderingenvironment",
+   "template_id": "rendering_environment_definition",
    "manchester_template": "Class: {RenderingEnvironment:Class} EquivalentTo: sdg:IndoorEnvironment and sdg:supportsRendering some sdg:RenderedAnimationArtifact",
    "slot_types": {
     "RenderingEnvironment": "Class"
@@ -13658,7 +13998,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_renderingenvironment",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "animation rendering space",
@@ -13670,7 +14012,7 @@
    "scope_note": "Applies to indoor settings where digital animation artifacts undergo computational rendering processes. Used in computer graphics production, architectural visualization, and virtual reality development workflows."
   },
   {
-   "template_id": "filler_reportingchannel",
+   "template_id": "reporting_channel",
    "manchester_template": "Class: {ReportingChannel:Class} EquivalentTo: sdg:CommunicationChannel and sdg:transmitsDisclosure some sdg:ProtectedDisclosureProcess",
    "slot_types": {
     "ReportingChannel": "Class"
@@ -13690,7 +14032,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_reportingchannel",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Disclosure Channel",
@@ -13702,7 +14046,7 @@
    "scope_note": "Applies to communication pathways that transmit protected disclosures, such as whistleblower reports or compliance alerts. Practitioners use this term when designing or managing systems for reporting misconduct, ethical violations, or regulatory concerns within organizations."
   },
   {
-   "template_id": "filler_requestedprovidertype",
+   "template_id": "requested_provider_type",
    "manchester_template": "Class: {RequestedProviderType:Class} EquivalentTo: sdg:ServiceType and sdg:requestedBy some sdg:ProviderChangeRequestProcess",
    "slot_types": {
     "RequestedProviderType": "Class"
@@ -13725,7 +14069,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_requestedprovidertype",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Requested Provider Type",
@@ -13737,7 +14083,7 @@
    "scope_note": "Tracks the specific service type requested by a provider change request process. Used to manage service modification requests."
   },
   {
-   "template_id": "filler_requestingclient",
+   "template_id": "requesting_client",
    "manchester_template": "Class: {RequestingClient:Class} EquivalentTo: bfo:0000040 and sdg:makesRequest some sdg:ProviderChangeRequestProcess",
    "slot_types": {
     "RequestingClient": "Class"
@@ -13760,7 +14106,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_requestingclient",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Client Making Request",
@@ -13773,7 +14121,7 @@
    "scope_note": "A material entity that initiates a provider change request process through formal communication."
   },
   {
-   "template_id": "filler_requestingentity",
+   "template_id": "requesting_entity",
    "manchester_template": "Class: {RequestingEntity:Class} EquivalentTo: bfo:0000040 and sdg:submitsRequest some sdg:DuplicatingRequest",
    "slot_types": {
     "RequestingEntity": "Class"
@@ -13796,7 +14144,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_requestingentity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Request submitter",
@@ -13808,7 +14158,7 @@
    "scope_note": "A RequestingEntity is a material entity that submits a duplicating request."
   },
   {
-   "template_id": "filler_researchactivity",
+   "template_id": "research_activity",
    "manchester_template": "Class: {ResearchActivity:Class} EquivalentTo: sdg:ResearchProcess and sdg:conductedBy some sdg:YoungResearcherRole",
    "slot_types": {
     "ResearchActivity": "Class"
@@ -13831,7 +14181,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_researchactivity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Research Project",
@@ -13843,7 +14195,7 @@
    "scope_note": "Applies to research processes actively conducted by young researchers, such as doctoral candidates or early-career scientists. Practitioners use this term when tracking research outputs, funding allocations, or mentorship initiatives focused on emerging scholars."
   },
   {
-   "template_id": "filler_facilityinfrastructure",
+   "template_id": "facility_infrastructure",
    "manchester_template": "Class: {FacilityInfrastructure:Class} EquivalentTo: cco:ont00000192 and sdg:includes some cco:ont00000328",
    "slot_types": {
     "FacilityInfrastructure": "Class"
@@ -13866,7 +14218,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_facilityinfrastructure",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Facility Infrastructure",
@@ -13878,7 +14232,7 @@
    "scope_note": "Tracks the physical infrastructure components of a facility. Used to manage and maintain physical assets."
   },
   {
-   "template_id": "filler_finalinspectionprocess",
+   "template_id": "final_inspection_process",
    "manchester_template": "Class: {FinalInspectionProcess:Class} EquivalentTo: cco:ont00000908 and sdg:has_objective some cco:ont00001224",
    "slot_types": {
     "FinalInspectionProcess": "Class"
@@ -13901,13 +14255,15 @@
      "membranes": "annotation_membrane M1-M6",
      "registry": "78deaaff39621a08",
      "reverted": "2026-07-07 M8 negative-voice (RH ruling)"
-    }
+    },
+    "renamed_from": "filler_finalinspectionprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_financialfund",
+   "template_id": "financial_fund",
    "manchester_template": "Class: {FinancialFund:Class} EquivalentTo: cco:ont00001295 and sdg:involves some sdg:FinancialResource",
    "slot_types": {
     "FinancialFund": "Class"
@@ -13930,7 +14286,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_financialfund",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "financial fund entity",
@@ -13941,7 +14299,7 @@
    "scope_note": "A financial facility that involves a financial resource. This entity serves as a container or mechanism for financial resources."
   },
   {
-   "template_id": "filler_financialmanagementprocess",
+   "template_id": "financial_management_process",
    "manchester_template": "Class: {FinancialManagementProcess:Class} EquivalentTo: sdg:FinancialActivity and sdg:involves some sdg:FinancialStrategyOversight",
    "slot_types": {
     "FinancialManagementProcess": "Class"
@@ -13957,13 +14315,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_financialmanagementprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_financialproduct",
+   "template_id": "financial_product",
    "manchester_template": "Class: {FinancialProduct:Class} EquivalentTo: cco:ont00000537 and sdg:has_function some cco:ont00000938",
    "slot_types": {
     "FinancialProduct": "Class"
@@ -13986,7 +14346,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_financialproduct",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "financial instrument",
@@ -13998,7 +14360,7 @@
    "scope_note": "A financial instrument serving as a tradeable asset or liability within capital markets."
   },
   {
-   "template_id": "filler_financialreport",
+   "template_id": "financial_report",
    "manchester_template": "Class: {FinancialReport:Class} EquivalentTo: cco:ont00000958 and sdg:concerns some sdg:FinancialResource",
    "slot_types": {
     "FinancialReport": "Class"
@@ -14021,7 +14383,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_financialreport",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "financial report entity",
@@ -14032,7 +14396,7 @@
    "scope_note": "An information content entity that concerns a financial resource. This entity represents a document or data set related to financial resources."
   },
   {
-   "template_id": "filler_financialresource",
+   "template_id": "financial_resource",
    "manchester_template": "Class: {FinancialResource:Class} EquivalentTo: cco:ont00000608 and sdg:used_for some sdg:FinancialActivity",
    "slot_types": {
     "FinancialResource": "Class"
@@ -14055,7 +14419,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_financialresource",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Financial Resource",
@@ -14067,7 +14433,7 @@
    "scope_note": "A Financial Resource is a financial value used for a financial activity. This resource includes funds, credit, or investments. The value supports operational needs and strategic initiatives."
   },
   {
-   "template_id": "filler_healthrecordtransferprocess",
+   "template_id": "health_record_transfer_process",
    "manchester_template": "Class: {HealthRecordTransferProcess:Class} EquivalentTo: cco:ont00001330 and sdg:transfers_health_record_data some sdg:ClinicalQualityData",
    "slot_types": {
     "HealthRecordTransferProcess": "Class"
@@ -14083,13 +14449,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_healthrecordtransferprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_healthcarenetworkinfrastructure",
+   "template_id": "healthcare_network_infrastructure",
    "manchester_template": "Class: {HealthcareNetworkInfrastructure:Class} EquivalentTo: cco:ont00000870 and sdg:supports_healthcare_services some cco:ont00000700",
    "slot_types": {
     "HealthcareNetworkInfrastructure": "Class"
@@ -14112,7 +14480,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_healthcarenetworkinfrastructure",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Healthcare Network Infrastructure",
@@ -14124,7 +14494,7 @@
    "scope_note": "This term designates the physical and logical network components that provide connectivity for healthcare services within a designated operational area. It encompasses the hardware, software, and communication protocols that enable data exchange between healthcare facilities, providers, and patients."
   },
   {
-   "template_id": "filler_healthcareorganization",
+   "template_id": "healthcare_organization",
    "manchester_template": "Class: {HealthcareOrganization:Class} EquivalentTo: cco:ont00001180 and sdg:provides_healthcare_services some cco:ont00000055",
    "slot_types": {
     "HealthcareOrganization": "Class"
@@ -14144,7 +14514,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_healthcareorganization",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Healthcare provider",
@@ -14156,7 +14528,7 @@
    "scope_note": "A HealthcareOrganization is an Organization that provides healthcare services through healthcare facilities."
   },
   {
-   "template_id": "filler_heightmeasurement",
+   "template_id": "height_measurement",
    "manchester_template": "Class: {HeightMeasurement:Class} EquivalentTo: cco:ont00000120 and sdg:quantifies_vertical_extent some cco:ont00000967",
    "slot_types": {
     "HeightMeasurement": "Class"
@@ -14177,7 +14549,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_heightmeasurement",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Height Measurement",
@@ -14189,7 +14563,7 @@
    "scope_note": "Applies to the measurement of vertical dimensions in manufacturing, construction, and physics contexts."
   },
   {
-   "template_id": "filler_horseidentity",
+   "template_id": "horse_identity",
    "manchester_template": "Class: {HorseIdentity:Class} EquivalentTo: cco:ont00000923 and sdg:designates_horse some cco:ont00000562",
    "slot_types": {
     "HorseIdentity": "Class"
@@ -14212,7 +14586,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_horseidentity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Horse identifier",
@@ -14224,7 +14600,7 @@
    "scope_note": "Applies to an arbitrary identifier that uniquely designates a specific horse within a registry or tracking system."
   },
   {
-   "template_id": "filler_housingclient",
+   "template_id": "housing_client",
    "manchester_template": "Class: {HousingClient:Class} EquivalentTo: bfo:0000040 and sdg:enters_rental_agreement some cco:ont00001325",
    "slot_types": {
     "HousingClient": "Class"
@@ -14247,7 +14623,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_housingclient",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Housing Client",
@@ -14259,7 +14637,7 @@
    "scope_note": "Applies to material entities that enter into rental agreements for housing purposes. Used when documenting individuals or entities participating in housing rental arrangements."
   },
   {
-   "template_id": "filler_housingdebtissue",
+   "template_id": "housing_debt_issue",
    "manchester_template": "Class: {HousingDebtIssue:Class} EquivalentTo: cco:ont00001073 and sdg:originates_from_rental some cco:ont00001325",
    "slot_types": {
     "HousingDebtIssue": "Class"
@@ -14282,7 +14660,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_housingdebtissue",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Housing debt instrument",
@@ -14294,7 +14674,7 @@
    "scope_note": "Applies to financial instruments representing property debt obligations arising directly from rental agreements."
   },
   {
-   "template_id": "filler_housingpolicytopic",
+   "template_id": "housing_policy_topic",
    "manchester_template": "Class: {HousingPolicyTopic:Class} EquivalentTo: bfo:0000031 and sdg:addresses_housing_matters some cco:ont00001325",
    "slot_types": {
     "HousingPolicyTopic": "Class"
@@ -14306,13 +14686,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_housingpolicytopic",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_humanagent",
+   "template_id": "human_agent",
    "manchester_template": "Class: {HumanAgent:Class} EquivalentTo: cco:ont00001017 and sdg:encompasses_human_person some cco:ont00001262",
    "slot_types": {
     "HumanAgent": "Class"
@@ -14335,7 +14717,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_humanagent",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Human Agent",
@@ -14347,7 +14731,7 @@
    "scope_note": "Identifies an agent that encompasses or is constituted by a human person. Used to distinguish human actors from organizational entities."
   },
   {
-   "template_id": "filler_imagingequipment",
+   "template_id": "imaging_equipment",
    "manchester_template": "Class: {ImagingEquipment:Class} EquivalentTo: cco:ont00000771 and sdg:facilitates_diagnostic_procedures some sdg:DiagnosticImaging",
    "slot_types": {
     "ImagingEquipment": "Class"
@@ -14367,7 +14751,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_imagingequipment",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Diagnostic Imaging Instrument",
@@ -14380,7 +14766,7 @@
    "scope_note": "A specialized instrument that facilitates diagnostic imaging procedures for clinical assessment."
   },
   {
-   "template_id": "filler_independenteconomicagent",
+   "template_id": "independent_economic_agent",
    "manchester_template": "Class: {IndependentEconomicAgent:Class} EquivalentTo: cco:ont00001017 and sdg:engages_in_market_exchange some sdg:ExternalBusinessPartner",
    "slot_types": {
     "IndependentEconomicAgent": "Class"
@@ -14403,7 +14789,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "400fcc1ac0c6bdf6"
-    }
+    },
+    "renamed_from": "filler_independenteconomicagent",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Independent Economic Agent",
@@ -14415,7 +14803,7 @@
    "scope_note": "Applies to economic entities that participate in market exchanges as autonomous decision-makers, independent of other organizations."
   },
   {
-   "template_id": "filler_individual",
+   "template_id": "individual",
    "manchester_template": "Class: {Individual:Class} EquivalentTo: bfo:0000040 and sdg:constitutes_human_person some cco:ont00001262",
    "slot_types": {
     "Individual": "Class"
@@ -14438,7 +14826,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_individual",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Human Person",
@@ -14450,7 +14840,7 @@
    "scope_note": "Applies to any material entity that physically constitutes a human person in legal, medical, or administrative contexts. Practitioners use this term when documenting the biological subject of a study, patient, or claimant in formal records."
   },
   {
-   "template_id": "filler_observatorymountingstructure",
+   "template_id": "observatory_mounting_structure",
    "manchester_template": "Class: {ObservatoryMountingStructure:Class} EquivalentTo: cco:ont00001042 and sdg:supportsObservatoryInstrument some cco:ont00001009",
    "slot_types": {
     "ObservatoryMountingStructure": "Class"
@@ -14473,7 +14863,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_observatorymountingstructure",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Observatory Mounting Structure",
@@ -14485,7 +14877,7 @@
    "scope_note": "This term represents an equipment mount that supports an observatory instrument."
   },
   {
-   "template_id": "filler_offlinechannel",
+   "template_id": "offline_channel",
    "manchester_template": "Class: {OfflineChannel:Class} EquivalentTo: sdg:DisseminationChannel and sdg:utilizesOfflineMedia some cco:ont00000859",
    "slot_types": {
     "OfflineChannel": "Class"
@@ -14508,7 +14900,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_offlinechannel",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Offline Channel",
@@ -14520,7 +14914,7 @@
    "scope_note": "An Offline Channel is a dissemination channel that utilizes offline media. This channel includes television broadcasts, radio, and print. The channel reaches audiences through non-digital platforms."
   },
   {
-   "template_id": "filler_onlinechannel",
+   "template_id": "online_channel",
    "manchester_template": "Class: {OnlineChannel:Class} EquivalentTo: sdg:DisseminationChannel and sdg:utilizesOnlineMedia some cco:ont00001183",
    "slot_types": {
     "OnlineChannel": "Class"
@@ -14543,7 +14937,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_onlinechannel",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Digital Channel",
@@ -14555,7 +14951,7 @@
    "scope_note": "Applies to digital communication pathways that leverage internet infrastructure for information dissemination. Practitioners use this term when designing or analyzing outreach strategies that rely on websites, social media, or digital messaging platforms."
   },
   {
-   "template_id": "filler_operationaldisruption",
+   "template_id": "operational_disruption",
    "manchester_template": "Class: {OperationalDisruption:Class} EquivalentTo: cco:ont00001213 and sdg:impactsOperationalArea some cco:ont00000567",
    "slot_types": {
     "OperationalDisruption": "Class"
@@ -14575,7 +14971,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_operationaldisruption",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Operational Disruption",
@@ -14587,7 +14985,7 @@
    "scope_note": "This term identifies a state of halted or impaired operational activity within a specific operational area, affecting the delivery of services or functions. It represents a temporary cessation or reduction in the normal functioning of processes, systems, or resources within the defined operational context."
   },
   {
-   "template_id": "filler_operationaleffectiveness",
+   "template_id": "operational_effectiveness",
    "manchester_template": "Class: {OperationalEffectiveness:Class} EquivalentTo: cco:ont00001191 and sdg:evaluatesOperationalArea some cco:ont00000567",
    "slot_types": {
     "OperationalEffectiveness": "Class"
@@ -14610,7 +15008,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_operationaleffectiveness",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Operational Area Evaluation",
@@ -14622,7 +15022,7 @@
    "scope_note": "This operational stasis evaluates an operational area by measuring performance metrics within defined boundaries. The stasis applies in military, emergency response, or organizational contexts where area effectiveness is assessed through structured evaluation."
   },
   {
-   "template_id": "filler_operationalequipment",
+   "template_id": "operational_equipment",
    "manchester_template": "Class: {OperationalEquipment:Class} EquivalentTo: cco:ont00000870 and bfo:0000178 some cco:ont00000567",
    "slot_types": {
     "OperationalEquipment": "Class"
@@ -14645,7 +15045,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_operationalequipment",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "operational apparatus",
@@ -14657,7 +15059,7 @@
    "scope_note": "Applies to physical systems and apparatus deployed within operational areas to support field activities. Used in military operations, emergency response coordination, and industrial site management."
   },
   {
-   "template_id": "filler_operationalprotocol",
+   "template_id": "operational_protocol",
    "manchester_template": "Class: {OperationalProtocol:Class} EquivalentTo: sdg:MonitoringProtocol and bfo:0000056 some bfo:0000015",
    "slot_types": {
     "OperationalProtocol": "Class"
@@ -14680,7 +15082,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_operationalprotocol",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Operational Protocol",
@@ -14693,7 +15097,7 @@
    "scope_note": "Used to document standardized rules and procedures governing daily activities within a specific operational area or site."
   },
   {
-   "template_id": "filler_operationalunit",
+   "template_id": "operational_unit",
    "manchester_template": "Class: {OperationalUnit:Class} EquivalentTo: cco:ont00000172 and cco:ont00001901 some sdg:PoliceOfficerRole",
    "slot_types": {
     "OperationalUnit": "Class"
@@ -14716,7 +15120,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_operationalunit",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "operational base",
@@ -14727,7 +15133,7 @@
    "scope_note": "A base of operations or organizational entity comprising law enforcement personnel. This entity serves as a physical or organizational location for police officers."
   },
   {
-   "template_id": "filler_orderconstraint",
+   "template_id": "order_constraint",
    "manchester_template": "Class: {OrderConstraint:Class} EquivalentTo: cco:ont00001041 and bfo:0000056 some sdg:PromotionalCalendarOrder",
    "slot_types": {
     "OrderConstraint": "Class"
@@ -14750,7 +15156,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_orderconstraint",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Order Constraint",
@@ -14762,7 +15170,7 @@
    "scope_note": "Applies to rules that define the required sequence, position, or ordinal arrangement of items within promotional calendars, marketing campaigns, or scheduling systems."
   },
   {
-   "template_id": "filler_organizationmember",
+   "template_id": "organization_member",
    "manchester_template": "Class: {OrganizationMember:Class} EquivalentTo: cco:ont00000175 and bfo:0000178 some cco:ont00001180",
    "slot_types": {
     "OrganizationMember": "Class"
@@ -14785,7 +15193,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_organizationmember",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Organization Member",
@@ -14798,7 +15208,7 @@
    "scope_note": "Applies to individuals or entities holding a formal membership role within an organization's structure."
   },
   {
-   "template_id": "filler_organizationalagent",
+   "template_id": "organizational_agent",
    "manchester_template": "Class: {OrganizationalAgent:Class} EquivalentTo: cco:ont00001017 and bfo:0000056 some sdg:FinancialPlanningProcess",
    "slot_types": {
     "OrganizationalAgent": "Class"
@@ -14821,7 +15231,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_organizationalagent",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Corporate Agent",
@@ -14833,7 +15245,7 @@
    "scope_note": "Applies to agents acting on behalf of an organization during financial planning activities. Practitioners use this term when documenting roles responsible for budgeting, investment strategy, or fiscal decision-making within corporate or institutional settings."
   },
   {
-   "template_id": "filler_organizationalfunction",
+   "template_id": "organizational_function",
    "manchester_template": "Class: {OrganizationalFunction:Class} EquivalentTo: cco:ont00000568 and sdg:GeneralManagerRole",
    "slot_types": {
     "OrganizationalFunction": "Class"
@@ -14856,7 +15268,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_organizationalfunction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Organizational Capability",
@@ -14867,7 +15281,7 @@
    "scope_note": "An organizational function is a capability of an organization. This capability realizes the duties of a general manager."
   },
   {
-   "template_id": "filler_organizationalhealthmetric",
+   "template_id": "organizational_health_metric",
    "manchester_template": "Class: {OrganizationalHealthMetric:Class} EquivalentTo: sdg:HealthOutcomeMetric and bfo:0000056 some sdg:EmployeeFeedbackSurvey",
    "slot_types": {
     "OrganizationalHealthMetric": "Class"
@@ -14890,7 +15304,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_organizationalhealthmetric",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Organizational Health Metric",
@@ -14902,7 +15318,7 @@
    "scope_note": "Applies when measuring employee wellbeing, workplace safety, or organizational culture through survey data. This term covers metrics derived from employee feedback, engagement surveys, or health assessments."
   },
   {
-   "template_id": "filler_organizationalleadershiprole",
+   "template_id": "organizational_leadership_role",
    "manchester_template": "Class: {OrganizationalLeadershipRole:Class} EquivalentTo: cco:ont00000768 and bfo:0000178 some sdg:ExecutiveLeadershipProcess",
    "slot_types": {
     "OrganizationalLeadershipRole": "Class"
@@ -14925,7 +15341,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_organizationalleadershiprole",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Organizational Leadership Role",
@@ -14937,7 +15355,7 @@
    "scope_note": "Tracks the leadership role realized during executive leadership activities. Used to manage organizational hierarchy."
   },
   {
-   "template_id": "filler_ozoneoxygenmixture",
+   "template_id": "ozone_oxygen_mixture",
    "manchester_template": "Class: {OzoneOxygenMixture:Class} EquivalentTo: cco:ont00000897 and bfo:0000056 some sdg:OzoneTherapySession",
    "slot_types": {
     "OzoneOxygenMixture": "Class"
@@ -14960,7 +15378,9 @@
      "model": "engine/instruct",
      "membranes": "annotation_membrane M1-M6",
      "registry": "79e6f45da0b32c91"
-    }
+    },
+    "renamed_from": "filler_ozoneoxygenmixture",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [
     "Ozone-oxygen blend",
@@ -14972,7 +15392,7 @@
    "scope_note": "Applies to medical preparations containing a mixture of ozone and oxygen used in therapeutic treatments."
   },
   {
-   "template_id": "filler_academicdegree",
+   "template_id": "academic_degree",
    "manchester_template": "Class: {AcademicDegree:Class} EquivalentTo: bfo:0000031 and sdg:conferredBy some sdg:HigherEducationInstitution and sdg:signifiesCompletionOf some sdg:AcademicCurriculumProgram",
    "slot_types": {
     "AcademicDegree": "Class"
@@ -14984,13 +15404,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_academicdegree",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_calendarproduct",
+   "template_id": "calendar_product",
    "manchester_template": "Class: {CalendarProduct:Class} EquivalentTo: bfo:0000031 and sdg:implements some cco:ont00000891 and sdg:specifiesTemporalReferenceFor some cco:ont00000259",
    "slot_types": {
     "CalendarProduct": "Class"
@@ -15006,13 +15428,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_calendarproduct",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_callvolume",
+   "template_id": "call_volume",
    "manchester_template": "Class: {CallVolume:Class} EquivalentTo: bfo:0000019 and sdg:measures some cco:ont00001190",
    "slot_types": {
     "CallVolume": "Class"
@@ -15024,13 +15448,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_callvolume",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_child",
+   "template_id": "child",
    "manchester_template": "Class: {Child:Class} EquivalentTo: cco:ont00001262 and sdg:hasAge some sdg:Age and sdg:hasBiologicalParent some cco:ont00001262",
    "slot_types": {
     "Child": "Class"
@@ -15046,13 +15472,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_child",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_clinicalcare",
+   "template_id": "clinical_care",
    "manchester_template": "Class: {ClinicalCare:Class} EquivalentTo: bfo:0000015 and sdg:involvesAgent some sdg:IndividualClinician and sdg:hasPatient some sdg:Patient",
    "slot_types": {
     "ClinicalCare": "Class"
@@ -15068,13 +15496,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_clinicalcare",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_communicationsecurityaspect",
+   "template_id": "communication_security_aspect",
    "manchester_template": "Class: {CommunicationSecurityAspect:Class} EquivalentTo: bfo:0000019 and sdg:pertainsTo some sdg:CommunicationChannel and sdg:ensuresSecurityOf some cco:ont00001036",
    "slot_types": {
     "CommunicationSecurityAspect": "Class"
@@ -15090,13 +15520,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_communicationsecurityaspect",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_constructedpredicate",
+   "template_id": "constructed_predicate",
    "manchester_template": "Class: {ConstructedPredicate:Class} EquivalentTo: bfo:0000031 and sdg:encodesLogicalRelation some cco:ont00000965 and sdg:appliesTo some cco:ont00001037",
    "slot_types": {
     "ConstructedPredicate": "Class"
@@ -15112,13 +15544,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_constructedpredicate",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_continuousemissionsmonitoringprocess",
+   "template_id": "continuous_emissions_monitoring_process",
    "manchester_template": "Class: {ContinuousEmissionsMonitoringProcess:Class} EquivalentTo: cco:ont00002075 and sdg:monitors some sdg:IndustrialEmissionSource and sdg:hasMonitoringMode some sdg:ContinuousMode",
    "slot_types": {
     "ContinuousEmissionsMonitoringProcess": "Class"
@@ -15134,13 +15568,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_continuousemissionsmonitoringprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_corporateactivity",
+   "template_id": "corporate_activity",
    "manchester_template": "Class: {CorporateActivity:Class} EquivalentTo: sdg:OrganizationalActivity and sdg:conductedBy some cco:ont00000443",
    "slot_types": {
     "CorporateActivity": "Class"
@@ -15154,13 +15590,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_corporateactivity",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_corporateauditprocess",
+   "template_id": "corporate_audit_process",
    "manchester_template": "Class: {CorporateAuditProcess:Class} EquivalentTo: bfo:0000015 and sdg:examinesRecordsOf some cco:ont00000443 and sdg:verifiesComplianceWith some sdg:AuditMethodology",
    "slot_types": {
     "CorporateAuditProcess": "Class"
@@ -15176,13 +15614,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_corporateauditprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_corporateemploymentprocess",
+   "template_id": "corporate_employment_process",
    "manchester_template": "Class: {CorporateEmploymentProcess:Class} EquivalentTo: cco:ont00001226 and sdg:involvesAgent some cco:ont00000443 and sdg:resultsInRole some sdg:CorporateEmployee",
    "slot_types": {
     "CorporateEmploymentProcess": "Class"
@@ -15198,13 +15638,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_corporateemploymentprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_corporatereputation",
+   "template_id": "corporate_reputation",
    "manchester_template": "Class: {CorporateReputation:Class} EquivalentTo: bfo:0000019 and sdg:reflectsPerceptionOf some cco:ont00000443 and sdg:heldBy some sdg:StakeholderRole",
    "slot_types": {
     "CorporateReputation": "Class"
@@ -15220,13 +15662,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_corporatereputation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_course",
+   "template_id": "course",
    "manchester_template": "Class: {Course:Class} EquivalentTo: bfo:0000031 and sdg:hasCurriculum some sdg:AcademicCurriculumProgram and sdg:deliveredBy some sdg:HigherEducationInstitution",
    "slot_types": {
     "Course": "Class"
@@ -15238,13 +15682,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_course",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_criminaljusticeprocess",
+   "template_id": "criminal_justice_process",
    "manchester_template": "Class: {CriminalJusticeProcess:Class} EquivalentTo: bfo:0000015 and bfo:0000056 some sdg:CriminalJusticeAdministration",
    "slot_types": {
     "CriminalJusticeProcess": "Class"
@@ -15260,13 +15706,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_criminaljusticeprocess",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_customerdevice",
+   "template_id": "customer_device",
    "manchester_template": "Class: {CustomerDevice:Class} EquivalentTo: bfo:0000040 and bfo:0000178 some sdg:CustomerNetwork",
    "slot_types": {
     "CustomerDevice": "Class"
@@ -15282,13 +15730,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_customerdevice",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_databasecontainer",
+   "template_id": "database_container",
    "manchester_template": "Class: {DatabaseContainer:Class} EquivalentTo: cco:ont00000020 and sdg:usedForStorage some sdg:CloudStorageVolume",
    "slot_types": {
     "DatabaseContainer": "Class"
@@ -15304,13 +15754,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_databasecontainer",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_decisionaction",
+   "template_id": "decision_action",
    "manchester_template": "Class: sdg:DecisionAction EquivalentTo: bfo:0000015 and cco:ont00001777 some sdg:DecisionMakingProcess",
    "slot_types": {},
    "is_complex": true,
@@ -15324,13 +15776,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_decisionaction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_decisiontransitionaction",
+   "template_id": "decision_transition_action",
    "manchester_template": "Class: {DecisionTransitionAction:Class} EquivalentTo: bfo:0000015 and bfo:0000056 some sdg:DecisionMakingProcess",
    "slot_types": {
     "DecisionTransitionAction": "Class"
@@ -15346,13 +15800,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_decisiontransitionaction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_diagnosticimaging",
+   "template_id": "diagnostic_imaging",
    "manchester_template": "Class: {DiagnosticImaging:Class} EquivalentTo: bfo:0000015 and sdg:facilitated_by some sdg:ImagingEquipment",
    "slot_types": {
     "DiagnosticImaging": "Class"
@@ -15368,13 +15824,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_diagnosticimaging",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_ethicalinvestment",
+   "template_id": "ethical_investment",
    "manchester_template": "Class: {EthicalInvestment:Class} EquivalentTo: bfo:0000015 and sdg:hasPurpose some sdg:EthicalInvestmentAsset",
    "slot_types": {
     "EthicalInvestment": "Class"
@@ -15390,13 +15848,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_ethicalinvestment",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_ethicalstandard",
+   "template_id": "ethical_standard",
    "manchester_template": "Class: {EthicalStandard:Class} EquivalentTo: cco:ont00000575 and sdg:hasStandard some sdg:EthicalRequirement",
    "slot_types": {
     "EthicalStandard": "Class"
@@ -15408,13 +15868,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_ethicalstandard",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_executivedirection",
+   "template_id": "executive_direction",
    "manchester_template": "Class: {ExecutiveDirection:Class} EquivalentTo: bfo:0000015 and sdg:hasResponsibility some sdg:ExecutiveDirectorFunction",
    "slot_types": {
     "ExecutiveDirection": "Class"
@@ -15430,13 +15892,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_executivedirection",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_executiveimplementation",
+   "template_id": "executive_implementation",
    "manchester_template": "Class: {ExecutiveImplementation:Class} EquivalentTo: bfo:0000015 and sdg:hasPurpose some sdg:ExecutiveExecutionFunction",
    "slot_types": {
     "ExecutiveImplementation": "Class"
@@ -15452,13 +15916,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_executiveimplementation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_executiveleadershiprole",
+   "template_id": "executive_leadership_role",
    "manchester_template": "Class: {ExecutiveLeadershipRole:Class} EquivalentTo: sdg:OrganizationalLeadershipRole and sdg:hasMember some sdg:ExecutiveLeadershipProcess",
    "slot_types": {
     "ExecutiveLeadershipRole": "Class"
@@ -15474,13 +15940,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_executiveleadershiprole",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_externalbusinesspartner",
+   "template_id": "external_business_partner",
    "manchester_template": "Class: {ExternalBusinessPartner:Class} EquivalentTo: cco:ont00000599 and sdg:hasRelationship some sdg:ExternalAgency and sdg:engages_in_market_exchange some sdg:IndependentEconomicAgent",
    "slot_types": {
     "ExternalBusinessPartner": "Class"
@@ -15496,13 +15964,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_externalbusinesspartner",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_financialinstrument",
+   "template_id": "financial_instrument",
    "manchester_template": "Class: {FinancialInstrument:Class} EquivalentTo: sdg:FinancialProduct and bfo:0000056 some {ClearingFunction:Class}",
    "slot_types": {
     "FinancialInstrument": "Class",
@@ -15519,13 +15989,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_financialinstrument",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_financialstrategyoversight",
+   "template_id": "financial_strategy_oversight",
    "manchester_template": "Class: {FinancialStrategyOversight:Class} EquivalentTo: bfo:0000015 and bfo:0000056 some sdg:FinancialManagementProcess",
    "slot_types": {
     "FinancialStrategyOversight": "Class"
@@ -15541,13 +16013,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_financialstrategyoversight",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_highereducationinstitution",
+   "template_id": "higher_education_institution",
    "manchester_template": "Class: {HigherEducationInstitution:Class} EquivalentTo: cco:ont00000564 and sdg:confersAcademicDegree some cco:ont00002003",
    "slot_types": {
     "HigherEducationInstitution": "Class"
@@ -15562,13 +16036,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_highereducationinstitution",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_institutionalinvestor",
+   "template_id": "institutional_investor",
    "manchester_template": "Class: {InstitutionalInvestor:Class} EquivalentTo: bfo:0000040 and sdg:providesInvestorFunding some sdg:InvestorFundingSituation",
    "slot_types": {
     "InstitutionalInvestor": "Class"
@@ -15584,13 +16060,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_institutionalinvestor",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_legalproceeding",
+   "template_id": "legal_proceeding",
    "manchester_template": "Class: {LegalProceeding:Class} EquivalentTo: cco:ont00001314 and sdg:involvesCourtDocument some sdg:CourtDocument",
    "slot_types": {
     "LegalProceeding": "Class"
@@ -15606,13 +16084,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_legalproceeding",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_networkuser",
+   "template_id": "network_user",
    "manchester_template": "Class: {NetworkUser:Class} EquivalentTo: bfo:0000040 and sdg:usesNetwork some cco:ont00000700",
    "slot_types": {
     "NetworkUser": "Class"
@@ -15628,13 +16108,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_networkuser",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_observationfunction",
+   "template_id": "observation_function",
    "manchester_template": "Class: {ObservationFunction:Class} EquivalentTo: cco:ont00001306 and sdg:enablesObservation some cco:ont00000889",
    "slot_types": {
     "ObservationFunction": "Class"
@@ -15646,13 +16128,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_observationfunction",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_organization",
+   "template_id": "organization",
    "manchester_template": "Class: {Organization:Class} EquivalentTo: bfo:0000040 and sdg:hasMember some cco:ont00000647",
    "slot_types": {
     "Organization": "Class"
@@ -15668,13 +16152,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_organization",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_organizationalculture",
+   "template_id": "organizational_culture",
    "manchester_template": "Class: {OrganizationalCulture:Class} EquivalentTo: cco:ont00000568 and sdg:inheresInOrganization some sdg:Organization",
    "slot_types": {
     "OrganizationalCulture": "Class"
@@ -15686,13 +16172,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_organizationalculture",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_originaldocument",
+   "template_id": "original_document",
    "manchester_template": "Class: {OriginalDocument:Class} EquivalentTo: cco:ont00002039 and sdg:isSourceOfInformationContentFor some sdg:CopiedDocument",
    "slot_types": {
     "OriginalDocument": "Class"
@@ -15708,13 +16196,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_originaldocument",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_pdfformat",
+   "template_id": "pdf_format",
    "manchester_template": "Class: {PdfFormat:Class} EquivalentTo: bfo:0000019 and sdg:appliesToDocument some sdg:PdfDocument",
    "slot_types": {
     "PdfFormat": "Class"
@@ -15730,13 +16220,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_pdfformat",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_personallyidentifiableinformation",
+   "template_id": "personally_identifiable_information",
    "manchester_template": "Class: {PersonallyIdentifiableInformation:Class} EquivalentTo: cco:ont00000958 and sdg:identifiesPerson some bfo:0000040",
    "slot_types": {
     "PersonallyIdentifiableInformation": "Class"
@@ -15752,13 +16244,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_personallyidentifiableinformation",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_population",
+   "template_id": "population",
    "manchester_template": "Class: {Population:Class} EquivalentTo: cco:ont00000914 and sdg:isSubjectOfPrevalenceRate some sdg:PrevalenceRate",
    "slot_types": {
     "Population": "Class"
@@ -15774,13 +16268,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_population",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_professionalexperience",
+   "template_id": "professional_experience",
    "manchester_template": "Class: {ProfessionalExperience:Class} EquivalentTo: bfo:0000015 and sdg:involvesProfessionalPractice some sdg:PracticeSession",
    "slot_types": {
     "ProfessionalExperience": "Class"
@@ -15795,13 +16291,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_professionalexperience",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_qualificationlevel",
+   "template_id": "qualification_level",
    "manchester_template": "Class: {QualificationLevel:Class} EquivalentTo: cco:ont00002003 and sdg:indicatesStatisticalSignificance some sdg:SignificanceLevel",
    "slot_types": {
     "QualificationLevel": "Class"
@@ -15817,13 +16315,15 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_qualificationlevel",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""
   },
   {
-   "template_id": "filler_raffle",
+   "template_id": "raffle",
    "manchester_template": "Class: {Raffle:Class} EquivalentTo: bfo:0000015 and sdg:distributesPrizesViaLotNumber some cco:ont00001309",
    "slot_types": {
     "Raffle": "Class"
@@ -15839,7 +16339,9 @@
    "bfo_anchor_path": [],
    "broader": [],
    "provenance": {
-    "source": "define_fillers"
+    "source": "define_fillers",
+    "renamed_from": "filler_raffle",
+    "renamed": "egalitarian-ids-2026-07-21"
    },
    "alt_labels": [],
    "scope_note": ""

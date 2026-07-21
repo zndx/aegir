@@ -81,7 +81,8 @@ def main() -> int:
                   "label": p.payload.get("pref_label"), "score": round(float(p.score), 4),
                   "rel": round(float(p.score) / best, 3) if best else 0.0, "kind": "adjacent-domain"}
                  for p in adj[:8]]
-        lattice[c.pref_label] = cons
+        lattice[c.pref_label] = {"iri": c.iri, "point_id": anchor_points.get(c.pref_label),
+                                 "constituents": cons}
         for x in cons:
             if x["kind"] == "concept":
                 concept_domains[x["code"]].append(c.pref_label)
@@ -91,9 +92,9 @@ def main() -> int:
                                points=[anchor_points[c.pref_label]])
 
     shared = {k: v for k, v in concept_domains.items() if len(v) > 1}
+    sizes = [len(v["constituents"]) for v in lattice.values()]
     print(f"{len(lattice)} anchors · constituents per anchor "
-          f"min/med/max = {min(map(len, lattice.values()))}/"
-          f"{sorted(map(len, lattice.values()))[len(lattice)//2]}/{max(map(len, lattice.values()))}")
+          f"min/med/max = {min(sizes)}/{sorted(sizes)[len(sizes)//2]}/{max(sizes)}")
     print(f"LATTICE (M:N) confirmed empirically: {len(shared)}/{len(concept_domains)} concepts "
           f"occur in >1 domain")
 
@@ -108,8 +109,8 @@ def main() -> int:
         from aegir.ontology.genus_induction import embed
         report = {}
         n_flag = 0
-        for dom, cons in lattice.items():
-            cons = [x for x in cons if x["kind"] == "concept"]
+        for dom, entry in lattice.items():
+            cons = [x for x in entry["constituents"] if x["kind"] == "concept"]
             texts = [vocab[next(k for k, v in vocab.items() if v.code == x["code"])].text()
                      if any(v.code == x["code"] for v in vocab.values()) else x["label"]
                      for x in cons]

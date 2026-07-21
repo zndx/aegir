@@ -86,15 +86,19 @@ def _pathways(onto: str = "sdg"):
         rows.append((idx[a], idx[b], int(e["n"]), " · ".join(e.get("props", [])[:3])))
     present = sorted({r[0] for r in rows} | {r[1] for r in rows})
     local = {gi: k for k, gi in enumerate(present)}
-    nodes = pd.DataFrame([{"index": local[gi], "name": names[gi]} for gi in present])
+    nodes = pd.DataFrame([{"index": local[gi], "name": names[gi],
+                           "nid": nid_by_name.get(names[gi], "")} for gi in present])
     eds = pd.DataFrame([(local[a], local[b], v, pr) for a, b, v, pr in rows],
                        columns=["source", "target", "value", "props"])
     # tap-to-open: node tap posts the group-panel id to the host page (script embed — same
     # document), which the React PanelView forwards into the lineup trail. Navigation, not
     # just orientation (RH 2026-07-20).
     base = "ontology/self-census/group/" if onto == "sdg" else f"ontology/foreign/{onto}/group/"
-    slug_by_name = {g["group"][:28]: g.get("slug", "") for g in groups}
-    idmap = {n: base + slug_by_name[n] for n in slug_by_name if slug_by_name[n]}
+    # note id rides the node DATA (slug — identity), never the displayed name (RH 2026-07-21)
+    nid_by_name = {}
+    for g in groups:
+        if g.get("slug"):
+            nid_by_name[g["group"][:28]] = base + g["slug"]
 
     def _tap_hook(plot, element):  # noqa: ANN001
         try:
@@ -104,12 +108,12 @@ def _pathways(onto: str = "sdg"):
                 st.add_tools(TapTool())
             for r in st.renderers:
                 ds = getattr(r, "data_source", None)
-                if ds is not None and "name" in getattr(ds, "data", {}):
+                if ds is not None and "nid" in getattr(ds, "data", {}):
                     ds.selected.js_on_change("indices", CustomJS(
-                        args={"ds": ds, "idmap": idmap},
+                        args={"ds": ds},
                         code="const i=ds.selected.indices[0];"
-                             "if(i!=null){const n=ds.data['name'][i];"
-                             "if(idmap[n]&&window.__lineupOpen)window.__lineupOpen(idmap[n]);}"))
+                             "if(i!=null){const nid=(ds.data['nid']||[])[i];"
+                             "if(nid&&window.__lineupOpen)window.__lineupOpen(nid);}"))
         except Exception:  # noqa: BLE001 — navigation is an enhancement, never a crash
             pass
 
