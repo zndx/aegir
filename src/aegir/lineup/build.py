@@ -2344,6 +2344,14 @@ def run(args=None) -> int:
         N.write_note(kb, n)
     entries = (N.scan_notes(kb, "current") + N.scan_notes(kb, "scratch") + N.scan_notes(kb, "archive"))
     idx = N.write_index(kb, entries)
+    # content-addressed path manifest (RH 2026-07-21): trails encode against this kasten version
+    try:
+        from aegir.lineup.path import build_manifest
+        pm = build_manifest(kb)
+        print(f"  path manifest: version {pm['version']} over {pm['n']} note ids "
+              f"(rank-MPH; trails are now durable computation specs)")
+    except Exception as _e:  # noqa: BLE001
+        print(f"  path manifest: skipped ({_e})")
     by_dp: dict[str, int] = {}
     by_root: dict[str, int] = {}
     edges = 0

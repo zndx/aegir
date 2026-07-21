@@ -137,16 +137,38 @@ function Lineup() {
     setTrail(first ? [first.id] : []);
   }, [seed, root, index, layer, prefix]);
   useEffect(() => { saveTrail(layer, seed, trail); }, [trail, seed, layer]);
-  // shareable URLs: the focused (last) panel + root ride the query string
+  // shareable URLs with FEDWIKI HISTORY SEMANTICS (RH 2026-07-21): extending the lineup
+  // PUSHES history (back walks the path leftward, as Ward's lineup does); truncation/replacement
+  // REPLACES. lastNav distinguishes our own writes from inbound navigation.
+  const lastNav = useRef<string | null>(null);
+  const prevLen = useRef(0);
   useEffect(() => {
     if (!trail.length) return;
+    const focused = trail[trail.length - 1];
+    const extend = trail.length > prevLen.current;
+    prevLen.current = trail.length;
+    lastNav.current = focused;
     setParams((prev) => {
       const q = new URLSearchParams(prev);
-      q.set("open", trail[trail.length - 1]);
+      q.set("open", focused);
       q.set("root", root);
       return q.toString() === prev.toString() ? prev : q;
-    }, { replace: true });
+    }, { replace: !extend });
   }, [trail, root, setParams]);
+  // inbound navigation (back/forward buttons, a pasted/edited URL in-place): reconcile the trail.
+  // back to an id already in the trail = truncate right of it (the lineup walks back); a novel id
+  // extends the current lineup (forward / hand-edited deep link).
+  useEffect(() => {
+    const pOpen = params.get("open");
+    if (!pOpen || pOpen === lastNav.current) return;
+    lastNav.current = pOpen;
+    setTrail((t) => {
+      const i = t.indexOf(pOpen);
+      if (i >= 0) { prevLen.current = i + 1; return t.slice(0, i + 1); }
+      prevLen.current = t.length + 1;
+      return [...t, pOpen];
+    });
+  }, [params]);
 
   const openFrom = (fromIdx: number) => (targetId: string) =>
     setTrail((t) => [...t.slice(0, fromIdx + 1), targetId]);
