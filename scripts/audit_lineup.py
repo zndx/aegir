@@ -82,6 +82,13 @@ def main() -> int:
             tgt = m.group(1).strip()
             if tgt in all_ids:
                 inbound[tgt] += 1
+            elif re.match(r"(?:ontology/(?:foreign/\w+|self-census)/class/|path/|provenance/\d)", tgt):
+                pass    # SYNTHETIC ids — resolved live by the gateway (class panels, path
+                        # runs, provenance ego graphs); projected files never exist for them
+            elif n["root"] == "archive":
+                D["dangling_archive_era"].append(f"{n['id']} → [[{tgt}]]")
+                # frozen kastens are historical documents — era-dangling is reported,
+                # never floored (the live-projection floor stays zero)
             else:
                 D["dangling_wikilink"].append(f"{n['root']}:{n['id']} → [[{tgt}]]")
         # hash titles

@@ -23,8 +23,14 @@ const LENSES = [
 const TRAINING = [
   { key: "sweeps", label: "Sweeps", seed: "training/sweeps", hint: "parallel coords" },
   { key: "reward", label: "Reward", seed: "training/reward", hint: "GRPO dynamics" },
-  { key: "provenance", label: "Provenance", seed: "training/provenance", hint: "lineage DAG" },
   { key: "metrics", label: "Metrics", seed: "training/metrics", hint: "gates & measures" },
+];
+// PROVENANCE — sibling of LENS/TRAINING (RH 2026-07-21): Lineage = the internal DAG (Atlas/OL
+// ego-graph, formerly the 'Provenance' training entry); Sources = the EPISTEMIC lineage —
+// every external source directly referenced, in scope via SDG.
+const PROVENANCE = [
+  { key: "lineage", label: "Lineage", seed: "training/provenance", hint: "internal DAG" },
+  { key: "sources", label: "Sources", seed: "provenance/sources", hint: "external inputs" },
 ];
 // Roots are refs (RH 2026-07-06, git-style): current = the latest sdg-corpora release kasten ·
 // scratch = TRUNK (the live projection — incremental work lands here) · archive = past releases
@@ -212,6 +218,7 @@ function Lineup() {
   const rootNotes = (index?.notes || []).filter((n) => n.root === root);
   const lenses = LENSES.filter((l) => rootNotes.some((n) => n.id === prefix + l.seed));
   const training = TRAINING.filter((t) => rootNotes.some((n) => n.id === prefix + t.seed));
+  const provenance = PROVENANCE.filter((t) => rootNotes.some((n) => n.id === prefix + t.seed));
 
   // UXR 2026-07-19: collapsible left-nav — the close control lives at the BOTTOM of the rail.
   const [navClosed, setNavClosed] = useState<boolean>(() => {
@@ -279,6 +286,16 @@ function Lineup() {
         {training.length > 0 && (
           <Group title="TRAINING">
             {training.map((t) => (
+              <a key={t.key} onClick={() => setTrail([prefix + t.seed])} style={tab(trail[0] === prefix + t.seed)} title={t.hint}>
+                {t.label}
+                <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{t.hint}</span>
+              </a>
+            ))}
+          </Group>
+        )}
+        {provenance.length > 0 && (
+          <Group title="PROVENANCE">
+            {provenance.map((t) => (
               <a key={t.key} onClick={() => setTrail([prefix + t.seed])} style={tab(trail[0] === prefix + t.seed)} title={t.hint}>
                 {t.label}
                 <span style={{ float: "right", fontSize: 11, opacity: 0.6 }}>{t.hint}</span>

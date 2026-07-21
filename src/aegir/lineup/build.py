@@ -258,7 +258,11 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
     for aid, a in sorted(anchors.items()):
         body = f"BFO/CCO anchor **{a['label']}** — {len(a['terms'])} terms anchored here (siblings).\n\n"
         if a["parent"]:
-            body += f"**Broader.** {N.wl(a['parent'])}\n\n"
+            # link the parent anchor only when it has a page of its own (a terminal anchor
+            # for some template); mid-path ancestors render as code — never a dead end
+            body += ("**Broader.** "
+                     + (N.wl(a["parent"]) if a["parent"] in anchors
+                        else f"`{a['parent'].rsplit('/', 1)[-1]}`") + "\n\n")
         body += "\n".join(f"- {N.wl(tid, tid.split('/')[-1])}" for tid in sorted(a["terms"]))
         out.append(N.Note(id=aid, title=a["label"], kind="ontology-anchor",
                           data_product="ontology", body=body,
@@ -1413,11 +1417,13 @@ def project_release_chapters(sc: "dict | None") -> "tuple[list[N.Note], dict]":
             fallback = (_tabs0[0].replace("_", " ") + " (chapter)") if _tabs0 else pid[:12]
             title = (m.group(1).strip()[:72] if m else fallback) + f" · {reg}"
             nid = f"content/chapter/rel_{pid[:12]}.{reg}"
-            twin = f"content/chapter/rel_{pid[:12]}.{'natural' if reg == 'semantic' else 'semantic'}"
+            other = "natural" if reg == "semantic" else "semantic"
+            twin = (f"content/chapter/rel_{pid[:12]}.{other}"
+                    if (cdir / f"{other}.md").exists() else None)
             tabs = sorted(pid_tables.get(pid, []))
             vws = sorted(pid_views.get(pid, []))
-            head = (f"*Release chapter — **{reg}** register · construct `{pid[:12]}` · "
-                    f"{N.wl(twin, ('natural' if reg == 'semantic' else 'semantic') + ' register')}*\n\n"
+            head = (f"*Release chapter — **{reg}** register · construct `{pid[:12]}`"
+                    + (f" · {N.wl(twin, other + ' register')}" if twin else "") + "*\n\n"
                     + (("**Tables.** " + " · ".join(N.wl(f"relational/table/{t}", t) for t in tabs[:10])
                         + (f" _…+{len(tabs) - 10}_" if len(tabs) > 10 else "") + "\n\n") if tabs else "")
                     + (("**Views.** " + " · ".join(N.wl(f"relational/view/{v}", v) for v in vws[:6])
@@ -1430,7 +1436,7 @@ def project_release_chapters(sc: "dict | None") -> "tuple[list[N.Note], dict]":
             notes.append(N.Note(
                 id=nid, title=title + (f" (1/{n})" if n > 1 else ""), kind="content-chapter",
                 data_product="content", root="current",
-                links=[twin] + [f"relational/table/{t}" for t in tabs[:10]]
+                links=([twin] if twin else []) + [f"relational/table/{t}" for t in tabs[:10]]
                       + [f"relational/view/{v}" for v in vws[:6]],
                 frontmatter={"register": reg, "construct": pid, "release": True, "windows": n},
                 body=body0 + "\n"))
@@ -1454,6 +1460,112 @@ def project_release_chapters(sc: "dict | None") -> "tuple[list[N.Note], dict]":
                             kind="content-index", data_product="content", root="current",
                             frontmatter={"n_chapters": len(notes)}, body=idx_body))
     return notes, by_pid
+
+
+
+# ── PROVENANCE › Sources: the epistemic-lineage surface (RH 2026-07-21) ──────
+# Every EXTERNAL source directly referenced by the pipeline, registry-driven. Posture
+# language per RH: none of these are "under management" — they are IN-SCOPE VIA SDG
+# (grounding backbones, integration sources, extension sources, corpora, benchmarks).
+SOURCES = [
+    dict(key="bfo", name="BFO 2020", kind="upper ontology (backbone)",
+         role="The grounding mandate's root: numeric-IRI backbone, category disjointness, "
+              "and the armed relation signatures. Never minted into — sdg coins ground via "
+              "rdfs:subPropertyOf to real BFO IRIs.",
+         local="vendored numeric backbone (build_realized_ontology NUMERIC_BFO + "
+               "relation_signatures)", links=["ontology/shapes"]),
+    dict(key="cco", name="Common Core Ontologies", kind="mid-level ontology (backbone)",
+         role="The reasoning authority for grounding: π(CCO) merges into every realization; "
+              "specific cco: genera beat generic bfo: anchors (grounding-debt doctrine).",
+         local="build/grounding/cco-merged.ttl", links=[]),
+    dict(key="fibo", name="FIBO (EDM Council)", kind="domain ontology (integration source)",
+         role="Financial-industry ontology, censused end-to-end. DOUBLE DUTY: expressibility "
+              "probe of our pattern library AND the deriver CALIBRATION SET (775 authored "
+              "rdfs:domain + 1,011 rdfs:range = ground truth for usage-derivation accuracy).",
+         local="~/local/src/oss/fibo", artifact="build/fibo_coverage.json",
+         links=["ontology/foreign/fibo"]),
+    dict(key="fhir", name="HL7 FHIR", kind="interop standard (integration source)",
+         role="Healthcare interoperability resources. The only-typing stress pole of the "
+              "census (element typing as effective domains); begat the element_typing "
+              "pattern category.", local="~/local/src/oss/fhir (spec repo; ontology fetched "
+              "from build.fhir.org matching checkout)", artifact="build/fhir_coverage.json",
+         links=["ontology/foreign/fhir"]),
+    dict(key="prodml", name="Energistics PRODML", kind="data standard (extension source)",
+         role="Production data (volumes, fluid analyses, distributed sensing, operations) — "
+              "COMPREHENSIVE EXTENSION INTO SDG: candidate ConceptScheme sibling of pure CSG; "
+              "XSD→OWL projection machinery pending; admission gated on measured FinePDFs "
+              "selectivity delta.", local="docs.energistics.org/PRODML",
+         links=["lexicon/concept/PRODML"]),
+    dict(key="witsml", name="Energistics WITSML", kind="data standard (extension source)",
+         role="Drilling/wellbore data standard; extensive productive overlap with PRODML "
+              "expected (energistics.org/reference-materials). In scope via SDG alongside "
+              "the existing ENERGY family.", local="docs.energistics.org", links=[]),
+    dict(key="sysmlv2", name="SysML v2 / KerML (OMG)", kind="modeling language (extension source)",
+         role="Model-Based Systems Engineering: its rdfs:domain realization yields MBSE "
+              "practices and tools into the Lexicon. Candidate ConceptScheme authored "
+              "(requirements · structure · behavior · verification).",
+         local="OMG SysML-v2 releases", links=["lexicon/concept/SYSML"]),
+    dict(key="finepdfs", name="FinePDFs", kind="open-domain corpus (input)",
+         role="The input information landscape: passages admitted through the aperture's "
+              "MaxSim surface (one passage → one anchor-topic); the substrate for coverage "
+              "audits, topic models, and the selectivity measurements that gate aperture "
+              "extensions.", local="build/domain_harvest/docs + coverage_v* runs",
+         links=["lexicon/construct/item", "topic/index"]),
+    dict(key="schemapile", name="SchemaPile", kind="schema corpus (structural signal)",
+         role="The relational-structure yardstick: width distributions and shape EMD gate "
+              "the derive loop and the DDL spine (metrology-informed derivation).",
+         local="just get-schemapile", links=[]),
+    dict(key="gittables", name="GitTables", kind="table corpus (value realism)",
+         role="Real values with RETAINED LINEAGE for differentia columns — the federated "
+              "Atelier harvest (maxsim/NHSVM/CatBoost over gRPC); provenance-backed noun "
+              "admission; pool lineage into Atlas (Merkle strategy components).",
+         local="just get-gittables", links=[]),
+    dict(key="sotab", name="SOTAB", kind="benchmark (evaluation lineage)",
+         role="CTA/CPA benchmark family of the v0.2 era; the convergence re-target moved the "
+              "primary eval to ontology-CPA, but SOTAB remains the comparability lineage.",
+         local="just get-sotab", links=[]),
+]
+
+
+def project_sources() -> "list[N.Note]":
+    notes: "list[N.Note]" = []
+    rows = ["| source | kind | in-scope role |", "|---|---|---|"]
+    for s_ in SOURCES:
+        rows.append(f"| {N.wl('provenance/source/' + s_['key'], s_['name'])} "
+                    f"| {s_['kind']} | {s_['role'][:94]}… |")
+        # live measured touchpoints, pulled honestly (absent → omitted)
+        measured = ""
+        art = s_.get("artifact")
+        if art and Path(art).exists():
+            try:
+                cov = json.loads(Path(art).read_text())
+                tb, tt = cov.get("tbox_rbox_covered"), cov.get("tbox_rbox_total")
+                if tb is not None:
+                    measured = (f"**Measured.** {cov.get('n_logical_axioms', 0):,} logical "
+                                f"axioms censused · schema expressibility {tb:,}/{tt:,} = "
+                                f"{100 * tb / max(1, tt):.1f}% · census artifact `{art}`\n\n")
+            except Exception:  # noqa: BLE001
+                pass
+        link_md = " · ".join(N.wl(l_, l_.rsplit("/", 1)[-1]) for l_ in s_.get("links", [])
+                             ) or "—"
+        notes.append(N.Note(
+            id=f"provenance/source/{s_['key']}", title=s_["name"], kind="provenance-source",
+            data_product="ontology", root="scratch",
+            links=s_.get("links", []) + ["provenance/sources"],
+            frontmatter={"source_kind": s_["kind"]},
+            body=(f"**{s_['name']}** — {s_['kind']}, in scope via SDG.\n\n{s_['role']}\n\n"
+                  + measured
+                  + f"**Local.** `{s_.get('local', '—')}`\n\n**Surfaces.** {link_md}\n")))
+    notes.append(N.Note(
+        id="provenance/sources", title="Sources", kind="provenance-source",
+        data_product="ontology", root="scratch",
+        links=[f"provenance/source/{s_['key']}" for s_ in SOURCES],
+        body=("**Sources** — every external source of information the pipeline directly "
+              "references: grounding backbones, integration and extension sources, input "
+              "corpora, structural signals, and benchmarks. None are 'under management' — "
+              "they are IN SCOPE VIA SDG, each with its measured touchpoints where a census "
+              "or harvest exists.\n\n" + "\n".join(rows) + "\n")))
+    return notes
 
 
 def project_escalation_channel() -> "list[N.Note]":
@@ -1867,7 +1979,7 @@ def project_shape_surfaces(live_ids: "set | None" = None) -> "tuple[list[N.Note]
         opa = blocked.get("abox:opa", 0)
         notes.append(N.Note(
             id=base, title=("SDG — native self-census" if native else
-                            f"{tag.upper()} — foreign ontology under management"),
+                            f"{tag.upper()} — in-scope source (censused)"),
             kind="lexicon-construct", data_product="ontology", root="scratch",
             frontmatter={"tag": tag, "tbox_coverage": round(pct, 1),
                          "n_logical": cov.get("n_logical_axioms"),
@@ -1923,8 +2035,8 @@ def project_shape_surfaces(live_ids: "set | None" = None) -> "tuple[list[N.Note]
                 body=body_g))
         if not native:
             fentries.append((base, tag, pct))
-    lens_line = ("**Under management.** " + N.wl("ontology/shapes", "axiom shapes (universal)")
-                 + " organize every ontology here — ours and foreign: native "
+    lens_line = ("**In scope (via SDG).** " + N.wl("ontology/shapes", "axiom shapes (universal)")
+                 + " organize every censused ontology — ours and external: native "
                  + N.wl("ontology/self-census", "sdg")
                  + ("".join(f" · {N.wl(nid, tag.upper())} ({pct:.0f}% expressible)"
                             for nid, tag, pct in fentries))
@@ -2678,6 +2790,7 @@ def run(args=None) -> int:
     if REF_DEFECTS:
         _reflog.error("reference integrity: %d structural failure(s) this build "
                       "→ build/reference_integrity.json (remediation worklist)", len(REF_DEFECTS))
+    notes += project_sources()
     notes += project_escalation_channel()
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
                                   zettel_head=zs[-1]["id"] if zs else None,
