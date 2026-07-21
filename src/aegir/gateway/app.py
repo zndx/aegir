@@ -315,7 +315,10 @@ def _register_api_routes(app: FastAPI) -> None:
             return {"id": note_id, "name": note_id, "title": f"path verify · {r['path_id'][:8]}",
                     "kind": "path-run", "data_product": "ontology", "root": "scratch",
                     "body": body, "links": r.get("trail", [])}
-        if note_id.startswith("provenance/"):
+        if re.fullmatch(r"provenance/\d+", note_id):
+            # SYNTHETIC ego ids are the vid form ONLY (provenance/<digits>) — provenance/sources
+            # and provenance/source/* are PROJECTED notes and must fall through to the index
+            # (RH 2026-07-21: the ego route was shadowing the Sources panels)
             rest = note_id.split("/", 1)[1]
             return {"id": note_id, "name": note_id, "title": "Provenance", "kind": "provenance",
                     "data_product": "training", "ego_focal": int(rest) if rest.isdigit() else None,

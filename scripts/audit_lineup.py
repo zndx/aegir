@@ -30,7 +30,7 @@ _WL = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]*)?\]\]")
 _HEX_TITLE = re.compile(r"^[0-9a-f]{8,16}(\s*·.*)?(\s*\(\d+/\d+\))?$")
 _ENTRY_KINDS_EXEMPT_ORPHAN = {"lens", "collection-index", "content-index", "archive-snapshot",
                               "release-note", "corpus", "provenance", "lexicon-construct",
-                              "training", "item"}
+                              "training", "item", "provenance-source"}
 STUB_FLOOR = 400          # chars of body below which a content panel counts as a stub
 
 
