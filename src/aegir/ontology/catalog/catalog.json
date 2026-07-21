@@ -2665,11 +2665,12 @@
     "ExecutiveLeadershipProcess": "Class"
    },
    "is_complex": true,
-   "verbal_template": "A roster for an executive team is a function that is realized in an executive leadership process, aligning the process filler with the range of realized_in.",
+   "verbal_template": "{ExecutiveTeamRoster} is an entity that 0000056 some {ExecutiveLeadershipProcess}",
    "verbal_templates": [
-    "A roster for an executive team is defined as a function that is realized in an executive leadership process, and it aligns the process filler with the range of realized_in.",
-    "The process filler is aligned with the range of realized_in by a roster for an executive team, which is a function that is realized in an executive leadership process.",
-    "A function that is realized in an executive leadership process serves as a roster for an executive team, aligning the process filler with the range of realized_in."
+    "{ExecutiveTeamRoster} is an entity that 0000056 some {ExecutiveLeadershipProcess}",
+    "For an entity to count as {ExecutiveTeamRoster}, it must bear the 0000056 relation to at least one {ExecutiveLeadershipProcess}.",
+    "Every {ExecutiveTeamRoster} stands in the 0000056 relation to at least one {ExecutiveLeadershipProcess}.",
+    "Each {ExecutiveTeamRoster} is defined as an entity which 0000056 some {ExecutiveLeadershipProcess}."
    ],
    "mean_verbal_length": 0.0,
    "bfo_anchor_path": [
@@ -6106,11 +6107,12 @@
     "MarketDemand": "Class"
    },
    "is_complex": true,
-   "verbal_template": "An EntrepreneurialActivityProcess is a Process that produces EconomicGoodsAndServices and targets MarketDemand.",
+   "verbal_template": "{EntrepreneurialActivityProcess} is an entity that produces some {EconomicGoodsAndServices}, and that targets some {MarketDemand}",
    "verbal_templates": [
-    "A Process is classified as an EntrepreneurialActivityProcess if and only if it generates EconomicGoodsAndServices and directs its focus toward MarketDemand.",
-    "The generation of EconomicGoodsAndServices and the direction toward MarketDemand characterize a Process when it is identified as an EntrepreneurialActivityProcess.",
-    "A Process that produces EconomicGoodsAndServices and targets MarketDemand is formally classified as an EntrepreneurialActivityProcess."
+    "{EntrepreneurialActivityProcess} is an entity that produces some {EconomicGoodsAndServices}, and that targets some {MarketDemand}",
+    "For an entity to count as {EntrepreneurialActivityProcess}, it must bear the produces relation to at least one {EconomicGoodsAndServices}, and the targets relation to at least one {MarketDemand}.",
+    "Each {EntrepreneurialActivityProcess} is defined as an entity which produces some {EconomicGoodsAndServices}, and which targets some {MarketDemand}.",
+    "Every {EntrepreneurialActivityProcess} stands in the produces relation to at least one {EconomicGoodsAndServices}, and the targets relation to at least one {MarketDemand}."
    ],
    "mean_verbal_length": 0.0,
    "bfo_anchor_path": [
@@ -12610,12 +12612,11 @@
     "GovernanceFunction": "Class"
    },
    "is_complex": true,
-   "verbal_template": "A function that enables an entity to exercise administrative authority or oversight over an organization or domain.",
+   "verbal_template": "{GovernanceFunction} is a kind of entity.",
    "verbal_templates": [
-    "A function that enables an entity to exercise administrative authority or oversight over an organization or domain. This function manifests through the active direction of organizational resources and the monitoring of operational compliance with established standards.",
-    "A function is defined as a mechanism that permits an entity to carry out administrative authority or oversight regarding an organization or domain.",
-    "When an entity exercises administrative authority or oversight over an organization or domain, that capability is provided by a function.",
-    "Administrative authority or oversight over an organization or domain is exercised by an entity through a function."
+    "{GovernanceFunction} is a kind of entity.",
+    "{GovernanceFunction} is a type of entity.",
+    "Every {GovernanceFunction} is an entity."
    ],
    "mean_verbal_length": 0.0,
    "bfo_anchor_path": [],

@@ -29,8 +29,16 @@ from aegir.ontology.schema import CatalogTemplate
 LEXICON = "aegir"      # the single Lexicon (Atlas Glossary) for now; extend when multi-domain
 
 
+def _fill_slot(m: "re.Match") -> str:
+    """{RightsExerciseProcess} → 'rights exercise process' — slots FILL as their de-camelized
+    names; deleting them truncated every braced verbalization to a subjectless fragment
+    ('is a process that has participant some' — RH 2026-07-21)."""
+    name = m.group(0).strip("{}").split(":")[0]
+    return re.sub(r"(?<!^)(?=[A-Z])", " ", name).lower()
+
+
 def _verbal(t: CatalogTemplate) -> str:
-    v = re.sub(r"\{[^}]+\}", "", t.verbal_template or "")
+    v = re.sub(r"\{[^}]+\}", _fill_slot, t.verbal_template or "")
     v = re.sub(r"\s+", " ", v).strip(" .")
     return v or t.template_id.replace("_", " ")
 
