@@ -220,15 +220,23 @@ def main() -> int:
             if mn is not None and ent["min"] is not None and int(mn) != ent["min"]:
                 ok = False
                 mism["mincount_mismatch"] += 1
+                mism_ex.setdefault("mincount_mismatch", []).append(
+                    f"{str(tc).rsplit('#', 1)[-1]}.{str(path).rsplit('#', 1)[-1]} "
+                    f"shape={int(mn)} owl={ent['min']}")
             if mx is not None and ent["max"] is not None and int(mx) != ent["max"]:
                 ok = False
                 mism["maxcount_mismatch"] += 1
+                mism_ex.setdefault("maxcount_mismatch", []).append(
+                    f"{str(tc).rsplit('#', 1)[-1]}.{str(path).rsplit('#', 1)[-1]} "
+                    f"shape={int(mx)} owl={ent['max']}")
             if ok:
                 corr["constraint_corresponds"] += 1
 
     overlap = len(cat_classes & classes)
+    containment = overlap / max(1, len(cat_classes))
     out = {"run_classes": len(classes), "catalog_classes": len(cat_classes),
            "generation_overlap": overlap,
+           "catalog_containment": round(containment, 4),
            "owl_skos": {"projected": sk_total, "entailed": sk_ok,
                         "missing": sk_miss[:12]},
            "owl_shacl": {"shapes": n_shapes, "targetclass_realized": tc_ok,
@@ -239,8 +247,8 @@ def main() -> int:
            "skos_shacl": {"sh_in_values": in_total, "matched_to_skos_labels": in_hit},
            "driver_framed": True}
     Path(a.json).write_text(json.dumps(out, indent=1))
-    print(f"TRIAD (drivers): catalog OWL {len(cat_classes)} · run OWL {len(classes)} · "
-          f"GENERATION OVERLAP {overlap} — the unification gap is the composition target")
+    print(f"TRIAD (drivers): catalog OWL {len(cat_classes)} · paired OWL {len(classes)} · "
+          f"overlap {overlap} · CATALOG CONTAINMENT {containment:.1%} (unification target 100%)")
     print(f"  OWL⊨SKOS   {sk_ok}/{sk_total} (vs the catalog realization — the vocab's source)"
           + (f" · missing e.g. {sk_miss[:3]}" if sk_miss else ""))
     print(f"  OWL⊨SHACL  targetClass {tc_ok}/{n_shapes} · constraints corresponding "
