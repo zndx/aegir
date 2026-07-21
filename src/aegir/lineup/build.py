@@ -1506,7 +1506,15 @@ def project_escalation_channel() -> "list[N.Note]":
         body="\n".join(body))]
 
 
-def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> "list[N.Note]":
+def _aslist(v) -> "list[str]":
+    """Attribute-shape tolerance: SKOS loaders hand back str | list | None."""
+    if not v:
+        return []
+    return [str(v)] if isinstance(v, str) else [str(x) for x in v if x]
+
+
+def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
+                           head_by_tid: "dict[str, str] | None" = None) -> "list[N.Note]":
     """The vocab's concepts as REAL notes (RH 2026-07-21: constituents were unlinked text — but
     concepts are first-class lexicon citizens; the lens advertises 973 it could not show). One
     note per concept code, carrying its definition text, the anchors that count it a constituent
@@ -1533,6 +1541,13 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
             if key:
                 in_anchors.setdefault(key, []).append(
                     (str(p0.get("id")), p0.get("label") or "", x.get("rel")))
+    head_by_tid = head_by_tid or {}
+    tid_by_upper = {t.upper(): t for t in live_ids}
+    locs = {str(k): str(k).rsplit("#", 1)[-1] for k in vocab}
+    narrower: "dict[str, list]" = {}
+    for k, c in vocab.items():
+        for b in _aslist(getattr(c, "broader", None)):
+            narrower.setdefault(b, []).append(str(k))
     notes: "list[N.Note]" = []
     for key, c in sorted(vocab.items()):
         code = str(key).rsplit("#", 1)[-1].rsplit("/", 1)[-1]     # IRI-local — STABLE
@@ -1548,11 +1563,22 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
                 return t
             cut = t[:n].rfind(". ")
             return t[:cut + 1] if cut > 200 else t[:n] + "…"
-        camel = re.sub(r"[^A-Za-z0-9]", "", label.title())
         snake = re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_")
+        # ONTOLOGY BINDING: the vocab code embeds the template_id (…_<TID_UPPER>) — resolve it
+        # and the template's realized head class, so the concept's OWL situation is one hop away
+        tid = snake if snake in live_ids else None
+        if not tid:
+            for i, ch in enumerate(code):
+                if ch == "_" and code[i + 1:] in tid_by_upper:
+                    tid = tid_by_upper[code[i + 1:]]
+                    break
         cross = ""
-        if snake in live_ids:
-            cross = f"**Term.** {N.wl(f'ontology/term/{snake}', snake)}\n\n"
+        if tid:
+            head = head_by_tid.get(tid)
+            cross = ("**Ontology binding.** template " + N.wl(f"ontology/term/{tid}", tid)
+                     + ((" · realized class "
+                         + N.wl(f"ontology/self-census/class/{head}", head)) if head else "")
+                     + "\n\n")
         anchors_md = ""
         hit = next((in_anchors[k] for k in
                     (code, _lnorm2(label), _lnorm2(code))          # IRI-local first; legacy after
@@ -1561,16 +1587,47 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
             anchors_md = ("**Constituent of.** " + " · ".join(
                 N.wl(f"lexicon/aperture/{aid}", albl[:40]) + (f" (rel {rel})" if rel else "")
                 for aid, albl, rel in hit[:8]) + "\n\n")
+        alts = _aslist(getattr(c, "alt_label", None))
+        broaders = _aslist(getattr(c, "broader", None))
+        skos_rows = ["| skos property | value |", "|---|---|", f"| `prefLabel` | {label} |"]
+        if alts:
+            skos_rows.append("| `altLabel` | " + " · ".join(a[:36] for a in alts[:6])
+                             + (f" _…+{len(alts) - 6}_" if len(alts) > 6 else "") + " |")
+        skos_rows.append(f"| `notation` | `{getattr(c, 'code', '')}` |")
+        for b in broaders:
+            bl = locs.get(b, b.rsplit("#", 1)[-1])
+            skos_rows.append(f"| `broader` | {N.wl('lexicon/concept/' + bl, bl)} |")
+        skos_rows.append(f"| IRI | `{key}` |")
+        chain, cur, guard = [], str(key), 0
+        while guard < 8:
+            guard += 1
+            bs = [b for b in _aslist(getattr(vocab.get(cur), "broader", None)) if b in locs]
+            if not bs:
+                break
+            cur = bs[0]
+            chain.append(N.wl("lexicon/concept/" + locs[cur], locs[cur]))
+        kids = narrower.get(str(key), [])
+        pos = ("**Position.** " + (" → ".join(reversed(chain)) + " → " if chain else "")
+               + f"**{label}**"
+               + ((f" · {len(kids)} narrower: " + " · ".join(
+                   N.wl("lexicon/concept/" + locs[k2], locs[k2][:32]) for k2 in kids[:6])
+                   + (f" _…+{len(kids) - 6}_" if len(kids) > 6 else "")) if kids else "")
+               + "\n\n")
+        admission = ("**Admission role.** Encoded (with every ancestor code) into the "
+                     "`sdg_domains` MaxSim collection — the surface that admits materials into "
+                     "the pipeline; the anchors above composite it into the aperture.\n\n")
         notes.append(N.Note(
             id=f"lexicon/concept/{code}", title=label[:64], kind="lexicon-construct",
             data_product="ontology", root="scratch",
-            frontmatter={"code": code},
-            links=[f"lexicon/aperture/{a}" for a, _, _ in (hit or [])[:8]],
-            body=(f"**{label}** — a vocab concept (`{code}`; the admission surface's unit — "
+            frontmatter={"code": code, "iri": str(key)},
+            links=([f"lexicon/aperture/{a}" for a, _, _ in (hit or [])[:8]]
+                   + ["lexicon/concept/" + locs[b] for b in broaders if b in locs]
+                   + ([f"ontology/term/{tid}"] if tid else [])),
+            body=(f"**{label}** — a vocab concept (the admission surface's unit — "
                   f"see {N.wl('lexicon/construct/concept', 'concept (construct)')}).\n\n"
                   + (f"> {_clip(defn)}\n\n" if defn else "")
                   + (f"**Scope.** {_clip(scope, 400)}\n\n" if scope else "")
-                  + cross + anchors_md
+                  + "\n".join(skos_rows) + "\n\n" + pos + cross + anchors_md + admission
                   + "_Retrieval surface: label · abbrev · definition · scope, concatenated and "
                   "encoded to qdrant as the MaxSim multivector — an engineering serialization, "
                   "distinct from the definition above._\n")))
@@ -1637,7 +1694,8 @@ def project_aperture_anchors() -> list[N.Note]:
                   + _aperture_constituents_md(p0, label_to_aid, label_local, label_pref)
                   + "Part of " + N.wl("lexicon/aperture/index", "the Canonical Aperture") + " · "
                   + N.wl("lexicon/construct/aperture", "aperture (construct)"))))
-    notes += project_vocab_concepts(pts, live_ids=getattr(project_aperture_anchors, "_live_ids", None))
+    notes += project_vocab_concepts(pts, live_ids=getattr(project_aperture_anchors, "_live_ids", None),
+                                    head_by_tid=getattr(project_aperture_anchors, "_head_by_tid", None))
     return notes
 
 
@@ -2496,6 +2554,12 @@ def run(args=None) -> int:
     shape_notes, shapes_line = project_shape_surfaces(live_ids=set(tid2cat))
     notes += shape_notes
     notes += project_lexicon_constructs()
+    def _head_of(mt: str) -> "str | None":
+        m_ = re.search(r"Class:\s*\{(\w+):Class\}", mt or "")
+        return m_.group(1) if m_ else None
+    project_aperture_anchors._live_ids = set(tid2cat)
+    project_aperture_anchors._head_by_tid = {t.template_id: _head_of(t.manchester_template)
+                                             for _, t in rows}
     notes += project_aperture_anchors()
     notes += rel_ch_notes
     notes += rel_coll_notes
