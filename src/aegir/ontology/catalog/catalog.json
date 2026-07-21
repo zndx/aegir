@@ -2665,12 +2665,9 @@
     "ExecutiveLeadershipProcess": "Class"
    },
    "is_complex": true,
-   "verbal_template": "{ExecutiveTeamRoster} is an entity that 0000056 some {ExecutiveLeadershipProcess}",
+   "verbal_template": "{ExecutiveTeamRoster} is exactly a role that participates in some {ExecutiveLeadershipProcess}.",
    "verbal_templates": [
-    "{ExecutiveTeamRoster} is an entity that 0000056 some {ExecutiveLeadershipProcess}",
-    "For an entity to count as {ExecutiveTeamRoster}, it must bear the 0000056 relation to at least one {ExecutiveLeadershipProcess}.",
-    "Every {ExecutiveTeamRoster} stands in the 0000056 relation to at least one {ExecutiveLeadershipProcess}.",
-    "Each {ExecutiveTeamRoster} is defined as an entity which 0000056 some {ExecutiveLeadershipProcess}."
+    "{ExecutiveTeamRoster} is exactly a role that participates in some {ExecutiveLeadershipProcess}."
    ],
    "mean_verbal_length": 0.0,
    "bfo_anchor_path": [
@@ -6107,12 +6104,9 @@
     "MarketDemand": "Class"
    },
    "is_complex": true,
-   "verbal_template": "{EntrepreneurialActivityProcess} is an entity that produces some {EconomicGoodsAndServices}, and that targets some {MarketDemand}",
+   "verbal_template": "{EntrepreneurialActivityProcess} is exactly a process that produces some {EconomicGoodsAndServices} and targets some {MarketDemand}.",
    "verbal_templates": [
-    "{EntrepreneurialActivityProcess} is an entity that produces some {EconomicGoodsAndServices}, and that targets some {MarketDemand}",
-    "For an entity to count as {EntrepreneurialActivityProcess}, it must bear the produces relation to at least one {EconomicGoodsAndServices}, and the targets relation to at least one {MarketDemand}.",
-    "Each {EntrepreneurialActivityProcess} is defined as an entity which produces some {EconomicGoodsAndServices}, and which targets some {MarketDemand}.",
-    "Every {EntrepreneurialActivityProcess} stands in the produces relation to at least one {EconomicGoodsAndServices}, and the targets relation to at least one {MarketDemand}."
+    "{EntrepreneurialActivityProcess} is exactly a process that produces some {EconomicGoodsAndServices} and targets some {MarketDemand}."
    ],
    "mean_verbal_length": 0.0,
    "bfo_anchor_path": [
@@ -12612,11 +12606,9 @@
     "GovernanceFunction": "Class"
    },
    "is_complex": true,
-   "verbal_template": "{GovernanceFunction} is a kind of entity.",
+   "verbal_template": "{GovernanceFunction} is exactly a function that exercises governance over some organization.",
    "verbal_templates": [
-    "{GovernanceFunction} is a kind of entity.",
-    "{GovernanceFunction} is a type of entity.",
-    "Every {GovernanceFunction} is an entity."
+    "{GovernanceFunction} is exactly a function that exercises governance over some organization."
    ],
    "mean_verbal_length": 0.0,
    "bfo_anchor_path": [],
