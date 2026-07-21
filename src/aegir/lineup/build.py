@@ -1537,11 +1537,17 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
     for key, c in sorted(vocab.items()):
         code = str(key).rsplit("#", 1)[-1].rsplit("/", 1)[-1]     # IRI-local — STABLE
         label = getattr(c, "pref_label", key)
-        text = ""
-        try:
-            text = re.sub(r"\s+", " ", c.text()).strip()[:400]
-        except Exception:  # noqa: BLE001
-            pass
+        # the DEFINITION is the display content; c.text() is the RETRIEVAL SERIALIZATION
+        # (label+abbrev+definition+scope concatenated for ColBERT encoding — the qdrant
+        # surface), which a panel must never present as the definition (RH 2026-07-21).
+        defn = re.sub(r"\s+", " ", getattr(c, "definition", "") or "").strip()
+        scope = re.sub(r"\s+", " ", getattr(c, "scope_note", "") or "").strip()
+
+        def _clip(t: str, n: int = 700) -> str:
+            if len(t) <= n:
+                return t
+            cut = t[:n].rfind(". ")
+            return t[:cut + 1] if cut > 200 else t[:n] + "…"
         camel = re.sub(r"[^A-Za-z0-9]", "", label.title())
         snake = re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_")
         cross = ""
@@ -1562,7 +1568,12 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
             links=[f"lexicon/aperture/{a}" for a, _, _ in (hit or [])[:8]],
             body=(f"**{label}** — a vocab concept (`{code}`; the admission surface's unit — "
                   f"see {N.wl('lexicon/construct/concept', 'concept (construct)')}).\n\n"
-                  + (f"> {text}\n\n" if text else "") + cross + anchors_md)))
+                  + (f"> {_clip(defn)}\n\n" if defn else "")
+                  + (f"**Scope.** {_clip(scope, 400)}\n\n" if scope else "")
+                  + cross + anchors_md
+                  + "_Retrieval surface: label · abbrev · definition · scope, concatenated and "
+                  "encoded to qdrant as the MaxSim multivector — an engineering serialization, "
+                  "distinct from the definition above._\n")))
     return notes
 
 
