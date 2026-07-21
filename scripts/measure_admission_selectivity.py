@@ -61,22 +61,33 @@ def main() -> int:
         anchors.append((frag, v))
     print(f"{len(anchors)} aperture anchors (vectors from qdrant)")
 
+    def fam(frag: str) -> str:
+        return frag.split("_", 1)[0]
+
     docs = sorted(DOCS.glob("*.txt"))[:a.sample]
     shares = Counter()
     margins = []
     anchor_margins: "dict[str, list]" = defaultdict(list)
+    confusion = Counter()          # (best, second) pairs on low-margin admissions
     low = []
+    n_low_intra = n_low_cross = 0
     for i, f in enumerate(docs):
         text = f.read_text(errors="ignore")[:WINDOW_CHARS]
         q = enc.encode([text])[0]
         scores = sorted(((maxsim(q, v), frag) for frag, v in anchors), reverse=True)
-        (s1, a1), (s2, _a2) = scores[0], scores[1]
+        (s1, a1), (s2, a2) = scores[0], scores[1]
         rel_margin = (s1 - s2) / max(1e-9, s1)
         shares[a1] += 1
         margins.append(rel_margin)
         anchor_margins[a1].append(rel_margin)
         if rel_margin < LOW_MARGIN_REL:
-            low.append({"doc": f.stem[:16], "best": a1, "margin": round(rel_margin, 4)})
+            intra = fam(a1) == fam(a2)
+            n_low_intra += intra
+            n_low_cross += not intra
+            confusion[(a1, a2)] += 1
+            low.append({"doc": f.stem[:16], "best": a1, "second": a2,
+                        "margin": round(rel_margin, 4),
+                        "tie": "intra-family" if intra else "CROSS-FAMILY"})
         if (i + 1) % 50 == 0:
             print(f"  …{i + 1}/{len(docs)}", flush=True)
 
@@ -87,6 +98,11 @@ def main() -> int:
                       "median": round(float(np.median(m)), 4),
                       "p10": round(float(np.percentile(m, 10)), 4),
                       "low_share": round(float((m < LOW_MARGIN_REL).mean()), 4)},
+           "low_margin_split": {"intra_family": n_low_intra, "cross_family": n_low_cross,
+                                "cross_share_of_low": round(
+                                    n_low_cross / max(1, n_low_intra + n_low_cross), 4)},
+           "confusion_pairs": [{"best": b, "second": s_, "n": n_}
+                               for (b, s_), n_ in confusion.most_common(15)],
            "admission_share": dict(shares.most_common()),
            "anchor_mean_margin": {k: round(float(np.mean(v)), 4)
                                   for k, v in sorted(anchor_margins.items())},
@@ -94,6 +110,9 @@ def main() -> int:
     (REPO / "build/admission_selectivity.json").write_text(json.dumps(out, indent=1))
     print(f"margins: median {out['margin']['median']:.3f} · p10 {out['margin']['p10']:.3f} · "
           f"low(<{LOW_MARGIN_REL}) {out['margin']['low_share']:.1%}")
+    print(f"low-margin split: intra-family {n_low_intra} · CROSS-FAMILY {n_low_cross} "
+          f"({out['low_margin_split']['cross_share_of_low']:.1%} of low)")
+    print("top confusion pairs:", [(f"{b}~{s_}", n_) for (b, s_), n_ in confusion.most_common(4)])
     print("top admitting anchors:", dict(shares.most_common(5)))
     weak = sorted(out["anchor_mean_margin"].items(), key=lambda kv: kv[1])[:4]
     print("weakest-margin anchors:", weak)
