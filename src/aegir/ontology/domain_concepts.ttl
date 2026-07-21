@@ -532,3 +532,80 @@
         <https://signals.zndx.org/sdg#CSG> ,
         <https://signals.zndx.org/sdg#UTILITY> ,
         <https://signals.zndx.org/sdg#DATAENG> .
+
+# ── CANDIDATE scheme families (RH 2026-07-21): PRODML (sibling of CSG — pure constructive
+# solid geometry, distinct from the consumer-electronics design concept) and SYSML (whose
+# rdfs:domain yields Model-Based Systems Engineering practices and tools). PROVISIONAL until
+# rdfs:domain confirmation; NOT aperture points (no admission-surface change until ratified
+# and content-backed). PRODML extension is comprehensive-into-SDG; FIBO/FHIR remain foreign
+# under-management integrations — SDG stays distinctly our own. ──
+
+<https://signals.zndx.org/sdg#PRODML> a skos:Concept ;
+    skos:prefLabel "Production Markup Language Domain" ;
+    skos:altLabel "PRODML" ;
+    skos:definition "The Energistics PRODML production-data domain extended comprehensively into SDG: well production volumes, fluid analyses, distributed sensing, and production operations reporting, as a scheme family sibling to Constructive Solid Geometry." ;
+    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#PRODML_PRODUCT_VOLUME> a skos:Concept ;
+    skos:prefLabel "Product Volume Reporting" ;
+    skos:altLabel "PRODML_PRODUCT_VOLUME" ;
+    skos:definition "Reported production volumes and dispositions per well, facility, and period — PRODML's product volume object family." ;
+    skos:broader <https://signals.zndx.org/sdg#PRODML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#PRODML_FLUID_ANALYSIS> a skos:Concept ;
+    skos:prefLabel "Fluid Sample Analysis" ;
+    skos:altLabel "PRODML_FLUID_ANALYSIS" ;
+    skos:definition "Laboratory analyses of reservoir fluid samples — PVT studies, compositional assays, and sample chain-of-custody in the PRODML fluid analysis family." ;
+    skos:broader <https://signals.zndx.org/sdg#PRODML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#PRODML_DISTRIBUTED_SENSING> a skos:Concept ;
+    skos:prefLabel "Distributed Sensing Surveys" ;
+    skos:altLabel "PRODML_DISTRIBUTED_SENSING" ;
+    skos:definition "Distributed temperature and acoustic sensing installations and surveys along the wellbore — PRODML DTS/DAS object families." ;
+    skos:broader <https://signals.zndx.org/sdg#PRODML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#PRODML_PRODUCTION_OPERATIONS> a skos:Concept ;
+    skos:prefLabel "Production Operations Reporting" ;
+    skos:altLabel "PRODML_PRODUCTION_OPERATIONS" ;
+    skos:definition "Daily production operations reports: activities, shutdowns, safety events, and operational parameters across producing assets." ;
+    skos:broader <https://signals.zndx.org/sdg#PRODML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#SYSML> a skos:Concept ;
+    skos:prefLabel "Model Based Systems Engineering Domain" ;
+    skos:altLabel "SYSML" ;
+    skos:definition "The SysMLv2/KerML domain whose rdfs:domain realization yields Model-Based Systems Engineering practices and tools into the Lexicon: requirements, structure, behavior, parametric constraints, and verification cases as first-class modeled artifacts." ;
+    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#SYSML_REQUIREMENTS> a skos:Concept ;
+    skos:prefLabel "Requirements Modeling" ;
+    skos:altLabel "SYSML_REQUIREMENTS" ;
+    skos:definition "Requirement definitions, satisfaction and verification relationships, and traceability structure per SysMLv2 requirements modeling practice." ;
+    skos:broader <https://signals.zndx.org/sdg#SYSML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#SYSML_STRUCTURE> a skos:Concept ;
+    skos:prefLabel "Structural Decomposition Modeling" ;
+    skos:altLabel "SYSML_STRUCTURE" ;
+    skos:definition "Part, port, and connection usage decomposition — SysMLv2 structural modeling of systems as compositional hierarchies." ;
+    skos:broader <https://signals.zndx.org/sdg#SYSML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#SYSML_BEHAVIOR> a skos:Concept ;
+    skos:prefLabel "Behavioral Modeling" ;
+    skos:altLabel "SYSML_BEHAVIOR" ;
+    skos:definition "Actions, states, and sequence-structured occurrence modeling — SysMLv2 behavioral practice over system operation." ;
+    skos:broader <https://signals.zndx.org/sdg#SYSML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#SYSML_VERIFICATION> a skos:Concept ;
+    skos:prefLabel "Verification Case Modeling" ;
+    skos:altLabel "SYSML_VERIFICATION" ;
+    skos:definition "Verification and validation cases binding requirements to analysis, inspection, and test evidence in SysMLv2 practice." ;
+    skos:broader <https://signals.zndx.org/sdg#SYSML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
