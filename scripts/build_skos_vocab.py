@@ -80,6 +80,14 @@ def _humanize(tid: str) -> str:
 
 
 def _iri(code: str) -> str:
+    """Fragment = the code WITHOUT the redundant SDG prefix (RH 2026-07-21: the namespace
+    already says sdg — '…/sdg#SDG_X' said it twice; formal-IRI referencing removed any
+    lexical-conflict rationale). Legacy form kept for deprecation bridges only."""
+    frag = code[4:] if code.startswith("SDG.") else code
+    return f"https://signals.zndx.org/sdg#{frag.replace('.', '_')}"
+
+
+def _iri_legacy(code: str) -> str:
     return f"https://signals.zndx.org/sdg#{code.replace('.', '_')}"
 
 
@@ -239,8 +247,15 @@ def write_ttl(records: list[dict], path: Path) -> None:
             lines.append(f"    skos:broader <{_iri(r['parent_code'])}> ;")
         lines.append(f"    skos:inScheme <{SCHEME_IRI}> .")
         lines.append("")
+    for r in records:
+        if str(r.get("code", "")).startswith("SDG."):
+            lines += [f"<{_iri_legacy(r['code'])}> a skos:Concept ;",
+                      f'    skos:prefLabel "{esc(r["label"])}" ;',
+                      "    owl:deprecated true ;",
+                      f"    dct:isReplacedBy <{_iri(r['code'])}> ;",
+                      f"    skos:inScheme <{SCHEME_IRI}> .", ""]
     for old_code, new_code, label in getattr(build_records, "bridges", []):
-        lines += [f"<{_iri(old_code)}> a skos:Concept ;",
+        lines += [f"<{_iri_legacy(old_code)}> a skos:Concept ;",
                   f'    skos:prefLabel "{esc(label)}" ;',
                   "    owl:deprecated true ;",
                   f"    dct:isReplacedBy <{_iri(new_code)}> ;",

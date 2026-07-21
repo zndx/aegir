@@ -74,6 +74,12 @@ def _pathways(onto: str = "sdg"):
         pw = {}
     groups = pw.get("groups") or []
     edges_in = pw.get("edges") or []
+    base = "ontology/self-census/group/" if onto == "sdg" else f"ontology/foreign/{onto}/group/"
+    # note id rides the node DATA (slug — identity), never the displayed name (RH 2026-07-21)
+    nid_by_name = {}
+    for g in groups:
+        if g.get("slug"):
+            nid_by_name[g["group"][:28]] = base + g["slug"]
     names = [g["group"][:28] for g in groups] + ["(other)"]
     idx = {n: i for i, n in enumerate(names)}
     rows = []
@@ -93,12 +99,6 @@ def _pathways(onto: str = "sdg"):
     # tap-to-open: node tap posts the group-panel id to the host page (script embed — same
     # document), which the React PanelView forwards into the lineup trail. Navigation, not
     # just orientation (RH 2026-07-20).
-    base = "ontology/self-census/group/" if onto == "sdg" else f"ontology/foreign/{onto}/group/"
-    # note id rides the node DATA (slug — identity), never the displayed name (RH 2026-07-21)
-    nid_by_name = {}
-    for g in groups:
-        if g.get("slug"):
-            nid_by_name[g["group"][:28]] = base + g["slug"]
 
     def _tap_hook(plot, element):  # noqa: ANN001
         try:
@@ -123,6 +123,66 @@ def _pathways(onto: str = "sdg"):
                       hooks=[_tap_hook]))
 
 
+
+
+def _aperture_chord():
+    """The APERTURE as the Lexicon's orienting chord (RH 2026-07-21): arcs = the admission
+    anchors (labeled by their IRI FRAGMENT — display IS identity, so the instrument cannot
+    drift), chords = SHARED CONSTITUENT CONCEPTS between anchors (the M:N lattice made
+    visual). Heavy chords = anchors insufficiently differentiated — the chord doubles as the
+    aperture-refinement instrument. Tap → the anchor's panel. Substrate:
+    build/aperture_constituents.json (IRI-first derivation)."""
+    import json as _json
+    from itertools import combinations
+    from pathlib import Path as _P
+    art = _P(__file__).resolve().parents[3] / "build" / "aperture_constituents.json"
+    try:
+        d = _json.loads(art.read_text())
+    except Exception:  # noqa: BLE001
+        return hv.Chord(([], hv.Dataset(pd.DataFrame({"index": [], "name": []}), "index")))
+    anchors = d.get("anchors") or {}
+    rows_ = []
+    for lbl, e in anchors.items():
+        if not isinstance(e, dict):
+            continue
+        frag = str(e.get("iri") or lbl).rsplit("#", 1)[-1]
+        cons = {x.get("iri") for x in e.get("constituents", [])
+                if x.get("kind") == "concept" and x.get("iri")}
+        rows_.append({"frag": frag, "pid": e.get("point_id"), "cons": cons})
+    idx = {r["frag"]: i for i, r in enumerate(rows_)}
+    eds_rows = []
+    for a, b in combinations(rows_, 2):
+        n = len(a["cons"] & b["cons"])
+        if n:
+            eds_rows.append((idx[a["frag"]], idx[b["frag"]], n))
+    nodes = pd.DataFrame([{"index": i, "name": r["frag"][:30],
+                           "nid": f"lexicon/aperture/{r['pid']}" if r["pid"] is not None else ""}
+                          for i, r in enumerate(rows_)])
+    eds = pd.DataFrame(eds_rows, columns=["source", "target", "value"])
+
+    def _tap_hook(plot, element):  # noqa: ANN001
+        try:
+            from bokeh.models import CustomJS, TapTool
+            st = plot.state
+            if not any(isinstance(t, TapTool) for t in st.tools):
+                st.add_tools(TapTool())
+            for r in st.renderers:
+                ds = getattr(r, "data_source", None)
+                if ds is not None and "nid" in getattr(ds, "data", {}):
+                    ds.selected.js_on_change("indices", CustomJS(
+                        args={"ds": ds},
+                        code="const i=ds.selected.indices[0];"
+                             "if(i!=null){const nid=(ds.data['nid']||[])[i];"
+                             "if(nid&&window.__lineupOpen)window.__lineupOpen(nid);}"))
+        except Exception:  # noqa: BLE001
+            pass
+
+    return hv.Chord((eds, hv.Dataset(nodes, "index"))).opts(
+        hv.opts.Chord(labels="name", node_color="index", edge_color="source", cmap="Category20",
+                      width=560, height=560, tools=["hover", "tap"], title="",
+                      hooks=[_tap_hook]))
+
+
 def _args() -> "tuple[str, str, str, str]":
     sc = curdoc().session_context
     args = sc.request.arguments if (sc and sc.request) else {}
@@ -140,5 +200,6 @@ from aegir.viz.theme import apply_color_mode, themed  # noqa: E402
 
 _MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
 _lens, _root, _view, _onto = _args()
-_plot = _pathways(_onto) if _view == "pathways" else _chord(_lens, _root)
+_plot = (_aperture_chord() if _view == "aperture"
+         else _pathways(_onto) if _view == "pathways" else _chord(_lens, _root))
 curdoc().add_root(themed(hv.render(_plot, backend="bokeh"), _K))

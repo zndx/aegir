@@ -1878,11 +1878,13 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
     terms = N.Note(
         id="lens/terms", title="Lexicon (trunk)", kind="lens", data_product="ontology",
         root="scratch", frontmatter={"lens": "terms", "lexicon": LEXICON, "chord": False,
-                                     "viz_view": "pathways", "viz_onto": "sdg"},
-        body=("*The chord above is the ontology's INHERENT navigable structure — its own "
-              "discriminating ancestors, its restriction web and property lattice. Universally "
-              "available for any ontology under management; maxsim/aperture is ONE further view, "
-              "not the organizer.*\n\n"
+                                     "viz_view": "aperture", "viz_onto": "sdg"},
+        body=("*The chord above IS the Aperture — the admission surface itself: arcs are the "
+              "anchor concepts (labeled by IRI fragment — display is identity), chords are "
+              "SHARED CONSTITUENTS (the M:N lattice). A heavy chord = two anchors "
+              "insufficiently differentiated: the orienting view doubles as the refinement "
+              "instrument. Tap an arc for its anchor panel. The inherent-pathways chord lives "
+              "on each ontology's census panel under Under-management.*\n\n"
               + shapes_line
               + ap_line
               + "**Generative coverage.** The live catalog by pattern category (the overlay, "
