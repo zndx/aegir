@@ -1567,8 +1567,10 @@ def project_aperture_anchors() -> list[N.Note]:
             _loc = str(_k).rsplit("#", 1)[-1]
             _pref = getattr(_c, "pref_label", "")
             _keys = [_lnorm(_pref), _lnorm(_loc)]
-            if "FILLER_" in _loc:                       # provenance suffix, parent-prefix-proof
-                _keys.append(_lnorm(_loc[_loc.index("FILLER_"):]))
+            _parts = _loc.split("_")
+            _keys += [_lnorm("".join(_parts[i:])) for i in range(1, len(_parts))]
+            # every suffix of the local — the template_id (any parent depth) and the FILLER_
+            # form both live in there, so ALL past label generations normalize onto it
             for _alt in (getattr(_c, "alt_label", None) or []):
                 _keys.append(_lnorm(_alt))              # abbrev rides as an altLabel — the bridge
             for _key in _keys:
