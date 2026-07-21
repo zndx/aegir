@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
@@ -169,6 +170,48 @@ def _register_api_routes(app: FastAPI) -> None:
     def kb_note(note_id: str, root: str | None = None) -> dict:
         # provenance/<vid> ids are synthetic (the live AGE graph, not a projected file) — resolve them to a
         # provenance-kind note the React panel renders as a ReactFlow ego-graph centered on that node.
+        if re.match(r"ontology/foreign/\w+/class/", note_id):
+            # synthetic FOREIGN CLASS panel (RH 2026-07-21: members ARE the primary articles):
+            # resolved from the census fragment cache — every class of a censused ontology is
+            # navigable, axiom links walk class-to-class, zero projection bloat.
+            import json as _json
+            from pathlib import Path as _P
+            _, _, tag, _, local = note_id.split("/", 4)
+            frag_p = _P("build/foreign_fragments") / f"{tag}.json"
+            if not frag_p.exists():
+                try:
+                    from aegir.lineup.verify_path import _extract_foreign
+                    _extract_foreign(tag)
+                except Exception as e:  # noqa: BLE001
+                    raise HTTPException(503, f"fragment cache for {tag!r} unavailable: {e}") from e
+            frag = _json.loads(frag_p.read_text())
+            iri = next((k for k in frag["frames"]
+                        if k.rsplit("/", 1)[-1].rsplit("#", 1)[-1] == local), None)
+            frames = frag["frames"].get(iri or "", [])
+            cov = _json.loads(_P(f"build/{tag}_coverage.json").read_text())
+            grp = next((g for g in cov.get("pathways", {}).get("groups", [])
+                        if any(m.get("local") == local for m in g.get("members", []))), None)
+
+            def _wl_iris(txt: str) -> str:
+                def _one(m: "re.Match") -> str:
+                    loc = m.group(1).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+                    return f"[[ontology/foreign/{tag}/class/{loc}|{loc[:40]}]]"
+                return re.sub(r"<([^>]+)>", _one, txt)
+
+            ax_rows = "\n".join(f"- SubClassOf {_wl_iris(f)}" for f in frames[:24]) or \
+                      "- _(no extracted axioms — outside the renderer's construct family)_"
+            grp_line = ""
+            if grp:
+                gid = f"ontology/foreign/{tag}/group/{grp['slug']}"
+                grp_line = f" (group [[{gid}|{grp.get('group', '')[:36]}]])"
+            body = (f"**`{local}`** — a class of {tag.upper()}{grp_line}.\n\n"
+                    "**Axioms (extracted).**\n" + ax_rows + "\n\n"
+                    + f"_Source: build/foreign_fragments/{tag}.json (census extraction; "
+                    "constructs outside the renderer degrade honestly)._\n")
+            return {"id": note_id, "name": note_id, "title": f"{local[:52]} · {tag}",
+                    "kind": "lexicon-construct", "data_product": "ontology", "root": "scratch",
+                    "body": body,
+                    "links": ([f"ontology/foreign/{tag}/group/{grp['slug']}"] if grp else [])}
         if note_id.startswith("path/"):
             # synthetic path-run note (RH 2026-07-21): verification results join the lineup
             # WITHOUT waiting for a projection rebuild — resolved straight from build/path_runs.

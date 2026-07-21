@@ -1603,7 +1603,7 @@ def project_shape_surfaces(live_ids: "set | None" = None) -> "tuple[list[N.Note]
                 if native and _snake(loc) in live_ids:
                     mem_cells.append(N.wl(f"ontology/term/{_snake(loc)}", m.get("label", loc)[:34]))
                 else:
-                    mem_cells.append(f"`{m.get('label', loc)[:34]}`")
+                    mem_cells.append(N.wl(f"{base}/class/{loc}", m.get("label", loc)[:34]))
             body_g = (
                 f"**{g['group']}** — a pathway group of {N.wl(base, tag.upper())} "
                 f"({g['n_classes']} classes; the chord arc).\n\n"

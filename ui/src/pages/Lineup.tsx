@@ -43,16 +43,19 @@ function tab(active: boolean): React.CSSProperties {
 // Persist the panel trail per layer+seed in sessionStorage so it survives a re-render/remount
 // (e.g. on window blur→focus / alt-tab) and per-layer trails don't bleed into each other.
 // The layer is the root, plus the selected archived kasten when browsing archive.
-const trailKey = (layer: string, seed: string) => `lineup:trail:${layer}:${seed}`;
-function loadTrail(layer: string, seed: string): string[] | null {
+// One ACTIVE trail per layer (v2 — RH 2026-07-21): the URL tracks the FOCUSED panel, so a
+// seed-keyed store broke on remount (alt-tab): the remount re-seeded from the last panel and
+// restored nothing. The layer key restores the whole path regardless of focus.
+const trailKey = (layer: string) => `lineup:trail2:${layer}`;
+function loadTrail(layer: string): string[] | null {
   try {
-    const v = sessionStorage.getItem(trailKey(layer, seed));
+    const v = sessionStorage.getItem(trailKey(layer));
     if (v) { const a = JSON.parse(v); if (Array.isArray(a) && a.length) return a as string[]; }
   } catch { /* sessionStorage unavailable */ }
   return null;
 }
-function saveTrail(layer: string, seed: string, trail: string[]): void {
-  try { if (trail.length) sessionStorage.setItem(trailKey(layer, seed), JSON.stringify(trail)); } catch { /* ignore */ }
+function saveTrail(layer: string, trail: string[]): void {
+  try { if (trail.length) sessionStorage.setItem(trailKey(layer), JSON.stringify(trail)); } catch { /* ignore */ }
 }
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
@@ -126,17 +129,25 @@ function Lineup() {
   useEffect(() => { trail.forEach((id) => { if (!(ck(id) in cache)) fetchNote(id); }); }, [trail, cache, fetchNote, ck]);
   // Restore (not reset) the trail per layer+seed; else start at the (kasten-prefixed) seed if
   // the layer has it, else the layer's first natural trailhead (lens → release → snapshot).
+  const restoredFor = useRef<string | null>(null);
   useEffect(() => {
-    const saved = loadTrail(layer, seed);
-    if (saved) { setTrail(saved); return; }
+    if (restoredFor.current === layer) return;     // once per layer — later seed churn never clobbers
+    restoredFor.current = layer;
+    const saved = loadTrail(layer);
+    if (saved && (!initialOpen || saved.includes(initialOpen))) {
+      prevLen.current = saved.length;
+      setTrail(saved);                             // the FULL path survives remounts (alt-tab)
+      return;
+    }
     const inRoot = (id: string) => (index?.notes || []).some((n) => n.root === root && n.id === id);
+    if (initialOpen) { setTrail([initialOpen]); return; }   // genuinely new deep link
     if (inRoot(prefix + seed)) { setTrail([prefix + seed]); return; }
     if (inRoot(prefix + "lens/terms")) { setTrail([prefix + "lens/terms"]); return; }
     const first = (index?.notes || []).find((n) => n.root === root &&
       (n.kind === "lens" || n.kind === "release-note" || n.kind === "corpus"));
     setTrail(first ? [first.id] : []);
-  }, [seed, root, index, layer, prefix]);
-  useEffect(() => { saveTrail(layer, seed, trail); }, [trail, seed, layer]);
+  }, [seed, root, index, layer, prefix, initialOpen]);
+  useEffect(() => { saveTrail(layer, trail); }, [trail, layer]);
   // shareable URLs with FEDWIKI HISTORY SEMANTICS (RH 2026-07-21): extending the lineup
   // PUSHES history (back walks the path leftward, as Ward's lineup does); truncation/replacement
   // REPLACES. lastNav distinguishes our own writes from inbound navigation.
