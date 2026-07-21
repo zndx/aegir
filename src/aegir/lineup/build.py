@@ -1673,15 +1673,100 @@ def project_aperture_anchors() -> list[N.Note]:
             label_pref[str(_k).rsplit("#", 1)[-1]] = getattr(_c, "pref_label", "")
     except Exception:  # noqa: BLE001
         pass
+    # derivation params + constituency df (the selectivity instrument) + SKOS/contract rows
+    try:
+        _art = json.loads(Path("build/aperture_constituents.json").read_text())
+    except Exception:  # noqa: BLE001
+        _art = {}
+    _df: "dict[str, int]" = {}
+    for _e in (_art.get("anchors") or {}).values():
+        if isinstance(_e, dict):
+            for _x in _e.get("constituents", []):
+                if _x.get("kind") == "concept" and _x.get("iri"):
+                    _df[_x["iri"]] = _df.get(_x["iri"], 0) + 1
+    try:
+        _contract = {r.get("iri"): r for r in
+                     json.loads(Path("build/aperture_contract.json").read_text()).get("rows", [])}
+    except Exception:  # noqa: BLE001
+        _contract = {}
+    try:
+        from aegir.ontology import domain_index as _DI
+        _ov = {k: c for k, c in _DI.load_skos(str(_DI.DEFAULT_OVERLAY)).items()
+               if not getattr(c, "deprecated", False)}
+    except Exception:  # noqa: BLE001
+        _ov = {}
+    _ov_narrower: "dict[str, list]" = {}
+    for _k, _c in _ov.items():
+        for _b in _aslist(getattr(_c, "broader", None)):
+            _ov_narrower.setdefault(_b, []).append(str(_k))
+
     for p0 in pts:
         aid, label = str(p0.get("id")), p0.get("label") or str(p0.get("id"))
+        iri = p0.get("iri") or ""
+        frag = iri.rsplit("#", 1)[-1] if iri else ""
+        c_ = _ov.get(iri)
+        # SKOS record (the fiat contract's substance, verbatim)
+        skos_rows = ["| skos property | value |", "|---|---|",
+                     f"| `prefLabel` | {getattr(c_, 'pref_label', label) if c_ else label} |"]
+        if c_:
+            for a_ in _aslist(getattr(c_, "alt_label", None))[:4]:
+                skos_rows.append(f"| `altLabel` | `{a_}` |")
+            for b_ in _aslist(getattr(c_, "broader", None)):
+                bl = b_.rsplit("#", 1)[-1]
+                b_aid = iri_to_aid.get(b_)
+                skos_rows.append("| `broader` | "
+                                 + (N.wl(f"lexicon/aperture/{b_aid}", bl) if b_aid else f"`{bl}`")
+                                 + " |")
+            for n_ in _ov_narrower.get(iri, [])[:8]:
+                nl = n_.rsplit("#", 1)[-1]
+                n_aid = iri_to_aid.get(n_)
+                skos_rows.append("| `narrower` | "
+                                 + (N.wl(f"lexicon/aperture/{n_aid}", nl) if n_aid else f"`{nl}`")
+                                 + " |")
+            if getattr(c_, "top_concept_of", ""):
+                skos_rows.append("| `topConceptOf` | `sdg/scheme` _(CANDIDATE — pending "
+                                 "rdfs:domain confirmation)_ |")
+        skos_rows.append(f"| IRI | `{iri}` |")
+        cr = _contract.get(iri, {})
+        drivers = ("**Contract drivers.** broader "
+                   + ("✓" if cr.get("broader") else "✗") + " · narrower "
+                   + ("✓" if cr.get("narrower") else "✗") + " · altLabel≡fragment "
+                   + ("✓" if cr.get("altLabel_eq_fragment") else "✗") + "\n\n") if cr else ""
+        # constituent dossier: rel + RAW MaxSim + df (promiscuity watchlist ≥4)
+        entry = (_art.get("anchors") or {}).get(label) or {}
+        cons = [x for x in (entry.get("constituents") or p0.get("constituents") or [])
+                if x.get("kind") == "concept"]
+        adjs = [x for x in (entry.get("constituents") or p0.get("constituents") or [])
+                if x.get("kind") == "adjacent-domain"]
+        crow = ["| constituent concept | rel | MaxSim | df |", "|---|---|---|---|"]
+        for x in cons[:21]:
+            loc = str(x.get("iri", "")).rsplit("#", 1)[-1]
+            d_ = _df.get(x.get("iri"), 0)
+            flag = " ⚠" if d_ >= 4 else ""
+            nm = (label_pref.get(loc) or x.get("label") or loc)[:44]
+            crow.append(f"| {N.wl('lexicon/concept/' + loc, nm)} | {x.get('rel')} "
+                        f"| {x.get('score')} | {d_}{flag} |")
+        adj_md = ""
+        if adjs:
+            adj_md = ("**Adjacent domains** (retrieval-adjacent — adjacency, not constituency): "
+                      + " · ".join(
+                          (N.wl("lexicon/aperture/" + iri_to_aid[x["iri"]], (x.get("label") or "")[:36])
+                           if x.get("iri") in iri_to_aid else (x.get("label") or "")[:36])
+                          + f" ({x.get('rel')})" for x in adjs[:8]) + "\n\n")
         notes.append(N.Note(
             id=f"lexicon/aperture/{aid}", title=label, kind="lexicon-construct",
             data_product="ontology", root="scratch",
-            frontmatter={"vector_sha": p0.get("vector_sha")},
-            body=(f"**{label}** — a Canonical Aperture composite anchor (id `{aid}`, vector "
-                  f"`{p0.get('vector_sha')}`).\n\n"
-                  + _aperture_constituents_md(p0, iri_to_aid, label_pref)
+            frontmatter={"vector_sha": p0.get("vector_sha"), "iri": iri},
+            links=([f"lexicon/concept/{str(x.get('iri','')).rsplit('#',1)[-1]}" for x in cons[:21]]
+                   + ["lexicon/aperture/index"]),
+            body=(f"**{label}** — a Canonical Aperture composite anchor "
+                  f"(id `{aid}` · fragment `{frag}` · vector `{p0.get('vector_sha')}`).\n\n"
+                  + "\n".join(skos_rows) + "\n\n" + drivers
+                  + f"**Derivation.** MaxSim over `sdg_domains` · top-k {_art.get('top_k', '?')} "
+                  f"· α-band {_art.get('alpha', '?')} × best concept score · df = constituency "
+                  "count across all 29 anchors (⚠ ≥4 = promiscuous — the selectivity "
+                  "watchlist; chord edges count df≤3 shares only).\n\n"
+                  + "\n".join(crow) + "\n\n" + adj_md
                   + "Part of " + N.wl("lexicon/aperture/index", "the Canonical Aperture") + " · "
                   + N.wl("lexicon/construct/aperture", "aperture (construct)"))))
     notes += project_vocab_concepts(pts, live_ids=getattr(project_aperture_anchors, "_live_ids", None),
