@@ -116,6 +116,14 @@ def build_records() -> list[dict]:
                 a = ANCHORS.get(anchor, GENERIC) if anchor else GENERIC
                 parent_code, parent_notation = a[0], a[1]
             counters[parent_code] = counters.get(parent_code, 0) + 1
+            # NAMING AUTHORITY (RH 2026-07-21): the label is the CLASS the template defines,
+            # de-camelized from the manchester head — never the template_id, whose provenance
+            # prefixes (filler_*) are implementation history, not identity. _humanize on
+            # 'filler_criminaljusticesystem' minted 'Filler Criminaljusticesystem' — 250
+            # mangled prefLabels; the filler_* templates are logically first-class
+            # (251/251 EquivalentTo + verbalized) and deserve first-class names.
+            label = (re.sub(r"(?<!^)(?=[A-Z])", " ", hm.group(1)) if hm
+                     else _humanize(t.template_id))
             class_slots = [s for s, ty in t.slot_types.items() if ty != "ObjectProperty"]
             # NATURAL description (RH 2026-07-09): the published vocabulary is a MaxSim
             # anchor surface (Atelier consumes annotations.* as its source taxonomy) —
@@ -134,7 +142,7 @@ def build_records() -> list[dict]:
                 s.replace("_", " ") for s in class_slots)
             records.append({
                 "code": f"{parent_code}.{t.template_id.upper()}",
-                "label": _humanize(t.template_id),
+                "label": label,
                 "abbrev": t.template_id.upper(),
                 "notation": f"{parent_notation}.{counters[parent_code]}",
                 "parent_code": parent_code,

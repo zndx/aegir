@@ -1208,7 +1208,8 @@ def project_lexicon_constructs() -> list[N.Note]:
                  + " · ".join(N.wl(f"lexicon/construct/{x}", x) for x in sibs if x != c)))
     return notes
 
-def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = None) -> str:
+def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = None,
+                              label_local: "dict[str, str] | None" = None) -> str:
     """The anchor's lattice, from the snapshot payload: primary concept constituents (α-banded,
     rel-scored) + adjacent domains typed apart. Honest placeholder when a pre-#31 snapshot lacks it."""
     cons = p0.get("constituents") or []
@@ -1218,11 +1219,15 @@ def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = 
         return ("Composites primary constituent concepts; the constituent list is not in this "
                 "strategy snapshot (re-seed after build_aperture_constituents).\n\n")
     label_to_aid = label_to_aid or {}
+    label_local = label_local or {}
     out = f"**Primary constituent concepts** ({len(concepts)}, α-banded, rel to best):\n\n"
-    out += "\n".join(
-        f"- {N.wl('lexicon/concept/' + str(x.get('code')), (x.get('label') or '')[:52])} · rel {x.get('rel')}"
-        if x.get("code") else f"- {x.get('label')} · rel {x.get('rel')}"
-        for x in concepts[:16])
+    rows_ = []
+    for x in concepts[:16]:
+        lbl = (x.get("label") or "")[:52]                # payload label — truthful at derivation
+        loc = label_local.get(x.get("label") or "")      # → today's stable concept id, by label
+        rows_.append(f"- {N.wl('lexicon/concept/' + loc, lbl)} · rel {x.get('rel')}" if loc
+                     else f"- {lbl} · rel {x.get('rel')} _(label absent from current vocab)_")
+    out += "\n".join(rows_)
     if len(concepts) > 16:
         out += f"\n- _…{len(concepts) - 16} more_"
     if adj:
@@ -1471,15 +1476,19 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
     except Exception:  # noqa: BLE001
         return []
     live_ids = live_ids or set()
+    # JOIN BY LABEL: payload "codes" are counter notations that RENUMBER across vocab
+    # regenerations (0.46 pointed at a different concept after today's regen — measured);
+    # labels were truthful at derivation. The durable fix (stable codes end-to-end +
+    # payload refresh) rides the next index cycle.
     in_anchors: "dict[str, list]" = {}
     for p0 in pts:
         for x in p0.get("constituents") or []:
-            if x.get("kind") == "concept" and x.get("code"):
-                in_anchors.setdefault(str(x["code"]), []).append(
+            if x.get("kind") == "concept" and x.get("label"):
+                in_anchors.setdefault(str(x["label"]), []).append(
                     (str(p0.get("id")), p0.get("label") or "", x.get("rel")))
     notes: "list[N.Note]" = []
     for key, c in sorted(vocab.items()):
-        code = str(getattr(c, "code", key))
+        code = str(key).rsplit("#", 1)[-1].rsplit("/", 1)[-1]     # IRI-local — STABLE
         label = getattr(c, "pref_label", key)
         text = ""
         try:
@@ -1492,15 +1501,15 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None) -> 
         if snake in live_ids:
             cross = f"**Term.** {N.wl(f'ontology/term/{snake}', snake)}\n\n"
         anchors_md = ""
-        if code in in_anchors:
+        if label in in_anchors:
             anchors_md = ("**Constituent of.** " + " · ".join(
                 N.wl(f"lexicon/aperture/{aid}", albl[:40]) + (f" (rel {rel})" if rel else "")
-                for aid, albl, rel in in_anchors[code][:8]) + "\n\n")
+                for aid, albl, rel in in_anchors[label][:8]) + "\n\n")
         notes.append(N.Note(
             id=f"lexicon/concept/{code}", title=label[:64], kind="lexicon-construct",
             data_product="ontology", root="scratch",
             frontmatter={"code": code},
-            links=[f"lexicon/aperture/{a}" for a, _, _ in in_anchors.get(code, [])[:8]],
+            links=[f"lexicon/aperture/{a}" for a, _, _ in in_anchors.get(label, [])[:8]],
             body=(f"**{label}** — a vocab concept (`{code}`; the admission surface's unit — "
                   f"see {N.wl('lexicon/construct/concept', 'concept (construct)')}).\n\n"
                   + (f"> {text}\n\n" if text else "") + cross + anchors_md)))
@@ -1530,6 +1539,13 @@ def project_aperture_anchors() -> list[N.Note]:
               + "\n".join(f"- {N.wl('lexicon/aperture/' + str(p0.get('id')), p0.get('label') or str(p0.get('id')))}"
                            for p0 in pts)))]
     label_to_aid = {(p0.get("label") or ""): str(p0.get("id")) for p0 in pts}
+    label_local: "dict[str, str]" = {}
+    try:
+        from aegir.ontology import domain_index as DI
+        for _k, _c in DI.load_skos().items():
+            label_local[getattr(_c, "pref_label", "")] = str(_k).rsplit("#", 1)[-1]
+    except Exception:  # noqa: BLE001
+        pass
     for p0 in pts:
         aid, label = str(p0.get("id")), p0.get("label") or str(p0.get("id"))
         notes.append(N.Note(
@@ -1538,7 +1554,7 @@ def project_aperture_anchors() -> list[N.Note]:
             frontmatter={"vector_sha": p0.get("vector_sha")},
             body=(f"**{label}** — a Canonical Aperture composite anchor (id `{aid}`, vector "
                   f"`{p0.get('vector_sha')}`).\n\n"
-                  + _aperture_constituents_md(p0, label_to_aid)
+                  + _aperture_constituents_md(p0, label_to_aid, label_local)
                   + "Part of " + N.wl("lexicon/aperture/index", "the Canonical Aperture") + " · "
                   + N.wl("lexicon/construct/aperture", "aperture (construct)"))))
     notes += project_vocab_concepts(pts, live_ids=getattr(project_aperture_anchors, "_live_ids", None))
