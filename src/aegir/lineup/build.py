@@ -1208,6 +1208,9 @@ def project_lexicon_constructs() -> list[N.Note]:
                  + " · ".join(N.wl(f"lexicon/construct/{x}", x) for x in sibs if x != c)))
     return notes
 
+import logging as _logging
+
+_reflog = _logging.getLogger("aegir.lineup.reference_integrity")
 REF_DEFECTS: "list[dict]" = []       # referential-integrity failures — DEFECTS, never states
 
 
@@ -1247,23 +1250,24 @@ def _aperture_constituents_md(p0: dict, label_to_aid: "dict[str, str] | None" = 
                 rows_.append(f"- {N.wl(f'{kasten}/lexicon/concept/{loc}', (x.get('label') or loc)[:52])}"
                              f" · rel {x.get('rel')} _({kasten} kasten)_")
             else:
-                # NOT a state of the world — a stored reference resolving NOWHERE can only
-                # arise from failed logic (mis-minted join / identity-destroying regeneration /
-                # freeze gap). Routed as a DEFECT, rendered as one (RH: don't normalize failure).
-                REF_DEFECTS.append({"panel": f"lexicon/aperture/{p0.get('id')}",
-                                    "reference": loc, "iri": x.get("iri"),
-                                    "payload_label": x.get("label"),
-                                    "attempted": ["current-vocab", "archive-kastens"]})
-                rows_.append(f"- ⚠ **BROKEN REFERENCE** `{loc}` · rel {x.get('rel')} — defect "
-                             f"(see {N.wl('lexicon/reference-integrity', 'reference integrity')})")
+                # NOT a state of the world — failed logic (mis-minted join / identity-
+                # destroying regeneration / freeze gap). RH 2026-07-21: the INTERFACE stays
+                # calm ('unresolved', no drama); the STRUCTURAL failure surfaces at ERROR
+                # level internally for remediation (+ artifact + audit floor).
+                d = {"panel": f"lexicon/aperture/{p0.get('id')}", "reference": loc,
+                     "iri": x.get("iri"), "payload_label": x.get("label"),
+                     "attempted": ["current-vocab", "archive-kastens"]}
+                REF_DEFECTS.append(d)
+                _reflog.error("reference integrity: %(panel)s → %(reference)r resolves nowhere "
+                              "(iri=%(iri)r, attempted=%(attempted)s)", d)
+                rows_.append(f"- `{loc}` · rel {x.get('rel')} _(unresolved)_")
         else:
-            REF_DEFECTS.append({"panel": f"lexicon/aperture/{p0.get('id')}",
-                                "reference": None, "iri": None,
-                                "payload_label": x.get("label"),
-                                "attempted": ["legacy-label-bridge"]})
-            rows_.append(f"- ⚠ **BROKEN REFERENCE** (pre-IRI payload, label "
-                         f"{(x.get('label') or '')[:40]!r} unresolvable) — defect "
-                         f"(see {N.wl('lexicon/reference-integrity', 'reference integrity')})")
+            d = {"panel": f"lexicon/aperture/{p0.get('id')}", "reference": None, "iri": None,
+                 "payload_label": x.get("label"), "attempted": ["legacy-label-bridge"]}
+            REF_DEFECTS.append(d)
+            _reflog.error("reference integrity: %(panel)s → pre-IRI payload label "
+                          "%(payload_label)r unresolvable (attempted=%(attempted)s)", d)
+            rows_.append(f"- {(x.get('label') or '')[:52]} · rel {x.get('rel')} _(unresolved)_")
     out += "\n".join(rows_)
     if len(concepts) > 16:
         out += f"\n- _…{len(concepts) - 16} more_"
@@ -2487,18 +2491,8 @@ def run(args=None) -> int:
     Path("build/reference_integrity.json").write_text(json.dumps(
         {"n": len(REF_DEFECTS), "defects": REF_DEFECTS}, indent=1))
     if REF_DEFECTS:
-        print(f"  ⚠ REFERENCE INTEGRITY: {len(REF_DEFECTS)} broken references (defects) "
-              "→ build/reference_integrity.json", flush=True)
-        notes.append(N.Note(
-            id="lexicon/reference-integrity", title="Reference integrity — BROKEN references",
-            kind="lexicon-construct", data_product="ontology", root="scratch",
-            frontmatter={"n_defects": len(REF_DEFECTS)},
-            body=("**Referential-integrity DEFECTS** — stored references resolving nowhere "
-                  "(current vocab + every archived kasten). Each is failed logic to trace, "
-                  "never a tolerable state:\n\n"
-                  + "\n".join(f"- {N.wl(d['panel'], d['panel'])} → `{d.get('reference') or d.get('payload_label')}` "
-                               f"(attempted: {', '.join(d['attempted'])})"
-                               for d in REF_DEFECTS[:40]) + "\n")))
+        _reflog.error("reference integrity: %d structural failure(s) this build "
+                      "→ build/reference_integrity.json (remediation worklist)", len(REF_DEFECTS))
     notes += project_escalation_channel()
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
                                   zettel_head=zs[-1]["id"] if zs else None,
