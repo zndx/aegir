@@ -1597,6 +1597,11 @@ def project_shape_surfaces(live_ids: "set | None" = None) -> "tuple[list[N.Note]
             slug = g["slug"]
             out_e = [e for e in edges_ if e.get("src_slug") == slug][:10]
             in_e = [e for e in edges_ if e.get("dst_slug") == slug and e.get("src_slug") != slug][:8]
+            gslugs = {g_["slug"] for g_ in groups_}
+
+            def _gcell(sl: str, label: str, n_: int) -> str:
+                return (N.wl(f"{base}/group/{sl}", label[:34]) + f" ({n_})") if sl in gslugs \
+                    else f"`{label[:34]}` ({n_})"
             mem_cells = []
             for m in g.get("members", [])[:40]:
                 loc = m.get("local", "")
@@ -1609,11 +1614,10 @@ def project_shape_surfaces(live_ids: "set | None" = None) -> "tuple[list[N.Note]
                 f"({g['n_classes']} classes; the chord arc).\n\n"
                 + "**Outbound.** " + ("\n".join(
                     f"- →[`{' · '.join(e.get('props', [])[:3])}`] "
-                    + N.wl(f"{base}/group/{e['dst_slug']}", e["dst"][:34]) + f" ({e['n']})"
+                    + _gcell(e["dst_slug"], e["dst"], e["n"])
                     for e in out_e) or "—") + "\n\n"
                 + "**Inbound.** " + (" · ".join(
-                    N.wl(f"{base}/group/{e['src_slug']}", e["src"][:30]) + f" ({e['n']})"
-                    for e in in_e) or "—") + "\n\n"
+                    _gcell(e["src_slug"], e["src"], e["n"]) for e in in_e) or "—") + "\n\n"
                 + "**Members.** " + (" · ".join(mem_cells) or "—")
                 + (f" _…+{g['n_classes'] - len(mem_cells)}_" if g["n_classes"] > len(mem_cells) else "")
                 + "\n")

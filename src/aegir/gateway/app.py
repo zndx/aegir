@@ -170,13 +170,15 @@ def _register_api_routes(app: FastAPI) -> None:
     def kb_note(note_id: str, root: str | None = None) -> dict:
         # provenance/<vid> ids are synthetic (the live AGE graph, not a projected file) — resolve them to a
         # provenance-kind note the React panel renders as a ReactFlow ego-graph centered on that node.
-        if re.match(r"ontology/foreign/\w+/class/", note_id):
+        if re.match(r"ontology/(?:foreign/\w+|self-census)/class/", note_id):
             # synthetic FOREIGN CLASS panel (RH 2026-07-21: members ARE the primary articles):
             # resolved from the census fragment cache — every class of a censused ontology is
             # navigable, axiom links walk class-to-class, zero projection bloat.
             import json as _json
             from pathlib import Path as _P
-            _, _, tag, _, local = note_id.split("/", 4)
+            _m = re.match(r"ontology/(?:foreign/(\w+)|self-census)/class/(.+)$", note_id)
+            tag, local = (_m.group(1) or "sdg"), _m.group(2)
+            base_id = f"ontology/foreign/{tag}" if _m.group(1) else "ontology/self-census"
             frag_p = _P("build/foreign_fragments") / f"{tag}.json"
             if not frag_p.exists():
                 try:
@@ -194,24 +196,47 @@ def _register_api_routes(app: FastAPI) -> None:
 
             def _wl_iris(txt: str) -> str:
                 def _one(m: "re.Match") -> str:
-                    loc = m.group(1).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
-                    return f"[[ontology/foreign/{tag}/class/{loc}|{loc[:40]}]]"
+                    iri = m.group(1)
+                    loc = iri.rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+                    if tag == "sdg" and "signals.zndx.org" not in iri:
+                        return f"`{loc[:40]}`"          # backbone (BFO/CCO) — not our article
+                    return f"[[{base_id}/class/{loc}|{loc[:40]}]]"
                 return re.sub(r"<([^>]+)>", _one, txt)
 
             ax_rows = "\n".join(f"- SubClassOf {_wl_iris(f)}" for f in frames[:24]) or \
                       "- _(no extracted axioms — outside the renderer's construct family)_"
             grp_line = ""
             if grp:
-                gid = f"ontology/foreign/{tag}/group/{grp['slug']}"
+                gid = f"{base_id}/group/{grp['slug']}"
                 grp_line = f" (group [[{gid}|{grp.get('group', '')[:36]}]])"
-            body = (f"**`{local}`** — a class of {tag.upper()}{grp_line}.\n\n"
-                    "**Axioms (extracted).**\n" + ax_rows + "\n\n"
+            term_line = ""
+            if tag == "sdg":
+                # head → template_id (the move-2 lesson: heads are NOT always snake(template_id))
+                hm = getattr(app.state, "head_map", None)
+                if hm is None:
+                    hm = {}
+                    try:
+                        _cat = _json.loads(_P("src/aegir/ontology/catalog/catalog.json").read_text())
+                        for _t in _cat.get("templates", []):
+                            _h = re.search(r"Class:\s*\{(\w+):Class\}",
+                                           _t.get("manchester_template") or "")
+                            if _h:
+                                hm[_h.group(1)] = _t["template_id"]
+                    except Exception:  # noqa: BLE001
+                        pass
+                    app.state.head_map = hm
+                tid = hm.get(local)
+                if tid and (_P("build/dev/scratch/ontology/term") / f"{tid}.md").exists():
+                    term_line = (f"**Live term.** [[ontology/term/{tid}|{tid}]] — the catalog "
+                                 "template surface for this class.\n\n")
+            body = (f"**`{local}`** — a class of {tag.upper()}{grp_line}.\n\n" + term_line
+                    + "**Axioms (extracted).**\n" + ax_rows + "\n\n"
                     + f"_Source: build/foreign_fragments/{tag}.json (census extraction; "
                     "constructs outside the renderer degrade honestly)._\n")
             return {"id": note_id, "name": note_id, "title": f"{local[:52]} · {tag}",
                     "kind": "lexicon-construct", "data_product": "ontology", "root": "scratch",
                     "body": body,
-                    "links": ([f"ontology/foreign/{tag}/group/{grp['slug']}"] if grp else [])}
+                    "links": ([f"{base_id}/group/{grp['slug']}"] if grp else [])}
         if note_id.startswith("path/"):
             # synthetic path-run note (RH 2026-07-21): verification results join the lineup
             # WITHOUT waiting for a projection rebuild — resolved straight from build/path_runs.
