@@ -1,0 +1,19349 @@
+"""property_domains — GENERATED rdfs:domain/range for sdg properties (derive_property_domains.py; RH 2026-07-21 meta-structure arc).
+
+Usage-derived, banded (auto ≥ 0.70 dominant-anchor share), staged behind
+AEGIR_PROPERTY_DOMAINS (default OFF) until verify_property_domains reaches 0 unsat —
+the #27 arming discipline. NEVER hand-edit; re-run the deriver.
+"""
+
+DOMAINS_OMN = """
+DataProperty: sdg:abatementCost
+    Domain: bfo:0000002
+ObjectProperty: sdg:about
+    Domain: cco:ont00000995
+ObjectProperty: sdg:aboutSubject
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:abstractText
+    Domain: bfo:0000015
+DataProperty: sdg:abuseCode
+    Domain: bfo:0000015
+DataProperty: sdg:academicFocus
+    Domain: bfo:0000040
+ObjectProperty: sdg:academicLevel
+    Domain: bfo:0000002
+DataProperty: sdg:academicScore
+    Domain: bfo:0000002
+ObjectProperty: sdg:academicStandard
+    Domain: bfo:0000040
+ObjectProperty: sdg:academicStanding
+    Domain: bfo:0000002
+DataProperty: sdg:academicTerm
+    Domain: bfo:0000015
+DataProperty: sdg:academicTitle
+    Domain: bfo:0000015
+DataProperty: sdg:acceptabilityStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:acceptanceStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:acceptedBy
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:acceptsMailForDispatch
+    Range: bfo:0000015
+DataProperty: sdg:acceptsMedicaid
+    Domain: cco:ont00000995
+DataProperty: sdg:acceptsNewPatients
+    Domain: cco:ont00000995
+DataProperty: sdg:acceptsTransfer
+    Domain: bfo:0000015
+ObjectProperty: sdg:accessControlLevel
+    Domain: bfo:0000040
+DataProperty: sdg:accessControlMode
+    Domain: bfo:0000040
+DataProperty: sdg:accessControlPolicy
+    Domain: bfo:0000015
+DataProperty: sdg:accessDuration
+    Domain: cco:ont00000995
+DataProperty: sdg:accessPermission
+    Domain: cco:ont00000995
+ObjectProperty: sdg:accessPolicy
+    Domain: bfo:0000002
+DataProperty: sdg:accessRestriction
+    Domain: cco:ont00000995
+DataProperty: sdg:accessTimestamp
+    Domain: bfo:0000015
+DataProperty: sdg:accessToCare
+    Domain: cco:ont00000995
+DataProperty: sdg:accessUrl
+    Domain: cco:ont00000995
+DataProperty: sdg:accessViaClever
+    Domain: bfo:0000040
+ObjectProperty: sdg:accessedVia
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:accesses
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:accessesService
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:accessibility
+    Domain: bfo:0000015
+DataProperty: sdg:accessibilityCompliance
+    Domain: bfo:0000015
+DataProperty: sdg:accessibilityCompliant
+    Domain: bfo:0000040
+DataProperty: sdg:accessibilityScore
+    Domain: cco:ont00000995
+ObjectProperty: sdg:accessibleByRole
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:accessibleVia
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:accessories
+    Domain: bfo:0000040
+DataProperty: sdg:accidentRate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:accommodatesHouseholds
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:accompaniesMenuItem
+    Range: bfo:0000040
+ObjectProperty: sdg:accompaniesProject
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:accountId
+    Domain: cco:ont00000995
+DataProperty: sdg:accountManager
+    Domain: bfo:0000002
+DataProperty: sdg:accountNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:accountReference
+    Domain: bfo:0000023
+DataProperty: sdg:accountabilityStatus
+    Domain: bfo:0000002
+DataProperty: sdg:accountantId
+    Domain: bfo:0000015
+DataProperty: sdg:accreditationCode
+    Domain: cco:ont00000995
+DataProperty: sdg:accreditationId
+    Domain: cco:ont00000995
+DataProperty: sdg:accreditationLevel
+    Domain: bfo:0000002
+DataProperty: sdg:accreditationScope
+    Domain: bfo:0000023
+DataProperty: sdg:accreditationStartDate
+    Domain: bfo:0000023
+DataProperty: sdg:accumulatedTime
+    Domain: bfo:0000015
+DataProperty: sdg:accuracy
+    Domain: cco:ont00000995
+DataProperty: sdg:achievementDate
+    Domain: bfo:0000040
+ObjectProperty: sdg:achievementLevel
+    Range: bfo:0000040
+ObjectProperty: sdg:achievesQualification
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:acidNumberMax
+    Domain: cco:ont00000995
+ObjectProperty: sdg:acquires
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:acquiresUnitsIn
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:acquisitionUnitId
+    Domain: bfo:0000040
+DataProperty: sdg:acreage
+    Domain: bfo:0000040
+DataProperty: sdg:acres
+    Domain: bfo:0000040
+DataProperty: sdg:actIdentif
+    Domain: bfo:0000002
+DataProperty: sdg:actNumber
+    Domain: bfo:0000040
+DataProperty: sdg:actTitle
+    Domain: bfo:0000002
+DataProperty: sdg:actionId
+    Domain: bfo:0000015
+DataProperty: sdg:actionIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:actionPlanTitle
+    Domain: bfo:0000015
+ObjectProperty: sdg:activatedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:activeDuringPowerOutage
+    Domain: bfo:0000015
+DataProperty: sdg:activeGamesCount
+    Domain: bfo:0000015
+DataProperty: sdg:activePeriod
+    Domain: bfo:0000002
+DataProperty: sdg:activeRigCount
+    Domain: cco:ont00000995
+DataProperty: sdg:activeSince
+    Domain: bfo:0000004
+DataProperty: sdg:activeUsers
+    Domain: cco:ont00000995
+DataProperty: sdg:activityClass
+    Domain: cco:ont00000995
+DataProperty: sdg:activityDate
+    Domain: cco:ont00000995
+DataProperty: sdg:activityIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:activityScope
+    Domain: cco:ont00000958
+DataProperty: sdg:actorId
+    Domain: bfo:0000004
+ObjectProperty: sdg:actsForLicence
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:actsOn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:actualCapacityMW
+    Domain: bfo:0000015
+DataProperty: sdg:actualDate
+    Domain: bfo:0000015
+DataProperty: sdg:actualDuration
+    Domain: bfo:0000015
+DataProperty: sdg:actualFootwork
+    Domain: bfo:0000015
+DataProperty: sdg:actualParticipants
+    Domain: bfo:0000015
+DataProperty: sdg:actualSignificanceLevel
+    Domain: bfo:0000015
+DataProperty: sdg:actualValue
+    Domain: bfo:0000015
+DataProperty: sdg:adIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:adamsAccessionNumber
+    Domain: bfo:0000015
+ObjectProperty: sdg:adaptationReadiness
+    Domain: bfo:0000004
+DataProperty: sdg:adaptationStrategy
+    Domain: bfo:0000015
+ObjectProperty: sdg:adaptedTo
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:addOnId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:addedTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:additionalCost
+    Domain: cco:ont00000995
+DataProperty: sdg:additionalPrice
+    Domain: cco:ont00000995
+DataProperty: sdg:addonCode
+    Domain: cco:ont00000995
+DataProperty: sdg:addonName
+    Domain: cco:ont00000995
+DataProperty: sdg:addonType
+    Domain: cco:ont00000995
+DataProperty: sdg:addressId
+    Domain: bfo:0000004
+DataProperty: sdg:addressLine2
+    Domain: cco:ont00000995
+DataProperty: sdg:addressType
+    Domain: bfo:0000004
+ObjectProperty: sdg:addressedByApprenticeships
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:addressedByRecommendation
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:addressedByRepresentative
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:addressedByResource
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:addressedTo
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:addresses
+    Domain: bfo:0000015
+ObjectProperty: sdg:addressesComplianceYear
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:addressesNeed
+    Range: bfo:0000002
+ObjectProperty: sdg:addressesQuestion
+    Range: bfo:0000002
+ObjectProperty: sdg:addressesSituation
+    Range: bfo:0000002
+ObjectProperty: sdg:addressesSkillGap
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:addressesStakeholderNeeds
+    Domain: bfo:0000015
+    Range: bfo:0000016
+ObjectProperty: sdg:addressesSubject
+    Range: bfo:0000002
+ObjectProperty: sdg:addressesVulnerableGroup
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:addresses_housing_matters
+    Range: cco:ont00001325
+DataProperty: sdg:adherenceLevel
+    Domain: cco:ont00000995
+ObjectProperty: sdg:adjacentToArea
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:adjudicatedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:adjudicates
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:administeredBy
+    Domain: cco:ont00000958
+DataProperty: sdg:administeredByDetail
+    Domain: bfo:0000015
+DataProperty: sdg:administeredDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:administeredTo
+    Domain: bfo:0000015
+DataProperty: sdg:administeringBody
+    Domain: bfo:0000015
+DataProperty: sdg:administeringEntity
+    Domain: cco:ont00000995
+ObjectProperty: sdg:administersSocialServices
+    Range: bfo:0000002
+ObjectProperty: sdg:administersSubstance
+    Domain: bfo:0000015
+ObjectProperty: sdg:administersTo
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:administrationDate
+    Domain: bfo:0000015
+DataProperty: sdg:administrationMethod
+    Domain: bfo:0000015
+DataProperty: sdg:administrationRoute
+    Domain: cco:ont00000995
+DataProperty: sdg:administrativeZone
+    Domain: bfo:0000002
+DataProperty: sdg:administratorID
+    Domain: bfo:0000015
+DataProperty: sdg:admissionDate
+    Domain: cco:ont00000995
+DataProperty: sdg:admissionNotificationDate
+    Domain: bfo:0000002
+ObjectProperty: sdg:admissionStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:admits
+    Domain: bfo:0000004
+    Range: bfo:0000002
+DataProperty: sdg:adoptabilityRating
+    Domain: bfo:0000015
+ObjectProperty: sdg:adoptedAt
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+DataProperty: sdg:adopterContact
+    Domain: cco:ont00000995
+DataProperty: sdg:adopterName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:adoptionAuthority
+    Domain: bfo:0000002
+    Range: bfo:0000001
+DataProperty: sdg:adoptionFee
+    Domain: cco:ont00000995
+DataProperty: sdg:adoptionId
+    Domain: cco:ont00000995
+DataProperty: sdg:adoptionOfSocialModel
+    Domain: bfo:0000040
+DataProperty: sdg:adoptionRate
+    Domain: bfo:0000015
+ObjectProperty: sdg:adopts
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:advancementID
+    Domain: bfo:0000015
+DataProperty: sdg:adviceGiven
+    Domain: bfo:0000015
+DataProperty: sdg:adviserId
+    Domain: bfo:0000040
+ObjectProperty: sdg:advisesClient
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:advisesOn
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+DataProperty: sdg:advisorFirmName
+    Domain: bfo:0000002
+DataProperty: sdg:advisorId
+    Domain: bfo:0000002
+DataProperty: sdg:advisorName
+    Domain: bfo:0000002
+DataProperty: sdg:advisorRepresentative
+    Domain: bfo:0000002
+DataProperty: sdg:advisorRole
+    Domain: cco:ont00000995
+DataProperty: sdg:advocacyFocus
+    Domain: bfo:0000015
+DataProperty: sdg:advocateId
+    Domain: bfo:0000015
+ObjectProperty: sdg:advocatedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:aerodynamicCoefficient
+    Domain: bfo:0000040
+ObjectProperty: sdg:affected
+    Domain: bfo:0000015
+DataProperty: sdg:affectedAreaHectares
+    Domain: bfo:0000015
+ObjectProperty: sdg:affectedBy
+    Range: bfo:0000015
+ObjectProperty: sdg:affectedByDisease
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:affectedByRecommendation
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:affectedDepartment
+    Domain: bfo:0000015
+DataProperty: sdg:affectedHouseholds
+    Domain: bfo:0000004
+DataProperty: sdg:affectedPopulationCount
+    Domain: bfo:0000003
+DataProperty: sdg:affectedRegions
+    Domain: bfo:0000015
+DataProperty: sdg:affectedStates
+    Domain: bfo:0000015
+ObjectProperty: sdg:affectedStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:affects
+    Domain: bfo:0000015
+ObjectProperty: sdg:affectsAsset
+    Range: cco:ont00000995
+ObjectProperty: sdg:affectsAssets
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:affectsBasis
+    Domain: bfo:0000015
+ObjectProperty: sdg:affectsDataSubject
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:affectsDivision
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:affectsDraftExemption
+    Domain: bfo:0000002
+DataProperty: sdg:affectsNII
+    Domain: bfo:0000015
+ObjectProperty: sdg:affectsPopulation
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:affectsRegion
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:affectsSector
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:affectsStudent
+    Range: bfo:0000002
+ObjectProperty: sdg:affiliatedWithClinic
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:affiliatedWithDepartment
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:affiliatedWithTrust
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+DataProperty: sdg:affiliatedWorkshop
+    Domain: bfo:0000023
+ObjectProperty: sdg:affiliatesSubject
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:affiliatesWhistleblower
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:affiliationStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:affinityForTCDD
+    Domain: bfo:0000040
+DataProperty: sdg:ageAtDiagnosis
+    Domain: cco:ont00000995
+DataProperty: sdg:ageAtIntervention
+    Domain: bfo:0000040
+DataProperty: sdg:ageCategory
+    Domain: bfo:0000040
+DataProperty: sdg:ageEligible
+    Domain: bfo:0000004
+DataProperty: sdg:ageRange
+    Domain: bfo:0000002
+DataProperty: sdg:ageThreshold
+    Domain: bfo:0000040
+DataProperty: sdg:agencyAffiliation
+    Domain: bfo:0000004
+DataProperty: sdg:agencyCode
+    Domain: bfo:0000040
+DataProperty: sdg:agencyContact
+    Domain: cco:ont00000995
+DataProperty: sdg:agencyFundedBy
+    Domain: bfo:0000040
+DataProperty: sdg:agencyID
+    Domain: bfo:0000002
+DataProperty: sdg:agenda
+    Domain: bfo:0000015
+DataProperty: sdg:agendaItem
+    Domain: bfo:0000015
+DataProperty: sdg:agendaItems
+    Domain: bfo:0000015
+DataProperty: sdg:agendaItemsCount
+    Domain: bfo:0000015
+DataProperty: sdg:agentId
+    Domain: bfo:0000002
+DataProperty: sdg:agentIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:agentName
+    Domain: bfo:0000002
+DataProperty: sdg:agentType
+    Domain: bfo:0000002
+DataProperty: sdg:aggregateScore
+    Domain: bfo:0000040
+DataProperty: sdg:agingCondition
+    Domain: bfo:0000015
+DataProperty: sdg:agreementEndDate
+    Domain: bfo:0000004
+DataProperty: sdg:agreementId
+    Domain: cco:ont00000958
+DataProperty: sdg:agreementStartDate
+    Domain: bfo:0000004
+DataProperty: sdg:agreementType
+    Domain: cco:ont00000958
+DataProperty: sdg:aiEnabled
+    Domain: cco:ont00000995
+DataProperty: sdg:aircraftType
+    Domain: bfo:0000040
+DataProperty: sdg:alcoholContent
+    Domain: cco:ont00000995
+DataProperty: sdg:alertId
+    Domain: cco:ont00000995
+DataProperty: sdg:alertProactive
+    Domain: bfo:0000040
+DataProperty: sdg:alertThreshold
+    Domain: bfo:0000040
+ObjectProperty: sdg:algorithm
+    Domain: cco:ont00000995
+DataProperty: sdg:alignmentConfirmation
+    Domain: cco:ont00000995
+ObjectProperty: sdg:alignmentFramework
+    Domain: bfo:0000015
+DataProperty: sdg:alignmentLevel
+    Domain: bfo:0000015
+DataProperty: sdg:alignmentMethod
+    Domain: bfo:0000015
+DataProperty: sdg:alignmentScore
+    Domain: bfo:0000015
+DataProperty: sdg:alignmentWithBusinessStrategy
+    Domain: bfo:0000015
+DataProperty: sdg:alignmentWithITStrategy
+    Domain: bfo:0000015
+ObjectProperty: sdg:alignsWith
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:alignsWithTheme
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:allegesImproperConduct
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:allergenCodes
+    Domain: bfo:0000040
+DataProperty: sdg:allergenType
+    Domain: cco:ont00000995
+DataProperty: sdg:allocatedAmount
+    Domain: bfo:0000040
+DataProperty: sdg:allocatedCapacity
+    Domain: bfo:0000015
+DataProperty: sdg:allocatedMarks
+    Domain: bfo:0000015
+DataProperty: sdg:allocatedPlaces
+    Domain: bfo:0000004
+ObjectProperty: sdg:allocatedTo
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:allocatedToNetwork
+    Domain: cco:ont00000995
+    Range: cco:ont00000700
+ObjectProperty: sdg:allocatesTo
+    Range: bfo:0000002
+DataProperty: sdg:allocationRegion
+    Domain: cco:ont00000995
+DataProperty: sdg:allocationType
+    Domain: bfo:0000002
+DataProperty: sdg:allowsAudioRecording
+    Domain: cco:ont00000958
+DataProperty: sdg:allowsPhotography
+    Domain: cco:ont00000958
+DataProperty: sdg:allowsPromotionalUse
+    Domain: cco:ont00000958
+DataProperty: sdg:allowsVideoRecording
+    Domain: cco:ont00000958
+DataProperty: sdg:alpha
+    Domain: cco:ont00000995
+DataProperty: sdg:altLabel
+    Domain: cco:ont00000995
+DataProperty: sdg:alternatePhone
+    Domain: bfo:0000002
+DataProperty: sdg:alternativeAccepted
+    Domain: cco:ont00000995
+DataProperty: sdg:altitudeLimitMeters
+    Domain: bfo:0000040
+DataProperty: sdg:altitudeMeters
+    Domain: bfo:0000040
+ObjectProperty: sdg:alumnusOf
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:amendedBy
+    Domain: cco:ont00000958
+DataProperty: sdg:amendmentDate
+    Domain: cco:ont00000958
+DataProperty: sdg:amendmentId
+    Domain: bfo:0000040
+DataProperty: sdg:amendmentStatus
+    Domain: cco:ont00000958
+ObjectProperty: sdg:amendmentType
+    Domain: bfo:0000040
+DataProperty: sdg:amendsDetail
+    Domain: bfo:0000015
+DataProperty: sdg:amenityId
+    Domain: bfo:0000015
+ObjectProperty: sdg:amenityType
+    Domain: bfo:0000015
+DataProperty: sdg:amountApproved
+    Domain: cco:ont00000995
+DataProperty: sdg:amountGiven
+    Domain: cco:ont00000958
+DataProperty: sdg:amountNeeded
+    Domain: cco:ont00000958
+DataProperty: sdg:amountPerPerson
+    Domain: cco:ont00000995
+DataProperty: sdg:amountPerShare
+    Domain: cco:ont00000995
+DataProperty: sdg:amountRequested
+    Domain: cco:ont00000995
+ObjectProperty: sdg:amplifies
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:amplifiesConcept
+    Domain: bfo:0000015
+ObjectProperty: sdg:amyloidStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:analysisDate
+    Domain: bfo:0000015
+DataProperty: sdg:analysisId
+    Domain: bfo:0000015
+DataProperty: sdg:analysisTechniques
+    Domain: cco:ont00000995
+DataProperty: sdg:analystBadgeNumber
+    Domain: bfo:0000004
+DataProperty: sdg:analystName
+    Domain: bfo:0000004
+DataProperty: sdg:analyticsId
+    Domain: cco:ont00000995
+DataProperty: sdg:analyticsProvider
+    Domain: bfo:0000015
+ObjectProperty: sdg:analyzesBuildingShape
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:analyzesInscription
+    Domain: bfo:0000015
+ObjectProperty: sdg:analyzesReading
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:analyzesReport
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:analyzesToponym
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:ancestralTown
+    Domain: bfo:0000004
+ObjectProperty: sdg:anchoredTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:anchors
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:angularSeparation
+    Domain: cco:ont00000995
+DataProperty: sdg:animalId
+    Domain: bfo:0000004
+DataProperty: sdg:animalSpecies
+    Domain: bfo:0000015
+DataProperty: sdg:animalType
+    Domain: bfo:0000023
+ObjectProperty: sdg:animatesAsset
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:animationType
+    Domain: bfo:0000002
+DataProperty: sdg:anniversaryYear
+    Domain: bfo:0000015
+DataProperty: sdg:annotation
+    Domain: bfo:0000002
+DataProperty: sdg:annualAggregateTurnover
+    Domain: bfo:0000015
+DataProperty: sdg:annualBudget
+    Domain: bfo:0000040
+DataProperty: sdg:annualEdition
+    Domain: bfo:0000015
+DataProperty: sdg:annualPaymentVolume
+    Domain: bfo:0000040
+DataProperty: sdg:annualRenewalFee
+    Domain: cco:ont00000958
+DataProperty: sdg:annualRent
+    Domain: bfo:0000040
+ObjectProperty: sdg:answersQuestion
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:antennaIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:antennaType
+    Domain: cco:ont00000995
+DataProperty: sdg:antiAbuseRule
+    Domain: bfo:0000023
+DataProperty: sdg:anticipatedAttainmentLevel
+    Domain: bfo:0000016
+DataProperty: sdg:apertureInches
+    Domain: bfo:0000040
+DataProperty: sdg:apertureMeters
+    Domain: bfo:0000040
+DataProperty: sdg:apertureValue
+    Domain: bfo:0000015
+DataProperty: sdg:apiEndpoint
+    Domain: cco:ont00000995
+DataProperty: sdg:apiId
+    Domain: cco:ont00000995
+DataProperty: sdg:apiSupplier
+    Domain: bfo:0000040
+DataProperty: sdg:appUsed
+    Domain: bfo:0000040
+DataProperty: sdg:apparentMagnitude
+    Domain: bfo:0000004
+DataProperty: sdg:appealAddress
+    Domain: cco:ont00000958
+DataProperty: sdg:appealDeadlineDays
+    Domain: cco:ont00000958
+DataProperty: sdg:appealEmail
+    Domain: cco:ont00000958
+DataProperty: sdg:appealFax
+    Domain: cco:ont00000958
+ObjectProperty: sdg:appealStatus
+    Domain: bfo:0000040
+DataProperty: sdg:appearanceAndPoliteness
+    Domain: bfo:0000015
+DataProperty: sdg:appearanceScore
+    Domain: bfo:0000015
+ObjectProperty: sdg:appearsBefore
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:appellation
+    Domain: bfo:0000040
+DataProperty: sdg:applianceId
+    Domain: cco:ont00000995
+DataProperty: sdg:applianceType
+    Domain: cco:ont00000995
+DataProperty: sdg:applicableEntitySize
+    Domain: bfo:0000015
+DataProperty: sdg:applicableGrade
+    Domain: cco:ont00000958
+DataProperty: sdg:applicablePatientAgeMinimum
+    Domain: bfo:0000015
+DataProperty: sdg:applicableShotTypes
+    Domain: bfo:0000015
+DataProperty: sdg:applicableYear
+    Domain: cco:ont00000995
+DataProperty: sdg:applicantId
+    Domain: bfo:0000004
+DataProperty: sdg:applicationFee
+    Domain: cco:ont00000958
+DataProperty: sdg:applicationName
+    Domain: bfo:0000040
+DataProperty: sdg:applicationSubmissionDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:appliedInActivity
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:appliedTo
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliedToBuildingShape
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:appliedToStudent
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:appliesPrinciple
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:appliesSignificanceLevel
+    Domain: bfo:0000015
+ObjectProperty: sdg:appliesTag
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesTerm
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:appliesToAMT
+    Domain: bfo:0000015
+ObjectProperty: sdg:appliesToAccount
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesToBowl
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesToCanape
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesToChainDrive
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:appliesToChallenge
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:appliesToConcept
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:appliesToEnrollee
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:appliesToGroup
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+DataProperty: sdg:appliesToGroupSize
+    Domain: bfo:0000015
+ObjectProperty: sdg:appliesToJurisdiction
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:appliesToMaterial
+    Domain: bfo:0000015
+DataProperty: sdg:appliesToMedia
+    Domain: cco:ont00000995
+ObjectProperty: sdg:appliesToMenu
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesToMenuItem
+    Range: bfo:0000040
+ObjectProperty: sdg:appliesToOrderType
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:appliesToOrganisation
+    Domain: cco:ont00000958
+    Range: bfo:0000040
+ObjectProperty: sdg:appliesToPlan
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesToPopulation
+    Range: bfo:0000015
+ObjectProperty: sdg:appliesToPort
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesToProgram
+    Range: bfo:0000002
+ObjectProperty: sdg:appliesToProperty
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesToRestaurant
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:appliesToSample
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:appliesToStandard
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:appliesToStudent
+    Range: bfo:0000002
+ObjectProperty: sdg:appliesToSupportSystem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:appliesToTerm
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:appliesToTerritory
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:appliesToTrophy
+    Domain: cco:ont00000995
+ObjectProperty: sdg:appliesToZone
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:applies_to
+    Range: bfo:0000023
+ObjectProperty: sdg:appointedAt
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:appointedBy
+    Range: bfo:0000015
+DataProperty: sdg:appointeeName
+    Domain: cco:ont00000995
+DataProperty: sdg:appointmentAuthority
+    Domain: bfo:0000015
+DataProperty: sdg:appointmentIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:appointmentMonth
+    Domain: bfo:0000040
+DataProperty: sdg:appointmentType
+    Domain: bfo:0000040
+DataProperty: sdg:appointmentYear
+    Domain: bfo:0000023
+DataProperty: sdg:appointmentsSet
+    Domain: cco:ont00000995
+ObjectProperty: sdg:appoints
+    Domain: bfo:0000015
+ObjectProperty: sdg:appointsPerson
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:appointsToOrganization
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:appraiserIdentifier
+    Domain: bfo:0000015
+ObjectProperty: sdg:apprehends
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:apprenticeCount
+    Domain: bfo:0000040
+ObjectProperty: sdg:apprenticeLevel
+    Domain: bfo:0000004
+DataProperty: sdg:apprenticeshipCapacity
+    Domain: bfo:0000040
+DataProperty: sdg:approvalAgency
+    Domain: cco:ont00000995
+ObjectProperty: sdg:approvalAuthority
+    Domain: cco:ont00000995
+DataProperty: sdg:approvalGranted
+    Domain: bfo:0000015
+DataProperty: sdg:approvalGrantedDate
+    Domain: bfo:0000002
+DataProperty: sdg:approvalLevel
+    Domain: bfo:0000015
+DataProperty: sdg:approvalNumber
+    Domain: bfo:0000015
+DataProperty: sdg:approvalStandard
+    Domain: bfo:0000002
+ObjectProperty: sdg:approvalType
+    Domain: bfo:0000015
+ObjectProperty: sdg:approvedBy
+    Domain: cco:ont00000995
+DataProperty: sdg:approvedByMeeting
+    Domain: cco:ont00000995
+ObjectProperty: sdg:approvedForMarket
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:approvedVia
+    Domain: bfo:0000016
+    Range: bfo:0000015
+ObjectProperty: sdg:approves
+    Range: cco:ont00000995
+ObjectProperty: sdg:approvesCurriculum
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:approvesDeficiencyPlan
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:approvesReport
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:arcId
+    Domain: bfo:0000015
+DataProperty: sdg:areaCode
+    Domain: bfo:0000002
+DataProperty: sdg:areaDescription
+    Domain: bfo:0000040
+DataProperty: sdg:areaKm2
+    Domain: bfo:0000015
+DataProperty: sdg:areaName
+    Domain: bfo:0000040
+ObjectProperty: sdg:arisesIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:armPosition
+    Domain: bfo:0000015
+DataProperty: sdg:arrivalAirport
+    Domain: bfo:0000040
+DataProperty: sdg:arrivalDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:arrivedIn
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:arsn
+    Domain: cco:ont00000995
+DataProperty: sdg:askedDate
+    Domain: cco:ont00000958
+ObjectProperty: sdg:asksQuestions
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+DataProperty: sdg:assayId
+    Domain: bfo:0000015
+DataProperty: sdg:assayType
+    Domain: bfo:0000015
+ObjectProperty: sdg:assembledForPurpose
+    Range: bfo:0000002
+DataProperty: sdg:assemblyIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:assemblyType
+    Domain: cco:ont00000995
+DataProperty: sdg:assentDate
+    Domain: bfo:0000040
+ObjectProperty: sdg:assessedAgainst
+    Domain: bfo:0000015
+ObjectProperty: sdg:assessedByQuestions
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:assessedBySurvey
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:assessedFor
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:assessedIn
+    Range: bfo:0000015
+DataProperty: sdg:assessedValue
+    Domain: bfo:0000040
+ObjectProperty: sdg:assesses
+    Domain: bfo:0000015
+ObjectProperty: sdg:assessesCapacity
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:assessesChemical
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:assessesCompetencyOf
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:assessesDomain
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:assessesPopulation
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:assessesProgram
+    Range: cco:ont00000995
+ObjectProperty: sdg:assessesStudent
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:assessesSubject
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:assessmentCriteria
+    Domain: bfo:0000015
+DataProperty: sdg:assessmentDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:assessmentDomain
+    Domain: bfo:0000015
+DataProperty: sdg:assessmentID
+    Domain: bfo:0000015
+DataProperty: sdg:assessmentId
+    Domain: bfo:0000015
+ObjectProperty: sdg:assessmentMethod
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:assessmentMode
+    Domain: bfo:0000015
+DataProperty: sdg:assessmentName
+    Domain: bfo:0000015
+DataProperty: sdg:assessmentOpportunitiesOffered
+    Domain: bfo:0000040
+ObjectProperty: sdg:assessmentOutcome
+    Domain: bfo:0000015
+DataProperty: sdg:assessmentPurpose
+    Domain: bfo:0000015
+DataProperty: sdg:assessmentScope
+    Domain: bfo:0000040
+DataProperty: sdg:assessmentScore
+    Domain: bfo:0000015
+DataProperty: sdg:assessmentStatus
+    Domain: bfo:0000015
+DataProperty: sdg:assessorName
+    Domain: bfo:0000015
+ObjectProperty: sdg:assessorRole
+    Domain: bfo:0000015
+DataProperty: sdg:assetClass
+    Domain: cco:ont00000995
+DataProperty: sdg:assetLimit
+    Domain: bfo:0000015
+DataProperty: sdg:assetLiquidityStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:assetProtectionStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:assetSize
+    Domain: cco:ont00000995
+DataProperty: sdg:assetStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:assetTitle
+    Domain: cco:ont00000995
+ObjectProperty: sdg:assignedAdvisor
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:assignedAdvocate
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:assignedArea
+    Domain: bfo:0000015
+ObjectProperty: sdg:assignedCampus
+    Domain: bfo:0000004
+DataProperty: sdg:assignedClinic
+    Domain: bfo:0000004
+DataProperty: sdg:assignedCourse
+    Domain: bfo:0000003
+ObjectProperty: sdg:assignedNurse
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:assignedRating
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:assignedRole
+    Domain: bfo:0000040
+    Range: bfo:0000023
+DataProperty: sdg:assignedRoleDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:assignedToAppointment
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:assignedToBranch
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:assignedToCard
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:assignedToClassroom
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:assignedToClinic
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:assignedToDepartment
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:assignedToFacility
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:assignedToOrganisation
+    Domain: bfo:0000023
+    Range: bfo:0000040
+ObjectProperty: sdg:assignedToParticipation
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:assignedToPerson
+    Domain: cco:ont00000958
+    Range: bfo:0000004
+ObjectProperty: sdg:assignedToRecipient
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:assignedToRole
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:assignedToStaff
+    Range: bfo:0000002
+ObjectProperty: sdg:assignedToWorker
+    Domain: bfo:0000023
+    Range: bfo:0000040
+DataProperty: sdg:assignmentId
+    Domain: bfo:0000015
+DataProperty: sdg:assignmentStatus
+    Domain: bfo:0000015
+DataProperty: sdg:assistanceId
+    Domain: bfo:0000015
+DataProperty: sdg:assistanceType
+    Domain: cco:ont00000995
+DataProperty: sdg:assistantId
+    Domain: bfo:0000015
+ObjectProperty: sdg:assistedBy
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:assists
+    Domain: bfo:0000003
+    Range: bfo:0000015
+ObjectProperty: sdg:assistsPhase
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:associatedPriceId
+    Domain: bfo:0000040
+DataProperty: sdg:associatedThreats
+    Domain: bfo:0000002
+ObjectProperty: sdg:associatedWithConfig
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:associatedWithCourse
+    Domain: bfo:0000023
+    Range: bfo:0000040
+ObjectProperty: sdg:associatedWithDocument
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:associatedWithPlan
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:associatedWithProtein
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:associatedWithReport
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:associatedWithTribe
+    Range: bfo:0000002
+DataProperty: sdg:associationId
+    Domain: bfo:0000040
+DataProperty: sdg:associationName
+    Domain: bfo:0000040
+DataProperty: sdg:assumptionId
+    Domain: cco:ont00000995
+DataProperty: sdg:assumptionIdentifier
+    Domain: bfo:0000016
+DataProperty: sdg:assumptionText
+    Domain: bfo:0000016
+DataProperty: sdg:assumptionType
+    Domain: cco:ont00000995
+DataProperty: sdg:astmMethodNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:astmNumber
+    Domain: cco:ont00000958
+ObjectProperty: sdg:atOrganization
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:atSchool
+    Domain: bfo:0000002
+    Range: bfo:0000004
+DataProperty: sdg:athleteId
+    Domain: bfo:0000040
+DataProperty: sdg:atomicMass
+    Domain: cco:ont00000995
+DataProperty: sdg:atomicNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:atsIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:attachedTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:attachedToOrder
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:attachesTo
+    Range: cco:ont00000995
+DataProperty: sdg:attackId
+    Domain: bfo:0000015
+DataProperty: sdg:attackType
+    Domain: bfo:0000015
+DataProperty: sdg:attemptNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:attendanceCount
+    Domain: bfo:0000015
+ObjectProperty: sdg:attended
+    Domain: bfo:0000002
+ObjectProperty: sdg:attendedBy
+    Domain: bfo:0000015
+DataProperty: sdg:attendeeInteractionPurpose
+    Domain: bfo:0000015
+DataProperty: sdg:attendeeShareholderCount
+    Domain: bfo:0000015
+ObjectProperty: sdg:attendsEvent
+    Range: bfo:0000015
+ObjectProperty: sdg:attendsMeeting
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:attendsTraining
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:attractsParticipants
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:attributedToMember
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:auctionDate
+    Domain: bfo:0000015
+DataProperty: sdg:auctionId
+    Domain: bfo:0000015
+DataProperty: sdg:audienceSize
+    Domain: cco:ont00000995
+DataProperty: sdg:auditFirm
+    Domain: cco:ont00000995
+DataProperty: sdg:auditIdentifier
+    Domain: cco:ont00000958
+DataProperty: sdg:auditLogRetentionDays
+    Domain: bfo:0000040
+DataProperty: sdg:auditOutcome
+    Domain: cco:ont00000958
+DataProperty: sdg:auditResult
+    Domain: bfo:0000023
+DataProperty: sdg:auditScope
+    Domain: bfo:0000040
+ObjectProperty: sdg:auditStatus
+    Domain: bfo:0000040
+DataProperty: sdg:auditorId
+    Domain: bfo:0000023
+DataProperty: sdg:auditorIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:auditorTitle
+    Domain: bfo:0000023
+ObjectProperty: sdg:audits
+    Range: bfo:0000040
+DataProperty: sdg:authMethodId
+    Domain: bfo:0000040
+ObjectProperty: sdg:authenticatedBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:authenticatedVia
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:authenticates
+    Domain: bfo:0000040
+ObjectProperty: sdg:authenticatesAccessTo
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:authenticatesDigitalAccess
+    Range: bfo:0000015
+ObjectProperty: sdg:authenticatesWith
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:authenticationProtocol
+    Domain: bfo:0000040
+DataProperty: sdg:authenticationRealm
+    Domain: bfo:0000040
+ObjectProperty: sdg:authenticationStatus
+    Domain: bfo:0000040
+DataProperty: sdg:authorMembershipRequired
+    Domain: bfo:0000015
+DataProperty: sdg:authorName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:authored
+    Range: cco:ont00000995
+ObjectProperty: sdg:authoredAuthorization
+    Domain: bfo:0000004
+    Range: bfo:0000023
+ObjectProperty: sdg:authoredData
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:authoredDocument
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:authorisationDate
+    Domain: bfo:0000023
+DataProperty: sdg:authorisationStatus
+    Domain: bfo:0000023
+ObjectProperty: sdg:authorisesRepresentative
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+DataProperty: sdg:authorityId
+    Domain: bfo:0000023
+DataProperty: sdg:authorityIdentifier
+    Domain: bfo:0000023
+DataProperty: sdg:authorityName
+    Domain: bfo:0000023
+DataProperty: sdg:authorizationDate
+    Domain: bfo:0000015
+DataProperty: sdg:authorizationId
+    Domain: bfo:0000023
+DataProperty: sdg:authorizationIdentifier
+    Domain: bfo:0000023
+DataProperty: sdg:authorizationObtained
+    Domain: bfo:0000015
+DataProperty: sdg:authorizationSignature
+    Domain: cco:ont00000995
+DataProperty: sdg:authorizationSource
+    Domain: bfo:0000004
+ObjectProperty: sdg:authorizesAction
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:authorizesTransportFor
+    Domain: bfo:0000023
+    Range: bfo:0000040
+DataProperty: sdg:authorshipRole
+    Domain: bfo:0000023
+DataProperty: sdg:autoSaveEnabled
+    Domain: cco:ont00000995
+DataProperty: sdg:autovonNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:availabilityEnd
+    Domain: cco:ont00000995
+DataProperty: sdg:availabilitySchedule
+    Domain: bfo:0000015
+DataProperty: sdg:availabilityScope
+    Domain: bfo:0000023
+DataProperty: sdg:availabilityStart
+    Domain: cco:ont00000995
+ObjectProperty: sdg:availableDuring
+    Range: bfo:0000015
+DataProperty: sdg:availableExpansionSlots
+    Domain: cco:ont00000995
+ObjectProperty: sdg:availableFor
+    Range: bfo:0000040
+ObjectProperty: sdg:availableForConsumption
+    Range: cco:ont00000307
+DataProperty: sdg:averageAnnualRainfall
+    Domain: bfo:0000004
+DataProperty: sdg:averageDailyWage
+    Domain: cco:ont00000995
+DataProperty: sdg:averageDurationHours
+    Domain: bfo:0000015
+DataProperty: sdg:averageGateCurrent
+    Domain: cco:ont00000995
+DataProperty: sdg:averageHouseholdSize
+    Domain: bfo:0000015
+DataProperty: sdg:averageLandPrice
+    Domain: bfo:0000004
+DataProperty: sdg:averageVesselSize
+    Domain: bfo:0000004
+DataProperty: sdg:averageVineAge
+    Domain: bfo:0000040
+DataProperty: sdg:averageWaitTime
+    Domain: bfo:0000015
+DataProperty: sdg:averageWeightTons
+    Domain: bfo:0000002
+DataProperty: sdg:awardAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:awardTitle
+    Domain: bfo:0000015
+ObjectProperty: sdg:awardType
+    Domain: cco:ont00000995
+DataProperty: sdg:awardedDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:awardedFor
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:awardedScore
+    Domain: bfo:0000040
+DataProperty: sdg:awardingInstitution
+    Domain: bfo:0000015
+DataProperty: sdg:awardingOrganization
+    Domain: bfo:0000040
+ObjectProperty: sdg:awardsAgreementTo
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:awardsPrizeTo
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:awayTeamId
+    Domain: bfo:0000015
+DataProperty: sdg:bCorpMember
+    Domain: bfo:0000015
+DataProperty: sdg:badgeNumber
+    Domain: bfo:0000015
+DataProperty: sdg:ballotQuestion
+    Domain: bfo:0000015
+DataProperty: sdg:bandGapEnergy
+    Domain: cco:ont00000995
+DataProperty: sdg:bandwidthAllocation
+    Domain: bfo:0000040
+DataProperty: sdg:bankAccountNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:bankIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:bankName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:bankingSectorImpact
+    Domain: cco:ont00000995
+DataProperty: sdg:barCircuit
+    Domain: bfo:0000002
+DataProperty: sdg:barLicenseNumber
+    Domain: bfo:0000004
+DataProperty: sdg:barMembershipNumber
+    Domain: bfo:0000023
+ObjectProperty: sdg:barStatus
+    Domain: bfo:0000004
+DataProperty: sdg:barType
+    Domain: bfo:0000015
+DataProperty: sdg:barrierId
+    Domain: bfo:0000015
+DataProperty: sdg:barrierIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:barrierToEntry
+    Domain: bfo:0000040
+DataProperty: sdg:barrierToTreatment
+    Domain: bfo:0000015
+ObjectProperty: sdg:barrierType
+    Domain: bfo:0000015
+DataProperty: sdg:baseAlcohol
+    Domain: cco:ont00000995
+DataProperty: sdg:baseCharge
+    Domain: cco:ont00000958
+DataProperty: sdg:baseGreens
+    Domain: cco:ont00000995
+DataProperty: sdg:baseId
+    Domain: cco:ont00000995
+DataProperty: sdg:baseIngredient
+    Domain: cco:ont00000995
+DataProperty: sdg:baseLocation
+    Domain: bfo:0000015
+DataProperty: sdg:baseName
+    Domain: cco:ont00000995
+DataProperty: sdg:basePartNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:basePricePerPerson
+    Domain: cco:ont00000995
+DataProperty: sdg:baseSalary
+    Domain: cco:ont00000995
+DataProperty: sdg:baseUrl
+    Domain: cco:ont00000995
+ObjectProperty: sdg:basedAt
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:basedIn
+    Domain: bfo:0000023
+    Range: bfo:0000040
+ObjectProperty: sdg:basedOn
+    Range: bfo:0000015
+ObjectProperty: sdg:basedOnAnimalStudies
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:basedOnAssessment
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:basedOnHumanStudies
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:basedOnStandard
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:basedOnSurvey
+    Range: bfo:0000015
+DataProperty: sdg:baselinePRCST
+    Domain: cco:ont00000995
+DataProperty: sdg:baselineScore
+    Domain: bfo:0000015
+DataProperty: sdg:baselineVEP
+    Domain: cco:ont00000995
+DataProperty: sdg:baselineValue
+    Domain: cco:ont00000995
+DataProperty: sdg:baselineVisualAcuity
+    Domain: cco:ont00000995
+DataProperty: sdg:baselineVisualField
+    Domain: cco:ont00000995
+DataProperty: sdg:batchId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:batchStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:bedCapacity
+    Domain: bfo:0000040
+DataProperty: sdg:bedCount
+    Domain: bfo:0000015
+DataProperty: sdg:bedNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:bedrooms
+    Domain: bfo:0000040
+DataProperty: sdg:behaviourAndAttitudes
+    Domain: bfo:0000015
+ObjectProperty: sdg:belongs
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:belongsBatch
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:belongsCategory
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:belongsFromClass
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:belongsHouseholdTo
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:belongsTeam
+    Domain: bfo:0000015
+ObjectProperty: sdg:belongsTld
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:belongsToApplication
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:belongsToCategory
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:belongsToDevice
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:belongsToEntity
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:belongsToFiledBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:belongsToForum
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:belongsToInstitution
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:belongsToManyStakeholders
+    Domain: bfo:0000016
+    Range: bfo:0000040
+ObjectProperty: sdg:belongsToNetwork
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:belongsToOneAssistant
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:belongsToOneClient
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:belongsToOnePlanner
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:belongsToOrder
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:belongsToService
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:belongsToSession
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:belongsToStudent
+    Range: bfo:0000002
+DataProperty: sdg:benchmark
+    Domain: cco:ont00000995
+DataProperty: sdg:benchmarkId
+    Domain: bfo:0000015
+DataProperty: sdg:benchmarkReturn
+    Domain: cco:ont00000995
+ObjectProperty: sdg:benchmarkedAgainst
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:beneficiariesCount
+    Domain: bfo:0000015
+DataProperty: sdg:beneficiaryCount
+    Domain: bfo:0000040
+DataProperty: sdg:beneficiaryId
+    Domain: bfo:0000002
+DataProperty: sdg:beneficiaryIdentifier
+    Domain: bfo:0000002
+ObjectProperty: sdg:beneficiaryOf
+    Domain: bfo:0000004
+    Range: bfo:0000015
+DataProperty: sdg:beneficiaryType
+    Domain: bfo:0000002
+DataProperty: sdg:benefitOption
+    Domain: cco:ont00000958
+DataProperty: sdg:benefitStartDate
+    Domain: cco:ont00000958
+ObjectProperty: sdg:benefits
+    Range: bfo:0000040
+ObjectProperty: sdg:benefitsCharity
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:benefitsDescription
+    Domain: cco:ont00000995
+ObjectProperty: sdg:benefitsFisherman
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:benefitsFromEvent
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:bestowalDate
+    Domain: bfo:0000040
+ObjectProperty: sdg:bestowsNameOn
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:beta
+    Domain: cco:ont00000995
+DataProperty: sdg:betaEstimate
+    Domain: bfo:0000015
+DataProperty: sdg:beverageId
+    Domain: cco:ont00000995
+DataProperty: sdg:beverageIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:beverageName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:beverageType
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:biasRisk
+    Domain: cco:ont00000995
+DataProperty: sdg:bilingual
+    Domain: bfo:0000023
+DataProperty: sdg:billingDate
+    Domain: cco:ont00000995
+DataProperty: sdg:billingId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:binds
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:bindsProvider
+    Domain: bfo:0000031
+ObjectProperty: sdg:bindsToReceptor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:bindsWith
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:bioUrl
+    Domain: bfo:0000015
+DataProperty: sdg:biochemicalAdjustment
+    Domain: bfo:0000015
+DataProperty: sdg:biodegradabilityStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:biodieselPercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:biologicalComponent
+    Domain: bfo:0000040
+DataProperty: sdg:biologicalEffect
+    Domain: bfo:0000040
+DataProperty: sdg:biologicalResponse
+    Domain: bfo:0000015
+DataProperty: sdg:biomarkerIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:biomarkerName
+    Domain: bfo:0000015
+DataProperty: sdg:biomarkerType
+    Domain: bfo:0000015
+DataProperty: sdg:biosafetyLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:birthCertificateReference
+    Domain: bfo:0000004
+DataProperty: sdg:birthCity
+    Domain: bfo:0000040
+DataProperty: sdg:birthCityState
+    Domain: bfo:0000023
+DataProperty: sdg:birthCountry
+    Domain: bfo:0000004
+DataProperty: sdg:birthFatherName
+    Domain: bfo:0000023
+DataProperty: sdg:birthMotherName
+    Domain: bfo:0000023
+DataProperty: sdg:birthState
+    Domain: bfo:0000040
+DataProperty: sdg:birthYear
+    Domain: bfo:0000002
+DataProperty: sdg:bitArchitecture
+    Domain: cco:ont00000958
+DataProperty: sdg:blackBeltRank
+    Domain: bfo:0000040
+DataProperty: sdg:blendDate
+    Domain: cco:ont00000995
+DataProperty: sdg:blendId
+    Domain: cco:ont00000995
+DataProperty: sdg:blockingVoltageRating
+    Domain: cco:ont00000995
+DataProperty: sdg:boardCertificationBody
+    Domain: bfo:0000002
+DataProperty: sdg:boardCertified
+    Domain: bfo:0000002
+DataProperty: sdg:bodyId
+    Domain: bfo:0000040
+DataProperty: sdg:bodyIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:bodyRegion
+    Domain: cco:ont00000995
+DataProperty: sdg:bodyType
+    Domain: bfo:0000040
+DataProperty: sdg:boilingPoint
+    Domain: bfo:0000040
+DataProperty: sdg:bondIssuanceAuthority
+    Domain: cco:ont00000995
+DataProperty: sdg:bonusPaymentAmount
+    Domain: cco:ont00000958
+DataProperty: sdg:bookCount
+    Domain: cco:ont00000995
+DataProperty: sdg:bookName
+    Domain: cco:ont00000995
+DataProperty: sdg:bookReference
+    Domain: cco:ont00000995
+DataProperty: sdg:bookTitle
+    Domain: cco:ont00000995
+ObjectProperty: sdg:bookedBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:bookedFor
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:boothCount
+    Domain: cco:ont00000995
+DataProperty: sdg:boothId
+    Domain: bfo:0000040
+DataProperty: sdg:boothLocation
+    Domain: bfo:0000040
+DataProperty: sdg:boothSize
+    Domain: bfo:0000040
+DataProperty: sdg:boothStatus
+    Domain: bfo:0000040
+DataProperty: sdg:borderingCountry
+    Domain: bfo:0000002
+ObjectProperty: sdg:borders
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:borneBy
+    Domain: bfo:0000023
+ObjectProperty: sdg:borrows
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:boundaryCoordinates
+    Domain: cco:ont00000995
+DataProperty: sdg:boundaryId
+    Domain: bfo:0000040
+DataProperty: sdg:bowlId
+    Domain: cco:ont00000995
+DataProperty: sdg:bpm
+    Domain: bfo:0000040
+DataProperty: sdg:brainRegion
+    Domain: bfo:0000015
+DataProperty: sdg:branchCode
+    Domain: bfo:0000040
+DataProperty: sdg:branchOf
+    Domain: bfo:0000040
+DataProperty: sdg:brand
+    Domain: cco:ont00000995
+DataProperty: sdg:brandId
+    Domain: cco:ont00000995
+DataProperty: sdg:brandReference
+    Domain: bfo:0000040
+DataProperty: sdg:breadCode
+    Domain: cco:ont00000995
+DataProperty: sdg:breadId
+    Domain: cco:ont00000995
+DataProperty: sdg:breadName
+    Domain: cco:ont00000995
+DataProperty: sdg:breadType
+    Domain: cco:ont00000995
+DataProperty: sdg:breakCount
+    Domain: bfo:0000040
+DataProperty: sdg:breedingPreference
+    Domain: cco:ont00000995
+DataProperty: sdg:breedingValue
+    Domain: bfo:0000015
+DataProperty: sdg:broadcastDate
+    Domain: bfo:0000040
+ObjectProperty: sdg:broadcastsOrder
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:broaderTerm
+    Domain: cco:ont00000995
+ObjectProperty: sdg:broaderThan
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:browserType
+    Domain: bfo:0000015
+DataProperty: sdg:browserVersion
+    Domain: cco:ont00000995
+DataProperty: sdg:budget
+    Domain: bfo:0000015
+DataProperty: sdg:budgetAllocated
+    Domain: bfo:0000015
+DataProperty: sdg:budgetAmount
+    Domain: bfo:0000015
+DataProperty: sdg:budgetEuros
+    Domain: bfo:0000015
+DataProperty: sdg:buildingAge
+    Domain: bfo:0000002
+DataProperty: sdg:buildingCode
+    Domain: cco:ont00000995
+DataProperty: sdg:buildingFloors
+    Domain: bfo:0000040
+DataProperty: sdg:buildingHeight
+    Domain: bfo:0000040
+DataProperty: sdg:buildingId
+    Domain: bfo:0000040
+DataProperty: sdg:buildingIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:buildingSquareFootage
+    Domain: cco:ont00000995
+DataProperty: sdg:buildingType
+    Domain: bfo:0000040
+ObjectProperty: sdg:buildsRelationships
+    Domain: bfo:0000023
+    Range: bfo:0000015
+DataProperty: sdg:bulletinName
+    Domain: bfo:0000023
+DataProperty: sdg:bureauId
+    Domain: bfo:0000040
+DataProperty: sdg:bureauName
+    Domain: bfo:0000040
+DataProperty: sdg:businessContext
+    Domain: bfo:0000004
+ObjectProperty: sdg:byParticipant
+    Domain: bfo:0000040
+DataProperty: sdg:cOfOId
+    Domain: cco:ont00000995
+DataProperty: sdg:cableType
+    Domain: cco:ont00000995
+DataProperty: sdg:cacId
+    Domain: bfo:0000015
+DataProperty: sdg:caffeinated
+    Domain: cco:ont00000995
+DataProperty: sdg:calcium
+    Domain: cco:ont00000995
+ObjectProperty: sdg:calculatedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:calculatedForRegion
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:calculationYear
+    Domain: cco:ont00000995
+DataProperty: sdg:calibrationDate
+    Domain: cco:ont00000995
+DataProperty: sdg:calibrationDueDate
+    Domain: bfo:0000040
+DataProperty: sdg:calibrationStatus
+    Domain: bfo:0000015
+DataProperty: sdg:caliperType
+    Domain: cco:ont00000995
+DataProperty: sdg:callSign
+    Domain: cco:ont00000995
+DataProperty: sdg:callSignsIncluded
+    Domain: bfo:0000015
+DataProperty: sdg:callingSuggestion
+    Domain: bfo:0000015
+ObjectProperty: sdg:calls
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:callsAllMen
+    Domain: cco:ont00000995
+DataProperty: sdg:callsign
+    Domain: bfo:0000040
+DataProperty: sdg:cameraResolution
+    Domain: bfo:0000040
+DataProperty: sdg:cameraResolutionMegapixels
+    Domain: bfo:0000002
+DataProperty: sdg:cameraSerialNumber
+    Domain: bfo:0000004
+ObjectProperty: sdg:cameraType
+    Domain: bfo:0000004
+DataProperty: sdg:campaignID
+    Domain: bfo:0000015
+DataProperty: sdg:campaignId
+    Domain: bfo:0000015
+DataProperty: sdg:campaignName
+    Domain: bfo:0000015
+DataProperty: sdg:campaignStatus
+    Domain: bfo:0000015
+DataProperty: sdg:campaignTitle
+    Domain: bfo:0000015
+DataProperty: sdg:campusAffiliation
+    Domain: bfo:0000004
+DataProperty: sdg:campusLevel
+    Domain: bfo:0000002
+DataProperty: sdg:campusType
+    Domain: bfo:0000015
+DataProperty: sdg:canapeId
+    Domain: cco:ont00000995
+DataProperty: sdg:cancerName
+    Domain: cco:ont00000995
+DataProperty: sdg:cancerTypeName
+    Domain: cco:ont00000995
+DataProperty: sdg:cancerTypesObserved
+    Domain: bfo:0000015
+DataProperty: sdg:candidateName
+    Domain: bfo:0000015
+DataProperty: sdg:candyThrowingProhibited
+    Domain: bfo:0000040
+DataProperty: sdg:canonicalStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:capacityCount
+    Domain: bfo:0000023
+DataProperty: sdg:capacityIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:capacityInstalled
+    Domain: bfo:0000040
+DataProperty: sdg:capacityLimited
+    Domain: bfo:0000040
+DataProperty: sdg:capacityLiters
+    Domain: bfo:0000040
+DataProperty: sdg:capacityMVA
+    Domain: bfo:0000040
+DataProperty: sdg:capacityMegawatts
+    Domain: bfo:0000040
+DataProperty: sdg:capacityMw
+    Domain: bfo:0000040
+DataProperty: sdg:capacityName
+    Domain: bfo:0000015
+DataProperty: sdg:capacityRating
+    Domain: bfo:0000015
+ObjectProperty: sdg:capacityStatus
+    Domain: bfo:0000015
+DataProperty: sdg:capacityTB
+    Domain: cco:ont00000995
+DataProperty: sdg:capacityTb
+    Domain: cco:ont00000995
+DataProperty: sdg:capacityTbps
+    Domain: cco:ont00000995
+DataProperty: sdg:capacityTonsPerDay
+    Domain: bfo:0000040
+DataProperty: sdg:capacityType
+    Domain: cco:ont00000995
+DataProperty: sdg:capacityUtilization
+    Domain: bfo:0000040
+DataProperty: sdg:captureDate
+    Domain: cco:ont00000995
+DataProperty: sdg:captureDateTime
+    Domain: cco:ont00000995
+DataProperty: sdg:captureIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:captureTimestamp
+    Domain: cco:ont00000995
+ObjectProperty: sdg:captured
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:capturedIn
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:capturedSubject
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:capturesDocument
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:capturesFrom
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:carcinogenicityStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:cardIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:cardType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:careLevel
+    Domain: bfo:0000004
+DataProperty: sdg:carePlanId
+    Domain: cco:ont00000958
+ObjectProperty: sdg:careerPhase
+    Domain: cco:ont00000995
+DataProperty: sdg:careerStage
+    Domain: bfo:0000040
+DataProperty: sdg:careerStartYear
+    Domain: bfo:0000023
+DataProperty: sdg:carerId
+    Domain: bfo:0000004
+DataProperty: sdg:cargoWeight
+    Domain: bfo:0000040
+DataProperty: sdg:carpetId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:carried
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:carriedForwardLoss
+    Domain: cco:ont00000995
+DataProperty: sdg:carrierName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:carries
+    Domain: bfo:0000004
+ObjectProperty: sdg:carriesEntry
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:casNumber
+    Domain: bfo:0000040
+DataProperty: sdg:casRegistryNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:caseAuthorization
+    Domain: bfo:0000015
+DataProperty: sdg:caseCount
+    Domain: bfo:0000015
+DataProperty: sdg:caseID
+    Domain: cco:ont00000995
+DataProperty: sdg:caseLoad
+    Domain: bfo:0000015
+DataProperty: sdg:caseNotes
+    Domain: cco:ont00000995
+DataProperty: sdg:caseStyle
+    Domain: cco:ont00000995
+DataProperty: sdg:caseTitle
+    Domain: bfo:0000015
+ObjectProperty: sdg:caseType
+    Domain: bfo:0000040
+DataProperty: sdg:catalogDesignation
+    Domain: bfo:0000004
+DataProperty: sdg:catalogNumber
+    Domain: cco:ont00000995
+ObjectProperty: sdg:categorizedAs
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:categorizedByCause
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:categoryLabel
+    Domain: cco:ont00000995
+DataProperty: sdg:cause
+    Domain: bfo:0000015
+DataProperty: sdg:causeCategory
+    Domain: bfo:0000040
+DataProperty: sdg:causeIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:causeName
+    Domain: bfo:0000040
+DataProperty: sdg:causeOfDeath
+    Domain: cco:ont00000995
+DataProperty: sdg:causePercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:causeType
+    Domain: bfo:0000015
+ObjectProperty: sdg:caused
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:causedHerdDecimation
+    Domain: bfo:0000015
+ObjectProperty: sdg:causesCompressionOf
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:causesDiseaseIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:causesEyeIrritation
+    Domain: cco:ont00000995
+DataProperty: sdg:cdsId
+    Domain: bfo:0000015
+DataProperty: sdg:cdsName
+    Domain: bfo:0000015
+DataProperty: sdg:cdsType
+    Domain: bfo:0000015
+DataProperty: sdg:cellId
+    Domain: cco:ont00000995
+DataProperty: sdg:cellType
+    Domain: cco:ont00000995
+DataProperty: sdg:censusYear
+    Domain: cco:ont00000995
+DataProperty: sdg:centerName
+    Domain: cco:ont00000995
+DataProperty: sdg:centerWavelength
+    Domain: cco:ont00000995
+DataProperty: sdg:centerX
+    Domain: bfo:0000040
+DataProperty: sdg:centerY
+    Domain: bfo:0000040
+DataProperty: sdg:centreId
+    Domain: cco:ont00000995
+DataProperty: sdg:centreIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:ceremonyDate
+    Domain: bfo:0000023
+DataProperty: sdg:certId
+    Domain: cco:ont00000995
+DataProperty: sdg:certType
+    Domain: cco:ont00000995
+DataProperty: sdg:certaintyLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:certificateIdentityNumber
+    Domain: bfo:0000015
+DataProperty: sdg:certificateStatus
+    Domain: bfo:0000015
+DataProperty: sdg:certificationBodyRegion
+    Domain: cco:ont00000995
+DataProperty: sdg:certificationBodyRepresentative
+    Domain: cco:ont00000995
+DataProperty: sdg:certificationBodyTitle
+    Domain: cco:ont00000995
+DataProperty: sdg:certificationExpiry
+    Domain: bfo:0000002
+DataProperty: sdg:certificationFrequency
+    Domain: bfo:0000023
+DataProperty: sdg:certificationId
+    Domain: cco:ont00000995
+DataProperty: sdg:certificationProtocol
+    Domain: bfo:0000023
+DataProperty: sdg:certificationRequired
+    Domain: bfo:0000016
+DataProperty: sdg:certificationRequirement
+    Domain: bfo:0000040
+DataProperty: sdg:certificationScope
+    Domain: bfo:0000023
+DataProperty: sdg:certificationStandard
+    Domain: cco:ont00000995
+DataProperty: sdg:certifiedByDetail
+    Domain: bfo:0000002
+ObjectProperty: sdg:certifiedTo
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:certifiesAcademicStanding
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:certifiesComplianceWith
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:certifiesForEvent
+    Range: bfo:0000040
+ObjectProperty: sdg:certifiesOrganization
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:certifiesParticipant
+    Range: bfo:0000002
+ObjectProperty: sdg:certifiesStandard
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+DataProperty: sdg:cetaneMin
+    Domain: cco:ont00000995
+DataProperty: sdg:chainCount
+    Domain: cco:ont00000995
+DataProperty: sdg:chainId
+    Domain: cco:ont00000995
+DataProperty: sdg:chairName
+    Domain: bfo:0000015
+ObjectProperty: sdg:chairedBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:chairmanId
+    Domain: bfo:0000004
+DataProperty: sdg:chairmanName
+    Domain: bfo:0000004
+DataProperty: sdg:chairpersonName
+    Domain: bfo:0000015
+ObjectProperty: sdg:chairsConference
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:challengeName
+    Domain: bfo:0000040
+ObjectProperty: sdg:challenges
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+DataProperty: sdg:championshipName
+    Domain: bfo:0000040
+DataProperty: sdg:changeDirection
+    Domain: bfo:0000015
+DataProperty: sdg:changePercentage
+    Domain: bfo:0000015
+DataProperty: sdg:channel
+    Domain: bfo:0000015
+DataProperty: sdg:channelId
+    Domain: cco:ont00000995
+DataProperty: sdg:channelIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:channelName
+    Domain: cco:ont00000995
+DataProperty: sdg:chapterId
+    Domain: bfo:0000040
+DataProperty: sdg:chapterName
+    Domain: bfo:0000040
+DataProperty: sdg:chapterNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:characteristicType
+    Domain: bfo:0000015
+ObjectProperty: sdg:characterizes
+    Domain: bfo:0000016
+    Range: cco:ont00000995
+DataProperty: sdg:chargeAmount
+    Domain: bfo:0000015
+DataProperty: sdg:chargeId
+    Domain: bfo:0000015
+DataProperty: sdg:chargeName
+    Domain: bfo:0000015
+DataProperty: sdg:chargeType
+    Domain: bfo:0000015
+DataProperty: sdg:chargeValue
+    Domain: bfo:0000015
+ObjectProperty: sdg:chargedTo
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:chargedWith
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:charitableDonationStatus
+    Domain: bfo:0000040
+DataProperty: sdg:charitablePurposeStatement
+    Domain: cco:ont00000958
+DataProperty: sdg:charityBeneficiary
+    Domain: bfo:0000040
+DataProperty: sdg:charityId
+    Domain: bfo:0000040
+DataProperty: sdg:charityName
+    Domain: bfo:0000040
+DataProperty: sdg:charterType
+    Domain: cco:ont00000995
+DataProperty: sdg:charterVersion
+    Domain: bfo:0000004
+DataProperty: sdg:charteredInState
+    Domain: cco:ont00000958
+DataProperty: sdg:charteredState
+    Domain: bfo:0000002
+ObjectProperty: sdg:chastens
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:checkInDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:checkStatus
+    Domain: bfo:0000040
+DataProperty: sdg:checkpointId
+    Domain: bfo:0000040
+DataProperty: sdg:checkpointStatus
+    Domain: bfo:0000040
+DataProperty: sdg:checkpointType
+    Domain: bfo:0000040
+DataProperty: sdg:checkpointX
+    Domain: bfo:0000040
+DataProperty: sdg:checkpointY
+    Domain: bfo:0000040
+ObjectProperty: sdg:cheeseName
+    Domain: bfo:0000040
+DataProperty: sdg:chemicalAgent
+    Domain: bfo:0000015
+DataProperty: sdg:chemicalClass
+    Domain: cco:ont00000995
+DataProperty: sdg:chemicalFamily
+    Domain: cco:ont00000995
+DataProperty: sdg:chemicalFormula
+    Domain: cco:ont00000995
+DataProperty: sdg:chemicalId
+    Domain: bfo:0000040
+DataProperty: sdg:chemicalName
+    Domain: cco:ont00000995
+DataProperty: sdg:childCount
+    Domain: bfo:0000040
+DataProperty: sdg:childId
+    Domain: bfo:0000004
+DataProperty: sdg:childName
+    Domain: bfo:0000004
+DataProperty: sdg:childPopulationCount
+    Domain: cco:ont00000958
+DataProperty: sdg:childPopulationPercentage
+    Domain: cco:ont00000958
+DataProperty: sdg:childPovertyRate
+    Domain: cco:ont00000995
+DataProperty: sdg:chlorophyllPresence
+    Domain: bfo:0000040
+DataProperty: sdg:choreographyDate
+    Domain: bfo:0000015
+DataProperty: sdg:chosenOption
+    Domain: bfo:0000015
+DataProperty: sdg:chromosomeCount
+    Domain: cco:ont00000995
+DataProperty: sdg:chronicStatus
+    Domain: bfo:0000002
+DataProperty: sdg:circleCenterX
+    Domain: bfo:0000040
+DataProperty: sdg:circleCenterY
+    Domain: bfo:0000040
+DataProperty: sdg:circleCurvature
+    Domain: bfo:0000040
+DataProperty: sdg:circleId
+    Domain: bfo:0000040
+DataProperty: sdg:circleRadius
+    Domain: bfo:0000040
+DataProperty: sdg:circulatingStrain
+    Domain: cco:ont00000995
+DataProperty: sdg:circulationCount
+    Domain: cco:ont00000995
+DataProperty: sdg:citation
+    Domain: bfo:0000040
+DataProperty: sdg:citationCount
+    Domain: cco:ont00000995
+DataProperty: sdg:citationId
+    Domain: cco:ont00000995
+DataProperty: sdg:citationText
+    Domain: cco:ont00000995
+ObjectProperty: sdg:citedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:citedByAnalysis
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:citedIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:citesConcept
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:citesConcern
+    Domain: cco:ont00000958
+    Range: bfo:0000040
+ObjectProperty: sdg:citesPriorFinding
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:citesSource
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:citesViolation
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:citizenComplaintId
+    Domain: bfo:0000004
+DataProperty: sdg:cityId
+    Domain: bfo:0000002
+DataProperty: sdg:cityLocation
+    Domain: cco:ont00000995
+DataProperty: sdg:claimAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:claimDate
+    Domain: cco:ont00000995
+DataProperty: sdg:claimDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:claimExcessThreshold
+    Domain: cco:ont00000995
+DataProperty: sdg:claimId
+    Domain: cco:ont00000995
+DataProperty: sdg:claimIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:claimStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:claimText
+    Domain: cco:ont00000995
+DataProperty: sdg:claimType
+    Domain: cco:ont00000995
+DataProperty: sdg:claimYear
+    Domain: cco:ont00000995
+ObjectProperty: sdg:claimedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:claimedOncePerPeriod
+    Domain: bfo:0000023
+DataProperty: sdg:clarityLevel
+    Domain: bfo:0000015
+DataProperty: sdg:classCode
+    Domain: bfo:0000002
+DataProperty: sdg:classDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:classId
+    Domain: bfo:0000015
+DataProperty: sdg:classLevel
+    Domain: bfo:0000015
+DataProperty: sdg:className
+    Domain: bfo:0000015
+DataProperty: sdg:classRank
+    Domain: bfo:0000015
+DataProperty: sdg:classicalComplexity
+    Domain: bfo:0000015
+DataProperty: sdg:classificationCode
+    Domain: bfo:0000002
+DataProperty: sdg:classificationLevel
+    Domain: bfo:0000004
+DataProperty: sdg:classificationStandard
+    Domain: bfo:0000040
+ObjectProperty: sdg:classifiedAs
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:classifiedBy
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:classifies
+    Domain: bfo:0000023
+    Range: bfo:0000002
+DataProperty: sdg:clearingThresholdExceeded
+    Domain: bfo:0000040
+DataProperty: sdg:clientIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:clientMhNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:clientSince
+    Domain: bfo:0000004
+ObjectProperty: sdg:clientStatus
+    Domain: bfo:0000004
+DataProperty: sdg:climateClassification
+    Domain: bfo:0000004
+DataProperty: sdg:climateResilienceScore
+    Domain: bfo:0000040
+DataProperty: sdg:clinicCode
+    Domain: bfo:0000040
+DataProperty: sdg:clinicId
+    Domain: bfo:0000040
+DataProperty: sdg:clinicName
+    Domain: bfo:0000040
+DataProperty: sdg:clinicalCode
+    Domain: cco:ont00000995
+DataProperty: sdg:clinicalContext
+    Domain: bfo:0000015
+DataProperty: sdg:clinicalDiagnosis
+    Domain: bfo:0000015
+DataProperty: sdg:clinicalImpact
+    Domain: cco:ont00000995
+DataProperty: sdg:clinicalNeedJustification
+    Domain: cco:ont00000995
+DataProperty: sdg:clinicianID
+    Domain: bfo:0000015
+DataProperty: sdg:clinicianId
+    Domain: bfo:0000015
+DataProperty: sdg:clinicianName
+    Domain: bfo:0000015
+DataProperty: sdg:closingDate
+    Domain: bfo:0000002
+DataProperty: sdg:cloudPointMax
+    Domain: cco:ont00000995
+DataProperty: sdg:clubId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:clubType
+    Domain: cco:ont00000995
+DataProperty: sdg:cluster
+    Domain: bfo:0000040
+DataProperty: sdg:clusterLocation
+    Domain: bfo:0000040
+DataProperty: sdg:cmsPlatform
+    Domain: cco:ont00000995
+DataProperty: sdg:coAuthor
+    Domain: bfo:0000040
+ObjectProperty: sdg:coChairedBy
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:coChairs
+    Domain: bfo:0000023
+    Range: bfo:0000023
+DataProperty: sdg:coachId
+    Domain: bfo:0000015
+ObjectProperty: sdg:coaches
+    Range: bfo:0000002
+DataProperty: sdg:coachingGoal
+    Domain: bfo:0000015
+DataProperty: sdg:coachingNeeds
+    Domain: bfo:0000004
+DataProperty: sdg:coalitionId
+    Domain: cco:ont00000995
+DataProperty: sdg:coalitionName
+    Domain: cco:ont00000995
+DataProperty: sdg:codeChapter
+    Domain: cco:ont00000958
+DataProperty: sdg:codeName
+    Domain: cco:ont00000995
+DataProperty: sdg:codeOfEthicsPledge
+    Domain: bfo:0000023
+DataProperty: sdg:codeSection
+    Domain: cco:ont00000958
+DataProperty: sdg:codeTitle
+    Domain: cco:ont00000958
+DataProperty: sdg:codecId
+    Domain: bfo:0000040
+DataProperty: sdg:codecName
+    Domain: bfo:0000040
+DataProperty: sdg:codecType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:cognitivelyRepresents
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:cohortIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:cohortLocation
+    Domain: bfo:0000015
+DataProperty: sdg:cohortSize
+    Domain: bfo:0000040
+DataProperty: sdg:coldBendTemperature
+    Domain: cco:ont00000995
+ObjectProperty: sdg:collaboratesWithAdvocate
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:collaboratesWithUnit
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:collateralIdentifier
+    Domain: bfo:0000040
+ObjectProperty: sdg:collectedBy
+    Domain: cco:ont00000995
+ObjectProperty: sdg:collectedFrom
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:collectedVia
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:collectedViaDownlink
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:collectionDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:collectionFrequency
+    Domain: bfo:0000002
+DataProperty: sdg:collectionId
+    Domain: cco:ont00000995
+DataProperty: sdg:collectionPurpose
+    Domain: bfo:0000040
+DataProperty: sdg:collectionSize
+    Domain: cco:ont00000995
+ObjectProperty: sdg:collectionStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:collectiveUnconsciousAccess
+    Domain: bfo:0000004
+ObjectProperty: sdg:collectsData
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:collectsDataFor
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:collectsDataFrom
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:collectsFrom
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:collectsSpecimen
+    Range: bfo:0000002
+DataProperty: sdg:collegeIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:collegeName
+    Domain: bfo:0000040
+DataProperty: sdg:color
+    Domain: cco:ont00000995
+DataProperty: sdg:colorDepthBits
+    Domain: cco:ont00000995
+DataProperty: sdg:colorVariant
+    Domain: cco:ont00000995
+DataProperty: sdg:colorantSource
+    Domain: cco:ont00000995
+DataProperty: sdg:combinedLimit
+    Domain: bfo:0000015
+ObjectProperty: sdg:comfortLevel
+    Domain: cco:ont00000995
+ObjectProperty: sdg:commands
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:commemoratedByStatue
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:commemoratesPerson
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:commercialSector
+    Domain: cco:ont00000995
+DataProperty: sdg:commercialUse
+    Domain: cco:ont00000995
+DataProperty: sdg:commissionCode
+    Domain: bfo:0000015
+DataProperty: sdg:commissionType
+    Domain: bfo:0000015
+ObjectProperty: sdg:commissioned
+    Domain: bfo:0000002
+    Range: bfo:0000023
+ObjectProperty: sdg:commissionedBy
+    Range: bfo:0000002
+DataProperty: sdg:commissionedByDetail
+    Domain: cco:ont00000958
+DataProperty: sdg:commissioningBody
+    Domain: bfo:0000015
+DataProperty: sdg:commissioningStatus
+    Domain: bfo:0000002
+ObjectProperty: sdg:commissions
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:commissionsServiceFrom
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:commitsTo
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:committedBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:committedIncident
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:committeeCode
+    Domain: bfo:0000040
+DataProperty: sdg:committeeIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:committeeName
+    Domain: bfo:0000040
+DataProperty: sdg:commodity
+    Domain: cco:ont00000995
+DataProperty: sdg:commodityId
+    Domain: bfo:0000040
+DataProperty: sdg:commodityName
+    Domain: cco:ont00000995
+DataProperty: sdg:commodityType
+    Domain: bfo:0000015
+ObjectProperty: sdg:communicatedVia
+    Domain: bfo:0000015
+ObjectProperty: sdg:communicatesWith
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:communicatesWithEntity
+    Range: bfo:0000001
+ObjectProperty: sdg:communicationDirection
+    Domain: bfo:0000015
+DataProperty: sdg:communicationId
+    Domain: cco:ont00000958
+DataProperty: sdg:communicationNeeds
+    Domain: bfo:0000004
+DataProperty: sdg:communicationProtocol
+    Domain: bfo:0000040
+DataProperty: sdg:communicationType
+    Domain: cco:ont00000995
+DataProperty: sdg:communityAccessPercentage
+    Domain: bfo:0000040
+DataProperty: sdg:communityGoal
+    Domain: bfo:0000015
+DataProperty: sdg:commuteMode
+    Domain: bfo:0000002
+ObjectProperty: sdg:commutesTo
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:company
+    Domain: bfo:0000040
+DataProperty: sdg:companyIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:companyRegistrationNumber
+    Domain: bfo:0000004
+DataProperty: sdg:companyType
+    Domain: bfo:0000040
+ObjectProperty: sdg:comparedInStudy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:comparedToBenchmark
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:comparesInterventions
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:compartmentId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:compartmentName
+    Domain: cco:ont00000995
+DataProperty: sdg:compensationBand
+    Domain: bfo:0000023
+DataProperty: sdg:competenceLevel
+    Domain: bfo:0000023
+DataProperty: sdg:competencyCount
+    Domain: bfo:0000040
+DataProperty: sdg:competencyDemonstrated
+    Domain: cco:ont00000995
+DataProperty: sdg:competencyDescription
+    Domain: bfo:0000015
+DataProperty: sdg:competencyID
+    Domain: bfo:0000015
+DataProperty: sdg:competencyId
+    Domain: bfo:0000015
+DataProperty: sdg:competencyName
+    Domain: bfo:0000015
+DataProperty: sdg:competencyTitle
+    Domain: bfo:0000015
+DataProperty: sdg:competitionDate
+    Domain: bfo:0000040
+DataProperty: sdg:competitionType
+    Domain: bfo:0000040
+DataProperty: sdg:competitionYear
+    Domain: bfo:0000015
+DataProperty: sdg:competitorId
+    Domain: bfo:0000004
+DataProperty: sdg:compilationDate
+    Domain: cco:ont00000958
+DataProperty: sdg:complaintId
+    Domain: cco:ont00000995
+DataProperty: sdg:completedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:completedCredential
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:completedDate
+    Domain: bfo:0000015
+DataProperty: sdg:completedDateTime
+    Domain: bfo:0000015
+DataProperty: sdg:completedWithin24Hours
+    Domain: bfo:0000015
+DataProperty: sdg:completenessScore
+    Domain: cco:ont00000958
+DataProperty: sdg:completesOnSchedule
+    Domain: cco:ont00000995
+ObjectProperty: sdg:completesTraining
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:completionDeadline
+    Domain: cco:ont00000995
+DataProperty: sdg:completionDeadlineMet
+    Domain: bfo:0000015
+DataProperty: sdg:completionDeadlineMultiplier
+    Domain: cco:ont00000995
+DataProperty: sdg:completionRatePercent
+    Domain: bfo:0000015
+DataProperty: sdg:complianceDate
+    Domain: cco:ont00000995
+DataProperty: sdg:complianceDeadline
+    Domain: cco:ont00000995
+DataProperty: sdg:complianceDomain
+    Domain: bfo:0000002
+DataProperty: sdg:complianceFramework
+    Domain: cco:ont00000995
+DataProperty: sdg:complianceOfficerId
+    Domain: cco:ont00000995
+DataProperty: sdg:complianceRate
+    Domain: cco:ont00000958
+DataProperty: sdg:complianceRating
+    Domain: cco:ont00000995
+DataProperty: sdg:complianceScore
+    Domain: bfo:0000040
+ObjectProperty: sdg:compliesWith
+    Range: cco:ont00000995
+DataProperty: sdg:componentId
+    Domain: cco:ont00000995
+DataProperty: sdg:componentIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:componentName
+    Domain: cco:ont00000995
+DataProperty: sdg:componentType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:composesBowl
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:composesCanape
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:composition
+    Domain: bfo:0000015
+ObjectProperty: sdg:compressedBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:concentration
+    Domain: cco:ont00000995
+DataProperty: sdg:concentrationId
+    Domain: bfo:0000015
+DataProperty: sdg:concentrationName
+    Domain: bfo:0000015
+DataProperty: sdg:concentrationThreshold
+    Domain: cco:ont00000995
+DataProperty: sdg:conceptCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:conceptCovered
+    Domain: cco:ont00000995
+DataProperty: sdg:conceptName
+    Domain: bfo:0000015
+DataProperty: sdg:conceptType
+    Domain: bfo:0000015
+ObjectProperty: sdg:concernsClient
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:concernsPropertyAssessment
+    Range: cco:ont00000024
+DataProperty: sdg:concernsRaised
+    Domain: bfo:0000015
+ObjectProperty: sdg:concernsSubject
+    Range: bfo:0000002
+DataProperty: sdg:conclusion
+    Domain: bfo:0000015
+DataProperty: sdg:conclusionText
+    Domain: bfo:0000015
+DataProperty: sdg:conditionCategory
+    Domain: bfo:0000002
+DataProperty: sdg:conditionId
+    Domain: bfo:0000015
+DataProperty: sdg:conditionIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:conditionLocation
+    Domain: bfo:0000016
+DataProperty: sdg:conditionScore
+    Domain: cco:ont00000995
+ObjectProperty: sdg:conditionStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:conductDate
+    Domain: bfo:0000015
+DataProperty: sdg:conductId
+    Domain: bfo:0000015
+DataProperty: sdg:conductScore
+    Domain: bfo:0000002
+DataProperty: sdg:conductType
+    Domain: bfo:0000015
+ObjectProperty: sdg:conductedAssessment
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:conductedAt
+    Domain: bfo:0000015
+ObjectProperty: sdg:conductedByAssessors
+    Range: cco:ont00000144
+ObjectProperty: sdg:conductedByAuditor
+    Domain: bfo:0000023
+    Range: bfo:0000023
+DataProperty: sdg:conductedByDetail
+    Domain: cco:ont00000958
+ObjectProperty: sdg:conductedForApproval
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:conductedForState
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:conductedIn
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:conductedOn
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:conductedOnBehalfOf
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:conductedOnTrust
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:conductedWith
+    Domain: bfo:0000015
+ObjectProperty: sdg:conducts
+    Range: bfo:0000015
+ObjectProperty: sdg:conductsAssessment
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:conductsAudit
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:conductsAuditFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:conductsBusinessVia
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:conductsCampaignIn
+    Range: bfo:0000040
+ObjectProperty: sdg:conductsEvents
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:conductsInterviewsFor
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:conductsInvestigation
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:conductsMeetings
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:conductsResearchOn
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:conductsSurvey
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+ObjectProperty: sdg:conductsTestOn
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:conductsWebinar
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:conferenceId
+    Domain: bfo:0000015
+DataProperty: sdg:conferenceIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:conferenceName
+    Domain: bfo:0000040
+ObjectProperty: sdg:confersAcademicDegree
+    Domain: bfo:0000002
+    Range: cco:ont00002003
+DataProperty: sdg:confidence
+    Domain: bfo:0000040
+DataProperty: sdg:confidenceScore
+    Domain: cco:ont00000995
+DataProperty: sdg:confidentialityLevel
+    Domain: bfo:0000015
+DataProperty: sdg:confidentialityStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:configId
+    Domain: bfo:0000040
+ObjectProperty: sdg:configuredBy
+    Domain: bfo:0000040
+    Range: bfo:0000031
+ObjectProperty: sdg:configuredWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:configuresNetwork
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:confirmationStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:confirmedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+DataProperty: sdg:conflictOfInterestDisclosure
+    Domain: bfo:0000004
+DataProperty: sdg:conformanceStatus
+    Domain: cco:ont00000958
+ObjectProperty: sdg:conformsTo
+    Domain: cco:ont00000995
+ObjectProperty: sdg:conformsToStandard
+    Range: bfo:0000040
+ObjectProperty: sdg:connectedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:connectedByStraightLine
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:connectedDevicesCount
+    Domain: bfo:0000040
+ObjectProperty: sdg:connectedToClient
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:connectedToPort
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:connectedToRoute
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:connectedVia
+    Range: bfo:0000040
+ObjectProperty: sdg:connectionBehavior
+    Domain: cco:ont00000995
+ObjectProperty: sdg:connectionMode
+    Domain: bfo:0000040
+DataProperty: sdg:connectionScore
+    Domain: bfo:0000015
+DataProperty: sdg:connectionStatus
+    Domain: bfo:0000015
+DataProperty: sdg:connectivityStatus
+    Domain: bfo:0000004
+DataProperty: sdg:connectorType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:connectsEnd
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:connectsPort
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:connectsStart
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:connectsToFrame
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:connectsToServer
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:consentGiven
+    Domain: cco:ont00000995
+DataProperty: sdg:consentID
+    Domain: cco:ont00000995
+DataProperty: sdg:consentId
+    Domain: cco:ont00000958
+DataProperty: sdg:consentMethod
+    Domain: cco:ont00000995
+ObjectProperty: sdg:consentScope
+    Domain: cco:ont00000995
+DataProperty: sdg:consentTimestamp
+    Domain: cco:ont00000995
+DataProperty: sdg:conservationLevel
+    Domain: bfo:0000015
+DataProperty: sdg:conservationStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:consistsOfMembers
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:consolidationStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:constellation
+    Domain: bfo:0000004
+DataProperty: sdg:constituentSchoolCount
+    Domain: bfo:0000040
+ObjectProperty: sdg:constitutes
+    Range: cco:ont00000995
+ObjectProperty: sdg:constitutesBenchmark
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:constitutesHistoricalRoot
+    Range: cco:ont00001175
+ObjectProperty: sdg:constitutesLevelOfBuilding
+    Range: bfo:0000002
+ObjectProperty: sdg:constitutes_human_person
+    Domain: bfo:0000004
+    Range: cco:ont00001262
+ObjectProperty: sdg:constrainsBook
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:constructedFrom
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:constructionDate
+    Domain: cco:ont00000995
+DataProperty: sdg:constructionYear
+    Domain: bfo:0000040
+DataProperty: sdg:consultantId
+    Domain: bfo:0000023
+DataProperty: sdg:consultantName
+    Domain: cco:ont00000995
+DataProperty: sdg:consultationFrequency
+    Domain: cco:ont00000995
+DataProperty: sdg:consultationParticipants
+    Domain: bfo:0000015
+ObjectProperty: sdg:consultedFor
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:consultingServices
+    Domain: bfo:0000015
+ObjectProperty: sdg:consults
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:consultsWith
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:consumerId
+    Domain: bfo:0000040
+ObjectProperty: sdg:consumesEnergyIn
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:consumptionKwh
+    Domain: bfo:0000015
+DataProperty: sdg:contactEndDate
+    Domain: cco:ont00000995
+DataProperty: sdg:contactFax
+    Domain: cco:ont00000958
+DataProperty: sdg:contactId
+    Domain: bfo:0000040
+DataProperty: sdg:contactInformation
+    Domain: bfo:0000015
+DataProperty: sdg:contactMobile
+    Domain: bfo:0000015
+DataProperty: sdg:contactPermission
+    Domain: bfo:0000004
+DataProperty: sdg:contactPersonName
+    Domain: cco:ont00000995
+DataProperty: sdg:contactStartDate
+    Domain: cco:ont00000995
+DataProperty: sdg:contactTelephone
+    Domain: bfo:0000004
+ObjectProperty: sdg:contactedAbout
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:contactedByVia
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:contactsChain
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsAction
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:containsAdCopy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsAsset
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsAssets
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:containsBeneficiaries
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:containsChecklistItem
+    Range: bfo:0000002
+ObjectProperty: sdg:containsComponent
+    Domain: bfo:0000040
+ObjectProperty: sdg:containsConcept
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:containsContentFor
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:containsCourse
+    Domain: cco:ont00000958
+    Range: bfo:0000040
+ObjectProperty: sdg:containsDay
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:containsDepartment
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:containsDevice
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:containsEducationData
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsElement
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsEnrolment
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:containsField
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsFisherman
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:containsGeographicRegions
+    Domain: bfo:0000040
+    Range: bfo:0000004
+DataProperty: sdg:containsGospels
+    Domain: cco:ont00000958
+DataProperty: sdg:containsGrandfatherStatus
+    Domain: cco:ont00000958
+ObjectProperty: sdg:containsHealthData
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsIngredient
+    Domain: cco:ont00000995
+ObjectProperty: sdg:containsInscription
+    Domain: bfo:0000015
+DataProperty: sdg:containsInsights
+    Domain: bfo:0000040
+ObjectProperty: sdg:containsItem
+    Domain: cco:ont00000995
+ObjectProperty: sdg:containsLaborData
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:containsLaw
+    Domain: cco:ont00000958
+ObjectProperty: sdg:containsLine
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsLineItem
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:containsMeasurements
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsMenuItem
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:containsMessage
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsMetric
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:containsMucinousFluid
+    Domain: cco:ont00000995
+ObjectProperty: sdg:containsObservation
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:containsOperations
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:containsOrganization
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:containsPage
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsPopulation
+    Range: bfo:0000002
+ObjectProperty: sdg:containsPosition
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:containsPovertyData
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsProperty
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:containsProphecy
+    Domain: cco:ont00000958
+ObjectProperty: sdg:containsRURecord
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsReceipt
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsRecord
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsRequirement
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:containsResident
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:containsResource
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsResponseRecord
+    Range: bfo:0000002
+ObjectProperty: sdg:containsResponseTo
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+DataProperty: sdg:containsResveratrol
+    Domain: bfo:0000040
+ObjectProperty: sdg:containsRole
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:containsSamplingUnit
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:containsSchool
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:containsSession
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:containsShell
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsSocialEnterprises
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:containsSprocket
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsStatue
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:containsStep
+    Domain: bfo:0000015
+ObjectProperty: sdg:containsSubjectGrade
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsSubtopic
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:containsSupplementReview
+    Domain: cco:ont00000995
+ObjectProperty: sdg:containsSurveillanceSites
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:containsTerm
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsTheme
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsToponym
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsToponyms
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:containsTribe
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:containsUtterance
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:containsVectorPopulation
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:contains_item
+    Range: bfo:0000002
+ObjectProperty: sdg:contains_presentation
+    Range: bfo:0000002
+DataProperty: sdg:contaminationRatePercent
+    Domain: bfo:0000002
+ObjectProperty: sdg:contentFormat
+    Domain: cco:ont00000958
+DataProperty: sdg:contentGenre
+    Domain: cco:ont00000995
+DataProperty: sdg:contentHash
+    Domain: cco:ont00000995
+DataProperty: sdg:contentId
+    Domain: bfo:0000015
+DataProperty: sdg:contentSnippet
+    Domain: cco:ont00000995
+DataProperty: sdg:contentSpecification
+    Domain: cco:ont00000995
+DataProperty: sdg:contentTier
+    Domain: bfo:0000002
+DataProperty: sdg:contentTitle
+    Domain: bfo:0000015
+DataProperty: sdg:contextIdentifier
+    Domain: bfo:0000040
+ObjectProperty: sdg:contextualizedIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:continent
+    Domain: bfo:0000004
+DataProperty: sdg:continuousLength
+    Domain: cco:ont00000995
+DataProperty: sdg:contractId
+    Domain: bfo:0000015
+DataProperty: sdg:contractStatus
+    Domain: bfo:0000004
+DataProperty: sdg:contractedSquareFeet
+    Domain: cco:ont00000995
+DataProperty: sdg:contractingOrganisation
+    Domain: bfo:0000023
+DataProperty: sdg:contractorId
+    Domain: bfo:0000015
+DataProperty: sdg:contractorIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:contractorName
+    Domain: bfo:0000015
+DataProperty: sdg:contractorType
+    Domain: bfo:0000015
+ObjectProperty: sdg:contradicts
+    Domain: bfo:0000030
+    Range: bfo:0000030
+DataProperty: sdg:contrastSensitivity
+    Domain: bfo:0000015
+DataProperty: sdg:contrastUsed
+    Domain: cco:ont00000995
+ObjectProperty: sdg:contributesTo
+    Range: bfo:0000015
+ObjectProperty: sdg:contributesToOutcome
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:contributionAmount
+    Domain: bfo:0000002
+DataProperty: sdg:contributionDate
+    Domain: bfo:0000002
+ObjectProperty: sdg:contributionStatus
+    Domain: bfo:0000002
+DataProperty: sdg:controlHierarchyType
+    Domain: bfo:0000040
+DataProperty: sdg:controlIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:controlInterventionId
+    Domain: bfo:0000015
+DataProperty: sdg:controlMechanism
+    Domain: bfo:0000040
+DataProperty: sdg:controlName
+    Domain: bfo:0000040
+DataProperty: sdg:controlSystemType
+    Domain: bfo:0000040
+DataProperty: sdg:controlType
+    Domain: bfo:0000040
+ObjectProperty: sdg:controlledBy
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:controlledSubstanceSchedule
+    Domain: cco:ont00000995
+DataProperty: sdg:controllingAuthority
+    Domain: bfo:0000040
+ObjectProperty: sdg:controls
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+DataProperty: sdg:conurbation
+    Domain: bfo:0000015
+ObjectProperty: sdg:convenedBy
+    Domain: bfo:0000015
+ObjectProperty: sdg:convenes
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:convenorName
+    Domain: bfo:0000040
+DataProperty: sdg:convergenceStatus
+    Domain: bfo:0000015
+DataProperty: sdg:conversionType
+    Domain: bfo:0000040
+ObjectProperty: sdg:conveysInformationContent
+    Range: cco:ont00000958
+DataProperty: sdg:cookieEnabled
+    Domain: bfo:0000015
+DataProperty: sdg:cookieId
+    Domain: cco:ont00000995
+DataProperty: sdg:cookieName
+    Domain: cco:ont00000995
+DataProperty: sdg:cookingDuration
+    Domain: bfo:0000015
+DataProperty: sdg:cookingMethod
+    Domain: bfo:0000040
+DataProperty: sdg:cookingTemperature
+    Domain: bfo:0000015
+DataProperty: sdg:cookingTime
+    Domain: bfo:0000040
+DataProperty: sdg:coolingLoad
+    Domain: bfo:0000015
+DataProperty: sdg:coolingMethod
+    Domain: cco:ont00000995
+ObjectProperty: sdg:coordinatesProject
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:coordinatesServiceProvision
+    Range: bfo:0000002
+DataProperty: sdg:coordinatingEntity
+    Domain: cco:ont00000995
+ObjectProperty: sdg:coordinationLevel
+    Domain: bfo:0000040
+DataProperty: sdg:coordinatorId
+    Domain: bfo:0000040
+DataProperty: sdg:copperCorrosionRate
+    Domain: cco:ont00000995
+DataProperty: sdg:copyAreaDimensions
+    Domain: cco:ont00000995
+DataProperty: sdg:copyCount
+    Domain: cco:ont00000995
+DataProperty: sdg:copyrightInfo
+    Domain: cco:ont00000995
+DataProperty: sdg:copyrightInfoProvided
+    Domain: cco:ont00000995
+DataProperty: sdg:copyrightOwner
+    Domain: cco:ont00000995
+DataProperty: sdg:corePrinciple
+    Domain: bfo:0000015
+DataProperty: sdg:corkageFee
+    Domain: bfo:0000040
+DataProperty: sdg:corpId
+    Domain: bfo:0000040
+DataProperty: sdg:corpName
+    Domain: bfo:0000040
+DataProperty: sdg:corporateReputationScore
+    Domain: bfo:0000040
+DataProperty: sdg:corporateTitle
+    Domain: bfo:0000002
+DataProperty: sdg:corporationId
+    Domain: bfo:0000040
+ObjectProperty: sdg:correctedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:correctedDate
+    Domain: bfo:0000015
+DataProperty: sdg:correctiveActionTaken
+    Domain: bfo:0000015
+DataProperty: sdg:correctiveStepsTaken
+    Domain: cco:ont00000995
+ObjectProperty: sdg:corrects
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:correlatesWith
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:correlationScore
+    Domain: cco:ont00000995
+ObjectProperty: sdg:correspondsTo
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:costCoveragePercent
+    Domain: cco:ont00000995
+DataProperty: sdg:costId
+    Domain: bfo:0000015
+DataProperty: sdg:costIncurred
+    Domain: bfo:0000015
+DataProperty: sdg:costIndex
+    Domain: bfo:0000015
+DataProperty: sdg:costOfLivingIndex
+    Domain: bfo:0000002
+DataProperty: sdg:costPerCouple
+    Domain: cco:ont00000995
+DataProperty: sdg:costPercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:costReduction
+    Domain: bfo:0000015
+DataProperty: sdg:costSavings
+    Domain: bfo:0000040
+ObjectProperty: sdg:councilStatus
+    Domain: bfo:0000015
+DataProperty: sdg:counselorId
+    Domain: bfo:0000002
+DataProperty: sdg:countDate
+    Domain: cco:ont00000995
+DataProperty: sdg:countId
+    Domain: cco:ont00000995
+DataProperty: sdg:countRange
+    Domain: bfo:0000015
+ObjectProperty: sdg:counteredBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:counterpartyIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:countriesCovered
+    Domain: cco:ont00000958
+DataProperty: sdg:countryOfIncorporation
+    Domain: bfo:0000040
+ObjectProperty: sdg:countsTowards
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+DataProperty: sdg:countyLocation
+    Domain: cco:ont00000995
+DataProperty: sdg:countyName
+    Domain: bfo:0000040
+DataProperty: sdg:countyServed
+    Domain: cco:ont00000995
+DataProperty: sdg:courseDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:courseIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:courseLevel
+    Domain: bfo:0000040
+DataProperty: sdg:courseNumber
+    Domain: bfo:0000040
+DataProperty: sdg:courseOfStudy
+    Domain: bfo:0000004
+DataProperty: sdg:courtAssignment
+    Domain: bfo:0000015
+DataProperty: sdg:courtCaseNumber
+    Domain: cco:ont00000958
+DataProperty: sdg:courtDate
+    Domain: cco:ont00000995
+DataProperty: sdg:courtDocketNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:courtName
+    Domain: bfo:0000040
+DataProperty: sdg:courtRegistry
+    Domain: bfo:0000040
+DataProperty: sdg:courtSystem
+    Domain: bfo:0000002
+DataProperty: sdg:covenantId
+    Domain: bfo:0000030
+DataProperty: sdg:covenantName
+    Domain: bfo:0000030
+DataProperty: sdg:covenantStatus
+    Domain: bfo:0000040
+DataProperty: sdg:coverColor
+    Domain: cco:ont00000995
+DataProperty: sdg:coverageDepth
+    Domain: bfo:0000015
+DataProperty: sdg:coverageLimit
+    Domain: cco:ont00000995
+DataProperty: sdg:coverageLimitUSD
+    Domain: cco:ont00000995
+DataProperty: sdg:coveragePercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:coveragePolicy
+    Domain: cco:ont00000995
+DataProperty: sdg:coverageRadius
+    Domain: bfo:0000015
+DataProperty: sdg:coverageRange
+    Domain: bfo:0000040
+DataProperty: sdg:coverageRequested
+    Domain: bfo:0000015
+ObjectProperty: sdg:coverageScope
+    Domain: cco:ont00000995
+DataProperty: sdg:coverageType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:coveredByPDS
+    Domain: bfo:0000023
+    Range: cco:ont00000958
+ObjectProperty: sdg:coveredByPlan
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:coveredByPolicy
+    Range: cco:ont00000995
+ObjectProperty: sdg:coveredEvent
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:coveredIn
+    Range: bfo:0000015
+ObjectProperty: sdg:coveredInEngagement
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:coversAsset
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:coversCase
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:coversComplianceYear
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:coversConcept
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:coversDrugSubstance
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:coversEvents
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:coversIndividual
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:coversMedication
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:coversMinor
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:coversOrganization
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+DataProperty: sdg:coversOverTheCounter
+    Domain: cco:ont00000995
+ObjectProperty: sdg:coversParticipant
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:coversParticipantAccidents
+    Domain: cco:ont00000995
+ObjectProperty: sdg:coversPatient
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:coversPrograms
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:coversRegion
+    Range: bfo:0000004
+ObjectProperty: sdg:coversScope
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:coversSegment
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:coversSocialEnterprises
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:coversSocialNetworkingServiceUsage
+    Range: bfo:0000002
+ObjectProperty: sdg:coversState
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:coversStudent
+    Range: bfo:0000002
+ObjectProperty: sdg:coversTerm
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:coversTerritory
+    Domain: cco:ont00000958
+    Range: bfo:0000004
+ObjectProperty: sdg:coversTrader
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:coversZone
+    Domain: cco:ont00000995
+DataProperty: sdg:cpuCount
+    Domain: bfo:0000040
+DataProperty: sdg:cqcRating
+    Domain: cco:ont00000995
+DataProperty: sdg:craftspersonId
+    Domain: bfo:0000023
+DataProperty: sdg:createdAt
+    Domain: cco:ont00000995
+ObjectProperty: sdg:createdBySignature
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:createdFor
+    Domain: cco:ont00000995
+ObjectProperty: sdg:createdFundFor
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:createdWith
+    Range: cco:ont00000995
+ObjectProperty: sdg:createdWithApp
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:createsIEP
+    Domain: bfo:0000002
+    Range: bfo:0000016
+ObjectProperty: sdg:createsJobsFor
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:createsReport
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:creatinine
+    Domain: cco:ont00000995
+DataProperty: sdg:credentials
+    Domain: bfo:0000040
+DataProperty: sdg:creditAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:creditDate
+    Domain: cco:ont00000995
+DataProperty: sdg:creditHoursRequired
+    Domain: bfo:0000040
+DataProperty: sdg:creditLimit
+    Domain: bfo:0000002
+DataProperty: sdg:creditQualityRating
+    Domain: bfo:0000040
+DataProperty: sdg:creditRating
+    Domain: cco:ont00000995
+DataProperty: sdg:creditRatingAMBest
+    Domain: cco:ont00000995
+DataProperty: sdg:creditRatingFitch
+    Domain: cco:ont00000995
+DataProperty: sdg:creditRatingSP
+    Domain: cco:ont00000995
+DataProperty: sdg:creditRequirement
+    Domain: bfo:0000040
+DataProperty: sdg:creditSystemType
+    Domain: cco:ont00000995
+DataProperty: sdg:creditValue
+    Domain: bfo:0000040
+DataProperty: sdg:creditsApplied
+    Domain: cco:ont00000995
+DataProperty: sdg:creditsAwarded
+    Domain: bfo:0000023
+DataProperty: sdg:creditsEarned
+    Domain: cco:ont00000995
+DataProperty: sdg:creditsRequired
+    Domain: cco:ont00000995
+DataProperty: sdg:crewName
+    Domain: bfo:0000004
+ObjectProperty: sdg:criminalHistoryStatus
+    Domain: bfo:0000015
+DataProperty: sdg:crisisCallCount
+    Domain: bfo:0000002
+DataProperty: sdg:criteriaId
+    Domain: cco:ont00000995
+DataProperty: sdg:criticalValue
+    Domain: bfo:0000015
+ObjectProperty: sdg:crmUsageLevel
+    Domain: bfo:0000023
+DataProperty: sdg:cropType
+    Domain: bfo:0000040
+DataProperty: sdg:crossSectionHeight
+    Domain: bfo:0000015
+DataProperty: sdg:crossSectionWidth
+    Domain: bfo:0000015
+ObjectProperty: sdg:crossedBy
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:crustType
+    Domain: cco:ont00000995
+DataProperty: sdg:crystalSystem
+    Domain: cco:ont00000995
+DataProperty: sdg:csaIdentifier
+    Domain: cco:ont00000958
+DataProperty: sdg:cueSubstance
+    Domain: bfo:0000015
+DataProperty: sdg:cuisineType
+    Domain: bfo:0000040
+DataProperty: sdg:culturalAdoption
+    Domain: bfo:0000015
+DataProperty: sdg:culturalOrigin
+    Domain: cco:ont00000995
+DataProperty: sdg:cumulativeGPA
+    Domain: bfo:0000015
+DataProperty: sdg:cumulativeGpa
+    Domain: bfo:0000002
+DataProperty: sdg:currencyDenomination
+    Domain: bfo:0000040
+DataProperty: sdg:current
+    Domain: cco:ont00000995
+DataProperty: sdg:currentAddress
+    Domain: bfo:0000002
+DataProperty: sdg:currentAffiliation
+    Domain: bfo:0000040
+DataProperty: sdg:currentAltitude
+    Domain: bfo:0000040
+DataProperty: sdg:currentAssignment
+    Domain: bfo:0000040
+DataProperty: sdg:currentAttendance
+    Domain: bfo:0000015
+DataProperty: sdg:currentCaseLoad
+    Domain: bfo:0000004
+DataProperty: sdg:currentCertificationPeriodEnd
+    Domain: bfo:0000023
+DataProperty: sdg:currentCertificationPeriodStart
+    Domain: bfo:0000023
+DataProperty: sdg:currentDailyProduction
+    Domain: bfo:0000040
+DataProperty: sdg:currentEffectiveDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:currentEmployer
+    Domain: bfo:0000004
+    Range: bfo:0000002
+DataProperty: sdg:currentEmployerDetail
+    Domain: bfo:0000002
+DataProperty: sdg:currentEnrollment
+    Domain: bfo:0000015
+DataProperty: sdg:currentFillLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:currentGpa
+    Domain: bfo:0000002
+DataProperty: sdg:currentGrade
+    Domain: bfo:0000002
+DataProperty: sdg:currentGradeLevel
+    Domain: bfo:0000002
+DataProperty: sdg:currentHeading
+    Domain: cco:ont00000958
+DataProperty: sdg:currentHeelAngle
+    Domain: cco:ont00000995
+ObjectProperty: sdg:currentHousingStatus
+    Domain: bfo:0000040
+DataProperty: sdg:currentInfluenceLevel
+    Domain: bfo:0000002
+DataProperty: sdg:currentInstitution
+    Domain: bfo:0000040
+DataProperty: sdg:currentIssueDate
+    Domain: bfo:0000015
+DataProperty: sdg:currentLandUse
+    Domain: bfo:0000040
+ObjectProperty: sdg:currentLevel
+    Domain: bfo:0000002
+DataProperty: sdg:currentLoad
+    Domain: bfo:0000015
+DataProperty: sdg:currentLoadPercent
+    Domain: bfo:0000015
+DataProperty: sdg:currentMembers
+    Domain: bfo:0000040
+DataProperty: sdg:currentOccupancy
+    Domain: cco:ont00000995
+DataProperty: sdg:currentQualityRating
+    Domain: cco:ont00000995
+DataProperty: sdg:currentReading
+    Domain: cco:ont00000995
+DataProperty: sdg:currentRegistrations
+    Domain: bfo:0000015
+DataProperty: sdg:currentResidence
+    Domain: bfo:0000004
+DataProperty: sdg:currentResponsibleOffice
+    Domain: bfo:0000015
+DataProperty: sdg:currentRoleTitle
+    Domain: bfo:0000023
+DataProperty: sdg:currentSanctionCount
+    Domain: bfo:0000002
+DataProperty: sdg:currentSchool
+    Domain: bfo:0000002
+DataProperty: sdg:currentSession
+    Domain: bfo:0000040
+DataProperty: sdg:currentSpeed
+    Domain: bfo:0000040
+DataProperty: sdg:currentStance
+    Domain: bfo:0000004
+DataProperty: sdg:currentTermEnd
+    Domain: bfo:0000015
+DataProperty: sdg:currentTheme
+    Domain: bfo:0000015
+DataProperty: sdg:currentUtilization
+    Domain: bfo:0000040
+DataProperty: sdg:currentValue
+    Domain: cco:ont00000995
+DataProperty: sdg:currentVersion
+    Domain: cco:ont00000995
+DataProperty: sdg:currentX
+    Domain: cco:ont00000958
+DataProperty: sdg:currentY
+    Domain: cco:ont00000958
+DataProperty: sdg:currentYearGroup
+    Domain: bfo:0000015
+DataProperty: sdg:currentlyEmployed
+    Domain: bfo:0000004
+DataProperty: sdg:curriculumAlignment
+    Domain: cco:ont00000995
+DataProperty: sdg:curriculumId
+    Domain: bfo:0000040
+DataProperty: sdg:curriculumName
+    Domain: bfo:0000040
+DataProperty: sdg:curriculumTitle
+    Domain: cco:ont00000995
+DataProperty: sdg:custodianEntity
+    Domain: cco:ont00000995
+DataProperty: sdg:custodianId
+    Domain: cco:ont00000958
+DataProperty: sdg:custodianType
+    Domain: cco:ont00000958
+ObjectProperty: sdg:customerClass
+    Domain: bfo:0000031
+DataProperty: sdg:customerCount
+    Domain: cco:ont00000995
+DataProperty: sdg:customerID
+    Domain: bfo:0000002
+DataProperty: sdg:customerIdentifier
+    Domain: cco:ont00000958
+DataProperty: sdg:customerSatisfactionScore
+    Domain: bfo:0000040
+DataProperty: sdg:customerType
+    Domain: cco:ont00000958
+DataProperty: sdg:cybersafetyTrained
+    Domain: bfo:0000002
+DataProperty: sdg:cyborgId
+    Domain: bfo:0000040
+DataProperty: sdg:cycleId
+    Domain: bfo:0000015
+DataProperty: sdg:cystId
+    Domain: cco:ont00000995
+DataProperty: sdg:cystLocation
+    Domain: cco:ont00000995
+ObjectProperty: sdg:cystType
+    Domain: cco:ont00000995
+DataProperty: sdg:dailyFee
+    Domain: cco:ont00000995
+DataProperty: sdg:dailyGenerationMWh
+    Domain: bfo:0000040
+DataProperty: sdg:dailyProductionTarget
+    Domain: bfo:0000040
+DataProperty: sdg:dailyTasksCompleted
+    Domain: bfo:0000004
+DataProperty: sdg:dailyVolumeTons
+    Domain: bfo:0000002
+DataProperty: sdg:damName
+    Domain: cco:ont00000995
+DataProperty: sdg:danceId
+    Domain: bfo:0000015
+ObjectProperty: sdg:dataAccessLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:dataAllowance
+    Domain: bfo:0000040
+ObjectProperty: sdg:dataArchiveStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:dataClassification
+    Domain: cco:ont00000995
+DataProperty: sdg:dataCollected
+    Domain: bfo:0000015
+DataProperty: sdg:dataCollectionPolicy
+    Domain: cco:ont00000995
+ObjectProperty: sdg:dataContentScope
+    Domain: cco:ont00000995
+    Range: bfo:0000001
+ObjectProperty: sdg:dataExtent
+    Domain: bfo:0000015
+ObjectProperty: sdg:dataField
+    Domain: cco:ont00000995
+DataProperty: sdg:dataId
+    Domain: cco:ont00000995
+DataProperty: sdg:dataIntegrityCheck
+    Domain: bfo:0000015
+DataProperty: sdg:dataIntegrityStatus
+    Domain: bfo:0000015
+DataProperty: sdg:dataPointId
+    Domain: bfo:0000015
+DataProperty: sdg:dataProcessingDomain
+    Domain: cco:ont00000995
+DataProperty: sdg:dataProcessingPurpose
+    Domain: bfo:0000002
+DataProperty: sdg:dataProductId
+    Domain: cco:ont00000995
+DataProperty: sdg:dataProvider
+    Domain: cco:ont00000995
+DataProperty: sdg:dataQuality
+    Domain: cco:ont00000995
+DataProperty: sdg:dataQualityIndex
+    Domain: cco:ont00000995
+DataProperty: sdg:dataQualityScore
+    Domain: cco:ont00000995
+DataProperty: sdg:dataRecordID
+    Domain: cco:ont00000995
+DataProperty: sdg:dataRecordId
+    Domain: cco:ont00000995
+DataProperty: sdg:dataSharingAgreementId
+    Domain: bfo:0000002
+DataProperty: sdg:dataSources
+    Domain: cco:ont00000995
+DataProperty: sdg:dataStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:dataVariety
+    Domain: cco:ont00000995
+DataProperty: sdg:dataVolumeBytes
+    Domain: cco:ont00000995
+DataProperty: sdg:databaseType
+    Domain: bfo:0000040
+DataProperty: sdg:datasetName
+    Domain: cco:ont00000995
+DataProperty: sdg:date
+    Domain: bfo:0000015
+DataProperty: sdg:dateAssessed
+    Domain: bfo:0000015
+DataProperty: sdg:dateAuthorized
+    Domain: bfo:0000002
+DataProperty: sdg:dateClosed
+    Domain: bfo:0000040
+DataProperty: sdg:dateConducted
+    Domain: bfo:0000015
+DataProperty: sdg:dateCreated
+    Domain: cco:ont00000995
+DataProperty: sdg:dateDiscovered
+    Domain: cco:ont00000995
+DataProperty: sdg:dateEntered9thGrade
+    Domain: bfo:0000002
+DataProperty: sdg:dateFiled
+    Domain: bfo:0000040
+DataProperty: sdg:dateGiven
+    Domain: bfo:0000015
+DataProperty: sdg:dateIdentified
+    Domain: cco:ont00000995
+DataProperty: sdg:dateModified
+    Domain: cco:ont00000995
+DataProperty: sdg:dateMovedIn
+    Domain: bfo:0000002
+DataProperty: sdg:dateMovedToNevada
+    Domain: bfo:0000023
+DataProperty: sdg:dateOfCommencement
+    Domain: bfo:0000002
+DataProperty: sdg:dateOfFormation
+    Domain: cco:ont00000958
+DataProperty: sdg:dateOfIncident
+    Domain: bfo:0000015
+DataProperty: sdg:dateOfReferral
+    Domain: bfo:0000040
+DataProperty: sdg:dateOfService
+    Domain: cco:ont00000995
+DataProperty: sdg:dateOpened
+    Domain: bfo:0000040
+DataProperty: sdg:dateRectified
+    Domain: cco:ont00000995
+DataProperty: sdg:dateResolved
+    Domain: cco:ont00000995
+DataProperty: sdg:dateTime
+    Domain: bfo:0000015
+DataProperty: sdg:dayNumber
+    Domain: bfo:0000015
+DataProperty: sdg:dayOfWeek
+    Domain: bfo:0000015
+DataProperty: sdg:daysPerWeek
+    Domain: bfo:0000015
+DataProperty: sdg:dbaId
+    Domain: bfo:0000002
+DataProperty: sdg:dbaName
+    Domain: bfo:0000002
+DataProperty: sdg:dcOnStateCurrent
+    Domain: cco:ont00000995
+DataProperty: sdg:ddosProtectionEnabled
+    Domain: bfo:0000040
+DataProperty: sdg:deMinimisThreshold
+    Domain: bfo:0000023
+DataProperty: sdg:deadlineCondition
+    Domain: bfo:0000015
+DataProperty: sdg:deadlineDate
+    Domain: bfo:0000040
+DataProperty: sdg:deadlineHours
+    Domain: bfo:0000015
+DataProperty: sdg:deanId
+    Domain: bfo:0000040
+DataProperty: sdg:deathYear
+    Domain: bfo:0000002
+DataProperty: sdg:decimationEvent
+    Domain: bfo:0000015
+DataProperty: sdg:decipheredText
+    Domain: cco:ont00000995
+DataProperty: sdg:decisionCapacityStatus
+    Domain: bfo:0000015
+DataProperty: sdg:decisionCategory
+    Domain: bfo:0000040
+DataProperty: sdg:decisionDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:decisionFrequency
+    Domain: bfo:0000004
+DataProperty: sdg:decisionIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:decisionOutcome
+    Domain: bfo:0000015
+ObjectProperty: sdg:decisionStatus
+    Domain: bfo:0000015
+DataProperty: sdg:decisionText
+    Domain: bfo:0000040
+DataProperty: sdg:decisionTitle
+    Domain: bfo:0000015
+DataProperty: sdg:decisionTopic
+    Domain: bfo:0000015
+DataProperty: sdg:decisionType
+    Domain: bfo:0000015
+DataProperty: sdg:declarationDate
+    Domain: bfo:0000002
+DataProperty: sdg:declarationDeadline
+    Domain: bfo:0000015
+DataProperty: sdg:declarationTitle
+    Domain: bfo:0000015
+DataProperty: sdg:declaredAverage
+    Domain: bfo:0000040
+ObjectProperty: sdg:declaredIn
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:declaresStatusIn
+    Domain: bfo:0000004
+    Range: bfo:0000002
+DataProperty: sdg:decryptionStatus
+    Domain: bfo:0000040
+DataProperty: sdg:dedicatedPerson
+    Domain: bfo:0000040
+ObjectProperty: sdg:dedicatedToSurvey
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:dedicationTarget
+    Domain: bfo:0000040
+DataProperty: sdg:dedicationYear
+    Domain: bfo:0000040
+DataProperty: sdg:deductibleAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:deductionPercentage
+    Domain: bfo:0000015
+DataProperty: sdg:defectDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:defectType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:defendantIn
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:deficiencyCount
+    Domain: bfo:0000015
+ObjectProperty: sdg:definedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000016
+ObjectProperty: sdg:definedByFramework
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:definedIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:definedInScope
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:definesBenchmark
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:definesCapability
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:definesCriteriaFor
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:definesLevel
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:definesMaterial
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:definesPlan
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:definesQoSFor
+    Domain: bfo:0000031
+    Range: bfo:0000040
+ObjectProperty: sdg:definesScope
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:degreeField
+    Domain: bfo:0000002
+DataProperty: sdg:degreeGrantingInstitution
+    Domain: bfo:0000015
+DataProperty: sdg:degreeName
+    Domain: cco:ont00000958
+DataProperty: sdg:degreeOrDiploma
+    Domain: bfo:0000004
+DataProperty: sdg:degreeProgram
+    Domain: bfo:0000002
+DataProperty: sdg:delegationDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:deliveredIn
+    Range: bfo:0000015
+ObjectProperty: sdg:deliveredThrough
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:deliveredToFacility
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:deliversContent
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:deliversDietaryAdvice
+    Range: bfo:0000002
+ObjectProperty: sdg:deliversDisplayOutput
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:deliversEngagement
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:deliversLecture
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:deliversMessagesTo
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:deliversProgram
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:deliversService
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:deliversServiceTo
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:deliversServiceType
+    Range: bfo:0000002
+ObjectProperty: sdg:deliversSession
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:deliversTrainingFor
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:deliversTreatmentTo
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:deliveryFrequency
+    Domain: bfo:0000002
+DataProperty: sdg:deliveryId
+    Domain: bfo:0000015
+DataProperty: sdg:demographicId
+    Domain: cco:ont00000995
+DataProperty: sdg:demographicIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:demonstratedByResponses
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:demonstratedInActivity
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:demonstratesCompetency
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:demonstratesConcept
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:denominatedInCurrency
+    Range: cco:ont00000518
+DataProperty: sdg:denomination
+    Domain: bfo:0000040
+ObjectProperty: sdg:densityClass
+    Domain: bfo:0000015
+ObjectProperty: sdg:densityCondition
+    Domain: cco:ont00000995
+DataProperty: sdg:departmentAffiliation
+    Domain: bfo:0000002
+DataProperty: sdg:departmentAssigned
+    Domain: bfo:0000023
+DataProperty: sdg:departmentCode
+    Domain: bfo:0000015
+DataProperty: sdg:departmentScope
+    Domain: bfo:0000015
+ObjectProperty: sdg:departmentType
+    Domain: bfo:0000015
+DataProperty: sdg:departmentalAffiliation
+    Domain: bfo:0000023
+DataProperty: sdg:departureAirport
+    Domain: bfo:0000040
+DataProperty: sdg:departureCountry
+    Domain: bfo:0000015
+ObjectProperty: sdg:dependentOf
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:dependsOn
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:depicts
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:deployedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:deployedTo
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:deploymentLocation
+    Domain: cco:ont00000995
+DataProperty: sdg:deploymentMode
+    Domain: cco:ont00000995
+ObjectProperty: sdg:deploymentModel
+    Domain: cco:ont00000995
+ObjectProperty: sdg:deploysAt
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:depositedToBankAccount
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:deptCode
+    Domain: bfo:0000040
+DataProperty: sdg:deptId
+    Domain: bfo:0000015
+ObjectProperty: sdg:derivedFromApplication
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:derivedFromCensus
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:derivedFromEvent
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:derivedFromInvestment
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:derivedFromObservation
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:derivedFromSurvey
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:derivedFromViolation
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:derivesFromTribe
+    Range: bfo:0000002
+ObjectProperty: sdg:describesAsset
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:describesChemical
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:describesElement
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:describesPopulation
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:describesProduct
+    Domain: cco:ont00000958
+    Range: bfo:0000023
+ObjectProperty: sdg:describesProgram
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:describesRegion
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:describesStudentProfile
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:describes_hazard
+    Range: bfo:0000003
+DataProperty: sdg:designHeelAngle
+    Domain: cco:ont00000995
+DataProperty: sdg:designId
+    Domain: bfo:0000015
+DataProperty: sdg:designIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:designStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:designStyle
+    Domain: cco:ont00000995
+DataProperty: sdg:designSulfateClass
+    Domain: bfo:0000016
+DataProperty: sdg:designType
+    Domain: bfo:0000015
+ObjectProperty: sdg:designatedBy
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:designatedByIndividual
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:designatedFor
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:designatesDriver
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:designatesPerson
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:designatesProvider
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:designates_horse
+    Range: cco:ont00000562
+DataProperty: sdg:designationId
+    Domain: bfo:0000023
+ObjectProperty: sdg:designed
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:designedFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:designerId
+    Domain: bfo:0000023
+DataProperty: sdg:designerName
+    Domain: bfo:0000023
+DataProperty: sdg:designerRole
+    Domain: cco:ont00000995
+DataProperty: sdg:desiredPosition
+    Domain: cco:ont00000958
+DataProperty: sdg:desiredWage
+    Domain: cco:ont00000958
+DataProperty: sdg:deskIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:dessertId
+    Domain: cco:ont00000995
+DataProperty: sdg:dessertName
+    Domain: cco:ont00000995
+DataProperty: sdg:destination
+    Domain: cco:ont00000995
+DataProperty: sdg:destinationCity
+    Domain: bfo:0000015
+DataProperty: sdg:destinationCountry
+    Domain: bfo:0000015
+DataProperty: sdg:destinationFacilityCode
+    Domain: bfo:0000015
+DataProperty: sdg:destinationIp
+    Domain: cco:ont00000995
+DataProperty: sdg:destinationProvider
+    Domain: bfo:0000040
+DataProperty: sdg:destinationType
+    Domain: bfo:0000040
+ObjectProperty: sdg:destinedForTransition
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:detectionRangeKm
+    Domain: bfo:0000040
+DataProperty: sdg:detectionType
+    Domain: cco:ont00000995
+DataProperty: sdg:detectorSensitivity
+    Domain: cco:ont00000995
+DataProperty: sdg:detectorType
+    Domain: bfo:0000015
+ObjectProperty: sdg:detects
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:detectsVulnerabilities
+    Domain: bfo:0000040
+DataProperty: sdg:determinationDate
+    Domain: bfo:0000015
+DataProperty: sdg:determinationId
+    Domain: bfo:0000015
+DataProperty: sdg:determinationIdentifier
+    Domain: bfo:0000015
+ObjectProperty: sdg:determines
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:determinesAward
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:developedByRole
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:developerGroup
+    Domain: cco:ont00000995
+DataProperty: sdg:developerId
+    Domain: bfo:0000015
+ObjectProperty: sdg:develops
+    Domain: bfo:0000002
+ObjectProperty: sdg:developsIdea
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:developsProgram
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:deviceID
+    Domain: cco:ont00000995
+DataProperty: sdg:deviceIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:deviceModel
+    Domain: cco:ont00000995
+DataProperty: sdg:deviceModelName
+    Domain: bfo:0000002
+ObjectProperty: sdg:diagnosedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:diagnosedCount
+    Domain: bfo:0000002
+ObjectProperty: sdg:diagnoses
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:diagnosis
+    Domain: cco:ont00000995
+DataProperty: sdg:diagnosisCode
+    Domain: cco:ont00000995
+DataProperty: sdg:diagnosisCodes
+    Domain: cco:ont00000958
+DataProperty: sdg:diagnosisDateRangeEnd
+    Domain: bfo:0000040
+DataProperty: sdg:diagnosisDateRangeStart
+    Domain: bfo:0000040
+DataProperty: sdg:diameter
+    Domain: bfo:0000002
+DataProperty: sdg:diameterCm
+    Domain: cco:ont00000995
+DataProperty: sdg:diaperSize
+    Domain: bfo:0000004
+DataProperty: sdg:dielectricConstant
+    Domain: cco:ont00000995
+DataProperty: sdg:dielectricStrength
+    Domain: cco:ont00000995
+DataProperty: sdg:dietaryCategory
+    Domain: cco:ont00000995
+ObjectProperty: sdg:dietaryClassification
+    Domain: cco:ont00000995
+DataProperty: sdg:dietaryPreferences
+    Domain: bfo:0000004
+DataProperty: sdg:dietaryRequirements
+    Domain: cco:ont00000958
+DataProperty: sdg:dietaryRestrictions
+    Domain: bfo:0000015
+DataProperty: sdg:difficultyRating
+    Domain: bfo:0000015
+DataProperty: sdg:digitalLiteracyLevel
+    Domain: bfo:0000023
+DataProperty: sdg:dimensions
+    Domain: cco:ont00000995
+DataProperty: sdg:diplomaId
+    Domain: bfo:0000040
+ObjectProperty: sdg:directedBy
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:directiveId
+    Domain: cco:ont00000958
+DataProperty: sdg:directorName
+    Domain: bfo:0000040
+DataProperty: sdg:disabilityType
+    Domain: bfo:0000002
+DataProperty: sdg:disasterKitReady
+    Domain: bfo:0000040
+ObjectProperty: sdg:disbursementStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:disburses
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:disciplineId
+    Domain: bfo:0000040
+DataProperty: sdg:disciplineName
+    Domain: bfo:0000040
+DataProperty: sdg:disclaimerText
+    Domain: cco:ont00000995
+DataProperty: sdg:disclaimerType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:disclosesPastClaims
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+DataProperty: sdg:disclosureId
+    Domain: cco:ont00000995
+DataProperty: sdg:disclosureOutcome
+    Domain: bfo:0000015
+DataProperty: sdg:disclosureStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:discountPercentage
+    Domain: bfo:0000015
+DataProperty: sdg:discountRate
+    Domain: bfo:0000015
+DataProperty: sdg:discourseId
+    Domain: bfo:0000040
+DataProperty: sdg:discourseTitle
+    Domain: bfo:0000040
+DataProperty: sdg:discourseType
+    Domain: bfo:0000040
+DataProperty: sdg:discovererName
+    Domain: bfo:0000040
+ObjectProperty: sdg:discovers
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:discussDeferredGiving
+    Domain: bfo:0000040
+ObjectProperty: sdg:discussedIn
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:discussedInSession
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:discussesMovement
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:discussionFocus
+    Domain: bfo:0000015
+DataProperty: sdg:discussionFormat
+    Domain: bfo:0000015
+DataProperty: sdg:diseaseDuration
+    Domain: cco:ont00000995
+DataProperty: sdg:diseaseForm
+    Domain: cco:ont00000995
+DataProperty: sdg:diseaseId
+    Domain: bfo:0000002
+DataProperty: sdg:dishId
+    Domain: cco:ont00000995
+DataProperty: sdg:disorderAssociation
+    Domain: cco:ont00000995
+DataProperty: sdg:disorderId
+    Domain: bfo:0000015
+DataProperty: sdg:disorderName
+    Domain: bfo:0000015
+DataProperty: sdg:displacement
+    Domain: cco:ont00000995
+DataProperty: sdg:displayId
+    Domain: bfo:0000040
+DataProperty: sdg:displayName
+    Domain: cco:ont00000995
+DataProperty: sdg:displayOrder
+    Domain: cco:ont00000995
+ObjectProperty: sdg:displayedBy
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:displayedIn
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:displays
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:displaysDataFrom
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:displaysFactSheet
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:displaysProducts
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:displaysProductsAt
+    Domain: cco:ont00000995
+ObjectProperty: sdg:disposalMethod
+    Domain: bfo:0000040
+DataProperty: sdg:disputeId
+    Domain: bfo:0000015
+DataProperty: sdg:disputeResolutionLog
+    Domain: bfo:0000015
+ObjectProperty: sdg:disruptionRisk
+    Domain: bfo:0000015
+ObjectProperty: sdg:disseminatedTo
+    Range: bfo:0000004
+DataProperty: sdg:distance
+    Domain: bfo:0000040
+DataProperty: sdg:distanceFromBall
+    Domain: bfo:0000002
+DataProperty: sdg:distanceFromHole
+    Domain: bfo:0000002
+DataProperty: sdg:distanceFromShore
+    Domain: cco:ont00000995
+DataProperty: sdg:distinction
+    Domain: bfo:0000015
+DataProperty: sdg:distinctionLevel
+    Domain: bfo:0000015
+ObjectProperty: sdg:distributedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:distributedTo
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:distributedToBeneficiaries
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:distributedToIndividual
+    Domain: cco:ont00000958
+    Range: bfo:0000004
+ObjectProperty: sdg:distributedToStaff
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:distributesEstate
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:distributesPrizesViaLotNumber
+    Range: cco:ont00001309
+DataProperty: sdg:distributionDate
+    Domain: bfo:0000040
+DataProperty: sdg:distributionMethod
+    Domain: bfo:0000015
+DataProperty: sdg:distributionModel
+    Domain: bfo:0000015
+DataProperty: sdg:distributionParameter
+    Domain: bfo:0000015
+ObjectProperty: sdg:distributionStatus
+    Domain: cco:ont00000958
+DataProperty: sdg:districtAffiliation
+    Domain: bfo:0000040
+DataProperty: sdg:districtCode
+    Domain: bfo:0000015
+DataProperty: sdg:districtName
+    Domain: bfo:0000015
+ObjectProperty: sdg:districtType
+    Domain: bfo:0000040
+DataProperty: sdg:diveControl
+    Domain: cco:ont00000995
+DataProperty: sdg:diversificationOpportunities
+    Domain: bfo:0000040
+DataProperty: sdg:divestmentId
+    Domain: bfo:0000015
+ObjectProperty: sdg:dividesInto
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:divineName
+    Domain: bfo:0000040
+DataProperty: sdg:division
+    Domain: bfo:0000004
+DataProperty: sdg:divisionId
+    Domain: bfo:0000040
+DataProperty: sdg:divisionIdentifier
+    Domain: bfo:0000040
+ObjectProperty: sdg:divisionStage
+    Domain: cco:ont00000995
+ObjectProperty: sdg:divisionState
+    Domain: cco:ont00000995
+DataProperty: sdg:docId
+    Domain: cco:ont00000995
+DataProperty: sdg:docType
+    Domain: cco:ont00000995
+DataProperty: sdg:dockId
+    Domain: bfo:0000023
+DataProperty: sdg:dockName
+    Domain: bfo:0000023
+DataProperty: sdg:documentNumber
+    Domain: bfo:0000002
+ObjectProperty: sdg:documentStatus
+    Domain: cco:ont00000958
+ObjectProperty: sdg:documentedBy
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:documentedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:documentedByPDS
+    Domain: bfo:0000023
+    Range: cco:ont00000958
+DataProperty: sdg:documentedEvidence
+    Domain: bfo:0000015
+ObjectProperty: sdg:documentedIn
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:documentedInReport
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:documentsConsentFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:documentsDeficiency
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:documentsInspection
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:documentsParticipant
+    Range: bfo:0000015
+ObjectProperty: sdg:documentsPerformanceOf
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:documentsRecommendations
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+DataProperty: sdg:doesNotNeedAid
+    Domain: cco:ont00000995
+DataProperty: sdg:dogIdentifier
+    Domain: bfo:0000002
+ObjectProperty: sdg:domain
+    Domain: bfo:0000015
+DataProperty: sdg:domainCategory
+    Domain: bfo:0000015
+DataProperty: sdg:domainContext
+    Domain: bfo:0000004
+DataProperty: sdg:domainIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:domainLabel
+    Domain: cco:ont00000995
+DataProperty: sdg:dominantCrops
+    Domain: bfo:0000004
+DataProperty: sdg:dominantCulture
+    Domain: bfo:0000015
+DataProperty: sdg:dominantEcosystem
+    Domain: bfo:0000002
+DataProperty: sdg:dominantSoilType
+    Domain: bfo:0000004
+ObjectProperty: sdg:donatesToCharity
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:donationAmount
+    Domain: bfo:0000002
+DataProperty: sdg:donationDate
+    Domain: cco:ont00000995
+DataProperty: sdg:donationFrequency
+    Domain: bfo:0000040
+DataProperty: sdg:donationId
+    Domain: cco:ont00000995
+DataProperty: sdg:donationIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:dongleId
+    Domain: bfo:0000040
+DataProperty: sdg:donorId
+    Domain: bfo:0000040
+DataProperty: sdg:donorName
+    Domain: bfo:0000040
+DataProperty: sdg:donorType
+    Domain: bfo:0000040
+DataProperty: sdg:dosage
+    Domain: bfo:0000015
+DataProperty: sdg:dosageForm
+    Domain: cco:ont00000995
+DataProperty: sdg:doseDependent
+    Domain: bfo:0000015
+DataProperty: sdg:doubleCountingAllowed
+    Domain: cco:ont00000995
+DataProperty: sdg:downlinkId
+    Domain: bfo:0000015
+DataProperty: sdg:downlinkMode
+    Domain: cco:ont00000995
+ObjectProperty: sdg:downlinkType
+    Domain: bfo:0000015
+ObjectProperty: sdg:draftsProposalFor
+    Domain: bfo:0000004
+DataProperty: sdg:drawingId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:drawingType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:drawsFromIndigenousKnowledge
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:drawsFromScientificKnowledge
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:dressing
+    Domain: cco:ont00000995
+DataProperty: sdg:driveId
+    Domain: bfo:0000040
+DataProperty: sdg:driveMode
+    Domain: cco:ont00000995
+DataProperty: sdg:driveType
+    Domain: bfo:0000040
+ObjectProperty: sdg:drivenBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:driverId
+    Domain: bfo:0000040
+DataProperty: sdg:driverLicenseStatus
+    Domain: bfo:0000015
+DataProperty: sdg:driverName
+    Domain: cco:ont00000958
+DataProperty: sdg:driversLicenseNumber
+    Domain: bfo:0000040
+ObjectProperty: sdg:drivesSegment
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:drivesWheels
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:drmId
+    Domain: bfo:0000040
+DataProperty: sdg:droneId
+    Domain: bfo:0000040
+DataProperty: sdg:droneSerialNumber
+    Domain: bfo:0000040
+DataProperty: sdg:dropBoxLocation
+    Domain: bfo:0000002
+DataProperty: sdg:dropoffTime
+    Domain: bfo:0000040
+DataProperty: sdg:dropoutRate
+    Domain: cco:ont00000995
+DataProperty: sdg:drugSubstance
+    Domain: cco:ont00000995
+ObjectProperty: sdg:drugTestStatus
+    Domain: bfo:0000015
+DataProperty: sdg:dscpCode
+    Domain: bfo:0000040
+DataProperty: sdg:dualUsePotential
+    Domain: bfo:0000015
+DataProperty: sdg:duration
+    Domain: bfo:0000015
+DataProperty: sdg:durationNights
+    Domain: cco:ont00000995
+DataProperty: sdg:durationOfAcquaintance
+    Domain: bfo:0000023
+DataProperty: sdg:dwellTime
+    Domain: bfo:0000015
+DataProperty: sdg:eanNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:earliestStartDate
+    Domain: cco:ont00000958
+DataProperty: sdg:earlyStimulusExposure
+    Domain: bfo:0000004
+DataProperty: sdg:eavesdroppingDetection
+    Domain: bfo:0000015
+DataProperty: sdg:ecologicalFootprint
+    Domain: bfo:0000040
+DataProperty: sdg:ecologicalSystemId
+    Domain: bfo:0000015
+DataProperty: sdg:ecommerceId
+    Domain: cco:ont00000995
+DataProperty: sdg:economicLossUSD
+    Domain: bfo:0000015
+DataProperty: sdg:economicPeriod
+    Domain: bfo:0000015
+DataProperty: sdg:edExperienceYears
+    Domain: bfo:0000004
+DataProperty: sdg:ediEnabled
+    Domain: cco:ont00000995
+ObjectProperty: sdg:editedBy
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:educatedAt
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+ObjectProperty: sdg:educationHistory
+    Domain: cco:ont00000958
+    Range: bfo:0000004
+DataProperty: sdg:educationInstitution
+    Domain: bfo:0000040
+DataProperty: sdg:educationProgramCompleted
+    Domain: bfo:0000002
+DataProperty: sdg:educationRequired
+    Domain: cco:ont00000995
+DataProperty: sdg:educationalLevel
+    Domain: bfo:0000015
+DataProperty: sdg:educatorId
+    Domain: bfo:0000040
+DataProperty: sdg:effect
+    Domain: bfo:0000015
+DataProperty: sdg:effectiveRangeMeters
+    Domain: bfo:0000040
+DataProperty: sdg:effectiveTaxRate
+    Domain: bfo:0000015
+ObjectProperty: sdg:effectiveness
+    Domain: bfo:0000015
+DataProperty: sdg:effectivenessScore
+    Domain: bfo:0000015
+DataProperty: sdg:efficacyScore
+    Domain: bfo:0000015
+DataProperty: sdg:efficiencyGainPercent
+    Domain: bfo:0000015
+DataProperty: sdg:efficiencyRating
+    Domain: bfo:0000015
+DataProperty: sdg:effluentIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:ehcPlan
+    Domain: bfo:0000015
+DataProperty: sdg:ehcPlanId
+    Domain: bfo:0000015
+DataProperty: sdg:ehcpId
+    Domain: cco:ont00000958
+DataProperty: sdg:ehcpReference
+    Domain: bfo:0000002
+DataProperty: sdg:ehrId
+    Domain: cco:ont00000995
+DataProperty: sdg:ein
+    Domain: cco:ont00000995
+DataProperty: sdg:electronegativity
+    Domain: cco:ont00000995
+DataProperty: sdg:electronicComponent
+    Domain: bfo:0000040
+DataProperty: sdg:elementId
+    Domain: cco:ont00000995
+DataProperty: sdg:elementSymbol
+    Domain: cco:ont00000995
+DataProperty: sdg:elementType
+    Domain: cco:ont00000995
+DataProperty: sdg:elevation
+    Domain: cco:ont00000995
+DataProperty: sdg:elevationChange
+    Domain: bfo:0000002
+DataProperty: sdg:elevationMeters
+    Domain: bfo:0000004
+ObjectProperty: sdg:elicitedResponse
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:elicitedResponses
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:eligiblePatientCount
+    Domain: cco:ont00000995
+DataProperty: sdg:elongationAtBreak
+    Domain: cco:ont00000995
+DataProperty: sdg:emergencyId
+    Domain: bfo:0000015
+DataProperty: sdg:emissionContext
+    Domain: bfo:0000002
+DataProperty: sdg:emissionLevel
+    Domain: cco:ont00000958
+DataProperty: sdg:emissionRate
+    Domain: bfo:0000002
+ObjectProperty: sdg:emits
+    Range: bfo:0000040
+ObjectProperty: sdg:emitsIndustrialEmission
+    Range: bfo:0000040
+ObjectProperty: sdg:emotionalSafetyLevel
+    Domain: bfo:0000015
+DataProperty: sdg:emotionalValence
+    Domain: cco:ont00000995
+ObjectProperty: sdg:emplocesPerson
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:employed
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:employedAt
+    Range: bfo:0000040
+ObjectProperty: sdg:employedByFacility
+    Range: cco:ont00000055
+ObjectProperty: sdg:employedByProject
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:employeeCapacity
+    Domain: bfo:0000040
+DataProperty: sdg:employeeRetentionCommitment
+    Domain: bfo:0000015
+DataProperty: sdg:employerAddress
+    Domain: bfo:0000004
+DataProperty: sdg:employerPhone
+    Domain: bfo:0000004
+DataProperty: sdg:employerSize
+    Domain: cco:ont00000995
+DataProperty: sdg:employerType
+    Domain: bfo:0000040
+DataProperty: sdg:employmentChange
+    Domain: bfo:0000015
+DataProperty: sdg:employmentEligibility
+    Domain: bfo:0000004
+DataProperty: sdg:employmentRate
+    Domain: cco:ont00000995
+DataProperty: sdg:employmentSector
+    Domain: bfo:0000004
+ObjectProperty: sdg:employsAnalyst
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:employsAnalyticalMethod
+    Range: bfo:0000002
+ObjectProperty: sdg:employsAuditor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:employsConsultant
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:employsDirector
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:employsDirectors
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:employsExecutive
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:employsFaculty
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:employsInsuranceCoordinator
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:employsInternalAuditRole
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:employsInvestigator
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:employsManager
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:employsMember
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:employsMethod
+    Range: bfo:0000002
+ObjectProperty: sdg:employsModerator
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:employsOrEnrolls
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:employsPartner
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:employsPersonnel
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:employsProfessional
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:employsRadiologist
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:employsReviewer
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:employsStaff
+    Range: bfo:0000002
+ObjectProperty: sdg:employsStrategy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:employsTeacher
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:employsTechnique
+    Range: bfo:0000002
+ObjectProperty: sdg:employsTrainer
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:employs_method
+    Range: bfo:0000002
+ObjectProperty: sdg:enabledBy
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:enablesActivity
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:enablesDataExport
+    Range: cco:ont00002006
+ObjectProperty: sdg:enablesObservation
+    Range: cco:ont00000889
+ObjectProperty: sdg:enablesPractice
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:enablesRelease
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:enablesTransfer
+    Domain: bfo:0000023
+    Range: bfo:0000015
+DataProperty: sdg:enactmentId
+    Domain: bfo:0000015
+DataProperty: sdg:enactmentYear
+    Domain: bfo:0000040
+ObjectProperty: sdg:enactsLegislationFor
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:enclosureType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:encodesLogicalRelation
+    Range: cco:ont00000965
+ObjectProperty: sdg:encodesTaggingMetadata
+    Range: bfo:0000040
+ObjectProperty: sdg:encompasses_human_person
+    Range: cco:ont00001262
+DataProperty: sdg:encounterDate
+    Domain: bfo:0000015
+DataProperty: sdg:encounterId
+    Domain: bfo:0000015
+DataProperty: sdg:encroachmentPresent
+    Domain: bfo:0000040
+DataProperty: sdg:encryptionAlgorithm
+    Domain: bfo:0000040
+DataProperty: sdg:encryptionEnabled
+    Domain: cco:ont00000995
+DataProperty: sdg:encryptionLevel
+    Domain: bfo:0000040
+ObjectProperty: sdg:encryptionProtocol
+    Domain: bfo:0000040
+ObjectProperty: sdg:encryptionStandard
+    Domain: bfo:0000040
+DataProperty: sdg:encryptionSupport
+    Domain: bfo:0000040
+ObjectProperty: sdg:encrypts
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:endAngle
+    Domain: bfo:0000015
+DataProperty: sdg:endDateTime
+    Domain: bfo:0000015
+DataProperty: sdg:endMileMarker
+    Domain: bfo:0000015
+DataProperty: sdg:endPoint
+    Domain: bfo:0000015
+DataProperty: sdg:endTangentPointX
+    Domain: bfo:0000015
+DataProperty: sdg:endTangentPointY
+    Domain: bfo:0000015
+DataProperty: sdg:endTime
+    Domain: bfo:0000015
+DataProperty: sdg:endYear
+    Domain: bfo:0000015
+DataProperty: sdg:endZoneDepthYards
+    Domain: bfo:0000040
+DataProperty: sdg:endorsableStatus
+    Domain: bfo:0000040
+DataProperty: sdg:endorsementEligible
+    Domain: cco:ont00000995
+DataProperty: sdg:endpointId
+    Domain: bfo:0000040
+DataProperty: sdg:endpointUrl
+    Domain: bfo:0000015
+ObjectProperty: sdg:endsAt
+    Range: bfo:0000040
+DataProperty: sdg:energyConsumption
+    Domain: bfo:0000015
+DataProperty: sdg:energyGeneratedMWh
+    Domain: bfo:0000015
+DataProperty: sdg:energyLevel
+    Domain: bfo:0000015
+DataProperty: sdg:energyOutputMWhPerDay
+    Domain: bfo:0000040
+DataProperty: sdg:energyQuantity
+    Domain: bfo:0000040
+DataProperty: sdg:energyStarRating
+    Domain: cco:ont00000995
+DataProperty: sdg:energyType
+    Domain: bfo:0000040
+DataProperty: sdg:enforceabilityReviewStatus
+    Domain: cco:ont00000958
+DataProperty: sdg:enforcedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:enforcedByOffice
+    Range: bfo:0000002
+ObjectProperty: sdg:enforcedByPolicy
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:enforcedOn
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:enforcementAgency
+    Domain: bfo:0000040
+ObjectProperty: sdg:enforcementMode
+    Domain: bfo:0000015
+ObjectProperty: sdg:enforcesLaws
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:enforcesPolicy
+    Range: bfo:0000040
+ObjectProperty: sdg:enforcesRegistration
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:enforcesRegulation
+    Domain: bfo:0000001
+    Range: cco:ont00001324
+ObjectProperty: sdg:enforcesRule
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:enforcesStandard
+    Domain: bfo:0000023
+    Range: cco:ont00000958
+DataProperty: sdg:enforcingBody
+    Domain: bfo:0000040
+ObjectProperty: sdg:engagesCommunicationsAdvisor
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:engagesFinancialAdvisor
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:engagesParticipant
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:engagesSprocket
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:engineId
+    Domain: cco:ont00000995
+DataProperty: sdg:engineName
+    Domain: cco:ont00000995
+DataProperty: sdg:engineType
+    Domain: cco:ont00000995
+DataProperty: sdg:engineVersion
+    Domain: bfo:0000015
+DataProperty: sdg:engineerId
+    Domain: bfo:0000040
+DataProperty: sdg:engramCount
+    Domain: cco:ont00000995
+DataProperty: sdg:engramId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:enhancesMechanism
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:enjoyedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:enjoysPrivilegeOf
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:enrolledInProgramme
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:enrolleeId
+    Domain: bfo:0000040
+DataProperty: sdg:enrollment
+    Domain: bfo:0000002
+DataProperty: sdg:enrollmentCapacity
+    Domain: bfo:0000040
+ObjectProperty: sdg:enrollmentMode
+    Domain: cco:ont00000995
+DataProperty: sdg:enrollmentYear
+    Domain: bfo:0000002
+ObjectProperty: sdg:enrollsChild
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:enrollsInClass
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:enrollsParticipant
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:enrollsRecipient
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:enrollsStudent
+    Range: bfo:0000002
+DataProperty: sdg:enrolmentDate
+    Domain: bfo:0000002
+DataProperty: sdg:enrolmentId
+    Domain: bfo:0000015
+ObjectProperty: sdg:ensuresAquaticSafety
+    Range: bfo:0000015
+ObjectProperty: sdg:ensuresSecurityOf
+    Range: cco:ont00001036
+DataProperty: sdg:entangledWith
+    Domain: bfo:0000015
+DataProperty: sdg:enterpriseName
+    Domain: bfo:0000002
+ObjectProperty: sdg:entersInto
+    Domain: bfo:0000040
+ObjectProperty: sdg:enters_rental_agreement
+    Domain: bfo:0000040
+    Range: cco:ont00001325
+DataProperty: sdg:entityStatus
+    Domain: bfo:0000002
+ObjectProperty: sdg:entityType
+    Range: bfo:0000040
+DataProperty: sdg:entrepreneurshipIndex
+    Domain: bfo:0000002
+ObjectProperty: sdg:entryStatus
+    Domain: bfo:0000040
+DataProperty: sdg:entryType
+    Domain: bfo:0000040
+ObjectProperty: sdg:enumeratesDevice
+    Range: bfo:0000002
+DataProperty: sdg:environmentAdaptation
+    Domain: bfo:0000040
+DataProperty: sdg:environmentName
+    Domain: bfo:0000015
+DataProperty: sdg:environmentalPollutionLevel
+    Domain: bfo:0000040
+DataProperty: sdg:eopoStatus
+    Domain: bfo:0000002
+DataProperty: sdg:epaAddressCode
+    Domain: bfo:0000040
+DataProperty: sdg:epicPrice
+    Domain: cco:ont00000995
+DataProperty: sdg:equipmentInventory
+    Domain: bfo:0000040
+DataProperty: sdg:equipmentModel
+    Domain: bfo:0000015
+DataProperty: sdg:equipmentProvided
+    Domain: bfo:0000040
+ObjectProperty: sdg:equippedWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:errorRate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:escalatedTo
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:escalatedToDetail
+    Domain: cco:ont00000995
+ObjectProperty: sdg:escalatedToExternalBody
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:escalatesToBoard
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:establishedAccountabilityMechanism
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:establishes
+    Range: cco:ont00000995
+ObjectProperty: sdg:establishesLocalNetworkIn
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:establishesOrganizationalAffiliation
+    Domain: bfo:0000040
+    Range: cco:ont00001180
+DataProperty: sdg:estimatedAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:estimatedCompletionTime
+    Domain: cco:ont00000995
+DataProperty: sdg:estimatedCost
+    Domain: bfo:0000015
+DataProperty: sdg:estimatedDate
+    Domain: bfo:0000015
+DataProperty: sdg:estimatedDuration
+    Domain: bfo:0000015
+DataProperty: sdg:estimatedQuantity
+    Domain: cco:ont00000995
+DataProperty: sdg:estimatedResidentCount
+    Domain: cco:ont00000995
+DataProperty: sdg:estimatedShortage
+    Domain: bfo:0000015
+DataProperty: sdg:ethicalPolicyAdopted
+    Domain: cco:ont00000995
+DataProperty: sdg:ethicsPledgeSigned
+    Domain: bfo:0000023
+DataProperty: sdg:ethnonym
+    Domain: bfo:0000002
+DataProperty: sdg:etymologicalRoot
+    Domain: cco:ont00000995
+ObjectProperty: sdg:evacuatesTo
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:evacuationComplianceRate
+    Domain: bfo:0000015
+ObjectProperty: sdg:evacuationStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:evacuationType
+    Domain: bfo:0000015
+DataProperty: sdg:evacuationZone
+    Domain: bfo:0000015
+ObjectProperty: sdg:evaluated
+    Range: cco:ont00000995
+ObjectProperty: sdg:evaluatedAgainst
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:evaluatedAgency
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:evaluatedByInternalAuditRole
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:evaluatedInProcess
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:evaluatesAnswer
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:evaluatesApplications
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+ObjectProperty: sdg:evaluatesCandidatesFor
+    Range: bfo:0000015
+ObjectProperty: sdg:evaluatesCurriculum
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:evaluatesGovernanceFramework
+    Domain: bfo:0000023
+    Range: bfo:0000040
+ObjectProperty: sdg:evaluatesNeed
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:evaluatesOperationalArea
+    Range: cco:ont00000567
+ObjectProperty: sdg:evaluatesPerformanceData
+    Range: cco:ont00000995
+ObjectProperty: sdg:evaluatesProductsOf
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:evaluatesProgram
+    Range: bfo:0000002
+ObjectProperty: sdg:evaluatesProperty
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:evaluatesRequest
+    Domain: bfo:0000015
+ObjectProperty: sdg:evaluatesStatistic
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:evaluatesStudent
+    Range: bfo:0000002
+ObjectProperty: sdg:evaluatesSystem
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:evaluationCriteria
+    Domain: bfo:0000015
+DataProperty: sdg:evaluationCriteriaMet
+    Domain: cco:ont00000995
+DataProperty: sdg:evaluationFrequency
+    Domain: bfo:0000015
+DataProperty: sdg:evaluationId
+    Domain: bfo:0000015
+DataProperty: sdg:evaluationResult
+    Domain: bfo:0000015
+DataProperty: sdg:evaluatorId
+    Domain: bfo:0000023
+DataProperty: sdg:evaluatorLicenseeId
+    Domain: bfo:0000015
+DataProperty: sdg:evaluatorName
+    Domain: bfo:0000023
+DataProperty: sdg:eventCode
+    Domain: bfo:0000015
+DataProperty: sdg:eventCount
+    Domain: bfo:0000015
+DataProperty: sdg:eventDateTime
+    Domain: bfo:0000015
+DataProperty: sdg:eventDuration
+    Domain: bfo:0000040
+DataProperty: sdg:eventID
+    Domain: bfo:0000015
+DataProperty: sdg:eventIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:eventLocation
+    Domain: bfo:0000040
+DataProperty: sdg:eventName
+    Domain: bfo:0000015
+DataProperty: sdg:eventTime
+    Domain: bfo:0000015
+DataProperty: sdg:eventTitle
+    Domain: bfo:0000015
+DataProperty: sdg:eventYear
+    Domain: bfo:0000015
+DataProperty: sdg:evidenceBasedStatus
+    Domain: bfo:0000002
+DataProperty: sdg:evidenceCollected
+    Domain: cco:ont00000995
+ObjectProperty: sdg:evidenceLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:evidenceType
+    Domain: cco:ont00000995
+DataProperty: sdg:examCode
+    Domain: cco:ont00000995
+DataProperty: sdg:examDate
+    Domain: bfo:0000015
+DataProperty: sdg:examName
+    Domain: cco:ont00000995
+DataProperty: sdg:examPerformedBy
+    Domain: bfo:0000015
+DataProperty: sdg:examType
+    Domain: bfo:0000015
+ObjectProperty: sdg:examinedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:examinesConduct
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:examinesRecordsOf
+    Range: cco:ont00000443
+DataProperty: sdg:exampleId
+    Domain: cco:ont00000995
+DataProperty: sdg:exampleIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:exceedsThreshold
+    Domain: cco:ont00000995
+DataProperty: sdg:exceptionDate
+    Domain: cco:ont00000995
+DataProperty: sdg:exceptionId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:excludedFor
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:excludes
+    Domain: bfo:0000023
+    Range: bfo:0000015
+DataProperty: sdg:exclusionStatus
+    Domain: bfo:0000023
+ObjectProperty: sdg:executed
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:executedBy
+    Domain: bfo:0000015
+ObjectProperty: sdg:executedByScript
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:executedIn
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:executedOn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:executedUsing
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:executes
+    Range: bfo:0000015
+ObjectProperty: sdg:executesMission
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:executesProtocol
+    Range: bfo:0000002
+ObjectProperty: sdg:executesSimulation
+    Range: cco:ont00001045
+ObjectProperty: sdg:executesTask
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:executionCount
+    Domain: bfo:0000040
+DataProperty: sdg:executionFrequency
+    Domain: bfo:0000015
+DataProperty: sdg:executionOrder
+    Domain: bfo:0000015
+DataProperty: sdg:executionScore
+    Domain: bfo:0000015
+DataProperty: sdg:executionTime
+    Domain: cco:ont00000995
+DataProperty: sdg:executiveDirectorName
+    Domain: bfo:0000040
+DataProperty: sdg:executiveId
+    Domain: bfo:0000015
+DataProperty: sdg:executiveIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:executiveName
+    Domain: bfo:0000015
+DataProperty: sdg:executorName
+    Domain: cco:ont00000958
+DataProperty: sdg:exemptionId
+    Domain: cco:ont00000995
+DataProperty: sdg:exemptionIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:exemptionType
+    Domain: cco:ont00000995
+DataProperty: sdg:exerciseId
+    Domain: cco:ont00000995
+DataProperty: sdg:exerciseType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:exercisesLocalJurisdiction
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:exercisesRegulation
+    Domain: bfo:0000023
+    Range: cco:ont00001324
+ObjectProperty: sdg:exercises_governance
+    Range: cco:ont00000408
+ObjectProperty: sdg:exhibits
+    Range: bfo:0000015
+ObjectProperty: sdg:exhibitsCharacteristic
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:exhibitsHealthIndicator
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:exhibitsPattern
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:exhibitsProperty
+    Domain: cco:ont00000995
+    Range: bfo:0000016
+ObjectProperty: sdg:exhibitsVariable
+    Domain: bfo:0000004
+    Range: bfo:0000015
+DataProperty: sdg:exitPlan
+    Domain: bfo:0000023
+DataProperty: sdg:exitTimeframe
+    Domain: bfo:0000023
+DataProperty: sdg:expandedUncertainty
+    Domain: bfo:0000015
+DataProperty: sdg:expandedUncertaintyValue
+    Domain: cco:ont00000958
+DataProperty: sdg:expectedGraduationDate
+    Domain: bfo:0000002
+DataProperty: sdg:expectedReservesYears
+    Domain: bfo:0000040
+DataProperty: sdg:expectedServiceLifeYears
+    Domain: bfo:0000002
+DataProperty: sdg:expeditionId
+    Domain: bfo:0000015
+DataProperty: sdg:expenditureId
+    Domain: cco:ont00000995
+DataProperty: sdg:expenseAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:expenseCategory
+    Domain: cco:ont00000995
+ObjectProperty: sdg:experienceLevel
+    Domain: bfo:0000002
+DataProperty: sdg:experienceRequired
+    Domain: cco:ont00000995
+DataProperty: sdg:experienceYears
+    Domain: bfo:0000040
+ObjectProperty: sdg:experienced
+    Range: bfo:0000015
+ObjectProperty: sdg:experiencedIncident
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:experiencesBarrier
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:experiencesCondition
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:experiencesShortage
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:experiencesStigmaFrom
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:experiencesVariable
+    Domain: bfo:0000004
+    Range: bfo:0000015
+DataProperty: sdg:expertIdentifier
+    Domain: bfo:0000023
+DataProperty: sdg:expertise
+    Domain: bfo:0000040
+DataProperty: sdg:expertiseDomain
+    Domain: bfo:0000015
+DataProperty: sdg:expirationMonths
+    Domain: bfo:0000015
+ObjectProperty: sdg:explains
+    Domain: cco:ont00000995
+DataProperty: sdg:exploitationRate
+    Domain: bfo:0000040
+DataProperty: sdg:explorerId
+    Domain: bfo:0000004
+DataProperty: sdg:exportCapabilities
+    Domain: cco:ont00000995
+DataProperty: sdg:exportDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:exportFormat
+    Domain: cco:ont00000995
+DataProperty: sdg:exportId
+    Domain: bfo:0000015
+DataProperty: sdg:exportStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:exportedAs
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:exportedTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:exportedWith
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:exposedTo
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:exposureLevel
+    Domain: bfo:0000015
+DataProperty: sdg:exposureMode
+    Domain: bfo:0000015
+ObjectProperty: sdg:exposureRoute
+    Domain: bfo:0000015
+DataProperty: sdg:exposureValue
+    Domain: bfo:0000015
+ObjectProperty: sdg:expressedBy
+    Domain: bfo:0000016
+    Range: bfo:0000002
+ObjectProperty: sdg:expressesValue
+    Range: bfo:0000002
+ObjectProperty: sdg:extends
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:extendsCreditTo
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:externalAdvisorId
+    Domain: bfo:0000002
+DataProperty: sdg:externalityId
+    Domain: bfo:0000002
+DataProperty: sdg:extraCostAmount
+    Domain: cco:ont00000995
+ObjectProperty: sdg:extractedFromUplink
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:extractionDate
+    Domain: bfo:0000040
+DataProperty: sdg:extractionId
+    Domain: bfo:0000040
+DataProperty: sdg:extractionRate
+    Domain: bfo:0000040
+ObjectProperty: sdg:extractsFrom
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:faceLength
+    Domain: cco:ont00000995
+DataProperty: sdg:faceWidth
+    Domain: cco:ont00000995
+ObjectProperty: sdg:facilitatedBy
+    Range: bfo:0000002
+ObjectProperty: sdg:facilitates
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:facilitatesSession
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:facilitator
+    Domain: bfo:0000015
+DataProperty: sdg:facilitatorName
+    Domain: bfo:0000015
+ObjectProperty: sdg:facilityClassification
+    Domain: bfo:0000023
+DataProperty: sdg:facilityCode
+    Domain: cco:ont00000995
+DataProperty: sdg:facilityID
+    Domain: cco:ont00000995
+DataProperty: sdg:factSheetId
+    Domain: bfo:0000002
+DataProperty: sdg:factorCategory
+    Domain: bfo:0000015
+DataProperty: sdg:factorId
+    Domain: bfo:0000015
+DataProperty: sdg:factorIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:factorName
+    Domain: bfo:0000015
+DataProperty: sdg:facultyId
+    Domain: bfo:0000015
+DataProperty: sdg:failureRate
+    Domain: cco:ont00000995
+DataProperty: sdg:fairnessRating
+    Domain: bfo:0000004
+DataProperty: sdg:falsePositiveFlag
+    Domain: bfo:0000015
+DataProperty: sdg:familyId
+    Domain: bfo:0000015
+DataProperty: sdg:familySize
+    Domain: bfo:0000015
+DataProperty: sdg:fatherId
+    Domain: bfo:0000040
+DataProperty: sdg:faultTolerance
+    Domain: cco:ont00000995
+DataProperty: sdg:favoriteCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:favoriteColor
+    Domain: bfo:0000004
+DataProperty: sdg:fdcIdentifier
+    Domain: cco:ont00000958
+DataProperty: sdg:fdcName
+    Domain: cco:ont00000958
+DataProperty: sdg:featureId
+    Domain: bfo:0000015
+DataProperty: sdg:featureSet
+    Domain: cco:ont00000958
+ObjectProperty: sdg:featuresDance
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:featuresDetail
+    Domain: cco:ont00000995
+ObjectProperty: sdg:featuresJournalist
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:featuresLogo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:featuresMenu
+    Domain: cco:ont00000995
+ObjectProperty: sdg:featuresSpeaker
+    Domain: bfo:0000015
+ObjectProperty: sdg:featuresWine
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:featuresWinemaker
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:fedBy
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:fedMemberStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:federalRegisterCitation
+    Domain: cco:ont00000958
+DataProperty: sdg:feeOffered
+    Domain: cco:ont00000995
+DataProperty: sdg:feeType
+    Domain: bfo:0000015
+DataProperty: sdg:feeValidityDays
+    Domain: cco:ont00000995
+DataProperty: sdg:feedbackCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:feedbackDate
+    Domain: bfo:0000015
+DataProperty: sdg:feedbackId
+    Domain: bfo:0000015
+DataProperty: sdg:feedbackNotes
+    Domain: bfo:0000015
+DataProperty: sdg:feedbackRating
+    Domain: cco:ont00000995
+DataProperty: sdg:feedbackSubmitted
+    Domain: bfo:0000023
+DataProperty: sdg:feedbackText
+    Domain: cco:ont00000995
+ObjectProperty: sdg:feedsReceiver
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:feedstockType
+    Domain: cco:ont00000995
+DataProperty: sdg:femaleDropoutRate
+    Domain: cco:ont00000995
+DataProperty: sdg:femaleEmploymentRate
+    Domain: cco:ont00000995
+DataProperty: sdg:femaleFailureRate
+    Domain: cco:ont00000995
+DataProperty: sdg:fiberCore
+    Domain: cco:ont00000995
+DataProperty: sdg:fiberId
+    Domain: bfo:0000002
+DataProperty: sdg:fiberLength
+    Domain: cco:ont00000995
+DataProperty: sdg:fiberType
+    Domain: cco:ont00000995
+DataProperty: sdg:field
+    Domain: bfo:0000015
+DataProperty: sdg:fieldCode
+    Domain: bfo:0000004
+DataProperty: sdg:fieldName
+    Domain: bfo:0000004
+DataProperty: sdg:fieldOfStudy
+    Domain: bfo:0000015
+DataProperty: sdg:fieldStandardIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:fifteenToSeventeenPercentage
+    Domain: cco:ont00000958
+DataProperty: sdg:figureId
+    Domain: bfo:0000002
+DataProperty: sdg:fileExtension
+    Domain: cco:ont00000958
+DataProperty: sdg:fileId
+    Domain: cco:ont00000995
+DataProperty: sdg:fileNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:fileSize
+    Domain: cco:ont00000995
+DataProperty: sdg:fileSizeBytes
+    Domain: cco:ont00000995
+DataProperty: sdg:fileSizeMB
+    Domain: cco:ont00000995
+DataProperty: sdg:fileSystemFormat
+    Domain: cco:ont00000995
+DataProperty: sdg:fileType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:filedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:filedByAdvocate
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:filedByIndividual
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:filedByInvestor
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:filesClaim
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:filesComplianceRecord
+    Range: bfo:0000002
+ObjectProperty: sdg:filesPetitionFor
+    Domain: bfo:0000023
+ObjectProperty: sdg:filesProtectionOrder
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:filesReport
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:filingDeadline
+    Domain: bfo:0000002
+DataProperty: sdg:fillDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:filledBy
+    Domain: bfo:0000015
+    Range: bfo:0000023
+DataProperty: sdg:filteringAutomatic
+    Domain: bfo:0000040
+DataProperty: sdg:finalRank
+    Domain: bfo:0000015
+DataProperty: sdg:financeType
+    Domain: cco:ont00000995
+DataProperty: sdg:financedAmount
+    Domain: cco:ont00000995
+ObjectProperty: sdg:financesProject
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+DataProperty: sdg:financialFootingStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:financialMetricType
+    Domain: cco:ont00000995
+DataProperty: sdg:finding
+    Domain: cco:ont00000995
+DataProperty: sdg:findingCategory
+    Domain: bfo:0000015
+DataProperty: sdg:findingDate
+    Domain: bfo:0000015
+DataProperty: sdg:findingDescription
+    Domain: bfo:0000015
+DataProperty: sdg:findingId
+    Domain: bfo:0000015
+DataProperty: sdg:findingSeverity
+    Domain: bfo:0000015
+ObjectProperty: sdg:findingStatus
+    Domain: bfo:0000015
+DataProperty: sdg:findings
+    Domain: bfo:0000015
+DataProperty: sdg:findingsDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:finish
+    Domain: cco:ont00000995
+DataProperty: sdg:finishedDosageManufacturer
+    Domain: bfo:0000040
+DataProperty: sdg:firIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:firName
+    Domain: bfo:0000040
+ObjectProperty: sdg:firType
+    Domain: bfo:0000040
+DataProperty: sdg:firewallEnabled
+    Domain: bfo:0000040
+DataProperty: sdg:firmIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:firmType
+    Domain: bfo:0000023
+DataProperty: sdg:firmwareHash
+    Domain: bfo:0000040
+DataProperty: sdg:firstLineTherapy
+    Domain: cco:ont00000995
+DataProperty: sdg:firstObserved
+    Domain: bfo:0000040
+DataProperty: sdg:firstSeen
+    Domain: bfo:0000040
+DataProperty: sdg:firstUsed
+    Domain: cco:ont00000995
+DataProperty: sdg:fiscalPeriod
+    Domain: cco:ont00000995
+DataProperty: sdg:fishermanId
+    Domain: bfo:0000004
+ObjectProperty: sdg:fitnessLevel
+    Domain: bfo:0000002
+ObjectProperty: sdg:fitsBusBar
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:fiveToNinePercentage
+    Domain: cco:ont00000958
+ObjectProperty: sdg:fixedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:flaggingSpecialistId
+    Domain: cco:ont00000995
+DataProperty: sdg:flashPointMin
+    Domain: cco:ont00000995
+DataProperty: sdg:flavorProfile
+    Domain: cco:ont00000995
+DataProperty: sdg:flightNumber
+    Domain: bfo:0000040
+ObjectProperty: sdg:flightStatus
+    Domain: bfo:0000040
+DataProperty: sdg:floodRiskLevel
+    Domain: bfo:0000015
+DataProperty: sdg:floodVulnerabilityIndex
+    Domain: bfo:0000004
+DataProperty: sdg:floodingRisk
+    Domain: cco:ont00000995
+DataProperty: sdg:floor
+    Domain: bfo:0000015
+DataProperty: sdg:floorArea
+    Domain: bfo:0000040
+DataProperty: sdg:floorHeight
+    Domain: cco:ont00000995
+DataProperty: sdg:floorLevel
+    Domain: bfo:0000040
+DataProperty: sdg:floorNumber
+    Domain: bfo:0000002
+DataProperty: sdg:floorType
+    Domain: bfo:0000015
+DataProperty: sdg:flowRate
+    Domain: bfo:0000002
+DataProperty: sdg:flowRateLitersPerSecond
+    Domain: bfo:0000040
+DataProperty: sdg:flowVolume
+    Domain: bfo:0000004
+ObjectProperty: sdg:fluidType
+    Domain: bfo:0000015
+DataProperty: sdg:focalLength
+    Domain: cco:ont00000995
+DataProperty: sdg:focusId
+    Domain: bfo:0000015
+DataProperty: sdg:focusMode
+    Domain: bfo:0000015
+DataProperty: sdg:focusMonth
+    Domain: bfo:0000015
+DataProperty: sdg:focusRegion
+    Domain: bfo:0000040
+ObjectProperty: sdg:focusedOnTopic
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:focusesOnCondition
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:focusesOnSubject
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:focusesOnThemes
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:folderName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:followUpFrequency
+    Domain: cco:ont00000995
+DataProperty: sdg:followUpRequired
+    Domain: cco:ont00000995
+DataProperty: sdg:followUpStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:followedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:fontFamily
+    Domain: cco:ont00000995
+DataProperty: sdg:foodId
+    Domain: cco:ont00000995
+DataProperty: sdg:footworkDescription
+    Domain: bfo:0000015
+ObjectProperty: sdg:forAthlete
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:forDiscipline
+    Range: bfo:0000040
+ObjectProperty: sdg:forEnrollee
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:forEvent
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:forFacility
+    Domain: bfo:0000002
+ObjectProperty: sdg:forMedication
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:forMember
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:forStudent
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:force
+    Domain: bfo:0000015
+DataProperty: sdg:forceField
+    Domain: bfo:0000015
+DataProperty: sdg:forecastId
+    Domain: cco:ont00000995
+DataProperty: sdg:forecastSource
+    Domain: cco:ont00000995
+DataProperty: sdg:forecastType
+    Domain: cco:ont00000995
+DataProperty: sdg:form
+    Domain: cco:ont00000995
+DataProperty: sdg:formId
+    Domain: cco:ont00000995
+DataProperty: sdg:formName
+    Domain: cco:ont00000995
+DataProperty: sdg:formType
+    Domain: cco:ont00000995
+DataProperty: sdg:formatCode
+    Domain: cco:ont00000995
+DataProperty: sdg:formatType
+    Domain: cco:ont00000995
+DataProperty: sdg:formationDate
+    Domain: bfo:0000002
+DataProperty: sdg:formationEnergy
+    Domain: cco:ont00000995
+DataProperty: sdg:formationId
+    Domain: bfo:0000040
+DataProperty: sdg:formationName
+    Domain: bfo:0000040
+DataProperty: sdg:formationRegion
+    Domain: bfo:0000040
+DataProperty: sdg:formationType
+    Domain: bfo:0000040
+ObjectProperty: sdg:formattedAs
+    Range: bfo:0000002
+ObjectProperty: sdg:formedIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:formerAffiliation
+    Domain: bfo:0000004
+DataProperty: sdg:formulationDate
+    Domain: bfo:0000015
+DataProperty: sdg:formulationId
+    Domain: cco:ont00000995
+DataProperty: sdg:forumIdentifier
+    Domain: cco:ont00000958
+DataProperty: sdg:forumName
+    Domain: cco:ont00000958
+DataProperty: sdg:forwardedTo
+    Domain: cco:ont00000995
+ObjectProperty: sdg:fostersDevelopment
+    Range: bfo:0000002
+ObjectProperty: sdg:fostersLegalTechnologyInnovation
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:foulingPotential
+    Domain: bfo:0000002
+ObjectProperty: sdg:foundInRegion
+    Range: bfo:0000015
+ObjectProperty: sdg:founded
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:foundedBy
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:foundedInstitution
+    Domain: bfo:0000002
+DataProperty: sdg:founderName
+    Domain: bfo:0000015
+DataProperty: sdg:foundingLocation
+    Domain: bfo:0000002
+DataProperty: sdg:frameDesignation
+    Domain: cco:ont00000995
+DataProperty: sdg:frameRate
+    Domain: cco:ont00000995
+DataProperty: sdg:framework
+    Domain: bfo:0000015
+DataProperty: sdg:frameworkType
+    Domain: bfo:0000015
+DataProperty: sdg:frameworkVersion
+    Domain: bfo:0000015
+DataProperty: sdg:freeGlycerinMax
+    Domain: cco:ont00000995
+DataProperty: sdg:frequencyBand
+    Domain: bfo:0000040
+DataProperty: sdg:frequencyRange
+    Domain: bfo:0000015
+ObjectProperty: sdg:fromDonor
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:frontDiscDiameter
+    Domain: cco:ont00000995
+DataProperty: sdg:frontType
+    Domain: cco:ont00000995
+DataProperty: sdg:ftsNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:fuelDeliverySystem
+    Domain: cco:ont00000995
+DataProperty: sdg:fuelLevelPercent
+    Domain: bfo:0000040
+ObjectProperty: sdg:fulfilledBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:fulfillsCategory
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:fulfillsNeedFrom
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:fulfillsOutcome
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:fulfillsProfessionalRole
+    Domain: bfo:0000023
+ObjectProperty: sdg:fulfillsRequirement
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:fulfillsRole
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:fullTimeEquivalent
+    Domain: bfo:0000040
+DataProperty: sdg:fullTitle
+    Domain: bfo:0000040
+DataProperty: sdg:functionCategory
+    Domain: bfo:0000002
+DataProperty: sdg:functionDescription
+    Domain: bfo:0000040
+DataProperty: sdg:functionId
+    Domain: bfo:0000002
+DataProperty: sdg:functionIdentifier
+    Domain: bfo:0000015
+ObjectProperty: sdg:functionStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:functionType
+    Domain: bfo:0000015
+DataProperty: sdg:fundAmount
+    Domain: bfo:0000040
+DataProperty: sdg:fundClass
+    Domain: bfo:0000040
+DataProperty: sdg:fundDescription
+    Domain: bfo:0000040
+DataProperty: sdg:fundId
+    Domain: bfo:0000040
+DataProperty: sdg:fundIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:fundType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:fundedByDivision
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:fundedByLEA
+    Domain: cco:ont00000958
+    Range: bfo:0000023
+DataProperty: sdg:funderName
+    Domain: cco:ont00000995
+DataProperty: sdg:fundingAgreed
+    Domain: cco:ont00000958
+DataProperty: sdg:fundingAgreementId
+    Domain: bfo:0000002
+DataProperty: sdg:fundingConsortium
+    Domain: bfo:0000040
+DataProperty: sdg:fundingFocus
+    Domain: bfo:0000040
+DataProperty: sdg:fundingGap
+    Domain: cco:ont00000958
+DataProperty: sdg:fundingId
+    Domain: bfo:0000002
+DataProperty: sdg:fundingInstitution
+    Domain: bfo:0000015
+DataProperty: sdg:fundingLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:fundingMechanism
+    Domain: bfo:0000040
+ObjectProperty: sdg:fundingModel
+    Domain: bfo:0000015
+DataProperty: sdg:fundingPurpose
+    Domain: bfo:0000015
+ObjectProperty: sdg:fundingSource
+    Range: cco:ont00000995
+ObjectProperty: sdg:fundsJurisdiction
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:fundsOrganization
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:fundsPhase
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:fundsPlacements
+    Domain: bfo:0000023
+    Range: cco:ont00000958
+ObjectProperty: sdg:fundsProgram
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:fundsResearch
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:fundsStudy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:gageType
+    Domain: cco:ont00000995
+DataProperty: sdg:gapId
+    Domain: bfo:0000015
+DataProperty: sdg:gatewayId
+    Domain: bfo:0000040
+DataProperty: sdg:gatewayIp
+    Domain: bfo:0000040
+ObjectProperty: sdg:gatheredIn
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:gauge
+    Domain: cco:ont00000995
+DataProperty: sdg:gdp
+    Domain: bfo:0000002
+DataProperty: sdg:gdpPerCapita
+    Domain: bfo:0000040
+DataProperty: sdg:gearPositions
+    Domain: cco:ont00000995
+DataProperty: sdg:geneName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:generatedByDivision
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:generatedByManager
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:generatedBySession
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:generatedByTeam
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:generatedDate
+    Domain: cco:ont00000995
+DataProperty: sdg:generatedDateTime
+    Domain: cco:ont00000995
+ObjectProperty: sdg:generatedForInstance
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:generatedReport
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:generatedTimestamp
+    Domain: cco:ont00000995
+ObjectProperty: sdg:generatesAlertFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:generatesAuditTrail
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:generatesData
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:generatesDataFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:generatesEnergy
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:generatesFunds
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:generatesIndicators
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:generatesInsight
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:generatesOutput
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:generatesPerformanceReport
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:generatesRecord
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:generatesReferral
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:generatesReport
+    Range: bfo:0000015
+ObjectProperty: sdg:generatesResult
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:generatesTraffic
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:generatesWithdrawal
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:generationTime
+    Domain: bfo:0000002
+DataProperty: sdg:genericName
+    Domain: cco:ont00000995
+DataProperty: sdg:geneticLineage
+    Domain: bfo:0000004
+DataProperty: sdg:genotoxicityFindings
+    Domain: cco:ont00000995
+DataProperty: sdg:genre
+    Domain: cco:ont00000995
+DataProperty: sdg:geographicArea
+    Domain: bfo:0000040
+DataProperty: sdg:geographicBoundary
+    Domain: cco:ont00000958
+DataProperty: sdg:geographicCoordinates
+    Domain: bfo:0000015
+DataProperty: sdg:geographicCoverage
+    Domain: cco:ont00000995
+DataProperty: sdg:geographicScope
+    Domain: bfo:0000002
+DataProperty: sdg:geographicalBounds
+    Domain: bfo:0000015
+DataProperty: sdg:geometryControl
+    Domain: cco:ont00000995
+DataProperty: sdg:germinationCueRequired
+    Domain: bfo:0000040
+DataProperty: sdg:ggpa
+    Domain: bfo:0000002
+DataProperty: sdg:ggpaMet
+    Domain: bfo:0000015
+DataProperty: sdg:giftFrom
+    Domain: bfo:0000040
+ObjectProperty: sdg:giveAwayMethod
+    Domain: bfo:0000040
+ObjectProperty: sdg:givenBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:givenTo
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+DataProperty: sdg:glazingArea
+    Domain: bfo:0000040
+DataProperty: sdg:glazingRatioId
+    Domain: bfo:0000040
+DataProperty: sdg:globalBurden
+    Domain: bfo:0000002
+DataProperty: sdg:globalPresence
+    Domain: bfo:0000002
+DataProperty: sdg:globalRank
+    Domain: bfo:0000040
+DataProperty: sdg:goalCategory
+    Domain: bfo:0000040
+DataProperty: sdg:goalIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:goalName
+    Domain: bfo:0000040
+DataProperty: sdg:goggleId
+    Domain: cco:ont00000995
+DataProperty: sdg:golferId
+    Domain: bfo:0000040
+DataProperty: sdg:goodCauseJustification
+    Domain: cco:ont00000995
+DataProperty: sdg:governanceAuthorityScope
+    Domain: bfo:0000023
+DataProperty: sdg:governanceCode
+    Domain: cco:ont00000995
+DataProperty: sdg:governanceDomain
+    Domain: bfo:0000040
+DataProperty: sdg:governanceMaturityLevel
+    Domain: bfo:0000040
+DataProperty: sdg:governanceScope
+    Domain: bfo:0000023
+DataProperty: sdg:governanceStructure
+    Domain: cco:ont00000958
+ObjectProperty: sdg:governedByWill
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:governingBody
+    Domain: cco:ont00000958
+DataProperty: sdg:governingLaw
+    Domain: bfo:0000015
+DataProperty: sdg:governingOffice
+    Domain: cco:ont00000995
+DataProperty: sdg:governingPolicy
+    Domain: cco:ont00000958
+ObjectProperty: sdg:governingRule
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:governingStatute
+    Domain: bfo:0000015
+DataProperty: sdg:governmentPolicies
+    Domain: bfo:0000002
+DataProperty: sdg:governmentType
+    Domain: bfo:0000002
+DataProperty: sdg:governorId
+    Domain: bfo:0000002
+ObjectProperty: sdg:governsAccount
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:governsByPolicy
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:governsEmployee
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:governsNetwork
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:governsOrderType
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+ObjectProperty: sdg:governsPrescription
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:gpa
+    Domain: bfo:0000002
+DataProperty: sdg:gpuArchitecture
+    Domain: cco:ont00000995
+ObjectProperty: sdg:grade
+    Domain: cco:ont00000995
+DataProperty: sdg:gradeCode
+    Domain: cco:ont00000995
+DataProperty: sdg:gradeIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:gradeNumber
+    Domain: bfo:0000015
+DataProperty: sdg:gradeRange
+    Domain: bfo:0000040
+DataProperty: sdg:graduateName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:graduatedFrom
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:graduationDate
+    Domain: bfo:0000040
+DataProperty: sdg:grandAwardYear
+    Domain: bfo:0000040
+DataProperty: sdg:grandDamName
+    Domain: cco:ont00000995
+DataProperty: sdg:grandPrizeAwarded
+    Domain: bfo:0000015
+DataProperty: sdg:grandSireName
+    Domain: cco:ont00000995
+DataProperty: sdg:grandfatheredStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:grantCurrency
+    Domain: bfo:0000040
+DataProperty: sdg:grantDate
+    Domain: bfo:0000015
+DataProperty: sdg:grantID
+    Domain: bfo:0000040
+DataProperty: sdg:grantId
+    Domain: cco:ont00000995
+DataProperty: sdg:grantPurpose
+    Domain: bfo:0000040
+DataProperty: sdg:grantReferenceId
+    Domain: bfo:0000040
+ObjectProperty: sdg:grantReviewRole
+    Domain: bfo:0000015
+DataProperty: sdg:grantStatus
+    Domain: bfo:0000040
+DataProperty: sdg:grantedAt
+    Domain: cco:ont00000958
+ObjectProperty: sdg:grantedByProgram
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:grantedForChallenge
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:grantedForScheme
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:grantedTo
+    Range: bfo:0000040
+DataProperty: sdg:grantingAuthority
+    Domain: cco:ont00000995
+ObjectProperty: sdg:grantorType
+    Domain: bfo:0000023
+ObjectProperty: sdg:grants
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:grantsCertification
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:grantsConsentOnBehalfOf
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:grantsInputTaxCredit
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:grantsLeaseTo
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:grantsRole
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:grantsTransferPermission
+    Domain: bfo:0000023
+    Range: bfo:0000002
+DataProperty: sdg:gratuityIncluded
+    Domain: cco:ont00000958
+DataProperty: sdg:gridColumn
+    Domain: cco:ont00000995
+ObjectProperty: sdg:gridConnectionStatus
+    Domain: bfo:0000040
+DataProperty: sdg:gridId
+    Domain: bfo:0000040
+DataProperty: sdg:gridOperator
+    Domain: bfo:0000040
+DataProperty: sdg:gridRow
+    Domain: cco:ont00000995
+DataProperty: sdg:gripStyle
+    Domain: cco:ont00000995
+DataProperty: sdg:groundClearance
+    Domain: cco:ont00000995
+DataProperty: sdg:groundPlanType
+    Domain: bfo:0000040
+DataProperty: sdg:groupCode
+    Domain: bfo:0000040
+DataProperty: sdg:groupIdentifier
+    Domain: bfo:0000004
+ObjectProperty: sdg:groupedBy
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:growsIn
+    Domain: bfo:0000040
+    Range: bfo:0000004
+DataProperty: sdg:growthAmbition
+    Domain: bfo:0000015
+DataProperty: sdg:growthRegion
+    Domain: bfo:0000040
+DataProperty: sdg:growthStage
+    Domain: cco:ont00000995
+DataProperty: sdg:guaranteeMonths
+    Domain: cco:ont00000995
+DataProperty: sdg:guaranteeType
+    Domain: bfo:0000040
+ObjectProperty: sdg:guaranteedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:guarantees
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:guaranteesInheritanceFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:guardianContactId
+    Domain: bfo:0000002
+DataProperty: sdg:guardianId
+    Domain: bfo:0000004
+DataProperty: sdg:guardingSchedule
+    Domain: bfo:0000040
+DataProperty: sdg:guestName
+    Domain: bfo:0000015
+DataProperty: sdg:guidanceStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:guidedBy
+    Domain: bfo:0000002
+    Range: bfo:0000023
+ObjectProperty: sdg:guidesIdea
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:guidesInternalAudit
+    Range: cco:ont00000476
+DataProperty: sdg:haEnabled
+    Domain: bfo:0000040
+DataProperty: sdg:halfAngle
+    Domain: cco:ont00000958
+DataProperty: sdg:halogenFree
+    Domain: cco:ont00000995
+DataProperty: sdg:handPlacement
+    Domain: bfo:0000015
+DataProperty: sdg:handPreference
+    Domain: bfo:0000040
+DataProperty: sdg:handle
+    Domain: cco:ont00000995
+ObjectProperty: sdg:handles
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:handlesCase
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:handlesComplaint
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:handlesComplaintsFrom
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:handlesDataFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:handlesDispute
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:handlesLegislativeAffairs
+    Range: bfo:0000015
+ObjectProperty: sdg:handlesReportFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:handlesTaxAppeals
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:happinessScore
+    Domain: bfo:0000040
+DataProperty: sdg:happyPlanetRank
+    Domain: bfo:0000002
+DataProperty: sdg:harmCategory
+    Domain: bfo:0000015
+DataProperty: sdg:harmCode
+    Domain: bfo:0000015
+ObjectProperty: sdg:has
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:has25DMaps
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasAbstract
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasAcademicRecord
+    Range: bfo:0000002
+ObjectProperty: sdg:hasAccessPlatform
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasAccessTo
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:hasAcquisitionSource
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:hasActType
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasActivityEvidence
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:hasAdministrativeDirector
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasAdministrator
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasAdmissionCriteria
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasAdultAdoptee
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:hasAdvisor
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:hasAffiliate
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasAge
+    Domain: bfo:0000004
+    Range: bfo:0000019
+ObjectProperty: sdg:hasAgeBelowLegalMajority
+    Range: bfo:0000019
+DataProperty: sdg:hasAllReceipts
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasAlternateTemporarySystem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasAlternative
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasAncestralOriginLocation
+    Domain: bfo:0000004
+ObjectProperty: sdg:hasAnimalCapacity
+    Range: bfo:0000023
+ObjectProperty: sdg:hasAnimalConfinementBuilding
+    Range: bfo:0000040
+DataProperty: sdg:hasAnimalOccupants
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasAppealWaiver
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasAppliance
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasApplication
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasAppointment
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasAssessmentMethod
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasAssessmentNotice
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasAssumption
+    Domain: bfo:0000040
+    Range: bfo:0000016
+ObjectProperty: sdg:hasAthleticHistory
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:hasAtrophy
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasAuditCommittee
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:hasAuthor
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:hasAuthority
+    Domain: bfo:0000030
+DataProperty: sdg:hasAward
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasAwardTier
+    Domain: bfo:0000015
+    Range: bfo:0000023
+DataProperty: sdg:hasBarcodeScanner
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasBasePrice
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasBearer
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:hasBeneficiary
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:hasBeneficiaryDesignation
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:hasBeverageChoice
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasBillingModule
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasBiologicalParent
+    Domain: bfo:0000004
+ObjectProperty: sdg:hasBirthFather
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:hasBirthLocation
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasBirthMother
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasBoardAppointment
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasBorneAgent
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:hasBoundaryLine
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasBrakeSystem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasBuildingReport
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasBuildingType
+    Domain: bfo:0000040
+DataProperty: sdg:hasCIO
+    Domain: bfo:0000040
+DataProperty: sdg:hasCISO
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasCamera
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:hasCampus
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:hasCapacity
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasCaptain
+    Range: bfo:0000023
+ObjectProperty: sdg:hasCarcinogenicityStatus
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasCarePlan
+    Domain: bfo:0000004
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasCaregiver
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+DataProperty: sdg:hasCaregiverDetail
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasCarer
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:hasCarrierCount
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:hasCategory
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasCertificate
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:hasCertificationData
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasChairperson
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:hasChecksum
+    Domain: cco:ont00001180
+ObjectProperty: sdg:hasCheeseOption
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasChef
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasChiefExecutiveOfficer
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+DataProperty: sdg:hasChildren
+    Domain: bfo:0000015
+DataProperty: sdg:hasCleaningTechnology
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasClinicalProfile
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasCloseFriend
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+DataProperty: sdg:hasCoachInstructionProgram
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasCommittee
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:hasCommunicableDisease
+    Domain: bfo:0000015
+DataProperty: sdg:hasCommunicationDifficulty
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasComplianceObligation
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasComplianceReport
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasComputationalExample
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:hasConcentration
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasConditionRecord
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasConnector
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasConsentRecord
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasContactDetail
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasContactInformation
+    Range: bfo:0000002
+DataProperty: sdg:hasContinenceNeeds
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasContributingFactor
+    Range: bfo:0000002
+ObjectProperty: sdg:hasControl
+    Domain: bfo:0000015
+DataProperty: sdg:hasControls
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasCoordinator
+    Domain: bfo:0000015
+    Range: bfo:0000023
+DataProperty: sdg:hasCopyCount
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasCoreCharacteristics
+    Domain: bfo:0000040
+    Range: bfo:0000016
+ObjectProperty: sdg:hasCouncilMember
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:hasCourseStandard
+    Range: bfo:0000040
+DataProperty: sdg:hasCreatedDate
+    Domain: cco:ont00001180
+ObjectProperty: sdg:hasCredential
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasCrew
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:hasCriteria
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:hasCurrencyPeriod
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasCurriculum
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasDam
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasDataProcessedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:hasDataProcessingRecord
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:hasDecreeTitle
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasDefendant
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasDeficiencyPlan
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:hasDefinedRoles
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasDepartment
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasDepartmentResponsible
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasDependent
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:hasDependents
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasDevice
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:hasDeviceInventoryManagement
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasDiagnosis
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:hasDigitalSignature
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasDimension
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasDimensionalStandard
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasDirector
+    Domain: bfo:0000040
+DataProperty: sdg:hasDisability
+    Domain: bfo:0000002
+DataProperty: sdg:hasDisabledParent
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasDispute
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasDividendPolicy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasDivision
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasDocument
+    Range: bfo:0000002
+DataProperty: sdg:hasDottedLineTo
+    Domain: bfo:0000002
+DataProperty: sdg:hasDriverLicense
+    Domain: bfo:0000015
+DataProperty: sdg:hasDriversLicense
+    Domain: bfo:0000004
+DataProperty: sdg:hasDrivingLicense
+    Domain: bfo:0000023
+ObjectProperty: sdg:hasEHCP
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasEducation
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasEducationalResource
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasEducator
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasElectricalSpec
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasEmergencyAuthority
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasEmergencyContact
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasEmployee
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasEnergySimulation
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:hasEnforcementDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasEngine
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasEnrollment
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasEnrolment
+    Range: bfo:0000002
+ObjectProperty: sdg:hasEntry
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasEntryPoint
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:hasEternalDestiny
+    Domain: bfo:0000040
+DataProperty: sdg:hasEventDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasEvidence
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasExampleAnswer
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasExemption
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasExitPoint
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:hasExternalButton
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasExtracurricularRecord
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasFactSheet
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:hasFamilyMember
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+DataProperty: sdg:hasFamilyName
+    Domain: bfo:0000004
+ObjectProperty: sdg:hasFather
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:hasFellowship
+    Domain: bfo:0000023
+ObjectProperty: sdg:hasFestivalBooth
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:hasFiberAssembly
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasFiberOpticCable
+    Domain: bfo:0000040
+DataProperty: sdg:hasFibroConnectiveTissue
+    Domain: cco:ont00000995
+DataProperty: sdg:hasFibroblasts
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasFrame
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasFramework
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasFunction
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:hasFundingAvailable
+    Domain: cco:ont00000995
+DataProperty: sdg:hasGED
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasGame
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:hasGarden
+    Domain: bfo:0000040
+DataProperty: sdg:hasGeographicRegion
+    Domain: bfo:0000040
+DataProperty: sdg:hasGivenName
+    Domain: bfo:0000004
+ObjectProperty: sdg:hasGlazingRatio
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasGoal
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:hasGoalPosts
+    Domain: bfo:0000040
+DataProperty: sdg:hasGoggles
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasGovernor
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:hasGrandAward
+    Domain: bfo:0000040
+DataProperty: sdg:hasGreenScreen
+    Domain: bfo:0000040
+DataProperty: sdg:hasGroupAgreement
+    Domain: bfo:0000015
+DataProperty: sdg:hasGuaranteePeriod
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasGuardian
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasGuardianshipOver
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:hasHalfLifeInHumans
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasHalfLifeInRodents
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:hasHandholds
+    Domain: cco:ont00000995
+DataProperty: sdg:hasHashMarks
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasHazardBarrier
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasHead
+    Domain: bfo:0000040
+    Range: bfo:0000023
+DataProperty: sdg:hasHealthInsurance
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasHealthSummary
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasHealthcareProfessional
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:hasHumanRightsFramework
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasIEP
+    Domain: bfo:0000002
+    Range: bfo:0000016
+DataProperty: sdg:hasImageStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasImplant
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:hasInclusivePolicy
+    Domain: bfo:0000040
+DataProperty: sdg:hasInflammatoryChanges
+    Domain: bfo:0000015
+DataProperty: sdg:hasInjuryControlProgram
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasInscription
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasInsight
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:hasInspectionRecord
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasIntervention
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasInterviewQuestions
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasInterviewScore
+    Range: bfo:0000015
+DataProperty: sdg:hasIssuingEmperor
+    Domain: bfo:0000015
+DataProperty: sdg:hasItemName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasJointOwnership
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasJudge
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasJurisdictionOver
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasKeyframe
+    Range: bfo:0000040
+ObjectProperty: sdg:hasLCO
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasLaboratory
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasLeadershipTeam
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasLearningEnvironment
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasLegalPersonhood
+    Range: bfo:0000019
+DataProperty: sdg:hasLegalRequirement
+    Domain: bfo:0000015
+DataProperty: sdg:hasLighting
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasLimit
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasLocalNetwork
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasLocalNetworkEstablishedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasLocalOrganizationCommittee
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasLocation
+    Domain: bfo:0000015
+DataProperty: sdg:hasLocationDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasLogicModel
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:hasMandatingAuthority
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasManufacturer
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+DataProperty: sdg:hasMaterialComposition
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasMaterialSpecification
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasMaterialType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasMeasuredValue
+    Domain: bfo:0000031
+ObjectProperty: sdg:hasMeasurementRange
+    Range: bfo:0000002
+ObjectProperty: sdg:hasMechanicalSpec
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasMechanism
+    Domain: bfo:0000015
+DataProperty: sdg:hasMedicalNeeds
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasMemberRepresentative
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasMemberSchool
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasMembers
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:hasMembership
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:hasMesenchymalCells
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasMeter
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:hasMission
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasModerator
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasModification
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasMonitoringMode
+    Range: bfo:0000023
+ObjectProperty: sdg:hasMonitoringStation
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasMother
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:hasMucinousFluid
+    Domain: cco:ont00000995
+DataProperty: sdg:hasMuseum
+    Domain: bfo:0000040
+DataProperty: sdg:hasNGOForum
+    Domain: bfo:0000015
+DataProperty: sdg:hasName
+    Domain: bfo:0000015
+DataProperty: sdg:hasNature
+    Domain: bfo:0000015
+DataProperty: sdg:hasNecrosis
+    Domain: bfo:0000015
+DataProperty: sdg:hasNetworkMonitoring
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasNewsEvent
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:hasNoRunZone
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasNotice
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasNursingDirector
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:hasObjection
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+DataProperty: sdg:hasOccupancyStatus
+    Domain: bfo:0000040
+DataProperty: sdg:hasOccupationRole
+    Domain: bfo:0000004
+ObjectProperty: sdg:hasOfficer
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasOfficers
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:hasOnlineAccess
+    Domain: cco:ont00000995
+DataProperty: sdg:hasOpenEnrollment
+    Domain: bfo:0000004
+ObjectProperty: sdg:hasOperatingCondition
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasOperator
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasOption
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasOptionalTopping
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:hasOrder
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasOriginalPages
+    Domain: bfo:0000002
+ObjectProperty: sdg:hasOutbreak
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:hasOutcome
+    Range: bfo:0000040
+DataProperty: sdg:hasOutcomeDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasOwnerOperator
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasPackageStyle
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasParent
+    Range: bfo:0000040
+ObjectProperty: sdg:hasParentalResponsibilityFor
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:hasParesthesia
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasParticipant
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasParticipatingEntity
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:hasPartner
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasPatient
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasPaymentRecord
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasPaymentType
+    Range: bfo:0000002
+ObjectProperty: sdg:hasPeriodType
+    Range: bfo:0000002
+ObjectProperty: sdg:hasPermit
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasPersonalInformation
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasPetitioner
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+DataProperty: sdg:hasPhysicalCondition
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasPlacement
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasPlannedCredits
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasPlayer
+    Range: bfo:0000015
+ObjectProperty: sdg:hasPlayer1
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasPlayer2
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasPolicy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:hasPopulationDensity
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasPort
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasPortfolio
+    Domain: bfo:0000004
+    Range: bfo:0000040
+DataProperty: sdg:hasPosition
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasPredicateConcept
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasPreparationMethod
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:hasPrerequisite
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasPrescription
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasPriceOption
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasPricingTier
+    Domain: bfo:0000015
+DataProperty: sdg:hasPriorFederalAid
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasProductDisplay
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:hasProgram
+    Range: bfo:0000015
+ObjectProperty: sdg:hasProgrammeCommittee
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:hasProperty
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasPropositionType
+    Domain: bfo:0000030
+ObjectProperty: sdg:hasProsecutor
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasProtectedInfrastructure
+    Range: bfo:0000002
+ObjectProperty: sdg:hasProvider
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasQuorumOf
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasRating
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasRecertificationUnits
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:hasRecipient
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasRecognitionManager
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+DataProperty: sdg:hasRecommendations
+    Domain: bfo:0000015
+DataProperty: sdg:hasReconciliationStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasRecord
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasRecords
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasReferral
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:hasReferralCapacity
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasRegisteredManager
+    Range: bfo:0000023
+ObjectProperty: sdg:hasRegistration
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:hasRegistrationDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasRegistrationLink
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+DataProperty: sdg:hasRegistrationLocation
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasRegulatorySign
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasRender
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasRepairTask
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:hasRepresentative
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:hasRepresentativeAccount
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasRepresentedAccount
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasRequest
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasRequirement
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasResidenceIn
+    Domain: bfo:0000004
+    Range: bfo:0000040
+DataProperty: sdg:hasResidenceLocation
+    Domain: bfo:0000004
+ObjectProperty: sdg:hasResponsibleEntity
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasRestriction
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasResult
+    Range: bfo:0000040
+DataProperty: sdg:hasResultDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasReview
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:hasRigging
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:hasRiskAssessment
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:hasRiskScore
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:hasRiskScoringProcess
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasRnDLocation
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:hasRole
+    Domain: bfo:0000002
+    Range: bfo:0000023
+ObjectProperty: sdg:hasRoleBearer
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:hasRoleDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasSafetyDirector
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:hasSample
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:hasSchedulingModule
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasSchool
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+DataProperty: sdg:hasScope
+    Domain: bfo:0000030
+ObjectProperty: sdg:hasScore
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:hasScoreSheet
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:hasSeal
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasSection
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasSecurityProtocol
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasSettlementName
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasSexualPartner
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:hasShareholder
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasShockAbsorber
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasSibling
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:hasSinCondition
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasSire
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasSite
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:hasSizeOption
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:hasSlide
+    Domain: bfo:0000015
+DataProperty: sdg:hasSocietyLogo
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasSortingCriteria
+    Range: bfo:0000002
+DataProperty: sdg:hasSource
+    Domain: bfo:0000015
+DataProperty: sdg:hasSpecificPolicy
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasSpecification
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasSpousalConsent
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasStaffAssignment
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:hasStaffingPlan
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasStakeholderNeeds
+    Domain: bfo:0000040
+    Range: bfo:0000016
+ObjectProperty: sdg:hasSteeringCommittee
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:hasSteps
+    Domain: cco:ont00000958
+ObjectProperty: sdg:hasStudent
+    Range: bfo:0000002
+ObjectProperty: sdg:hasSubject
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasSubjectConcept
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasSubstanceType
+    Range: bfo:0000002
+ObjectProperty: sdg:hasSupportRecord
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:hasSuspension
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:hasSynovialEpithelium
+    Domain: cco:ont00000995
+DataProperty: sdg:hasSynovialLining
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasTangentCircle
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hasTeam
+    Domain: bfo:0000040
+DataProperty: sdg:hasTelehealth
+    Domain: bfo:0000040
+DataProperty: sdg:hasTemporalPhase
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasToponym
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasTournamentDirector
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:hasTrafficRule
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hasTrainingPlan
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasTransaction
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:hasTransactionRecord
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hasTransferCredits
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:hasTransportationArrangement
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasTriggeringAttack
+    Range: bfo:0000003
+DataProperty: sdg:hasTruthValue
+    Domain: bfo:0000030
+ObjectProperty: sdg:hasUnit
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:hasUnityType
+    Domain: bfo:0000015
+DataProperty: sdg:hasUniversityCarAccess
+    Domain: bfo:0000002
+DataProperty: sdg:hasVehicleAccess
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasVicePresident
+    Range: bfo:0000040
+DataProperty: sdg:hasVideoWall
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hasVineyard
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:hasViolation
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:hasVulnerablePopulation
+    Domain: bfo:0000002
+    Range: bfo:0000004
+DataProperty: sdg:hasWeakness
+    Domain: bfo:0000015
+ObjectProperty: sdg:hasWheelAssembly
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hasWineSpectatorGrandAward
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:hasWorkshops
+    Domain: bfo:0000040
+ObjectProperty: sdg:hasWorkstream
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:hasWorkstreamLead
+    Domain: cco:ont00000958
+    Range: bfo:0000023
+ObjectProperty: sdg:has_certification
+    Range: cco:ont00002002
+ObjectProperty: sdg:has_denotation
+    Range: bfo:0000002
+ObjectProperty: sdg:has_departure_status
+    Range: cco:ont00001226
+ObjectProperty: sdg:has_disease
+    Range: cco:ont00000318
+ObjectProperty: sdg:has_geospatial_boundary
+    Domain: bfo:0000004
+    Range: cco:ont00000487
+ObjectProperty: sdg:has_objective
+    Range: cco:ont00001224
+DataProperty: sdg:hashAlgorithm
+    Domain: cco:ont00000995
+DataProperty: sdg:haulerContractId
+    Domain: bfo:0000002
+DataProperty: sdg:hazardId
+    Domain: bfo:0000015
+DataProperty: sdg:hazardRating
+    Domain: bfo:0000004
+ObjectProperty: sdg:hazardSeverity
+    Domain: bfo:0000015
+DataProperty: sdg:hazardType
+    Domain: bfo:0000015
+DataProperty: sdg:hcahpsScore
+    Domain: cco:ont00000995
+DataProperty: sdg:headContactAllowed
+    Domain: bfo:0000040
+DataProperty: sdg:headCount
+    Domain: bfo:0000015
+DataProperty: sdg:headName
+    Domain: bfo:0000040
+ObjectProperty: sdg:headOf
+    Domain: bfo:0000015
+    Range: bfo:0000023
+DataProperty: sdg:headOfDepartment
+    Domain: bfo:0000015
+DataProperty: sdg:headOfDepartmentId
+    Domain: bfo:0000040
+DataProperty: sdg:headOfficial
+    Domain: bfo:0000040
+DataProperty: sdg:headStaffId
+    Domain: bfo:0000015
+DataProperty: sdg:headline
+    Domain: cco:ont00000995
+DataProperty: sdg:headquartersAddress
+    Domain: bfo:0000002
+DataProperty: sdg:headquartersStreet
+    Domain: cco:ont00000958
+DataProperty: sdg:headquartersZip
+    Domain: cco:ont00000958
+DataProperty: sdg:healerId
+    Domain: bfo:0000023
+ObjectProperty: sdg:heals
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:healsSpiritualSickness
+    Domain: cco:ont00000995
+DataProperty: sdg:healthDepartmentComplianceStatus
+    Domain: bfo:0000040
+DataProperty: sdg:healthHistorySummary
+    Domain: cco:ont00000995
+DataProperty: sdg:healthId
+    Domain: bfo:0000015
+DataProperty: sdg:healthImpactCategory
+    Domain: bfo:0000040
+DataProperty: sdg:healthOutcome
+    Domain: bfo:0000002
+DataProperty: sdg:healthScore
+    Domain: bfo:0000015
+DataProperty: sdg:healthStandardCompliance
+    Domain: bfo:0000015
+DataProperty: sdg:hearingId
+    Domain: bfo:0000015
+ObjectProperty: sdg:heatedBy
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:heatingLoad
+    Domain: bfo:0000015
+DataProperty: sdg:heightCm
+    Domain: cco:ont00000995
+ObjectProperty: sdg:heldAt
+    Domain: bfo:0000015
+ObjectProperty: sdg:heldAtInstitution
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:heldAtLocation
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:heldByCoach
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:heldByFund
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:heldByOrganisation
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:heldByOwner
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:heldByTrainer
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:heldIn
+    Domain: bfo:0000040
+ObjectProperty: sdg:heldInPortfolio
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:heldInUnderlyingFund
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:herdSize
+    Domain: bfo:0000015
+DataProperty: sdg:highSchoolGPA
+    Domain: bfo:0000015
+DataProperty: sdg:hipAngle
+    Domain: bfo:0000015
+DataProperty: sdg:hipaaCompliant
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hiresParticipants
+    Domain: bfo:0000040
+    Range: bfo:0000004
+DataProperty: sdg:historicalApprovalNumber
+    Domain: cco:ont00000958
+ObjectProperty: sdg:historicalLink
+    Domain: cco:ont00000995
+DataProperty: sdg:historicalPeriod
+    Domain: bfo:0000015
+DataProperty: sdg:historicalPresence
+    Domain: bfo:0000015
+DataProperty: sdg:historicalStandard
+    Domain: cco:ont00000958
+DataProperty: sdg:historicalStatus
+    Domain: bfo:0000002
+DataProperty: sdg:holdHarmlessAgreement
+    Domain: cco:ont00000958
+DataProperty: sdg:holderName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:holdsAcademicRecord
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:holdsAccount
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:holdsActivationKey
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:holdsAppointment
+    Range: bfo:0000015
+ObjectProperty: sdg:holdsApproval
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:holdsApprovalFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:holdsApprovalFrom
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:holdsAsset
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:holdsAuthorization
+    Range: cco:ont00000647
+ObjectProperty: sdg:holdsBatch
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:holdsBoardAppointment
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:holdsDebtFrom
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:holdsIdentityDocument
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:holdsInterestIn
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:holdsJointOwnership
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:holdsLeadershipRole
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:holdsMeeting
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:holdsMeetingAt
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:holdsOwnershipOf
+    Range: cco:ont00001336
+ObjectProperty: sdg:holdsPositionIn
+    Range: bfo:0000002
+ObjectProperty: sdg:holdsQualification
+    Range: bfo:0000015
+ObjectProperty: sdg:holdsRank
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:holdsRegistration
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:holdsRole
+    Range: bfo:0000023
+ObjectProperty: sdg:holdsSample
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:holdsSeatOnBoard
+    Domain: bfo:0000023
+    Range: cco:ont00000175
+ObjectProperty: sdg:holdsSecuritiesIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:holdsUnderlyingFund
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:homeTeamId
+    Domain: bfo:0000015
+DataProperty: sdg:homeTelephone
+    Domain: bfo:0000040
+DataProperty: sdg:homeostaticStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:honoredBy
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:honoreeId
+    Domain: bfo:0000040
+DataProperty: sdg:honoreeName
+    Domain: bfo:0000040
+ObjectProperty: sdg:honoreeType
+    Domain: bfo:0000040
+DataProperty: sdg:honoursNotation
+    Domain: cco:ont00000995
+DataProperty: sdg:horseId
+    Domain: cco:ont00000995
+DataProperty: sdg:horseName
+    Domain: cco:ont00000995
+DataProperty: sdg:horsepower
+    Domain: cco:ont00000995
+DataProperty: sdg:hostAddress
+    Domain: cco:ont00000995
+DataProperty: sdg:hostId
+    Domain: bfo:0000040
+DataProperty: sdg:hostInstitution
+    Domain: cco:ont00000958
+DataProperty: sdg:hostName
+    Domain: bfo:0000015
+DataProperty: sdg:hostPlant
+    Domain: cco:ont00000995
+DataProperty: sdg:hostRootProximityRequired
+    Domain: bfo:0000015
+ObjectProperty: sdg:hostStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:hosted
+    Domain: cco:ont00000995
+ObjectProperty: sdg:hostedActivity
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:hostedBirth
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:hostedEvent
+    Range: bfo:0000015
+ObjectProperty: sdg:hostedIn
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hostedMeeting
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:hostedOn
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:hostingInstitute
+    Domain: bfo:0000015
+DataProperty: sdg:hostingPlatform
+    Domain: cco:ont00000995
+DataProperty: sdg:hostname
+    Domain: bfo:0000040
+ObjectProperty: sdg:hostsApprenticeships
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsBooths
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsCompany
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsConference
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsContent
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsDataFile
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsEvent
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsEvents
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsHealthService
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsImagingStudy
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsIndigenousKnowledge
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsInstance
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsInstrument
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsInvestigation
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsLibrary
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsManager
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:hostsMatch
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsMeeting
+    Range: bfo:0000015
+DataProperty: sdg:hostsNationalInterconnect
+    Domain: bfo:0000040
+ObjectProperty: sdg:hostsOperation
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsPackage
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsPartner
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsProductsFrom
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsProgramme
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsProvider
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:hostsPublication
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsResource
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsResources
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsRnD
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsScientificAssessment
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsScrubbingCenter
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsSession
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsStudents
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:hostsSurveyData
+    Domain: bfo:0000004
+    Range: cco:ont00000958
+ObjectProperty: sdg:hostsTraining
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:hostsUserAccount
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:hostsWineDinner
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:hotlineIdentifier
+    Domain: bfo:0000015
+ObjectProperty: sdg:hotlineType
+    Domain: cco:ont00000995
+DataProperty: sdg:hourlyRate
+    Domain: bfo:0000004
+DataProperty: sdg:hoursAllocated
+    Domain: bfo:0000015
+DataProperty: sdg:hoursPerWeek
+    Domain: bfo:0000003
+DataProperty: sdg:hoursRequired
+    Domain: bfo:0000015
+DataProperty: sdg:householdCount
+    Domain: bfo:0000015
+DataProperty: sdg:householdHead
+    Domain: bfo:0000040
+DataProperty: sdg:householdIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:householdIncomePercentile
+    Domain: cco:ont00000995
+DataProperty: sdg:householdPovertyRate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:housesDepartment
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:housesStandard
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:housesUnit
+    Domain: bfo:0000040
+    Range: bfo:0000004
+DataProperty: sdg:housingStartsRate
+    Domain: bfo:0000015
+DataProperty: sdg:hrcMembershipStatus
+    Domain: bfo:0000002
+DataProperty: sdg:humanId
+    Domain: bfo:0000004
+DataProperty: sdg:humanityId
+    Domain: bfo:0000040
+DataProperty: sdg:humidityLevel
+    Domain: bfo:0000002
+DataProperty: sdg:hurricaneVulnerability
+    Domain: bfo:0000004
+DataProperty: sdg:hybrotId
+    Domain: bfo:0000040
+DataProperty: sdg:hydrationMonitoring
+    Domain: cco:ont00000958
+DataProperty: sdg:hypothesisType
+    Domain: bfo:0000015
+DataProperty: sdg:icd10Code
+    Domain: cco:ont00000995
+DataProperty: sdg:icdCode
+    Domain: bfo:0000002
+DataProperty: sdg:idNumber
+    Domain: bfo:0000002
+DataProperty: sdg:ideaId
+    Domain: bfo:0000015
+DataProperty: sdg:ideaTitle
+    Domain: bfo:0000015
+ObjectProperty: sdg:identifiedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:identifiedDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:identifiedIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:identifiesDeficiency
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:identifiesPerson
+    Range: bfo:0000040
+DataProperty: sdg:identityGroup
+    Domain: cco:ont00000995
+DataProperty: sdg:identityId
+    Domain: cco:ont00000995
+DataProperty: sdg:identityLabel
+    Domain: cco:ont00000995
+DataProperty: sdg:ideologicalAlignment
+    Domain: bfo:0000002
+DataProperty: sdg:iepId
+    Domain: bfo:0000016
+ObjectProperty: sdg:iepStatus
+    Domain: bfo:0000002
+DataProperty: sdg:illuminationRequirement
+    Domain: cco:ont00000958
+ObjectProperty: sdg:illustrates
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:imageResolution
+    Domain: bfo:0000040
+DataProperty: sdg:immigrantStatus
+    Domain: bfo:0000040
+DataProperty: sdg:immigrationStatus
+    Domain: bfo:0000002
+DataProperty: sdg:impactCoefficient
+    Domain: bfo:0000015
+DataProperty: sdg:impactDescription
+    Domain: bfo:0000015
+DataProperty: sdg:impactFactor
+    Domain: cco:ont00000958
+DataProperty: sdg:impactId
+    Domain: bfo:0000040
+DataProperty: sdg:impactOnLivelihood
+    Domain: bfo:0000015
+ObjectProperty: sdg:impactOnRole
+    Domain: bfo:0000040
+DataProperty: sdg:impactOnUtility
+    Domain: bfo:0000002
+DataProperty: sdg:impactScore
+    Domain: bfo:0000015
+DataProperty: sdg:impactSeverity
+    Domain: bfo:0000015
+ObjectProperty: sdg:impactSource
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:impacted
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:impactedByProject
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:impactsCommunity
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:impactsGroup
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:impactsLocation
+    Domain: bfo:0000003
+    Range: cco:ont00000995
+ObjectProperty: sdg:impactsOperationalArea
+    Range: cco:ont00000567
+ObjectProperty: sdg:impairmentType
+    Domain: bfo:0000015
+DataProperty: sdg:impedance
+    Domain: cco:ont00000995
+DataProperty: sdg:impedanceRatio
+    Domain: cco:ont00000995
+DataProperty: sdg:implantId
+    Domain: bfo:0000040
+DataProperty: sdg:implantLocation
+    Domain: bfo:0000040
+DataProperty: sdg:implantType
+    Domain: bfo:0000040
+DataProperty: sdg:implementationComplexity
+    Domain: bfo:0000015
+DataProperty: sdg:implementationMethod
+    Domain: bfo:0000015
+DataProperty: sdg:implementationMonths
+    Domain: cco:ont00000995
+DataProperty: sdg:implementationPhase
+    Domain: bfo:0000015
+DataProperty: sdg:implementationRole
+    Domain: bfo:0000015
+ObjectProperty: sdg:implementedAt
+    Domain: bfo:0000015
+ObjectProperty: sdg:implementedByOrganisation
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:implementedInZone
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:implementedUsing
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:implementsAccommodation
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:implementsActivities
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:implementsITGovernanceProcesses
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:implementsMethod
+    Range: bfo:0000002
+ObjectProperty: sdg:implementsProgram
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:implementsPrograms
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:implementsRecommendation
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:implementsStandard
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+ObjectProperty: sdg:implementsStrategy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:implementsVia
+    Range: bfo:0000002
+ObjectProperty: sdg:implementsWorkstream
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:implicatedIn
+    Domain: bfo:0000004
+    Range: bfo:0000015
+DataProperty: sdg:importVolume
+    Domain: bfo:0000015
+ObjectProperty: sdg:imports
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:imposedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:imposes
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:imposesSanctionsOn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:impositionDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:impoundStatus
+    Domain: bfo:0000004
+DataProperty: sdg:imprintSource
+    Domain: cco:ont00000995
+DataProperty: sdg:improvementAreas
+    Domain: bfo:0000015
+ObjectProperty: sdg:improvementDirection
+    Domain: bfo:0000015
+DataProperty: sdg:improvementPercentage
+    Domain: bfo:0000015
+DataProperty: sdg:improvementStatus
+    Domain: bfo:0000015
+DataProperty: sdg:improvementThreshold
+    Domain: bfo:0000015
+ObjectProperty: sdg:improves
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:improvesMetric
+    Domain: bfo:0000015
+ObjectProperty: sdg:inOrganization
+    Domain: bfo:0000023
+    Range: bfo:0000002
+DataProperty: sdg:inaugurationDate
+    Domain: cco:ont00000995
+DataProperty: sdg:inceptionDate
+    Domain: bfo:0000040
+DataProperty: sdg:incidence
+    Domain: bfo:0000002
+DataProperty: sdg:incidentIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:incidentName
+    Domain: bfo:0000015
+ObjectProperty: sdg:includedIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:includedInAd
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:includedInApplication
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:includedInPrice
+    Domain: bfo:0000040
+ObjectProperty: sdg:includedWith
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:includesAccommodation
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesAddon
+    Range: cco:ont00000995
+DataProperty: sdg:includesAlcohol
+    Domain: cco:ont00000995
+ObjectProperty: sdg:includesAttorney
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:includesBeverage
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:includesBeverageDetail
+    Domain: cco:ont00000995
+ObjectProperty: sdg:includesCanape
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesCard
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:includesChampagneCocktail
+    Domain: cco:ont00000995
+DataProperty: sdg:includesCheese
+    Domain: cco:ont00000995
+DataProperty: sdg:includesColdBeverages
+    Domain: cco:ont00000995
+ObjectProperty: sdg:includesCourse
+    Range: bfo:0000040
+ObjectProperty: sdg:includesDam
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:includesDessert
+    Domain: cco:ont00000995
+ObjectProperty: sdg:includesDish
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesEvent
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:includesFolder
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:includesHotBeverages
+    Domain: cco:ont00000995
+ObjectProperty: sdg:includesITSubProject
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:includesIndividuals
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:includesInsight
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:includesItem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesLab
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:includesLogo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesMaterial
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:includesMember
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:includesMemberOrg
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesMenuItem
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:includesObservation
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:includesPayment
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:includesQuestion
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesReading
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesRecommendation
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesService
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:includesSession
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:includesSide
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:includesSideDetail
+    Domain: cco:ont00000995
+ObjectProperty: sdg:includesSire
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:includesText
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:includesTopic
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:inclusionCriteria
+    Domain: bfo:0000015
+DataProperty: sdg:incomeAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:incomeLevel
+    Domain: bfo:0000040
+DataProperty: sdg:incomeShare
+    Domain: bfo:0000015
+ObjectProperty: sdg:incorporatesGenomicData
+    Range: bfo:0000002
+ObjectProperty: sdg:incorporatesImagingData
+    Range: bfo:0000002
+ObjectProperty: sdg:increasesRiskOf
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:incurredLateFee
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:incurs
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:indexId
+    Domain: bfo:0000040
+DataProperty: sdg:indexTicker
+    Domain: cco:ont00000995
+DataProperty: sdg:indexType
+    Domain: cco:ont00000995
+DataProperty: sdg:indexYear
+    Domain: cco:ont00000995
+ObjectProperty: sdg:indexedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:indexerRole
+    Domain: bfo:0000015
+ObjectProperty: sdg:indicatesDirectionalChangeIn
+    Range: cco:ont00001278
+ObjectProperty: sdg:indicatesMaritalStatus
+    Range: cco:ont00000895
+ObjectProperty: sdg:indicatesRecoveryFrom
+    Range: cco:ont00000548
+DataProperty: sdg:indicatorName
+    Domain: cco:ont00000995
+DataProperty: sdg:individualID
+    Domain: bfo:0000004
+DataProperty: sdg:individualId
+    Domain: bfo:0000004
+DataProperty: sdg:individualIdentifier
+    Domain: bfo:0000004
+DataProperty: sdg:indoorTemperature
+    Domain: bfo:0000015
+DataProperty: sdg:industryClassificationCode
+    Domain: bfo:0000004
+DataProperty: sdg:industryType
+    Domain: bfo:0000040
+DataProperty: sdg:infantName
+    Domain: bfo:0000015
+ObjectProperty: sdg:infectedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:infectionCount
+    Domain: bfo:0000015
+ObjectProperty: sdg:infectionSource
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:infects
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:infestedBy
+    Domain: bfo:0000004
+    Range: bfo:0000040
+DataProperty: sdg:infillMaterial
+    Domain: cco:ont00000995
+ObjectProperty: sdg:influenceLevel
+    Domain: bfo:0000040
+DataProperty: sdg:influenceScore
+    Domain: bfo:0000040
+DataProperty: sdg:influenceStrength
+    Domain: bfo:0000015
+ObjectProperty: sdg:influencedBy
+    Domain: bfo:0000015
+ObjectProperty: sdg:influencesOutcome
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:influencesTransition
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:influencingFactors
+    Domain: bfo:0000015
+DataProperty: sdg:informationRequirementLevel
+    Domain: bfo:0000004
+DataProperty: sdg:informationType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:informedByExpert
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:informsEvent
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:informsProgram
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:informsRiskReductionStrategy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:informsStaffTraining
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:infraId
+    Domain: bfo:0000040
+ObjectProperty: sdg:infraType
+    Domain: bfo:0000040
+ObjectProperty: sdg:infrastructureLevel
+    Domain: bfo:0000002
+ObjectProperty: sdg:ingestsImageSet
+    Range: bfo:0000002
+DataProperty: sdg:ingredientCategory
+    Domain: bfo:0000040
+DataProperty: sdg:ingredientCode
+    Domain: bfo:0000040
+DataProperty: sdg:ingredientIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:ingredientType
+    Domain: bfo:0000040
+DataProperty: sdg:ingredients
+    Domain: bfo:0000040
+ObjectProperty: sdg:inhabited
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:inhabits
+    Domain: bfo:0000015
+ObjectProperty: sdg:inhabitsRegion
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:inheresIn
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:inheresInOrganization
+    Range: bfo:0000002
+DataProperty: sdg:inheritanceId
+    Domain: bfo:0000040
+ObjectProperty: sdg:inheritanceStatus
+    Domain: bfo:0000040
+DataProperty: sdg:inheritanceType
+    Domain: bfo:0000040
+ObjectProperty: sdg:inhibits
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:initialLicenseFee
+    Domain: cco:ont00000958
+DataProperty: sdg:initialStateId
+    Domain: bfo:0000015
+ObjectProperty: sdg:initiatedByClient
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:initiatedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:initiatesCommunication
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:initiatesDivestment
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:initiatesTransaction
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:initiationDate
+    Domain: bfo:0000015
+DataProperty: sdg:initiativeId
+    Domain: bfo:0000015
+DataProperty: sdg:initiativeIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:initiativeName
+    Domain: bfo:0000015
+DataProperty: sdg:injuredParty
+    Domain: bfo:0000004
+ObjectProperty: sdg:innovationType
+    Domain: bfo:0000040
+DataProperty: sdg:inputIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:inputImpedance
+    Domain: cco:ont00000995
+DataProperty: sdg:inputName
+    Domain: bfo:0000040
+DataProperty: sdg:inscriptionID
+    Domain: cco:ont00000995
+ObjectProperty: sdg:insertedIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:insideDiameterMax
+    Domain: cco:ont00000995
+DataProperty: sdg:insideDiameterMin
+    Domain: cco:ont00000995
+DataProperty: sdg:insightId
+    Domain: cco:ont00000995
+DataProperty: sdg:insightIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:inspectionReportId
+    Domain: cco:ont00000995
+DataProperty: sdg:inspectionScope
+    Domain: bfo:0000015
+DataProperty: sdg:inspectorBadgeNumber
+    Domain: bfo:0000015
+DataProperty: sdg:inspectorRole
+    Domain: bfo:0000015
+DataProperty: sdg:installationGuideUrl
+    Domain: cco:ont00000958
+DataProperty: sdg:installationId
+    Domain: bfo:0000023
+ObjectProperty: sdg:installedIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:installedInSystem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:instanceId
+    Domain: bfo:0000040
+ObjectProperty: sdg:institutesCentres
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:institutionAddress
+    Domain: bfo:0000004
+DataProperty: sdg:institutionID
+    Domain: bfo:0000015
+DataProperty: sdg:institutionPhone
+    Domain: bfo:0000004
+ObjectProperty: sdg:instructedAt
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:instructedBy
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:instructionalPurpose
+    Domain: cco:ont00000995
+DataProperty: sdg:instructionsAdopted
+    Domain: bfo:0000004
+DataProperty: sdg:instructorName
+    Domain: bfo:0000015
+ObjectProperty: sdg:instructs
+    Domain: bfo:0000023
+DataProperty: sdg:instrumentCode
+    Domain: bfo:0000015
+ObjectProperty: sdg:instrumentFormat
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:instrumentIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:instrumentName
+    Domain: bfo:0000015
+DataProperty: sdg:instrumentUsed
+    Domain: cco:ont00000995
+ObjectProperty: sdg:insulatedBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:insuranceType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:insuredBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:integratedInto
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:integrates
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:integratesHealthProfile
+    Range: bfo:0000002
+ObjectProperty: sdg:integratesMultipleDisciplines
+    Range: bfo:0000040
+ObjectProperty: sdg:integratesWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:integrationAssessment
+    Domain: cco:ont00000995
+DataProperty: sdg:integrationIntent
+    Domain: bfo:0000004
+ObjectProperty: sdg:integrationLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:integrityCheckHash
+    Domain: bfo:0000040
+DataProperty: sdg:intelligenceLevel
+    Domain: cco:ont00000995
+ObjectProperty: sdg:intendedEffect
+    Domain: cco:ont00000995
+ObjectProperty: sdg:intendedFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:intensityLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:interAgencyBoundaries
+    Domain: bfo:0000015
+DataProperty: sdg:interAgencyCollaboration
+    Domain: bfo:0000002
+DataProperty: sdg:interactionNotes
+    Domain: bfo:0000015
+ObjectProperty: sdg:interfacesWith
+    Domain: bfo:0000040
+ObjectProperty: sdg:intermarriesWith
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:internetPenetration
+    Domain: bfo:0000040
+DataProperty: sdg:interoperabilityStandard
+    Domain: bfo:0000015
+DataProperty: sdg:interpretationConfidence
+    Domain: cco:ont00000995
+DataProperty: sdg:interpretationName
+    Domain: bfo:0000030
+DataProperty: sdg:interpretationResult
+    Domain: bfo:0000015
+DataProperty: sdg:interpretationText
+    Domain: cco:ont00000995
+ObjectProperty: sdg:interprets
+    Range: cco:ont00000995
+DataProperty: sdg:intervalDuration
+    Domain: bfo:0000015
+DataProperty: sdg:interventionIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:interventionType
+    Domain: bfo:0000015
+DataProperty: sdg:interviewCompleted
+    Domain: cco:ont00000958
+ObjectProperty: sdg:interviewFormat
+    Domain: bfo:0000015
+DataProperty: sdg:interviewId
+    Domain: bfo:0000015
+ObjectProperty: sdg:interviewResult
+    Domain: bfo:0000002
+DataProperty: sdg:interviewScheduled
+    Domain: bfo:0000002
+DataProperty: sdg:interviewerName
+    Domain: bfo:0000023
+ObjectProperty: sdg:introduces
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+DataProperty: sdg:intrusivenessLevel
+    Domain: bfo:0000015
+DataProperty: sdg:intuitionType
+    Domain: bfo:0000015
+DataProperty: sdg:invasivenessLevel
+    Domain: bfo:0000015
+ObjectProperty: sdg:invented
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:inventedBy
+    Domain: bfo:0000002
+    Range: bfo:0000004
+DataProperty: sdg:inventorySystem
+    Domain: cco:ont00000995
+ObjectProperty: sdg:investedInBy
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:investigatesProject
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:investigationId
+    Domain: bfo:0000015
+ObjectProperty: sdg:investigationOutcome
+    Domain: bfo:0000015
+DataProperty: sdg:investigationStatus
+    Domain: bfo:0000004
+ObjectProperty: sdg:investorType
+    Domain: bfo:0000040
+ObjectProperty: sdg:investsInAssets
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:invoiceId
+    Domain: cco:ont00000958
+ObjectProperty: sdg:involvedCelestialBody
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:involvedInIncidentAsPerpetrator
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:involvedInIncidentAsVictim
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:involvedInPathogenesis
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:involvedInTeamAssessment
+    Range: bfo:0000002
+ObjectProperty: sdg:involvedInTransition
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:involved_in
+    Domain: bfo:0000002
+ObjectProperty: sdg:involvesAcademicAgent
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesAccount
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:involvesAdultToBeAdopted
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:involvesAnimal
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesArtifact
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesAsset
+    Domain: bfo:0000015
+ObjectProperty: sdg:involvesAutotransfusion
+    Range: bfo:0000015
+ObjectProperty: sdg:involvesBeneficiaries
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesCarer
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesCharacter
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesClient
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesCoResearcher
+    Domain: bfo:0000002
+ObjectProperty: sdg:involvesCollaborator
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:involvesCompany
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:involvesConcept
+    Range: bfo:0000015
+ObjectProperty: sdg:involvesCourtDocument
+    Domain: bfo:0000040
+ObjectProperty: sdg:involvesDataFile
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:involvesExporter
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesFather
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesFieldStandard
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:involvesImporter
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesInfant
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesInteraction
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesInterviewers
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:involvesMembership
+    Range: bfo:0000040
+ObjectProperty: sdg:involvesMother
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesOffender
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesOriginalMember
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesOwner
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesPartner
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:involvesPatient
+    Range: cco:ont00000995
+ObjectProperty: sdg:involvesPerpetrator
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesPetitioner
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:involvesPlayer
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:involvesReceptor
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:involvesRecipient
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesResearchProject
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesServiceUser
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesStandard
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:involvesStudent
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesSubject
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:involvesSystemicDisruption
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesVictim
+    Range: bfo:0000002
+ObjectProperty: sdg:involvesYouth
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:iocId
+    Domain: bfo:0000040
+DataProperty: sdg:ipId
+    Domain: bfo:0000040
+DataProperty: sdg:ipRange
+    Domain: bfo:0000040
+DataProperty: sdg:ipType
+    Domain: bfo:0000040
+DataProperty: sdg:ipacCompliant
+    Domain: bfo:0000004
+DataProperty: sdg:iparCount
+    Domain: bfo:0000040
+DataProperty: sdg:irritabilityLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:isALPARCMember
+    Domain: cco:ont00000995
+DataProperty: sdg:isAbstract
+    Domain: bfo:0000015
+DataProperty: sdg:isAcceptingTraffic
+    Domain: bfo:0000015
+ObjectProperty: sdg:isAccessedBy
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:isAccessible
+    Domain: bfo:0000015
+DataProperty: sdg:isAchieved
+    Domain: bfo:0000015
+ObjectProperty: sdg:isAchievedByProgram
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:isAcknowledged
+    Domain: cco:ont00000995
+DataProperty: sdg:isActionable
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isAddedTo
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:isAdditional
+    Domain: bfo:0000015
+DataProperty: sdg:isAddressedByPhysician
+    Domain: bfo:0000015
+DataProperty: sdg:isAdjustable
+    Domain: cco:ont00000995
+DataProperty: sdg:isAdopted
+    Domain: bfo:0000015
+ObjectProperty: sdg:isAdoptedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isAdultDependent
+    Domain: bfo:0000004
+DataProperty: sdg:isAdvanced
+    Domain: bfo:0000040
+DataProperty: sdg:isAdvancedStudies
+    Domain: bfo:0000040
+DataProperty: sdg:isAerosol
+    Domain: cco:ont00000995
+DataProperty: sdg:isAlaModeAvailable
+    Domain: cco:ont00000995
+DataProperty: sdg:isAlcoholic
+    Domain: bfo:0000040
+ObjectProperty: sdg:isAllegedIn
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:isAlphabetic
+    Domain: cco:ont00000995
+DataProperty: sdg:isAlwaysOn
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isAmendedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isAmpliative
+    Domain: bfo:0000015
+ObjectProperty: sdg:isAnalyzedIn
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:isAnomalous
+    Domain: bfo:0000015
+DataProperty: sdg:isAnonymized
+    Domain: cco:ont00000995
+DataProperty: sdg:isAnonymous
+    Domain: cco:ont00000995
+DataProperty: sdg:isApostle
+    Domain: bfo:0000002
+DataProperty: sdg:isAppealed
+    Domain: bfo:0000040
+ObjectProperty: sdg:isApplicableTo
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:isAppliedTo
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:isApprenticeProgram
+    Domain: cco:ont00000995
+DataProperty: sdg:isApproved
+    Domain: bfo:0000015
+DataProperty: sdg:isAssignedToRepair
+    Domain: bfo:0000004
+ObjectProperty: sdg:isAttemptedBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:isAudioEnabled
+    Domain: bfo:0000040
+DataProperty: sdg:isAudited
+    Domain: bfo:0000040
+ObjectProperty: sdg:isAuditedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isAuthenticated
+    Domain: bfo:0000040
+DataProperty: sdg:isAuthorPreferred
+    Domain: bfo:0000030
+DataProperty: sdg:isAuthorized
+    Domain: bfo:0000004
+ObjectProperty: sdg:isAuthorizedBy
+    Domain: bfo:0000040
+    Range: bfo:0000023
+DataProperty: sdg:isAuthorizedForRemoval
+    Domain: bfo:0000015
+DataProperty: sdg:isAuthorizedOperator
+    Domain: bfo:0000015
+DataProperty: sdg:isAuthorizedToRevoke
+    Domain: bfo:0000004
+DataProperty: sdg:isAutoJoinEnabled
+    Domain: bfo:0000040
+DataProperty: sdg:isAutoUpdating
+    Domain: cco:ont00000995
+DataProperty: sdg:isAvailable247
+    Domain: cco:ont00000995
+DataProperty: sdg:isAvailableForOrder
+    Domain: bfo:0000040
+DataProperty: sdg:isBCorp
+    Domain: bfo:0000002
+DataProperty: sdg:isBQ9000Critical
+    Domain: cco:ont00000958
+DataProperty: sdg:isBaked
+    Domain: bfo:0000040
+DataProperty: sdg:isBalanced
+    Domain: bfo:0000015
+DataProperty: sdg:isBaseline
+    Domain: bfo:0000015
+DataProperty: sdg:isBehavioral
+    Domain: cco:ont00000995
+DataProperty: sdg:isBenchmark
+    Domain: cco:ont00000995
+DataProperty: sdg:isBenchmarked
+    Domain: cco:ont00000995
+DataProperty: sdg:isBestPractice
+    Domain: bfo:0000015
+DataProperty: sdg:isBilateral
+    Domain: bfo:0000030
+DataProperty: sdg:isBinding
+    Domain: cco:ont00000958
+ObjectProperty: sdg:isBirthFatherOf
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:isBirthMotherOf
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:isBlendedLearningTool
+    Domain: cco:ont00000995
+DataProperty: sdg:isBoldCall
+    Domain: cco:ont00000995
+DataProperty: sdg:isBookable
+    Domain: bfo:0000040
+DataProperty: sdg:isBreached
+    Domain: bfo:0000040
+DataProperty: sdg:isBreaded
+    Domain: bfo:0000040
+DataProperty: sdg:isBuffet
+    Domain: cco:ont00000995
+DataProperty: sdg:isBuffetStyle
+    Domain: bfo:0000015
+DataProperty: sdg:isByGrace
+    Domain: bfo:0000002
+DataProperty: sdg:isCafeteriaPlan
+    Domain: cco:ont00000995
+DataProperty: sdg:isCancelled
+    Domain: bfo:0000015
+DataProperty: sdg:isCelebrity
+    Domain: bfo:0000002
+DataProperty: sdg:isCeltic
+    Domain: bfo:0000002
+DataProperty: sdg:isCelticOrigin
+    Domain: bfo:0000002
+ObjectProperty: sdg:isCertifiedBy
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:isChairman
+    Domain: bfo:0000023
+DataProperty: sdg:isCharity
+    Domain: bfo:0000015
+DataProperty: sdg:isChefSpecial
+    Domain: cco:ont00000995
+DataProperty: sdg:isChiefOfStaff
+    Domain: bfo:0000023
+DataProperty: sdg:isChiefResilienceOfficer
+    Domain: bfo:0000023
+DataProperty: sdg:isChoice
+    Domain: bfo:0000040
+DataProperty: sdg:isChoiceBased
+    Domain: bfo:0000040
+DataProperty: sdg:isClean
+    Domain: bfo:0000015
+DataProperty: sdg:isClinical
+    Domain: bfo:0000023
+DataProperty: sdg:isClosed
+    Domain: bfo:0000015
+DataProperty: sdg:isClosedForRepairs
+    Domain: bfo:0000015
+DataProperty: sdg:isCloudBased
+    Domain: cco:ont00000995
+DataProperty: sdg:isCloudService
+    Domain: cco:ont00000995
+DataProperty: sdg:isCoercive
+    Domain: bfo:0000015
+DataProperty: sdg:isCollaborative
+    Domain: bfo:0000040
+DataProperty: sdg:isColor
+    Domain: bfo:0000040
+DataProperty: sdg:isCompetentAuthority
+    Domain: bfo:0000023
+DataProperty: sdg:isCompetitive
+    Domain: bfo:0000040
+DataProperty: sdg:isComplete
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isComponentOf
+    Domain: cco:ont00000995
+DataProperty: sdg:isComprehensive
+    Domain: bfo:0000015
+DataProperty: sdg:isCompressed
+    Domain: bfo:0000015
+DataProperty: sdg:isConcurrent
+    Domain: bfo:0000002
+DataProperty: sdg:isCondiment
+    Domain: bfo:0000040
+DataProperty: sdg:isConfirmed
+    Domain: bfo:0000015
+ObjectProperty: sdg:isConnectedTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:isConnectedToNetwork
+    Domain: bfo:0000040
+DataProperty: sdg:isConsiderationRequired
+    Domain: bfo:0000015
+DataProperty: sdg:isConstrained
+    Domain: bfo:0000040
+ObjectProperty: sdg:isConstructedFrom
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:isConstructible
+    Domain: bfo:0000015
+ObjectProperty: sdg:isContactFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isContingent
+    Domain: bfo:0000015
+DataProperty: sdg:isContinuing
+    Domain: bfo:0000015
+ObjectProperty: sdg:isContradictedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:isContradictory
+    Domain: bfo:0000015
+DataProperty: sdg:isContributed
+    Domain: bfo:0000015
+DataProperty: sdg:isControlledSubstance
+    Domain: cco:ont00000995
+DataProperty: sdg:isCooked
+    Domain: bfo:0000040
+DataProperty: sdg:isCoordinator
+    Domain: bfo:0000040
+DataProperty: sdg:isCopernicusMission
+    Domain: bfo:0000040
+DataProperty: sdg:isCopernicusSource
+    Domain: cco:ont00000995
+DataProperty: sdg:isCore
+    Domain: bfo:0000015
+DataProperty: sdg:isCoreFunction
+    Domain: bfo:0000002
+DataProperty: sdg:isCorrect
+    Domain: cco:ont00000995
+DataProperty: sdg:isCourtOrdered
+    Domain: bfo:0000023
+DataProperty: sdg:isCovenantPeople
+    Domain: bfo:0000040
+DataProperty: sdg:isCovenantal
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isCoveredByRequest
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:isCreditBearing
+    Domain: bfo:0000015
+DataProperty: sdg:isCriminal
+    Domain: bfo:0000015
+DataProperty: sdg:isCrispy
+    Domain: cco:ont00000995
+DataProperty: sdg:isCritical
+    Domain: cco:ont00000995
+DataProperty: sdg:isCriticalOfMovement
+    Domain: cco:ont00000995
+DataProperty: sdg:isCriticalOperation
+    Domain: bfo:0000040
+DataProperty: sdg:isCrossBorder
+    Domain: cco:ont00000995
+DataProperty: sdg:isCrossFunctional
+    Domain: bfo:0000040
+DataProperty: sdg:isCulDeSac
+    Domain: bfo:0000040
+DataProperty: sdg:isCurrentMember
+    Domain: bfo:0000023
+DataProperty: sdg:isCurrentPeriod
+    Domain: bfo:0000015
+DataProperty: sdg:isCurrentlyConnected
+    Domain: bfo:0000002
+DataProperty: sdg:isCustomized
+    Domain: bfo:0000040
+DataProperty: sdg:isCyberBullying
+    Domain: bfo:0000015
+DataProperty: sdg:isDairy
+    Domain: bfo:0000040
+DataProperty: sdg:isDeMinimis
+    Domain: bfo:0000023
+DataProperty: sdg:isDeceased
+    Domain: bfo:0000040
+DataProperty: sdg:isDecoratedByStudents
+    Domain: bfo:0000040
+DataProperty: sdg:isDeductedByCompany
+    Domain: bfo:0000040
+DataProperty: sdg:isDefault
+    Domain: bfo:0000040
+DataProperty: sdg:isDefaultSide
+    Domain: bfo:0000040
+DataProperty: sdg:isDeferred
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isDefinedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:isDefinedIn
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:isDefunct
+    Domain: bfo:0000040
+DataProperty: sdg:isDegenerated
+    Domain: cco:ont00000995
+DataProperty: sdg:isDelegated
+    Domain: cco:ont00000995
+DataProperty: sdg:isDeletedSecurely
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isDeliveredBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:isDeliveredIn
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+DataProperty: sdg:isDemonstrationSite
+    Domain: bfo:0000040
+ObjectProperty: sdg:isDestinationOf
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:isDevelopmental
+    Domain: bfo:0000015
+DataProperty: sdg:isDevelopmentalRequired
+    Domain: bfo:0000015
+DataProperty: sdg:isDiagnostic
+    Domain: cco:ont00000995
+DataProperty: sdg:isDieselPowered
+    Domain: bfo:0000040
+DataProperty: sdg:isDieselPoweredAllowed
+    Domain: bfo:0000040
+DataProperty: sdg:isDisruptive
+    Domain: bfo:0000040
+DataProperty: sdg:isDivine
+    Domain: bfo:0000002
+DataProperty: sdg:isDocumentary
+    Domain: bfo:0000040
+DataProperty: sdg:isDramatic
+    Domain: bfo:0000015
+ObjectProperty: sdg:isDrivenByOutput
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:isDriverBased
+    Domain: bfo:0000040
+ObjectProperty: sdg:isDropoffFor
+    Domain: bfo:0000015
+    Range: bfo:0000023
+DataProperty: sdg:isDuplicate
+    Domain: bfo:0000002
+DataProperty: sdg:isEP
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isElectedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:isElectronic
+    Domain: cco:ont00000995
+DataProperty: sdg:isElectronicRequired
+    Domain: cco:ont00000958
+DataProperty: sdg:isElectronicSignatureAccepted
+    Domain: cco:ont00000995
+DataProperty: sdg:isEligibilityRequirement
+    Domain: bfo:0000015
+DataProperty: sdg:isEligibleForCompetition
+    Domain: bfo:0000040
+DataProperty: sdg:isEligibleForFederalAid
+    Domain: cco:ont00000995
+DataProperty: sdg:isEligibleForInternet
+    Domain: bfo:0000002
+DataProperty: sdg:isEligibleForProdigy
+    Domain: bfo:0000002
+DataProperty: sdg:isEligibleForServices
+    Domain: bfo:0000040
+DataProperty: sdg:isEligibleToBlitz
+    Domain: bfo:0000015
+DataProperty: sdg:isEmbeddedAnalytics
+    Domain: bfo:0000004
+DataProperty: sdg:isEmpiricallyAnalyzed
+    Domain: bfo:0000040
+DataProperty: sdg:isEmployee
+    Domain: bfo:0000023
+DataProperty: sdg:isEmpowerment
+    Domain: bfo:0000015
+ObjectProperty: sdg:isEndOf
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:isEndemic
+    Domain: cco:ont00000995
+DataProperty: sdg:isEndemicZone
+    Domain: bfo:0000015
+DataProperty: sdg:isEnforced
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isEnforcedBy
+    Range: bfo:0000023
+DataProperty: sdg:isEnrollmentRequired
+    Domain: bfo:0000002
+DataProperty: sdg:isEnterpriseGrade
+    Domain: cco:ont00000995
+DataProperty: sdg:isEpicUpgrade
+    Domain: cco:ont00000995
+DataProperty: sdg:isEquitable
+    Domain: cco:ont00000995
+DataProperty: sdg:isEquity
+    Domain: bfo:0000040
+DataProperty: sdg:isEschatological
+    Domain: cco:ont00000995
+DataProperty: sdg:isEssential
+    Domain: cco:ont00000995
+DataProperty: sdg:isEthical
+    Domain: bfo:0000040
+ObjectProperty: sdg:isEvaluatedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:isEvidenceBased
+    Domain: bfo:0000015
+DataProperty: sdg:isExOfficio
+    Domain: bfo:0000040
+DataProperty: sdg:isExcessCoverage
+    Domain: cco:ont00000995
+DataProperty: sdg:isExempt
+    Domain: bfo:0000023
+DataProperty: sdg:isExplicative
+    Domain: bfo:0000015
+DataProperty: sdg:isExplicit
+    Domain: bfo:0000040
+DataProperty: sdg:isExploited
+    Domain: bfo:0000015
+ObjectProperty: sdg:isExporterIn
+    Domain: bfo:0000004
+    Range: bfo:0000015
+DataProperty: sdg:isExposedToForeignMaterials
+    Domain: bfo:0000015
+DataProperty: sdg:isExtraCost
+    Domain: cco:ont00000995
+DataProperty: sdg:isFeasible
+    Domain: bfo:0000015
+DataProperty: sdg:isFederalAgency
+    Domain: bfo:0000023
+DataProperty: sdg:isFeeBased
+    Domain: cco:ont00000995
+DataProperty: sdg:isFellow
+    Domain: bfo:0000015
+DataProperty: sdg:isFinalist
+    Domain: bfo:0000002
+DataProperty: sdg:isFixedIncome
+    Domain: bfo:0000040
+ObjectProperty: sdg:isForItem
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:isForeignOwner
+    Domain: cco:ont00000995
+DataProperty: sdg:isFormatted
+    Domain: cco:ont00000995
+DataProperty: sdg:isFormedForIncubator
+    Domain: bfo:0000040
+DataProperty: sdg:isFormerMember
+    Domain: bfo:0000002
+DataProperty: sdg:isFormulary
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isForwardedTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:isFoundational
+    Domain: bfo:0000040
+DataProperty: sdg:isFried
+    Domain: bfo:0000040
+DataProperty: sdg:isFullyApplicable
+    Domain: bfo:0000015
+DataProperty: sdg:isFunctional
+    Domain: cco:ont00000995
+DataProperty: sdg:isFunded
+    Domain: bfo:0000015
+ObjectProperty: sdg:isGeneratedBy
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:isGlutenSource
+    Domain: bfo:0000040
+DataProperty: sdg:isGodBreathed
+    Domain: cco:ont00000995
+DataProperty: sdg:isGodly
+    Domain: bfo:0000040
+DataProperty: sdg:isGoodFaith
+    Domain: cco:ont00000995
+DataProperty: sdg:isGovernmentAgency
+    Domain: cco:ont00000995
+DataProperty: sdg:isGraduateStudent
+    Domain: bfo:0000002
+DataProperty: sdg:isGrandAward
+    Domain: bfo:0000040
+DataProperty: sdg:isGreenAgent
+    Domain: bfo:0000040
+DataProperty: sdg:isGrowthSector
+    Domain: bfo:0000004
+DataProperty: sdg:isGuaranteed
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isGuardedBy
+    Domain: bfo:0000040
+    Range: bfo:0000004
+DataProperty: sdg:isHalfTimeMinimum
+    Domain: cco:ont00000995
+DataProperty: sdg:isHandsOn
+    Domain: cco:ont00000958
+DataProperty: sdg:isHeadquarters
+    Domain: bfo:0000040
+DataProperty: sdg:isHealing
+    Domain: bfo:0000015
+DataProperty: sdg:isHedged
+    Domain: cco:ont00000995
+DataProperty: sdg:isHighReliability
+    Domain: cco:ont00000995
+DataProperty: sdg:isHistoricNarrative
+    Domain: cco:ont00000995
+DataProperty: sdg:isHistorical
+    Domain: cco:ont00000995
+DataProperty: sdg:isHolistic
+    Domain: bfo:0000015
+DataProperty: sdg:isHomemade
+    Domain: cco:ont00000995
+DataProperty: sdg:isHomesteaded
+    Domain: bfo:0000040
+DataProperty: sdg:isHonor
+    Domain: cco:ont00000995
+DataProperty: sdg:isHonorsStudent
+    Domain: bfo:0000002
+DataProperty: sdg:isHostForRhamphicarpa
+    Domain: bfo:0000040
+DataProperty: sdg:isHostForStriga
+    Domain: bfo:0000040
+DataProperty: sdg:isHousemade
+    Domain: cco:ont00000995
+DataProperty: sdg:isIlluminated
+    Domain: cco:ont00000995
+DataProperty: sdg:isImmutable
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isImplementedBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:isImplementedIn
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:isImporterIn
+    Domain: bfo:0000004
+    Range: bfo:0000015
+DataProperty: sdg:isIncoherent
+    Domain: bfo:0000015
+DataProperty: sdg:isIncorporated
+    Domain: bfo:0000040
+ObjectProperty: sdg:isInfluencedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:isIngredient
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:isInitialState
+    Domain: bfo:0000002
+DataProperty: sdg:isInstantaneous
+    Domain: bfo:0000002
+DataProperty: sdg:isInstrumentality
+    Domain: bfo:0000040
+DataProperty: sdg:isInsuranceCoordinator
+    Domain: bfo:0000040
+DataProperty: sdg:isIntegrated
+    Domain: cco:ont00000995
+DataProperty: sdg:isInterdisciplinary
+    Domain: bfo:0000040
+DataProperty: sdg:isInternal
+    Domain: bfo:0000015
+DataProperty: sdg:isInternalThought
+    Domain: bfo:0000015
+DataProperty: sdg:isInternalized
+    Domain: bfo:0000002
+DataProperty: sdg:isInternetFacing
+    Domain: bfo:0000015
+ObjectProperty: sdg:isInterpretedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000030
+ObjectProperty: sdg:isInvestedInBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isIrreversible
+    Domain: bfo:0000002
+DataProperty: sdg:isIslandBoard
+    Domain: bfo:0000040
+ObjectProperty: sdg:isIssuedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isJournalEntry
+    Domain: cco:ont00000995
+DataProperty: sdg:isKeptAtHome
+    Domain: cco:ont00000995
+DataProperty: sdg:isLeader
+    Domain: bfo:0000023
+DataProperty: sdg:isLeadership
+    Domain: bfo:0000015
+DataProperty: sdg:isLeadershipRole
+    Domain: bfo:0000015
+DataProperty: sdg:isLegacy
+    Domain: bfo:0000015
+DataProperty: sdg:isLegallyBinding
+    Domain: bfo:0000040
+DataProperty: sdg:isLicensed
+    Domain: bfo:0000002
+DataProperty: sdg:isLifetimeAchievement
+    Domain: cco:ont00000995
+DataProperty: sdg:isLocal
+    Domain: bfo:0000040
+DataProperty: sdg:isLocalSourced
+    Domain: bfo:0000040
+DataProperty: sdg:isLocallyGrown
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isLocatedAt
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:isLocked
+    Domain: bfo:0000002
+DataProperty: sdg:isLunchBreakIncluded
+    Domain: bfo:0000015
+DataProperty: sdg:isMailPickupLocation
+    Domain: cco:ont00000995
+DataProperty: sdg:isMainland
+    Domain: bfo:0000040
+DataProperty: sdg:isMainstream
+    Domain: bfo:0000030
+DataProperty: sdg:isMajorDonor
+    Domain: bfo:0000040
+ObjectProperty: sdg:isManagedBy
+    Domain: bfo:0000040
+DataProperty: sdg:isManagedService
+    Domain: cco:ont00000995
+DataProperty: sdg:isManager
+    Domain: bfo:0000023
+DataProperty: sdg:isMarried
+    Domain: bfo:0000040
+ObjectProperty: sdg:isMatchedDatasetOf
+    Range: bfo:0000002
+DataProperty: sdg:isMaterial
+    Domain: cco:ont00000995
+DataProperty: sdg:isMathBased
+    Domain: bfo:0000040
+DataProperty: sdg:isMeaningful
+    Domain: bfo:0000040
+ObjectProperty: sdg:isMeasuredBy
+    Range: bfo:0000015
+DataProperty: sdg:isMessiah
+    Domain: bfo:0000002
+DataProperty: sdg:isMet
+    Domain: bfo:0000040
+DataProperty: sdg:isMinorParticipantEvent
+    Domain: bfo:0000015
+DataProperty: sdg:isMirrorless
+    Domain: cco:ont00000995
+DataProperty: sdg:isMisleading
+    Domain: cco:ont00000995
+DataProperty: sdg:isMitigated
+    Domain: bfo:0000015
+ObjectProperty: sdg:isMitigatedBy
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:isModerator
+    Domain: bfo:0000002
+DataProperty: sdg:isModernInvention
+    Domain: bfo:0000040
+DataProperty: sdg:isMoneyLaunderingReportingOfficer
+    Domain: bfo:0000023
+ObjectProperty: sdg:isMonitoredBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:isMotherTongue
+    Domain: bfo:0000040
+DataProperty: sdg:isMultiRuleEnabled
+    Domain: cco:ont00000995
+DataProperty: sdg:isMultilobulated
+    Domain: cco:ont00000995
+DataProperty: sdg:isMultilocular
+    Domain: cco:ont00000995
+DataProperty: sdg:isMutagenic
+    Domain: cco:ont00000995
+DataProperty: sdg:isNearJoint
+    Domain: bfo:0000015
+DataProperty: sdg:isNearTendonSheath
+    Domain: bfo:0000015
+DataProperty: sdg:isNecessaryStep
+    Domain: bfo:0000015
+DataProperty: sdg:isNegotiating
+    Domain: cco:ont00000995
+DataProperty: sdg:isNerveWracking
+    Domain: bfo:0000015
+DataProperty: sdg:isNetworkCapable
+    Domain: bfo:0000002
+DataProperty: sdg:isNewElement
+    Domain: bfo:0000040
+DataProperty: sdg:isNonFiction
+    Domain: cco:ont00000995
+DataProperty: sdg:isNonFormulary
+    Domain: cco:ont00000995
+DataProperty: sdg:isNonProfit
+    Domain: bfo:0000040
+DataProperty: sdg:isNonprofit
+    Domain: bfo:0000002
+DataProperty: sdg:isNotarized
+    Domain: cco:ont00000995
+DataProperty: sdg:isObjectionAllowed
+    Domain: bfo:0000015
+DataProperty: sdg:isObsolete
+    Domain: bfo:0000040
+DataProperty: sdg:isOccupied
+    Domain: bfo:0000040
+ObjectProperty: sdg:isOfferedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+DataProperty: sdg:isOfficial
+    Domain: cco:ont00000995
+DataProperty: sdg:isOlympicChampion
+    Domain: bfo:0000040
+DataProperty: sdg:isOnSiteAvailable
+    Domain: cco:ont00000958
+DataProperty: sdg:isOnSiteRegistration
+    Domain: bfo:0000040
+DataProperty: sdg:isOneTimeOnly
+    Domain: cco:ont00000995
+DataProperty: sdg:isOneWay
+    Domain: bfo:0000015
+DataProperty: sdg:isOngoing
+    Domain: bfo:0000015
+DataProperty: sdg:isOnline
+    Domain: bfo:0000015
+DataProperty: sdg:isOpenXdr
+    Domain: cco:ont00000995
+DataProperty: sdg:isOperable
+    Domain: cco:ont00000995
+DataProperty: sdg:isOperational
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isOriginOf
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:isOriginalMemberOf
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:isOriginator
+    Domain: bfo:0000040
+DataProperty: sdg:isOutdoor
+    Domain: bfo:0000040
+DataProperty: sdg:isOutofState
+    Domain: bfo:0000023
+DataProperty: sdg:isOwner
+    Domain: bfo:0000004
+DataProperty: sdg:isPanSeared
+    Domain: bfo:0000040
+DataProperty: sdg:isPanelQuestion
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isParasitizedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isParent
+    Domain: bfo:0000004
+ObjectProperty: sdg:isPartOfBlend
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:isPartOfInitiative
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:isPartOfMovement
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:isPartOfOrganization
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:isPartOfProgram
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:isPartOfRegularDuties
+    Domain: bfo:0000023
+ObjectProperty: sdg:isPartOfTopic
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:isParticular
+    Domain: bfo:0000015
+DataProperty: sdg:isPediatricOtolaryngology
+    Domain: bfo:0000015
+ObjectProperty: sdg:isPerformedBy
+    Domain: cco:ont00000958
+ObjectProperty: sdg:isPermittedBy
+    Range: bfo:0000023
+ObjectProperty: sdg:isPetitionedBy
+    Domain: bfo:0000023
+    Range: bfo:0000023
+DataProperty: sdg:isPhilanthropic
+    Domain: bfo:0000040
+DataProperty: sdg:isPhysical
+    Domain: bfo:0000015
+ObjectProperty: sdg:isPickupFor
+    Domain: bfo:0000015
+    Range: bfo:0000023
+DataProperty: sdg:isPoetry
+    Domain: cco:ont00000995
+DataProperty: sdg:isPolicyOwner
+    Domain: bfo:0000023
+DataProperty: sdg:isPolicyRelevant
+    Domain: bfo:0000040
+DataProperty: sdg:isPortable
+    Domain: cco:ont00000995
+DataProperty: sdg:isPositive
+    Domain: bfo:0000015
+DataProperty: sdg:isPossible
+    Domain: bfo:0000015
+DataProperty: sdg:isPostResurrection
+    Domain: cco:ont00000958
+DataProperty: sdg:isPotential
+    Domain: cco:ont00000995
+DataProperty: sdg:isPreChristian
+    Domain: cco:ont00000958
+DataProperty: sdg:isPreSigned
+    Domain: cco:ont00000995
+DataProperty: sdg:isPrecedentSetting
+    Domain: bfo:0000015
+DataProperty: sdg:isPredictive
+    Domain: bfo:0000015
+DataProperty: sdg:isPregnant
+    Domain: cco:ont00000995
+DataProperty: sdg:isPrerequisite
+    Domain: bfo:0000040
+ObjectProperty: sdg:isPriceFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:isPrimaryCancer
+    Domain: cco:ont00000995
+DataProperty: sdg:isPrimaryCare
+    Domain: bfo:0000040
+DataProperty: sdg:isPrimaryFocus
+    Domain: bfo:0000002
+DataProperty: sdg:isPrimaryProvider
+    Domain: bfo:0000015
+DataProperty: sdg:isPrimaryResidence
+    Domain: bfo:0000002
+DataProperty: sdg:isPrimaryStandard
+    Domain: cco:ont00000995
+DataProperty: sdg:isPrimaryVector
+    Domain: cco:ont00000995
+DataProperty: sdg:isPrime
+    Domain: cco:ont00000995
+DataProperty: sdg:isPrioritizedForResponse
+    Domain: bfo:0000015
+DataProperty: sdg:isPrivacyProtected
+    Domain: cco:ont00000995
+DataProperty: sdg:isPrivate
+    Domain: cco:ont00000995
+DataProperty: sdg:isProactive
+    Domain: bfo:0000015
+ObjectProperty: sdg:isProducedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:isProfitable
+    Domain: bfo:0000040
+DataProperty: sdg:isPromise
+    Domain: cco:ont00000995
+DataProperty: sdg:isProperlyFilled
+    Domain: cco:ont00000995
+DataProperty: sdg:isProphecy
+    Domain: cco:ont00000995
+DataProperty: sdg:isProphet
+    Domain: bfo:0000002
+DataProperty: sdg:isProtectedFromRetaliation
+    Domain: bfo:0000004
+DataProperty: sdg:isProtein
+    Domain: bfo:0000040
+DataProperty: sdg:isProxyHolder
+    Domain: cco:ont00000995
+DataProperty: sdg:isPublicFacing
+    Domain: cco:ont00000995
+DataProperty: sdg:isPublicRecord
+    Domain: cco:ont00000958
+DataProperty: sdg:isPubliclyAccessible
+    Domain: bfo:0000002
+DataProperty: sdg:isPublished
+    Domain: bfo:0000015
+ObjectProperty: sdg:isPublishedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isQualified
+    Domain: bfo:0000002
+DataProperty: sdg:isQualityFocused
+    Domain: bfo:0000015
+DataProperty: sdg:isRavingFan
+    Domain: cco:ont00000958
+DataProperty: sdg:isRaw
+    Domain: bfo:0000040
+DataProperty: sdg:isReadyMade
+    Domain: bfo:0000015
+DataProperty: sdg:isRealTime
+    Domain: bfo:0000040
+ObjectProperty: sdg:isRealizedBy
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:isReappointment
+    Domain: bfo:0000023
+DataProperty: sdg:isRebootRequired
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isRecipientOf
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:isRecognized
+    Domain: bfo:0000023
+DataProperty: sdg:isRecommended
+    Domain: cco:ont00000995
+DataProperty: sdg:isRecorded
+    Domain: bfo:0000015
+ObjectProperty: sdg:isRecordingOf
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:isRecurring
+    Domain: bfo:0000040
+DataProperty: sdg:isRedundant
+    Domain: bfo:0000040
+ObjectProperty: sdg:isReferencedBy
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:isReferencedIn
+    Domain: bfo:0000030
+    Range: cco:ont00000995
+DataProperty: sdg:isRefundable
+    Domain: cco:ont00000995
+DataProperty: sdg:isRegimented
+    Domain: bfo:0000015
+DataProperty: sdg:isRegulatory
+    Domain: bfo:0000002
+DataProperty: sdg:isReissued
+    Domain: cco:ont00000995
+DataProperty: sdg:isRelative
+    Domain: bfo:0000002
+DataProperty: sdg:isRelevant
+    Domain: cco:ont00000958
+DataProperty: sdg:isReliableDuringOutage
+    Domain: cco:ont00000995
+DataProperty: sdg:isRemedial
+    Domain: bfo:0000016
+DataProperty: sdg:isRentalShow
+    Domain: bfo:0000015
+DataProperty: sdg:isRepeated
+    Domain: bfo:0000015
+DataProperty: sdg:isRepetitive
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isRepresentedBy
+    Range: bfo:0000004
+DataProperty: sdg:isRequested
+    Domain: bfo:0000040
+ObjectProperty: sdg:isRequestedChange
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:isResidenceOf
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:isResolved
+    Domain: bfo:0000040
+DataProperty: sdg:isResponsibleForStandards
+    Domain: bfo:0000015
+DataProperty: sdg:isRestDay
+    Domain: bfo:0000002
+DataProperty: sdg:isRetired
+    Domain: bfo:0000040
+DataProperty: sdg:isRetroreflectorized
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isReviewedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:isRoHsCompliant
+    Domain: cco:ont00000995
+DataProperty: sdg:isRural
+    Domain: bfo:0000004
+DataProperty: sdg:isSSOSupported
+    Domain: bfo:0000040
+DataProperty: sdg:isSafeHarbor
+    Domain: cco:ont00000995
+DataProperty: sdg:isSafeSpace
+    Domain: cco:ont00000958
+DataProperty: sdg:isSample
+    Domain: bfo:0000040
+DataProperty: sdg:isSanctification
+    Domain: bfo:0000015
+DataProperty: sdg:isScalable
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isScannedBy
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:isSeasonal
+    Domain: cco:ont00000995
+DataProperty: sdg:isSecure
+    Domain: bfo:0000015
+DataProperty: sdg:isSelected
+    Domain: bfo:0000040
+DataProperty: sdg:isSelectedForIncubator
+    Domain: bfo:0000015
+DataProperty: sdg:isSensible
+    Domain: bfo:0000015
+ObjectProperty: sdg:isServedAt
+    Domain: cco:ont00000958
+    Range: bfo:0000040
+ObjectProperty: sdg:isServedBy
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:isServedByUnit
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:isServedWith
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:isServiceLed
+    Domain: bfo:0000015
+ObjectProperty: sdg:isServingOf
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:isShortcut
+    Domain: bfo:0000015
+DataProperty: sdg:isSickInHousehold
+    Domain: cco:ont00000995
+DataProperty: sdg:isSideDish
+    Domain: bfo:0000040
+DataProperty: sdg:isSigned
+    Domain: cco:ont00000958
+DataProperty: sdg:isSixthForm
+    Domain: bfo:0000015
+DataProperty: sdg:isSmartMetering
+    Domain: bfo:0000015
+ObjectProperty: sdg:isSoldIn
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:isSolubleMoly
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isSourceFor
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:isSpecialCategory
+    Domain: bfo:0000002
+DataProperty: sdg:isSpecialCategoryState
+    Domain: bfo:0000015
+DataProperty: sdg:isSpecialMenu
+    Domain: bfo:0000015
+DataProperty: sdg:isSpecialty
+    Domain: cco:ont00000995
+DataProperty: sdg:isSponsor
+    Domain: bfo:0000002
+DataProperty: sdg:isSponsoredByEmployer
+    Domain: bfo:0000040
+DataProperty: sdg:isStaining
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isStartOf
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:isStateSupported
+    Domain: bfo:0000040
+DataProperty: sdg:isStatic
+    Domain: bfo:0000040
+DataProperty: sdg:isStatutory
+    Domain: bfo:0000015
+DataProperty: sdg:isStrategic
+    Domain: bfo:0000040
+DataProperty: sdg:isStrategicPlanner
+    Domain: bfo:0000002
+DataProperty: sdg:isSubchondral
+    Domain: bfo:0000015
+DataProperty: sdg:isSubjectOfDiversification
+    Domain: bfo:0000040
+ObjectProperty: sdg:isSubjectOfPrevalenceRate
+    Domain: bfo:0000015
+DataProperty: sdg:isSubjectOfRetaliation
+    Domain: bfo:0000004
+ObjectProperty: sdg:isSubjectTo
+    Domain: bfo:0000040
+DataProperty: sdg:isSubjectToDisclosure
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isSubmittedBy
+    Domain: cco:ont00000995
+DataProperty: sdg:isSubmittedEarly
+    Domain: cco:ont00000995
+DataProperty: sdg:isSubsetOf
+    Domain: bfo:0000040
+DataProperty: sdg:isSubsidiary
+    Domain: bfo:0000040
+ObjectProperty: sdg:isSubtypeOf
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:isSufficientStep
+    Domain: bfo:0000015
+ObjectProperty: sdg:isSupersededBy
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+DataProperty: sdg:isSupervisory
+    Domain: bfo:0000023
+DataProperty: sdg:isSurge
+    Domain: cco:ont00000995
+DataProperty: sdg:isSuspicious
+    Domain: bfo:0000040
+DataProperty: sdg:isSweetened
+    Domain: bfo:0000040
+DataProperty: sdg:isSynced
+    Domain: cco:ont00000995
+DataProperty: sdg:isSyncretic
+    Domain: cco:ont00000995
+DataProperty: sdg:isSystemicallyImportant
+    Domain: cco:ont00000995
+DataProperty: sdg:isTacky
+    Domain: cco:ont00000995
+DataProperty: sdg:isTargetMarket
+    Domain: bfo:0000015
+ObjectProperty: sdg:isTargetOf
+    Range: bfo:0000015
+DataProperty: sdg:isTeaching
+    Domain: cco:ont00000995
+DataProperty: sdg:isTeamCaptain
+    Domain: bfo:0000015
+DataProperty: sdg:isTeamEvent
+    Domain: bfo:0000040
+DataProperty: sdg:isTechnicalSpecificationBound
+    Domain: cco:ont00000995
+DataProperty: sdg:isTemporary
+    Domain: bfo:0000023
+DataProperty: sdg:isTenured
+    Domain: bfo:0000015
+ObjectProperty: sdg:isTestedBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:isTestedIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:isTheoreticalModel
+    Domain: bfo:0000015
+DataProperty: sdg:isThirdParty
+    Domain: cco:ont00000995
+DataProperty: sdg:isThroughWord
+    Domain: bfo:0000002
+DataProperty: sdg:isTollFree
+    Domain: cco:ont00000995
+DataProperty: sdg:isTopFive
+    Domain: bfo:0000040
+DataProperty: sdg:isTrainer
+    Domain: bfo:0000002
+DataProperty: sdg:isTransit
+    Domain: bfo:0000015
+DataProperty: sdg:isTreatable
+    Domain: bfo:0000015
+DataProperty: sdg:isTrusted
+    Domain: bfo:0000002
+ObjectProperty: sdg:isTypeOf
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:isUnaccompanied
+    Domain: bfo:0000040
+DataProperty: sdg:isUngodly
+    Domain: bfo:0000040
+DataProperty: sdg:isUnilateral
+    Domain: bfo:0000030
+DataProperty: sdg:isUniversal
+    Domain: bfo:0000015
+DataProperty: sdg:isUnlisted
+    Domain: cco:ont00000995
+DataProperty: sdg:isUpdated
+    Domain: cco:ont00000995
+DataProperty: sdg:isUpgraded
+    Domain: bfo:0000040
+DataProperty: sdg:isUpperDivision
+    Domain: bfo:0000040
+DataProperty: sdg:isUrbanAdapted
+    Domain: cco:ont00000995
+DataProperty: sdg:isUrgentCare
+    Domain: bfo:0000015
+ObjectProperty: sdg:isUsedBy
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:isValid
+    Domain: cco:ont00000995
+ObjectProperty: sdg:isVariantOf
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:isVerbal
+    Domain: bfo:0000015
+DataProperty: sdg:isVerifiable
+    Domain: cco:ont00000995
+DataProperty: sdg:isVeteran
+    Domain: cco:ont00000995
+DataProperty: sdg:isVocational
+    Domain: bfo:0000015
+DataProperty: sdg:isVoluntary
+    Domain: bfo:0000015
+DataProperty: sdg:isVulnerable
+    Domain: bfo:0000002
+DataProperty: sdg:isWaived
+    Domain: bfo:0000040
+DataProperty: sdg:isWebBased
+    Domain: cco:ont00000958
+DataProperty: sdg:isWet
+    Domain: bfo:0000015
+DataProperty: sdg:isWildCaught
+    Domain: cco:ont00000995
+DataProperty: sdg:isWinner
+    Domain: bfo:0000002
+DataProperty: sdg:isWirelessEnabled
+    Domain: bfo:0000040
+DataProperty: sdg:isWithdrawable
+    Domain: cco:ont00000995
+DataProperty: sdg:isWithdrawing
+    Domain: cco:ont00000995
+DataProperty: sdg:isWithheld
+    Domain: bfo:0000015
+DataProperty: sdg:isWithinAggregateLimit
+    Domain: cco:ont00000995
+DataProperty: sdg:isWithinAnnualLimit
+    Domain: cco:ont00000995
+DataProperty: sdg:isWithinJurisdiction
+    Domain: bfo:0000015
+DataProperty: sdg:isWordless
+    Domain: cco:ont00000995
+DataProperty: sdg:isWritten
+    Domain: bfo:0000015
+DataProperty: sdg:isYouth
+    Domain: bfo:0000002
+DataProperty: sdg:isYouthOnly
+    Domain: bfo:0000015
+ObjectProperty: sdg:is_result_of
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:is_target_of
+    Range: cco:ont00000741
+DataProperty: sdg:isbn10
+    Domain: cco:ont00000995
+DataProperty: sdg:isbn13
+    Domain: cco:ont00000995
+DataProperty: sdg:islandGroup
+    Domain: cco:ont00000995
+DataProperty: sdg:ismsCompliant
+    Domain: cco:ont00000995
+DataProperty: sdg:isoSetting
+    Domain: bfo:0000015
+DataProperty: sdg:isolationLevel
+    Domain: bfo:0000040
+DataProperty: sdg:isolationRating
+    Domain: cco:ont00000995
+DataProperty: sdg:issn
+    Domain: cco:ont00000958
+DataProperty: sdg:issuanceDate
+    Domain: cco:ont00000995
+DataProperty: sdg:issuanceDateTime
+    Domain: bfo:0000015
+DataProperty: sdg:issueCategory
+    Domain: bfo:0000015
+DataProperty: sdg:issueCode
+    Domain: bfo:0000015
+DataProperty: sdg:issueDateTime
+    Domain: bfo:0000015
+DataProperty: sdg:issueDescription
+    Domain: bfo:0000015
+DataProperty: sdg:issueId
+    Domain: bfo:0000015
+DataProperty: sdg:issueName
+    Domain: bfo:0000015
+DataProperty: sdg:issuePrice
+    Domain: bfo:0000023
+DataProperty: sdg:issueTitle
+    Domain: bfo:0000015
+DataProperty: sdg:issuedByDetail
+    Domain: cco:ont00000958
+ObjectProperty: sdg:issuedByLea
+    Domain: cco:ont00000958
+    Range: bfo:0000023
+ObjectProperty: sdg:issuedByReview
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:issuedByScheme
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+DataProperty: sdg:issuedDate
+    Domain: cco:ont00000958
+ObjectProperty: sdg:issuedDuringReview
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:issuedFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:issuedIn
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:issuedToStation
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:issued_by
+    Range: bfo:0000023
+DataProperty: sdg:issuer
+    Domain: cco:ont00000958
+DataProperty: sdg:issuerName
+    Domain: bfo:0000015
+DataProperty: sdg:issuerType
+    Domain: bfo:0000015
+ObjectProperty: sdg:issuesApprovalFor
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:issuesApprovalTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:issuesAssessment
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:issuesAwards
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:issuesCertificationFor
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:issuesEhcp
+    Domain: bfo:0000023
+    Range: cco:ont00000958
+ObjectProperty: sdg:issuesForecast
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:issuesPressRelease
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:issuesRegistration
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:issuesStipendsFor
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:issuesUnits
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:issuesUnitsTo
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:issuingAuthority
+    Domain: bfo:0000040
+    Range: bfo:0000001
+ObjectProperty: sdg:issuingAuthorityType
+    Domain: cco:ont00000958
+    Range: bfo:0000001
+DataProperty: sdg:issuingBodyName
+    Domain: cco:ont00000958
+DataProperty: sdg:issuingConference
+    Domain: cco:ont00000958
+DataProperty: sdg:issuingCountryCode
+    Domain: bfo:0000002
+DataProperty: sdg:issuingEntity
+    Domain: bfo:0000040
+DataProperty: sdg:issuingJurisdiction
+    Domain: bfo:0000015
+DataProperty: sdg:issuingLEA
+    Domain: cco:ont00000958
+DataProperty: sdg:issuingOffice
+    Domain: cco:ont00000958
+DataProperty: sdg:issuingOfficer
+    Domain: bfo:0000002
+DataProperty: sdg:issuingOfficerTitle
+    Domain: bfo:0000002
+ObjectProperty: sdg:issuingOrganization
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:itemCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:itemCode
+    Domain: bfo:0000040
+DataProperty: sdg:itemStatus
+    Domain: bfo:0000015
+DataProperty: sdg:itemText
+    Domain: bfo:0000015
+DataProperty: sdg:itemsPurchased
+    Domain: cco:ont00000995
+DataProperty: sdg:iupacName
+    Domain: cco:ont00000995
+DataProperty: sdg:jerseyNumber
+    Domain: bfo:0000015
+DataProperty: sdg:jitterTolerance
+    Domain: bfo:0000040
+DataProperty: sdg:jobCreationCommitment
+    Domain: bfo:0000015
+DataProperty: sdg:jobId
+    Domain: bfo:0000015
+DataProperty: sdg:jobPostingId
+    Domain: bfo:0000015
+DataProperty: sdg:jobType
+    Domain: bfo:0000015
+DataProperty: sdg:joinNewsletter
+    Domain: bfo:0000040
+DataProperty: sdg:jointCount
+    Domain: bfo:0000040
+DataProperty: sdg:jointType
+    Domain: bfo:0000016
+DataProperty: sdg:journalId
+    Domain: cco:ont00000958
+DataProperty: sdg:journeyId
+    Domain: bfo:0000004
+DataProperty: sdg:judgementText
+    Domain: bfo:0000015
+ObjectProperty: sdg:judges
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:judgmentDate
+    Domain: bfo:0000040
+DataProperty: sdg:judgmentId
+    Domain: bfo:0000040
+DataProperty: sdg:jumpingScore
+    Domain: bfo:0000015
+DataProperty: sdg:jumpingSireCount
+    Domain: cco:ont00000995
+DataProperty: sdg:junctionTemperatureRange
+    Domain: cco:ont00000995
+DataProperty: sdg:jurisdictionCoverage
+    Domain: bfo:0000040
+DataProperty: sdg:jurisdictionDescription
+    Domain: bfo:0000040
+ObjectProperty: sdg:jurisdictionForRegulation
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:jurisdictionRegion
+    Domain: bfo:0000004
+DataProperty: sdg:jurisdictionState
+    Domain: cco:ont00000958
+DataProperty: sdg:jurisdictionType
+    Domain: bfo:0000002
+DataProperty: sdg:jurisdictionalScope
+    Domain: bfo:0000040
+DataProperty: sdg:justificationDate
+    Domain: bfo:0000040
+DataProperty: sdg:justificationText
+    Domain: bfo:0000015
+ObjectProperty: sdg:justifies
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:keelMaterial
+    Domain: cco:ont00000995
+DataProperty: sdg:keyContributions
+    Domain: bfo:0000002
+DataProperty: sdg:keyFindings
+    Domain: cco:ont00000995
+DataProperty: sdg:keyId
+    Domain: bfo:0000040
+DataProperty: sdg:keyIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:keyLength
+    Domain: cco:ont00000995
+DataProperty: sdg:keyLengthBits
+    Domain: bfo:0000040
+DataProperty: sdg:keyString
+    Domain: cco:ont00000958
+DataProperty: sdg:keyThemes
+    Domain: bfo:0000040
+DataProperty: sdg:keyType
+    Domain: bfo:0000040
+DataProperty: sdg:keyframeCount
+    Domain: bfo:0000002
+DataProperty: sdg:knowledgeBaseId
+    Domain: cco:ont00000995
+DataProperty: sdg:knowledgeId
+    Domain: cco:ont00000995
+DataProperty: sdg:labName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:labelsSocialNetworkingServiceUsage
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+DataProperty: sdg:laborCost
+    Domain: bfo:0000015
+DataProperty: sdg:laborStatId
+    Domain: cco:ont00000995
+DataProperty: sdg:laboratoryIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:laboratoryName
+    Domain: bfo:0000040
+DataProperty: sdg:landOwnershipType
+    Domain: bfo:0000040
+DataProperty: sdg:landUseCategory
+    Domain: bfo:0000040
+DataProperty: sdg:landUseCode
+    Domain: bfo:0000040
+DataProperty: sdg:landUseHistory
+    Domain: bfo:0000040
+DataProperty: sdg:landUseId
+    Domain: bfo:0000015
+DataProperty: sdg:landfillCapacitySavedPercent
+    Domain: bfo:0000015
+ObjectProperty: sdg:landscapePosition
+    Domain: bfo:0000004
+DataProperty: sdg:laneCount
+    Domain: bfo:0000015
+DataProperty: sdg:languageAvailability
+    Domain: cco:ont00000995
+DataProperty: sdg:languageBarrierPerception
+    Domain: cco:ont00000995
+DataProperty: sdg:languageProficiency
+    Domain: bfo:0000004
+DataProperty: sdg:languages
+    Domain: bfo:0000040
+DataProperty: sdg:largeEndTolerance
+    Domain: cco:ont00000958
+DataProperty: sdg:lastAccessed
+    Domain: cco:ont00000995
+DataProperty: sdg:lastAdministered
+    Domain: bfo:0000015
+DataProperty: sdg:lastAmendmentDate
+    Domain: cco:ont00000958
+DataProperty: sdg:lastAnalysisDate
+    Domain: bfo:0000040
+DataProperty: sdg:lastApplicationDate
+    Domain: bfo:0000004
+DataProperty: sdg:lastAssessed
+    Domain: bfo:0000040
+DataProperty: sdg:lastAssessedDate
+    Domain: bfo:0000016
+DataProperty: sdg:lastAssessmentDate
+    Domain: bfo:0000004
+DataProperty: sdg:lastBackup
+    Domain: cco:ont00000995
+DataProperty: sdg:lastBackupDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastCatalogedDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastCertificationDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastCommunicationTime
+    Domain: bfo:0000040
+DataProperty: sdg:lastComplianceCheck
+    Domain: cco:ont00000995
+DataProperty: sdg:lastContactDate
+    Domain: bfo:0000015
+DataProperty: sdg:lastCredentialUpdate
+    Domain: bfo:0000015
+DataProperty: sdg:lastDonationDate
+    Domain: bfo:0000040
+DataProperty: sdg:lastEvaluationDate
+    Domain: bfo:0000040
+DataProperty: sdg:lastFirmwareVersion
+    Domain: bfo:0000040
+DataProperty: sdg:lastHealthCheckDate
+    Domain: bfo:0000040
+DataProperty: sdg:lastHeartbeat
+    Domain: bfo:0000040
+DataProperty: sdg:lastLogPush
+    Domain: bfo:0000040
+DataProperty: sdg:lastLoginAt
+    Domain: cco:ont00000995
+DataProperty: sdg:lastLoginDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastMaintenance
+    Domain: cco:ont00000995
+DataProperty: sdg:lastMaintenanceDate
+    Domain: bfo:0000040
+DataProperty: sdg:lastMeetingDate
+    Domain: bfo:0000002
+DataProperty: sdg:lastObserved
+    Domain: bfo:0000040
+DataProperty: sdg:lastOccurrence
+    Domain: bfo:0000015
+DataProperty: sdg:lastOptimizationRun
+    Domain: bfo:0000015
+DataProperty: sdg:lastPasswordChangeDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastPolicyReview
+    Domain: bfo:0000040
+DataProperty: sdg:lastRebalanceDate
+    Domain: bfo:0000040
+DataProperty: sdg:lastRebootDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastRenovationDate
+    Domain: bfo:0000040
+DataProperty: sdg:lastRestocked
+    Domain: cco:ont00000995
+DataProperty: sdg:lastReviewedDate
+    Domain: bfo:0000015
+DataProperty: sdg:lastRunDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastSalePrice
+    Domain: bfo:0000004
+DataProperty: sdg:lastSeen
+    Domain: bfo:0000040
+DataProperty: sdg:lastStatementDate
+    Domain: bfo:0000040
+DataProperty: sdg:lastSurveyDate
+    Domain: bfo:0000015
+DataProperty: sdg:lastSyncTimestamp
+    Domain: bfo:0000040
+DataProperty: sdg:lastTrafficRedirect
+    Domain: bfo:0000015
+DataProperty: sdg:lastUsed
+    Domain: cco:ont00000995
+DataProperty: sdg:lastUsedDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastValuationDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastVerified
+    Domain: cco:ont00000995
+DataProperty: sdg:lastVerifiedDate
+    Domain: cco:ont00000995
+DataProperty: sdg:lastViolationDate
+    Domain: bfo:0000040
+DataProperty: sdg:lateFee
+    Domain: cco:ont00000995
+DataProperty: sdg:lateFeeAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:lateFeeDeadlineDay
+    Domain: cco:ont00000995
+DataProperty: sdg:latencyReductionStrategy
+    Domain: bfo:0000040
+DataProperty: sdg:latencyThreshold
+    Domain: bfo:0000031
+DataProperty: sdg:latticeParameterA
+    Domain: cco:ont00000995
+DataProperty: sdg:latticeParameterB
+    Domain: cco:ont00000995
+DataProperty: sdg:latticeParameterC
+    Domain: cco:ont00000995
+DataProperty: sdg:launchYear
+    Domain: bfo:0000040
+ObjectProperty: sdg:launchedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:launchesMission
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:lawyerName
+    Domain: bfo:0000023
+DataProperty: sdg:layer
+    Domain: bfo:0000015
+DataProperty: sdg:layoutFormat
+    Domain: bfo:0000015
+DataProperty: sdg:layoutOrientation
+    Domain: bfo:0000040
+DataProperty: sdg:lcoDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:lcoIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:leaCode
+    Domain: bfo:0000023
+DataProperty: sdg:leadInvestigator
+    Domain: bfo:0000015
+DataProperty: sdg:leadSource
+    Domain: cco:ont00000995
+DataProperty: sdg:leaderIdentifier
+    Domain: bfo:0000023
+DataProperty: sdg:leadershipAndManagement
+    Domain: bfo:0000015
+ObjectProperty: sdg:leadsPhase
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:leadsStudy
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:leadsTeam
+    Domain: bfo:0000023
+ObjectProperty: sdg:leadsTo
+    Range: cco:ont00000995
+ObjectProperty: sdg:leadsToAcademicDegree
+    Domain: cco:ont00000995
+ObjectProperty: sdg:leadsToShelter
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:leadsWorkstream
+    Domain: bfo:0000023
+    Range: bfo:0000015
+DataProperty: sdg:learningCurve
+    Domain: cco:ont00000995
+DataProperty: sdg:learningObjective
+    Domain: cco:ont00000958
+DataProperty: sdg:learningProfile
+    Domain: bfo:0000002
+ObjectProperty: sdg:learnsConcept
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:learnsFromDataPatterns
+    Range: bfo:0000015
+DataProperty: sdg:leaseGrantor
+    Domain: bfo:0000040
+DataProperty: sdg:leaseId
+    Domain: bfo:0000040
+DataProperty: sdg:leaseIdentifier
+    Domain: cco:ont00000958
+DataProperty: sdg:leasePurposeRestriction
+    Domain: bfo:0000004
+DataProperty: sdg:leaseRatePerYear
+    Domain: bfo:0000004
+DataProperty: sdg:leaseStartDate
+    Domain: bfo:0000040
+DataProperty: sdg:leaseStatus
+    Domain: bfo:0000040
+DataProperty: sdg:leaseTermYears
+    Domain: bfo:0000040
+ObjectProperty: sdg:leasesLandFrom
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:leasesTo
+    Domain: bfo:0000004
+DataProperty: sdg:leastRestrictiveOption
+    Domain: bfo:0000015
+ObjectProperty: sdg:lectureType
+    Domain: bfo:0000015
+ObjectProperty: sdg:ledBy
+    Domain: bfo:0000015
+ObjectProperty: sdg:ledToImprovementPlan
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:leftInscription
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:legalAuthority
+    Domain: bfo:0000015
+DataProperty: sdg:legalEffect
+    Domain: bfo:0000040
+DataProperty: sdg:legalEntity
+    Domain: bfo:0000004
+DataProperty: sdg:legalEstablishmentMechanism
+    Domain: cco:ont00000958
+DataProperty: sdg:legalFrameworkVersion
+    Domain: bfo:0000002
+DataProperty: sdg:legalGround
+    Domain: bfo:0000015
+DataProperty: sdg:legalReasoning
+    Domain: bfo:0000040
+DataProperty: sdg:legalReference
+    Domain: bfo:0000002
+DataProperty: sdg:legalResponsibilityScope
+    Domain: bfo:0000023
+DataProperty: sdg:legislationReference
+    Domain: cco:ont00000958
+DataProperty: sdg:legislativeBody
+    Domain: bfo:0000015
+DataProperty: sdg:legislativeReference
+    Domain: bfo:0000015
+DataProperty: sdg:legislatorId
+    Domain: bfo:0000004
+DataProperty: sdg:lenderIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:lenderName
+    Domain: cco:ont00000995
+DataProperty: sdg:lenderType
+    Domain: cco:ont00000995
+DataProperty: sdg:lengthYards
+    Domain: bfo:0000040
+DataProperty: sdg:lensIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:lensMountType
+    Domain: cco:ont00000995
+DataProperty: sdg:lesseeName
+    Domain: cco:ont00000958
+DataProperty: sdg:lessorName
+    Domain: cco:ont00000958
+DataProperty: sdg:lethalityScore
+    Domain: bfo:0000002
+DataProperty: sdg:letterGrade
+    Domain: cco:ont00000995
+DataProperty: sdg:letterId
+    Domain: cco:ont00000958
+ObjectProperty: sdg:leverages
+    Domain: cco:ont00000995
+ObjectProperty: sdg:leviedOnLot
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:liaisesWithProsecutor
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:librarianId
+    Domain: bfo:0000040
+DataProperty: sdg:libraryId
+    Domain: bfo:0000040
+DataProperty: sdg:libraryName
+    Domain: bfo:0000040
+DataProperty: sdg:libraryVersion
+    Domain: cco:ont00000995
+DataProperty: sdg:licenceHolder
+    Domain: cco:ont00000995
+DataProperty: sdg:licenceNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:license
+    Domain: cco:ont00000995
+DataProperty: sdg:licenseClass
+    Domain: bfo:0000016
+DataProperty: sdg:licenseExpiryDate
+    Domain: bfo:0000004
+DataProperty: sdg:licensePeriodEnd
+    Domain: cco:ont00000958
+DataProperty: sdg:licensePeriodStart
+    Domain: cco:ont00000958
+DataProperty: sdg:licensePlateNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:licenseServerUrl
+    Domain: bfo:0000040
+ObjectProperty: sdg:licensedIn
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:licenseeName
+    Domain: bfo:0000040
+ObjectProperty: sdg:licenses
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+DataProperty: sdg:licensingEntity
+    Domain: bfo:0000023
+DataProperty: sdg:licensingModel
+    Domain: cco:ont00000995
+DataProperty: sdg:lifeExpectancyScore
+    Domain: bfo:0000040
+DataProperty: sdg:lifecycleStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:lifestyleType
+    Domain: bfo:0000040
+DataProperty: sdg:lightingCondition
+    Domain: bfo:0000015
+DataProperty: sdg:lightingSetup
+    Domain: cco:ont00000995
+ObjectProperty: sdg:limitType
+    Domain: cco:ont00000995
+DataProperty: sdg:limitValue
+    Domain: cco:ont00000995
+ObjectProperty: sdg:limitedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:lineId
+    Domain: cco:ont00000995
+DataProperty: sdg:lineItemId
+    Domain: bfo:0000040
+DataProperty: sdg:lineTotal
+    Domain: cco:ont00000995
+DataProperty: sdg:lineType
+    Domain: cco:ont00000995
+DataProperty: sdg:lineage
+    Domain: bfo:0000040
+DataProperty: sdg:linguisticFamily
+    Domain: cco:ont00000995
+DataProperty: sdg:linguisticInterpretation
+    Domain: cco:ont00000995
+DataProperty: sdg:linkedSupplyId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:linkedTo
+    Domain: cco:ont00000995
+ObjectProperty: sdg:linkedToAccount
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:linkedToActivity
+    Range: bfo:0000023
+ObjectProperty: sdg:linkedToAppointment
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:linkedToDeclaration
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:linkedToDesignation
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:linkedToEHCP
+    Range: cco:ont00000958
+ObjectProperty: sdg:linkedToIssue
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:linkedToJointOwnership
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:linkedToPackage
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:linkedToPatient
+    Range: cco:ont00000995
+ObjectProperty: sdg:linkedToPlacement
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:linkedToQualification
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:linkedToStudy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:linkedToTransaction
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:linkedToUplink
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:linksSourceComponent
+    Domain: bfo:0000016
+    Range: bfo:0000040
+ObjectProperty: sdg:linksTargetComponent
+    Domain: bfo:0000016
+    Range: bfo:0000015
+ObjectProperty: sdg:linksToWebinar
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+DataProperty: sdg:listCoverage
+    Domain: cco:ont00000995
+DataProperty: sdg:listType
+    Domain: cco:ont00000995
+DataProperty: sdg:literacyOrNumeracyRequirement
+    Domain: bfo:0000040
+DataProperty: sdg:literacyProficiency
+    Domain: bfo:0000002
+DataProperty: sdg:livelihoodStrategy
+    Domain: cco:ont00000995
+DataProperty: sdg:livelihoodType
+    Domain: bfo:0000015
+ObjectProperty: sdg:livesWith
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:lmsId
+    Domain: bfo:0000040
+DataProperty: sdg:lmsName
+    Domain: bfo:0000040
+DataProperty: sdg:loadIndex
+    Domain: cco:ont00000995
+DataProperty: sdg:loadLevel
+    Domain: bfo:0000015
+DataProperty: sdg:loadTime
+    Domain: cco:ont00000995
+DataProperty: sdg:localId
+    Domain: bfo:0000004
+DataProperty: sdg:localeCode
+    Domain: cco:ont00000995
+ObjectProperty: sdg:locatedInArea
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:locatedInBuilding
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:locatedInCampusArea
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:locatedInJurisdiction
+    Domain: bfo:0000040
+ObjectProperty: sdg:locatedInRegion
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:locatedInSafeZone
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:locationBuilding
+    Domain: cco:ont00000958
+DataProperty: sdg:locationDescription
+    Domain: bfo:0000015
+DataProperty: sdg:locationID
+    Domain: bfo:0000015
+DataProperty: sdg:locationInOffice
+    Domain: cco:ont00000995
+DataProperty: sdg:locationInWine
+    Domain: bfo:0000040
+DataProperty: sdg:locationPostcode
+    Domain: bfo:0000015
+DataProperty: sdg:locationProvince
+    Domain: bfo:0000040
+DataProperty: sdg:locationQth
+    Domain: cco:ont00000995
+DataProperty: sdg:locationReference
+    Domain: cco:ont00000995
+DataProperty: sdg:locationZip
+    Domain: bfo:0000040
+DataProperty: sdg:locationZone
+    Domain: bfo:0000004
+DataProperty: sdg:lodgedDate
+    Domain: cco:ont00000995
+DataProperty: sdg:loft
+    Domain: cco:ont00000995
+DataProperty: sdg:loftAngle
+    Domain: cco:ont00000995
+DataProperty: sdg:logId
+    Domain: bfo:0000040
+DataProperty: sdg:logoType
+    Domain: cco:ont00000995
+DataProperty: sdg:logoUrl
+    Domain: cco:ont00000995
+DataProperty: sdg:longTitle
+    Domain: cco:ont00000958
+DataProperty: sdg:longevity
+    Domain: bfo:0000040
+DataProperty: sdg:lossAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:lotIdentifier
+    Domain: bfo:0000004
+DataProperty: sdg:lowerBound
+    Domain: bfo:0000015
+DataProperty: sdg:lowerLimit
+    Domain: bfo:0000040
+DataProperty: sdg:lubricantId
+    Domain: cco:ont00000995
+DataProperty: sdg:lunchBreakEnd
+    Domain: bfo:0000015
+DataProperty: sdg:lunchBreakStart
+    Domain: bfo:0000015
+DataProperty: sdg:lunchId
+    Domain: cco:ont00000995
+DataProperty: sdg:lunchName
+    Domain: cco:ont00000995
+DataProperty: sdg:mRZLine1
+    Domain: bfo:0000002
+DataProperty: sdg:mRZLine2
+    Domain: bfo:0000002
+ObjectProperty: sdg:mRZRecognitionStatus
+    Domain: bfo:0000002
+DataProperty: sdg:macAddress
+    Domain: bfo:0000040
+ObjectProperty: sdg:madeBy
+    Domain: bfo:0000015
+ObjectProperty: sdg:madeDisclosure
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:madeGift
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:madeInSession
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:madeTo
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:mailSortDeadline
+    Domain: cco:ont00000995
+DataProperty: sdg:mailboxAddress
+    Domain: cco:ont00000995
+DataProperty: sdg:mailboxStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:mailboxType
+    Domain: cco:ont00000995
+DataProperty: sdg:mailingAddress
+    Domain: cco:ont00000995
+ObjectProperty: sdg:mainIngredient
+    Domain: cco:ont00000995
+ObjectProperty: sdg:maintainingOrganization
+    Domain: cco:ont00000995
+    Range: bfo:0000001
+ObjectProperty: sdg:maintains
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:maintainsRegister
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:maintainsRegistry
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+DataProperty: sdg:maintenanceId
+    Domain: cco:ont00000995
+DataProperty: sdg:maintenanceType
+    Domain: cco:ont00000995
+DataProperty: sdg:majorDeclared
+    Domain: bfo:0000002
+DataProperty: sdg:majorRequired
+    Domain: bfo:0000015
+DataProperty: sdg:make
+    Domain: cco:ont00000958
+DataProperty: sdg:makeModel
+    Domain: cco:ont00000958
+ObjectProperty: sdg:makes
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:makesDisclosure
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:maleDropoutRate
+    Domain: cco:ont00000995
+DataProperty: sdg:maleEmploymentRate
+    Domain: cco:ont00000995
+DataProperty: sdg:maleFailureRate
+    Domain: cco:ont00000995
+DataProperty: sdg:malePercentage
+    Domain: cco:ont00000995
+ObjectProperty: sdg:managedByDivision
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:managedByNLFRep
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:managedByServer
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:managedByServerDetail
+    Domain: bfo:0000040
+ObjectProperty: sdg:managedByUnit
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+DataProperty: sdg:managementFee
+    Domain: bfo:0000023
+DataProperty: sdg:managementFeeRate
+    Domain: bfo:0000040
+ObjectProperty: sdg:managementQuality
+    Domain: bfo:0000040
+DataProperty: sdg:managementStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:managerAddress
+    Domain: bfo:0000040
+DataProperty: sdg:managerID
+    Domain: bfo:0000023
+DataProperty: sdg:managerIdentifier
+    Domain: bfo:0000040
+ObjectProperty: sdg:managesAccount
+    Range: cco:ont00000995
+ObjectProperty: sdg:managesAccountAuthorizationRecord
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:managesClient
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:managesClinicalDocumentationData
+    Range: cco:ont00000958
+ObjectProperty: sdg:managesCommittee
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:managesCommunication
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:managesCommunicationsFor
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:managesDevice
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:managesEncryptionKey
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:managesFund
+    Domain: bfo:0000002
+    Range: bfo:0000016
+ObjectProperty: sdg:managesGame
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:managesInstance
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:managesInvestorCommunication
+    Range: bfo:0000040
+ObjectProperty: sdg:managesOffice
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:managesPortfolio
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:managesProgramme
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:managesProject
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:managesPublicInformation
+    Domain: bfo:0000023
+    Range: cco:ont00000366
+ObjectProperty: sdg:managesSystem
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:managesUnderlyingFund
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:managesVenue
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:mandateDescription
+    Domain: bfo:0000015
+DataProperty: sdg:mandateScope
+    Domain: bfo:0000015
+DataProperty: sdg:mandatedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:mandatedByRegulator
+    Domain: cco:ont00000958
+    Range: bfo:0000001
+ObjectProperty: sdg:mandatesAccommodation
+    Domain: bfo:0000016
+    Range: cco:ont00000995
+ObjectProperty: sdg:mandatesCertificate
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:mandatesCompletion
+    Range: bfo:0000002
+DataProperty: sdg:mandatory
+    Domain: bfo:0000015
+ObjectProperty: sdg:manifestsAs
+    Range: bfo:0000002
+ObjectProperty: sdg:manifestsIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:manner
+    Domain: bfo:0000015
+DataProperty: sdg:mannerScore
+    Domain: bfo:0000015
+DataProperty: sdg:manualRevision
+    Domain: cco:ont00000995
+DataProperty: sdg:manufactureDate
+    Domain: bfo:0000040
+DataProperty: sdg:manufactureLeadTime
+    Domain: cco:ont00000995
+ObjectProperty: sdg:manufacturedAt
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:manufacturedBy
+    Domain: cco:ont00000995
+DataProperty: sdg:manufacturerCode
+    Domain: cco:ont00000995
+DataProperty: sdg:manufacturerName
+    Domain: bfo:0000004
+DataProperty: sdg:manufacturerPartNumber
+    Domain: cco:ont00000995
+ObjectProperty: sdg:manufactures
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:manufacturingCapacity
+    Domain: bfo:0000040
+DataProperty: sdg:manufacturingDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:mappedTo
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:mapsSource
+    Range: cco:ont00000995
+ObjectProperty: sdg:mapsTarget
+    Range: bfo:0000002
+ObjectProperty: sdg:mapsTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:mapsToQualification
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:markSize
+    Domain: cco:ont00000995
+DataProperty: sdg:marketCapitalizationUSD
+    Domain: cco:ont00000995
+ObjectProperty: sdg:marketForDrug
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:marketId
+    Domain: bfo:0000002
+DataProperty: sdg:marketListing
+    Domain: bfo:0000002
+DataProperty: sdg:marketMaturity
+    Domain: bfo:0000015
+DataProperty: sdg:marketSegment
+    Domain: bfo:0000002
+DataProperty: sdg:marketSize
+    Domain: bfo:0000004
+ObjectProperty: sdg:marketType
+    Domain: bfo:0000002
+DataProperty: sdg:marketValueRank
+    Domain: cco:ont00000995
+DataProperty: sdg:marketplaceId
+    Domain: cco:ont00000995
+DataProperty: sdg:markingStyle
+    Domain: cco:ont00000995
+ObjectProperty: sdg:marks
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:marksAllotted
+    Domain: bfo:0000015
+DataProperty: sdg:masonryUnitType
+    Domain: bfo:0000040
+DataProperty: sdg:masteryLevel
+    Domain: bfo:0000015
+DataProperty: sdg:matchId
+    Domain: bfo:0000015
+ObjectProperty: sdg:matches
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:matchesCategory
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+DataProperty: sdg:material
+    Domain: cco:ont00000995
+DataProperty: sdg:materialClass
+    Domain: cco:ont00000995
+DataProperty: sdg:materialCode
+    Domain: bfo:0000040
+DataProperty: sdg:materialIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:materialName
+    Domain: bfo:0000040
+DataProperty: sdg:maturityDate
+    Domain: bfo:0000015
+DataProperty: sdg:maturityLevel
+    Domain: bfo:0000015
+DataProperty: sdg:maxAdvancedStandingCredits
+    Domain: cco:ont00000995
+DataProperty: sdg:maxAllowedSanctions
+    Domain: bfo:0000002
+DataProperty: sdg:maxAperture
+    Domain: cco:ont00000995
+DataProperty: sdg:maxCameras
+    Domain: cco:ont00000995
+DataProperty: sdg:maxCapacity
+    Domain: bfo:0000015
+DataProperty: sdg:maxConcurrentConnections
+    Domain: bfo:0000040
+DataProperty: sdg:maxConcurrentSessions
+    Domain: cco:ont00000958
+DataProperty: sdg:maxConnections
+    Domain: bfo:0000040
+DataProperty: sdg:maxDeductionAmount
+    Domain: bfo:0000015
+DataProperty: sdg:maxDistance
+    Domain: bfo:0000015
+DataProperty: sdg:maxFileSizeGB
+    Domain: bfo:0000040
+DataProperty: sdg:maxForce
+    Domain: cco:ont00000995
+DataProperty: sdg:maxGuaranteeAmount
+    Domain: cco:ont00000958
+DataProperty: sdg:maxLatency
+    Domain: bfo:0000040
+DataProperty: sdg:maxMembers
+    Domain: bfo:0000004
+DataProperty: sdg:maxParticipants
+    Domain: bfo:0000015
+DataProperty: sdg:maxPower
+    Domain: cco:ont00000995
+DataProperty: sdg:maxPowerConsumptionWatts
+    Domain: cco:ont00000995
+DataProperty: sdg:maxRange
+    Domain: bfo:0000040
+DataProperty: sdg:maxResolutionX
+    Domain: cco:ont00000995
+DataProperty: sdg:maxResolutionY
+    Domain: cco:ont00000995
+DataProperty: sdg:maxResources
+    Domain: bfo:0000023
+DataProperty: sdg:maxScore
+    Domain: bfo:0000015
+DataProperty: sdg:maxSpacingAlongWall
+    Domain: cco:ont00000995
+DataProperty: sdg:maxThroughputGbps
+    Domain: cco:ont00000995
+DataProperty: sdg:maxTimeMinutes
+    Domain: bfo:0000015
+DataProperty: sdg:maxTimeframePercent
+    Domain: bfo:0000015
+DataProperty: sdg:maxVoltage
+    Domain: cco:ont00000995
+DataProperty: sdg:maximumScanningSize
+    Domain: bfo:0000002
+DataProperty: sdg:mealPeriod
+    Domain: cco:ont00000995
+ObjectProperty: sdg:mealPlan
+    Domain: cco:ont00000995
+DataProperty: sdg:meaning
+    Domain: cco:ont00000995
+DataProperty: sdg:measurableValue
+    Domain: bfo:0000015
+DataProperty: sdg:measureId
+    Domain: bfo:0000015
+DataProperty: sdg:measureName
+    Domain: bfo:0000015
+DataProperty: sdg:measureType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:measuredAt
+    Domain: bfo:0000015
+ObjectProperty: sdg:measuredAtTrust
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:measuredByBenchmark
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:measuredBySurvey
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:measuredDoseRate
+    Domain: bfo:0000015
+ObjectProperty: sdg:measuredDuring
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:measuredFor
+    Domain: bfo:0000016
+    Range: bfo:0000016
+ObjectProperty: sdg:measuredIn
+    Domain: bfo:0000015
+ObjectProperty: sdg:measuredInRegion
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:measuredInStudy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:measuredOn
+    Domain: bfo:0000015
+DataProperty: sdg:measuredOutcome
+    Domain: bfo:0000002
+DataProperty: sdg:measuredValue
+    Domain: bfo:0000016
+DataProperty: sdg:measurementAspects
+    Domain: bfo:0000015
+DataProperty: sdg:measurementCondition
+    Domain: bfo:0000015
+DataProperty: sdg:measurementDateTime
+    Domain: bfo:0000015
+DataProperty: sdg:measurementPeriod
+    Domain: bfo:0000015
+DataProperty: sdg:measurementQuality
+    Domain: bfo:0000015
+DataProperty: sdg:measurementRange
+    Domain: bfo:0000015
+DataProperty: sdg:measurementRangeMax
+    Domain: cco:ont00000958
+DataProperty: sdg:measurementRangeMin
+    Domain: cco:ont00000958
+ObjectProperty: sdg:measurementType
+    Domain: bfo:0000015
+DataProperty: sdg:measurementUnit
+    Domain: bfo:0000015
+ObjectProperty: sdg:measuresAttribute
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:measuresOutcomes
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:measuresPopulation
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:measuresProperty
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:measuresServicePerformance
+    Range: bfo:0000002
+ObjectProperty: sdg:measuresVariable
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+DataProperty: sdg:mechanicId
+    Domain: bfo:0000015
+DataProperty: sdg:mechanicName
+    Domain: cco:ont00000995
+DataProperty: sdg:mechanicSignature
+    Domain: cco:ont00000995
+DataProperty: sdg:mechanicsManualVersion
+    Domain: bfo:0000040
+DataProperty: sdg:mechanismId
+    Domain: bfo:0000015
+DataProperty: sdg:mechanismName
+    Domain: bfo:0000015
+DataProperty: sdg:mechanismType
+    Domain: bfo:0000015
+DataProperty: sdg:medalAwarded
+    Domain: bfo:0000015
+DataProperty: sdg:mediaFormat
+    Domain: cco:ont00000995
+ObjectProperty: sdg:mediaType
+    Domain: cco:ont00000995
+DataProperty: sdg:medianIncome
+    Domain: cco:ont00000958
+ObjectProperty: sdg:mediatedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:mediatesMechanism
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:medicalLicenseNumber
+    Domain: bfo:0000002
+DataProperty: sdg:medicareBeneficiaryId
+    Domain: bfo:0000015
+DataProperty: sdg:medicationId
+    Domain: cco:ont00000995
+DataProperty: sdg:medicationList
+    Domain: cco:ont00000958
+DataProperty: sdg:medicationManagement
+    Domain: cco:ont00000958
+DataProperty: sdg:medicationName
+    Domain: cco:ont00000995
+DataProperty: sdg:medicationRegimen
+    Domain: cco:ont00000958
+DataProperty: sdg:medicineId
+    Domain: cco:ont00000995
+DataProperty: sdg:medicineName
+    Domain: cco:ont00000995
+DataProperty: sdg:medicineType
+    Domain: cco:ont00000995
+DataProperty: sdg:meetingDate
+    Domain: bfo:0000015
+DataProperty: sdg:meetingDurationMinutes
+    Domain: bfo:0000015
+DataProperty: sdg:meetingId
+    Domain: bfo:0000015
+DataProperty: sdg:meetingIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:meetingName
+    Domain: cco:ont00000995
+DataProperty: sdg:meetingOutcome
+    Domain: bfo:0000015
+DataProperty: sdg:meetingSchedule
+    Domain: bfo:0000002
+ObjectProperty: sdg:meetingStatus
+    Domain: bfo:0000015
+DataProperty: sdg:meetingTime
+    Domain: bfo:0000040
+ObjectProperty: sdg:meetingType
+    Domain: bfo:0000015
+ObjectProperty: sdg:meets
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:meetsAt
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:meetsEligibilityCriteria
+    Domain: bfo:0000002
+DataProperty: sdg:meetsFederalCompliance
+    Domain: bfo:0000016
+ObjectProperty: sdg:meetsGrade
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:meetsSAP
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:meetsSpecification
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:meetsStandard
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:meetsStateCompliance
+    Domain: bfo:0000016
+DataProperty: sdg:megapixels
+    Domain: cco:ont00000995
+DataProperty: sdg:meltingPoint
+    Domain: bfo:0000040
+DataProperty: sdg:memberEligibilityCriteria
+    Domain: cco:ont00000995
+DataProperty: sdg:memberEmail
+    Domain: bfo:0000002
+DataProperty: sdg:memberID
+    Domain: bfo:0000040
+DataProperty: sdg:memberLaboratoryCount
+    Domain: bfo:0000040
+ObjectProperty: sdg:memberOfCoalition
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:memberRole
+    Domain: bfo:0000040
+DataProperty: sdg:memberSince
+    Domain: cco:ont00000995
+ObjectProperty: sdg:memberStates
+    Domain: bfo:0000004
+ObjectProperty: sdg:membersLocalOrganizationCommittee
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:membership
+    Domain: bfo:0000002
+DataProperty: sdg:membershipDurationMonths
+    Domain: bfo:0000002
+ObjectProperty: sdg:membershipLimit
+    Domain: bfo:0000015
+DataProperty: sdg:membershipNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:memoryBandwidthGbps
+    Domain: cco:ont00000995
+DataProperty: sdg:memoryCapacity
+    Domain: cco:ont00000995
+DataProperty: sdg:memoryCapacityBytes
+    Domain: cco:ont00000995
+DataProperty: sdg:memoryInterfaceWidth
+    Domain: cco:ont00000995
+DataProperty: sdg:mentalCapacityStatus
+    Domain: bfo:0000004
+ObjectProperty: sdg:mentions
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:mentorId
+    Domain: bfo:0000004
+ObjectProperty: sdg:mentors
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:menuId
+    Domain: bfo:0000040
+DataProperty: sdg:menuItemId
+    Domain: bfo:0000040
+DataProperty: sdg:menuName
+    Domain: cco:ont00000958
+ObjectProperty: sdg:mergedWith
+    Domain: bfo:0000023
+    Range: bfo:0000023
+DataProperty: sdg:messageContent
+    Domain: bfo:0000015
+DataProperty: sdg:messageCount
+    Domain: bfo:0000015
+DataProperty: sdg:messageId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:messageType
+    Domain: cco:ont00000995
+DataProperty: sdg:meteorologistIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:meterId
+    Domain: cco:ont00000995
+DataProperty: sdg:meterType
+    Domain: cco:ont00000995
+DataProperty: sdg:meteringMode
+    Domain: bfo:0000015
+ObjectProperty: sdg:methodCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:methodCode
+    Domain: bfo:0000015
+DataProperty: sdg:methodDescription
+    Domain: cco:ont00000958
+DataProperty: sdg:methodID
+    Domain: cco:ont00000995
+DataProperty: sdg:methodIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:methodOfAssessment
+    Domain: bfo:0000040
+DataProperty: sdg:methodologicalFocus
+    Domain: bfo:0000015
+DataProperty: sdg:methodology
+    Domain: bfo:0000015
+DataProperty: sdg:metricValue
+    Domain: bfo:0000015
+DataProperty: sdg:mhNumber
+    Domain: bfo:0000004
+DataProperty: sdg:microchipId
+    Domain: bfo:0000004
+DataProperty: sdg:middleInitial
+    Domain: cco:ont00000995
+DataProperty: sdg:middleName
+    Domain: bfo:0000004
+DataProperty: sdg:migrantId
+    Domain: bfo:0000004
+DataProperty: sdg:mileage
+    Domain: cco:ont00000958
+DataProperty: sdg:militaryRank
+    Domain: bfo:0000040
+DataProperty: sdg:millIdentifier
+    Domain: bfo:0000004
+DataProperty: sdg:minCourses
+    Domain: cco:ont00000958
+DataProperty: sdg:minMembers
+    Domain: bfo:0000004
+DataProperty: sdg:minObstacleDistance
+    Domain: bfo:0000015
+DataProperty: sdg:minParticipants
+    Domain: bfo:0000015
+DataProperty: sdg:minQualifications
+    Domain: bfo:0000015
+DataProperty: sdg:minScore
+    Domain: bfo:0000040
+DataProperty: sdg:minScrewsPerStrap
+    Domain: bfo:0000015
+DataProperty: sdg:minTurningRadius
+    Domain: cco:ont00000958
+DataProperty: sdg:minimumAge
+    Domain: bfo:0000040
+DataProperty: sdg:minimumCapitalRequirement
+    Domain: cco:ont00000995
+DataProperty: sdg:minimumCredits
+    Domain: bfo:0000040
+DataProperty: sdg:minimumHours
+    Domain: cco:ont00000995
+DataProperty: sdg:minimumInvestment
+    Domain: bfo:0000023
+DataProperty: sdg:minimumLength
+    Domain: cco:ont00000995
+DataProperty: sdg:minimumOrderQuantity
+    Domain: bfo:0000040
+DataProperty: sdg:minimumQuantity
+    Domain: cco:ont00000958
+DataProperty: sdg:minimumScore
+    Domain: bfo:0000015
+DataProperty: sdg:minimumSelections
+    Domain: bfo:0000040
+DataProperty: sdg:minimumShrinkTemperature
+    Domain: cco:ont00000995
+DataProperty: sdg:ministerialLead
+    Domain: cco:ont00000995
+DataProperty: sdg:ministry
+    Domain: bfo:0000015
+DataProperty: sdg:minorId
+    Domain: bfo:0000004
+DataProperty: sdg:minuteUrl
+    Domain: bfo:0000015
+DataProperty: sdg:minutesPublished
+    Domain: bfo:0000015
+DataProperty: sdg:minutesStatus
+    Domain: bfo:0000015
+DataProperty: sdg:missingReceiptsCount
+    Domain: cco:ont00000995
+DataProperty: sdg:missionScope
+    Domain: bfo:0000004
+DataProperty: sdg:missionText
+    Domain: bfo:0000040
+ObjectProperty: sdg:misusedIn
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:misuses
+    Range: bfo:0000002
+ObjectProperty: sdg:mitigatedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:mitigatesRiskOf
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:mitigatesVariable
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:mitigationPlan
+    Domain: bfo:0000015
+ObjectProperty: sdg:mitigationStatus
+    Domain: bfo:0000015
+DataProperty: sdg:mitigationSteps
+    Domain: bfo:0000015
+DataProperty: sdg:mmeLimit
+    Domain: cco:ont00000995
+DataProperty: sdg:mobileOptimized
+    Domain: cco:ont00000995
+DataProperty: sdg:mobilePhone
+    Domain: bfo:0000004
+DataProperty: sdg:mobileTelephone
+    Domain: bfo:0000040
+DataProperty: sdg:modelDisplayName
+    Domain: cco:ont00000995
+DataProperty: sdg:modelId
+    Domain: cco:ont00000995
+DataProperty: sdg:modelName
+    Domain: cco:ont00000995
+DataProperty: sdg:modelNumber
+    Domain: cco:ont00000995
+ObjectProperty: sdg:modelType
+    Domain: cco:ont00000995
+DataProperty: sdg:modelUsed
+    Domain: bfo:0000015
+ObjectProperty: sdg:modeledUsing
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:models
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:modelsMolecule
+    Range: bfo:0000002
+ObjectProperty: sdg:moderates
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:moderatorCount
+    Domain: bfo:0000040
+DataProperty: sdg:moderatorIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:moderatorName
+    Domain: bfo:0000015
+DataProperty: sdg:modificationId
+    Domain: bfo:0000040
+DataProperty: sdg:modificationType
+    Domain: bfo:0000040
+DataProperty: sdg:modifiedBy
+    Domain: bfo:0000002
+ObjectProperty: sdg:modifiesIngredient
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:moduleName
+    Domain: bfo:0000015
+DataProperty: sdg:moduleSerialNumber
+    Domain: bfo:0000040
+DataProperty: sdg:moistureAdjustment
+    Domain: cco:ont00000995
+DataProperty: sdg:moistureContent
+    Domain: bfo:0000016
+DataProperty: sdg:moistureThreshold
+    Domain: bfo:0000015
+DataProperty: sdg:molecularWeight
+    Domain: cco:ont00000995
+DataProperty: sdg:moleculeId
+    Domain: cco:ont00000995
+DataProperty: sdg:momentId
+    Domain: bfo:0000015
+DataProperty: sdg:monarchId
+    Domain: bfo:0000004
+DataProperty: sdg:monetaryValue
+    Domain: cco:ont00000995
+DataProperty: sdg:monitorCurrent
+    Domain: cco:ont00000995
+DataProperty: sdg:monitored
+    Domain: bfo:0000003
+ObjectProperty: sdg:monitoredByLeader
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:monitoredByStaff
+    Domain: cco:ont00000958
+    Range: bfo:0000004
+ObjectProperty: sdg:monitoredUnder
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:monitoringSchedule
+    Domain: bfo:0000040
+DataProperty: sdg:monitoringSection
+    Domain: cco:ont00000995
+DataProperty: sdg:monitorsDeviceInventory
+    Domain: bfo:0000040
+ObjectProperty: sdg:monitorsEligibilityStatus
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:monitorsSource
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:monitorsStrategy
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:monitorsStudent
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:monitorsZone
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:monthlyImpressions
+    Domain: cco:ont00000995
+DataProperty: sdg:monthlyPageViews
+    Domain: cco:ont00000995
+DataProperty: sdg:monthlyRent
+    Domain: bfo:0000040
+DataProperty: sdg:monthlyTuition
+    Domain: cco:ont00000995
+DataProperty: sdg:monthlyVisitors
+    Domain: cco:ont00000995
+DataProperty: sdg:monthlyVolume
+    Domain: bfo:0000015
+ObjectProperty: sdg:mooredAt
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:moors
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+DataProperty: sdg:moraleLevel
+    Domain: bfo:0000015
+DataProperty: sdg:morbidityRate
+    Domain: bfo:0000002
+DataProperty: sdg:mortalityCount
+    Domain: bfo:0000015
+DataProperty: sdg:mortalityIncrease
+    Domain: bfo:0000015
+DataProperty: sdg:mortalityRate
+    Domain: bfo:0000002
+DataProperty: sdg:motionId
+    Domain: bfo:0000015
+DataProperty: sdg:motionText
+    Domain: bfo:0000015
+DataProperty: sdg:motivationCategory
+    Domain: bfo:0000023
+DataProperty: sdg:motivationId
+    Domain: bfo:0000023
+ObjectProperty: sdg:motivationLevel
+    Domain: bfo:0000002
+ObjectProperty: sdg:motivationType
+    Domain: bfo:0000040
+DataProperty: sdg:mountCompatibility
+    Domain: cco:ont00000995
+ObjectProperty: sdg:mountedOn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:mountingType
+    Domain: bfo:0000040
+ObjectProperty: sdg:mountsBrakes
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:mountsWheel
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:moveCount
+    Domain: bfo:0000015
+ObjectProperty: sdg:movedTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:movementIdentifier
+    Domain: bfo:0000015
+ObjectProperty: sdg:movesToNextSession
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:municipality
+    Domain: bfo:0000040
+DataProperty: sdg:muscleId
+    Domain: bfo:0000002
+DataProperty: sdg:musclePadContact
+    Domain: bfo:0000015
+DataProperty: sdg:musicBpm
+    Domain: bfo:0000015
+DataProperty: sdg:namedAfter
+    Domain: bfo:0000015
+DataProperty: sdg:namedBeneficiary
+    Domain: bfo:0000023
+ObjectProperty: sdg:namedInWill
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+ObjectProperty: sdg:namesBeneficiary
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:namesDefendant
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:narrative
+    Domain: cco:ont00000995
+DataProperty: sdg:narrowerTerm
+    Domain: cco:ont00000995
+ObjectProperty: sdg:narrowerThan
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:nativeLanguage
+    Domain: bfo:0000015
+DataProperty: sdg:natureOfException
+    Domain: cco:ont00000995
+DataProperty: sdg:needCode
+    Domain: bfo:0000040
+DataProperty: sdg:needIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:needName
+    Domain: bfo:0000040
+DataProperty: sdg:needType
+    Domain: bfo:0000015
+DataProperty: sdg:needsAcknowledged
+    Domain: bfo:0000002
+DataProperty: sdg:needsAssistance
+    Domain: bfo:0000002
+DataProperty: sdg:needsComplexCommunication
+    Domain: bfo:0000004
+DataProperty: sdg:needsIdentified
+    Domain: bfo:0000015
+DataProperty: sdg:nerveId
+    Domain: bfo:0000015
+DataProperty: sdg:nerveName
+    Domain: bfo:0000015
+DataProperty: sdg:netCapitalUSD
+    Domain: cco:ont00000995
+DataProperty: sdg:netIncome
+    Domain: bfo:0000040
+DataProperty: sdg:netProfit
+    Domain: cco:ont00000995
+DataProperty: sdg:netQBI
+    Domain: cco:ont00000995
+DataProperty: sdg:nettingSet
+    Domain: cco:ont00000958
+DataProperty: sdg:network
+    Domain: bfo:0000040
+DataProperty: sdg:networkCode
+    Domain: bfo:0000015
+DataProperty: sdg:networkMailbox
+    Domain: cco:ont00000995
+DataProperty: sdg:networkParent
+    Domain: bfo:0000040
+DataProperty: sdg:neuralIntegrationLevel
+    Domain: bfo:0000040
+DataProperty: sdg:newProspects
+    Domain: cco:ont00000995
+DataProperty: sdg:newsId
+    Domain: cco:ont00000995
+DataProperty: sdg:nextAuditDue
+    Domain: cco:ont00000958
+DataProperty: sdg:nextCertificationDueDate
+    Domain: cco:ont00000995
+DataProperty: sdg:nextDonationDate
+    Domain: bfo:0000040
+DataProperty: sdg:nextScheduledMeeting
+    Domain: bfo:0000002
+DataProperty: sdg:nightsAllocatedPerYear
+    Domain: bfo:0000015
+DataProperty: sdg:nightsIncluded
+    Domain: cco:ont00000995
+DataProperty: sdg:nlfRep
+    Domain: cco:ont00000995
+DataProperty: sdg:noiseLevel
+    Domain: bfo:0000015
+DataProperty: sdg:nominalDiameter
+    Domain: bfo:0000015
+DataProperty: sdg:nominalImpedance
+    Domain: cco:ont00000995
+DataProperty: sdg:nominalPipeSize
+    Domain: cco:ont00000995
+DataProperty: sdg:nominalSizeRange
+    Domain: cco:ont00000995
+DataProperty: sdg:nominalValue
+    Domain: cco:ont00000995
+DataProperty: sdg:nominationDate
+    Domain: cco:ont00000995
+DataProperty: sdg:nominationYear
+    Domain: bfo:0000002
+DataProperty: sdg:nonSelfGoverning
+    Domain: cco:ont00000995
+DataProperty: sdg:normID
+    Domain: cco:ont00000958
+DataProperty: sdg:normId
+    Domain: bfo:0000015
+DataProperty: sdg:normName
+    Domain: cco:ont00000958
+ObjectProperty: sdg:normType
+    Domain: bfo:0000015
+DataProperty: sdg:normalRange
+    Domain: bfo:0000015
+DataProperty: sdg:normalizedScore
+    Domain: bfo:0000015
+DataProperty: sdg:notaryCommissionExpiry
+    Domain: cco:ont00000958
+DataProperty: sdg:notaryName
+    Domain: cco:ont00000958
+DataProperty: sdg:notationAgreement
+    Domain: bfo:0000040
+DataProperty: sdg:notationType
+    Domain: bfo:0000015
+DataProperty: sdg:noteId
+    Domain: cco:ont00000995
+DataProperty: sdg:noteIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:notesStatus
+    Domain: bfo:0000015
+DataProperty: sdg:notesSummary
+    Domain: bfo:0000040
+DataProperty: sdg:noticeId
+    Domain: bfo:0000040
+DataProperty: sdg:noticeIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:noticeType
+    Domain: bfo:0000040
+DataProperty: sdg:notificationDate
+    Domain: bfo:0000040
+ObjectProperty: sdg:notificationMethod
+    Domain: bfo:0000015
+DataProperty: sdg:notificationPreference
+    Domain: bfo:0000023
+DataProperty: sdg:notificationType
+    Domain: bfo:0000002
+ObjectProperty: sdg:notifiedBy
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:notifiedOf
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:notifiedOfIncident
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:notifiedVia
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:notifiesAbout
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:notifiesFacility
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:notionalAmount
+    Domain: bfo:0000015
+DataProperty: sdg:novelMaterialsDiscovered
+    Domain: bfo:0000015
+DataProperty: sdg:nuclearIntelligence
+    Domain: cco:ont00000995
+DataProperty: sdg:nucleusId
+    Domain: cco:ont00000995
+DataProperty: sdg:nucleusPresent
+    Domain: cco:ont00000995
+DataProperty: sdg:numberOfClinicians
+    Domain: bfo:0000015
+DataProperty: sdg:numberOfComponents
+    Domain: cco:ont00000995
+DataProperty: sdg:numberOfDependents
+    Domain: bfo:0000002
+DataProperty: sdg:numberOfEmployees
+    Domain: bfo:0000015
+DataProperty: sdg:numberOfFirms
+    Domain: bfo:0000040
+DataProperty: sdg:numberOfFloors
+    Domain: bfo:0000040
+DataProperty: sdg:numberOfItems
+    Domain: bfo:0000015
+DataProperty: sdg:numberOfMembers
+    Domain: bfo:0000040
+DataProperty: sdg:numberOfOrganizations
+    Domain: bfo:0000015
+DataProperty: sdg:numberOfPanelists
+    Domain: bfo:0000015
+DataProperty: sdg:numberOfParticipants
+    Domain: bfo:0000040
+DataProperty: sdg:numberOfStudents
+    Domain: bfo:0000040
+DataProperty: sdg:numberOfSupportStaff
+    Domain: bfo:0000015
+DataProperty: sdg:numberOfWeeks
+    Domain: bfo:0000002
+DataProperty: sdg:numericScore
+    Domain: cco:ont00000995
+DataProperty: sdg:nutritionMonitoring
+    Domain: cco:ont00000958
+DataProperty: sdg:objectId
+    Domain: cco:ont00000995
+DataProperty: sdg:objectIdentifier
+    Domain: bfo:0000004
+DataProperty: sdg:objectionId
+    Domain: cco:ont00000958
+ObjectProperty: sdg:objectionReason
+    Domain: cco:ont00000958
+DataProperty: sdg:objective
+    Domain: bfo:0000015
+DataProperty: sdg:objectiveName
+    Domain: bfo:0000040
+DataProperty: sdg:objectiveText
+    Domain: bfo:0000015
+ObjectProperty: sdg:objectiveType
+    Domain: bfo:0000016
+DataProperty: sdg:objectives
+    Domain: bfo:0000002
+DataProperty: sdg:obligationIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:obligationType
+    Domain: cco:ont00000995
+DataProperty: sdg:observationContext
+    Domain: bfo:0000015
+DataProperty: sdg:observationDateTime
+    Domain: cco:ont00000995
+DataProperty: sdg:observationIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:observationMode
+    Domain: bfo:0000040
+DataProperty: sdg:observationPeriod
+    Domain: bfo:0000015
+DataProperty: sdg:observationType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:observedAt
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:observedBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:observedInPhase
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:observedInSpecies
+    Domain: bfo:0000015
+DataProperty: sdg:observedResult
+    Domain: bfo:0000040
+DataProperty: sdg:observedValue
+    Domain: bfo:0000015
+DataProperty: sdg:observerIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:observerName
+    Domain: cco:ont00000995
+DataProperty: sdg:obstacleId
+    Domain: bfo:0000040
+DataProperty: sdg:obstacleRadius
+    Domain: bfo:0000040
+ObjectProperty: sdg:obstacleStatus
+    Domain: bfo:0000040
+DataProperty: sdg:obstacleType
+    Domain: bfo:0000040
+DataProperty: sdg:obstacleX
+    Domain: bfo:0000040
+DataProperty: sdg:obstacleY
+    Domain: bfo:0000040
+DataProperty: sdg:occasionId
+    Domain: cco:ont00000995
+DataProperty: sdg:occupancyLevel
+    Domain: bfo:0000002
+DataProperty: sdg:occupancyLimit
+    Domain: bfo:0000004
+ObjectProperty: sdg:occupies
+    Range: bfo:0000040
+ObjectProperty: sdg:occupiesRole
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:occupiesSession
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:occurredAtEvent
+    Range: bfo:0000015
+ObjectProperty: sdg:occurredIn
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:occurrenceDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:occursAt
+    Domain: bfo:0000015
+ObjectProperty: sdg:occursIn
+    Domain: bfo:0000015
+ObjectProperty: sdg:occursInRegion
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:occursInState
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:occursInTemporalPhase
+    Range: bfo:0000002
+ObjectProperty: sdg:occursOnLot
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:ocrConfidenceScore
+    Domain: cco:ont00000995
+DataProperty: sdg:offenderId
+    Domain: bfo:0000002
+DataProperty: sdg:offenseHistory
+    Domain: cco:ont00000995
+ObjectProperty: sdg:offeredAt
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:offers
+    Range: cco:ont00000995
+ObjectProperty: sdg:offersApprenticeships
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:offersConcentration
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:offersCourse
+    Domain: bfo:0000023
+    Range: bfo:0000040
+DataProperty: sdg:offersGraduateProgram
+    Domain: bfo:0000040
+ObjectProperty: sdg:offersProgramme
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:office
+    Domain: bfo:0000040
+DataProperty: sdg:officeAddress
+    Domain: bfo:0000023
+DataProperty: sdg:officeCity
+    Domain: bfo:0000023
+DataProperty: sdg:officeIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:officeLocations
+    Domain: bfo:0000040
+DataProperty: sdg:officePincode
+    Domain: bfo:0000023
+DataProperty: sdg:officeSought
+    Domain: bfo:0000015
+DataProperty: sdg:officeTitle
+    Domain: bfo:0000023
+ObjectProperty: sdg:officeType
+    Domain: bfo:0000015
+DataProperty: sdg:officerBadgeNumber
+    Domain: bfo:0000015
+DataProperty: sdg:officerNotes
+    Domain: cco:ont00000995
+DataProperty: sdg:officialNewspaper
+    Domain: bfo:0000002
+ObjectProperty: sdg:offsetByOtherResource
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:ombudsmanName
+    Domain: bfo:0000004
+ObjectProperty: sdg:onCallRotation
+    Domain: bfo:0000015
+DataProperty: sdg:onCallStatus
+    Domain: bfo:0000002
+DataProperty: sdg:onboardQuantity
+    Domain: cco:ont00000995
+DataProperty: sdg:onlinePageViews
+    Domain: cco:ont00000995
+DataProperty: sdg:onsetDate
+    Domain: bfo:0000015
+DataProperty: sdg:onsetDateTime
+    Domain: bfo:0000003
+DataProperty: sdg:openRate
+    Domain: bfo:0000015
+DataProperty: sdg:openingDate
+    Domain: bfo:0000002
+ObjectProperty: sdg:operabilityStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:operatedByFacility
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:operatesCentres
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:operatesEntry
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:operatesEquipment
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:operatesForPublicBenefit
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:operatesHotline
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:operatesInJurisdiction
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:operatesInMarketStructure
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:operatesInState
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:operatesService
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:operatesSoftware
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:operatesUnder
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:operatesWithoutHumanIntervention
+    Range: cco:ont00000781
+DataProperty: sdg:operatingCurrent
+    Domain: cco:ont00000995
+DataProperty: sdg:operatingHoursEnd
+    Domain: bfo:0000015
+DataProperty: sdg:operatingHoursStart
+    Domain: bfo:0000015
+DataProperty: sdg:operatingInstitution
+    Domain: cco:ont00000995
+DataProperty: sdg:operatingMargin
+    Domain: bfo:0000015
+DataProperty: sdg:operatingModel
+    Domain: bfo:0000002
+DataProperty: sdg:operatingSeason
+    Domain: bfo:0000040
+DataProperty: sdg:operatingSince
+    Domain: bfo:0000040
+DataProperty: sdg:operatingStatus
+    Domain: bfo:0000040
+DataProperty: sdg:operatingTemperature
+    Domain: bfo:0000015
+DataProperty: sdg:operatingTemperatureMax
+    Domain: cco:ont00000995
+DataProperty: sdg:operatingTemperatureMin
+    Domain: cco:ont00000995
+DataProperty: sdg:operatingVoltage
+    Domain: cco:ont00000995
+ObjectProperty: sdg:operationName
+    Domain: bfo:0000015
+ObjectProperty: sdg:operationalScope
+    Domain: bfo:0000040
+DataProperty: sdg:operationalSeason
+    Domain: bfo:0000004
+ObjectProperty: sdg:operationalTerritory
+    Domain: bfo:0000015
+DataProperty: sdg:operatorCapacity
+    Domain: cco:ont00000995
+DataProperty: sdg:operatorId
+    Domain: bfo:0000040
+DataProperty: sdg:operatorName
+    Domain: cco:ont00000995
+DataProperty: sdg:operatorSignature
+    Domain: bfo:0000040
+DataProperty: sdg:operatorStatus
+    Domain: bfo:0000040
+DataProperty: sdg:opportunityNumber
+    Domain: bfo:0000040
+DataProperty: sdg:optimizationGoal
+    Domain: bfo:0000015
+DataProperty: sdg:optimizationStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:optimizesBuildingShape
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:optionId
+    Domain: cco:ont00000995
+DataProperty: sdg:orderDate
+    Domain: cco:ont00000995
+DataProperty: sdg:orderIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:orderNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:orderReference
+    Domain: cco:ont00000995
+ObjectProperty: sdg:orderSubmissionRole
+    Domain: cco:ont00000995
+    Range: bfo:0000001
+DataProperty: sdg:orderTypeId
+    Domain: cco:ont00000958
+ObjectProperty: sdg:orderedBy
+    Range: cco:ont00000995
+ObjectProperty: sdg:orders
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:orgID
+    Domain: bfo:0000040
+DataProperty: sdg:orgIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:orgSize
+    Domain: bfo:0000002
+ObjectProperty: sdg:organisedBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:organism
+    Domain: cco:ont00000995
+DataProperty: sdg:organismId
+    Domain: bfo:0000040
+ObjectProperty: sdg:organismType
+    Domain: bfo:0000040
+DataProperty: sdg:organizationAffiliation
+    Domain: bfo:0000040
+DataProperty: sdg:organizationID
+    Domain: bfo:0000015
+DataProperty: sdg:organizationalHealthScore
+    Domain: bfo:0000015
+DataProperty: sdg:organizationalUnitType
+    Domain: bfo:0000040
+ObjectProperty: sdg:organized
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:organizedByManager
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:organizer
+    Domain: bfo:0000015
+DataProperty: sdg:organizerName
+    Domain: bfo:0000015
+ObjectProperty: sdg:organizerRole
+    Domain: bfo:0000015
+    Range: bfo:0000001
+ObjectProperty: sdg:organizesConference
+    Range: bfo:0000040
+ObjectProperty: sdg:organizesEvent
+    Range: bfo:0000040
+ObjectProperty: sdg:organizes_meetings
+    Domain: cco:ont00001180
+    Range: bfo:0000002
+DataProperty: sdg:organizingBody
+    Domain: bfo:0000015
+DataProperty: sdg:organizingDepartment
+    Domain: bfo:0000015
+DataProperty: sdg:organizingMunicipality
+    Domain: bfo:0000040
+DataProperty: sdg:orientation
+    Domain: bfo:0000040
+DataProperty: sdg:originCountry
+    Domain: bfo:0000015
+DataProperty: sdg:originDate
+    Domain: cco:ont00000995
+DataProperty: sdg:originFacilityCode
+    Domain: bfo:0000015
+DataProperty: sdg:originJurisdiction
+    Domain: bfo:0000002
+DataProperty: sdg:originLanguage
+    Domain: bfo:0000002
+DataProperty: sdg:originRegion
+    Domain: cco:ont00000995
+DataProperty: sdg:originTradition
+    Domain: bfo:0000015
+DataProperty: sdg:originalApprovalDate
+    Domain: cco:ont00000958
+DataProperty: sdg:originalLanguage
+    Domain: cco:ont00000995
+DataProperty: sdg:originalPageCount
+    Domain: cco:ont00000995
+DataProperty: sdg:originalResponsibleOffice
+    Domain: bfo:0000015
+DataProperty: sdg:originalValue
+    Domain: bfo:0000040
+ObjectProperty: sdg:originatedFrom
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:originates
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:originatesAt
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:originatesFromAccount
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:originatesIn
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:originatesTransition
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:originates_from_rental
+    Range: cco:ont00001325
+DataProperty: sdg:osPlatform
+    Domain: bfo:0000040
+DataProperty: sdg:osVersion
+    Domain: bfo:0000040
+DataProperty: sdg:outbreakId
+    Domain: bfo:0000015
+ObjectProperty: sdg:outcome
+    Domain: bfo:0000015
+DataProperty: sdg:outcomeDescription
+    Domain: bfo:0000015
+DataProperty: sdg:outcomeID
+    Domain: bfo:0000015
+DataProperty: sdg:outcomeIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:outcomeName
+    Domain: bfo:0000015
+DataProperty: sdg:outcomeStatus
+    Domain: bfo:0000015
+DataProperty: sdg:outdoorTemperature
+    Domain: bfo:0000015
+DataProperty: sdg:outletId
+    Domain: bfo:0000015
+DataProperty: sdg:outletName
+    Domain: bfo:0000015
+ObjectProperty: sdg:outlinesPromotionalStrategy
+    Range: bfo:0000015
+DataProperty: sdg:outputDate
+    Domain: bfo:0000040
+ObjectProperty: sdg:outputFormat
+    Domain: cco:ont00000995
+DataProperty: sdg:outputIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:outputName
+    Domain: bfo:0000040
+DataProperty: sdg:outputPower
+    Domain: cco:ont00000995
+DataProperty: sdg:overallCaringRating
+    Domain: bfo:0000015
+DataProperty: sdg:overallComplianceStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:overallEffectiveness
+    Domain: bfo:0000015
+DataProperty: sdg:overallEffectivenessRating
+    Domain: bfo:0000015
+DataProperty: sdg:overallRating
+    Domain: bfo:0000015
+DataProperty: sdg:overallResponsiveRating
+    Domain: bfo:0000015
+ObjectProperty: sdg:overallSafetyRating
+    Domain: bfo:0000015
+DataProperty: sdg:overallWeightedScore
+    Domain: bfo:0000002
+ObjectProperty: sdg:overallWellLedRating
+    Domain: bfo:0000015
+ObjectProperty: sdg:overlaps
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:overlapsWith
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:overseenBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:overseesDomain
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:overseesFunction
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:overseesInternalAuditRole
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:overseesProgram
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:overseesRegion
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:overseesTerritory
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:oversightResponsibility
+    Domain: bfo:0000004
+DataProperty: sdg:oversightScope
+    Domain: bfo:0000023
+ObjectProperty: sdg:oversightedBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:oversubscribed
+    Domain: bfo:0000002
+DataProperty: sdg:overtimeEligibility
+    Domain: cco:ont00000958
+DataProperty: sdg:overtimeHours
+    Domain: cco:ont00000995
+DataProperty: sdg:overtimeRate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:ownedByClient
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:ownedInstrument
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:ownerIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:ownerLocation
+    Domain: cco:ont00000995
+DataProperty: sdg:ownershipId
+    Domain: cco:ont00000995
+DataProperty: sdg:ownershipPercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:ownershipStructure
+    Domain: cco:ont00000995
+ObjectProperty: sdg:ownsAccount
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:ownsApplication
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:ownsLibrary
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:ownsLot
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:ownsOrOperates
+    Domain: cco:ont00000995
+ObjectProperty: sdg:ownsParcelAt
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:ownsPrivateData
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:ownsRestaurant
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:oxygenIndex
+    Domain: cco:ont00000995
+DataProperty: sdg:oxygenRatio
+    Domain: bfo:0000015
+DataProperty: sdg:ozoneConcentration
+    Domain: bfo:0000015
+DataProperty: sdg:ozoneDose
+    Domain: bfo:0000015
+ObjectProperty: sdg:pace
+    Domain: bfo:0000002
+DataProperty: sdg:packageId
+    Domain: cco:ont00000995
+DataProperty: sdg:packageName
+    Domain: cco:ont00000995
+DataProperty: sdg:packageStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:packageStyle
+    Domain: cco:ont00000995
+DataProperty: sdg:packetId
+    Domain: bfo:0000040
+DataProperty: sdg:packetLossLimit
+    Domain: bfo:0000031
+DataProperty: sdg:pageCount
+    Domain: cco:ont00000995
+DataProperty: sdg:pageId
+    Domain: cco:ont00000995
+DataProperty: sdg:pageReference
+    Domain: bfo:0000015
+ObjectProperty: sdg:paidBy
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:pairedWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:pairsWithFood
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:pairsWithWine
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:panNumber
+    Domain: bfo:0000015
+DataProperty: sdg:panelDesignation
+    Domain: bfo:0000015
+DataProperty: sdg:panelId
+    Domain: bfo:0000015
+DataProperty: sdg:panelName
+    Domain: bfo:0000015
+ObjectProperty: sdg:panelStatus
+    Domain: bfo:0000015
+DataProperty: sdg:panelTheme
+    Domain: bfo:0000015
+DataProperty: sdg:pantsSize
+    Domain: bfo:0000004
+DataProperty: sdg:paperId
+    Domain: bfo:0000015
+DataProperty: sdg:paperType
+    Domain: cco:ont00000995
+DataProperty: sdg:paradigmId
+    Domain: bfo:0000015
+DataProperty: sdg:parameter
+    Domain: cco:ont00000995
+DataProperty: sdg:parameterId
+    Domain: cco:ont00000995
+DataProperty: sdg:parameterSymbol
+    Domain: bfo:0000015
+DataProperty: sdg:paraphrased
+    Domain: cco:ont00000958
+DataProperty: sdg:parasiticType
+    Domain: bfo:0000040
+ObjectProperty: sdg:parasitises
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:parcelId
+    Domain: bfo:0000040
+DataProperty: sdg:parcelIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:parcelNumber
+    Domain: bfo:0000004
+DataProperty: sdg:parchmentId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:parentAgencyId
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:parentAgencyIdDetail
+    Domain: bfo:0000040
+DataProperty: sdg:parentCompany
+    Domain: cco:ont00000995
+DataProperty: sdg:parentDistrict
+    Domain: bfo:0000015
+DataProperty: sdg:parentFemaleName
+    Domain: bfo:0000015
+DataProperty: sdg:parentGuardianContact
+    Domain: bfo:0000002
+DataProperty: sdg:parentId
+    Domain: bfo:0000040
+DataProperty: sdg:parentInstitution
+    Domain: bfo:0000015
+DataProperty: sdg:parentInstitutionId
+    Domain: bfo:0000040
+DataProperty: sdg:parentMaleName
+    Domain: bfo:0000015
+DataProperty: sdg:parentOrg
+    Domain: bfo:0000002
+DataProperty: sdg:parentOrganizationId
+    Domain: bfo:0000002
+DataProperty: sdg:parentUniversity
+    Domain: bfo:0000040
+DataProperty: sdg:parentingStatus
+    Domain: bfo:0000002
+DataProperty: sdg:parkerRating
+    Domain: bfo:0000040
+DataProperty: sdg:partIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:partNumber
+    Domain: cco:ont00000995
+ObjectProperty: sdg:partOfCategory
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfCertificate
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:partOfCollection
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfConference
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:partOfConversation
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:partOfCountry
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:partOfDegree
+    Range: bfo:0000015
+ObjectProperty: sdg:partOfDepartment
+    Range: bfo:0000040
+ObjectProperty: sdg:partOfDiscipline
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfDrive
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:partOfForum
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:partOfIEP
+    Domain: bfo:0000016
+    Range: bfo:0000016
+ObjectProperty: sdg:partOfInspection
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfInstance
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:partOfMenu
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfMethod
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfOrder
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfPackage
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfPlan
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:partOfProgramme
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:partOfReading
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfRecord
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:partOfRegistry
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfRig
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:partOfRoute
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:partOfSchool
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:partOfSection
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:partOfSeries
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:partOfService
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfSubject
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:partOfSubmission
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:partOfSurvey
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:partOfSystem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfTerritory
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:partOfTournament
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:partOfTransaction
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:partOfTransfer
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:partOfUniversity
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:participantRole
+    Domain: bfo:0000015
+DataProperty: sdg:participants
+    Domain: bfo:0000015
+ObjectProperty: sdg:participatedBy
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:participatedInMeeting
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:participatedInSurvey
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:participatesInConciliation
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:participatesInGroup
+    Range: cco:ont00000914
+ObjectProperty: sdg:participatesTeam
+    Domain: bfo:0000015
+DataProperty: sdg:participatingAgencies
+    Domain: bfo:0000015
+DataProperty: sdg:participationId
+    Domain: bfo:0000015
+DataProperty: sdg:participationLevel
+    Domain: bfo:0000002
+DataProperty: sdg:participationMode
+    Domain: bfo:0000040
+ObjectProperty: sdg:participationStatus
+    Domain: bfo:0000015
+DataProperty: sdg:participationType
+    Domain: bfo:0000002
+DataProperty: sdg:partitionType
+    Domain: bfo:0000040
+ObjectProperty: sdg:partneredWith
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:partnershipId
+    Domain: bfo:0000040
+DataProperty: sdg:partnershipName
+    Domain: bfo:0000040
+DataProperty: sdg:partnershipType
+    Domain: bfo:0000040
+DataProperty: sdg:partsCost
+    Domain: bfo:0000015
+DataProperty: sdg:partyAffiliation
+    Domain: bfo:0000023
+ObjectProperty: sdg:partyTo
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+DataProperty: sdg:passDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:passedAt
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:passengerCount
+    Domain: bfo:0000040
+DataProperty: sdg:passengerName
+    Domain: bfo:0000040
+DataProperty: sdg:passingScore
+    Domain: bfo:0000015
+DataProperty: sdg:passportNumber
+    Domain: bfo:0000004
+DataProperty: sdg:passwordExpiryDays
+    Domain: cco:ont00000995
+DataProperty: sdg:passwordHash
+    Domain: cco:ont00000995
+DataProperty: sdg:patentCount
+    Domain: bfo:0000040
+DataProperty: sdg:patentStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:pathId
+    Domain: bfo:0000015
+DataProperty: sdg:pathName
+    Domain: bfo:0000015
+DataProperty: sdg:pathogenCode
+    Domain: cco:ont00000995
+DataProperty: sdg:pathogenId
+    Domain: cco:ont00000995
+DataProperty: sdg:pathogenName
+    Domain: bfo:0000015
+DataProperty: sdg:patientGender
+    Domain: cco:ont00000995
+DataProperty: sdg:patientID
+    Domain: cco:ont00000995
+DataProperty: sdg:patientId
+    Domain: cco:ont00000995
+DataProperty: sdg:patientName
+    Domain: cco:ont00000995
+DataProperty: sdg:patientNeeds
+    Domain: bfo:0000015
+DataProperty: sdg:patientVolume
+    Domain: bfo:0000015
+DataProperty: sdg:patientsTreatedWithinTarget
+    Domain: bfo:0000040
+DataProperty: sdg:patrolId
+    Domain: bfo:0000015
+DataProperty: sdg:patrolType
+    Domain: bfo:0000015
+DataProperty: sdg:patron
+    Domain: bfo:0000015
+DataProperty: sdg:pattern
+    Domain: bfo:0000040
+DataProperty: sdg:patternId
+    Domain: cco:ont00000995
+DataProperty: sdg:patternType
+    Domain: cco:ont00000995
+DataProperty: sdg:payPeriodEnd
+    Domain: cco:ont00000995
+DataProperty: sdg:payPeriodStart
+    Domain: cco:ont00000995
+DataProperty: sdg:payloadSizeBytes
+    Domain: bfo:0000040
+DataProperty: sdg:paymentAmount
+    Domain: bfo:0000015
+DataProperty: sdg:paymentDueDay
+    Domain: cco:ont00000995
+DataProperty: sdg:paymentDuration
+    Domain: cco:ont00000995
+DataProperty: sdg:paymentFrequency
+    Domain: cco:ont00000995
+DataProperty: sdg:paymentGateway
+    Domain: cco:ont00000995
+DataProperty: sdg:paymentId
+    Domain: bfo:0000015
+DataProperty: sdg:paymentIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:paymentStructure
+    Domain: bfo:0000015
+DataProperty: sdg:paymentThreshold
+    Domain: bfo:0000015
+DataProperty: sdg:paymentType
+    Domain: bfo:0000015
+ObjectProperty: sdg:paysFor
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:paysForService
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:pdReverseVoltage
+    Domain: cco:ont00000995
+DataProperty: sdg:pdbCode
+    Domain: cco:ont00000995
+DataProperty: sdg:pdsId
+    Domain: cco:ont00000958
+DataProperty: sdg:peakBandwidth
+    Domain: bfo:0000015
+DataProperty: sdg:peakGateCurrent
+    Domain: cco:ont00000995
+DataProperty: sdg:peakIntensityDateTime
+    Domain: bfo:0000003
+DataProperty: sdg:peakPerformanceFlops
+    Domain: bfo:0000004
+DataProperty: sdg:peakSurgeCurrent
+    Domain: cco:ont00000995
+DataProperty: sdg:peakUnemploymentRate
+    Domain: bfo:0000015
+DataProperty: sdg:peakWaterLevel
+    Domain: bfo:0000015
+DataProperty: sdg:pedagogicalApproach
+    Domain: cco:ont00000995
+DataProperty: sdg:pediatricPracticePercentage
+    Domain: bfo:0000002
+DataProperty: sdg:pedigreeId
+    Domain: cco:ont00000995
+DataProperty: sdg:peerReviewPublicationsCount
+    Domain: bfo:0000002
+DataProperty: sdg:peerReviewed
+    Domain: cco:ont00000995
+DataProperty: sdg:peeringISPs
+    Domain: bfo:0000040
+DataProperty: sdg:penaltyAmount
+    Domain: bfo:0000015
+DataProperty: sdg:penaltyApplied
+    Domain: bfo:0000015
+DataProperty: sdg:penaltyId
+    Domain: bfo:0000015
+DataProperty: sdg:penaltyType
+    Domain: bfo:0000015
+DataProperty: sdg:perceivedValue
+    Domain: bfo:0000015
+DataProperty: sdg:percentage
+    Domain: cco:ont00000995
+DataProperty: sdg:percentageOfTotal
+    Domain: bfo:0000002
+DataProperty: sdg:percentageShare
+    Domain: bfo:0000023
+DataProperty: sdg:percentile
+    Domain: bfo:0000015
+DataProperty: sdg:percentile90
+    Domain: cco:ont00000995
+DataProperty: sdg:perceptionOfMigrants
+    Domain: bfo:0000004
+DataProperty: sdg:perceptionScore
+    Domain: cco:ont00000995
+DataProperty: sdg:performanceCategory
+    Domain: bfo:0000002
+DataProperty: sdg:performanceFeeRate
+    Domain: bfo:0000040
+DataProperty: sdg:performanceTarget
+    Domain: bfo:0000002
+DataProperty: sdg:performanceVsIndex
+    Domain: cco:ont00000995
+DataProperty: sdg:performedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:performedDuring
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:performedInContext
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:performedObservation
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:performedOn
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:performedOnSystem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:performerRole
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:performsActivity
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:performsCalibrationFor
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:performsLawEnforcementDuties
+    Range: bfo:0000015
+ObjectProperty: sdg:performsProcedure
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:performsService
+    Range: bfo:0000015
+ObjectProperty: sdg:performsTask
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:performsTrafficCleaning
+    Range: cco:ont00000665
+DataProperty: sdg:perimeterDefinitionDate
+    Domain: bfo:0000004
+DataProperty: sdg:periodCovered
+    Domain: cco:ont00000958
+DataProperty: sdg:periodEndDate
+    Domain: bfo:0000015
+DataProperty: sdg:periodId
+    Domain: bfo:0000015
+DataProperty: sdg:periodStartDate
+    Domain: bfo:0000015
+DataProperty: sdg:perjuryAcknowledged
+    Domain: bfo:0000002
+DataProperty: sdg:permanentAddress
+    Domain: bfo:0000004
+DataProperty: sdg:permanentPostalCode
+    Domain: bfo:0000004
+DataProperty: sdg:permitId
+    Domain: cco:ont00000995
+DataProperty: sdg:permitName
+    Domain: cco:ont00000995
+DataProperty: sdg:permitType
+    Domain: bfo:0000002
+ObjectProperty: sdg:permits
+    Domain: cco:ont00000958
+    Range: bfo:0000004
+ObjectProperty: sdg:perpetratedBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:persistentAbsence
+    Domain: bfo:0000015
+DataProperty: sdg:personalDevelopment
+    Domain: bfo:0000015
+ObjectProperty: sdg:pertainsToApplication
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:pertainsToYouth
+    Domain: bfo:0000023
+    Range: bfo:0000040
+DataProperty: sdg:pesticideBanStatus
+    Domain: bfo:0000002
+DataProperty: sdg:petitionerContactPerson
+    Domain: cco:ont00000995
+DataProperty: sdg:petroleumDieselPercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:pfdId
+    Domain: cco:ont00000995
+DataProperty: sdg:pfdRequired
+    Domain: bfo:0000023
+DataProperty: sdg:pfdWorn
+    Domain: bfo:0000023
+DataProperty: sdg:phLevel
+    Domain: cco:ont00000995
+ObjectProperty: sdg:phase
+    Domain: bfo:0000015
+DataProperty: sdg:phaseId
+    Domain: bfo:0000040
+DataProperty: sdg:phaseIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:phaseInPercentage
+    Domain: bfo:0000015
+DataProperty: sdg:phaseInThreshold
+    Domain: bfo:0000015
+DataProperty: sdg:phaseName
+    Domain: cco:ont00000995
+DataProperty: sdg:phaseNumber
+    Domain: bfo:0000040
+DataProperty: sdg:phaseOutThreshold
+    Domain: bfo:0000015
+DataProperty: sdg:phaseRelationship
+    Domain: cco:ont00000995
+DataProperty: sdg:phaseShift
+    Domain: cco:ont00000995
+DataProperty: sdg:phaseStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:phdAwardDate
+    Domain: bfo:0000040
+DataProperty: sdg:phoneExtension
+    Domain: bfo:0000015
+DataProperty: sdg:phonicsApproach
+    Domain: bfo:0000015
+DataProperty: sdg:phosphorus
+    Domain: cco:ont00000995
+DataProperty: sdg:photonPolarizationStates
+    Domain: bfo:0000015
+DataProperty: sdg:physicalAtoms
+    Domain: bfo:0000015
+DataProperty: sdg:physicalFormFactor
+    Domain: bfo:0000002
+DataProperty: sdg:physicalSafetyLevel
+    Domain: bfo:0000015
+DataProperty: sdg:physicalState
+    Domain: bfo:0000040
+DataProperty: sdg:physicianID
+    Domain: bfo:0000002
+DataProperty: sdg:physicianIdentifier
+    Domain: bfo:0000023
+DataProperty: sdg:pickupDate
+    Domain: bfo:0000002
+DataProperty: sdg:pickupEndTime
+    Domain: bfo:0000002
+DataProperty: sdg:pickupStartTime
+    Domain: bfo:0000002
+DataProperty: sdg:pickupTime
+    Domain: bfo:0000040
+DataProperty: sdg:pilotLocation
+    Domain: bfo:0000040
+DataProperty: sdg:pinCode
+    Domain: bfo:0000002
+DataProperty: sdg:pinConfiguration
+    Domain: cco:ont00000995
+DataProperty: sdg:pinoutDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:pipelineId
+    Domain: bfo:0000015
+DataProperty: sdg:pipelineName
+    Domain: bfo:0000015
+DataProperty: sdg:pitch
+    Domain: cco:ont00000995
+DataProperty: sdg:pitchDiameter
+    Domain: cco:ont00000995
+DataProperty: sdg:pizzaId
+    Domain: cco:ont00000995
+DataProperty: sdg:placeOfBirth
+    Domain: bfo:0000004
+ObjectProperty: sdg:placed
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:placedOrder
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:placementId
+    Domain: cco:ont00000958
+ObjectProperty: sdg:placesOrder
+    Range: cco:ont00000995
+DataProperty: sdg:planEndDate
+    Domain: cco:ont00000958
+DataProperty: sdg:planIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:planStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:planTitle
+    Domain: cco:ont00000995
+ObjectProperty: sdg:plannedBy
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:plannedCapacityMW
+    Domain: bfo:0000015
+DataProperty: sdg:plannedCredits
+    Domain: cco:ont00000995
+DataProperty: sdg:plannedObsolescence
+    Domain: bfo:0000040
+DataProperty: sdg:plannerId
+    Domain: bfo:0000002
+DataProperty: sdg:planningHorizon
+    Domain: bfo:0000040
+DataProperty: sdg:planningPeriod
+    Domain: bfo:0000015
+DataProperty: sdg:plantId
+    Domain: cco:ont00000995
+DataProperty: sdg:plantationId
+    Domain: bfo:0000040
+DataProperty: sdg:platformId
+    Domain: cco:ont00000995
+DataProperty: sdg:platformName
+    Domain: cco:ont00000995
+DataProperty: sdg:platformURL
+    Domain: cco:ont00000995
+DataProperty: sdg:platformUrl
+    Domain: cco:ont00000995
+DataProperty: sdg:platformUsed
+    Domain: cco:ont00000958
+DataProperty: sdg:platinumMember
+    Domain: bfo:0000002
+DataProperty: sdg:platterId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:playedOn
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:playsInGame
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:plugType
+    Domain: bfo:0000015
+ObjectProperty: sdg:pluggedInto
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:poNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:pointId
+    Domain: bfo:0000040
+DataProperty: sdg:pointsAwarded
+    Domain: bfo:0000015
+DataProperty: sdg:policeReportNumber
+    Domain: bfo:0000002
+DataProperty: sdg:policyCode
+    Domain: cco:ont00000995
+DataProperty: sdg:policyID
+    Domain: bfo:0000040
+DataProperty: sdg:policyIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:policyRef
+    Domain: cco:ont00000958
+DataProperty: sdg:policyScope
+    Domain: cco:ont00000958
+ObjectProperty: sdg:policyStatus
+    Domain: bfo:0000040
+DataProperty: sdg:politenessScore
+    Domain: bfo:0000015
+DataProperty: sdg:politicalAffiliation
+    Domain: bfo:0000004
+DataProperty: sdg:pollutantClass
+    Domain: cco:ont00000995
+DataProperty: sdg:pollutantId
+    Domain: bfo:0000040
+DataProperty: sdg:pollutantIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:pollutantName
+    Domain: bfo:0000040
+DataProperty: sdg:pollutionSize
+    Domain: bfo:0000002
+DataProperty: sdg:polygonCount
+    Domain: cco:ont00000995
+DataProperty: sdg:poorHouseholdsWithChildrenPercent
+    Domain: cco:ont00000995
+DataProperty: sdg:populationAgeRange
+    Domain: cco:ont00000995
+DataProperty: sdg:populationGroupId
+    Domain: bfo:0000002
+DataProperty: sdg:populationId
+    Domain: bfo:0000015
+DataProperty: sdg:populationName
+    Domain: bfo:0000015
+DataProperty: sdg:port
+    Domain: bfo:0000015
+DataProperty: sdg:portCount
+    Domain: cco:ont00000995
+DataProperty: sdg:portIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:portLabel
+    Domain: cco:ont00000995
+DataProperty: sdg:portfolioId
+    Domain: bfo:0000040
+DataProperty: sdg:portfolioIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:portfolioStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:portionType
+    Domain: bfo:0000040
+DataProperty: sdg:positionCountChange
+    Domain: bfo:0000040
+DataProperty: sdg:positionIdentifier
+    Domain: bfo:0000023
+DataProperty: sdg:positionStatus
+    Domain: bfo:0000023
+DataProperty: sdg:positionType
+    Domain: bfo:0000023
+DataProperty: sdg:positionX
+    Domain: bfo:0000040
+DataProperty: sdg:positionY
+    Domain: bfo:0000040
+DataProperty: sdg:positioningStatement
+    Domain: bfo:0000015
+ObjectProperty: sdg:possessedBy
+    Range: cco:ont00000995
+ObjectProperty: sdg:possesses
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:possessesLegalQualifications
+    Range: bfo:0000019
+ObjectProperty: sdg:possessesSkill
+    Domain: cco:ont00000995
+    Range: bfo:0000016
+DataProperty: sdg:postDate
+    Domain: cco:ont00000995
+DataProperty: sdg:postId
+    Domain: cco:ont00000995
+DataProperty: sdg:postTreatmentValue
+    Domain: bfo:0000015
+DataProperty: sdg:postType
+    Domain: cco:ont00000995
+DataProperty: sdg:postingDate
+    Domain: bfo:0000015
+DataProperty: sdg:potassium
+    Domain: cco:ont00000995
+DataProperty: sdg:povertyIndexId
+    Domain: cco:ont00000995
+DataProperty: sdg:povertyRate
+    Domain: cco:ont00000995
+DataProperty: sdg:power
+    Domain: cco:ont00000995
+DataProperty: sdg:powerConsumptionWatts
+    Domain: bfo:0000040
+DataProperty: sdg:powerDependency
+    Domain: cco:ont00000995
+DataProperty: sdg:powerOutput
+    Domain: bfo:0000004
+DataProperty: sdg:powerSource
+    Domain: bfo:0000040
+DataProperty: sdg:powerSourceType
+    Domain: bfo:0000002
+DataProperty: sdg:powerSupplyReliability
+    Domain: bfo:0000040
+DataProperty: sdg:powerSupplyWatts
+    Domain: cco:ont00000995
+ObjectProperty: sdg:powers
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:prFirmName
+    Domain: cco:ont00000995
+DataProperty: sdg:prRepresentative
+    Domain: cco:ont00000995
+DataProperty: sdg:practiceAreas
+    Domain: bfo:0000023
+DataProperty: sdg:practiceCode
+    Domain: bfo:0000040
+DataProperty: sdg:practiceId
+    Domain: cco:ont00000995
+DataProperty: sdg:practiceSessionId
+    Domain: bfo:0000040
+DataProperty: sdg:practiceType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:practicedBy
+    Domain: bfo:0000015
+ObjectProperty: sdg:practices
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:practicesCompleted
+    Domain: cco:ont00000995
+DataProperty: sdg:preTreatmentValue
+    Domain: bfo:0000015
+ObjectProperty: sdg:preceded
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:precondition
+    Domain: bfo:0000015
+DataProperty: sdg:predicateConcept
+    Domain: bfo:0000015
+DataProperty: sdg:prefLabel
+    Domain: cco:ont00000995
+DataProperty: sdg:preferenceTags
+    Domain: cco:ont00000995
+DataProperty: sdg:preferredContactLocation
+    Domain: cco:ont00000995
+DataProperty: sdg:preferredContactMethod
+    Domain: cco:ont00000995
+DataProperty: sdg:preferredShift
+    Domain: cco:ont00000958
+DataProperty: sdg:prefix
+    Domain: bfo:0000040
+DataProperty: sdg:preheatedBy
+    Domain: bfo:0000002
+DataProperty: sdg:premiereVenue
+    Domain: bfo:0000040
+DataProperty: sdg:premisesId
+    Domain: bfo:0000002
+DataProperty: sdg:premiumPaid
+    Domain: cco:ont00000995
+DataProperty: sdg:preparationStyle
+    Domain: bfo:0000040
+ObjectProperty: sdg:preparedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:preparedByCompany
+    Domain: bfo:0000002
+DataProperty: sdg:preparedByEmail
+    Domain: bfo:0000002
+ObjectProperty: sdg:preparedByOfficial
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+DataProperty: sdg:preparedByPhone
+    Domain: bfo:0000002
+ObjectProperty: sdg:preparedByProfessionalEngineer
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:preparedByStaffId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:preparedFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:prepares
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:prerequisite
+    Domain: bfo:0000040
+DataProperty: sdg:prerequisiteConceptId
+    Domain: bfo:0000015
+DataProperty: sdg:prerequisiteConcepts
+    Domain: bfo:0000015
+DataProperty: sdg:prerequisiteCourseId
+    Domain: bfo:0000040
+ObjectProperty: sdg:prerequisiteFor
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:prerequisiteOf
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:prescribedBy
+    Domain: cco:ont00000995
+ObjectProperty: sdg:prescribedMedication
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:prescribedTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:prescribes
+    Range: cco:ont00000995
+DataProperty: sdg:prescriptionDate
+    Domain: cco:ont00000958
+DataProperty: sdg:prescriptionId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:prescriptionStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:presentIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:presentationCount
+    Domain: bfo:0000015
+DataProperty: sdg:presentationTitle
+    Domain: bfo:0000015
+ObjectProperty: sdg:presentationType
+    Domain: bfo:0000015
+ObjectProperty: sdg:presentedAt
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:presentedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:presentedByDetail
+    Domain: cco:ont00000995
+ObjectProperty: sdg:presentedByOrganization
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:presentedIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:presentsAward
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:pressure
+    Domain: bfo:0000015
+DataProperty: sdg:pressureBar
+    Domain: bfo:0000015
+ObjectProperty: sdg:pressureLevel
+    Domain: bfo:0000015
+DataProperty: sdg:pressurePSI
+    Domain: bfo:0000015
+ObjectProperty: sdg:pressureRatingBasis
+    Domain: cco:ont00000995
+DataProperty: sdg:prevalence
+    Domain: bfo:0000002
+DataProperty: sdg:prevalenceInTeens
+    Domain: bfo:0000015
+DataProperty: sdg:prevalencePercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:preventiveMeasures
+    Domain: cco:ont00000995
+DataProperty: sdg:previewUrl
+    Domain: cco:ont00000995
+DataProperty: sdg:previousApplicant
+    Domain: bfo:0000004
+ObjectProperty: sdg:previousComplianceStatus
+    Domain: bfo:0000015
+DataProperty: sdg:previousExperience
+    Domain: bfo:0000002
+DataProperty: sdg:previousInspectionDate
+    Domain: bfo:0000015
+DataProperty: sdg:previousOccupation
+    Domain: bfo:0000040
+ObjectProperty: sdg:previouslyEmployedAt
+    Domain: bfo:0000002
+ObjectProperty: sdg:previouslyHeld
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:previouslyHeldRoleAt
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+DataProperty: sdg:price
+    Domain: cco:ont00000995
+DataProperty: sdg:priceAdjustment
+    Domain: cco:ont00000995
+DataProperty: sdg:priceControl
+    Domain: bfo:0000040
+DataProperty: sdg:priceId
+    Domain: cco:ont00000995
+DataProperty: sdg:pricePerPerson
+    Domain: cco:ont00000958
+DataProperty: sdg:pricePerUnit
+    Domain: bfo:0000040
+DataProperty: sdg:pricePoint
+    Domain: cco:ont00000958
+DataProperty: sdg:priceType
+    Domain: cco:ont00000995
+DataProperty: sdg:priceValue
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryColor
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryCommunicationMode
+    Domain: bfo:0000040
+DataProperty: sdg:primaryCondition
+    Domain: bfo:0000002
+DataProperty: sdg:primaryContactPhone
+    Domain: bfo:0000004
+DataProperty: sdg:primaryCrop
+    Domain: bfo:0000004
+DataProperty: sdg:primaryDegree
+    Domain: bfo:0000040
+DataProperty: sdg:primaryDiagnosis
+    Domain: bfo:0000002
+DataProperty: sdg:primaryDiscipline
+    Domain: bfo:0000040
+DataProperty: sdg:primaryDrivers
+    Domain: bfo:0000015
+DataProperty: sdg:primaryEmployer
+    Domain: bfo:0000040
+ObjectProperty: sdg:primaryEnvironmentalConcern
+    Domain: bfo:0000002
+DataProperty: sdg:primaryEthnicGroup
+    Domain: bfo:0000040
+DataProperty: sdg:primaryExpertise
+    Domain: bfo:0000002
+DataProperty: sdg:primaryField
+    Domain: bfo:0000040
+DataProperty: sdg:primaryFocusArea
+    Domain: bfo:0000002
+ObjectProperty: sdg:primaryFunction
+    Domain: bfo:0000015
+    Range: bfo:0000001
+DataProperty: sdg:primaryGearType
+    Domain: bfo:0000004
+DataProperty: sdg:primaryGender
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryHazardType
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryInstrument
+    Domain: bfo:0000040
+DataProperty: sdg:primaryIntention
+    Domain: bfo:0000015
+DataProperty: sdg:primaryInterest
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryMarketType
+    Domain: bfo:0000015
+ObjectProperty: sdg:primaryNeed
+    Domain: bfo:0000040
+DataProperty: sdg:primaryOccupation
+    Domain: bfo:0000002
+DataProperty: sdg:primaryOutcome
+    Domain: bfo:0000015
+DataProperty: sdg:primaryPracticeAreas
+    Domain: bfo:0000040
+DataProperty: sdg:primaryProduct
+    Domain: bfo:0000004
+DataProperty: sdg:primaryProtein
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryQualification
+    Domain: bfo:0000023
+DataProperty: sdg:primaryRace
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryRegion
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryResponsibility
+    Domain: cco:ont00000995
+DataProperty: sdg:primarySkill
+    Domain: bfo:0000023
+DataProperty: sdg:primarySpecies
+    Domain: bfo:0000040
+DataProperty: sdg:primarySubject
+    Domain: bfo:0000030
+DataProperty: sdg:primaryTheme
+    Domain: cco:ont00000995
+DataProperty: sdg:primaryTherapeuticArea
+    Domain: bfo:0000040
+DataProperty: sdg:primaryTreatment
+    Domain: bfo:0000002
+DataProperty: sdg:primaryTrigger
+    Domain: bfo:0000015
+DataProperty: sdg:primaryUse
+    Domain: bfo:0000015
+DataProperty: sdg:principalInvestigator
+    Domain: bfo:0000040
+DataProperty: sdg:principalName
+    Domain: cco:ont00000958
+DataProperty: sdg:principalOfficeAddress
+    Domain: cco:ont00000958
+DataProperty: sdg:principleCode
+    Domain: bfo:0000040
+DataProperty: sdg:principleName
+    Domain: bfo:0000040
+DataProperty: sdg:principles
+    Domain: bfo:0000015
+ObjectProperty: sdg:printColor
+    Domain: cco:ont00000995
+DataProperty: sdg:printDate
+    Domain: cco:ont00000995
+DataProperty: sdg:printedName
+    Domain: bfo:0000040
+DataProperty: sdg:priorFindingId
+    Domain: bfo:0000015
+DataProperty: sdg:priorProfession
+    Domain: bfo:0000002
+DataProperty: sdg:priority
+    Domain: bfo:0000015
+DataProperty: sdg:priorityStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:prisonerCount
+    Domain: bfo:0000002
+DataProperty: sdg:privacyComplianceCheck
+    Domain: cco:ont00000995
+DataProperty: sdg:privacyPolicyURL
+    Domain: bfo:0000040
+DataProperty: sdg:privilegeId
+    Domain: bfo:0000040
+DataProperty: sdg:privilegeType
+    Domain: bfo:0000040
+ObjectProperty: sdg:prizeType
+    Domain: bfo:0000002
+DataProperty: sdg:prizeValue
+    Domain: bfo:0000002
+DataProperty: sdg:probateFiled
+    Domain: cco:ont00000958
+DataProperty: sdg:problemName
+    Domain: bfo:0000015
+DataProperty: sdg:procedureCode
+    Domain: bfo:0000015
+DataProperty: sdg:procedureDate
+    Domain: bfo:0000015
+DataProperty: sdg:procedureId
+    Domain: bfo:0000015
+DataProperty: sdg:procedureName
+    Domain: bfo:0000015
+ObjectProperty: sdg:procedureType
+    Domain: bfo:0000015
+DataProperty: sdg:processCategory
+    Domain: bfo:0000015
+DataProperty: sdg:processId
+    Domain: bfo:0000015
+DataProperty: sdg:processIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:processName
+    Domain: bfo:0000015
+ObjectProperty: sdg:processStatus
+    Domain: bfo:0000015
+DataProperty: sdg:processType
+    Domain: bfo:0000015
+ObjectProperty: sdg:processedByAssistant
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:processedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:processedByPlan
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:processedBySystem
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:processesDataFrom
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:processesDocument
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:processesFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:processesTrafficFor
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:processesTransaction
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:processesTransactionFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:processesWaste
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:processesWasteStream
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:processingDays
+    Domain: cco:ont00000995
+DataProperty: sdg:processingEfficiency
+    Domain: cco:ont00000995
+ObjectProperty: sdg:processingLocation
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:processingOffice
+    Domain: cco:ont00000958
+DataProperty: sdg:processingPeriodEnd
+    Domain: bfo:0000015
+DataProperty: sdg:processingPeriodStart
+    Domain: bfo:0000015
+DataProperty: sdg:processingPower
+    Domain: bfo:0000040
+ObjectProperty: sdg:processingPurpose
+    Domain: bfo:0000015
+DataProperty: sdg:processingSpeed
+    Domain: bfo:0000015
+DataProperty: sdg:proclamationId
+    Domain: cco:ont00000958
+DataProperty: sdg:procurementCost
+    Domain: cco:ont00000995
+ObjectProperty: sdg:producedByProject
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:producedBySystem
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:producedContent
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:producer
+    Domain: bfo:0000040
+ObjectProperty: sdg:producesCurriculum
+    Range: bfo:0000040
+ObjectProperty: sdg:producesDataFor
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:producesDecision
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:producesDocument
+    Range: cco:ont00000995
+ObjectProperty: sdg:producesEnzyme
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:producesLubricant
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:producesMenuItem
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:producesOutput
+    Range: bfo:0000040
+ObjectProperty: sdg:producesWine
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:productDescription
+    Domain: cco:ont00000995
+ObjectProperty: sdg:productDifferentiation
+    Domain: bfo:0000040
+DataProperty: sdg:productionDate
+    Domain: cco:ont00000995
+DataProperty: sdg:productionFacilityId
+    Domain: cco:ont00000995
+DataProperty: sdg:productionYear
+    Domain: bfo:0000040
+DataProperty: sdg:productivityMetric
+    Domain: bfo:0000015
+DataProperty: sdg:profession
+    Domain: bfo:0000004
+DataProperty: sdg:professionalID
+    Domain: bfo:0000002
+DataProperty: sdg:professionalName
+    Domain: bfo:0000040
+ObjectProperty: sdg:professionalQualifications
+    Domain: bfo:0000023
+DataProperty: sdg:professionalRole
+    Domain: bfo:0000002
+DataProperty: sdg:professionalismCourseCompleted
+    Domain: cco:ont00000995
+DataProperty: sdg:professionalismRating
+    Domain: bfo:0000023
+DataProperty: sdg:profileId
+    Domain: cco:ont00000995
+DataProperty: sdg:profileIndex
+    Domain: cco:ont00000995
+DataProperty: sdg:profileStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:profileType
+    Domain: cco:ont00000995
+DataProperty: sdg:profitDistributionPolicy
+    Domain: bfo:0000015
+ObjectProperty: sdg:programAffiliation
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+DataProperty: sdg:programDurationYears
+    Domain: bfo:0000002
+DataProperty: sdg:programEndDate
+    Domain: cco:ont00000995
+DataProperty: sdg:programManagerName
+    Domain: bfo:0000040
+DataProperty: sdg:programManagerPhone
+    Domain: bfo:0000040
+DataProperty: sdg:programMonths
+    Domain: cco:ont00000995
+DataProperty: sdg:programNameAtGraduation
+    Domain: cco:ont00000995
+DataProperty: sdg:programPeriodEnd
+    Domain: cco:ont00000995
+DataProperty: sdg:programPeriodStart
+    Domain: cco:ont00000995
+DataProperty: sdg:programStartDate
+    Domain: cco:ont00000995
+DataProperty: sdg:programmeIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:programmingLanguageSupport
+    Domain: cco:ont00000958
+ObjectProperty: sdg:prohibits
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:prohibitsCommercialUse
+    Domain: bfo:0000040
+DataProperty: sdg:projectDescription
+    Domain: bfo:0000015
+DataProperty: sdg:projectEndDate
+    Domain: bfo:0000002
+DataProperty: sdg:projectLocation
+    Domain: bfo:0000015
+DataProperty: sdg:projectParticipationStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:projectStartDate
+    Domain: bfo:0000002
+DataProperty: sdg:projectTypeCode
+    Domain: cco:ont00000995
+DataProperty: sdg:projectTypeDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:projectedExpenses
+    Domain: cco:ont00000995
+DataProperty: sdg:projectedNetCash
+    Domain: cco:ont00000995
+DataProperty: sdg:projectedRevenue
+    Domain: cco:ont00000995
+DataProperty: sdg:projectionPeriod
+    Domain: cco:ont00000995
+ObjectProperty: sdg:prominenceLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:promises
+    Domain: bfo:0000030
+ObjectProperty: sdg:promotes
+    Domain: bfo:0000015
+ObjectProperty: sdg:promotesItem
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:promotesLegalServices
+    Range: bfo:0000015
+DataProperty: sdg:proofMethod
+    Domain: bfo:0000015
+DataProperty: sdg:propertyAddress
+    Domain: cco:ont00000995
+DataProperty: sdg:proposalId
+    Domain: cco:ont00000995
+DataProperty: sdg:proposalType
+    Domain: cco:ont00000958
+ObjectProperty: sdg:proposedBy
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:proposedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:proposedByMember
+    Domain: bfo:0000015
+    Range: bfo:0000023
+DataProperty: sdg:proposedStartDate
+    Domain: bfo:0000023
+DataProperty: sdg:proposedYear
+    Domain: bfo:0000015
+DataProperty: sdg:proposingEntity
+    Domain: cco:ont00000958
+DataProperty: sdg:prosecutorId
+    Domain: bfo:0000015
+ObjectProperty: sdg:protectedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:protectedUnder
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:protectionLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:protectionStatus
+    Domain: bfo:0000004
+DataProperty: sdg:protectivePurpose
+    Domain: cco:ont00000995
+ObjectProperty: sdg:protectsSupportSystem
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:protectsVictim
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+DataProperty: sdg:proteinId
+    Domain: cco:ont00000995
+DataProperty: sdg:protocolID
+    Domain: bfo:0000015
+DataProperty: sdg:protocolId
+    Domain: bfo:0000015
+DataProperty: sdg:protocolIdentifier
+    Domain: cco:ont00000958
+DataProperty: sdg:protocolStatus
+    Domain: bfo:0000015
+DataProperty: sdg:protoplasmId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:protoplasmType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:providedAt
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:providedByAdvisor
+    Domain: bfo:0000023
+    Range: bfo:0000002
+ObjectProperty: sdg:providedByClient
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:providedByInvestor
+    Range: bfo:0000040
+ObjectProperty: sdg:providedByLicence
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:providedByParticipant
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:providedFor
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:providedIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:providedInJurisdiction
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:providedToTerritory
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:providerIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:providerOrganization
+    Domain: cco:ont00000995
+DataProperty: sdg:providerStaffId
+    Domain: bfo:0000015
+ObjectProperty: sdg:providesAccommodation
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:providesAccountTo
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:providesAdCopy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesAdviceFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:providesAdviceOn
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:providesApp
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesCareTo
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:providesConnectivityTo
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:providesConsent
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesConsultingTo
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:providesDataFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:providesElement
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesExercises
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesFeedbackFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:providesFinancialAdviceTo
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:providesInsight
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:providesInvestorFunding
+    Domain: bfo:0000040
+ObjectProperty: sdg:providesLateralRestraint
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:providesMeasurement
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesMitigationFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:providesNetworkAccess
+    Range: cco:ont00000700
+ObjectProperty: sdg:providesOffersTo
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesProcedure
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:providesProgram
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:providesReferralFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesReport
+    Range: cco:ont00000995
+ObjectProperty: sdg:providesServiceFor
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:providesServiceFunction
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:providesSupportTo
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:providesTo
+    Domain: cco:ont00000995
+ObjectProperty: sdg:providesTrainingTo
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:provides_healthcare
+    Range: cco:ont00000055
+ObjectProperty: sdg:provides_healthcare_services
+    Domain: bfo:0000015
+    Range: cco:ont00000055
+DataProperty: sdg:province
+    Domain: cco:ont00000995
+DataProperty: sdg:provinceState
+    Domain: cco:ont00000995
+DataProperty: sdg:pubId
+    Domain: bfo:0000040
+DataProperty: sdg:pubIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:publicDollarsLeveraged
+    Domain: cco:ont00000958
+DataProperty: sdg:publicHealthRoles
+    Domain: bfo:0000015
+DataProperty: sdg:publicationCount
+    Domain: bfo:0000040
+DataProperty: sdg:publicationId
+    Domain: cco:ont00000995
+DataProperty: sdg:publicationIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:publicationStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:publicationType
+    Domain: cco:ont00000995
+DataProperty: sdg:publicationUrl
+    Domain: cco:ont00000995
+DataProperty: sdg:publicationsCount
+    Domain: bfo:0000004
+DataProperty: sdg:publishedDate
+    Domain: bfo:0000040
+ObjectProperty: sdg:publishedIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:publisherName
+    Domain: cco:ont00000958
+ObjectProperty: sdg:publishesGuidance
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:publishes_journal
+    Domain: cco:ont00001180
+    Range: bfo:0000002
+DataProperty: sdg:punchListItems
+    Domain: bfo:0000015
+DataProperty: sdg:purchaseDate
+    Domain: cco:ont00000995
+DataProperty: sdg:purchasePrice
+    Domain: cco:ont00000995
+ObjectProperty: sdg:purchasedBy
+    Domain: cco:ont00000995
+ObjectProperty: sdg:purchases
+    Domain: bfo:0000040
+ObjectProperty: sdg:purchasesFromSocialEnterprises
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:purchasesItem
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:purposeDescription
+    Domain: cco:ont00000958
+DataProperty: sdg:purposeOfStay
+    Domain: bfo:0000015
+ObjectProperty: sdg:pursuesPurpose
+    Range: bfo:0000002
+ObjectProperty: sdg:pursuing
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:qaComplianceLevel
+    Domain: bfo:0000040
+DataProperty: sdg:qualId
+    Domain: bfo:0000015
+DataProperty: sdg:qualification
+    Domain: bfo:0000002
+DataProperty: sdg:qualificationGrade
+    Domain: bfo:0000040
+DataProperty: sdg:qualificationStatus
+    Domain: bfo:0000015
+DataProperty: sdg:qualificationType
+    Domain: cco:ont00000995
+DataProperty: sdg:qualificationYear
+    Domain: bfo:0000002
+ObjectProperty: sdg:qualifies
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:qualifiesFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:qualifiesForTraining
+    Domain: bfo:0000015
+DataProperty: sdg:qualityGrade
+    Domain: bfo:0000040
+DataProperty: sdg:qualityOfEducation
+    Domain: bfo:0000015
+DataProperty: sdg:qualityOfEnactment
+    Domain: bfo:0000015
+DataProperty: sdg:qualityScore
+    Domain: bfo:0000015
+DataProperty: sdg:qualityStandard
+    Domain: bfo:0000040
+ObjectProperty: sdg:quantifiedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:quantifies
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:quantifiesDesireFor
+    Range: cco:ont00001278
+ObjectProperty: sdg:quantifiesPhysicalProperty
+    Range: bfo:0000019
+ObjectProperty: sdg:quantifies_vertical_extent
+    Range: cco:ont00000967
+DataProperty: sdg:quantityIncluded
+    Domain: cco:ont00000995
+DataProperty: sdg:quantityMWh
+    Domain: bfo:0000040
+DataProperty: sdg:quantityOnHand
+    Domain: cco:ont00000995
+DataProperty: sdg:quantityProvided
+    Domain: bfo:0000015
+DataProperty: sdg:quantumComplexity
+    Domain: bfo:0000015
+DataProperty: sdg:qubitCount
+    Domain: cco:ont00000995
+DataProperty: sdg:questionType
+    Domain: bfo:0000015
+DataProperty: sdg:quorumMet
+    Domain: bfo:0000015
+DataProperty: sdg:quorumPresent
+    Domain: bfo:0000015
+DataProperty: sdg:quorumStatus
+    Domain: bfo:0000040
+DataProperty: sdg:quotationId
+    Domain: cco:ont00000995
+DataProperty: sdg:quotedText
+    Domain: bfo:0000015
+DataProperty: sdg:rAndDInvestment
+    Domain: bfo:0000040
+DataProperty: sdg:racsClientInstalled
+    Domain: bfo:0000040
+DataProperty: sdg:radarIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:radarModel
+    Domain: bfo:0000040
+DataProperty: sdg:radiationSafetyOfficer
+    Domain: bfo:0000040
+DataProperty: sdg:radiusMeters
+    Domain: bfo:0000040
+ObjectProperty: sdg:raisedBy
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:raisesConcernVia
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:ramGB
+    Domain: bfo:0000040
+DataProperty: sdg:rankCode
+    Domain: bfo:0000023
+DataProperty: sdg:rankOrTitle
+    Domain: bfo:0000023
+DataProperty: sdg:rankRequirement
+    Domain: bfo:0000040
+DataProperty: sdg:rankTitle
+    Domain: bfo:0000023
+ObjectProperty: sdg:rankedIn
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:rateId
+    Domain: cco:ont00000995
+DataProperty: sdg:ratePerKwh
+    Domain: cco:ont00000958
+DataProperty: sdg:rateType
+    Domain: cco:ont00000995
+DataProperty: sdg:rateValue
+    Domain: bfo:0000015
+ObjectProperty: sdg:ratedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:ratedPowerWatts
+    Domain: cco:ont00000995
+DataProperty: sdg:ratedWorkingPressureKpa
+    Domain: cco:ont00000995
+DataProperty: sdg:ratedWorkingPressurePsi
+    Domain: cco:ont00000995
+DataProperty: sdg:raterId
+    Domain: bfo:0000015
+ObjectProperty: sdg:rates
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:ratificationDate
+    Domain: bfo:0000015
+DataProperty: sdg:rating
+    Domain: bfo:0000015
+DataProperty: sdg:ratingAgency
+    Domain: cco:ont00000995
+DataProperty: sdg:ratingDate
+    Domain: cco:ont00000995
+DataProperty: sdg:ratingId
+    Domain: cco:ont00000995
+DataProperty: sdg:ratingMethodology
+    Domain: cco:ont00000995
+DataProperty: sdg:ratingScore
+    Domain: cco:ont00000995
+DataProperty: sdg:ratioPercentage
+    Domain: bfo:0000040
+DataProperty: sdg:rawScore
+    Domain: bfo:0000015
+DataProperty: sdg:reach
+    Domain: bfo:0000015
+DataProperty: sdg:reactionPattern
+    Domain: cco:ont00000995
+ObjectProperty: sdg:readBy
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:readabilityLevel
+    Domain: bfo:0000002
+DataProperty: sdg:readingId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:realizedIn
+    Domain: bfo:0000023
+ObjectProperty: sdg:realized_in
+    Range: cco:ont00001284
+ObjectProperty: sdg:realizesIn
+    Domain: bfo:0000023
+DataProperty: sdg:reappointmentCount
+    Domain: cco:ont00000995
+DataProperty: sdg:rearDiscDiameter
+    Domain: cco:ont00000995
+DataProperty: sdg:rearType
+    Domain: cco:ont00000995
+DataProperty: sdg:reasonCode
+    Domain: bfo:0000002
+DataProperty: sdg:reasonForChange
+    Domain: cco:ont00000995
+DataProperty: sdg:reasonForLeaving
+    Domain: bfo:0000004
+DataProperty: sdg:reasonablenessInception
+    Domain: bfo:0000015
+DataProperty: sdg:reasonablenessScope
+    Domain: bfo:0000015
+DataProperty: sdg:rebalancingFrequency
+    Domain: cco:ont00000995
+DataProperty: sdg:receiptCount
+    Domain: cco:ont00000995
+DataProperty: sdg:receiptId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:received
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:receivedByInvestor
+    Domain: cco:ont00000958
+    Range: bfo:0000004
+DataProperty: sdg:receiverIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:receiverType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:receivesAdministrativeSupport
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesApplications
+    Domain: bfo:0000004
+    Range: cco:ont00000958
+ObjectProperty: sdg:receivesAward
+    Domain: bfo:0000002
+ObjectProperty: sdg:receivesCertificateFrom
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:receivesCleanTrafficFrom
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesCommunication
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesCounseling
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:receivesDeposit
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesDevelopmentFunding
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:receivesDirectTips
+    Domain: bfo:0000023
+ObjectProperty: sdg:receivesDirectionFrom
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:receivesDisclosureFrom
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:receivesDivestment
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesDonations
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:receivesDonationsFromFund
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesDonationsFromUnderlyingFund
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:receivesEnergyFrom
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesEngagement
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesFeeFrom
+    Domain: bfo:0000023
+ObjectProperty: sdg:receivesFromRoute
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesFunding
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:receivesFunds
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesGrant
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesIncomeFrom
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesInstructionFrom
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesInvestmentFrom
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:receivesMedication
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:receivesMentorshipFrom
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:receivesNotificationFrom
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesPickupReminder
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:receivesRecommendationFrom
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesReferrals
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:receivesReminder
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+ObjectProperty: sdg:receivesRemunerationFrom
+    Domain: bfo:0000023
+ObjectProperty: sdg:receivesReportFrom
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesRiskSupportFrom
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:receivesService
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:receivesServiceCharge
+    Domain: bfo:0000023
+DataProperty: sdg:receivesServiceChargeShare
+    Domain: bfo:0000002
+ObjectProperty: sdg:receivesServices
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:receivesSpiritOf
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:receivesSummary
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:receivesTreatmentAt
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:receivesTreatmentFrom
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesUplinkFrom
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesWebinar
+    Domain: bfo:0000004
+    Range: bfo:0000015
+ObjectProperty: sdg:receivesWithdrawal
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:receives_financial_advice
+    Domain: bfo:0000004
+    Range: cco:ont00000509
+DataProperty: sdg:receptorId
+    Domain: bfo:0000040
+DataProperty: sdg:receptorName
+    Domain: bfo:0000040
+DataProperty: sdg:rechargeRate
+    Domain: bfo:0000015
+DataProperty: sdg:recidivismRate
+    Domain: bfo:0000015
+DataProperty: sdg:recipientAgency
+    Domain: cco:ont00000995
+DataProperty: sdg:reclassificationRate
+    Domain: bfo:0000040
+DataProperty: sdg:recognitionAccuracy
+    Domain: bfo:0000015
+DataProperty: sdg:recognitionTitle
+    Domain: bfo:0000040
+ObjectProperty: sdg:recognizedAt
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:recognizedBy
+    Domain: bfo:0000002
+DataProperty: sdg:recognizedByUN
+    Domain: bfo:0000002
+DataProperty: sdg:recommendationText
+    Domain: cco:ont00000995
+DataProperty: sdg:recommendations
+    Domain: bfo:0000015
+DataProperty: sdg:recommended
+    Domain: bfo:0000015
+DataProperty: sdg:recommendedBy
+    Domain: cco:ont00000995
+DataProperty: sdg:recommendedCountPerPerson
+    Domain: cco:ont00000995
+DataProperty: sdg:recordCount
+    Domain: cco:ont00000995
+DataProperty: sdg:recordFormat
+    Domain: cco:ont00000958
+DataProperty: sdg:recordHash
+    Domain: bfo:0000002
+DataProperty: sdg:recordID
+    Domain: bfo:0000002
+DataProperty: sdg:recordIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:recordStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:recordYear
+    Domain: cco:ont00000995
+ObjectProperty: sdg:recordedAs
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:recordedAt
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:recordedAtDetail
+    Domain: bfo:0000015
+DataProperty: sdg:recordedDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:recordedFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:recordedInRegion
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:recordedInZone
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:recordedPerson
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:recordingIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:recordingStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:recordsAccount
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:recordsApproval
+    Range: bfo:0000015
+ObjectProperty: sdg:recordsClinicalCases
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:recordsExtractionFrom
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:recordsIdentity
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:recordsIncident
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:recordsIndividual
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:recordsInscription
+    Domain: cco:ont00000995
+ObjectProperty: sdg:recordsInspectionOutcome
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:recordsLectureContent
+    Range: bfo:0000015
+ObjectProperty: sdg:recordsPollutant
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:recordsProcessed
+    Domain: bfo:0000015
+ObjectProperty: sdg:recordsReading
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:recordsResultIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:recordsToponym
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:records_patient_encounter
+    Range: bfo:0000002
+ObjectProperty: sdg:recoveryStatus
+    Domain: bfo:0000002
+DataProperty: sdg:recreationalAccessStatus
+    Domain: bfo:0000002
+ObjectProperty: sdg:recruitedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:recruiterId
+    Domain: bfo:0000015
+DataProperty: sdg:rectangularBusBarHeight
+    Domain: cco:ont00000995
+DataProperty: sdg:rectangularBusBarWidth
+    Domain: cco:ont00000995
+DataProperty: sdg:rectificationDate
+    Domain: cco:ont00000995
+DataProperty: sdg:redemptionDay
+    Domain: bfo:0000040
+ObjectProperty: sdg:reducedBy
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:reducesAward
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:reducesLiabilityFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:reducesStigmaFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:reductionAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:referenceCode
+    Domain: bfo:0000015
+DataProperty: sdg:referenceId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:referencedIn
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:referencesBenefitOption
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:referencesBook
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:referencesConcept
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:referencesEmergencyContact
+    Domain: bfo:0000023
+    Range: bfo:0000040
+ObjectProperty: sdg:referencesMenuItem
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:referencesPackage
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:referencesRule
+    Domain: cco:ont00000958
+    Range: bfo:0000040
+DataProperty: sdg:referencesScripture
+    Domain: cco:ont00000995
+ObjectProperty: sdg:referencesService
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:referencesSource
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:referencesStandard
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:referralReason
+    Domain: cco:ont00000995
+DataProperty: sdg:referralRoute
+    Domain: bfo:0000040
+ObjectProperty: sdg:referralSource
+    Domain: bfo:0000040
+DataProperty: sdg:referralStatus
+    Domain: bfo:0000002
+DataProperty: sdg:referralType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:referredBy
+    Domain: bfo:0000004
+    Range: bfo:0000002
+DataProperty: sdg:referringPhysicianId
+    Domain: bfo:0000015
+DataProperty: sdg:referringUrl
+    Domain: bfo:0000015
+ObjectProperty: sdg:reflectsPerceptionOf
+    Range: cco:ont00000443
+ObjectProperty: sdg:reflectsServiceExperienceSituation
+    Range: bfo:0000002
+DataProperty: sdg:reflexivePractice
+    Domain: bfo:0000015
+DataProperty: sdg:reformId
+    Domain: bfo:0000015
+DataProperty: sdg:reformTitle
+    Domain: bfo:0000015
+DataProperty: sdg:reformType
+    Domain: bfo:0000015
+DataProperty: sdg:refreshRateHz
+    Domain: cco:ont00000995
+ObjectProperty: sdg:regardingChild
+    Domain: bfo:0000002
+    Range: bfo:0000004
+DataProperty: sdg:regionCovered
+    Domain: bfo:0000002
+DataProperty: sdg:regionLevel
+    Domain: bfo:0000002
+DataProperty: sdg:regionOfPractice
+    Domain: bfo:0000023
+DataProperty: sdg:regionQra
+    Domain: cco:ont00000995
+DataProperty: sdg:regionServed
+    Domain: cco:ont00000995
+DataProperty: sdg:regionStatus
+    Domain: bfo:0000004
+DataProperty: sdg:registerId
+    Domain: cco:ont00000958
+DataProperty: sdg:registeredApplications
+    Domain: bfo:0000040
+ObjectProperty: sdg:registeredAt
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:registeredCount
+    Domain: bfo:0000004
+DataProperty: sdg:registeredOfficeAddress
+    Domain: cco:ont00000958
+DataProperty: sdg:registrantId
+    Domain: cco:ont00000995
+DataProperty: sdg:registrantName
+    Domain: bfo:0000015
+DataProperty: sdg:registrationAuthority
+    Domain: bfo:0000002
+DataProperty: sdg:registrationCountry
+    Domain: cco:ont00000995
+DataProperty: sdg:registrationRequired
+    Domain: bfo:0000015
+DataProperty: sdg:registryId
+    Domain: cco:ont00000995
+DataProperty: sdg:registryName
+    Domain: cco:ont00000995
+DataProperty: sdg:registryOperator
+    Domain: cco:ont00000995
+DataProperty: sdg:regulationCited
+    Domain: cco:ont00000995
+ObjectProperty: sdg:regulationType
+    Domain: bfo:0000015
+DataProperty: sdg:regulatoryAddress
+    Domain: cco:ont00000995
+DataProperty: sdg:regulatoryDomain
+    Domain: cco:ont00000995
+DataProperty: sdg:regulatoryEnvironment
+    Domain: bfo:0000002
+DataProperty: sdg:regulatoryInitiative
+    Domain: bfo:0000015
+DataProperty: sdg:regulatoryLicense
+    Domain: bfo:0000040
+DataProperty: sdg:regulatoryLimit
+    Domain: bfo:0000040
+ObjectProperty: sdg:regulatoryOversight
+    Domain: bfo:0000002
+    Range: bfo:0000001
+DataProperty: sdg:regulatoryPurpose
+    Domain: bfo:0000015
+DataProperty: sdg:regulatoryType
+    Domain: cco:ont00000995
+DataProperty: sdg:reignEndDate
+    Domain: bfo:0000004
+DataProperty: sdg:reignStartDate
+    Domain: bfo:0000004
+DataProperty: sdg:reimbursementId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:reinforces
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+DataProperty: sdg:relatedConcepts
+    Domain: bfo:0000002
+DataProperty: sdg:relatedTerm
+    Domain: cco:ont00000995
+ObjectProperty: sdg:relatedToEngagement
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:relatedToIncident
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:relatedToMeeting
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:relatedToPatient
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:relatedToPolicy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:relatedToPrescription
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:relatedToProgram
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:relatedToProvider
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:relatedToStudy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:relatedToTeacherCount
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:relatedToTransaction
+    Range: bfo:0000015
+ObjectProperty: sdg:relatesTo
+    Domain: cco:ont00000995
+ObjectProperty: sdg:relatesToAttack
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:relatesToOrganization
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:relatesToProcessing
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:relatesToProduct
+    Domain: cco:ont00000958
+    Range: bfo:0000023
+ObjectProperty: sdg:relationship
+    Range: bfo:0000004
+ObjectProperty: sdg:relationshipStatus
+    Domain: bfo:0000004
+DataProperty: sdg:relationshipToAdoptee
+    Domain: bfo:0000023
+DataProperty: sdg:relationshipToAdult
+    Domain: bfo:0000023
+DataProperty: sdg:relationshipToChild
+    Domain: bfo:0000040
+ObjectProperty: sdg:relationshipToEmployee
+    Domain: bfo:0000004
+DataProperty: sdg:relationshipToPatient
+    Domain: bfo:0000002
+DataProperty: sdg:relationshipToRequester
+    Domain: bfo:0000040
+ObjectProperty: sdg:relationshipToStudent
+    Domain: bfo:0000040
+    Range: bfo:0000004
+DataProperty: sdg:relationshipToTestator
+    Domain: bfo:0000002
+DataProperty: sdg:relationshipToUser
+    Domain: bfo:0000004
+DataProperty: sdg:releaseId
+    Domain: cco:ont00000958
+DataProperty: sdg:releaseIdentifier
+    Domain: bfo:0000015
+ObjectProperty: sdg:releaseType
+    Domain: bfo:0000015
+DataProperty: sdg:releaseYear
+    Domain: cco:ont00000995
+ObjectProperty: sdg:released
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:releasedFrom
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:reliabilityCoefficient
+    Domain: bfo:0000015
+ObjectProperty: sdg:reliesOnMathProblem
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:remarks
+    Domain: cco:ont00000995
+DataProperty: sdg:reminderSent
+    Domain: cco:ont00000995
+DataProperty: sdg:reminderType
+    Domain: cco:ont00000958
+DataProperty: sdg:removalDate
+    Domain: cco:ont00000995
+DataProperty: sdg:removedQuantity
+    Domain: cco:ont00000995
+DataProperty: sdg:remunerationRate
+    Domain: bfo:0000023
+DataProperty: sdg:renderDate
+    Domain: cco:ont00000995
+DataProperty: sdg:renderId
+    Domain: cco:ont00000995
+DataProperty: sdg:renderResolution
+    Domain: bfo:0000040
+DataProperty: sdg:renderTimeHours
+    Domain: cco:ont00000995
+DataProperty: sdg:renderingComplexity
+    Domain: cco:ont00000995
+ObjectProperty: sdg:rendersProject
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:renewabilityStatus
+    Domain: bfo:0000040
+DataProperty: sdg:reorderLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:repId
+    Domain: bfo:0000023
+DataProperty: sdg:repIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:repealDate
+    Domain: bfo:0000015
+DataProperty: sdg:repetitionFrequency
+    Domain: cco:ont00000995
+DataProperty: sdg:repetitivePeakOnStateCurrent
+    Domain: cco:ont00000995
+ObjectProperty: sdg:replacesSupportSystem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:reportDate
+    Domain: cco:ont00000995
+DataProperty: sdg:reportName
+    Domain: bfo:0000015
+DataProperty: sdg:reportNumber
+    Domain: bfo:0000015
+DataProperty: sdg:reportYear
+    Domain: cco:ont00000995
+DataProperty: sdg:reportedByDetail
+    Domain: bfo:0000040
+ObjectProperty: sdg:reportedByPlan
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:reportedDateTime
+    Domain: bfo:0000015
+ObjectProperty: sdg:reportedFrom
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:reportedOn
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:reportedVia
+    Domain: bfo:0000015
+DataProperty: sdg:reportingBody
+    Domain: cco:ont00000995
+DataProperty: sdg:reportingCapability
+    Domain: cco:ont00000995
+DataProperty: sdg:reportingFrequency
+    Domain: bfo:0000040
+DataProperty: sdg:reportingStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:reportsForFund
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:reportsForUnderlyingFund
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:reportsIncident
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:reportsPerformance
+    Range: cco:ont00000995
+ObjectProperty: sdg:reportsPerformanceFor
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:reportsPractice
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:reportsSafetyIssue
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:reportsToOrganisation
+    Domain: bfo:0000023
+    Range: bfo:0000040
+DataProperty: sdg:repositoryId
+    Domain: cco:ont00000995
+DataProperty: sdg:repositoryName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:representationStatus
+    Domain: bfo:0000004
+DataProperty: sdg:representativeIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:representativeRole
+    Domain: bfo:0000015
+ObjectProperty: sdg:representedAt
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:representedBy
+    Domain: bfo:0000004
+    Range: bfo:0000015
+DataProperty: sdg:representingEntity
+    Domain: cco:ont00000995
+ObjectProperty: sdg:representsAgency
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:represents_operational_stasis
+    Range: cco:ont00001191
+DataProperty: sdg:requestId
+    Domain: cco:ont00000995
+DataProperty: sdg:requestIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:requestType
+    Domain: bfo:0000040
+ObjectProperty: sdg:requestedCoverageFor
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:requestedFor
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requestedInChange
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:requestedOption
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:requestedRelief
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requests
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:requestsAdmissionFor
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:requestsData
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:requestsServiceFunction
+    Range: bfo:0000002
+DataProperty: sdg:requiredAction
+    Domain: bfo:0000015
+DataProperty: sdg:requiredAnswers
+    Domain: bfo:0000015
+ObjectProperty: sdg:requiredByProgram
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:requiredCount
+    Domain: bfo:0000023
+DataProperty: sdg:requiredElectives
+    Domain: bfo:0000015
+ObjectProperty: sdg:requiredFor
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requiredForNeed
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:requiredForRole
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:requiredForRoleDetail
+    Domain: bfo:0000040
+DataProperty: sdg:requiredLegend
+    Domain: cco:ont00000958
+DataProperty: sdg:requiredMaterials
+    Domain: cco:ont00000958
+DataProperty: sdg:requiredPoints
+    Domain: bfo:0000015
+DataProperty: sdg:requiredSize
+    Domain: cco:ont00000958
+DataProperty: sdg:requiredSkills
+    Domain: bfo:0000015
+DataProperty: sdg:requirementDescription
+    Domain: bfo:0000015
+DataProperty: sdg:requirementIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:requirementText
+    Domain: cco:ont00000995
+DataProperty: sdg:requirements
+    Domain: bfo:0000030
+DataProperty: sdg:requiresAbsenceAuthorization
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requiresAccommodation
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:requiresAdapter
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:requiresAdditionalLogin
+    Domain: bfo:0000040
+DataProperty: sdg:requiresAdvanceNotice
+    Domain: cco:ont00000958
+DataProperty: sdg:requiresAppInstallation
+    Domain: bfo:0000040
+DataProperty: sdg:requiresAppointment
+    Domain: bfo:0000015
+ObjectProperty: sdg:requiresApproval
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:requiresApprovalFrom
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:requiresAuthorizationFrom
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:requiresBackgroundCheck
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:requiresBenchmark
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:requiresBoardCertification
+    Domain: bfo:0000023
+DataProperty: sdg:requiresBrakes
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requiresCompetencies
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:requiresCompetency
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:requiresConsecutiveMath
+    Domain: cco:ont00000958
+ObjectProperty: sdg:requiresConsent
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:requiresConsentFrom
+    Domain: bfo:0000015
+    Range: bfo:0000004
+DataProperty: sdg:requiresConstruction
+    Domain: bfo:0000015
+DataProperty: sdg:requiresConversion
+    Domain: bfo:0000015
+ObjectProperty: sdg:requiresCourse
+    Range: bfo:0000040
+DataProperty: sdg:requiresCredential
+    Domain: bfo:0000015
+DataProperty: sdg:requiresDisclaimer
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requiresDisclosureOf
+    Range: cco:ont00000995
+ObjectProperty: sdg:requiresDocument
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:requiresDonation
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:requiresEthicalBehavior
+    Domain: bfo:0000040
+DataProperty: sdg:requiresFaith
+    Domain: bfo:0000002
+ObjectProperty: sdg:requiresFee
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+DataProperty: sdg:requiresFellowshipTraining
+    Domain: bfo:0000023
+ObjectProperty: sdg:requiresForm
+    Range: cco:ont00000995
+DataProperty: sdg:requiresImmobilization
+    Domain: bfo:0000015
+ObjectProperty: sdg:requiresInspection
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:requiresInsuranceTraining
+    Domain: bfo:0000023
+DataProperty: sdg:requiresInterpreter
+    Domain: bfo:0000002
+DataProperty: sdg:requiresIntuition
+    Domain: bfo:0000015
+DataProperty: sdg:requiresLawEnforcement
+    Domain: bfo:0000015
+ObjectProperty: sdg:requiresLicense
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:requiresLights
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requiresLubricant
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:requiresMandatoryReporting
+    Domain: bfo:0000015
+DataProperty: sdg:requiresMedicalLicense
+    Domain: bfo:0000023
+DataProperty: sdg:requiresMuffler
+    Domain: cco:ont00000995
+DataProperty: sdg:requiresNewInfrastructure
+    Domain: bfo:0000040
+DataProperty: sdg:requiresPeerRecommendations
+    Domain: bfo:0000023
+DataProperty: sdg:requiresPerception
+    Domain: bfo:0000015
+DataProperty: sdg:requiresPersonalReflection
+    Domain: cco:ont00000995
+DataProperty: sdg:requiresPhysicsOrChemOrBio
+    Domain: cco:ont00000958
+DataProperty: sdg:requiresPreAuthorization
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requiresPrerequisite
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:requiresPriorApproval
+    Domain: cco:ont00000995
+DataProperty: sdg:requiresPriorAuthorization
+    Domain: cco:ont00000995
+ObjectProperty: sdg:requiresProviderApproval
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:requiresPublications
+    Domain: bfo:0000023
+DataProperty: sdg:requiresReInspection
+    Domain: bfo:0000015
+ObjectProperty: sdg:requiresResidencyFrom
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:requiresRiskAssessment
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:requiresRoute
+    Domain: bfo:0000003
+    Range: bfo:0000015
+ObjectProperty: sdg:requiresSkill
+    Domain: bfo:0000015
+    Range: bfo:0000016
+DataProperty: sdg:requiresSpecializedExpertise
+    Domain: bfo:0000040
+DataProperty: sdg:requiresSpecializedSkills
+    Domain: bfo:0000040
+DataProperty: sdg:requiresSpecializedTherapy
+    Domain: bfo:0000040
+ObjectProperty: sdg:requiresStaffTraining
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:requiresStandard
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:requiresSupportFrom
+    Domain: bfo:0000002
+    Range: bfo:0000040
+DataProperty: sdg:requiresTwoStaff
+    Domain: bfo:0000015
+DataProperty: sdg:requiresUniversityCar
+    Domain: cco:ont00000995
+DataProperty: sdg:researchDomain
+    Domain: bfo:0000040
+DataProperty: sdg:researchField
+    Domain: bfo:0000040
+DataProperty: sdg:researchFocus
+    Domain: bfo:0000040
+DataProperty: sdg:researchId
+    Domain: bfo:0000015
+DataProperty: sdg:researchLocation
+    Domain: bfo:0000015
+DataProperty: sdg:researchOutputRank
+    Domain: bfo:0000040
+DataProperty: sdg:researchStatus
+    Domain: bfo:0000015
+DataProperty: sdg:researchTitle
+    Domain: bfo:0000015
+DataProperty: sdg:researcherId
+    Domain: bfo:0000040
+DataProperty: sdg:researcherIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:reservationId
+    Domain: bfo:0000015
+DataProperty: sdg:residence
+    Domain: bfo:0000004
+DataProperty: sdg:residenceCode
+    Domain: cco:ont00000995
+DataProperty: sdg:residenceDuration
+    Domain: bfo:0000004
+DataProperty: sdg:residencyMet
+    Domain: bfo:0000015
+DataProperty: sdg:residencyPercentage
+    Domain: bfo:0000002
+DataProperty: sdg:residentId
+    Domain: cco:ont00000995
+DataProperty: sdg:residentialPostalCode
+    Domain: bfo:0000040
+ObjectProperty: sdg:residesInJurisdiction
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:residesInRegion
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:residesInState
+    Domain: bfo:0000004
+    Range: bfo:0000002
+DataProperty: sdg:residesInStateDetail
+    Domain: bfo:0000004
+ObjectProperty: sdg:residesWith
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:resilienceFactors
+    Domain: bfo:0000040
+DataProperty: sdg:resolutionOutcome
+    Domain: bfo:0000004
+DataProperty: sdg:resolutionTime
+    Domain: bfo:0000040
+DataProperty: sdg:resolutionType
+    Domain: bfo:0000015
+ObjectProperty: sdg:resolvedAt
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:resolvedBy
+    Range: bfo:0000015
+ObjectProperty: sdg:resolves
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:resonantFrequency
+    Domain: cco:ont00000995
+DataProperty: sdg:resourceConsumptionRate
+    Domain: bfo:0000015
+DataProperty: sdg:resourceCount
+    Domain: cco:ont00000995
+DataProperty: sdg:resourceEfficiencyGain
+    Domain: bfo:0000040
+DataProperty: sdg:resourceTitle
+    Domain: cco:ont00000995
+DataProperty: sdg:resourcesAllocated
+    Domain: bfo:0000015
+DataProperty: sdg:resourcesUsed
+    Domain: bfo:0000002
+DataProperty: sdg:respondedInReportParagraph
+    Domain: cco:ont00000958
+ObjectProperty: sdg:respondedTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:respondentAge
+    Domain: cco:ont00000995
+DataProperty: sdg:respondentGender
+    Domain: cco:ont00000995
+ObjectProperty: sdg:respondentStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:respondentType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:respondsToSurvey
+    Domain: bfo:0000004
+    Range: cco:ont00000958
+ObjectProperty: sdg:responseAction
+    Domain: bfo:0000015
+DataProperty: sdg:responseCount
+    Domain: cco:ont00000995
+DataProperty: sdg:responseFormat
+    Domain: cco:ont00000995
+DataProperty: sdg:responseId
+    Domain: cco:ont00000995
+DataProperty: sdg:responseLatencyMs
+    Domain: bfo:0000040
+DataProperty: sdg:responseText
+    Domain: cco:ont00000995
+DataProperty: sdg:responseTimeLimit
+    Domain: bfo:0000015
+DataProperty: sdg:responseTimestamp
+    Domain: cco:ont00000995
+DataProperty: sdg:responseValue
+    Domain: cco:ont00000995
+DataProperty: sdg:responsibilities
+    Domain: bfo:0000023
+DataProperty: sdg:responsibilityArea
+    Domain: cco:ont00000995
+ObjectProperty: sdg:responsibilityScope
+    Domain: bfo:0000023
+    Range: bfo:0000001
+ObjectProperty: sdg:responsibilityScopeDetail
+    Domain: bfo:0000040
+DataProperty: sdg:responsibleEntity
+    Domain: cco:ont00000995
+ObjectProperty: sdg:responsibleFieldOfStudy
+    Domain: bfo:0000040
+    Range: bfo:0000001
+DataProperty: sdg:responsiveRating
+    Domain: bfo:0000015
+DataProperty: sdg:responsivenessRating
+    Domain: cco:ont00000995
+DataProperty: sdg:restaurantId
+    Domain: bfo:0000040
+DataProperty: sdg:restaurantName
+    Domain: bfo:0000040
+ObjectProperty: sdg:restoresSocialHarmony
+    Range: cco:ont00001183
+ObjectProperty: sdg:restrainedBy
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:restrains
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:restrictionDescription
+    Domain: bfo:0000015
+DataProperty: sdg:restrictionEndDate
+    Domain: bfo:0000015
+DataProperty: sdg:restrictionStartDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:restrictionStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:restrictionType
+    Domain: bfo:0000015
+DataProperty: sdg:restrictivenessLevel
+    Domain: bfo:0000015
+ObjectProperty: sdg:restrictsContactBetween
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:restrictsOffender
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+DataProperty: sdg:resultDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:resultOf
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:resultReleaseDate
+    Domain: bfo:0000040
+ObjectProperty: sdg:resultStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:resultedFrom
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:resultedIn
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:resultingAction
+    Domain: bfo:0000040
+ObjectProperty: sdg:resultingFrom
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:resultsFromActivity
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:resultsFromHealthcareAnalytics
+    Range: bfo:0000015
+ObjectProperty: sdg:resultsIn
+    Domain: bfo:0000015
+ObjectProperty: sdg:resultsInAssessment
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:resultsInCapacityChange
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:retainedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:retains
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:retaliationStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:retentionDate
+    Domain: cco:ont00000995
+DataProperty: sdg:retentionPeriodMonths
+    Domain: cco:ont00000995
+ObjectProperty: sdg:retirementStatus
+    Domain: bfo:0000004
+ObjectProperty: sdg:retroreflectivityLevel
+    Domain: cco:ont00000958
+DataProperty: sdg:revenueUSD
+    Domain: bfo:0000040
+DataProperty: sdg:reverseGateVoltage
+    Domain: cco:ont00000995
+DataProperty: sdg:reverseVoltage
+    Domain: bfo:0000015
+DataProperty: sdg:reviewCriteria
+    Domain: bfo:0000015
+DataProperty: sdg:reviewDueDate
+    Domain: cco:ont00000995
+DataProperty: sdg:reviewFrequency
+    Domain: cco:ont00000958
+DataProperty: sdg:reviewId
+    Domain: bfo:0000015
+DataProperty: sdg:reviewIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:reviewedByDetail
+    Domain: cco:ont00000958
+DataProperty: sdg:reviewer
+    Domain: bfo:0000015
+DataProperty: sdg:reviewerIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:reviewingAnalystID
+    Domain: cco:ont00000995
+DataProperty: sdg:reviewingBody
+    Domain: bfo:0000015
+DataProperty: sdg:reviewingState
+    Domain: bfo:0000015
+ObjectProperty: sdg:reviews
+    Domain: bfo:0000015
+ObjectProperty: sdg:reviewsCase
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:reviewsPaper
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:reviewsProtocol
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+ObjectProperty: sdg:reviewsRequest
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:revisionDate
+    Domain: bfo:0000002
+DataProperty: sdg:revisionNumber
+    Domain: cco:ont00000958
+DataProperty: sdg:revisionRequest
+    Domain: bfo:0000002
+DataProperty: sdg:revocable
+    Domain: bfo:0000023
+DataProperty: sdg:revocationReason
+    Domain: cco:ont00000995
+DataProperty: sdg:revokedAt
+    Domain: cco:ont00000958
+DataProperty: sdg:rigIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:rigType
+    Domain: bfo:0000040
+DataProperty: sdg:rimDiameter
+    Domain: cco:ont00000995
+DataProperty: sdg:rimMaterial
+    Domain: cco:ont00000995
+DataProperty: sdg:riskAssessmentFrequency
+    Domain: bfo:0000040
+ObjectProperty: sdg:riskAssessmentStatus
+    Domain: cco:ont00000958
+ObjectProperty: sdg:riskCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:riskConsiderationIncluded
+    Domain: bfo:0000015
+DataProperty: sdg:riskDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:riskFactor
+    Domain: bfo:0000002
+DataProperty: sdg:riskFactors
+    Domain: bfo:0000002
+DataProperty: sdg:riskFreeRate
+    Domain: bfo:0000015
+ObjectProperty: sdg:riskScreeningStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:riskSignificanceLevel
+    Domain: cco:ont00000995
+ObjectProperty: sdg:riskTolerance
+    Domain: cco:ont00000995
+DataProperty: sdg:ritualActivityType
+    Domain: cco:ont00000995
+DataProperty: sdg:rmsId
+    Domain: bfo:0000015
+DataProperty: sdg:rmsdValue
+    Domain: cco:ont00000995
+DataProperty: sdg:roadCondition
+    Domain: bfo:0000015
+DataProperty: sdg:roadName
+    Domain: bfo:0000015
+DataProperty: sdg:rohsCompliant
+    Domain: cco:ont00000995
+ObjectProperty: sdg:role
+    Domain: cco:ont00000995
+    Range: bfo:0000001
+DataProperty: sdg:roleAtEvent
+    Domain: bfo:0000015
+ObjectProperty: sdg:roleCategory
+    Range: bfo:0000040
+DataProperty: sdg:roleClarity
+    Domain: bfo:0000002
+DataProperty: sdg:roleCode
+    Domain: bfo:0000023
+DataProperty: sdg:roleConflictPresent
+    Domain: bfo:0000015
+DataProperty: sdg:roleDescription
+    Domain: bfo:0000023
+DataProperty: sdg:roleId
+    Domain: bfo:0000023
+DataProperty: sdg:roleIdentifier
+    Domain: bfo:0000023
+DataProperty: sdg:roleInProject
+    Domain: bfo:0000023
+DataProperty: sdg:roleInStudy
+    Domain: bfo:0000002
+DataProperty: sdg:roleInstanceId
+    Domain: bfo:0000023
+DataProperty: sdg:roleName
+    Domain: bfo:0000023
+DataProperty: sdg:rollingNoiseDb
+    Domain: cco:ont00000995
+DataProperty: sdg:rootWord
+    Domain: cco:ont00000995
+DataProperty: sdg:rosterNumber
+    Domain: bfo:0000040
+ObjectProperty: sdg:rotatesOn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:rotationPeriod
+    Domain: bfo:0000015
+DataProperty: sdg:rotationPolicyId
+    Domain: cco:ont00000995
+DataProperty: sdg:roundBusBarDiameter
+    Domain: cco:ont00000995
+DataProperty: sdg:roundTripFee
+    Domain: bfo:0000015
+DataProperty: sdg:route
+    Domain: bfo:0000015
+DataProperty: sdg:routeCode
+    Domain: bfo:0000015
+DataProperty: sdg:routeIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:routeLength
+    Domain: bfo:0000015
+DataProperty: sdg:routeName
+    Domain: bfo:0000015
+ObjectProperty: sdg:routedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:routesTo
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:routesTrafficFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:routine
+    Domain: bfo:0000040
+DataProperty: sdg:routineId
+    Domain: bfo:0000015
+DataProperty: sdg:routineIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:routineName
+    Domain: bfo:0000015
+ObjectProperty: sdg:routingMode
+    Domain: bfo:0000040
+DataProperty: sdg:royaltyPercentage
+    Domain: cco:ont00000958
+DataProperty: sdg:ruCreditsEarned
+    Domain: cco:ont00000995
+DataProperty: sdg:ruCreditsPerYear
+    Domain: bfo:0000023
+DataProperty: sdg:ruRequired
+    Domain: bfo:0000023
+DataProperty: sdg:ruRequirement
+    Domain: bfo:0000023
+DataProperty: sdg:ruTotalEarned
+    Domain: bfo:0000023
+DataProperty: sdg:ruleArticle
+    Domain: bfo:0000015
+DataProperty: sdg:ruleCount
+    Domain: cco:ont00000995
+DataProperty: sdg:ruleIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:ruleNumber
+    Domain: cco:ont00000958
+ObjectProperty: sdg:ruleSet
+    Domain: bfo:0000040
+DataProperty: sdg:ruleTitle
+    Domain: cco:ont00000958
+ObjectProperty: sdg:rulingDynasty
+    Domain: bfo:0000015
+DataProperty: sdg:rulingType
+    Domain: bfo:0000040
+ObjectProperty: sdg:runsApp
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:runsAutomatedScript
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:runsOnServer
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:runsSoftwarePackage
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:safeguardId
+    Domain: bfo:0000002
+DataProperty: sdg:safeguardName
+    Domain: bfo:0000002
+ObjectProperty: sdg:safeguardType
+    Domain: bfo:0000002
+DataProperty: sdg:safeguardingAwareness
+    Domain: bfo:0000015
+DataProperty: sdg:safetyCoordinatorRole
+    Domain: bfo:0000002
+ObjectProperty: sdg:safetyLevel
+    Domain: bfo:0000015
+ObjectProperty: sdg:safetyPlanStatus
+    Domain: bfo:0000002
+DataProperty: sdg:safetyScopeIncluded
+    Domain: bfo:0000040
+DataProperty: sdg:safetyTrainingStatus
+    Domain: bfo:0000002
+DataProperty: sdg:saladId
+    Domain: cco:ont00000995
+DataProperty: sdg:salaryGrade
+    Domain: bfo:0000015
+DataProperty: sdg:salaryLevel
+    Domain: bfo:0000004
+DataProperty: sdg:salarySavings
+    Domain: bfo:0000040
+DataProperty: sdg:salarySchedule
+    Domain: bfo:0000040
+DataProperty: sdg:salesTarget
+    Domain: bfo:0000023
+DataProperty: sdg:sampleCollectionDate
+    Domain: cco:ont00000995
+DataProperty: sdg:sampleSize
+    Domain: bfo:0000015
+DataProperty: sdg:sampleTime
+    Domain: bfo:0000015
+DataProperty: sdg:sampleVolume
+    Domain: cco:ont00000958
+DataProperty: sdg:samplingMethod
+    Domain: cco:ont00000958
+DataProperty: sdg:samplingRate
+    Domain: bfo:0000040
+DataProperty: sdg:sanAllocationGB
+    Domain: bfo:0000040
+DataProperty: sdg:sanctionAtoms
+    Domain: bfo:0000015
+DataProperty: sdg:sanctionId
+    Domain: bfo:0000015
+DataProperty: sdg:sanctionIncurment
+    Domain: bfo:0000015
+DataProperty: sdg:sanctionType
+    Domain: bfo:0000015
+ObjectProperty: sdg:sanctionedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:sankAt
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:sarId
+    Domain: cco:ont00000995
+DataProperty: sdg:sarIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:satelliteId
+    Domain: cco:ont00000995
+DataProperty: sdg:satisfactionRating
+    Domain: cco:ont00000958
+ObjectProperty: sdg:satisfactionStatus
+    Domain: bfo:0000016
+DataProperty: sdg:satisfiedAtoms
+    Domain: bfo:0000002
+ObjectProperty: sdg:satisfiedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:satisfiesLCO
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:sauceId
+    Domain: cco:ont00000995
+DataProperty: sdg:sauceType
+    Domain: cco:ont00000995
+DataProperty: sdg:schedule
+    Domain: cco:ont00000995
+DataProperty: sdg:scheduleEnd
+    Domain: bfo:0000040
+DataProperty: sdg:scheduleStart
+    Domain: bfo:0000040
+DataProperty: sdg:scheduledDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:scheduledDay
+    Domain: bfo:0000002
+DataProperty: sdg:scheduledEnd
+    Domain: bfo:0000015
+DataProperty: sdg:scheduledEndDateTime
+    Domain: bfo:0000015
+ObjectProperty: sdg:scheduledIn
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:scheduledStart
+    Domain: bfo:0000015
+DataProperty: sdg:scheduledStartDateTime
+    Domain: bfo:0000015
+DataProperty: sdg:schedulingFrequency
+    Domain: cco:ont00000995
+DataProperty: sdg:schemeCode
+    Domain: bfo:0000015
+DataProperty: sdg:schemeIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:schemeType
+    Domain: bfo:0000015
+DataProperty: sdg:schoolAffiliation
+    Domain: cco:ont00000995
+DataProperty: sdg:schoolAndWorkRate
+    Domain: cco:ont00000995
+DataProperty: sdg:schoolConnectivityRate
+    Domain: bfo:0000040
+DataProperty: sdg:schoolDistrict
+    Domain: bfo:0000002
+DataProperty: sdg:schoolEnrollment
+    Domain: bfo:0000002
+DataProperty: sdg:schoolLevel
+    Domain: cco:ont00000958
+DataProperty: sdg:schoolNumber
+    Domain: bfo:0000002
+ObjectProperty: sdg:schoolStage
+    Domain: bfo:0000015
+ObjectProperty: sdg:schoolType
+    Domain: bfo:0000004
+DataProperty: sdg:scopeOfApplication
+    Domain: bfo:0000040
+DataProperty: sdg:scopeOfApproval
+    Domain: bfo:0000023
+ObjectProperty: sdg:scopeOfAuthority
+    Domain: bfo:0000015
+DataProperty: sdg:scopeOfConsent
+    Domain: cco:ont00000995
+ObjectProperty: sdg:scopeOfInfluence
+    Domain: cco:ont00000958
+DataProperty: sdg:scopeOfJurisdiction
+    Domain: bfo:0000023
+ObjectProperty: sdg:scopeOfProtection
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:scopeOfProtectionDetail
+    Domain: bfo:0000040
+DataProperty: sdg:scopeTitle
+    Domain: cco:ont00000958
+DataProperty: sdg:scopeVersion
+    Domain: cco:ont00000958
+DataProperty: sdg:scoreEarned
+    Domain: cco:ont00000995
+DataProperty: sdg:scorePoints
+    Domain: cco:ont00000995
+DataProperty: sdg:scoreReportId
+    Domain: bfo:0000015
+DataProperty: sdg:scoreScale
+    Domain: bfo:0000015
+DataProperty: sdg:scoreSheetId
+    Domain: bfo:0000040
+DataProperty: sdg:scoreSheetVersion
+    Domain: bfo:0000040
+DataProperty: sdg:scoreThreshold
+    Domain: bfo:0000015
+DataProperty: sdg:scoreWeightPercentage
+    Domain: bfo:0000015
+DataProperty: sdg:scoringMethodology
+    Domain: bfo:0000015
+ObjectProperty: sdg:scoringRange
+    Domain: cco:ont00000995
+DataProperty: sdg:screeningStandard
+    Domain: cco:ont00000995
+DataProperty: sdg:screwGauge
+    Domain: bfo:0000015
+DataProperty: sdg:screwLength
+    Domain: bfo:0000015
+DataProperty: sdg:screwSpacing
+    Domain: bfo:0000015
+DataProperty: sdg:scriptId
+    Domain: bfo:0000015
+DataProperty: sdg:scriptName
+    Domain: bfo:0000015
+DataProperty: sdg:scripturalReference
+    Domain: bfo:0000040
+DataProperty: sdg:scriptureReference
+    Domain: cco:ont00000995
+DataProperty: sdg:sdkVersion
+    Domain: cco:ont00000995
+DataProperty: sdg:sealDate
+    Domain: bfo:0000040
+DataProperty: sdg:sealId
+    Domain: bfo:0000040
+ObjectProperty: sdg:sealType
+    Domain: bfo:0000040
+ObjectProperty: sdg:sealedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:searchId
+    Domain: bfo:0000015
+DataProperty: sdg:seasonEndDate
+    Domain: bfo:0000015
+DataProperty: sdg:seatHeight
+    Domain: cco:ont00000995
+DataProperty: sdg:secondaryColor
+    Domain: cco:ont00000995
+DataProperty: sdg:secondaryDegree
+    Domain: bfo:0000040
+DataProperty: sdg:secondaryLanguage
+    Domain: bfo:0000023
+ObjectProperty: sdg:secondedBy
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:secondedByDetail
+    Domain: bfo:0000015
+ObjectProperty: sdg:secondedByMember
+    Domain: bfo:0000015
+    Range: bfo:0000023
+DataProperty: sdg:sectionA
+    Domain: cco:ont00000995
+DataProperty: sdg:sectionB
+    Domain: cco:ont00000995
+DataProperty: sdg:sectionC
+    Domain: cco:ont00000995
+ObjectProperty: sdg:sectionDesignation
+    Domain: bfo:0000015
+DataProperty: sdg:sectionIndex
+    Domain: bfo:0000015
+DataProperty: sdg:sectorClassification
+    Domain: cco:ont00000995
+DataProperty: sdg:sectorShareOfIncome
+    Domain: bfo:0000015
+ObjectProperty: sdg:securedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:secures
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:securityAuditStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:securityBasis
+    Domain: cco:ont00000995
+DataProperty: sdg:securityClassification
+    Domain: cco:ont00000995
+ObjectProperty: sdg:securityClearanceStatus
+    Domain: bfo:0000004
+DataProperty: sdg:securityProtocol
+    Domain: bfo:0000040
+DataProperty: sdg:securityRating
+    Domain: bfo:0000040
+DataProperty: sdg:securityRiskLevel
+    Domain: bfo:0000040
+DataProperty: sdg:securityState
+    Domain: cco:ont00000995
+DataProperty: sdg:securityZone
+    Domain: bfo:0000040
+DataProperty: sdg:seedLongevityYears
+    Domain: bfo:0000040
+DataProperty: sdg:seedProductionRate
+    Domain: bfo:0000040
+DataProperty: sdg:seedSizeMicrograms
+    Domain: bfo:0000040
+DataProperty: sdg:seekerId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:seeksPosition
+    Domain: cco:ont00000958
+    Range: bfo:0000023
+DataProperty: sdg:segmentCount
+    Domain: cco:ont00000995
+DataProperty: sdg:segmentDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:segmentEndX
+    Domain: bfo:0000040
+DataProperty: sdg:segmentEndY
+    Domain: bfo:0000040
+DataProperty: sdg:segmentIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:segmentLength
+    Domain: bfo:0000040
+DataProperty: sdg:segmentStartX
+    Domain: bfo:0000040
+DataProperty: sdg:segmentStartY
+    Domain: bfo:0000040
+ObjectProperty: sdg:segmentStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:segmentType
+    Domain: bfo:0000002
+DataProperty: sdg:segregationStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:selectedSauce
+    Domain: cco:ont00000995
+DataProperty: sdg:selectionCount
+    Domain: cco:ont00000958
+DataProperty: sdg:selectionDeadline
+    Domain: bfo:0000015
+DataProperty: sdg:selectionId
+    Domain: cco:ont00000995
+DataProperty: sdg:selectionName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:selects
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:selectsAssets
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:selectsInvestmentOption
+    Range: cco:ont00000608
+ObjectProperty: sdg:selectsSauce
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:selectsSpeaker
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:selfIdentifiesAsSocialEnterprise
+    Domain: bfo:0000015
+ObjectProperty: sdg:sellsItem
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:semanticField
+    Domain: cco:ont00000995
+DataProperty: sdg:semester
+    Domain: bfo:0000040
+DataProperty: sdg:semesterHoursEarned
+    Domain: bfo:0000002
+DataProperty: sdg:semesterHoursRequired
+    Domain: bfo:0000002
+DataProperty: sdg:semesterOfEnrollment
+    Domain: bfo:0000002
+DataProperty: sdg:semesterRestriction
+    Domain: bfo:0000015
+DataProperty: sdg:senderIdentity
+    Domain: cco:ont00000995
+ObjectProperty: sdg:sendsAlertTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:senses
+    Domain: cco:ont00000958
+    Range: bfo:0000040
+DataProperty: sdg:sensitivity
+    Domain: cco:ont00000995
+DataProperty: sdg:sensorCalibrationDate
+    Domain: bfo:0000015
+DataProperty: sdg:sensorId
+    Domain: cco:ont00000995
+DataProperty: sdg:sensorType
+    Domain: cco:ont00000995
+DataProperty: sdg:sentAt
+    Domain: cco:ont00000995
+DataProperty: sdg:sentDate
+    Domain: cco:ont00000958
+DataProperty: sdg:sentDateTime
+    Domain: cco:ont00000958
+ObjectProperty: sdg:sentTo
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:sentToEnrollee
+    Domain: cco:ont00000958
+    Range: bfo:0000040
+DataProperty: sdg:sentenceLength
+    Domain: bfo:0000040
+DataProperty: sdg:sentimentScore
+    Domain: cco:ont00000995
+DataProperty: sdg:sequenceId
+    Domain: bfo:0000002
+DataProperty: sdg:sequenceLength
+    Domain: cco:ont00000995
+DataProperty: sdg:sequenceName
+    Domain: bfo:0000002
+DataProperty: sdg:sequenceOrder
+    Domain: cco:ont00000995
+DataProperty: sdg:sequencingCoverage
+    Domain: cco:ont00000995
+DataProperty: sdg:sequencingStrategy
+    Domain: bfo:0000015
+DataProperty: sdg:seriesId
+    Domain: bfo:0000015
+DataProperty: sdg:seriesName
+    Domain: bfo:0000015
+ObjectProperty: sdg:servedAt
+    Range: bfo:0000040
+ObjectProperty: sdg:servedBy
+    Range: bfo:0000002
+ObjectProperty: sdg:servedByGrid
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:servedBySocialEnterprises
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:servedClient
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:servedIn
+    Domain: cco:ont00000995
+ObjectProperty: sdg:servedInCourse
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:servedWithCategory
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:servedWithMenuItem
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:servedWithSide
+    Domain: bfo:0000040
+DataProperty: sdg:serverAddress
+    Domain: bfo:0000040
+DataProperty: sdg:serverId
+    Domain: bfo:0000040
+DataProperty: sdg:serverLocation
+    Domain: bfo:0000040
+DataProperty: sdg:serverName
+    Domain: bfo:0000040
+ObjectProperty: sdg:serverRole
+    Domain: bfo:0000040
+DataProperty: sdg:serverType
+    Domain: bfo:0000040
+ObjectProperty: sdg:servesAffectedCommunity
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:servesAsEndFor
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:servesAsPartOf
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+ObjectProperty: sdg:servesAsStartFor
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:servesCount
+    Domain: cco:ont00000995
+ObjectProperty: sdg:servesCourse
+    Range: cco:ont00000995
+ObjectProperty: sdg:servesDemographic
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:servesIndustry
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:servesLocation
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:servesMenu
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+ObjectProperty: sdg:servesMunicipalRecreation
+    Range: bfo:0000015
+ObjectProperty: sdg:servesOnAffiliateCouncil
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:servesOnCommittee
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:servesOnForum
+    Domain: bfo:0000023
+    Range: cco:ont00000958
+ObjectProperty: sdg:servesPatient
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:servesPhysician
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:servesPopulation
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:servesStakeholderGroups
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:servesStudents
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:servesTo
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:servesUsers
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:servesZone
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:serviceApplication
+    Domain: cco:ont00000995
+DataProperty: sdg:serviceChargePercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:serviceCondition
+    Domain: cco:ont00000995
+DataProperty: sdg:serviceDate
+    Domain: bfo:0000023
+ObjectProperty: sdg:serviceDeliveryMode
+    Domain: cco:ont00000995
+    Range: bfo:0000001
+DataProperty: sdg:serviceDomain
+    Domain: bfo:0000023
+DataProperty: sdg:serviceHost
+    Domain: cco:ont00000995
+DataProperty: sdg:serviceHours
+    Domain: cco:ont00000995
+DataProperty: sdg:servicePort
+    Domain: cco:ont00000995
+DataProperty: sdg:serviceProtocol
+    Domain: cco:ont00000995
+DataProperty: sdg:serviceScope
+    Domain: cco:ont00000995
+ObjectProperty: sdg:serviceTier
+    Domain: bfo:0000002
+ObjectProperty: sdg:servicedBy
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:servingId
+    Domain: bfo:0000040
+DataProperty: sdg:servingStyle
+    Domain: bfo:0000040
+ObjectProperty: sdg:servingTemp
+    Domain: cco:ont00000995
+DataProperty: sdg:servingTemperature
+    Domain: cco:ont00000995
+DataProperty: sdg:servingTime
+    Domain: bfo:0000040
+DataProperty: sdg:servingUnit
+    Domain: bfo:0000040
+DataProperty: sdg:servingWeight
+    Domain: bfo:0000040
+DataProperty: sdg:sessionActivityType
+    Domain: bfo:0000015
+DataProperty: sdg:sessionDate
+    Domain: bfo:0000015
+DataProperty: sdg:sessionDuration
+    Domain: cco:ont00000995
+DataProperty: sdg:sessionDurationSeconds
+    Domain: bfo:0000015
+DataProperty: sdg:sessionEnd
+    Domain: bfo:0000015
+DataProperty: sdg:sessionFrequency
+    Domain: bfo:0000015
+DataProperty: sdg:sessionId
+    Domain: bfo:0000015
+DataProperty: sdg:sessionIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:sessionKey
+    Domain: bfo:0000040
+DataProperty: sdg:sessionName
+    Domain: bfo:0000015
+DataProperty: sdg:sessionNumber
+    Domain: bfo:0000015
+DataProperty: sdg:sessionStart
+    Domain: bfo:0000015
+ObjectProperty: sdg:sessionStatus
+    Domain: bfo:0000015
+DataProperty: sdg:sessionTitle
+    Domain: bfo:0000015
+ObjectProperty: sdg:sessionType
+    Domain: bfo:0000015
+DataProperty: sdg:sessionYear
+    Domain: bfo:0000015
+DataProperty: sdg:settingId
+    Domain: cco:ont00000995
+DataProperty: sdg:settingType
+    Domain: cco:ont00000995
+DataProperty: sdg:settlementArea
+    Domain: bfo:0000002
+DataProperty: sdg:settlementDate
+    Domain: bfo:0000015
+DataProperty: sdg:settlementRegion
+    Domain: bfo:0000002
+DataProperty: sdg:settlementType
+    Domain: bfo:0000015
+DataProperty: sdg:setupFee
+    Domain: cco:ont00000995
+DataProperty: sdg:setupId
+    Domain: bfo:0000015
+DataProperty: sdg:setupName
+    Domain: bfo:0000015
+DataProperty: sdg:severityIndex
+    Domain: bfo:0000015
+DataProperty: sdg:severityRating
+    Domain: bfo:0000015
+DataProperty: sdg:severityScore
+    Domain: bfo:0000040
+DataProperty: sdg:sevisId
+    Domain: cco:ont00000995
+DataProperty: sdg:shaftLength
+    Domain: cco:ont00000995
+DataProperty: sdg:shapeFactor
+    Domain: bfo:0000040
+DataProperty: sdg:shapeId
+    Domain: bfo:0000040
+DataProperty: sdg:shareCount
+    Domain: cco:ont00000995
+DataProperty: sdg:shareInEnergyMix
+    Domain: bfo:0000040
+DataProperty: sdg:sharedServiceFlag
+    Domain: bfo:0000023
+DataProperty: sdg:shareholderCount
+    Domain: cco:ont00000995
+DataProperty: sdg:shareholderId
+    Domain: cco:ont00000995
+DataProperty: sdg:shareholderName
+    Domain: cco:ont00000995
+DataProperty: sdg:shareholderType
+    Domain: cco:ont00000995
+DataProperty: sdg:shareholdersEquityUSD
+    Domain: cco:ont00000995
+DataProperty: sdg:shareholdingStructure
+    Domain: cco:ont00000995
+ObjectProperty: sdg:shares
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:sharesDataWith
+    Domain: bfo:0000004
+    Range: bfo:0000004
+DataProperty: sdg:sharpeRatio
+    Domain: cco:ont00000995
+DataProperty: sdg:shelfLifeMonths
+    Domain: cco:ont00000995
+DataProperty: sdg:shellDepth
+    Domain: cco:ont00000995
+DataProperty: sdg:shellHeight
+    Domain: cco:ont00000995
+DataProperty: sdg:shellId
+    Domain: cco:ont00000995
+DataProperty: sdg:shellWidth
+    Domain: cco:ont00000995
+DataProperty: sdg:shelterIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:shelterName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:shelterType
+    Domain: cco:ont00000995
+DataProperty: sdg:shiftEnd
+    Domain: bfo:0000002
+DataProperty: sdg:shiftFlexibility
+    Domain: cco:ont00000958
+DataProperty: sdg:shiftStart
+    Domain: bfo:0000002
+DataProperty: sdg:shiftStatus
+    Domain: bfo:0000040
+DataProperty: sdg:shiftType
+    Domain: bfo:0000040
+ObjectProperty: sdg:shiftsTo
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:shipmentId
+    Domain: bfo:0000015
+ObjectProperty: sdg:shippedVia
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:shippingMethod
+    Domain: cco:ont00000995
+DataProperty: sdg:shirtSize
+    Domain: bfo:0000004
+DataProperty: sdg:shoeSize
+    Domain: bfo:0000004
+DataProperty: sdg:shooterId
+    Domain: bfo:0000040
+DataProperty: sdg:shopId
+    Domain: bfo:0000040
+DataProperty: sdg:shopName
+    Domain: bfo:0000040
+DataProperty: sdg:shopType
+    Domain: bfo:0000040
+DataProperty: sdg:shotId
+    Domain: bfo:0000040
+DataProperty: sdg:shotIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:shotType
+    Domain: bfo:0000040
+DataProperty: sdg:shrinkRatio
+    Domain: cco:ont00000995
+DataProperty: sdg:shutterSpeed
+    Domain: bfo:0000015
+DataProperty: sdg:sideCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:sideItemId
+    Domain: cco:ont00000995
+DataProperty: sdg:sideType
+    Domain: cco:ont00000995
+DataProperty: sdg:signColor
+    Domain: cco:ont00000995
+DataProperty: sdg:signIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:signMessage
+    Domain: cco:ont00000995
+ObjectProperty: sdg:signShape
+    Domain: cco:ont00000995
+DataProperty: sdg:signType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:signalFormat
+    Domain: bfo:0000040
+DataProperty: sdg:signalQuality
+    Domain: bfo:0000040
+DataProperty: sdg:signalSpeed
+    Domain: bfo:0000002
+DataProperty: sdg:signatoryCount
+    Domain: cco:ont00000995
+DataProperty: sdg:signature
+    Domain: bfo:0000040
+DataProperty: sdg:signatureId
+    Domain: cco:ont00000995
+DataProperty: sdg:signatureStatus
+    Domain: bfo:0000023
+ObjectProperty: sdg:signedBy
+    Domain: cco:ont00000958
+DataProperty: sdg:signedDate
+    Domain: cco:ont00000958
+DataProperty: sdg:significanceLevel
+    Domain: bfo:0000015
+DataProperty: sdg:significantRisks
+    Domain: cco:ont00000958
+DataProperty: sdg:signingDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:signs
+    Domain: bfo:0000023
+    Range: cco:ont00000958
+ObjectProperty: sdg:signsDataFile
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:simulatesStructure
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:simulationDate
+    Domain: bfo:0000015
+DataProperty: sdg:simulationId
+    Domain: bfo:0000015
+DataProperty: sdg:singleTripFee
+    Domain: bfo:0000015
+DataProperty: sdg:sinkIdentifier
+    Domain: bfo:0000004
+DataProperty: sdg:sinkType
+    Domain: bfo:0000004
+DataProperty: sdg:sireName
+    Domain: cco:ont00000995
+DataProperty: sdg:siteCode
+    Domain: bfo:0000015
+ObjectProperty: sdg:siteFor
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:siteId
+    Domain: bfo:0000040
+ObjectProperty: sdg:siteOf
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:siteType
+    Domain: bfo:0000040
+ObjectProperty: sdg:sitedAt
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:situated_in
+    Range: bfo:0000002
+DataProperty: sdg:situationId
+    Domain: bfo:0000015
+DataProperty: sdg:sizeBytes
+    Domain: cco:ont00000995
+DataProperty: sdg:sizeId
+    Domain: cco:ont00000995
+DataProperty: sdg:sizeInGB
+    Domain: cco:ont00000958
+DataProperty: sdg:skillId
+    Domain: bfo:0000016
+DataProperty: sdg:skillName
+    Domain: bfo:0000016
+DataProperty: sdg:skillShortageLevel
+    Domain: bfo:0000040
+DataProperty: sdg:skills
+    Domain: bfo:0000004
+DataProperty: sdg:skinSensitivity
+    Domain: bfo:0000040
+DataProperty: sdg:sku
+    Domain: cco:ont00000995
+DataProperty: sdg:slaId
+    Domain: bfo:0000031
+DataProperty: sdg:slavicEtymology
+    Domain: bfo:0000002
+DataProperty: sdg:slavicInfluenceLevel
+    Domain: bfo:0000015
+DataProperty: sdg:slavicLanguageBasis
+    Domain: bfo:0000015
+DataProperty: sdg:slavicRoot
+    Domain: cco:ont00000995
+DataProperty: sdg:smiles
+    Domain: cco:ont00000995
+DataProperty: sdg:smsKeyword
+    Domain: cco:ont00000995
+DataProperty: sdg:snubberId
+    Domain: cco:ont00000995
+DataProperty: sdg:socialEnterpriseDensity
+    Domain: bfo:0000004
+DataProperty: sdg:socialInsuranceNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:socialIntegration
+    Domain: cco:ont00000995
+DataProperty: sdg:societyIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:socioEcologicalNiche
+    Domain: bfo:0000004
+ObjectProperty: sdg:socioeconomicStatus
+    Domain: bfo:0000002
+DataProperty: sdg:sodium
+    Domain: cco:ont00000995
+DataProperty: sdg:softwareIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:softwareName
+    Domain: cco:ont00000995
+DataProperty: sdg:softwareType
+    Domain: cco:ont00000995
+DataProperty: sdg:softwareVersion
+    Domain: cco:ont00000995
+ObjectProperty: sdg:soilDrainage
+    Domain: bfo:0000004
+DataProperty: sdg:soilMoistureLevel
+    Domain: bfo:0000004
+DataProperty: sdg:soilQualityIndex
+    Domain: bfo:0000040
+ObjectProperty: sdg:soldIn
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:solderingDuration
+    Domain: cco:ont00000995
+DataProperty: sdg:solubility
+    Domain: cco:ont00000995
+DataProperty: sdg:solubilityInOrganicSolvents
+    Domain: bfo:0000040
+DataProperty: sdg:solubilityInWater
+    Domain: bfo:0000040
+DataProperty: sdg:solutionId
+    Domain: cco:ont00000958
+DataProperty: sdg:solutionIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:solutionType
+    Domain: cco:ont00000958
+ObjectProperty: sdg:solvedBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:sortOrder
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceActivityId
+    Domain: bfo:0000040
+DataProperty: sdg:sourceBatchId
+    Domain: cco:ont00000958
+DataProperty: sdg:sourceCategory
+    Domain: bfo:0000002
+DataProperty: sdg:sourceConnectorType
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceDeviceId
+    Domain: bfo:0000015
+DataProperty: sdg:sourceExperience
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:sourceIndustry
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceInstitution
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceIp
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceJurisdiction
+    Domain: bfo:0000002
+DataProperty: sdg:sourceLanguage
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceLanguageCode
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceMap
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceMaterial
+    Domain: cco:ont00000995
+ObjectProperty: sdg:sourceOrigin
+    Domain: cco:ont00000995
+DataProperty: sdg:sourceProcess
+    Domain: bfo:0000002
+DataProperty: sdg:sourceSession
+    Domain: bfo:0000040
+DataProperty: sdg:sourceStudy
+    Domain: bfo:0000040
+DataProperty: sdg:sourceUrl
+    Domain: cco:ont00000995
+ObjectProperty: sdg:sourcedFrom
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:sourcedFromVineyard
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:sourcingRegion
+    Domain: cco:ont00000995
+DataProperty: sdg:spaceGroupNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:spaceId
+    Domain: bfo:0000040
+DataProperty: sdg:spaceName
+    Domain: bfo:0000040
+DataProperty: sdg:spaceType
+    Domain: bfo:0000040
+DataProperty: sdg:spatialResolution
+    Domain: cco:ont00000995
+ObjectProperty: sdg:spatiallyAssociatedWith
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:spatiallyConstrainedTo
+    Range: bfo:0000002
+DataProperty: sdg:speakerId
+    Domain: bfo:0000040
+DataProperty: sdg:speakerIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:speakerName
+    Domain: bfo:0000015
+ObjectProperty: sdg:speaksAt
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:speaksIn
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+DataProperty: sdg:specId
+    Domain: cco:ont00000995
+DataProperty: sdg:specialNeedsFlag
+    Domain: bfo:0000002
+DataProperty: sdg:specialism
+    Domain: bfo:0000002
+DataProperty: sdg:specialistId
+    Domain: bfo:0000040
+DataProperty: sdg:specialistType
+    Domain: bfo:0000023
+DataProperty: sdg:specializationDomain
+    Domain: bfo:0000002
+DataProperty: sdg:specializationId
+    Domain: bfo:0000040
+DataProperty: sdg:specializationName
+    Domain: bfo:0000040
+DataProperty: sdg:speciesList
+    Domain: cco:ont00000995
+DataProperty: sdg:speciesName
+    Domain: cco:ont00000995
+DataProperty: sdg:speciesType
+    Domain: cco:ont00000995
+DataProperty: sdg:specification
+    Domain: bfo:0000040
+DataProperty: sdg:specificationId
+    Domain: cco:ont00000995
+DataProperty: sdg:specificationLimit
+    Domain: cco:ont00000995
+DataProperty: sdg:specificationScore
+    Domain: cco:ont00000995
+ObjectProperty: sdg:specifiedIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:specifiesConsentReason
+    Range: bfo:0000002
+ObjectProperty: sdg:specifiesConstraint
+    Domain: bfo:0000031
+ObjectProperty: sdg:specifiesCourseSelection
+    Range: bfo:0000015
+ObjectProperty: sdg:specifiesCriteriaFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:specifiesDropoffLocation
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:specifiesFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:specifiesImaging
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:specifiesInstruction
+    Domain: bfo:0000016
+    Range: bfo:0000016
+ObjectProperty: sdg:specifiesInterventionRequirements
+    Domain: cco:ont00000958
+    Range: bfo:0000002
+ObjectProperty: sdg:specifiesMethodology
+    Range: bfo:0000002
+ObjectProperty: sdg:specifiesMonitoringProcedure
+    Range: cco:ont00000569
+ObjectProperty: sdg:specifiesPickupLocation
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:specifiesStandard
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:specifiesTasks
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:specifiesTemporalReferenceFor
+    Range: cco:ont00000259
+ObjectProperty: sdg:specifiesWidth
+    Range: bfo:0000002
+DataProperty: sdg:specimenId
+    Domain: cco:ont00000995
+DataProperty: sdg:speedLimit
+    Domain: bfo:0000015
+DataProperty: sdg:speedRating
+    Domain: cco:ont00000995
+DataProperty: sdg:spellingVariant
+    Domain: cco:ont00000995
+DataProperty: sdg:spendingThreshold
+    Domain: bfo:0000016
+ObjectProperty: sdg:spiceLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:spiciness
+    Domain: cco:ont00000995
+DataProperty: sdg:spillNumber
+    Domain: bfo:0000015
+DataProperty: sdg:spilledQuantity
+    Domain: cco:ont00000995
+DataProperty: sdg:spiritId
+    Domain: bfo:0000040
+DataProperty: sdg:spiritType
+    Domain: bfo:0000040
+DataProperty: sdg:spiritualName
+    Domain: bfo:0000040
+ObjectProperty: sdg:spokenBy
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:sponsoringAgency
+    Domain: cco:ont00000995
+ObjectProperty: sdg:sponsors
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:sponsorsEvent
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:sponsorsFacility
+    Domain: bfo:0000004
+    Range: bfo:0000040
+DataProperty: sdg:sponsorshipProgramName
+    Domain: bfo:0000040
+ObjectProperty: sdg:sportDomain
+    Domain: bfo:0000015
+    Range: bfo:0000001
+DataProperty: sdg:sportType
+    Domain: bfo:0000015
+DataProperty: sdg:spotId
+    Domain: bfo:0000002
+DataProperty: sdg:spouseConsentStatus
+    Domain: cco:ont00000958
+DataProperty: sdg:spouseSsn
+    Domain: cco:ont00000958
+DataProperty: sdg:sprayDate
+    Domain: bfo:0000015
+DataProperty: sdg:sprocketId
+    Domain: cco:ont00000995
+DataProperty: sdg:squareFootage
+    Domain: bfo:0000004
+DataProperty: sdg:ssid
+    Domain: cco:ont00000995
+DataProperty: sdg:ssidName
+    Domain: bfo:0000040
+ObjectProperty: sdg:staffAttends
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:staffCountRequired
+    Domain: bfo:0000015
+DataProperty: sdg:staffIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:staffMemberId
+    Domain: cco:ont00000995
+DataProperty: sdg:staffName
+    Domain: bfo:0000002
+DataProperty: sdg:staffingLevel
+    Domain: bfo:0000015
+DataProperty: sdg:stainingMethod
+    Domain: bfo:0000015
+DataProperty: sdg:stakeholderIdentifier
+    Domain: bfo:0000004
+DataProperty: sdg:stallId
+    Domain: bfo:0000023
+DataProperty: sdg:stallLocationCode
+    Domain: bfo:0000023
+DataProperty: sdg:stallSize
+    Domain: bfo:0000023
+DataProperty: sdg:stallStatus
+    Domain: bfo:0000023
+ObjectProperty: sdg:stanceType
+    Domain: bfo:0000015
+DataProperty: sdg:standardCompliance
+    Domain: bfo:0000015
+DataProperty: sdg:standardComplianceStatus
+    Domain: bfo:0000023
+DataProperty: sdg:standardDeviation
+    Domain: cco:ont00000995
+DataProperty: sdg:standardFramework
+    Domain: cco:ont00000995
+DataProperty: sdg:standardLength
+    Domain: cco:ont00000995
+DataProperty: sdg:standardSpecificCount
+    Domain: cco:ont00000995
+DataProperty: sdg:standardTimeValue
+    Domain: cco:ont00000995
+DataProperty: sdg:standardTimeframeYears
+    Domain: cco:ont00000995
+DataProperty: sdg:startAngle
+    Domain: bfo:0000015
+DataProperty: sdg:startDateTime
+    Domain: bfo:0000015
+DataProperty: sdg:startMileMarker
+    Domain: bfo:0000015
+DataProperty: sdg:startOffsetSeconds
+    Domain: bfo:0000015
+DataProperty: sdg:startPoint
+    Domain: bfo:0000015
+DataProperty: sdg:startTangentPointX
+    Domain: bfo:0000015
+DataProperty: sdg:startTangentPointY
+    Domain: bfo:0000015
+DataProperty: sdg:startTime
+    Domain: bfo:0000015
+DataProperty: sdg:startYear
+    Domain: bfo:0000015
+ObjectProperty: sdg:startsAt
+    Range: bfo:0000040
+DataProperty: sdg:statYear
+    Domain: cco:ont00000995
+DataProperty: sdg:stateAtSTP
+    Domain: cco:ont00000995
+DataProperty: sdg:stateCount
+    Domain: bfo:0000015
+DataProperty: sdg:stateId
+    Domain: bfo:0000002
+DataProperty: sdg:stateIndex
+    Domain: bfo:0000002
+DataProperty: sdg:stateIssued
+    Domain: cco:ont00000995
+DataProperty: sdg:stateJurisdiction
+    Domain: bfo:0000004
+DataProperty: sdg:stateLicense
+    Domain: bfo:0000004
+DataProperty: sdg:stateOfRegistration
+    Domain: cco:ont00000995
+DataProperty: sdg:stateVector
+    Domain: bfo:0000015
+DataProperty: sdg:statementId
+    Domain: bfo:0000040
+DataProperty: sdg:statementText
+    Domain: bfo:0000015
+DataProperty: sdg:statementType
+    Domain: bfo:0000040
+ObjectProperty: sdg:states
+    Range: bfo:0000002
+DataProperty: sdg:stationId
+    Domain: bfo:0000040
+ObjectProperty: sdg:stationIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:stationName
+    Domain: bfo:0000040
+DataProperty: sdg:statisticId
+    Domain: cco:ont00000995
+DataProperty: sdg:statisticSymbol
+    Domain: bfo:0000015
+DataProperty: sdg:statisticType
+    Domain: cco:ont00000995
+DataProperty: sdg:statisticsClassification
+    Domain: cco:ont00000958
+DataProperty: sdg:statueId
+    Domain: bfo:0000040
+DataProperty: sdg:statueName
+    Domain: bfo:0000040
+DataProperty: sdg:statuteCode
+    Domain: cco:ont00000958
+DataProperty: sdg:statuteTitle
+    Domain: bfo:0000015
+DataProperty: sdg:statutoryAuthority
+    Domain: bfo:0000015
+DataProperty: sdg:statutoryPowers
+    Domain: bfo:0000015
+DataProperty: sdg:statutoryReference
+    Domain: bfo:0000040
+DataProperty: sdg:steamInputRate
+    Domain: bfo:0000004
+DataProperty: sdg:steeringCompliant
+    Domain: bfo:0000002
+DataProperty: sdg:stepCount
+    Domain: bfo:0000015
+DataProperty: sdg:stepCountRange
+    Domain: bfo:0000015
+DataProperty: sdg:stepDescription
+    Domain: bfo:0000040
+DataProperty: sdg:stepId
+    Domain: bfo:0000015
+DataProperty: sdg:stepLocation
+    Domain: cco:ont00000958
+DataProperty: sdg:stepNumber
+    Domain: bfo:0000040
+DataProperty: sdg:stepType
+    Domain: bfo:0000040
+DataProperty: sdg:steps
+    Domain: bfo:0000015
+DataProperty: sdg:stigmaId
+    Domain: bfo:0000040
+DataProperty: sdg:stigmaType
+    Domain: bfo:0000040
+DataProperty: sdg:stimulusEnergy
+    Domain: cco:ont00000995
+DataProperty: sdg:stimulusId
+    Domain: bfo:0000015
+ObjectProperty: sdg:stimulusType
+    Domain: bfo:0000015
+DataProperty: sdg:stockCode
+    Domain: bfo:0000002
+DataProperty: sdg:stockExchange
+    Domain: bfo:0000040
+DataProperty: sdg:stockTicker
+    Domain: bfo:0000040
+DataProperty: sdg:storageCapacityGB
+    Domain: cco:ont00000995
+DataProperty: sdg:storageCondition
+    Domain: cco:ont00000995
+DataProperty: sdg:storageId
+    Domain: cco:ont00000995
+DataProperty: sdg:storageLocation
+    Domain: cco:ont00000995
+DataProperty: sdg:storageName
+    Domain: cco:ont00000995
+DataProperty: sdg:storagePath
+    Domain: cco:ont00000995
+DataProperty: sdg:storageSizeGB
+    Domain: bfo:0000015
+ObjectProperty: sdg:storageStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:storageTemp
+    Domain: bfo:0000040
+DataProperty: sdg:storageTemperatureMax
+    Domain: cco:ont00000995
+DataProperty: sdg:storageTemperatureMin
+    Domain: cco:ont00000995
+DataProperty: sdg:storageTemperatureRange
+    Domain: cco:ont00000995
+ObjectProperty: sdg:storageType
+    Domain: cco:ont00000995
+DataProperty: sdg:storeId
+    Domain: bfo:0000015
+DataProperty: sdg:storeIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:storeLocation
+    Domain: cco:ont00000995
+ObjectProperty: sdg:storedAs
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:storedCredentialsIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:storedInSatellite
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:storedOn
+    Range: cco:ont00000995
+ObjectProperty: sdg:storedOnServer
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:storesCredentials
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:storesCredentialsFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:storesDataFor
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+ObjectProperty: sdg:storesDataIn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:storesDocument
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:storesPatientData
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:storesReport
+    Domain: bfo:0000040
+    Range: bfo:0000004
+DataProperty: sdg:strapIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:strategicPhase
+    Domain: bfo:0000015
+DataProperty: sdg:strategyIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:strategyType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:stratifiedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:streamIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:streamType
+    Domain: bfo:0000002
+DataProperty: sdg:street
+    Domain: bfo:0000004
+DataProperty: sdg:streetName
+    Domain: bfo:0000015
+DataProperty: sdg:strengthLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:stressLevel
+    Domain: bfo:0000015
+DataProperty: sdg:stressReductionMeasures
+    Domain: bfo:0000015
+DataProperty: sdg:stressToleranceLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:structuralRole
+    Domain: bfo:0000040
+ObjectProperty: sdg:structureType
+    Domain: bfo:0000040
+ObjectProperty: sdg:structuresQualityImprovement
+    Range: cco:ont00000131
+ObjectProperty: sdg:studies
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:studiesExposureTo
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:studiesTransition
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:studyDate
+    Domain: cco:ont00000995
+DataProperty: sdg:studyDesign
+    Domain: bfo:0000015
+DataProperty: sdg:studyEndDate
+    Domain: bfo:0000015
+DataProperty: sdg:studyId
+    Domain: bfo:0000015
+DataProperty: sdg:studyLevel
+    Domain: bfo:0000002
+DataProperty: sdg:studyStartDate
+    Domain: bfo:0000015
+ObjectProperty: sdg:studyType
+    Domain: bfo:0000015
+DataProperty: sdg:styleName
+    Domain: cco:ont00000995
+DataProperty: sdg:subCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:subGroupId
+    Domain: bfo:0000040
+DataProperty: sdg:subGroupTitle
+    Domain: bfo:0000040
+DataProperty: sdg:subProjectId
+    Domain: bfo:0000015
+DataProperty: sdg:subProjectName
+    Domain: bfo:0000015
+DataProperty: sdg:subQuestionIndex
+    Domain: bfo:0000015
+DataProperty: sdg:subQuestionLabel
+    Domain: bfo:0000015
+DataProperty: sdg:subfieldCode
+    Domain: bfo:0000023
+DataProperty: sdg:subject
+    Domain: cco:ont00000995
+ObjectProperty: sdg:subjectArea
+    Domain: bfo:0000040
+DataProperty: sdg:subjectConcept
+    Domain: bfo:0000015
+DataProperty: sdg:subjectDomain
+    Domain: cco:ont00000995
+DataProperty: sdg:subjectId
+    Domain: bfo:0000004
+DataProperty: sdg:subjectLine
+    Domain: cco:ont00000995
+ObjectProperty: sdg:subjectMatter
+    Domain: cco:ont00000995
+DataProperty: sdg:subjectMatterDomain
+    Domain: cco:ont00000995
+ObjectProperty: sdg:subjectOfAdoptionCase
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:subjectOfInvestigation
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:subjectOfPerception
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:subjectOfReview
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:subjectToAdvice
+    Domain: bfo:0000023
+    Range: bfo:0000023
+ObjectProperty: sdg:subjectToAssessment
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:subjectToAudit
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:subjectToAuditStandards
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+ObjectProperty: sdg:subjectToCodeOfConduct
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+ObjectProperty: sdg:subjectToDeficiency
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:subjectToEvaluation
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:subjectToInvestigation
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:subjectToOrder
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:subjectToPolicy
+    Range: bfo:0000015
+ObjectProperty: sdg:subjectToRegulation
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:subjectToReview
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:subjectToSurveillanceBy
+    Domain: bfo:0000004
+    Range: bfo:0000023
+DataProperty: sdg:subjectType
+    Domain: bfo:0000002
+DataProperty: sdg:submissionDeadline
+    Domain: cco:ont00000995
+DataProperty: sdg:submissionId
+    Domain: bfo:0000040
+DataProperty: sdg:submissionType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:submitsBudget
+    Domain: bfo:0000023
+    Range: bfo:0000040
+ObjectProperty: sdg:submitsBudgetTo
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:submitsComplaintTo
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:submitsEntry
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:submitsFeedbackFor
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:submitsPaper
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:submitsRecommendation
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:submitsResponse
+    Range: cco:ont00000995
+ObjectProperty: sdg:submitsScore
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:submitsTo
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:submitsToReview
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:submittedAt
+    Domain: cco:ont00000995
+ObjectProperty: sdg:submittedComplianceReport
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+DataProperty: sdg:submittedDate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:submittedDeficiencyPlan
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:submittedIdeaTo
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:submitterEmail
+    Domain: bfo:0000002
+DataProperty: sdg:submitterName
+    Domain: bfo:0000002
+DataProperty: sdg:subnetMask
+    Domain: bfo:0000040
+ObjectProperty: sdg:subscriptionStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:subsequentTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:subsidiaryId
+    Domain: cco:ont00000995
+DataProperty: sdg:subsidiaryName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:subsidyOf
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:substanceHistory
+    Domain: cco:ont00000995
+DataProperty: sdg:substitutedValue
+    Domain: bfo:0000040
+ObjectProperty: sdg:substitutesFor
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:substitutionCost
+    Domain: bfo:0000040
+DataProperty: sdg:subtopicId
+    Domain: bfo:0000015
+DataProperty: sdg:subtopicName
+    Domain: bfo:0000015
+ObjectProperty: sdg:succeedsPreviousAppointee
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:successCriteria
+    Domain: cco:ont00000958
+DataProperty: sdg:successMetric
+    Domain: bfo:0000015
+DataProperty: sdg:successRate
+    Domain: bfo:0000015
+DataProperty: sdg:successRating
+    Domain: bfo:0000015
+DataProperty: sdg:successStatus
+    Domain: cco:ont00000995
+ObjectProperty: sdg:suffersFromNutritionalDeficiency
+    Range: cco:ont00000318
+DataProperty: sdg:suffix
+    Domain: cco:ont00000995
+DataProperty: sdg:suggestedDonation
+    Domain: cco:ont00000995
+DataProperty: sdg:suggestedRetailPrice
+    Domain: bfo:0000015
+DataProperty: sdg:sulfurLimit
+    Domain: cco:ont00000995
+ObjectProperty: sdg:summarizes_clinical_care
+    Domain: cco:ont00000995
+DataProperty: sdg:summaryIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:summaryOfFindings
+    Domain: bfo:0000015
+DataProperty: sdg:summaryText
+    Domain: cco:ont00000995
+DataProperty: sdg:summitIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:superpositionEnabled
+    Domain: bfo:0000015
+ObjectProperty: sdg:supervised
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:supervisedByAssistant
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:supervisesCrew
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:supervisesStudent
+    Range: bfo:0000002
+DataProperty: sdg:supervisionRequired
+    Domain: bfo:0000015
+DataProperty: sdg:supervisorStaffId
+    Domain: bfo:0000015
+DataProperty: sdg:supervisorTitle
+    Domain: cco:ont00000995
+DataProperty: sdg:supervisoryRole
+    Domain: bfo:0000040
+ObjectProperty: sdg:suppliedTo
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:suppliedWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:supplierId
+    Domain: bfo:0000002
+ObjectProperty: sdg:suppliesApi
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:suppliesCourse
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:suppliesDevicesTo
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:suppliesToGrid
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:suppliesWasteToFacility
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:suppliesWine
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:supplyDate
+    Domain: bfo:0000015
+DataProperty: sdg:supplyId
+    Domain: bfo:0000015
+DataProperty: sdg:supplyType
+    Domain: bfo:0000015
+DataProperty: sdg:supportLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:supportNeedsAssessmentDate
+    Domain: bfo:0000004
+DataProperty: sdg:supportPhone
+    Domain: bfo:0000004
+DataProperty: sdg:supportProvided
+    Domain: bfo:0000015
+DataProperty: sdg:supportReceived
+    Domain: bfo:0000040
+DataProperty: sdg:supportStatus
+    Domain: cco:ont00000958
+ObjectProperty: sdg:supportType
+    Domain: bfo:0000040
+ObjectProperty: sdg:supportedByTool
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:supportedFormFactors
+    Domain: cco:ont00000995
+DataProperty: sdg:supportedLanguageCount
+    Domain: bfo:0000015
+DataProperty: sdg:supportedPlatforms
+    Domain: bfo:0000002
+DataProperty: sdg:supportingOrganization
+    Domain: bfo:0000002
+ObjectProperty: sdg:supportsActivity
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+DataProperty: sdg:supportsAnalog
+    Domain: cco:ont00000995
+ObjectProperty: sdg:supportsApi
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:supportsApplication
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:supportsApprenticeships
+    Domain: bfo:0000004
+    Range: bfo:0000040
+DataProperty: sdg:supportsAssignmentCreation
+    Domain: bfo:0000040
+DataProperty: sdg:supportsAudio
+    Domain: cco:ont00000995
+DataProperty: sdg:supportsBigData
+    Domain: cco:ont00000958
+ObjectProperty: sdg:supportsCanape
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:supportsCapability
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+ObjectProperty: sdg:supportsCommunicationType
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:supportsCommunity
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:supportsCompliance
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:supportsCompression
+    Domain: bfo:0000040
+ObjectProperty: sdg:supportsCrew
+    Domain: bfo:0000040
+    Range: bfo:0000004
+ObjectProperty: sdg:supportsDataTransmission
+    Domain: bfo:0000002
+    Range: cco:ont00000700
+ObjectProperty: sdg:supportsDeclaration
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:supportsDisclosureFor
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:supportsDocumentType
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:supportsDomain
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:supportsEnrollment
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:supportsGoal
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:supportsGovernanceProcess
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:supportsHD
+    Domain: cco:ont00000995
+DataProperty: sdg:supportsHdcp
+    Domain: cco:ont00000995
+DataProperty: sdg:supportsIP
+    Domain: cco:ont00000995
+ObjectProperty: sdg:supportsIndustry
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:supportsInitiative
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:supportsMission
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:supportsMultilingual
+    Domain: cco:ont00000995
+ObjectProperty: sdg:supportsObligation
+    Domain: cco:ont00000958
+    Range: cco:ont00000995
+ObjectProperty: sdg:supportsObservatoryInstrument
+    Range: cco:ont00001009
+ObjectProperty: sdg:supportsParticipant
+    Domain: bfo:0000015
+ObjectProperty: sdg:supportsPhase
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:supportsPlanner
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:supportsProgramme
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:supportsProject
+    Domain: bfo:0000040
+    Range: bfo:0000002
+ObjectProperty: sdg:supportsProtocol
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:supportsRack
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:supportsRole
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:supportsSegment
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:supportsServiceUser
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:supportsSuspension
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:supportsTask
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:supportsVictim
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:supports_healthcare_services
+    Range: cco:ont00000700
+ObjectProperty: sdg:suppressedBy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:surfaceOwnerName
+    Domain: bfo:0000040
+ObjectProperty: sdg:surroundedByBuilding
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:surveyIdentifier
+    Domain: cco:ont00000958
+DataProperty: sdg:surveyMethod
+    Domain: cco:ont00000995
+DataProperty: sdg:surveyTopic
+    Domain: cco:ont00000995
+ObjectProperty: sdg:surveyType
+    Domain: bfo:0000015
+DataProperty: sdg:surveyYear
+    Domain: cco:ont00000958
+ObjectProperty: sdg:surveyed
+    Domain: cco:ont00000958
+    Range: bfo:0000023
+DataProperty: sdg:survivorBenefitPercentage
+    Domain: cco:ont00000995
+DataProperty: sdg:survivorshipRight
+    Domain: cco:ont00000995
+DataProperty: sdg:suspensionId
+    Domain: bfo:0000015
+DataProperty: sdg:sustainability
+    Domain: bfo:0000015
+DataProperty: sdg:sustainabilityLimit
+    Domain: bfo:0000040
+ObjectProperty: sdg:sustainabilityStatus
+    Domain: bfo:0000040
+DataProperty: sdg:swimmingAbility
+    Domain: bfo:0000002
+DataProperty: sdg:symbol
+    Domain: cco:ont00000995
+DataProperty: sdg:symbolicMeaning
+    Domain: cco:ont00000995
+ObjectProperty: sdg:symbolizedBy
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:symbolizesConcept
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:symptomProfile
+    Domain: cco:ont00000995
+ObjectProperty: sdg:syncretizesWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:synonymOf
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:synthesisMethod
+    Domain: cco:ont00000995
+DataProperty: sdg:systemCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:systemEntanglement
+    Domain: bfo:0000040
+DataProperty: sdg:systemModel
+    Domain: bfo:0000002
+ObjectProperty: sdg:systemStatus
+    Domain: bfo:0000040
+DataProperty: sdg:systemVersion
+    Domain: bfo:0000015
+DataProperty: sdg:taId
+    Domain: bfo:0000003
+DataProperty: sdg:tableName
+    Domain: bfo:0000002
+DataProperty: sdg:tableNumber
+    Domain: bfo:0000040
+DataProperty: sdg:tagId
+    Domain: cco:ont00000995
+DataProperty: sdg:tagText
+    Domain: cco:ont00000995
+ObjectProperty: sdg:taggedWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:tags
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+ObjectProperty: sdg:takesCourse
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:takesPlaceAt
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:tankCapacity
+    Domain: cco:ont00000995
+DataProperty: sdg:tankId
+    Domain: cco:ont00000995
+DataProperty: sdg:tankMaterial
+    Domain: cco:ont00000995
+DataProperty: sdg:tankStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:taperRate
+    Domain: cco:ont00000995
+DataProperty: sdg:taperRatePerFoot
+    Domain: cco:ont00000958
+DataProperty: sdg:taperRatePerInch
+    Domain: cco:ont00000958
+DataProperty: sdg:taperTolerancePerInch
+    Domain: cco:ont00000958
+DataProperty: sdg:targetAgeGroup
+    Domain: bfo:0000015
+DataProperty: sdg:targetAgeRange
+    Domain: bfo:0000002
+DataProperty: sdg:targetBehavior
+    Domain: bfo:0000015
+DataProperty: sdg:targetBodyName
+    Domain: cco:ont00000995
+DataProperty: sdg:targetBodyType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:targetCapacity
+    Domain: cco:ont00000995
+DataProperty: sdg:targetChemicalClass
+    Domain: bfo:0000040
+DataProperty: sdg:targetClause
+    Domain: bfo:0000040
+DataProperty: sdg:targetCompletionDate
+    Domain: bfo:0000015
+DataProperty: sdg:targetConnectorType
+    Domain: cco:ont00000995
+DataProperty: sdg:targetCountries
+    Domain: cco:ont00000995
+DataProperty: sdg:targetDemographic
+    Domain: bfo:0000040
+DataProperty: sdg:targetDeviceModel
+    Domain: bfo:0000015
+DataProperty: sdg:targetDirection
+    Domain: bfo:0000040
+DataProperty: sdg:targetDisease
+    Domain: cco:ont00000958
+DataProperty: sdg:targetDuration
+    Domain: bfo:0000015
+DataProperty: sdg:targetEngagementRate
+    Domain: bfo:0000015
+DataProperty: sdg:targetEnrollmentCount
+    Domain: cco:ont00000995
+DataProperty: sdg:targetEvent
+    Domain: cco:ont00000995
+DataProperty: sdg:targetFileSizeMB
+    Domain: bfo:0000015
+DataProperty: sdg:targetFoodMatrix
+    Domain: bfo:0000015
+DataProperty: sdg:targetFunction
+    Domain: bfo:0000040
+DataProperty: sdg:targetGradeLevel
+    Domain: bfo:0000015
+DataProperty: sdg:targetHazard
+    Domain: cco:ont00000995
+DataProperty: sdg:targetIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:targetInstitution
+    Domain: cco:ont00000958
+DataProperty: sdg:targetJurisdiction
+    Domain: cco:ont00000958
+DataProperty: sdg:targetLevel
+    Domain: bfo:0000015
+DataProperty: sdg:targetLine
+    Domain: bfo:0000015
+DataProperty: sdg:targetMechanism
+    Domain: bfo:0000015
+DataProperty: sdg:targetMetric
+    Domain: bfo:0000015
+DataProperty: sdg:targetOperatingSystem
+    Domain: bfo:0000015
+DataProperty: sdg:targetOrganizationalScope
+    Domain: bfo:0000015
+DataProperty: sdg:targetOutcome
+    Domain: bfo:0000015
+DataProperty: sdg:targetOutputMW
+    Domain: bfo:0000040
+DataProperty: sdg:targetPolicyArea
+    Domain: bfo:0000040
+DataProperty: sdg:targetPollutantClass
+    Domain: bfo:0000015
+DataProperty: sdg:targetPollutionReduction
+    Domain: bfo:0000040
+ObjectProperty: sdg:targetPopulation
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:targetPrice
+    Domain: cco:ont00000995
+DataProperty: sdg:targetRegion
+    Domain: bfo:0000015
+DataProperty: sdg:targetSavingsPercent
+    Domain: bfo:0000015
+ObjectProperty: sdg:targetScale
+    Domain: bfo:0000023
+DataProperty: sdg:targetScope
+    Domain: bfo:0000015
+DataProperty: sdg:targetSection
+    Domain: bfo:0000040
+DataProperty: sdg:targetSegment
+    Domain: bfo:0000023
+ObjectProperty: sdg:targetStatus
+    Domain: bfo:0000015
+DataProperty: sdg:targetSymptoms
+    Domain: bfo:0000015
+DataProperty: sdg:targetTemperature
+    Domain: bfo:0000004
+DataProperty: sdg:targetUniversity
+    Domain: bfo:0000040
+ObjectProperty: sdg:targeted
+    Range: bfo:0000040
+ObjectProperty: sdg:targetedAt
+    Domain: bfo:0000015
+ObjectProperty: sdg:targetedAtEntity
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:targetedAtGradeLevel
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:targetedAtRegion
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:targetedByIdea
+    Domain: bfo:0000040
+    Range: bfo:0000015
+DataProperty: sdg:targetedStatus
+    Domain: cco:ont00000958
+ObjectProperty: sdg:targetedTo
+    Domain: bfo:0000015
+    Range: bfo:0000023
+ObjectProperty: sdg:targetsAbuseEvent
+    Range: bfo:0000003
+ObjectProperty: sdg:targetsAnalyte
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsAudience
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:targetsBeneficiaries
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsCapacity
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:targetsConcept
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:targetsCustomer
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsDataEntity
+    Range: cco:ont00000995
+ObjectProperty: sdg:targetsInstance
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:targetsInstitution
+    Domain: bfo:0000015
+ObjectProperty: sdg:targetsInstitutions
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsIssue
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:targetsLocation
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsMarket
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsMember
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsMetric
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:targetsOutcome
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:targetsPlatform
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsPopulation
+    Range: bfo:0000004
+ObjectProperty: sdg:targetsProviderInstance
+    Domain: cco:ont00000995
+    Range: bfo:0000004
+ObjectProperty: sdg:targetsRecipient
+    Range: bfo:0000004
+ObjectProperty: sdg:targetsResource
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:targetsRole
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:targetsSchool
+    Domain: bfo:0000002
+    Range: bfo:0000004
+ObjectProperty: sdg:targetsSector
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:targetsSocietalChallenge
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:targetsSource
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:targetsSpecimen
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsState
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsStudent
+    Range: bfo:0000002
+ObjectProperty: sdg:targetsSubtopic
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:targetsTrust
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:targetsZone
+    Domain: bfo:0000015
+    Range: bfo:0000004
+ObjectProperty: sdg:targets_market
+    Range: bfo:0000004
+DataProperty: sdg:tariffBand
+    Domain: bfo:0000015
+DataProperty: sdg:tariffCode
+    Domain: cco:ont00000958
+DataProperty: sdg:taskDescription
+    Domain: bfo:0000015
+DataProperty: sdg:taskId
+    Domain: bfo:0000015
+DataProperty: sdg:taskStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:taughtAt
+    Domain: bfo:0000002
+    Range: cco:ont00000958
+ObjectProperty: sdg:taughtBy
+    Domain: bfo:0000040
+ObjectProperty: sdg:taughtIn
+    Domain: bfo:0000015
+ObjectProperty: sdg:taughtInConcentration
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:taxAmount
+    Domain: cco:ont00000958
+DataProperty: sdg:taxBaseImpact
+    Domain: bfo:0000015
+DataProperty: sdg:taxEfficiency
+    Domain: cco:ont00000995
+DataProperty: sdg:taxIncluded
+    Domain: cco:ont00000958
+DataProperty: sdg:taxLiabilityShare
+    Domain: bfo:0000015
+DataProperty: sdg:taxReceiptIssued
+    Domain: bfo:0000015
+DataProperty: sdg:taxReceiptNumber
+    Domain: bfo:0000015
+DataProperty: sdg:taxResidency
+    Domain: bfo:0000002
+DataProperty: sdg:taxStatus
+    Domain: bfo:0000015
+DataProperty: sdg:taxWithheld
+    Domain: bfo:0000015
+DataProperty: sdg:teacherName
+    Domain: bfo:0000040
+ObjectProperty: sdg:teaches
+    Range: bfo:0000040
+ObjectProperty: sdg:teachesAt
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:teachesConcept
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:teachesCourse
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:teachesMethod
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:teamCode
+    Domain: bfo:0000040
+DataProperty: sdg:teamIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:teamMedal
+    Domain: bfo:0000040
+DataProperty: sdg:teamRank
+    Domain: bfo:0000040
+DataProperty: sdg:teamResultId
+    Domain: cco:ont00000995
+DataProperty: sdg:teamSize
+    Domain: bfo:0000015
+ObjectProperty: sdg:teamStatus
+    Domain: bfo:0000015
+DataProperty: sdg:teamworkRating
+    Domain: bfo:0000023
+DataProperty: sdg:techId
+    Domain: bfo:0000004
+DataProperty: sdg:technicalBarrierLevel
+    Domain: bfo:0000015
+DataProperty: sdg:technicalDomain
+    Domain: cco:ont00000958
+DataProperty: sdg:technicianId
+    Domain: bfo:0000004
+DataProperty: sdg:techniqueId
+    Domain: bfo:0000015
+DataProperty: sdg:techniqueName
+    Domain: bfo:0000015
+DataProperty: sdg:techniques
+    Domain: cco:ont00000995
+DataProperty: sdg:technologyIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:technologyName
+    Domain: cco:ont00000995
+DataProperty: sdg:technologyReadinessLevel
+    Domain: bfo:0000040
+DataProperty: sdg:technologyStack
+    Domain: bfo:0000015
+DataProperty: sdg:telescopeClass
+    Domain: bfo:0000040
+DataProperty: sdg:telescopeId
+    Domain: bfo:0000040
+DataProperty: sdg:telescopeIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:telescopeName
+    Domain: bfo:0000040
+DataProperty: sdg:temperament
+    Domain: bfo:0000004
+DataProperty: sdg:temperamentScore
+    Domain: bfo:0000015
+DataProperty: sdg:temperatureCelsius
+    Domain: bfo:0000015
+DataProperty: sdg:temperatureMax
+    Domain: bfo:0000015
+DataProperty: sdg:temperatureMin
+    Domain: bfo:0000015
+DataProperty: sdg:temporaryPassword
+    Domain: cco:ont00000995
+DataProperty: sdg:tenToFourteenPercentage
+    Domain: cco:ont00000958
+DataProperty: sdg:tensileStrength
+    Domain: cco:ont00000995
+DataProperty: sdg:tensionLevel
+    Domain: bfo:0000040
+DataProperty: sdg:tenureYears
+    Domain: bfo:0000015
+DataProperty: sdg:termLengthYears
+    Domain: bfo:0000015
+DataProperty: sdg:termName
+    Domain: bfo:0000002
+ObjectProperty: sdg:termType
+    Domain: bfo:0000002
+ObjectProperty: sdg:terminatedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:terminationState
+    Domain: cco:ont00000995
+DataProperty: sdg:territory
+    Domain: cco:ont00000958
+DataProperty: sdg:territoryId
+    Domain: bfo:0000002
+DataProperty: sdg:territoryIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:testAmbientTemperature
+    Domain: cco:ont00000995
+DataProperty: sdg:testCondition
+    Domain: cco:ont00000995
+DataProperty: sdg:testConditionDescription
+    Domain: cco:ont00000995
+DataProperty: sdg:testEnvironment
+    Domain: bfo:0000015
+DataProperty: sdg:testFormat
+    Domain: bfo:0000040
+DataProperty: sdg:testIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:testName
+    Domain: bfo:0000040
+DataProperty: sdg:testPrepId
+    Domain: bfo:0000040
+DataProperty: sdg:testPrepName
+    Domain: bfo:0000040
+DataProperty: sdg:testSheetId
+    Domain: cco:ont00000995
+DataProperty: sdg:testSpecification
+    Domain: cco:ont00000995
+DataProperty: sdg:testSubjectGroup
+    Domain: bfo:0000015
+ObjectProperty: sdg:testType
+    Domain: bfo:0000015
+DataProperty: sdg:testYear
+    Domain: bfo:0000015
+DataProperty: sdg:testatorName
+    Domain: cco:ont00000958
+ObjectProperty: sdg:testedIn
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:testedOnOrganism
+    Domain: bfo:0000040
+DataProperty: sdg:testimonial
+    Domain: bfo:0000015
+DataProperty: sdg:testingCenter
+    Domain: bfo:0000015
+ObjectProperty: sdg:tests
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:testsConcept
+    Range: bfo:0000015
+ObjectProperty: sdg:testsSubstanceOn
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:textContent
+    Domain: cco:ont00000995
+DataProperty: sdg:textExcerpt
+    Domain: cco:ont00000995
+DataProperty: sdg:textId
+    Domain: cco:ont00000995
+DataProperty: sdg:textKeyword
+    Domain: bfo:0000015
+DataProperty: sdg:textualUnitGranularity
+    Domain: cco:ont00000995
+DataProperty: sdg:thematicArea
+    Domain: cco:ont00000995
+DataProperty: sdg:themeId
+    Domain: bfo:0000040
+DataProperty: sdg:theoreticalFocus
+    Domain: bfo:0000015
+DataProperty: sdg:theoreticalInsertionLoss
+    Domain: cco:ont00000995
+DataProperty: sdg:theoreticalPerspective
+    Domain: bfo:0000002
+DataProperty: sdg:therapeuticClass
+    Domain: cco:ont00000995
+DataProperty: sdg:therapeuticIndication
+    Domain: cco:ont00000995
+DataProperty: sdg:thermalConductivity
+    Domain: bfo:0000040
+DataProperty: sdg:thermalSolution
+    Domain: cco:ont00000995
+DataProperty: sdg:thirdPartyProvider
+    Domain: cco:ont00000995
+DataProperty: sdg:threatCategory
+    Domain: bfo:0000004
+DataProperty: sdg:threatIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:threatType
+    Domain: bfo:0000015
+ObjectProperty: sdg:threatens
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:threatensCryptosystem
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:thresholdAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:thresholdCurrent
+    Domain: cco:ont00000995
+DataProperty: sdg:thresholdExceeded
+    Domain: cco:ont00000995
+DataProperty: sdg:thresholdUtilization
+    Domain: bfo:0000015
+DataProperty: sdg:thresholdValue
+    Domain: bfo:0000015
+DataProperty: sdg:tier
+    Domain: cco:ont00000995
+DataProperty: sdg:tierLevel
+    Domain: cco:ont00000995
+ObjectProperty: sdg:timeHorizon
+    Domain: bfo:0000015
+DataProperty: sdg:timeLimitSeconds
+    Domain: bfo:0000015
+DataProperty: sdg:timePeriod
+    Domain: bfo:0000002
+DataProperty: sdg:timeScale
+    Domain: bfo:0000015
+DataProperty: sdg:timeZone
+    Domain: bfo:0000004
+DataProperty: sdg:timeframe
+    Domain: cco:ont00000958
+DataProperty: sdg:timezone
+    Domain: cco:ont00000995
+DataProperty: sdg:tireHeight
+    Domain: cco:ont00000995
+DataProperty: sdg:tireModel
+    Domain: cco:ont00000995
+DataProperty: sdg:tireWidth
+    Domain: cco:ont00000995
+DataProperty: sdg:tissueId
+    Domain: cco:ont00000995
+DataProperty: sdg:tissueSitesAffected
+    Domain: bfo:0000015
+ObjectProperty: sdg:tissueType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:tldIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:tlsVersion
+    Domain: bfo:0000040
+DataProperty: sdg:todId
+    Domain: bfo:0000015
+DataProperty: sdg:toleranceLevel
+    Domain: cco:ont00000995
+DataProperty: sdg:tolerancePercentage
+    Domain: bfo:0000015
+ObjectProperty: sdg:tookPlaceIn
+    Domain: bfo:0000015
+    Range: bfo:0000040
+DataProperty: sdg:toolID
+    Domain: cco:ont00000995
+DataProperty: sdg:toolIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:toolNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:toolStatus
+    Domain: bfo:0000040
+ObjectProperty: sdg:toolType
+    Domain: cco:ont00000995
+DataProperty: sdg:toolUsed
+    Domain: bfo:0000015
+DataProperty: sdg:toothCount
+    Domain: cco:ont00000995
+DataProperty: sdg:topWaitEvent
+    Domain: cco:ont00000995
+DataProperty: sdg:topicArea
+    Domain: cco:ont00000995
+DataProperty: sdg:topicCategory
+    Domain: bfo:0000015
+DataProperty: sdg:topicCode
+    Domain: bfo:0000040
+DataProperty: sdg:topicIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:topicTheme
+    Domain: bfo:0000015
+DataProperty: sdg:topography
+    Domain: bfo:0000040
+DataProperty: sdg:toppingId
+    Domain: cco:ont00000995
+DataProperty: sdg:totalAUM
+    Domain: bfo:0000040
+DataProperty: sdg:totalActiveAccounts
+    Domain: cco:ont00000958
+DataProperty: sdg:totalAgriculturalAcreage
+    Domain: bfo:0000004
+DataProperty: sdg:totalAgriculturalAssets
+    Domain: bfo:0000040
+DataProperty: sdg:totalAllocation
+    Domain: bfo:0000016
+DataProperty: sdg:totalAmount
+    Domain: cco:ont00000995
+DataProperty: sdg:totalAreaAcres
+    Domain: bfo:0000040
+DataProperty: sdg:totalAreaHectares
+    Domain: bfo:0000004
+DataProperty: sdg:totalAreaSqFt
+    Domain: bfo:0000040
+DataProperty: sdg:totalAssets
+    Domain: bfo:0000040
+DataProperty: sdg:totalAssetsUSD
+    Domain: cco:ont00000995
+DataProperty: sdg:totalAssetsUnderManagement
+    Domain: bfo:0000040
+DataProperty: sdg:totalAttendance
+    Domain: bfo:0000015
+DataProperty: sdg:totalAudience
+    Domain: cco:ont00000995
+DataProperty: sdg:totalAuthors
+    Domain: bfo:0000023
+DataProperty: sdg:totalBudget
+    Domain: bfo:0000015
+DataProperty: sdg:totalCalls
+    Domain: cco:ont00000995
+DataProperty: sdg:totalCampusAreaAcres
+    Domain: bfo:0000040
+DataProperty: sdg:totalCandidates
+    Domain: bfo:0000015
+DataProperty: sdg:totalCapacity
+    Domain: bfo:0000015
+DataProperty: sdg:totalCapacityGB
+    Domain: cco:ont00000995
+DataProperty: sdg:totalCapitalDeployed
+    Domain: cco:ont00000995
+DataProperty: sdg:totalCertificates
+    Domain: cco:ont00000995
+DataProperty: sdg:totalChapters
+    Domain: cco:ont00000995
+DataProperty: sdg:totalChargeAmount
+    Domain: bfo:0000040
+DataProperty: sdg:totalComputeNodes
+    Domain: bfo:0000004
+DataProperty: sdg:totalConstructiveLoss
+    Domain: cco:ont00000995
+DataProperty: sdg:totalContributed
+    Domain: bfo:0000040
+DataProperty: sdg:totalCorridorLengthKm
+    Domain: cco:ont00000995
+DataProperty: sdg:totalCount
+    Domain: bfo:0000002
+DataProperty: sdg:totalCountiesResponded
+    Domain: cco:ont00000995
+DataProperty: sdg:totalCreditHoursRequired
+    Domain: cco:ont00000995
+DataProperty: sdg:totalCredits
+    Domain: bfo:0000040
+DataProperty: sdg:totalCreditsEarned
+    Domain: bfo:0000040
+DataProperty: sdg:totalDevicesAtSite
+    Domain: bfo:0000040
+DataProperty: sdg:totalDonationAmount
+    Domain: bfo:0000015
+DataProperty: sdg:totalDonationsReceived
+    Domain: bfo:0000040
+DataProperty: sdg:totalDurationSeconds
+    Domain: bfo:0000040
+DataProperty: sdg:totalEligiblePatients
+    Domain: bfo:0000040
+DataProperty: sdg:totalEmployees
+    Domain: bfo:0000015
+DataProperty: sdg:totalEnrollment
+    Domain: bfo:0000040
+DataProperty: sdg:totalEnterprises
+    Domain: bfo:0000015
+DataProperty: sdg:totalFees
+    Domain: cco:ont00000958
+DataProperty: sdg:totalFloorArea
+    Domain: cco:ont00000958
+DataProperty: sdg:totalFloors
+    Domain: bfo:0000015
+DataProperty: sdg:totalFrames
+    Domain: bfo:0000040
+DataProperty: sdg:totalFundingDistributed
+    Domain: bfo:0000040
+DataProperty: sdg:totalFundingUSD
+    Domain: cco:ont00000995
+DataProperty: sdg:totalGlycerinMax
+    Domain: cco:ont00000995
+DataProperty: sdg:totalGrossPay
+    Domain: cco:ont00000995
+DataProperty: sdg:totalGuaranteeIssuance
+    Domain: cco:ont00000958
+DataProperty: sdg:totalHeight
+    Domain: cco:ont00000958
+DataProperty: sdg:totalIncurredClaims
+    Domain: cco:ont00000995
+DataProperty: sdg:totalInterviewScore
+    Domain: bfo:0000015
+DataProperty: sdg:totalInvested
+    Domain: bfo:0000004
+DataProperty: sdg:totalInvestment
+    Domain: bfo:0000004
+DataProperty: sdg:totalLandHeld
+    Domain: bfo:0000004
+DataProperty: sdg:totalLength
+    Domain: bfo:0000002
+DataProperty: sdg:totalLevels
+    Domain: cco:ont00000995
+DataProperty: sdg:totalMaxPoints
+    Domain: bfo:0000040
+DataProperty: sdg:totalMemberAreas
+    Domain: cco:ont00000995
+DataProperty: sdg:totalPageViews
+    Domain: cco:ont00000995
+DataProperty: sdg:totalParticipants
+    Domain: bfo:0000002
+DataProperty: sdg:totalPermitFeesCollected
+    Domain: bfo:0000002
+DataProperty: sdg:totalPopulationCount
+    Domain: cco:ont00000958
+DataProperty: sdg:totalPrice
+    Domain: cco:ont00000995
+DataProperty: sdg:totalPrinciples
+    Domain: cco:ont00000958
+DataProperty: sdg:totalProceeds
+    Domain: bfo:0000015
+DataProperty: sdg:totalProjectedExpenditure
+    Domain: bfo:0000040
+DataProperty: sdg:totalQuantity
+    Domain: cco:ont00000995
+DataProperty: sdg:totalQuestions
+    Domain: bfo:0000015
+DataProperty: sdg:totalReached
+    Domain: cco:ont00000995
+DataProperty: sdg:totalRecords
+    Domain: bfo:0000015
+DataProperty: sdg:totalRegisteredNames
+    Domain: cco:ont00000995
+DataProperty: sdg:totalRequiredCredits
+    Domain: bfo:0000015
+DataProperty: sdg:totalRespondents
+    Domain: cco:ont00000958
+DataProperty: sdg:totalScoreWeight
+    Domain: bfo:0000015
+DataProperty: sdg:totalSharesIssued
+    Domain: cco:ont00000995
+DataProperty: sdg:totalSharesRepresented
+    Domain: bfo:0000015
+DataProperty: sdg:totalSocialEnterprises
+    Domain: bfo:0000040
+DataProperty: sdg:totalStoreCount
+    Domain: cco:ont00000995
+DataProperty: sdg:totalStudentsServed
+    Domain: cco:ont00000958
+DataProperty: sdg:totalTeachers
+    Domain: cco:ont00000995
+DataProperty: sdg:totalTimeUsed
+    Domain: bfo:0000015
+DataProperty: sdg:totalUniqueVisitors
+    Domain: cco:ont00000995
+DataProperty: sdg:totalValueUSD
+    Domain: cco:ont00000995
+DataProperty: sdg:totalVerses
+    Domain: cco:ont00000995
+DataProperty: sdg:totalVisits
+    Domain: cco:ont00000958
+DataProperty: sdg:totalVolume
+    Domain: cco:ont00000995
+DataProperty: sdg:totalWagesPaid
+    Domain: bfo:0000002
+DataProperty: sdg:totalWallCount
+    Domain: bfo:0000040
+DataProperty: sdg:totalWeight
+    Domain: cco:ont00000995
+DataProperty: sdg:totalWeightedScore
+    Domain: bfo:0000002
+DataProperty: sdg:totalWorkforce
+    Domain: bfo:0000040
+DataProperty: sdg:tournamentId
+    Domain: bfo:0000040
+DataProperty: sdg:tournamentName
+    Domain: bfo:0000040
+DataProperty: sdg:toxicityScore
+    Domain: cco:ont00000995
+DataProperty: sdg:tracerAgent
+    Domain: bfo:0000015
+DataProperty: sdg:trackId
+    Domain: cco:ont00000995
+DataProperty: sdg:trackIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:trackStartOffset
+    Domain: bfo:0000040
+DataProperty: sdg:trackTitle
+    Domain: bfo:0000040
+ObjectProperty: sdg:trackedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:trackedByFramework
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:trackedByWorkstream
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:trackingNumber
+    Domain: cco:ont00000995
+ObjectProperty: sdg:tracks
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:tracksAsset
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:tracksAthletePerformance
+    Range: bfo:0000003
+ObjectProperty: sdg:tracksBenchmark
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:tracksMetric
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:tradeCategory
+    Domain: cco:ont00000995
+DataProperty: sdg:tradeDate
+    Domain: bfo:0000015
+DataProperty: sdg:tradeIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:tradeRoute
+    Domain: bfo:0000015
+DataProperty: sdg:tradeType
+    Domain: bfo:0000015
+ObjectProperty: sdg:tradedIn
+    Range: bfo:0000002
+ObjectProperty: sdg:tradedInTransaction
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:tradedTo
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:traderId
+    Domain: bfo:0000015
+DataProperty: sdg:tradingPurpose
+    Domain: bfo:0000015
+DataProperty: sdg:trafficClassId
+    Domain: bfo:0000040
+DataProperty: sdg:trafficSource
+    Domain: cco:ont00000995
+DataProperty: sdg:trailId
+    Domain: cco:ont00000995
+DataProperty: sdg:trailingReturn
+    Domain: cco:ont00000995
+ObjectProperty: sdg:trainedAt
+    Domain: bfo:0000023
+    Range: cco:ont00000958
+ObjectProperty: sdg:trainedBy
+    Range: cco:ont00000995
+ObjectProperty: sdg:trainedIn
+    Domain: bfo:0000002
+ObjectProperty: sdg:trainedOn
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:trainedProfessional
+    Domain: cco:ont00000958
+    Range: bfo:0000023
+DataProperty: sdg:trainerId
+    Domain: bfo:0000015
+DataProperty: sdg:trainingCommitment
+    Domain: cco:ont00000995
+DataProperty: sdg:trainingCompleted
+    Domain: bfo:0000015
+DataProperty: sdg:trainingData
+    Domain: cco:ont00000995
+DataProperty: sdg:trainingDate
+    Domain: cco:ont00000995
+DataProperty: sdg:trainingTypeCode
+    Domain: cco:ont00000995
+DataProperty: sdg:trainingTypeName
+    Domain: cco:ont00000995
+DataProperty: sdg:traitId
+    Domain: bfo:0000016
+DataProperty: sdg:traitName
+    Domain: bfo:0000016
+DataProperty: sdg:transactionType
+    Domain: bfo:0000015
+DataProperty: sdg:transferDate
+    Domain: bfo:0000015
+DataProperty: sdg:transferId
+    Domain: bfo:0000015
+DataProperty: sdg:transferIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:transferRate
+    Domain: cco:ont00000958
+DataProperty: sdg:transferReason
+    Domain: cco:ont00000995
+DataProperty: sdg:transferStatus
+    Domain: bfo:0000040
+DataProperty: sdg:transferValue
+    Domain: bfo:0000015
+ObjectProperty: sdg:transferredFrom
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:transfers
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:transfersApplication
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:transfers_health_record_data
+    Range: bfo:0000002
+DataProperty: sdg:transformerIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:transforms
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:transformsIngredient
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:transitionId
+    Domain: bfo:0000015
+DataProperty: sdg:transitionRelationId
+    Domain: bfo:0000015
+ObjectProperty: sdg:transitionType
+    Domain: bfo:0000015
+ObjectProperty: sdg:transitionsTo
+    Domain: bfo:0000002
+    Range: bfo:0000002
+ObjectProperty: sdg:translatesTo
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:translationStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:transmissionMedium
+    Domain: bfo:0000015
+DataProperty: sdg:transmissionMethod
+    Domain: bfo:0000015
+DataProperty: sdg:transmissionRoute
+    Domain: bfo:0000002
+DataProperty: sdg:transmissionType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:transmits
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:transmitsDownlinkTo
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:transmitsPathogen
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:transmitsToProvider
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:transmittedBy
+    Range: cco:ont00000995
+DataProperty: sdg:transportLayer
+    Domain: bfo:0000040
+ObjectProperty: sdg:transportSpeed
+    Domain: bfo:0000015
+ObjectProperty: sdg:transportationAccess
+    Domain: bfo:0000015
+ObjectProperty: sdg:transports
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:traumaHistory
+    Domain: bfo:0000040
+DataProperty: sdg:traumaLevel
+    Domain: bfo:0000040
+DataProperty: sdg:travelPurpose
+    Domain: cco:ont00000995
+ObjectProperty: sdg:traversedBy
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:treatedArea
+    Domain: bfo:0000015
+ObjectProperty: sdg:treatedAt
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:treatedBy
+    Domain: cco:ont00000995
+ObjectProperty: sdg:treatedByDrug
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:treatedWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:treatmentGroup
+    Domain: cco:ont00000995
+DataProperty: sdg:treatmentStartCount
+    Domain: cco:ont00000995
+DataProperty: sdg:treatmentStatus
+    Domain: bfo:0000015
+ObjectProperty: sdg:treats
+    Range: cco:ont00000995
+ObjectProperty: sdg:treatsCondition
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:treatsPathogen
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:treatsSubstance
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+DataProperty: sdg:trendDirection
+    Domain: bfo:0000015
+DataProperty: sdg:trialId
+    Domain: bfo:0000015
+DataProperty: sdg:trialIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:triangleIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:tribeName
+    Domain: bfo:0000002
+DataProperty: sdg:triggerCondition
+    Domain: bfo:0000015
+DataProperty: sdg:triggerEventId
+    Domain: cco:ont00000995
+DataProperty: sdg:triggerSource
+    Domain: bfo:0000023
+DataProperty: sdg:triggerType
+    Domain: bfo:0000015
+ObjectProperty: sdg:triggered
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:triggeredBy
+    Domain: bfo:0000015
+ObjectProperty: sdg:triggeredByAssessment
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:triggeredByBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:triggeredByPlacement
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:triggeredLateFee
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:triggeringClinicalEvent
+    Domain: bfo:0000015
+DataProperty: sdg:triggeringTransactionId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:triggers
+    Domain: bfo:0000015
+ObjectProperty: sdg:triggersAssessment
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:triggersDisbursement
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:triggersInvestigation
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:triggersRecordTransmission
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:triggersRemedy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:triggersReminder
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+ObjectProperty: sdg:triggersReport
+    Domain: bfo:0000004
+    Range: cco:ont00000995
+ObjectProperty: sdg:triggersReporting
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:triggersReview
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:triggersRiskAssessment
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:triggersService
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:triggersSummaryTransfer
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+DataProperty: sdg:trimLevel
+    Domain: cco:ont00000995
+ObjectProperty: sdg:troubleshoots
+    Domain: bfo:0000040
+    Range: bfo:0000002
+DataProperty: sdg:trueValue
+    Domain: bfo:0000015
+DataProperty: sdg:trustId
+    Domain: cco:ont00000995
+DataProperty: sdg:trustIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:trustLevel
+    Domain: bfo:0000004
+DataProperty: sdg:trustName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:trustType
+    Domain: cco:ont00000995
+ObjectProperty: sdg:tuitionPolicy
+    Domain: bfo:0000040
+DataProperty: sdg:tumorIncidence
+    Domain: bfo:0000015
+DataProperty: sdg:turbineIdentifier
+    Domain: bfo:0000004
+DataProperty: sdg:turnDownConfiguration
+    Domain: cco:ont00000995
+DataProperty: sdg:turnoverChange
+    Domain: bfo:0000015
+DataProperty: sdg:turnsRatio
+    Domain: cco:ont00000995
+DataProperty: sdg:typeCode
+    Domain: cco:ont00000995
+DataProperty: sdg:typeId
+    Domain: bfo:0000015
+DataProperty: sdg:typeName
+    Domain: bfo:0000015
+DataProperty: sdg:ubiquitousInVertebrates
+    Domain: bfo:0000040
+DataProperty: sdg:ultimateGoal
+    Domain: bfo:0000015
+DataProperty: sdg:unDatabaseListed
+    Domain: bfo:0000002
+DataProperty: sdg:unadjustedBasisOfProperty
+    Domain: bfo:0000002
+DataProperty: sdg:uncertaintyUnit
+    Domain: bfo:0000015
+DataProperty: sdg:underFivePercentage
+    Domain: cco:ont00000958
+ObjectProperty: sdg:undergoes
+    Range: bfo:0000015
+ObjectProperty: sdg:undergoesMaintenance
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:undergoesReview
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:undergoesTransition
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:undergoesTreatment
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:underlyingFundIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:underlyingFundName
+    Domain: cco:ont00000995
+ObjectProperty: sdg:underpinsMathematicalReasoning
+    Domain: bfo:0000015
+    Range: cco:ont00000653
+DataProperty: sdg:underrepresentedPercentage
+    Domain: cco:ont00000958
+ObjectProperty: sdg:undertakenBy
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:undertakesActivity
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:underwriter
+    Domain: cco:ont00000995
+DataProperty: sdg:underwriterIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:undiagnosedCount
+    Domain: bfo:0000002
+DataProperty: sdg:unionName
+    Domain: cco:ont00000958
+DataProperty: sdg:uniprotAccession
+    Domain: cco:ont00000995
+DataProperty: sdg:uniqueVisitors
+    Domain: cco:ont00000995
+DataProperty: sdg:unitCount
+    Domain: bfo:0000004
+DataProperty: sdg:unitID
+    Domain: bfo:0000040
+DataProperty: sdg:unitOfMeasurement
+    Domain: cco:ont00000958
+DataProperty: sdg:unitPrice
+    Domain: cco:ont00000995
+DataProperty: sdg:unitTitle
+    Domain: cco:ont00000995
+ObjectProperty: sdg:unitType
+    Domain: bfo:0000040
+DataProperty: sdg:units
+    Domain: bfo:0000040
+DataProperty: sdg:university
+    Domain: bfo:0000040
+DataProperty: sdg:universityCode
+    Domain: bfo:0000040
+ObjectProperty: sdg:updatedBy
+    Domain: cco:ont00000958
+    Range: bfo:0000015
+ObjectProperty: sdg:updates
+    Domain: bfo:0000015
+    Range: cco:ont00000958
+DataProperty: sdg:uploadDate
+    Domain: cco:ont00000958
+DataProperty: sdg:upperBound
+    Domain: bfo:0000015
+DataProperty: sdg:upperDivisionCreditsRequired
+    Domain: bfo:0000015
+DataProperty: sdg:upperLimit
+    Domain: bfo:0000040
+DataProperty: sdg:uptime
+    Domain: bfo:0000040
+DataProperty: sdg:urea
+    Domain: cco:ont00000995
+DataProperty: sdg:uricAcid
+    Domain: cco:ont00000995
+DataProperty: sdg:urlOrEndpoint
+    Domain: cco:ont00000995
+DataProperty: sdg:usabilityScore
+    Domain: bfo:0000015
+DataProperty: sdg:usageContext
+    Domain: cco:ont00000995
+DataProperty: sdg:usageFrequency
+    Domain: cco:ont00000995
+DataProperty: sdg:usagePeriod
+    Domain: cco:ont00000995
+ObjectProperty: sdg:usageType
+    Domain: bfo:0000002
+ObjectProperty: sdg:usedAt
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:usedByEmployee
+    Domain: bfo:0000040
+    Range: bfo:0000023
+ObjectProperty: sdg:usedByFund
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:usedByUnderlyingFund
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usedDevice
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:usedForAudio
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:usedForParameter
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:usedForQuantitativeAnalysis
+    Domain: cco:ont00000995
+    Range: cco:ont00000353
+ObjectProperty: sdg:usedForService
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:usedForStandardizedEvaluation
+    Range: cco:ont00000636
+ObjectProperty: sdg:usedForStudy
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usedForVerificationOf
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usedInActivity
+    Domain: bfo:0000040
+ObjectProperty: sdg:usedInAppointment
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usedInAward
+    Domain: bfo:0000015
+ObjectProperty: sdg:usedInCalculationOf
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:usedInEnergySimulation
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:usedInEvent
+    Range: bfo:0000015
+ObjectProperty: sdg:usedInFormulation
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usedInInterviewFor
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:usedInLawsuit
+    Domain: cco:ont00000958
+    Range: bfo:0000040
+ObjectProperty: sdg:usedInMenuItem
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:usedInObservation
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:usedInProcessing
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:usedInProgram
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+ObjectProperty: sdg:usedInProject
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:usedInReport
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:usedInTransaction
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:usedInstrument
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:usedOn
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:usedToMeasure
+    Domain: bfo:0000015
+    Range: bfo:0000016
+ObjectProperty: sdg:usedWith
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:used_for
+    Range: bfo:0000003
+DataProperty: sdg:userAgent
+    Domain: bfo:0000015
+DataProperty: sdg:userName
+    Domain: bfo:0000002
+ObjectProperty: sdg:userRole
+    Domain: bfo:0000002
+    Range: bfo:0000023
+DataProperty: sdg:userType
+    Domain: bfo:0000002
+ObjectProperty: sdg:usesAssessment
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:usesAssumption
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesAuthentication
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:usesAuthenticationMethod
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:usesBaseData
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesBuildingMaterial
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:usesControl
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:usesDataChannel
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:usesDevice
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesDocument
+    Domain: bfo:0000015
+    Range: bfo:0000002
+ObjectProperty: sdg:usesEncryptionKey
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:usesEnergySimulationData
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:usesFiberType
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesFormulation
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesImplant
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:usesInfrastructure
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:usesInput
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:usesInterviewQuestions
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesLubricant
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesMechanism
+    Domain: bfo:0000040
+    Range: bfo:0000015
+ObjectProperty: sdg:usesMechanismOfAction
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:usesMethod
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesNetwork
+    Range: cco:ont00000700
+ObjectProperty: sdg:usesNonDieselPowerSource
+    Range: cco:ont00000477
+ObjectProperty: sdg:usesPlatform
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesProtocol
+    Domain: bfo:0000040
+    Range: cco:ont00000958
+ObjectProperty: sdg:usesQKD
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:usesQubitType
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+ObjectProperty: sdg:usesResources
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:usesRig
+    Domain: bfo:0000002
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesRoute
+    Domain: cco:ont00000995
+    Range: bfo:0000015
+DataProperty: sdg:usesSTARMethod
+    Domain: cco:ont00000995
+ObjectProperty: sdg:usesScript
+    Domain: cco:ont00000995
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesSoftware
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesSoundtrack
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:usesSpace
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+ObjectProperty: sdg:usesStorage
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:usesSystem
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesTelescope
+    Domain: bfo:0000015
+    Range: bfo:0000040
+ObjectProperty: sdg:usesTextbook
+    Domain: bfo:0000040
+    Range: cco:ont00000995
+ObjectProperty: sdg:usesTool
+    Domain: bfo:0000004
+    Range: bfo:0000040
+ObjectProperty: sdg:usesTrackingTool
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:usesVessel
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:uses_communication_medium
+    Range: cco:ont00000907
+DataProperty: sdg:utilityAccess
+    Domain: bfo:0000023
+DataProperty: sdg:utilizationRate
+    Domain: cco:ont00000995
+ObjectProperty: sdg:utilizesAnalyticTool
+    Range: cco:ont00000995
+ObjectProperty: sdg:utilizesOfflineMedia
+    Range: cco:ont00000859
+ObjectProperty: sdg:utilizesOnlineMedia
+    Range: cco:ont00001183
+ObjectProperty: sdg:utilizesPlatform
+    Range: bfo:0000002
+ObjectProperty: sdg:utilizesProcedure
+    Domain: bfo:0000015
+DataProperty: sdg:utteranceId
+    Domain: bfo:0000015
+ObjectProperty: sdg:utters
+    Domain: bfo:0000002
+    Range: bfo:0000015
+DataProperty: sdg:vacationPeriods
+    Domain: bfo:0000015
+ObjectProperty: sdg:validForService
+    Domain: bfo:0000023
+    Range: cco:ont00000995
+DataProperty: sdg:validTo
+    Domain: cco:ont00000995
+DataProperty: sdg:validUntilDate
+    Domain: cco:ont00000958
+ObjectProperty: sdg:validatedBy
+    Domain: bfo:0000015
+    Range: bfo:0000015
+ObjectProperty: sdg:validates
+    Domain: bfo:0000015
+ObjectProperty: sdg:validatesWorker
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:validationStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:validityDate
+    Domain: bfo:0000015
+DataProperty: sdg:validityPeriodMonths
+    Domain: bfo:0000015
+DataProperty: sdg:valuationFunctionId
+    Domain: bfo:0000015
+DataProperty: sdg:valueDescription
+    Domain: bfo:0000040
+DataProperty: sdg:valueRangeLowerBound
+    Domain: cco:ont00000995
+DataProperty: sdg:valueRangeUpperBound
+    Domain: cco:ont00000995
+ObjectProperty: sdg:valveLocation
+    Domain: cco:ont00000995
+DataProperty: sdg:variableIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:variableName
+    Domain: bfo:0000015
+DataProperty: sdg:variableType
+    Domain: bfo:0000015
+DataProperty: sdg:variantId
+    Domain: cco:ont00000995
+DataProperty: sdg:variantIdentifier
+    Domain: cco:ont00000995
+ObjectProperty: sdg:variantOf
+    Domain: cco:ont00000995
+    Range: bfo:0000040
+DataProperty: sdg:varietyId
+    Domain: cco:ont00000995
+DataProperty: sdg:varietyName
+    Domain: cco:ont00000995
+DataProperty: sdg:vehicleClassCode
+    Domain: cco:ont00000995
+DataProperty: sdg:vehicleCount
+    Domain: bfo:0000040
+DataProperty: sdg:vehicleId
+    Domain: cco:ont00000958
+DataProperty: sdg:vehicleIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:vehicleMake
+    Domain: cco:ont00000995
+DataProperty: sdg:vehicleType
+    Domain: bfo:0000040
+DataProperty: sdg:vendor
+    Domain: cco:ont00000995
+DataProperty: sdg:vendorId
+    Domain: cco:ont00000995
+DataProperty: sdg:vendorName
+    Domain: cco:ont00000995
+DataProperty: sdg:ventilation
+    Domain: cco:ont00000995
+DataProperty: sdg:venue
+    Domain: bfo:0000015
+DataProperty: sdg:venueAddress
+    Domain: bfo:0000015
+DataProperty: sdg:venueCity
+    Domain: cco:ont00000995
+DataProperty: sdg:venueIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:venueRoom
+    Domain: bfo:0000015
+ObjectProperty: sdg:venueType
+    Domain: bfo:0000015
+DataProperty: sdg:verificationId
+    Domain: bfo:0000040
+DataProperty: sdg:verificationRequired
+    Domain: cco:ont00000995
+DataProperty: sdg:verifiedAverage
+    Domain: bfo:0000040
+ObjectProperty: sdg:verifiesComplianceWith
+    Range: bfo:0000002
+ObjectProperty: sdg:verifiesConformityTo
+    Domain: cco:ont00000958
+    Range: cco:ont00000958
+ObjectProperty: sdg:verifiesDeclaration
+    Domain: bfo:0000004
+    Range: bfo:0000002
+ObjectProperty: sdg:verifiesFor
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:verifiesMinor
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:verifies_compliance
+    Range: cco:ont00000575
+DataProperty: sdg:verseEnd
+    Domain: cco:ont00000995
+DataProperty: sdg:verseNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:verseRange
+    Domain: cco:ont00000995
+DataProperty: sdg:verseStart
+    Domain: cco:ont00000995
+ObjectProperty: sdg:verticalDivisionType
+    Domain: bfo:0000040
+DataProperty: sdg:vesselId
+    Domain: cco:ont00000995
+ObjectProperty: sdg:vesselStatus
+    Domain: cco:ont00000995
+DataProperty: sdg:victimId
+    Domain: bfo:0000002
+ObjectProperty: sdg:viewedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:viewsFactSheet
+    Domain: cco:ont00000995
+    Range: bfo:0000002
+DataProperty: sdg:vin
+    Domain: cco:ont00000958
+DataProperty: sdg:vineyardId
+    Domain: bfo:0000040
+DataProperty: sdg:vineyardSource
+    Domain: bfo:0000040
+DataProperty: sdg:vintage
+    Domain: bfo:0000040
+ObjectProperty: sdg:violatedBy
+    Domain: bfo:0000040
+    Range: bfo:0000040
+DataProperty: sdg:violationCode
+    Domain: cco:ont00000995
+DataProperty: sdg:violationCount
+    Domain: cco:ont00000995
+DataProperty: sdg:violationId
+    Domain: bfo:0000015
+DataProperty: sdg:violationIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:violationTimestamp
+    Domain: bfo:0000015
+ObjectProperty: sdg:violationType
+    Domain: bfo:0000015
+DataProperty: sdg:visaStatus
+    Domain: bfo:0000002
+DataProperty: sdg:viscosityGrade
+    Domain: cco:ont00000995
+DataProperty: sdg:visibilityLevel
+    Domain: bfo:0000015
+ObjectProperty: sdg:visionLevel
+    Domain: bfo:0000040
+DataProperty: sdg:visionStatement
+    Domain: bfo:0000002
+DataProperty: sdg:visitTimestamp
+    Domain: cco:ont00000995
+DataProperty: sdg:visualAcuity
+    Domain: bfo:0000015
+DataProperty: sdg:visualCue
+    Domain: bfo:0000015
+DataProperty: sdg:visualEvokedPotentials
+    Domain: bfo:0000015
+DataProperty: sdg:visualField
+    Domain: bfo:0000015
+DataProperty: sdg:visualImpact
+    Domain: cco:ont00000995
+ObjectProperty: sdg:visualizes
+    Domain: bfo:0000015
+    Range: bfo:0000015
+DataProperty: sdg:vocalizationMode
+    Domain: bfo:0000015
+DataProperty: sdg:voltage
+    Domain: cco:ont00000995
+DataProperty: sdg:voltageRating
+    Domain: bfo:0000015
+DataProperty: sdg:volumeBarrels
+    Domain: bfo:0000015
+DataProperty: sdg:volumeBpd
+    Domain: cco:ont00000995
+DataProperty: sdg:volumeOz
+    Domain: bfo:0000040
+DataProperty: sdg:volumeResistance
+    Domain: cco:ont00000995
+DataProperty: sdg:volumeThousandCubicFeet
+    Domain: bfo:0000015
+DataProperty: sdg:volumeTonnes
+    Domain: bfo:0000015
+DataProperty: sdg:volumeTonnesCO2
+    Domain: bfo:0000040
+DataProperty: sdg:volunteerCount
+    Domain: bfo:0000002
+DataProperty: sdg:volunteerTime
+    Domain: bfo:0000040
+DataProperty: sdg:voteCount
+    Domain: bfo:0000015
+DataProperty: sdg:voteResult
+    Domain: bfo:0000015
+DataProperty: sdg:votingRecord
+    Domain: bfo:0000023
+DataProperty: sdg:votingRights
+    Domain: cco:ont00000995
+DataProperty: sdg:votingRightsPerShare
+    Domain: cco:ont00000995
+ObjectProperty: sdg:votingRightsStatus
+    Domain: bfo:0000002
+DataProperty: sdg:voucherId
+    Domain: cco:ont00000995
+DataProperty: sdg:vpnRequired
+    Domain: bfo:0000040
+DataProperty: sdg:vswr
+    Domain: cco:ont00000995
+DataProperty: sdg:vulnerabilityIndex
+    Domain: bfo:0000015
+DataProperty: sdg:vulnerabilityType
+    Domain: bfo:0000040
+DataProperty: sdg:vulnerableStatus
+    Domain: bfo:0000002
+DataProperty: sdg:wageLimit
+    Domain: bfo:0000015
+DataProperty: sdg:waiverDate
+    Domain: bfo:0000002
+DataProperty: sdg:waiverId
+    Domain: bfo:0000002
+DataProperty: sdg:waiverType
+    Domain: cco:ont00000995
+DataProperty: sdg:waivesRightToSue
+    Domain: cco:ont00000958
+DataProperty: sdg:wallArea
+    Domain: bfo:0000040
+DataProperty: sdg:wallHeight
+    Domain: bfo:0000040
+DataProperty: sdg:wallIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:wallThicknessMin
+    Domain: cco:ont00000995
+DataProperty: sdg:wallType
+    Domain: bfo:0000040
+ObjectProperty: sdg:warningMethod
+    Domain: bfo:0000015
+DataProperty: sdg:warrantyExpiry
+    Domain: cco:ont00000995
+ObjectProperty: sdg:wasEnrolledAt
+    Domain: bfo:0000004
+    Range: bfo:0000004
+ObjectProperty: sdg:wasMemberOf
+    Domain: bfo:0000004
+    Range: bfo:0000002
+DataProperty: sdg:wasteCapacityTonsPerDay
+    Domain: bfo:0000040
+DataProperty: sdg:wasteGenerationRateTonsPerCapita
+    Domain: bfo:0000002
+ObjectProperty: sdg:wasteType
+    Domain: bfo:0000002
+DataProperty: sdg:waterDepth
+    Domain: cco:ont00000995
+DataProperty: sdg:waterIdentifier
+    Domain: bfo:0000002
+DataProperty: sdg:waterQualityIndex
+    Domain: bfo:0000040
+DataProperty: sdg:waterSource
+    Domain: bfo:0000004
+DataProperty: sdg:waterTemperature
+    Domain: bfo:0000015
+DataProperty: sdg:watershedName
+    Domain: bfo:0000040
+DataProperty: sdg:waveId
+    Domain: bfo:0000015
+DataProperty: sdg:waypointId
+    Domain: bfo:0000040
+ObjectProperty: sdg:waypointType
+    Domain: bfo:0000040
+DataProperty: sdg:wealth
+    Domain: bfo:0000040
+DataProperty: sdg:weaponType
+    Domain: bfo:0000040
+DataProperty: sdg:weatherConditions
+    Domain: bfo:0000015
+DataProperty: sdg:websiteId
+    Domain: cco:ont00000995
+DataProperty: sdg:websiteURL
+    Domain: cco:ont00000995
+DataProperty: sdg:weekNumber
+    Domain: cco:ont00000995
+DataProperty: sdg:weeklyWorkingHours
+    Domain: cco:ont00000995
+DataProperty: sdg:weightDistribution
+    Domain: bfo:0000015
+DataProperty: sdg:weightGrams
+    Domain: bfo:0000040
+DataProperty: sdg:weightOz
+    Domain: cco:ont00000995
+DataProperty: sdg:weightUnit
+    Domain: cco:ont00000995
+DataProperty: sdg:weighting
+    Domain: bfo:0000015
+DataProperty: sdg:weightingScheme
+    Domain: cco:ont00000995
+DataProperty: sdg:welfareAndSafeguarding
+    Domain: bfo:0000015
+DataProperty: sdg:wellIdentifier
+    Domain: cco:ont00000995
+DataProperty: sdg:wellType
+    Domain: cco:ont00000995
+DataProperty: sdg:wheelbase
+    Domain: cco:ont00000995
+DataProperty: sdg:whistleblowerId
+    Domain: bfo:0000004
+DataProperty: sdg:whiteBalance
+    Domain: bfo:0000015
+DataProperty: sdg:width
+    Domain: bfo:0000040
+DataProperty: sdg:widthCm
+    Domain: cco:ont00000995
+DataProperty: sdg:widthMm
+    Domain: cco:ont00000995
+DataProperty: sdg:widthYards
+    Domain: bfo:0000040
+DataProperty: sdg:willId
+    Domain: cco:ont00000958
+DataProperty: sdg:wineId
+    Domain: bfo:0000040
+DataProperty: sdg:withdrawalDate
+    Domain: cco:ont00000995
+DataProperty: sdg:withdrawalId
+    Domain: bfo:0000015
+DataProperty: sdg:withdrawalTimestamp
+    Domain: cco:ont00000995
+DataProperty: sdg:withholdingAmount
+    Domain: bfo:0000015
+DataProperty: sdg:withholdingRate
+    Domain: bfo:0000015
+ObjectProperty: sdg:within
+    Domain: bfo:0000023
+DataProperty: sdg:witnessedByPlanRep
+    Domain: cco:ont00000958
+ObjectProperty: sdg:witnesses
+    Domain: bfo:0000023
+    Range: bfo:0000015
+ObjectProperty: sdg:witnessingPolicy
+    Domain: bfo:0000023
+DataProperty: sdg:witnessingRequired
+    Domain: bfo:0000015
+ObjectProperty: sdg:wonAwardIn
+    Domain: bfo:0000023
+    Range: bfo:0000015
+DataProperty: sdg:wordLimit
+    Domain: cco:ont00000995
+DataProperty: sdg:workAddress
+    Domain: cco:ont00000995
+ObjectProperty: sdg:workHistory
+    Domain: cco:ont00000958
+    Range: bfo:0000004
+DataProperty: sdg:workPhone
+    Domain: bfo:0000004
+DataProperty: sdg:workTelephone
+    Domain: bfo:0000040
+ObjectProperty: sdg:workedAt
+    Domain: bfo:0000002
+    Range: bfo:0000002
+DataProperty: sdg:workloadWellbeing
+    Domain: bfo:0000002
+ObjectProperty: sdg:worksAsChef
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:worksAtClinic
+    Domain: bfo:0000040
+    Range: bfo:0000040
+ObjectProperty: sdg:worksAtFacility
+    Domain: bfo:0000002
+    Range: bfo:0000040
+ObjectProperty: sdg:worksAtOutlet
+    Domain: bfo:0000002
+    Range: bfo:0000015
+ObjectProperty: sdg:worksOn
+    Domain: bfo:0000015
+    Range: bfo:0000002
+DataProperty: sdg:workshopId
+    Domain: bfo:0000015
+DataProperty: sdg:workshopTitle
+    Domain: bfo:0000015
+DataProperty: sdg:workstreamId
+    Domain: bfo:0000015
+DataProperty: sdg:workstreamIdentifier
+    Domain: bfo:0000015
+DataProperty: sdg:workstreamTitle
+    Domain: bfo:0000015
+ObjectProperty: sdg:wornBy
+    Domain: cco:ont00000995
+    Range: bfo:0000023
+DataProperty: sdg:wrapId
+    Domain: cco:ont00000995
+DataProperty: sdg:wrapName
+    Domain: cco:ont00000995
+DataProperty: sdg:writeSpeed
+    Domain: cco:ont00000995
+DataProperty: sdg:wrongWayRisk
+    Domain: bfo:0000040
+DataProperty: sdg:x
+    Domain: bfo:0000040
+DataProperty: sdg:xCoordinate
+    Domain: bfo:0000002
+DataProperty: sdg:y
+    Domain: bfo:0000040
+DataProperty: sdg:yCoordinate
+    Domain: bfo:0000002
+DataProperty: sdg:yardage
+    Domain: bfo:0000015
+DataProperty: sdg:yearAwarded
+    Domain: bfo:0000040
+DataProperty: sdg:yearBuilt
+    Domain: bfo:0000040
+DataProperty: sdg:yearEnacted
+    Domain: bfo:0000040
+DataProperty: sdg:yearEnd
+    Domain: bfo:0000040
+DataProperty: sdg:yearFiled
+    Domain: bfo:0000040
+DataProperty: sdg:yearLevel
+    Domain: bfo:0000040
+DataProperty: sdg:yearManufactured
+    Domain: bfo:0000040
+DataProperty: sdg:yearOfTraining
+    Domain: cco:ont00000995
+DataProperty: sdg:yearStart
+    Domain: bfo:0000040
+DataProperty: sdg:yearsActive
+    Domain: bfo:0000040
+DataProperty: sdg:yearsAttended
+    Domain: bfo:0000004
+DataProperty: sdg:yearsEmployed
+    Domain: bfo:0000023
+DataProperty: sdg:yearsInField
+    Domain: bfo:0000002
+DataProperty: sdg:yearsInOperation
+    Domain: bfo:0000040
+DataProperty: sdg:yearsInPractice
+    Domain: bfo:0000002
+DataProperty: sdg:yearsInRole
+    Domain: bfo:0000023
+DataProperty: sdg:yearsPostFellowship
+    Domain: bfo:0000002
+DataProperty: sdg:yieldMetric
+    Domain: cco:ont00000995
+ObjectProperty: sdg:yielded
+    Domain: bfo:0000015
+    Range: cco:ont00000995
+ObjectProperty: sdg:yieldsSample
+    Domain: cco:ont00000995
+    Range: cco:ont00000958
+DataProperty: sdg:youthBoardProportion
+    Domain: bfo:0000002
+DataProperty: sdg:youthID
+    Domain: bfo:0000040
+DataProperty: sdg:youthIdentifier
+    Domain: bfo:0000040
+DataProperty: sdg:zCoordinate
+    Domain: bfo:0000002
+DataProperty: sdg:zoneBoundaryCoordinates
+    Domain: cco:ont00000995
+DataProperty: sdg:zoneElevation
+    Domain: bfo:0000040
+DataProperty: sdg:zoneLength
+    Domain: bfo:0000040
+ObjectProperty: sdg:zoneStatus
+    Domain: bfo:0000040
+DataProperty: sdg:zoneWidth
+    Domain: bfo:0000040
+"""

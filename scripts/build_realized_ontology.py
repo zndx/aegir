@@ -69,6 +69,12 @@ ObjectProperty: bfo:0000197
 # until move 2 re-authors those axioms; verified isolated by scripts/verify_relation_signatures.py
 # (33/33 lint heads + 6 reasoner-only catches).
 import os as _os
+if _os.environ.get("AEGIR_PROPERTY_DOMAINS", "0") == "1":        # STAGED (default OFF):
+    # usage-derived rdfs:domain/range for sdg properties (derive_property_domains.py) —
+    # flips ON only after the unified-realization shakedown exercises the full frame set
+    # at 0 unsat (the #27 arming discipline at property-domain scale).
+    from aegir.ontology.property_domains import DOMAINS_OMN as _DOM
+    NUMERIC_BFO = NUMERIC_BFO + _DOM
 if _os.environ.get("AEGIR_RELATION_SIGNATURES", "1") != "0":     # DEFAULT ON since 2026-07-19:
     # the 39 miscasts are re-authored (UNSAT=0 verified) — signatures now guard every realize.
     from aegir.ontology.relation_signatures import SIGNATURES_OMN as _SIG
