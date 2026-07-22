@@ -88,6 +88,10 @@ def main() -> int:
         subprocess.run(["git", "add", "components/methods/armed_property_domains.omn",
                         "components/methods/armed_property_domains.provenance.json"],
                        cwd=SUB, check=True)
+        staged = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=SUB)
+        if staged.returncode == 0:
+            print("promotion unchanged — nothing to commit (idempotent)")
+            return 0
         msg = (f"methods: armed property domains v1 — {prov['n_armed_domain_lines']} "
                f"certified Domain lines (HermiT 0-unsat · kvasir no-clash; "
                f"{len(prov['demoted'])} demoted, {len(prov['deferred'])} "

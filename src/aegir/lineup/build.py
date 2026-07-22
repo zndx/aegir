@@ -1016,8 +1016,17 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
                       "collections — one passage, one topic; each collection cross-references its "
                       "live spine tables and their column concepts.\n\n" + "\n".join(rows)
                       + f"\n\nAll: {N.wl('collection/index', 'collections')}")
+        terms_body = (
+            "*The chord above IS the released Aperture — the admission surface as shipped "
+            "(substrate: the strategy lens snapshot; arcs labeled by IRI fragment, chords = "
+            "shared constituents). Compare against trunk in scratch — same panel, root-true "
+            "data.*\n\n" + terms_body
+            + "\n\n**Aperture.** " + N.wl("lexicon/aperture/index", "browse the anchors")
+            + " (released substrate).")
         terms = N.Note(id="lens/terms", title="Lexicon × Collections", kind="lens",
-                       data_product="ontology", frontmatter={"lens": "terms", "lexicon": LEXICON},
+                       data_product="ontology",
+                       frontmatter={"lens": "terms", "lexicon": LEXICON, "chord": False,
+                                    "viz_view": "aperture", "viz_onto": "sdg"},
                        body=terms_body)
     elif colls:
         rows = ["| collection | realizes terms |", "|---|---|"]
@@ -1746,7 +1755,7 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
     return notes
 
 
-def project_aperture_anchors() -> list[N.Note]:
+def project_aperture_anchors(root: str = "scratch") -> list[N.Note]:
     """The Canonical Aperture's composite anchors as notes (RH 2026-07-19): one per anchor, from the
     strategy lens snapshot (truth flows repo → runtime). Constituent-concept mappings are not yet in
     the snapshot (vector_sha only) — each note says so honestly; surfacing them is #31."""
@@ -1762,7 +1771,7 @@ def project_aperture_anchors() -> list[N.Note]:
         return []
     notes = [N.Note(
         id="lexicon/aperture/index", title="Canonical Aperture", kind="lexicon-construct",
-        data_product="ontology", root="scratch",
+        data_product="ontology", root=root,
         body=("**The Canonical Aperture** — " + str(len(pts)) + " composite anchors, each compositing "
               "primary constituent concepts (see " + N.wl("lexicon/construct/aperture", "the construct")
               + "). domain⇄concept is many-to-many; anchors are the admission surface.\n\n"
@@ -1867,7 +1876,7 @@ def project_aperture_anchors() -> list[N.Note]:
                           + f" ({x.get('rel')})" for x in adjs[:8]) + "\n\n")
         notes.append(N.Note(
             id=f"lexicon/aperture/{aid}", title=label, kind="lexicon-construct",
-            data_product="ontology", root="scratch",
+            data_product="ontology", root=root,
             frontmatter={"vector_sha": p0.get("vector_sha"), "iri": iri},
             links=([f"lexicon/concept/{str(x.get('iri','')).rsplit('#',1)[-1]}" for x in cons[:21]]
                    + ["lexicon/aperture/index"]),
@@ -2115,7 +2124,6 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
               "on each ontology's census panel under Under-management.*\n\n"
               + shapes_line
               + ap_line
-              + _aperture_quality_line()
               + _aperture_quality_line()
               + "**Generative coverage.** The live catalog by pattern category (the overlay, "
                 "demonstrably incomplete against foreign ontologies): "
@@ -2783,6 +2791,11 @@ def run(args=None) -> int:
     project_aperture_anchors._head_by_tid = {t.template_id: _head_of(t.manchester_template)
                                              for _, t in rows}
     notes += project_aperture_anchors()
+    # panel-drift correction (RH 2026-07-22): the SAME dossier surface under current —
+    # the point list is already release-true (strategy lens snapshot); enrichment reads
+    # the live artifacts, which coincide with the release at release time. Root-true
+    # enrichment for diverged trunks rides the next increment.
+    notes += project_aperture_anchors(root="current")
     notes += rel_ch_notes
     notes += rel_coll_notes
     Path("build/reference_integrity.json").write_text(json.dumps(

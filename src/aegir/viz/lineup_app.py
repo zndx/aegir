@@ -125,22 +125,46 @@ def _pathways(onto: str = "sdg"):
 
 
 
-def _aperture_chord():
+def _aperture_substrate(root: str, ref: str) -> dict:
+    """Root-true chord substrate (RH 2026-07-22, panel-drift correction): scratch reads the
+    LIVE derivation (build/aperture_constituents.json); current reads the RELEASED strategy
+    lens snapshot (strategy/components/lens/aperture.snapshot.json — the aperture as
+    shipped); archive reads the SAME component at the release's strategy ref via git show
+    (corpus-v0.6 …). One panel class, three root-true substrates — browsing compares data,
+    not rendering eras."""
+    import json as _json
+    import subprocess as _sp
+    from pathlib import Path as _P
+    repo = _P(__file__).resolve().parents[3]
+    if root in ("", "scratch"):
+        d = _json.loads((repo / "build" / "aperture_constituents.json").read_text())
+        return d.get("anchors") or {}
+    comp = "components/lens/aperture.snapshot.json"
+    if ref:
+        raw = _sp.run(["git", "show", f"{ref}:{comp}"], cwd=repo / "strategy",
+                      capture_output=True, text=True, check=True).stdout
+    else:
+        raw = (repo / "strategy" / comp).read_text()
+    rows = _json.loads(raw)
+    rows = rows if isinstance(rows, list) else rows.get("points") or []
+    return {r.get("label") or r.get("iri"): {"iri": r.get("iri"), "point_id": r.get("id"),
+                                             "constituents": r.get("constituents") or []}
+            for r in rows}
+
+
+def _aperture_chord(root: str = "scratch", ref: str = ""):
     """The APERTURE as the Lexicon's orienting chord (RH 2026-07-21): arcs = the admission
     anchors (labeled by their IRI FRAGMENT — display IS identity, so the instrument cannot
     drift), chords = SHARED CONSTITUENT CONCEPTS between anchors (the M:N lattice made
     visual). Heavy chords = anchors insufficiently differentiated — the chord doubles as the
-    aperture-refinement instrument. Tap → the anchor's panel. Substrate:
-    build/aperture_constituents.json (IRI-first derivation)."""
+    aperture-refinement instrument. Tap → the anchor's panel."""
     import json as _json
     from itertools import combinations
     from pathlib import Path as _P
-    art = _P(__file__).resolve().parents[3] / "build" / "aperture_constituents.json"
     try:
-        d = _json.loads(art.read_text())
+        anchors = _aperture_substrate(root, ref)
     except Exception:  # noqa: BLE001
         return hv.Chord(([], hv.Dataset(pd.DataFrame({"index": [], "name": []}), "index")))
-    anchors = d.get("anchors") or {}
     # scheme-aware ring order (SKOS S5-S8): arcs group by TOP-CONCEPT family — the ring
     # itself reads as the ConceptScheme's structure; edges stay the constituent lattice
     fam = {}
@@ -206,7 +230,7 @@ def _aperture_chord():
                       hooks=[_tap_hook]))
 
 
-def _args() -> "tuple[str, str, str, str]":
+def _args() -> "tuple[str, str, str, str, str]":
     sc = curdoc().session_context
     args = sc.request.arguments if (sc and sc.request) else {}
 
@@ -216,13 +240,14 @@ def _args() -> "tuple[str, str, str, str]":
 
     lens = _get("lens", "lens/terms")
     root = _get("root", "current")
-    return (lens if lens in D.SIMS else "lens/terms"), root, _get("view", ""), _get("onto", "sdg")
+    return ((lens if lens in D.SIMS else "lens/terms"), root,
+            _get("view", ""), _get("onto", "sdg"), _get("ref", ""))
 
 
 from aegir.viz.theme import apply_color_mode, themed  # noqa: E402
 
 _MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
-_lens, _root, _view, _onto = _args()
-_plot = (_aperture_chord() if _view == "aperture"
+_lens, _root, _view, _onto, _ref = _args()
+_plot = (_aperture_chord(_root, _ref) if _view == "aperture"
          else _pathways(_onto) if _view == "pathways" else _chord(_lens, _root))
 curdoc().add_root(themed(hv.render(_plot, backend="bokeh"), _K))

@@ -95,11 +95,22 @@ def snapshot(kb_dir: str | Path | None = None, key: str | None = None,
     if not cur.exists():
         return {"op": "snapshot", "key": key, "notes": 0, "note": "no current/ to snapshot"}
 
+    # panel-drift correction (RH 2026-07-22): archived notes keep their viz surfaces —
+    # frozen DATA, current toolkit. viz_ref pins the released strategy substrate so the
+    # chord renders the aperture AS-SHIPPED for this snapshot.
+    try:
+        viz_ref = subprocess.run(["git", "describe", "--tags", "--always"],
+                                 cwd=str(S.REPO / "strategy"), capture_output=True,
+                                 text=True).stdout.strip()
+    except Exception:  # noqa: BLE001
+        viz_ref = ""
     n = 0
     for p in sorted(cur.rglob("*.md")):
         meta, body = N.parse_markdown(p.read_text())
         meta["name"] = f"{key}/{meta.get('name', p.relative_to(cur).as_posix()[:-3])}"
         meta["root"] = "archive"
+        if meta.get("viz_view") and viz_ref:
+            meta["viz_ref"] = viz_ref
         meta["links"] = [f"{key}/{x}" for x in (meta.get("links") or N.extract_links(body))]
         body = _WL.sub(lambda m: f"[[{key}/{m.group(1)}{m.group(2)}]]", body)
         head = "\n".join(f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in meta.items())
