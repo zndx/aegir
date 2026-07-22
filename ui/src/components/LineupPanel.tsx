@@ -30,6 +30,7 @@ export interface KBNote {
   chord?: boolean;
   viz_view?: string;
   viz_ref?: string;
+  viz_target?: string;
   viz_onto?: string;
   // Relational-table notes carry their precomputed first-order ERD (rendered by RelationalErd).
   erd?: import("./RelationalErd").ErdData;
@@ -250,7 +251,7 @@ function LineupPanel({ note, loading, onLink, onClose }: Props) {
             as-shipped, uniformly browsable against current/scratch. */}
         {note?.viz_view && (note.root !== "archive" || note.viz_ref) && (
           <div style={{ margin: "0 -4px 10px", borderBottom: "1px solid var(--color-kumo-hairline)", paddingBottom: 6 }}>
-            <PanelView app="lineup_app" params={{ view: note.viz_view, onto: note.viz_onto ?? "sdg", root: note.root ?? "current", ...(note.viz_ref ? { ref: note.viz_ref } : {}) }} onOpen={onLink} />
+            <PanelView app="lineup_app" params={{ view: note.viz_view, onto: note.viz_onto ?? "sdg", root: note.root ?? "current", ...(note.viz_ref ? { ref: note.viz_ref } : {}), ...(note.viz_target ? { target: note.viz_target } : {}) }} onOpen={onLink} />
           </div>
         )}
         {note?.kind === "lens" && !note.viz_view && note.chord !== false && note.root !== "archive" && (

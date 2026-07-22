@@ -152,7 +152,7 @@ def _aperture_substrate(root: str, ref: str) -> dict:
             for r in rows}
 
 
-def _aperture_chord(root: str = "scratch", ref: str = ""):
+def _aperture_chord(root: str = "scratch", ref: str = "", target: str = ""):
     """The APERTURE as the Lexicon's orienting chord (RH 2026-07-21): arcs = the admission
     anchors (labeled by their IRI FRAGMENT — display IS identity, so the instrument cannot
     drift), chords = SHARED CONSTITUENT CONCEPTS between anchors (the M:N lattice made
@@ -202,8 +202,24 @@ def _aperture_chord(root: str = "scratch", ref: str = ""):
         n = sum(1 for c in a["cons"] & b["cons"] if df.get(c, 9) <= 3)
         if n:
             eds_rows.append((idx[a["frag"]], idx[b["frag"]], n))
-    nodes = pd.DataFrame([{"index": i, "name": r["frag"][:30],
-                           "nid": f"lexicon/aperture/{r['pid']}" if r["pid"] is not None else ""}
+    # target=schema (RH 2026-07-22): taps land on the anchor's COLLECTION — the direct
+    # aperture→DDL path (the collection panel fronts live tables + chapters); default
+    # taps stay on the anchor dossier.
+    smap = {}
+    if target == "schema":
+        try:
+            smap = _json.loads((_P(__file__).resolve().parents[3]
+                                / "build" / "aperture_schema_map.json").read_text())
+        except Exception:  # noqa: BLE001
+            smap = {}
+
+    def _nid(r):
+        if r["pid"] is None:
+            return ""
+        if target == "schema":
+            return smap.get(str(r["pid"]), f"lexicon/aperture/{r['pid']}")
+        return f"lexicon/aperture/{r['pid']}"
+    nodes = pd.DataFrame([{"index": i, "name": r["frag"][:30], "nid": _nid(r)}
                           for i, r in enumerate(rows_)])
     eds = pd.DataFrame(eds_rows, columns=["source", "target", "value"])
 
@@ -230,7 +246,7 @@ def _aperture_chord(root: str = "scratch", ref: str = ""):
                       hooks=[_tap_hook]))
 
 
-def _args() -> "tuple[str, str, str, str, str]":
+def _args() -> "tuple[str, str, str, str, str, str]":
     sc = curdoc().session_context
     args = sc.request.arguments if (sc and sc.request) else {}
 
@@ -241,13 +257,13 @@ def _args() -> "tuple[str, str, str, str, str]":
     lens = _get("lens", "lens/terms")
     root = _get("root", "current")
     return ((lens if lens in D.SIMS else "lens/terms"), root,
-            _get("view", ""), _get("onto", "sdg"), _get("ref", ""))
+            _get("view", ""), _get("onto", "sdg"), _get("ref", ""), _get("target", ""))
 
 
 from aegir.viz.theme import apply_color_mode, themed  # noqa: E402
 
 _MODE, _K = apply_color_mode()   # org design norm: doc theme follows the UI's data-mode
-_lens, _root, _view, _onto, _ref = _args()
-_plot = (_aperture_chord(_root, _ref) if _view == "aperture"
+_lens, _root, _view, _onto, _ref, _target = _args()
+_plot = (_aperture_chord(_root, _ref, _target) if _view == "aperture"
          else _pathways(_onto) if _view == "pathways" else _chord(_lens, _root))
 curdoc().add_root(themed(hv.render(_plot, backend="bokeh"), _K))

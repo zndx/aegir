@@ -114,6 +114,34 @@ def category_qn(name: str, parent_qn: str | None = None) -> str:
 
 
 # ── ontology Data Product — the Lexicon (Terms organized by Categories) ──────
+_NAMING_MAP_CACHE: "dict | None" = None
+
+
+def _naming_map() -> dict:
+    """Class→relational realization from the RELEASED naming map (identity joins only:
+    template_id = the class's own table; slot_ref = FK columns targeting the class).
+    → {"own": {template_id: table}, "refs": {ClassName: [(table, col), …]}}"""
+    global _NAMING_MAP_CACHE
+    if _NAMING_MAP_CACHE is not None:
+        return _NAMING_MAP_CACHE
+    out = {"own": {}, "refs": {}}
+    try:
+        import pandas as _pd
+        dirs = sorted((S.REPO / "corpora/ddl").glob("*/naming_map.parquet"))
+        if dirs:
+            nm = _pd.read_parquet(dirs[-1])
+            ent = nm[nm["kind"] == "entity"]
+            for tid, tab in zip(ent["template_id"], ent["table_name"]):
+                out["own"].setdefault(str(tid), str(tab))
+            for ref, tab, col in zip(nm["slot_ref"], nm["table_name"], nm["col_name"]):
+                if ref and str(ref) != "__pk__":
+                    out["refs"].setdefault(str(ref), []).append((str(tab), str(col)))
+    except Exception:  # noqa: BLE001 — the section renders "—" without the release tree
+        pass
+    _NAMING_MAP_CACHE = out
+    return out
+
+
 def project_ontology(rows: list[tuple[str, CatalogTemplate]],
                      term_chapters: dict[str, list[str]] | None = None,
                      term_topics: dict[str, list[int]] | None = None,
@@ -221,6 +249,23 @@ def project_ontology(rows: list[tuple[str, CatalogTemplate]],
             + (f"- **skos:example** — {', '.join(skos['skos:example'])}\n" if skos["skos:example"] else "")
         )
 
+        # realized-class fidelity (RH 2026-07-22): the term IS a realized class — surface
+        # its IRI, the full-detail class panel (self-census equiv+frames), and the
+        # relational realization (own table + referencing FKs, identity-joined from the
+        # released naming map) — the aperture→concept→class→DDL path made succinct.
+        head_cls = next(iter(t.slot_types or {}), None)
+        if head_cls:
+            nmap = _naming_map()
+            own_t = nmap["own"].get(t.template_id)
+            refs = nmap["refs"].get(head_cls, [])[:8]
+            body += (
+                "\n**Realized class.** `https://signals.zndx.org/sdg#" + head_cls + "` — "
+                + N.wl(f"ontology/self-census/class/{head_cls}", "full class detail")
+                + " (equivalents + frames)\n\n**Relational realization.** "
+                + (N.wl(f"relational/table/{own_t}", own_t) + " (own table)" if own_t else "—")
+                + ((" · referenced by " + " · ".join(
+                    f"{N.wl('relational/table/' + tb, tb)}.`{co}`" for tb, co in refs))
+                   if refs else "") + "\n")
         out.append(N.Note(
             id=term_id, title=t.template_id, kind="ontology-term", data_product="ontology",
             body=body, frontmatter={
@@ -1048,7 +1093,11 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
     # schema: the RELEASE's relational surface — collections × their live tables (the promised
     # pivot), the spine record, and the most-shared tables as entry points (RH 2026-07-20: the
     # lens must carry ACTUAL schema, not a pointer at a pointer).
-    schema_body = ("**Schema × Collections.** The released relational footprint — a base table is "
+    schema_body = ("*The chord above is the released Aperture aimed at SCHEMA: tap an anchor "
+                   "to land on its collection's relational surface (live tables + DDL) — the "
+                   "ontology informs the DDL by construction, and this is that path made "
+                   "direct.*\n\n"
+                   "**Schema × Collections.** The released relational footprint — a base table is "
                    "shared across the collections whose chapters embed views over it.\n")
     rel_schema = rel_schema or {}
     if rel_schema:
@@ -1076,7 +1125,10 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
         schema_body += "\n_No released DDL spine on disk (corpora submodule absent)._\n"
     schema_body += "\n_Trunk schema work (the generated web + the live spine) lives in `scratch`._"
     schema = N.Note(id="lens/schema", title="Schema × Collections" if colls else "Schema", kind="lens",
-                    data_product="relational", frontmatter={"lens": "schema", "lexicon": LEXICON},
+                    data_product="relational",
+                    frontmatter={"lens": "schema", "lexicon": LEXICON, "chord": False,
+                                 "viz_view": "aperture", "viz_onto": "sdg",
+                                 "viz_target": "schema"},
                     body=schema_body)
     # content: oriented around topics → topic → its collections (the densest cross-axis)
     tc = (maps or {}).get("topic_colls")
@@ -1333,6 +1385,7 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
     notes: "list[N.Note]" = []
     table_colls: "dict[str, list[str]]" = {}
     coll_ids = []
+    _schema_map_rows: "list[tuple[str, str]]" = []
     for cnode, pids in sorted(by_concept.items(), key=lambda kv: -len(kv[1])):
         label = labels.get(cnode, cnode)
         cid = f"collection/anchor-{_slug(label)}"
@@ -1363,6 +1416,7 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
                             links=[f"relational/table/{t}" for t in tabs[:18]] + chs[:16],
                             body=body, frontmatter={"anchor_concept": cnode, "label": label,
                                                     "n_chapters": len(chs), "n_tables": len(tabs)}))
+        _schema_map_rows.append((str(cnode), cid))
         rows = ["| table | data-elements (ontology-terms) |", "|---|---|"]
         for t in tabs[:30]:
             cell = " · ".join(_term(c) for c in table_concepts.get(t, [])[:10]) or "—"
@@ -1382,6 +1436,31 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
         notes.append(N.Note(id="collection/index", title="Collections", kind="collection-index",
                             data_product="content", root="current", body=idx,
                             frontmatter={"n_collections": len(coll_ids)}))
+    # aperture→schema tap map (RH 2026-07-22): anchor pid → collection note id, the
+    # identity chain code→IRI→pid (notation is a SKOS identity property; IRI is the join).
+    try:
+        # collections anchor to VOCAB concepts (their codes); aperture anchors composite
+        # those concepts as CONSTITUENTS (each carrying its code). The tap map walks each
+        # anchor's constituents by relevance and lands on the first with a collection —
+        # the anchor's strongest realized schema surface.
+        import json as _json
+        code2cid = {c_.split(":", 1)[-1]: cid_ for c_, cid_ in _schema_map_rows}
+        snap = _json.loads((S.REPO / "strategy/components/lens/aperture.snapshot.json").read_text())
+        rows_ = snap if isinstance(snap, list) else snap.get("points") or []
+        m = {}
+        for r_ in rows_:
+            cons = sorted(r_.get("constituents") or [], key=lambda x: -(x.get("rel") or 0))
+            for c_ in cons:
+                cid_ = code2cid.get(str(c_.get("code") or ""))
+                if cid_:
+                    m[str(r_.get("id"))] = cid_
+                    break
+        (S.REPO / "build/aperture_schema_map.json").write_text(_json.dumps(m, indent=1))
+        print(f"  aperture→schema map: {len(m)}/{len(rows_)} anchors → collections "
+              f"(via top-rel constituent; {len(code2cid)} concept-coded collections)")
+    except Exception as _e:  # noqa: BLE001
+        print(f"  aperture→schema map skipped: {_e}")
+
     return notes, table_colls
 
 
@@ -2406,6 +2485,13 @@ def run(args=None) -> int:
     for n in trunk:
         n.root = "scratch"
     notes = trunk
+    # realized-class panels under CURRENT too (RH 2026-07-22, the aperture→…→DDL path):
+    # the catalog IS the release right now, so the release kasten carries the same term
+    # surface — the concept panels' Ontology-binding links resolve in current, and the
+    # relational-realization section lands where the schema browsing starts. Root-true
+    # divergence (release-pinned catalog read) rides the next release cycle.
+    import dataclasses as _dc
+    notes += [_dc.replace(n, root="current") for n in trunk if n.kind == "ontology-term"]
     print(f"  trunk(scratch): {len(trunk)} notes from {len(rows)} live terms "
           f"in {len(categories)} pattern categories × {len(rel_cats)} grounds shapes "
           f"(Lexicon {LEXICON!r})")
