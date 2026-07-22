@@ -1147,7 +1147,13 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
                         + (f"- {N.wl('content/index', 'the corpus chapters')}\n- {N.wl('topic/index', 'the FinePDFs topics')}"
                            if has_content or has_topics else "No corpus/topics projected yet."))
     if rel_colls:
-        content_body = ("**Content (release).** The release's chapters, grouped by anchor-concept "
+        content_body = ("*The chord above is the released Aperture: tap an anchor for its panel — "
+                        "identity, the exact encoded admission text, and its content surface "
+                        "(passages admitted → classes informed → documents generated).*\n\n"
+                        "**Admitted material.** " + N.wl("content/passage/index", "the release's "
+                        "FinePDFs passages") + " — each carrying its admitting anchor, the classes "
+                        "it informed, and the documents generated from it.\n\n"
+                        "**Content (release).** The release's chapters, grouped by anchor-concept "
                         "collection:\n\n"
                         + "\n".join(f"- {N.wl(cid_, label_[:64])} ({n_} ch)"
                                      for cid_, label_, n_ in rel_colls[:20])
@@ -1157,8 +1163,14 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
         content_body += ("\n\n**Release record.** "
                          + N.wl(f"release/v{latest_release}", f"v{latest_release}")
                          + " (the sdg-corpora card this kasten projects)")
-    content = N.Note(id="lens/content", title="Content × Topics" if colls else "Content", kind="lens",
-                     data_product="content", frontmatter={"lens": "content"}, body=content_body)
+    content = N.Note(id="lens/content",
+                     title="Content × Collections" if rel_colls else
+                           ("Content × Topics" if colls else "Content"),
+                     kind="lens", data_product="content",
+                     frontmatter=({"lens": "content", "chord": False,
+                                   "viz_view": "aperture", "viz_onto": "sdg"}
+                                  if rel_colls else {"lens": "content"}),
+                     body=content_body)
 
     # The lens chords render live via the bokeh server (aegir.viz.lineup_app), embedded by the React
     # <PanelView> — no chord is baked into the note frontmatter anymore.
@@ -1386,6 +1398,7 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
     coll_ids = []
     _schema_map_rows: "list[tuple[str, str]]" = []
     _coll_stats: "dict[str, dict]" = {}
+    _pid_cid: "dict[str, str]" = {}
     # PRE-PASS (RH 2026-07-22): anchor ↔ collection, resolved before bodies render — the
     # collection panel a schema-tap lands on LEADS with the Canonical Aperture identity.
     # cids are deterministic (cnode → label → slug), so the walk runs on the same keys
@@ -1487,6 +1500,8 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
         _schema_map_rows.append((str(cnode), cid))
         _coll_stats[cid] = {"n_tables": len(tabs), "n_chapters": len(chs),
                             "tables": [f"relational/table/{t}" for t in tabs[:6]]}
+        for _pid in pids:
+            _pid_cid[_pid] = cid
         rows = ["| table | data-elements (ontology-terms) |", "|---|---|"]
         for t in tabs[:30]:
             cell = " · ".join(_term(c) for c in table_concepts.get(t, [])[:10]) or "—"
@@ -1506,6 +1521,7 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
         notes.append(N.Note(id="collection/index", title="Collections", kind="collection-index",
                             data_product="content", root="current", body=idx,
                             frontmatter={"n_collections": len(coll_ids)}))
+    project_release_collections._pid_cid = _pid_cid
     # enrich the tap map post-loop (counts + top tables) — the dossier's Relational
     # affordance renders from THIS artifact alone; no note-file reads mid-build (the
     # write-ordering hazard measured 2026-07-22: counts vanished when dossiers built
@@ -1905,6 +1921,35 @@ def _in_the_vector(p0: dict) -> str:
             + str(t).replace("\n", " ").strip() + "\n\n")
 
 
+def _content_affordances(aid: str) -> str:
+    """Content-facet affordances (RH 2026-07-22): what this anchor ADMITTED (passages)
+    and what the cycle GENERATED (documents) — the two ends of the pipeline, one hop."""
+    try:
+        m = json.loads((S.REPO / "build/aperture_schema_map.json").read_text())
+        e = m.get(str(aid))
+        cid = (e.get("cid") if isinstance(e, dict) else e) or ""
+        n_c = e.get("n_chapters", "") if isinstance(e, dict) else ""
+        n_adm = 0
+        pids = []
+        idx = S.REPO / "build/passage_admissions.json"
+        if idx.exists():
+            adm = json.loads(idx.read_text())
+            pids = adm.get(str(aid), [])
+            n_adm = len(pids)
+        parts = []
+        if n_adm:
+            parts.append(f"{n_adm} passages admitted: " + " · ".join(
+                N.wl("content/passage/" + p_, p_[:12]) for p_ in pids[:5])
+                + (" …" if n_adm > 5 else ""))
+        if cid and n_c != "":
+            parts.append(f"{n_c} generated documents in " + N.wl(cid, "the collection"))
+        if not parts:
+            return ""
+        return "**Content.** " + " — ".join(parts) + "\n\n"
+    except Exception:  # noqa: BLE001
+        return ""
+
+
 def _relational_affordances(aid: str) -> str:
     """Schema-forward affordances (RH 2026-07-22): what this anchor's admissions realized
     relationally — the collection surface with its live tables, one hop from the chord."""
@@ -1924,6 +1969,107 @@ def _relational_affordances(aid: str) -> str:
                     + " …") if tabs else "") + "\n\n")
     except Exception:  # noqa: BLE001
         return ""
+
+
+def project_release_passages(rel_by_pid: "dict[str, list[str]]") -> list[N.Note]:
+    """The RELEASE's admitted passage-items (RH 2026-07-22, the Content facet): FinePDFs
+    material that entered THROUGH the Aperture and informed the agent-mediated ontology
+    authoring. Each panel carries the verbatim window, the admitting anchor (harvest
+    manifest, code→IRI→pid identity chain), the classes it INDUCED (the per-passage
+    derive record — the causal edge into the ontology), its generated chapters, and its
+    collection. content/passage/<pid>, root=current."""
+    ents_dir = Path("/raid/checkpoints/aegir-artifacts/sdg-corpora/corpus-v06/entities")
+    if not ents_dir.exists():
+        return []
+    # admitting anchor per doc-hash prefix (identity: manifest code → overlay IRI → snapshot pid)
+    admit: "dict[str, dict]" = {}
+    try:
+        from aegir.ontology import domain_index as _DI
+        notat2iri = {}
+        for _k, _c in _DI.load_skos(str(_DI.DEFAULT_OVERLAY)).items():
+            _n = str(getattr(_c, "code", "") or "")
+            if _n:
+                notat2iri[_n] = str(_k)
+        snap = json.loads((S.REPO / "strategy/components/lens/aperture.snapshot.json").read_text())
+        rows_ = snap if isinstance(snap, list) else snap.get("points") or []
+        iri2pid = {r.get("iri"): str(r.get("id")) for r in rows_ if r.get("iri")}
+        pid_label = {str(r.get("id")): r.get("label") or "" for r in rows_}
+        for line in (S.REPO / "build/domain_harvest/manifest.jsonl").read_text().splitlines():
+            r = json.loads(line)
+            iri = notat2iri.get(str(r.get("code", "")))
+            aid_ = iri2pid.get(iri)
+            # the snapshot's label is the identity-true display; some manifest rows carry
+            # a code in the domain field
+            admit[str(r.get("hash", ""))[:16]] = {
+                "aid": aid_, "label": pid_label.get(aid_) or r.get("domain", ""),
+                "rel_margin": r.get("rel_margin")}
+    except Exception:  # noqa: BLE001
+        admit = {}
+    pid_cid = getattr(project_release_collections, "_pid_cid", {}) or {}
+    adm_idx: "dict[str, list[str]]" = {}
+    for _pid16, _ad in admit.items():
+        if _ad.get("aid") and (ents_dir / f"{_pid16}.json").exists():
+            adm_idx.setdefault(str(_ad["aid"]), []).append(_pid16)
+    (S.REPO / "build/passage_admissions.json").write_text(json.dumps(adm_idx, indent=1))
+    notes: "list[N.Note]" = []
+    idx_rows: "list[str]" = []
+    for f in sorted(ents_dir.glob("*.json")):
+        pid = f.stem
+        try:
+            d = json.loads(f.read_text())
+        except Exception:  # noqa: BLE001
+            continue
+        ents = d.get("entities") or []
+        cls_links = []
+        for e in ents[:14]:
+            nm = str(e.get("name") or "")
+            tid = re.sub(r"(?<!^)(?=[A-Z])", "_", nm).lower()
+            cls_links.append(N.wl(f"ontology/term/{tid}", nm))
+        text = ""
+        try:
+            src = Path(str(d.get("passage") or ""))
+            if not src.is_absolute() or not src.exists():
+                src = S.REPO / "build/domain_harvest/docs" / (src.name if src.name else "")
+            text = src.read_text(errors="ignore")[:1400]
+        except Exception:  # noqa: BLE001
+            text = ""
+        ad = admit.get(pid) or {}
+        chs = rel_by_pid.get(pid, [])
+        cid = pid_cid.get(pid)
+        body = (f"**Passage** `{pid}` — FinePDFs material admitted through the Aperture; "
+                f"the raw input of the authoring cycle.\n\n"
+                + ((f"**Admitted through.** "
+                    + (N.wl(f"lexicon/aperture/{ad['aid']}", ad.get("label") or ad["aid"])
+                       if ad.get("aid") else (ad.get("label") or ""))
+                    + (f" · margin {round(ad['rel_margin'], 3)}" if ad.get("rel_margin") is not None else "")
+                    + "\n\n") if ad else "")
+                + ((f"> {text.replace(chr(10), ' ')[:1200]}…\n\n") if text else "")
+                + (("**Informed the ontology.** " + " · ".join(cls_links)
+                    + (f" _…+{len(ents) - 14}_" if len(ents) > 14 else "") + "\n\n")
+                   if cls_links else "")
+                + (("**Generated documents.** " + " · ".join(
+                    N.wl(c, c.rsplit("/", 1)[-1][:22]) for c in chs[:8]) + "\n\n") if chs else "")
+                + ((f"**Collection.** {N.wl(cid, cid.rsplit('anchor-', 1)[-1].replace('-', ' ')[:48])}\n")
+                   if cid else ""))
+        notes.append(N.Note(
+            id=f"content/passage/{pid}", title=f"passage · {pid}", kind="content-passage",
+            data_product="content", root="current",
+            frontmatter={"admitted_by": ad.get("aid") or "", "n_entities": len(ents)},
+            links=([f"lexicon/aperture/{ad['aid']}"] if ad.get("aid") else [])
+                  + chs[:8] + ([cid] if cid else []),
+            body=body))
+        idx_rows.append(f"- {N.wl('content/passage/' + pid, pid)}"
+                        + (f" — {len(ents)} classes · {len(chs)} chapters" if ents or chs else ""))
+    if notes:
+        notes.append(N.Note(
+            id="content/passage/index", title="Admitted passages", kind="content-passage",
+            data_product="content", root="current",
+            body=("**The release's admitted material** — " + str(len(idx_rows)) + " FinePDFs "
+                  "passages, each admitted through the Aperture and carrying the classes it "
+                  "informed plus the documents generated from it.\n\n"
+                  + "\n".join(idx_rows[:60])
+                  + (f"\n_…+{len(idx_rows) - 60} more_" if len(idx_rows) > 60 else ""))))
+    return notes
 
 
 def project_aperture_anchors(root: str = "scratch") -> list[N.Note]:
@@ -2056,6 +2202,7 @@ def project_aperture_anchors(root: str = "scratch") -> list[N.Note]:
                   + "\n".join(skos_rows) + "\n\n" + drivers
                   + _in_the_vector(p0)
                   + _relational_affordances(aid)
+                  + _content_affordances(aid)
                   + f"**Derivation.** MaxSim over `sdg_domains` · top-k {_art.get('top_k', '?')} "
                   f"· α-band {_art.get('alpha', '?')} × best concept score · df = constituency "
                   "count across all 29 anchors (⚠ ≥4 = promiscuous — the selectivity "
@@ -2343,7 +2490,12 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
             content_body += "\n".join(rows) + "\n"
     content = N.Note(
         id="lens/content", title="Content × Topics (trunk)", kind="lens", data_product="content",
-        root="scratch", frontmatter={"lens": "content", "chord": chord_on}, body=content_body)
+        root="scratch", frontmatter={"lens": "content", "chord": False,
+                                     "viz_view": "aperture", "viz_onto": "sdg"},
+        body=("*The chord above is the Aperture (trunk substrate): tap an anchor for its "
+              "panel. Trunk passage-items live under " + N.wl("item/0", "item/*") + " (the "
+              "topic-layer windows); the release's admitted passages live in current.*\n\n"
+              + content_body))
     return [terms, schema, content]
 
 
@@ -2559,6 +2711,23 @@ def run(args=None) -> int:
     rel_ch_notes, rel_by_pid = project_release_chapters(sc)
     rel_coll_notes, rel_table_colls = project_release_collections(
         sc, rel_by_pid, live_ids={t.template_id for _, t in rows})
+    rel_pass_notes = project_release_passages(rel_by_pid)
+    # chapter → collection back-link (the content↔schema facet edge, bidirectional)
+    _pid_cid_ = getattr(project_release_collections, "_pid_cid", {}) or {}
+    _ch_cid = {}
+    for _pid, _chs in (rel_by_pid or {}).items():
+        for _c in _chs:
+            _ch_cid[_c] = _pid_cid_.get(_pid)
+    for n_ in rel_ch_notes:
+        _cid = _ch_cid.get(n_.id)
+        if _cid and n_.kind.startswith("content"):
+            n_.body += ("\n**Collection.** "
+                        + N.wl(_cid, _cid.rsplit("anchor-", 1)[-1].replace("-", " ")[:48]) + "\n")
+            n_.links = list(n_.links) + [_cid]
+    if rel_pass_notes:
+        print(f"  passages: {len(rel_pass_notes) - 1} admitted passage panels (+ index) "
+              f"— the Content facet's raw material")
+
     for t_, cids_ in rel_table_colls.items():
         maps.setdefault("table_colls", {}).setdefault(t_, []).extend(cids_)
 
@@ -2990,6 +3159,7 @@ def run(args=None) -> int:
     notes += project_aperture_anchors(root="current")
     notes += rel_ch_notes
     notes += rel_coll_notes
+    notes += rel_pass_notes
     Path("build/reference_integrity.json").write_text(json.dumps(
         {"n": len(REF_DEFECTS), "defects": REF_DEFECTS}, indent=1))
     if REF_DEFECTS:
