@@ -114,6 +114,27 @@ def category_qn(name: str, parent_qn: str | None = None) -> str:
 
 
 # ── ontology Data Product — the Lexicon (Terms organized by Categories) ──────
+_CENSUS_NAMES_CACHE: "set | None" = None
+
+
+def _census_names() -> set:
+    """Class locals of the self-census (the CERTIFIED union extraction) — the resolution
+    ladder's second rung: every realized class name links to its full-detail synthetic
+    panel (RH 2026-07-22: plain text is a dead end; everything navigates)."""
+    global _CENSUS_NAMES_CACHE
+    if _CENSUS_NAMES_CACHE is not None:
+        return _CENSUS_NAMES_CACHE
+    out: set = set()
+    try:
+        d = json.loads((S.REPO / "build/foreign_fragments/sdg.json").read_text())
+        for fam in ("frames", "equiv"):
+            out |= {k.rsplit("#", 1)[-1] for k in (d.get(fam) or {})}
+    except Exception:  # noqa: BLE001
+        pass
+    _CENSUS_NAMES_CACHE = out
+    return out
+
+
 _NAMING_MAP_CACHE: "dict | None" = None
 
 
@@ -1460,7 +1481,11 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
         live_ids = live_ids or set()
         def _term(x: str) -> str:
             sn = re.sub(r"(?<!^)(?=[A-Z])", "_", x).lower()
-            return N.wl(f"ontology/term/{sn}", x) if sn in live_ids else f"`{x}`"
+            if sn in live_ids:
+                return N.wl(f"ontology/term/{sn}", x)
+            if x in _census_names():
+                return N.wl(f"ontology/self-census/class/{x}", x)
+            return f"`{x}`"
         terms = sorted({c for t in tabs for c in table_concepts.get(t, ())} | set(tabs))
         anch = anchor_of.get(cid)
         skos_top = ""
