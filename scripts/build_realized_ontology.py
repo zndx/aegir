@@ -69,10 +69,12 @@ ObjectProperty: bfo:0000197
 # until move 2 re-authors those axioms; verified isolated by scripts/verify_relation_signatures.py
 # (33/33 lint heads + 6 reasoner-only catches).
 import os as _os
-if _os.environ.get("AEGIR_PROPERTY_DOMAINS", "0") == "1":        # STAGED (default OFF):
-    # usage-derived rdfs:domain/range for sdg properties (derive_property_domains.py) —
-    # flips ON only after the unified-realization shakedown exercises the full frame set
-    # at 0 unsat (the #27 arming discipline at property-domain scale).
+if _os.environ.get("AEGIR_PROPERTY_DOMAINS", "1") == "1":        # DEFAULT ON (2026-07-22):
+    # the arming gate CERTIFIED the armed set (union mass verify: HermiT 0-unsat ·
+    # kvasir full-rule no-clash) and the certified frames ship in the sdg-strategy
+    # release (methods/armed_property_domains.omn) — the accessor reads by strategy ref
+    # and REFUSES on staged-identity mismatch, so this path arms exactly the certified
+    # set or fails loudly (the #27 discipline completed at property-domain scale).
     from aegir.ontology.property_domains import armed_domains_omn as _dom
     NUMERIC_BFO = NUMERIC_BFO + _dom()   # exclusion-aware: demoted ∪ deferred filtered
 if _os.environ.get("AEGIR_RELATION_SIGNATURES", "1") != "0":     # DEFAULT ON since 2026-07-19:

@@ -5,36 +5,42 @@ AEGIR_PROPERTY_DOMAINS (default OFF) until verify_property_domains reaches 0 uns
 the #27 arming discipline. NEVER hand-edit; re-run the deriver.
 """
 
+import hashlib as _hashlib
 import json as _json
-import re as _re
 from pathlib import Path as _Path
 
 _REPO = _Path(__file__).resolve().parents[3]
+_STRATEGY_COMPONENT = "methods/armed_property_domains"
 
 
 def armed_domains_omn() -> str:
-    """DOMAINS_OMN minus the measured exclusions — the VERIFIED armed set.
-
-    Exclusions: build/domain_demotions.json (refutation-demoted → CAS review) and
-    build/domain_deferrals.json (tractability-deferred → T2/decomposed certification).
-    The union-scope mass verify certified exactly this filtered set (2026-07-22:
-    HermiT consistent · 4,747 classes · 0 unsat; kvasir full-rule no-clash) — any
-    consumer arming domains MUST use this accessor, never raw DOMAINS_OMN."""
-    excluded: set = set()
-    for name, key in (("domain_demotions.json", "demoted"),
-                      ("domain_deferrals.json", "deferred")):
-        f = _REPO / "build" / name
-        if f.exists():
-            excluded |= set(_json.loads(f.read_text()).get(key, []))
-    if not excluded:
-        return DOMAINS_OMN
-    kept = []
-    for frame in _re.split(r"\n(?=(?:Object|Data)Property:)", DOMAINS_OMN.strip()):
-        m = _re.match(r"(?:Object|Data)Property:\s*(\S+)", frame)
-        if m and m.group(1) in excluded:
-            continue
-        kept.append(frame)
-    return "\n" + "\n".join(kept) + "\n"
+    """The CERTIFIED armed set, read from the sdg-strategy release (RH 2026-07-22):
+    the strategy submodule is the independently released home of measurement artifacts —
+    consumers get the certified frames by strategy ref, so AEGIR_PROPERTY_DOMAINS=1 is
+    the universal path with NO fallback. Absence or a staged-set identity mismatch is a
+    hard error (a regenerated catalog must re-enter the gate), never a silent fallback
+    to raw DOMAINS_OMN."""
+    import os as _os
+    from aegir.strategy.manifest import read_component
+    ref = _os.environ.get("AEGIR_STRATEGY_REF") or None
+    try:
+        armed = read_component(f"{_STRATEGY_COMPONENT}.omn", ref).decode()
+        prov = _json.loads(read_component(f"{_STRATEGY_COMPONENT}.provenance.json", ref))
+    except Exception as e:  # noqa: BLE001
+        raise RuntimeError(
+            "armed property domains are not promoted to the strategy release "
+            f"({_STRATEGY_COMPONENT}.omn; ref={ref or 'CURRENT'}) — run "
+            "scripts/promote_armed_domains.py after the gate certifies"
+        ) from e
+    staged_sha = _hashlib.sha256(DOMAINS_OMN.encode()).hexdigest()
+    if prov.get("staged_sha256") != staged_sha:
+        raise RuntimeError(
+            "staged DOMAINS_OMN no longer matches the certified release "
+            f"(staged {staged_sha[:12]} vs certified {str(prov.get('staged_sha256'))[:12]}) — "
+            "the catalog was regenerated; re-enter the arming gate "
+            "(shakedown → demote → certify → promote) before arming"
+        )
+    return "\n" + armed + "\n"
 
 
 DOMAINS_OMN = """
