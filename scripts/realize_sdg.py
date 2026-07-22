@@ -388,6 +388,11 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
         dem_file = Path("build/domain_demotions.json")
         if dem_file.exists():
             demoted = set(json.loads(dem_file.read_text()).get("demoted", []))
+        defer_file = Path("build/domain_deferrals.json")
+        if defer_file.exists():
+            # tractability-deferred ≠ refuted: held for T2/decomposed certification,
+            # excluded from arming until then (worklisted, never dropped)
+            demoted |= set(json.loads(defer_file.read_text()).get("deferred", []))
         kept, dropped = [], 0
         for frame in re.split(r"\n(?=(?:Object|Data)Property:)", DOMAINS_OMN.strip()):
             pm = re.match(r"(?:Object|Data)Property:\s*(\S+)", frame)
