@@ -164,7 +164,11 @@ def build_index(*, vocab: "str | Path" = DEFAULT_VOCAB, url: str = DEFAULT_QDRAN
     for i, (c, v) in enumerate(zip(items, vecs)):
         points.append(models.PointStruct(id=i, vector=v.tolist(), payload={
             "iri": c.iri, "code": c.code, "pref_label": c.pref_label, "alt_label": c.alt_label,
-            "broader": c.broader, "ancestor_codes": c.ancestor_codes()}))
+            "broader": c.broader, "ancestor_codes": c.ancestor_codes(),
+            # the EXACT encoded text + its token count (RH 2026-07-22): the panel's
+            # "In the vector" section renders from the released snapshot, never recompute
+            "retrieval_text": texts[i],
+            "retrieval_tokens": int(len(enc._tokenizer(texts[i])["input_ids"]))}))
     # batch the upsert — all 548 multivectors at once exceeds Qdrant's 32 MB JSON payload limit
     for start in range(0, len(points), 64):
         client.upsert(collection_name=collection, points=points[start:start + 64])

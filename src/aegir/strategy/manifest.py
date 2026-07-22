@@ -57,6 +57,9 @@ def _scroll_snapshot(cl, collection: str) -> dict:
                    "label": pl.get("pref_label") or pl.get("label") or "",
                    "path": pl.get("path") or "",
                    "vector_sha": vs[:16]}
+            if pl.get("retrieval_text"):      # the EXACT encoded text, release-pinned (RH 2026-07-22)
+                row["retrieval_text"] = pl["retrieval_text"]
+                row["retrieval_tokens"] = pl.get("retrieval_tokens")
             if pl.get("constituents"):        # Canonical Aperture anchors carry their lattice (#31)
                 row["constituents"] = [{"iri": x.get("iri"), "label": x.get("label"),
                                         "code": x.get("code"), "rel": x.get("rel"),

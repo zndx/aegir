@@ -1093,10 +1093,10 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
     # schema: the RELEASE's relational surface — collections × their live tables (the promised
     # pivot), the spine record, and the most-shared tables as entry points (RH 2026-07-20: the
     # lens must carry ACTUAL schema, not a pointer at a pointer).
-    schema_body = ("*The chord above is the released Aperture aimed at SCHEMA: tap an anchor "
-                   "to land on its collection's relational surface (live tables + DDL) — the "
-                   "ontology informs the DDL by construction, and this is that path made "
-                   "direct.*\n\n"
+    schema_body = ("*The chord above is the released Aperture: tap an anchor for its panel — "
+                   "identity, the exact encoded admission text, and its relational surface "
+                   "(collection → live tables → DDL). The ontology informs the DDL by "
+                   "construction; the panel walks that construction.*\n\n"
                    "**Schema × Collections.** The released relational footprint — a base table is "
                    "shared across the collections whose chapters embed views over it.\n")
     rel_schema = rel_schema or {}
@@ -1127,8 +1127,7 @@ def project_lenses(era_fams: list[str], has_content: bool, has_topics: bool,
     schema = N.Note(id="lens/schema", title="Schema × Collections" if colls else "Schema", kind="lens",
                     data_product="relational",
                     frontmatter={"lens": "schema", "lexicon": LEXICON, "chord": False,
-                                 "viz_view": "aperture", "viz_onto": "sdg",
-                                 "viz_target": "schema"},
+                                 "viz_view": "aperture", "viz_onto": "sdg"},
                     body=schema_body)
     # content: oriented around topics → topic → its collections (the densest cross-axis)
     tc = (maps or {}).get("topic_colls")
@@ -1386,6 +1385,7 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
     table_colls: "dict[str, list[str]]" = {}
     coll_ids = []
     _schema_map_rows: "list[tuple[str, str]]" = []
+    _coll_stats: "dict[str, dict]" = {}
     # PRE-PASS (RH 2026-07-22): anchor ↔ collection, resolved before bodies render — the
     # collection panel a schema-tap lands on LEADS with the Canonical Aperture identity.
     # cids are deterministic (cnode → label → slug), so the walk runs on the same keys
@@ -1485,6 +1485,8 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
                             body=body, frontmatter={"anchor_concept": cnode, "label": label,
                                                     "n_chapters": len(chs), "n_tables": len(tabs)}))
         _schema_map_rows.append((str(cnode), cid))
+        _coll_stats[cid] = {"n_tables": len(tabs), "n_chapters": len(chs),
+                            "tables": [f"relational/table/{t}" for t in tabs[:6]]}
         rows = ["| table | data-elements (ontology-terms) |", "|---|---|"]
         for t in tabs[:30]:
             cell = " · ".join(_term(c) for c in table_concepts.get(t, [])[:10]) or "—"
@@ -1504,6 +1506,18 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
         notes.append(N.Note(id="collection/index", title="Collections", kind="collection-index",
                             data_product="content", root="current", body=idx,
                             frontmatter={"n_collections": len(coll_ids)}))
+    # enrich the tap map post-loop (counts + top tables) — the dossier's Relational
+    # affordance renders from THIS artifact alone; no note-file reads mid-build (the
+    # write-ordering hazard measured 2026-07-22: counts vanished when dossiers built
+    # before collection notes flushed).
+    try:
+        import json as _json
+        _mp = _json.loads((S.REPO / "build/aperture_schema_map.json").read_text())
+        _enr = {pid_: {"cid": cid_, **_coll_stats.get(cid_, {})}
+                for pid_, cid_ in _mp.items()}
+        (S.REPO / "build/aperture_schema_map.json").write_text(_json.dumps(_enr, indent=1))
+    except Exception:  # noqa: BLE001
+        pass
     return notes, table_colls
 
 
@@ -1877,6 +1891,41 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
     return notes
 
 
+def _in_the_vector(p0: dict) -> str:
+    """The EXACT text encoded into this anchor's ColBERT multivector, rendered from the
+    released strategy snapshot (RH 2026-07-22: render from the released artifact, never
+    recompute). The admission surface IS this prose — refining it refines the instrument."""
+    t = p0.get("retrieval_text")
+    if not t:
+        return ""
+    tok = p0.get("retrieval_tokens")
+    budget = f" · {tok}/512 tokens" if tok else ""
+    return ("**In the vector**" + budget + " — the encoded admission text, verbatim "
+            "(prefLabel · altLabel · definition · scopeNote):\n\n> "
+            + str(t).replace("\n", " ").strip() + "\n\n")
+
+
+def _relational_affordances(aid: str) -> str:
+    """Schema-forward affordances (RH 2026-07-22): what this anchor's admissions realized
+    relationally — the collection surface with its live tables, one hop from the chord."""
+    try:
+        m = json.loads((S.REPO / "build/aperture_schema_map.json").read_text())
+        e = m.get(str(aid))
+        if not e:
+            return ""
+        cid = e["cid"] if isinstance(e, dict) else e
+        n_t = e.get("n_tables", "") if isinstance(e, dict) else ""
+        n_c = e.get("n_chapters", "") if isinstance(e, dict) else ""
+        tabs = (e.get("tables") or []) if isinstance(e, dict) else []
+        label = cid.rsplit("anchor-", 1)[-1].replace("-", " ")
+        return ("**Relational.** " + N.wl(cid, label[:52])
+                + (f" — {n_t} live tables · {n_c} chapters" if n_t != "" else "")
+                + ((": " + " · ".join(N.wl(t_, t_.rsplit("/", 1)[-1][:24]) for t_ in tabs)
+                    + " …") if tabs else "") + "\n\n")
+    except Exception:  # noqa: BLE001
+        return ""
+
+
 def project_aperture_anchors(root: str = "scratch") -> list[N.Note]:
     """The Canonical Aperture's composite anchors as notes (RH 2026-07-19): one per anchor, from the
     strategy lens snapshot (truth flows repo → runtime). Constituent-concept mappings are not yet in
@@ -2005,6 +2054,8 @@ def project_aperture_anchors(root: str = "scratch") -> list[N.Note]:
             body=(f"**{label}** — a Canonical Aperture composite anchor "
                   f"(id `{aid}` · fragment `{frag}` · vector `{p0.get('vector_sha')}`).\n\n"
                   + "\n".join(skos_rows) + "\n\n" + drivers
+                  + _in_the_vector(p0)
+                  + _relational_affordances(aid)
                   + f"**Derivation.** MaxSim over `sdg_domains` · top-k {_art.get('top_k', '?')} "
                   f"· α-band {_art.get('alpha', '?')} × best concept score · df = constituency "
                   "count across all 29 anchors (⚠ ≥4 = promiscuous — the selectivity "
@@ -2563,6 +2614,18 @@ def run(args=None) -> int:
               f"corpus's terms; {len(rt) - n_cur} uncited → archive)")
     if rd:
         rdn = project_released_ddl(rd)
+        # schema-neighborhood affordances (RH 2026-07-22): every released table names the
+        # document collections whose chapters embed it — the schema→content facet edge.
+        for n_ in rdn:
+            if n_.kind != "relational-table":
+                continue
+            t_ = n_.id.rsplit("/", 1)[-1]
+            cids_ = (rel_table_colls or {}).get(t_) or []
+            if cids_:
+                n_.body += ("\n**Collections.** " + " · ".join(
+                    N.wl(c_, c_.rsplit("anchor-", 1)[-1].replace("-", " ")[:40])
+                    for c_ in cids_[:6]) + "\n")
+                n_.links = list(n_.links) + cids_[:6]
         notes += rdn
         print(f"  release ddl: {len(rdn)} current notes from corpora/ddl `{rd['run']}` "
               f"({len(rd['rows'])} released tables)")

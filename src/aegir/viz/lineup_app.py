@@ -202,24 +202,12 @@ def _aperture_chord(root: str = "scratch", ref: str = "", target: str = ""):
         n = sum(1 for c in a["cons"] & b["cons"] if df.get(c, 9) <= 3)
         if n:
             eds_rows.append((idx[a["frag"]], idx[b["frag"]], n))
-    # target=schema (RH 2026-07-22): taps land on the anchor's COLLECTION — the direct
-    # aperture→DDL path (the collection panel fronts live tables + chapters); default
-    # taps stay on the anchor dossier.
-    smap = {}
-    if target == "schema":
-        try:
-            smap = _json.loads((_P(__file__).resolve().parents[3]
-                                / "build" / "aperture_schema_map.json").read_text())
-        except Exception:  # noqa: BLE001
-            smap = {}
-
-    def _nid(r):
-        if r["pid"] is None:
-            return ""
-        if target == "schema":
-            return smap.get(str(r["pid"]), f"lexicon/aperture/{r['pid']}")
-        return f"lexicon/aperture/{r['pid']}"
-    nodes = pd.DataFrame([{"index": i, "name": r["frag"][:30], "nid": _nid(r)}
+    # Every tap lands on the ANCHOR's panel — the facet vertex (RH 2026-07-22): the
+    # panel leads schema-forward (identity → encoded text → relational affordances), so
+    # the lens flavor lives in the PANEL, and the tapped IRI is never lost to a shared
+    # landing. (`target` reserved for future lens-specific tap policies.)
+    nodes = pd.DataFrame([{"index": i, "name": r["frag"][:30],
+                           "nid": f"lexicon/aperture/{r['pid']}" if r["pid"] is not None else ""}
                           for i, r in enumerate(rows_)])
     eds = pd.DataFrame(eds_rows, columns=["source", "target", "value"])
 
