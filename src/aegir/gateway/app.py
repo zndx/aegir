@@ -330,11 +330,47 @@ def _register_api_routes(app: FastAPI) -> None:
             body = (f"**{lbl or local}** — realized class "
                     + f"`https://signals.zndx.org/sdg#{local}`{grp_line}\n\n" if tag == "sdg"
                     else f"**{lbl or local}** — a class of {tag.upper()}{grp_line} (`{iri}`)\n\n")
+            # native-syntax blocks (RH 2026-07-22): the VERBATIM artifacts, copyable —
+            # the Manchester frame reconstructed prefixed, and the class's SHACL shape
+            # from the certified union's kvasir emission where one exists.
+            def _plain(txt: str) -> str:
+                return re.sub(r"<([^>]+)>", lambda m: _pfx(m.group(1)), txt)
+            omn_lines = [f"Class: sdg:{local}" if tag == "sdg" else f"Class: {_pfx(iri or local)}"]
+            if a_.get("label"):
+                ann_bits = [f'rdfs:label "{a_["label"]}"']
+                if a_.get("definition"):
+                    d_ = a_["definition"].replace('"', "'")
+                    ann_bits.append(f'iao:0000115 "{d_}"')
+                omn_lines.append("    Annotations: " + ", ".join(ann_bits))
+            for f_ in equivs[:12]:
+                omn_lines.append(f"    EquivalentTo: {_plain(f_)}")
+            for f_ in frames[:24]:
+                omn_lines.append(f"    SubClassOf: {_plain(f_)}")
+            native_md = "```manchester\n" + "\n".join(omn_lines) + "\n```\n\n"
+            if tag == "sdg":
+                sm_ = getattr(app.state, "shape_map", None)
+                if sm_ is None:
+                    sm_ = {}
+                    try:
+                        ttl = _P("build/unified_grounded/shapes.ttl").read_text()
+                        hdr = "\n".join(l_ for l_ in ttl.splitlines()[:6]
+                                         if l_.startswith("@prefix"))
+                        for blk in re.split(r"\n\n(?=<)", ttl):
+                            tm_ = re.search(r"sh:targetClass <https://signals\.zndx\.org/sdg#(\w+)>", blk)
+                            if tm_:
+                                sm_[tm_.group(1)] = hdr + "\n\n" + blk.strip()
+                    except Exception:  # noqa: BLE001
+                        pass
+                    app.state.shape_map = sm_
+                shp = sm_.get(local)
+                if shp:
+                    native_md += "```turtle\n" + shp + "\n```\n\n"
             body += (def_md
                      + (catalog_md if tag == "sdg" else "")
                      + "**Axioms (realized OWL).**\n" + ax_rows + "\n\n"
                      + props_md
                      + (usage_md if tag == "sdg" else "")
+                     + native_md
                      + f"_Source: build/foreign_fragments/{tag}.json (census extraction of the "
                      "certified union; constructs outside the renderer degrade honestly)._\n")
             return {"id": note_id, "name": note_id, "title": f"{local[:52]} · {tag}",

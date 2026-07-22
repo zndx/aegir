@@ -1,6 +1,6 @@
-import { CloseOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, CopyOutlined } from "@ant-design/icons";
 import { Tag, Typography } from "antd";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 import PanelView from "./PanelView";
@@ -99,6 +99,40 @@ function cells(line: string): string[] {
   return out;
 }
 
+/** Native-syntax code block with a copy control (RH 2026-07-22): the Kumo pattern —
+    language chip, recessed ground, top-right copy with a confirm flash. The copied text
+    is the VERBATIM block (what you see is what you paste). */
+function CodeBlock({ lang, text }: { lang: string; text: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div style={{ position: "relative", margin: "8px 0" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
+                    background: "var(--color-kumo-recessed)", borderBottom: "1px solid var(--color-kumo-hairline)",
+                    borderRadius: "4px 4px 0 0", padding: "2px 8px" }}>
+        <span style={{ fontSize: 10.5, letterSpacing: 0.4, textTransform: "uppercase",
+                       color: "var(--text-color-kumo-subtle)", fontFamily: "monospace" }}>{lang || "code"}</span>
+        <span
+          onClick={() => {
+            navigator.clipboard?.writeText(text).then(() => {
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1400);
+            });
+          }}
+          style={{ cursor: "pointer", fontSize: 12, color: copied ? "var(--color-kumo-positive, #4caf50)" : "var(--text-color-kumo-inactive)" }}
+          title="Copy to clipboard"
+        >
+          {copied ? <CheckOutlined /> : <CopyOutlined />}{" "}
+          <span style={{ fontSize: 10.5 }}>{copied ? "copied" : "copy"}</span>
+        </span>
+      </div>
+      <pre style={{ background: "var(--color-kumo-recessed)", padding: 8, borderRadius: "0 0 4px 4px",
+                    fontSize: 11.5, margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+        {text}
+      </pre>
+    </div>
+  );
+}
+
 function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
   const lines = body.split("\n");
   const blocks: ReactNode[] = [];
@@ -190,9 +224,7 @@ function renderBody(body: string, onLink: (id: string) => void): ReactNode[] {
         continue;
       }
       blocks.push(
-        <pre key={`c-${i}`} style={{ background: "var(--color-kumo-recessed)", padding: 8, borderRadius: 4, fontSize: 11.5, margin: "6px 0", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-          {obj ? JSON.stringify(obj, null, 2) : raw}
-        </pre>,
+        <CodeBlock key={`c-${i}`} lang={lang} text={obj ? JSON.stringify(obj, null, 2) : raw} />,
       );
       continue;
     }
