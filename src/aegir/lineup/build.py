@@ -1386,6 +1386,56 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
     table_colls: "dict[str, list[str]]" = {}
     coll_ids = []
     _schema_map_rows: "list[tuple[str, str]]" = []
+    # PRE-PASS (RH 2026-07-22): anchor ↔ collection, resolved before bodies render — the
+    # collection panel a schema-tap lands on LEADS with the Canonical Aperture identity.
+    # cids are deterministic (cnode → label → slug), so the walk runs on the same keys
+    # the loop will mint; the reverse map carries the anchor's snapshot row + SKOS record.
+    anchor_of: "dict[str, dict]" = {}
+    try:
+        import json as _json
+        _code2cid = {str(c_).split(":", 1)[-1]: f"collection/anchor-{_slug(labels.get(c_, c_))}"
+                     for c_ in by_concept}
+        _snap = _json.loads((S.REPO / "strategy/components/lens/aperture.snapshot.json").read_text())
+        _rows = _snap if isinstance(_snap, list) else _snap.get("points") or []
+        _skos = {}
+        try:
+            from aegir.ontology import domain_index as _DI
+            for _k, _c in _DI.load_skos(str(_DI.DEFAULT_OVERLAY)).items():
+                _skos[str(_k)] = {"prefLabel": getattr(_c, "pref_label", "") or "",
+                                  "broader": str(getattr(_c, "broader", "") or "").rsplit("#", 1)[-1]}
+        except Exception:  # noqa: BLE001
+            pass
+        _m = {}
+        for _r in _rows:
+            _cons = sorted(_r.get("constituents") or [], key=lambda x: -(x.get("rel") or 0))
+            for _c in _cons:
+                _cid = _code2cid.get(str(_c.get("code") or ""))
+                if _cid:
+                    _m[str(_r.get("id"))] = _cid
+                    _iri = str(_r.get("iri") or "")
+                    _rec = {"pid": str(_r.get("id")), "iri": _iri,
+                            "fragment": _iri.rsplit("#", 1)[-1],
+                            "label": _r.get("label") or "",
+                            "vector_sha": _r.get("vector_sha") or "",
+                            "rel": _c.get("rel") or 0,
+                            **_skos.get(_iri, {})}
+                    # highest-rel claimant leads; the rest are named co-anchors (a
+                    # collection realized by several anchors shows its full composition)
+                    cur = anchor_of.get(_cid)
+                    if cur is None:
+                        _rec["also"] = []
+                        anchor_of[_cid] = _rec
+                    elif _rec["rel"] > cur["rel"]:
+                        _rec["also"] = [{"pid": cur["pid"], "fragment": cur["fragment"]}] + cur.get("also", [])
+                        anchor_of[_cid] = _rec
+                    else:
+                        cur.setdefault("also", []).append({"pid": _rec["pid"], "fragment": _rec["fragment"]})
+                    break
+        (S.REPO / "build/aperture_schema_map.json").write_text(_json.dumps(_m, indent=1))
+        print(f"  aperture→schema map: {len(_m)}/{len(_rows)} anchors → collections "
+              f"(pre-pass; {len(anchor_of)} collections lead with an anchor identity)")
+    except Exception as _e:  # noqa: BLE001
+        print(f"  aperture→schema map skipped: {_e}")
     for cnode, pids in sorted(by_concept.items(), key=lambda kv: -len(kv[1])):
         label = labels.get(cnode, cnode)
         cid = f"collection/anchor-{_slug(label)}"
@@ -1399,10 +1449,25 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
             sn = re.sub(r"(?<!^)(?=[A-Z])", "_", x).lower()
             return N.wl(f"ontology/term/{sn}", x) if sn in live_ids else f"`{x}`"
         terms = sorted({c for t in tabs for c in table_concepts.get(t, ())} | set(tabs))
+        anch = anchor_of.get(cid)
+        skos_top = ""
+        if anch:
+            skos_top = (
+                f"**{anch.get('prefLabel') or anch['label']}** — a "
+                f"{N.wl('lexicon/construct/aperture', 'Canonical Aperture')} composite anchor "
+                f"(id {anch['pid']} · fragment `{anch['fragment']}` · vector "
+                f"{anch['vector_sha']}) · {N.wl('lexicon/aperture/' + anch['pid'], 'anchor dossier')}\n\n"
+                "| skos property | value |\n|---|---|\n"
+                f"| `prefLabel` | {anch.get('prefLabel') or anch['label']} |\n"
+                f"| `altLabel` | `{anch['fragment']}` |\n"
+                + (f"| `broader` | {anch['broader']} |\n" if anch.get("broader") else "")
+                + f"| IRI | `{anch['iri']}` |\n\n"
+                + (("*Also composited by* " + " · ".join(
+                        N.wl("lexicon/aperture/" + a_["pid"], "`" + a_["fragment"] + "`")
+                        for a_ in anch["also"][:6]) + "\n\n")
+                   if anch.get("also") else ""))
         body = (
-            f"**Anchor-concept collection** — {N.wl('lexicon/construct/topic', 'anchor-topic')} "
-            f"“{label}” ({cnode}); {len(pids)} passages · {len(chs)} chapters · "
-            f"{len(tabs)} live tables.\n\n"
+            skos_top +
             "**Documents.** " + (" · ".join(
                 N.wl(c, c.split("_")[-1][:12].replace(".", " · ")) for c in chs[:16]) or "—")
             + (f" _…+{len(chs) - 16}_" if len(chs) > 16 else "") + "\n\n"
@@ -1410,6 +1475,9 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
                 N.wl(f"relational/table/{t}", t) for t in tabs[:18]) or "—") + "\n\n"
             "**Realizes terms.** " + (" · ".join(_term(x) for x in terms[:18]) or "—")
             + (f" _…+{len(terms) - 18}_" if len(terms) > 18 else "") + "\n\n"
+            f"**Anchor-concept collection** — {N.wl('lexicon/construct/topic', 'anchor-topic')} "
+            f"“{label}” ({cnode}); {len(pids)} passages · {len(chs)} chapters · "
+            f"{len(tabs)} live tables.\n\n"
             f"**Cross-reference.** {N.wl(cid + '/terms', 'tables × data-elements')}\n")
         notes.append(N.Note(id=cid, title=f"collection · {label[:60]}", kind="collection",
                             data_product="content", root="current",
@@ -1436,31 +1504,6 @@ def project_release_collections(sc: "dict | None", rel_by_pid: "dict[str, list[s
         notes.append(N.Note(id="collection/index", title="Collections", kind="collection-index",
                             data_product="content", root="current", body=idx,
                             frontmatter={"n_collections": len(coll_ids)}))
-    # aperture→schema tap map (RH 2026-07-22): anchor pid → collection note id, the
-    # identity chain code→IRI→pid (notation is a SKOS identity property; IRI is the join).
-    try:
-        # collections anchor to VOCAB concepts (their codes); aperture anchors composite
-        # those concepts as CONSTITUENTS (each carrying its code). The tap map walks each
-        # anchor's constituents by relevance and lands on the first with a collection —
-        # the anchor's strongest realized schema surface.
-        import json as _json
-        code2cid = {c_.split(":", 1)[-1]: cid_ for c_, cid_ in _schema_map_rows}
-        snap = _json.loads((S.REPO / "strategy/components/lens/aperture.snapshot.json").read_text())
-        rows_ = snap if isinstance(snap, list) else snap.get("points") or []
-        m = {}
-        for r_ in rows_:
-            cons = sorted(r_.get("constituents") or [], key=lambda x: -(x.get("rel") or 0))
-            for c_ in cons:
-                cid_ = code2cid.get(str(c_.get("code") or ""))
-                if cid_:
-                    m[str(r_.get("id"))] = cid_
-                    break
-        (S.REPO / "build/aperture_schema_map.json").write_text(_json.dumps(m, indent=1))
-        print(f"  aperture→schema map: {len(m)}/{len(rows_)} anchors → collections "
-              f"(via top-rel constituent; {len(code2cid)} concept-coded collections)")
-    except Exception as _e:  # noqa: BLE001
-        print(f"  aperture→schema map skipped: {_e}")
-
     return notes, table_colls
 
 
