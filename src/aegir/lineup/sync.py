@@ -131,6 +131,64 @@ def _mirror_ontology() -> None:
             shutil.copy2(src, dst / name)
     (dst / "family_complex.json").unlink(missing_ok=True)  # drop the retired artifact from the mirror
     print(f"   mirrored {n} catalog file(s) + sdg-vocab.ttl + SLOT_DSL.md")
+    _standalone_bundle(dst)
+
+
+IMPORT_IRI = "https://signals.zndx.org/sdg/imports/cco-module"
+COMPREHENSIVE_IRI = "https://signals.zndx.org/sdg/comprehensive"
+
+
+def _standalone_bundle(dst: Path) -> None:
+    """Make corpora/ontology/ COMPLETELY STANDALONE (RH 2026-07-22): the repo is the
+    publication of the results — a fresh clone must load in Protégé with no aegir.
+
+    * imports/cco-module.ttl ships (the BFO + π(CCO) theory the ontology imports).
+    * Machine-local `file:` imports rewrite to the LOGICAL import IRI; catalog-v001.xml
+      (the standard Protégé/OWLAPI XML-catalog mechanism) maps it to the shipped file.
+    * sdg-ontology-comprehensive.{omn,owl} ships the CERTIFIED UNION — the full realized
+      extent (catalog + entity generations + armed domains + grounding), under its own
+      ontology IRI so it coexists with the catalog ontology in one workspace.
+    Publication-time transform only: aegir-internal artifacts keep their local imports.
+    """
+    import re as _re
+    mod_src = REPO / "build/grounding/cco-module.ttl"
+    if mod_src.exists():
+        (dst / "imports").mkdir(exist_ok=True)
+        shutil.copy2(mod_src, dst / "imports" / "cco-module.ttl")
+
+    def _rewrite(p_: Path, also_iri: "tuple[str, str] | None" = None) -> None:
+        if not p_.exists():
+            return
+        t = p_.read_text()
+        t = _re.sub(r'file:/[^\s>"]*cco-module\.ttl', IMPORT_IRI, t)
+        if also_iri:
+            t = t.replace(also_iri[0], also_iri[1])
+        p_.write_text(t)
+
+    _rewrite(dst / "sdg-ontology.omn")
+    _rewrite(dst / "sdg-ontology.owl")
+    comp_omn = REPO / "build/unified_grounded/sdg-ontology.omn"
+    comp_owl = REPO / "build/unified_grounded/sdg-union.owl"
+    n_comp = 0
+    if comp_omn.exists():
+        shutil.copy2(comp_omn, dst / "sdg-ontology-comprehensive.omn")
+        _rewrite(dst / "sdg-ontology-comprehensive.omn",
+                 also_iri=("Ontology: <https://signals.zndx.org/sdg>",
+                           f"Ontology: <{COMPREHENSIVE_IRI}>"))
+        n_comp += 1
+    if comp_owl.exists():
+        shutil.copy2(comp_owl, dst / "sdg-ontology-comprehensive.owl")
+        _rewrite(dst / "sdg-ontology-comprehensive.owl",
+                 also_iri=('ontologyIRI="https://signals.zndx.org/sdg"',
+                           f'ontologyIRI="{COMPREHENSIVE_IRI}"'))
+        n_comp += 1
+    (dst / "catalog-v001.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">\n'
+        f'  <uri name="{IMPORT_IRI}" uri="imports/cco-module.ttl"/>\n'
+        '</catalog>\n')
+    print(f"   standalone bundle: theory module shipped · imports → {IMPORT_IRI} "
+          f"(catalog-v001.xml) · comprehensive union artifacts: {n_comp}")
 
 
 def _regen_vocabulary() -> bool:
