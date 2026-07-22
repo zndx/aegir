@@ -496,8 +496,17 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
 
         omn = _FRAME.sub(_site_rewrite, omn)
 
+        deferred_lifts: "set[str]" = set()
+        dl_file = Path("build/grounding_lift_deferrals.json")
+        if dl_file.exists():
+            deferred_lifts = set(json.loads(dl_file.read_text()).get("deferred_lifts", []))
         lines = []
         for q, bfo in grounded.items():
+            if q in deferred_lifts:
+                # tractability-deferred lift (inverse-pair activation): declared, not
+                # lifted — semantics ratified, proof pending decomposed certification
+                lines.append(f"ObjectProperty: sdg:{q}")
+                continue
             lines.append(f"ObjectProperty: sdg:{q}\n    SubPropertyOf: {bfo}")
         for bfo, (m_bfo, coin) in MIRROR_SPLIT.items():
             if f"sdg:{coin}" in omn:
