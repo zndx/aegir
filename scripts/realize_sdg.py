@@ -443,6 +443,16 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
 
         escal: "list[dict]" = []
         n_split = 0
+        # measured-refutation site ledger (the grounding-grain demotion loop): sites a
+        # kvasir witness implicated in a prior round escalate REGARDLESS of the local
+        # side-judgment — the checker in the loop is the theory-strength engine, not
+        # the hand lift (the ConferenceMarketplace lesson: "?" subjects can be
+        # theory-determined).
+        site_ledger: "set[tuple]" = set()
+        led_file = Path("build/grounding_site_escalations.json")
+        if led_file.exists():
+            for e_ in json.loads(led_file.read_text()).get("sites", []):
+                site_ledger.add((e_["class"], e_["property"], e_["filler"]))
 
         def _site_rewrite(fm):
             nonlocal n_split
@@ -457,6 +467,12 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
                 filler = _norm_iris(um.group(3)).rstrip(",")
                 s_side = _side_of(subj)
                 f_side = _side_of(filler) if _BARE.match(filler) else "?"
+                if (subj, q, filler) in site_ledger or \
+                        (subj, f"{q}", filler) in site_ledger:
+                    escal.append({"property": q, "bfo": bfo, "class": subj,
+                                  "filler": filler, "subject_side": s_side,
+                                  "filler_side": f_side, "via": "witness-ledger"})
+                    return um.group(0).replace(f"sdg:{q}", f"sdg:{q}__escalated", 1)
                 ok = ((exp_s == "any" or s_side in (exp_s, "?")) and
                       (exp_f == "any" or f_side in (exp_f, "?")))
                 if ok:
@@ -466,7 +482,8 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
                     m_bfo, coin = mirror
                     m_s, m_f = BFO_SIGNATURES[m_bfo]
                     if (s_side in (m_s, "?") and f_side in (m_f, "?")
-                            and (s_side, f_side) != ("?", "?")):
+                            and (s_side, f_side) != ("?", "?")
+                            and (subj, coin, filler) not in site_ledger):
                         n_split += 1
                         return um.group(0).replace(f"sdg:{q}", f"sdg:{coin}", 1)
                 escal.append({"property": q, "bfo": bfo, "class": subj,
