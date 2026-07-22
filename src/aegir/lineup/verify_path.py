@@ -54,7 +54,7 @@ def _extract_foreign(tag: str) -> dict:
     cache = FRAG_CACHE / f"{tag}.json"
     if cache.exists():
         d = json.loads(cache.read_text())
-        if d.get("v") == 2:                      # v2: + equivalentClass frames
+        if d.get("v") == 3:                      # v3: + per-class annotations (label/definition)
             return d
     cov = json.loads((REPO / "build" / f"{tag}_coverage.json").read_text())
     root = Path(cov["root"]).expanduser()
@@ -132,8 +132,25 @@ def _extract_foreign(tag: str) -> dict:
                 if r:
                     equiv.setdefault(str(s), []).append(r)
                     props |= {m.group(1) for m in re.finditer(r"<([^>]+)> (?:some|only|exactly|min|max)", r)}
+    # v3: the class's OWN words — label + definition annotations (the actual ontology
+    # definition, not just the axiom skeleton; RH 2026-07-22)
+    ann: "dict[str, dict]" = {}
+    _DEF_PREDS = [URIRef("http://purl.obolibrary.org/obo/IAO_0000115"),
+                  URIRef("http://www.w3.org/2004/02/skos/core#definition"),
+                  RDFS.comment]
+    for s_ in set(list(frames) + list(equiv)):
+        subj = URIRef(s_)
+        lab = _first(g, subj, RDFS.label)
+        dfn = None
+        for pred in _DEF_PREDS:
+            dfn = _first(g, subj, pred)
+            if dfn:
+                break
+        if lab or dfn:
+            ann[s_] = {"label": str(lab) if lab else "",
+                       "definition": str(dfn) if dfn else ""}
     FRAG_CACHE.mkdir(parents=True, exist_ok=True)
-    out = {"v": 2, "frames": frames, "equiv": equiv, "props": sorted(props)}
+    out = {"v": 3, "frames": frames, "equiv": equiv, "props": sorted(props), "ann": ann}
     cache.write_text(json.dumps(out))
     return out
 

@@ -221,17 +221,33 @@ def _register_api_routes(app: FastAPI) -> None:
             grp = next((g for g in cov.get("pathways", {}).get("groups", [])
                         if any(m.get("local") == local for m in g.get("members", []))), None)
 
+            prop_set = set(frag.get("props") or [])
+            class_set = set(frag["frames"]) | set(frag.get("equiv") or {})
+
+            def _pfx(iri_: str) -> str:
+                for pat, px in (("https://signals.zndx.org/sdg#", "sdg:"),
+                                ("http://purl.obolibrary.org/obo/BFO_", "bfo:"),
+                                ("https://www.commoncoreontologies.org/", "cco:"),
+                                ("http://www.w3.org/2001/XMLSchema#", "xsd:")):
+                    if iri_.startswith(pat):
+                        return px + iri_[len(pat):]
+                return iri_.rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+
             def _wl_iris(txt: str) -> str:
+                """Namespace-honest Manchester: every token renders PREFIXED (display is
+                identity); sdg classes link to their census panels; properties render
+                prefixed (their armed semantics surface in the Properties section)."""
                 def _one(m: "re.Match") -> str:
                     iri = m.group(1)
+                    pfx = _pfx(iri)
                     loc = iri.rsplit("/", 1)[-1].rsplit("#", 1)[-1]
-                    if tag == "sdg" and "signals.zndx.org" not in iri:
-                        return f"`{loc[:40]}`"          # backbone (BFO/CCO) — not our article
-                    return f"[[{base_id}/class/{loc}|{loc[:40]}]]"
+                    if iri in class_set and iri.startswith("https://signals.zndx.org/sdg#"):
+                        return f"[[{base_id}/class/{loc}|{pfx[:48]}]]"
+                    return f"`{pfx[:48]}`"
                 return re.sub(r"<([^>]+)>", _one, txt)
 
-            ax_parts = ([f"- EquivalentTo {_wl_iris(f)}" for f in equivs[:12]]
-                        + [f"- SubClassOf {_wl_iris(f)}" for f in frames[:24]])
+            ax_parts = ([f"- EquivalentTo: {_wl_iris(f)}" for f in equivs[:12]]
+                        + [f"- SubClassOf: {_wl_iris(f)}" for f in frames[:24]])
             ax_rows = "\n".join(ax_parts) or \
                       "- _(no extracted axioms — outside the renderer's construct family)_"
             tid2 = cm["head_tid"].get(local)
@@ -278,12 +294,49 @@ def _register_api_routes(app: FastAPI) -> None:
                 if tid and (_P("build/dev/scratch/ontology/term") / f"{tid}.md").exists():
                     term_line = (f"**Live term.** [[ontology/term/{tid}|{tid}]] — the catalog "
                                  "template surface for this class.\n\n")
-            body = (f"**`{local}`** — a class of {tag.upper()}{grp_line}.\n\n"
-                    + (catalog_md if tag == "sdg" else "")
-                    + "**Axioms (realized OWL, extracted).**\n" + ax_rows + "\n\n"
-                    + (usage_md if tag == "sdg" else "")
-                    + f"_Source: build/foreign_fragments/{tag}.json (census extraction; "
-                    "constructs outside the renderer degrade honestly)._\n")
+            a_ = (frag.get("ann") or {}).get(iri or "", {})
+            def_md = (f"> {a_['definition']}\n\n" if a_.get("definition") else "")
+            lbl = a_.get("label") or ""
+            # armed property semantics for the sdg properties this class's axioms use
+            props_md = ""
+            if tag == "sdg":
+                am = getattr(app.state, "armed_map", None)
+                if am is None:
+                    am = {}
+                    try:
+                        from aegir.ontology.property_domains import armed_domains_omn
+                        for fr_ in re.split(r"\n(?=(?:Object|Data)Property:)",
+                                            armed_domains_omn().strip()):
+                            pm_ = re.match(r"(?:Object|Data)Property:\s*sdg:(\S+)", fr_)
+                            if pm_:
+                                dm_ = re.search(r"Domain:\s*(\S+)", fr_)
+                                rm_ = re.search(r"Range:\s*(\S+)", fr_)
+                                am[pm_.group(1)] = {"domain": dm_.group(1) if dm_ else "",
+                                                    "range": rm_.group(1) if rm_ else ""}
+                    except Exception:  # noqa: BLE001
+                        pass
+                    app.state.armed_map = am
+                used_props = sorted({p_.rsplit("#", 1)[-1] for f_ in (frames + equivs)
+                                     for p_ in re.findall(r"<(https://signals\.zndx\.org/sdg#[^>]+)>"
+                                                          r"(?=\s*(?:some|only|exactly|min|max))", f_)})
+                rows_ = []
+                for up in used_props[:14]:
+                    e_ = am.get(up)
+                    det = (" — Domain `" + e_["domain"] + "`" + (" · Range `" + e_["range"] + "`"
+                           if e_.get("range") else "")) if e_ else ""
+                    rows_.append(f"- `sdg:{up}`{det}" + ("  _(armed, certified)_" if e_ else ""))
+                if rows_:
+                    props_md = "**Properties.**\n" + "\n".join(rows_) + "\n\n"
+            body = (f"**{lbl or local}** — realized class "
+                    + f"`https://signals.zndx.org/sdg#{local}`{grp_line}\n\n" if tag == "sdg"
+                    else f"**{lbl or local}** — a class of {tag.upper()}{grp_line} (`{iri}`)\n\n")
+            body += (def_md
+                     + (catalog_md if tag == "sdg" else "")
+                     + "**Axioms (realized OWL).**\n" + ax_rows + "\n\n"
+                     + props_md
+                     + (usage_md if tag == "sdg" else "")
+                     + f"_Source: build/foreign_fragments/{tag}.json (census extraction of the "
+                     "certified union; constructs outside the renderer degrade honestly)._\n")
             return {"id": note_id, "name": note_id, "title": f"{local[:52]} · {tag}",
                     "kind": "lexicon-construct", "data_product": "ontology", "root": "scratch",
                     "body": body,
