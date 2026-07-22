@@ -332,12 +332,28 @@ def _reconcile_categories(omn: str) -> "tuple[str, list]":
             worklist.append({"class": cls, "action": "cut_by_justification",
                              "dropped_parents": [gone], "genus": c_.get("genus"),
                              "via": c_.get("via")})
+
+    # ---- phase D: functional over-assertion (measured 2026-07-22: ablating the 7,601
+    # entity-side Characteristics: Functional lines collapses the full residual cascade
+    # 1,810 → 0; the catalog asserts ZERO functionality). A per-passage "exactly one"
+    # reading does not license a GLOBAL functional axiom on a property name shared
+    # across 454 independent passages — union scope-overreach, dropped wholesale.
+    # Generation-side fix (emit Functional only under union-wide type-consistency
+    # evidence) is the durable repair; this is the shakedown tier-1.
+    n_func = len(re.findall(r"^\s*Characteristics:\s*Functional\s*$", omn, flags=re.M))
+    if n_func:
+        omn = re.sub(r"^\s*Characteristics:\s*Functional\s*$\n?", "", omn, flags=re.M)
+        omn = re.sub(r"(Characteristics:[^\n]*?)\bFunctional,\s*", r"\1", omn)
+        omn = re.sub(r",\s*Functional(\s*$)", r"\1", omn, flags=re.M)
+        worklist.append({"action": "drop_functional_overassertion", "n": n_func,
+                         "reason": "per-passage =1 readings do not lift to union-global "
+                                   "functional axioms (catalog asserts none)"})
     return omn, worklist
 
 
 def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
             merge_ontology: "Path | None" = None, ground_entity_props: bool = False,
-            reconcile_categories: bool = False) -> dict:
+            reconcile_categories: bool = False, arm_property_domains: bool = False) -> dict:
     from aegir.ontology.derive_loop import merge_entities
     from aegir.ontology.entities import from_json, to_manchester
 
@@ -356,6 +372,27 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
             {"n": len(_wl), "repairs": _wl}, indent=1))
         print(f"category reconciliation: {len(_wl)} double-category classes repaired "
               f"(majority side kept) → build/category_reconciliation.json")
+    if arm_property_domains:
+        sys.path.insert(0, str(REPO / "src"))
+        from aegir.ontology.property_domains import DOMAINS_OMN
+        # measured-refutation demotions (demote_conflicting_domains.py): frames kvasir
+        # witnessed as clash-participating are withheld — auto-band → review, worklisted.
+        demoted: "set[str]" = set()
+        dem_file = Path("build/domain_demotions.json")
+        if dem_file.exists():
+            demoted = set(json.loads(dem_file.read_text()).get("demoted", []))
+        kept, dropped = [], 0
+        for frame in re.split(r"\n(?=(?:Object|Data)Property:)", DOMAINS_OMN.strip()):
+            pm = re.match(r"(?:Object|Data)Property:\s*(\S+)", frame)
+            if pm and pm.group(1) in demoted:
+                dropped += 1
+                continue
+            kept.append(frame)
+        armed_omn = "\n" + "\n".join(kept) + "\n"
+        n_frames = armed_omn.count("Domain:")
+        omn += "\n" + armed_omn                       # OMN has no comment syntax — bare append
+        print(f"armed: {n_frames} derived rdfs:domain frames appended "
+              f"({dropped} demoted by measured refutation)")
     if ground_entity_props:
         # phase-2 signal harvest: ground the entity-side bare sdg: properties by stem so the
         # armed signatures (and staged domains) BITE at entity scale; unsat = worklist
@@ -428,6 +465,9 @@ def main() -> int:
     ap.add_argument("--merge-ontology", type=Path, default=None,
                     help="GENERATION UNIFICATION: splice an additional realized OMN (the "
                          "catalog realization) into the union before certify/emit")
+    ap.add_argument("--arm-property-domains", action="store_true",
+                    help="append the W1-derived DOMAINS_OMN frames (worklist-4 shakedown; "
+                         "kvasir witnesses gives the fast structural verdict, HermiT gates)")
     ap.add_argument("--reconcile-categories", action="store_true",
                     help="tier-1 mechanical repair: drop minority-side parents of "
                          "double-category classes (worklisted, never silent)")
@@ -437,7 +477,8 @@ def main() -> int:
     a = ap.parse_args()
     res = realize(a.entities_dir, a.output_dir, skip_hermit=a.skip_hermit,
                   merge_ontology=a.merge_ontology, ground_entity_props=a.ground_entity_props,
-                  reconcile_categories=a.reconcile_categories)
+                  reconcile_categories=a.reconcile_categories,
+                  arm_property_domains=a.arm_property_domains)
     ok = res["certificate"].get("isConsistent", True) is not False
     return 0 if ok else 2
 
