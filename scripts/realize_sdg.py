@@ -389,14 +389,110 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
         print(f"armed: {n_frames} derived rdfs:domain frames appended "
               f"({n_all - n_frames} excluded: demoted ∪ deferred)")
     if ground_entity_props:
-        # phase-2 signal harvest: ground the entity-side bare sdg: properties by stem so the
-        # armed signatures (and staged domains) BITE at entity scale; unsat = worklist
-        from aegir.ontology.relation_signatures import grounding_frames
+        # SIGNATURE-CHECKED grounding v2 (RH adjudication 2026-07-22): stem-ground the
+        # entity-side sdg: properties, but check EVERY usage site against the BFO
+        # property's category signature first — conforming sites ground; partOf sites
+        # matching the occ→occ MIRROR split to sdg:occurrentPartOf ⊑ bfo:0000132;
+        # contradicting sites are rewritten to <prop>__escalated (declared, UNgrounded)
+        # and worklisted — escalated ≠ dropped, per the never-drop organ.
+        from aegir.ontology.relation_signatures import (grounding_of, BFO_SIGNATURES,
+                                                        MIRROR_SPLIT)
         props = set(re.findall(r"^ObjectProperty:\s*sdg:(\w+)$", omn, re.M))
-        g_omn, loose = grounding_frames(props)
-        if g_omn:
-            omn += "\n\n" + g_omn
-        print(f"grounded {len(props) - len(loose)}/{len(props)} entity properties by stem")
+        grounded = {q: grounding_of(q) for q in sorted(props) if grounding_of(q)}
+
+        # self-contained category lift over the CURRENT text (theory already inlined
+        # when enabled) — bare parents + ≡-conjunct genera, the standing harvest shape
+        g_parents: "dict[str, set]" = {}
+        for fm in _FRAME.finditer(omn):
+            cname = _norm_iris(fm.group(1))
+            ps = g_parents.setdefault(cname, set())
+            for line in ([fm.group(2)] if fm.group(2).strip() else []) + fm.group(3).splitlines():
+                sm = _SECT.match(line)
+                if not sm:
+                    continue
+                for it in _split_items(_norm_iris(sm.group(2))):
+                    it = it.strip()
+                    if _BARE.match(it) and it != cname:
+                        ps.add(it)
+                    elif " and " in it:
+                        for c_ in re.split(r"\s+and\s+", it):
+                            c_ = c_.strip().strip("()")
+                            if _BARE.match(c_) and c_ != cname:
+                                ps.add(c_)
+        g_memo: "dict[str, frozenset]" = {}
+
+        def g_cats(c: str, seen=frozenset()) -> frozenset:
+            if c in g_memo:
+                return g_memo[c]
+            if c in seen:
+                return frozenset()
+            out = set()
+            if c in _CONT:
+                out.add("cont")
+            if c in _OCC:
+                out.add("occ")
+            for p_ in g_parents.get(c, ()):
+                out |= g_cats(p_, seen | {c})
+            r = frozenset(out)
+            g_memo[c] = r
+            return r
+
+        def _side_of(c: str) -> str:
+            k = g_cats(c) if c else frozenset()
+            return "cont" if k == {"cont"} else "occ" if k == {"occ"} else "?"
+
+        escal: "list[dict]" = []
+        n_split = 0
+
+        def _site_rewrite(fm):
+            nonlocal n_split
+            subj = _norm_iris(fm.group(1))
+            def _one(um):
+                nonlocal n_split
+                q = um.group(1)
+                if q not in grounded:
+                    return um.group(0)
+                bfo = grounded[q]
+                exp_s, exp_f = BFO_SIGNATURES.get(bfo, ("any", "any"))
+                filler = _norm_iris(um.group(3)).rstrip(",")
+                s_side = _side_of(subj)
+                f_side = _side_of(filler) if _BARE.match(filler) else "?"
+                ok = ((exp_s == "any" or s_side in (exp_s, "?")) and
+                      (exp_f == "any" or f_side in (exp_f, "?")))
+                if ok:
+                    return um.group(0)
+                mirror = MIRROR_SPLIT.get(bfo)
+                if mirror:
+                    m_bfo, coin = mirror
+                    m_s, m_f = BFO_SIGNATURES[m_bfo]
+                    if (s_side in (m_s, "?") and f_side in (m_f, "?")
+                            and (s_side, f_side) != ("?", "?")):
+                        n_split += 1
+                        return um.group(0).replace(f"sdg:{q}", f"sdg:{coin}", 1)
+                escal.append({"property": q, "bfo": bfo, "class": subj,
+                              "filler": filler, "subject_side": s_side,
+                              "filler_side": f_side,
+                              "expected": {"subject": exp_s, "filler": exp_f}})
+                return um.group(0).replace(f"sdg:{q}", f"sdg:{q}__escalated", 1)
+            return re.sub(r"sdg:(\w+)(\s+(?:some|only|exactly \d+|min \d+|max \d+)\s+)(\S+)",
+                          _one, fm.group(0))
+
+        omn = _FRAME.sub(_site_rewrite, omn)
+
+        lines = []
+        for q, bfo in grounded.items():
+            lines.append(f"ObjectProperty: sdg:{q}\n    SubPropertyOf: {bfo}")
+        for bfo, (m_bfo, coin) in MIRROR_SPLIT.items():
+            if f"sdg:{coin}" in omn:
+                lines.append(f"ObjectProperty: sdg:{coin}\n    SubPropertyOf: {m_bfo}")
+        for e_ in sorted({x["property"] for x in escal}):
+            lines.append(f"ObjectProperty: sdg:{e_}__escalated")
+        omn += "\n\n" + "\n".join(lines) + "\n"
+        Path("build/grounding_escalations.json").write_text(json.dumps(
+            {"n_sites": len(escal), "sites": escal}, indent=1))
+        print(f"grounded {len(grounded)}/{len(props)} entity properties by stem "
+              f"(signature-checked: {n_split} sites split to occurrentPartOf · "
+              f"{len(escal)} sites escalated) → build/grounding_escalations.json")
     output_dir.mkdir(parents=True, exist_ok=True)
     omn_path = output_dir / "sdg-ontology.omn"
     omn_path.write_text(omn)

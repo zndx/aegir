@@ -232,6 +232,43 @@ kb-snapshot *args:
 kb-sync *args:
     uv run --no-sync python -m aegir.lineup sync {{args}}
 
+# RELEASE: complete sync+release across the sdg-* deliverables (RH 2026-07-22) — ONE
+# command for the release act over both independently published submodules:
+#   corpora  (zndx/sdg-corpora)   — the ontology Data Product (kb-sync: catalog + SKOS + DDL)
+#   strategy (zndx/sdg-strategy)  — release-versioned measurement (armed property domains
+#                                   v1+: certified frames + provenance; the accessor reads
+#                                   these BY STRATEGY REF — promotion IS certification
+#                                   made durable)
+# Modes mirror kb-sync: `just sdg-release` = dry (materialize + diff + promote preview,
+# nothing committed); `commit` = commit BOTH submodules locally; `push` = commit + publish
+# both remotes. The super-repo pointer bump is printed, never auto-committed.
+sdg-release mode="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    case "{{mode}}" in
+      "")
+        just kb-sync
+        uv run --no-sync python scripts/promote_armed_domains.py
+        echo "── dry release preview done (nothing committed). Next: just sdg-release commit"
+        ;;
+      commit)
+        just kb-sync --commit
+        uv run --no-sync python scripts/promote_armed_domains.py --commit
+        echo "── committed in corpora + strategy. Publish: just sdg-release push"
+        git status --short corpora strategy || true
+        ;;
+      push)
+        just kb-sync --push
+        uv run --no-sync python scripts/promote_armed_domains.py --commit
+        git -C strategy push origin trunk
+        echo "── published: corpora + strategy remotes. Bump the super-repo pointers:"
+        echo "   git add corpora strategy && git commit  (review first)"
+        ;;
+      *)
+        echo "usage: just sdg-release [commit|push]" >&2; exit 2
+        ;;
+    esac
+
 # SHARE-Docs Phase A: render the lineup KB projection → a browsable mdbook (collections × lens
 # pivot + the cross-linked ontology/relational/content graph, wikilinks lowered to page links).
 # `just kb-render` renders + builds → build/dev/lineup-book/book/index.html. Run `just kb-build` first.

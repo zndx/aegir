@@ -74,6 +74,9 @@ _GROUNDING_STEMS: "list[tuple[re.Pattern, str]]" = [
     (re.compile(r"^realized[_]?in$", re.I), "bfo:0000054"),
     (re.compile(r"^realizes[_]?in$", re.I), "bfo:0000054"),          # 'realizesIn' reads as realized-in
     (re.compile(r"^(role[_]?realizes|realizes.*)$", re.I), "bfo:0000055"),
+    # membership is NOT bfo participation (RH adjudication 2026-07-22: a group is a
+    # continuant — the relation is member-parthood): before the participates catch-all.
+    (re.compile(r"^participates[_]?in[_]?group$", re.I), "bfo:0000129"),
     (re.compile(r"^(borne[_]?by|has[_]?bearer.*|inheres.*)$", re.I), "bfo:0000197"),
     (re.compile(r"^bears.*$", re.I), "bfo:0000196"),
     (re.compile(r"^participates[_]?in.*$", re.I), "bfo:0000056"),
@@ -82,6 +85,32 @@ _GROUNDING_STEMS: "list[tuple[re.Pattern, str]]" = [
     (re.compile(r"^part[_]?of$", re.I), "bfo:0000176"),
     (re.compile(r"^occurs[_]?in$", re.I), "bfo:0000066"),
 ]
+
+
+# Expected (subject, filler) CATEGORY sides per grounded BFO property — the signature
+# the usage-directed grounding checks each site against (RH adjudication 2026-07-22:
+# conforming sites ground; mirror-conforming partOf sites split to occurrent part-of;
+# contradicting sites are ESCALATED, never silently typed). Sides: cont | occ | any.
+BFO_SIGNATURES: "dict[str, tuple[str, str]]" = {
+    "bfo:0000054": ("cont", "occ"),    # realized in: realizable bearer → process
+    "bfo:0000055": ("occ", "cont"),    # realizes: process → realizable
+    "bfo:0000196": ("cont", "cont"),   # bears
+    "bfo:0000197": ("cont", "cont"),   # inheres in / borne by
+    "bfo:0000056": ("cont", "occ"),    # participates in
+    "bfo:0000057": ("occ", "cont"),    # has participant
+    "bfo:0000178": ("cont", "cont"),   # has continuant part
+    "bfo:0000176": ("cont", "cont"),   # continuant part of
+    "bfo:0000129": ("cont", "cont"),   # member part of (membership)
+    "bfo:0000132": ("occ", "occ"),     # occurrent part of
+    "bfo:0000066": ("occ", "any"),     # occurs in (site/spatial region fillers vary)
+}
+
+# partOf's mereology polysemy: occ→occ usage sites belong to occurrent part-of —
+# the usage-directed SPLIT coins the sibling (HermiT-grounded, per the coined-alias rule).
+MIRROR_SPLIT: "dict[str, tuple[str, str]]" = {
+    # grounded bfo → (mirror bfo, sdg coin for mirror-conforming sites)
+    "bfo:0000176": ("bfo:0000132", "occurrentPartOf"),
+}
 
 
 def grounding_of(local: str) -> "str | None":
