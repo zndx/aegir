@@ -5,6 +5,38 @@ AEGIR_PROPERTY_DOMAINS (default OFF) until verify_property_domains reaches 0 uns
 the #27 arming discipline. NEVER hand-edit; re-run the deriver.
 """
 
+import json as _json
+import re as _re
+from pathlib import Path as _Path
+
+_REPO = _Path(__file__).resolve().parents[3]
+
+
+def armed_domains_omn() -> str:
+    """DOMAINS_OMN minus the measured exclusions — the VERIFIED armed set.
+
+    Exclusions: build/domain_demotions.json (refutation-demoted → CAS review) and
+    build/domain_deferrals.json (tractability-deferred → T2/decomposed certification).
+    The union-scope mass verify certified exactly this filtered set (2026-07-22:
+    HermiT consistent · 4,747 classes · 0 unsat; kvasir full-rule no-clash) — any
+    consumer arming domains MUST use this accessor, never raw DOMAINS_OMN."""
+    excluded: set = set()
+    for name, key in (("domain_demotions.json", "demoted"),
+                      ("domain_deferrals.json", "deferred")):
+        f = _REPO / "build" / name
+        if f.exists():
+            excluded |= set(_json.loads(f.read_text()).get(key, []))
+    if not excluded:
+        return DOMAINS_OMN
+    kept = []
+    for frame in _re.split(r"\n(?=(?:Object|Data)Property:)", DOMAINS_OMN.strip()):
+        m = _re.match(r"(?:Object|Data)Property:\s*(\S+)", frame)
+        if m and m.group(1) in excluded:
+            continue
+        kept.append(frame)
+    return "\n" + "\n".join(kept) + "\n"
+
+
 DOMAINS_OMN = """
 DataProperty: sdg:abatementCost
     Domain: bfo:0000002

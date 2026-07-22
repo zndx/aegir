@@ -381,30 +381,13 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
                   f"see the same theory HermiT imports)")
     if arm_property_domains:
         sys.path.insert(0, str(REPO / "src"))
-        from aegir.ontology.property_domains import DOMAINS_OMN
-        # measured-refutation demotions (demote_conflicting_domains.py): frames kvasir
-        # witnessed as clash-participating are withheld — auto-band → review, worklisted.
-        demoted: "set[str]" = set()
-        dem_file = Path("build/domain_demotions.json")
-        if dem_file.exists():
-            demoted = set(json.loads(dem_file.read_text()).get("demoted", []))
-        defer_file = Path("build/domain_deferrals.json")
-        if defer_file.exists():
-            # tractability-deferred ≠ refuted: held for T2/decomposed certification,
-            # excluded from arming until then (worklisted, never dropped)
-            demoted |= set(json.loads(defer_file.read_text()).get("deferred", []))
-        kept, dropped = [], 0
-        for frame in re.split(r"\n(?=(?:Object|Data)Property:)", DOMAINS_OMN.strip()):
-            pm = re.match(r"(?:Object|Data)Property:\s*(\S+)", frame)
-            if pm and pm.group(1) in demoted:
-                dropped += 1
-                continue
-            kept.append(frame)
-        armed_omn = "\n" + "\n".join(kept) + "\n"
+        from aegir.ontology.property_domains import DOMAINS_OMN, armed_domains_omn
+        armed_omn = armed_domains_omn()   # one accessor everywhere: demoted ∪ deferred filtered
         n_frames = armed_omn.count("Domain:")
+        n_all = DOMAINS_OMN.count("Domain:")
         omn += "\n" + armed_omn                       # OMN has no comment syntax — bare append
         print(f"armed: {n_frames} derived rdfs:domain frames appended "
-              f"({dropped} demoted by measured refutation)")
+              f"({n_all - n_frames} excluded: demoted ∪ deferred)")
     if ground_entity_props:
         # phase-2 signal harvest: ground the entity-side bare sdg: properties by stem so the
         # armed signatures (and staged domains) BITE at entity scale; unsat = worklist
