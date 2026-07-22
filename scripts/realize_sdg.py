@@ -76,8 +76,268 @@ def _splice_ontology(base_omn: str, extra_path: Path) -> str:
     return base_omn + "\n\n" + "\n".join(body_lines)
 
 
+
+
+_CONT = {"bfo:0000002", "bfo:0000004", "bfo:0000040", "bfo:0000031", "bfo:0000020",
+         "bfo:0000019", "bfo:0000027", "cco:ont00000995", "cco:ont00000958"}
+_OCC = {"bfo:0000003", "bfo:0000015", "bfo:0000017", "bfo:0000023"}
+
+
+def _split_items(rest: str) -> "list[str]":
+    """Split a Manchester expression list on TOP-LEVEL commas (depth- and quote-aware) —
+    the only safe grain for editing SubClassOf/EquivalentTo lists."""
+    items, depth, in_str, cur = [], 0, False, ""
+    for i, ch in enumerate(rest):
+        if ch == '"' and (i == 0 or rest[i - 1] != "\\"):
+            in_str = not in_str
+        elif not in_str:
+            if ch in "({[":
+                depth += 1
+            elif ch in ")}]":
+                depth -= 1
+            elif ch == "," and depth == 0:
+                items.append(cur)
+                cur = ""
+                continue
+        cur += ch
+    if cur.strip():
+        items.append(cur)
+    return items
+
+
+_IRI2PFX = [
+    (re.compile(r"<https://signals\.zndx\.org/sdg#([\w.-]+)>"), r"sdg:\1"),
+    (re.compile(r"<http://purl\.obolibrary\.org/obo/BFO_(\d{7})>"), r"bfo:\1"),
+    (re.compile(r"<https://www\.commoncoreontologies\.org/(ont\d+)>"), r"cco:\1"),
+]
+
+
+def _norm_iris(text: str) -> str:
+    for rx, rep in _IRI2PFX:
+        text = rx.sub(rep, text)
+    return text
+
+
+_BARE = re.compile(r"^(?:bfo:\d{7}|cco:\w+|sdg:[\w.-]+)$")
+# BFO 2020 sides — realizables (0000017), roles (0000023), functions (0000034) and
+# dispositions (0000016) are CONTINUANTS (the v1 misassignment fed the false worklist).
+_CONT = {"bfo:0000002", "bfo:0000004", "bfo:0000040", "bfo:0000031", "bfo:0000020",
+         "bfo:0000019", "bfo:0000027", "bfo:0000017", "bfo:0000023", "bfo:0000034",
+         "bfo:0000016", "cco:ont00000995", "cco:ont00000958"}
+_OCC = {"bfo:0000003", "bfo:0000015", "bfo:0000035", "bfo:0000008", "bfo:0000011"}
+_SECT = re.compile(r"^(\s*(?:SubClassOf|EquivalentTo):\s*)(.*)$")
+# Frame: prefixed OR full-IRI name; body on the SAME line (catalog single-line form)
+# and/or 4-space-indented following lines. Full-IRI headers are the CATALOG (certified)
+# side of the union; prefixed multi-line headers are the entity side.
+_FRAME = re.compile(r"^Class:\s*(<[^>\n]+>|(?:sdg|bfo|cco):[\w.-]+)([^\n]*)\n"
+                    r"((?:    [^\n]*\n)*)", re.M)
+
+
+def _reconcile_categories(omn: str) -> "tuple[str, list]":
+    """Tier-1 mechanical category repair (#27 pattern; RH worklist 3), justification-shaped:
+
+    The 1,836-class TBox cascade flows from a handful of WRONG-SIDE spine anchors
+    (e.g. EducationalEntity ⊑ bfo:0000015) and direct double-category assertions
+    (e.g. SupportService ⊑ bfo:0000002 AND ⊑ bfo:0000015) through ∃/min-card filler
+    propagation. Repairs, in order:
+
+      A. ANCHOR FLIP — an sdg class whose direct category anchor is contradicted by its
+         own SUBTREE's direct anchors (opposite side ≥ 3 classes and ≥ 2× same side)
+         gets the anchor rewritten to the subtree-majority generic root.
+      B. MINORITY DROP — an sdg class carrying direct parents on BOTH sides keeps the
+         evidence-majority side; ties prefer the side asserted by the CATALOG (certified)
+         origin, then continuant. Losing bare items are dropped from its frames.
+
+    Only bare TOP-LEVEL items are ever rewritten (never conjuncts inside ``and`` — those
+    count as evidence only). Every action is worklisted, never silent."""
+    frames: "dict[str, list]" = {}          # cls → [(header_tail, body, origin), ...]
+    for m in _FRAME.finditer(omn):
+        name = _norm_iris(m.group(1))
+        origin = "catalog" if m.group(1).startswith("<") else "entity"
+        frames.setdefault(name, []).append((m.group(2), m.group(3), origin))
+
+    parents: "dict[str, set]" = {}          # bare top-level items only
+    conj_parents: "dict[str, set]" = {}     # bare conjuncts of and-chains (evidence only)
+    origins: "dict[tuple, set]" = {}        # (cls, parent) → asserting origins
+    for cls, fl in frames.items():
+        ps, cps = set(), set()
+        for tail, body, origin in fl:
+            for line in ([tail] if tail.strip() else []) + body.splitlines():
+                sm = _SECT.match(line)
+                if not sm:
+                    continue
+                for it in _split_items(_norm_iris(sm.group(2))):
+                    it = it.strip()
+                    if _BARE.match(it):
+                        if it != cls:
+                            ps.add(it)
+                            origins.setdefault((cls, it), set()).add(origin)
+                    elif " and " in it:
+                        for c_ in re.split(r"\s+and\s+", it):
+                            c_ = c_.strip().strip("()")
+                            if _BARE.match(c_) and c_ != cls:
+                                cps.add(c_)
+        parents[cls] = ps
+        conj_parents[cls] = cps
+
+    children: "dict[str, set]" = {}
+    for c, ps in parents.items():
+        for p_ in ps:
+            children.setdefault(p_, set()).add(c)
+
+    memo: "dict[str, frozenset]" = {}
+
+    def cats(c: str, seen=frozenset()) -> frozenset:
+        if c in memo:
+            return memo[c]
+        if c in seen:
+            return frozenset()
+        out = set()
+        if c in _CONT:
+            out.add("cont")
+        if c in _OCC:
+            out.add("occ")
+        for p_ in parents.get(c, set()) | conj_parents.get(c, set()):
+            out |= cats(p_, seen | {c})
+        r = frozenset(out)
+        memo[c] = r
+        return r
+
+    def side(c: str) -> str:
+        k = cats(c)
+        return "both" if k == {"cont", "occ"} else ("cont" if "cont" in k
+                                                    else "occ" if "occ" in k else "none")
+
+    def direct_anchor_sides(c: str) -> "set[str]":
+        out = set()
+        for p_ in parents.get(c, ()):
+            if p_ in _CONT:
+                out.add("cont")
+            elif p_ in _OCC:
+                out.add("occ")
+        return out
+
+    def subtree_evidence(root: str) -> "tuple[int, int]":
+        seen, stack, c_n, o_n = set(), list(children.get(root, ())), 0, 0
+        while stack:
+            c = stack.pop()
+            if c in seen:
+                continue
+            seen.add(c)
+            ds = direct_anchor_sides(c)
+            c_n += "cont" in ds
+            o_n += "occ" in ds
+            stack.extend(children.get(c, ()))
+        return c_n, o_n
+
+    def rewrite_frames(cls: str, xform) -> None:
+        """Apply xform(items)->items to every SubClassOf/EquivalentTo section of every
+        frame of cls (both name forms, both frame shapes)."""
+        nonlocal omn
+
+        def _do(mm):
+            name = _norm_iris(mm.group(1))
+            if name != cls:
+                return mm.group(0)
+            parts = []
+            for line in ([mm.group(2)] if mm.group(2).strip() else []) + \
+                        mm.group(3).splitlines():
+                sm = _SECT.match(line)
+                if not sm:
+                    parts.append(line)
+                    continue
+                # split RAW text; xform matches in normalized space but emission keeps
+                # the original tokens — prefixed names need a PRIOR declaration where a
+                # full IRI never does, so normalizing the output breaks forward refs.
+                items = [x.strip() for x in _split_items(sm.group(2))]
+                kept = xform(items)
+                if kept:
+                    parts.append(sm.group(1) + ", ".join(kept))
+            head = f"Class: {mm.group(1)}"
+            if not parts:
+                return head + "\n"
+            # re-emit uniformly as indented body lines (legal OMN, both input shapes)
+            return head + "\n" + "".join(
+                ("    " + x.lstrip() + "\n") if x.strip() else "" for x in parts)
+        omn = _FRAME.sub(_do, omn)
+
+    worklist = []
+
+    # ---- phase A: anchor flips on subtree evidence (batch-decided, then applied)
+    flips = []
+    for cls in sorted(frames):
+        if not cls.startswith("sdg:"):
+            continue
+        for a_ in sorted(parents.get(cls, ())):
+            a_side = "cont" if a_ in _CONT else "occ" if a_ in _OCC else None
+            if not a_side:
+                continue
+            c_n, o_n = subtree_evidence(cls)
+            opp_n, same_n = (o_n, c_n) if a_side == "cont" else (c_n, o_n)
+            if opp_n >= 3 and opp_n >= 2 * max(same_n, 1):
+                tgt = "bfo:0000003" if a_side == "cont" else "bfo:0000002"
+                flips.append((cls, a_, tgt))
+                worklist.append({"class": cls, "action": "flip_anchor",
+                                 "from": a_, "to": tgt,
+                                 "subtree_cont": c_n, "subtree_occ": o_n})
+    for cls, a_, tgt in flips:
+        rewrite_frames(cls, lambda items, a_=a_, tgt=tgt:
+                       [tgt if _norm_iris(x) == a_ else x for x in items])
+        parents[cls] = (parents[cls] - {a_}) | {tgt}
+    memo.clear()
+
+    # ---- phase B: direct both-side minority drops
+    for cls in sorted(frames):
+        if not cls.startswith("sdg:"):
+            continue
+        direct = parents.get(cls, set())
+        cont_p = sorted(p_ for p_ in direct if side(p_) == "cont")
+        occ_p = sorted(p_ for p_ in direct if side(p_) == "occ")
+        if not cont_p or not occ_p:
+            continue
+        c_n, o_n = subtree_evidence(cls)
+        c_ev = len(cont_p) + c_n
+        o_ev = len(occ_p) + o_n
+        if c_ev != o_ev:
+            keep = "cont" if c_ev > o_ev else "occ"
+        else:
+            cat_sides = {("cont" if side(p_) == "cont" else "occ")
+                         for p_ in direct if "catalog" in origins.get((cls, p_), set())}
+            keep = next(iter(cat_sides)) if len(cat_sides) == 1 else "cont"
+        drop = set(occ_p if keep == "cont" else cont_p)
+        rewrite_frames(cls, lambda items, drop=drop:
+                       [x for x in items if _norm_iris(x) not in drop])
+        worklist.append({"class": cls, "action": "drop_minority",
+                         "kept": "continuant" if keep == "cont" else "occurrent",
+                         "dropped_parents": sorted(drop),
+                         "evidence": {"cont": c_ev, "occ": o_ev},
+                         "catalog_asserted": sorted(
+                             p_ for p_ in direct
+                             if "catalog" in origins.get((cls, p_), set()))})
+        parents[cls] = direct - drop
+        memo.clear()
+
+    # ---- phase C: justification-derived cuts (derive_category_cuts.py output).
+    # The ≡-identity-genus rule adjudicates edges the closure machinery cannot
+    # (disjoint continuant sub-branches, domain-forced categories). Imported truth
+    # is never cut; escalations in the cuts file stay CAS work.
+    cuts_file = Path("build/category_cuts.json")
+    if cuts_file.exists():
+        for c_ in json.loads(cuts_file.read_text()).get("cuts", []):
+            cls, gone = c_["class"], c_["cut_parent"]
+            if cls not in frames:
+                continue
+            rewrite_frames(cls, lambda items, gone=gone:
+                           [x for x in items if _norm_iris(x) != gone])
+            worklist.append({"class": cls, "action": "cut_by_justification",
+                             "dropped_parents": [gone], "genus": c_.get("genus"),
+                             "via": c_.get("via")})
+    return omn, worklist
+
+
 def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
-            merge_ontology: "Path | None" = None, ground_entity_props: bool = False) -> dict:
+            merge_ontology: "Path | None" = None, ground_entity_props: bool = False,
+            reconcile_categories: bool = False) -> dict:
     from aegir.ontology.derive_loop import merge_entities
     from aegir.ontology.entities import from_json, to_manchester
 
@@ -90,6 +350,12 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
     if merge_ontology:
         omn = _splice_ontology(omn, merge_ontology)
         print(f"unified: merged ontology {merge_ontology} spliced (prefixes reconciled)")
+    if reconcile_categories:
+        omn, _wl = _reconcile_categories(omn)
+        Path("build/category_reconciliation.json").write_text(json.dumps(
+            {"n": len(_wl), "repairs": _wl}, indent=1))
+        print(f"category reconciliation: {len(_wl)} double-category classes repaired "
+              f"(majority side kept) → build/category_reconciliation.json")
     if ground_entity_props:
         # phase-2 signal harvest: ground the entity-side bare sdg: properties by stem so the
         # armed signatures (and staged domains) BITE at entity scale; unsat = worklist
@@ -162,12 +428,16 @@ def main() -> int:
     ap.add_argument("--merge-ontology", type=Path, default=None,
                     help="GENERATION UNIFICATION: splice an additional realized OMN (the "
                          "catalog realization) into the union before certify/emit")
+    ap.add_argument("--reconcile-categories", action="store_true",
+                    help="tier-1 mechanical repair: drop minority-side parents of "
+                         "double-category classes (worklisted, never silent)")
     ap.add_argument("--ground-entity-props", action="store_true",
                     help="ground bare entity sdg: properties by stem (signatures/domains bite; "
                          "phase-2 signal harvest)")
     a = ap.parse_args()
     res = realize(a.entities_dir, a.output_dir, skip_hermit=a.skip_hermit,
-                  merge_ontology=a.merge_ontology, ground_entity_props=a.ground_entity_props)
+                  merge_ontology=a.merge_ontology, ground_entity_props=a.ground_entity_props,
+                  reconcile_categories=a.reconcile_categories)
     ok = res["certificate"].get("isConsistent", True) is not False
     return 0 if ok else 2
 
