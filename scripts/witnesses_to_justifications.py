@@ -42,6 +42,7 @@ def local(t: str) -> str:
 
 def render(line: str, subject_hint: "str | None") -> "list[str]":
     """One cited Manchester line → functional-syntax-shaped strings for the cutter."""
+    capped = len(line) >= 239         # kvasir cites at most 240 chars — the tail is mid-token
     line = local(line.strip())
     out = []
     m = re.match(r"^DisjointClasses:\s*(\S+?),\s*(\S+)$", line)
@@ -76,6 +77,8 @@ def render(line: str, subject_hint: "str | None") -> "list[str]":
             continue
         cur += ch
     items.append(cur)
+    if capped:
+        items = items[:-1]        # citation hit kvasir's 240-char cap — drop the cut tail
     for it in items:
         it = it.strip()
         if re.fullmatch(r"[\w.-]+", it):
