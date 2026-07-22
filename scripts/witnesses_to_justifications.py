@@ -89,9 +89,16 @@ def render(line: str, subject_hint: "str | None") -> "list[str]":
 def main() -> int:
     rep = json.load(sys.stdin)
     why = {}
+    import os
+    fams = set((os.environ.get("AEGIR_WITNESS_FAMILIES") or "RDisj,RFunc,RExistRangeBot").split(","))
     for w in rep.get("witnesses", []):
         if w["kind"] != "unsat_class":
             continue                      # class repairs first; RInst heals with them
+        if w["family"] not in fams:
+            continue                      # propagation victims (RExistBot/RSubUnsat) heal
+                                          # upstream — feeding their chain-leaves to the
+                                          # cutter over-cuts combinatorially (measured:
+                                          # 12,333 spurious cuts from 1,785 victim chains)
         axioms: "list[str]" = []
         for _ln, text in w["axioms"]:
             # indented body lines carry no Class: prefix — the witness's own name is the

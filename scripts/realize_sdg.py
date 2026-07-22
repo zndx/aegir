@@ -353,7 +353,8 @@ def _reconcile_categories(omn: str) -> "tuple[str, list]":
 
 def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
             merge_ontology: "Path | None" = None, ground_entity_props: bool = False,
-            reconcile_categories: bool = False, arm_property_domains: bool = False) -> dict:
+            reconcile_categories: bool = False, arm_property_domains: bool = False,
+            inline_theory: bool = False) -> dict:
     from aegir.ontology.derive_loop import merge_entities
     from aegir.ontology.entities import from_json, to_manchester
 
@@ -372,6 +373,12 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
             {"n": len(_wl), "repairs": _wl}, indent=1))
         print(f"category reconciliation: {len(_wl)} double-category classes repaired "
               f"(majority side kept) → build/category_reconciliation.json")
+    if inline_theory:
+        theory = Path("build/grounding/cco-taxonomy.omn")
+        if theory.exists():
+            omn += "\n" + theory.read_text()
+            print(f"inlined theory: {theory} (told CCO taxonomy — text-tier consumers "
+                  f"see the same theory HermiT imports)")
     if arm_property_domains:
         sys.path.insert(0, str(REPO / "src"))
         from aegir.ontology.property_domains import DOMAINS_OMN
@@ -465,6 +472,9 @@ def main() -> int:
     ap.add_argument("--merge-ontology", type=Path, default=None,
                     help="GENERATION UNIFICATION: splice an additional realized OMN (the "
                          "catalog realization) into the union before certify/emit")
+    ap.add_argument("--inline-theory", action="store_true",
+                    help="append build/grounding/cco-taxonomy.omn (told module taxonomy) "
+                         "so text-tier consumers judge with the full theory")
     ap.add_argument("--arm-property-domains", action="store_true",
                     help="append the W1-derived DOMAINS_OMN frames (worklist-4 shakedown; "
                          "kvasir witnesses gives the fast structural verdict, HermiT gates)")
@@ -478,7 +488,7 @@ def main() -> int:
     res = realize(a.entities_dir, a.output_dir, skip_hermit=a.skip_hermit,
                   merge_ontology=a.merge_ontology, ground_entity_props=a.ground_entity_props,
                   reconcile_categories=a.reconcile_categories,
-                  arm_property_domains=a.arm_property_domains)
+                  arm_property_domains=a.arm_property_domains, inline_theory=a.inline_theory)
     ok = res["certificate"].get("isConsistent", True) is not False
     return 0 if ok else 2
 
