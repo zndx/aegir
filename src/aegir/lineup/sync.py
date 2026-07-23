@@ -231,28 +231,63 @@ def _emit_entity_associations() -> None:
                     head_tid[h_.group(1)] = t_["template_id"]
         except Exception:  # noqa: BLE001
             pass
+        # CONFIRMATION RULE (RH 2026-07-23): a naming collision between ontology and
+        # relational entities is NOT an association — an EXPLICIT procedural generation
+        # link recorded by the pipeline must confirm every row published here (and to
+        # Atlas thereby). The confirmation universe is THIS run's recorded consumption:
+        # its manifest names its inputs; its naming_map rows are the generator's own
+        # record of which classes it consumed. Each association carries its evidence.
+        manifest = {}
+        try:
+            manifest = _json.loads((run_dir / "manifest.json").read_text())
+        except Exception:  # noqa: BLE001
+            pass
+        run_templates = set(own)                    # templates THIS run generated tables for
+        run_slot_refs = set(refs)                   # classes THIS run's generator referenced
         rows = []
         n_unpop = 0
+        n_rejected = 0
         classes = sorted({k for fam in ("frames", "equiv") for k in (frag.get(fam) or {})})
         for iri in classes:
             if "signals.zndx.org" not in iri:
                 continue
             local = iri.rsplit("#", 1)[-1]
-            tid = head_tid.get(local) or name_tid.get(local)
-            own_t = own.get(tid) if tid else None
-            assoc = ([{"kind": "own_table", "table": own_t,
-                       "atlas_qualifiedName": f"{own_t}@aegir"}] if own_t else [])                 + [{"kind": "fk_reference", **r_,
-                    "atlas_qualifiedName": f"{r_['table']}@aegir"}
-                   for r_ in refs.get(local, [])]
+            assoc = []
+            tid = head_tid.get(local)
+            if tid and tid in run_templates:
+                assoc.append({"kind": "own_table", "table": own[tid],
+                              "atlas_qualifiedName": f"{own[tid]}@aegir",
+                              "confirmed_by": "catalog_head_template",
+                              "template_id": tid})
+            elif name_tid.get(local) and name_tid[local] in run_templates:
+                t2 = name_tid[local]
+                assoc.append({"kind": "own_table", "table": own[t2],
+                              "atlas_qualifiedName": f"{own[t2]}@aegir",
+                              "confirmed_by": "naming_map_recorded_pair",
+                              "template_id": t2})
+            elif head_tid.get(local) or name_tid.get(local):
+                n_rejected += 1                     # name match WITHOUT a link in this run
+            if local in run_slot_refs:
+                assoc += [{"kind": "fk_reference", **r_,
+                           "atlas_qualifiedName": f"{r_['table']}@aegir",
+                           "confirmed_by": "naming_map_fk_record"}
+                          for r_ in refs[local]]
             if not assoc:
                 n_unpop += 1
-            rows.append({"class_iri": iri, "class": local, "template_id": tid or "",
+            rows.append({"class_iri": iri, "class": local,
+                         "template_id": (head_tid.get(local) or name_tid.get(local) or ""),
                          "associations": assoc})
         out = {"run": run_dir.name, "atlas_typeName": "rdbms_table",
-               "provenance": "by construction: catalog head→template + naming_map "
-                             "(slot_ref, semantic_col) recorded pairs — no name transforms",
+               "generated_from": {"inputs": manifest.get("catalog_files", []),
+                                  "n_templates": manifest.get("n_templates"),
+                                  "created_at": manifest.get("created_at")},
+               "confirmation_rule": "every association carries an EXPLICIT procedural "
+                                    "generation link recorded by the pipeline (confirmed_by); "
+                                    "name matches without a recorded link in THIS run are "
+                                    "rejected, never published",
                "n_classes": len(rows),
                "n_unpopulated": n_unpop,
+               "n_name_matches_rejected": n_rejected,
                "note": "associations == [] marks constructs awaiting the next "
                        "agent-mediated generative pass (ontology → relational)",
                "classes": rows}
