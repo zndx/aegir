@@ -75,6 +75,14 @@ def main() -> int:
     cursor = 0
     if not args.no_resume and cursor_f.exists():
         cursor = json.loads(cursor_f.read_text()).get("cursor", 0)
+    # S9-settled admission recomposition (RH 2026-07-23): roots retire from MaxSim
+    # competition when the strategy-released filter is ARMED (or force-armed for shadow
+    # windows via AEGIR_ADMISSION_FILTER=1); disarmed/absent = unchanged behavior.
+    _af = DI.armed_admission_filter()
+    _adm_exclude = _af.get("effective_exclude") or set()
+    if _adm_exclude:
+        print(f"admission filter ARMED: excluding codes {sorted(_adm_exclude)} "
+              f"({', '.join((_af.get('excluded_concepts') or {}).values())})")
     print(f"harvest '{args.domain}' ({len(codes)} SKOS concepts, tau={args.domain_tau}) · "
           f"resume cursor={cursor} · already stored={len(seen)} · target={args.target}")
 
@@ -99,7 +107,8 @@ def main() -> int:
             dup += 1
             continue
         hcls = DI.classify_hierarchical(text[: args.max_chars], top_k=5,
-                                        url=args.domain_url, collection=args.domain_collection)
+                                        url=args.domain_url, collection=args.domain_collection,
+                                        exclude_codes=_adm_exclude or None)
         top = hcls.get("top") or {}
         if DI.in_subtree(top, codes) and hcls["rel_margin"] >= args.domain_tau:
             (store / "docs" / f"{h}.txt").write_text(text, encoding="utf-8")

@@ -97,9 +97,34 @@ def main() -> int:
     for v in s_viol[:8]:
         print(f"  ✘ {v}")
 
+    # ── recomposition drivers (RH 2026-07-23; drivers, never gates) ──
+    # S9-SETTLED: the EFFECTIVE admission surface excludes scheme tops when the
+    # released admission_filter arms (aperture ∩ topConcepts = ∅). GENUS-STATUS: the
+    # genus-first anchor directive (skos:broader ∧ skos:narrower ∧ ¬top) measured as
+    # realized — 0/N until the hierarchy deepens ("fill in as needed").
+    _af = DI.armed_admission_filter()
+    _excl = set(_af.get("exclude_codes") or [])
+    _armed = bool(_af.get("effective_exclude"))
+    _top_pts = [r for r in rows if r["top_concept"]]
+    _s9_settled = _armed or not _top_pts
+    n_genus = sum(1 for r in rows if r["broader"] and r["narrower"]
+                  and not r["top_concept"])
+    n_nonroot = sum(1 for r in rows if not r["top_concept"])
+    print(f"S9-settled driver: filter {'ARMED' if _armed else 'staged (disarmed)'} · "
+          f"{len(_top_pts)} top-concept points in the collection · effective admission "
+          f"surface {'excludes tops ✓' if _s9_settled else 'still includes tops'}")
+    print(f"genus-status driver: {n_genus}/{n_nonroot} non-root anchors are genus-level "
+          "(broader ∧ narrower) — deepening converges this toward full-depth support")
+
     (REPO / "build/aperture_contract.json").write_text(json.dumps(
         {"n": n, "broader_ok": ok_b, "narrower_ok": ok_n, "altlabel_ok": ok_a,
          "top_concept_candidates": n_top, "quality_drivers": True,
+         "s9_settled": {"filter_staged": bool(_excl), "armed": _armed,
+                        "top_points_in_collection": len(_top_pts),
+                        "effective_surface_excludes_tops": _s9_settled},
+         "genus_status": {"n_genus": n_genus, "n_nonroot": n_nonroot,
+                          "directive": "anchors gain genus status as skos:narrower "
+                                       "children are authored (fill in as needed)"},
          "meta_s2_s9": {"schemes": len(_schemes), "concepts": len(_concepts),
                         "violations": s_viol}, "rows": rows}, indent=1))
     print("→ build/aperture_contract.json")

@@ -176,15 +176,50 @@ def build_index(*, vocab: "str | Path" = DEFAULT_VOCAB, url: str = DEFAULT_QDRAN
 
 
 def classify(text: str, *, url: str = DEFAULT_QDRANT_URL, collection: str = DEFAULT_COLLECTION,
-             top_k: int = 5) -> "list[dict]":
+             top_k: int = 5, exclude_codes: "set | list | None" = None) -> "list[dict]":
     """Encode a document and return the top-k nearest SKOS concepts (Qdrant native MaxSim), each as
-    {code, pref_label, score, ancestor_codes, iri}."""
+    {code, pref_label, score, ancestor_codes, iri}. ``exclude_codes`` applies the S9-settled
+    admission recomposition (RH 2026-07-23) as a QUERY-TIME payload filter — the collection
+    (which is also the topic identity space) is never rebuilt for admission policy."""
     from aegir.ontology.colbert_encoder import get_encoder
     enc = get_encoder()
     client = _client(url)
     q = enc.encode_single(text).tolist()
-    res = client.query_points(collection_name=collection, query=q, limit=top_k, with_payload=True).points
+    flt = None
+    if exclude_codes:
+        from qdrant_client import models as _m
+        flt = _m.Filter(must_not=[_m.FieldCondition(key="code",
+                                                    match=_m.MatchAny(any=sorted(exclude_codes)))])
+    res = client.query_points(collection_name=collection, query=q, limit=top_k,
+                              query_filter=flt, with_payload=True).points
     return [{"score": float(p.score), **(p.payload or {})} for p in res]
+
+
+def armed_admission_filter(ref: "str | None" = None) -> dict:
+    """The admission-surface recomposition component (RH 2026-07-23), strategy-resolved.
+
+    Reads ``lens/admission_filter.json`` from the RELEASED strategy (ref-aware:
+    AEGIR_STRATEGY_REF routes shadow runs) — falling back to the aegir SoT copy before
+    the first release. Returns the component dict plus ``effective_exclude``: the
+    exclude set WHEN armed (component ``armed`` flag, or ``AEGIR_ADMISSION_FILTER=1``
+    force-arming for shadow windows); empty when disarmed or absent. Absent component
+    = no filter — admission behaves exactly as before staging."""
+    import json as _json
+    import os as _os
+    rec: dict = {}
+    try:
+        from aegir.strategy.manifest import read_component
+        rec = _json.loads(read_component("lens/admission_filter.json",
+                                         ref or _os.environ.get("AEGIR_STRATEGY_REF") or None))
+    except Exception:  # noqa: BLE001 — pre-release: the SoT copy
+        try:
+            rec = _json.loads((Path(__file__).resolve().parent
+                               / "admission_filter.json").read_text())
+        except Exception:  # noqa: BLE001
+            return {"effective_exclude": set()}
+    armed = bool(rec.get("armed")) or _os.environ.get("AEGIR_ADMISSION_FILTER") == "1"
+    rec["effective_exclude"] = set(rec.get("exclude_codes") or []) if armed else set()
+    return rec
 
 
 def classify_hierarchical(text: str, *, top_k: int = 5, **kw) -> dict:

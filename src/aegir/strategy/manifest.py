@@ -96,6 +96,11 @@ def collect_lens() -> "dict[str, bytes]":
                                          "qdrant_url": DEFAULT_QDRANT_URL,
                                          "materialized_from": "live"}),
         })
+        # the admission-surface recomposition component (RH 2026-07-23): authored SoT
+        # rides the lens into the release — the accessor resolves the RELEASED copy
+        af = Path(__file__).resolve().parents[1] / "ontology" / "admission_filter.json"
+        if af.exists():
+            out["lens/admission_filter.json"] = af.read_bytes()
         try:
             out["lens/aperture.snapshot.json"] = _canon(_scroll_snapshot(cl, DEFAULT_APERTURE))
         except Exception as e:  # noqa: BLE001 — aiming collection absent: captured explicitly
