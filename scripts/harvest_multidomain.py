@@ -18,6 +18,7 @@ from collections import Counter
 from pathlib import Path
 
 from aegir.ontology import domain_index as DI
+from aegir.ontology import admission_items as AI
 
 REPO = Path(__file__).resolve().parents[1]
 STORE = REPO / "build" / "domain_harvest"
@@ -38,6 +39,8 @@ def main() -> None:
     ap.add_argument("--config", default="eng_Latn")
     ap.add_argument("--collection", default=DI.DEFAULT_APERTURE)
     ap.add_argument("--no-resume", action="store_true")
+    ap.add_argument("--stride-tokens", type=int, default=256)
+    ap.add_argument("--max-windows", type=int, default=16)
     a = ap.parse_args()
     _af = DI.armed_admission_filter()
     _adm_exclude = _af.get("effective_exclude") or set()
@@ -67,9 +70,11 @@ def main() -> None:
         ds = ds.skip(cursor)
 
     t0 = time.time()
-    scanned = short = dup = 0
+    scanned = short = dup = n_review = 0
     by_domain: Counter = Counter()
     mf = manifest.open("a")
+    imf = (STORE / "manifest_items.jsonl").open("a")
+    rvf = (STORE / "aperture_review.jsonl").open("a")
     for row in ds:
         if scanned >= a.max_stream:
             break
@@ -82,27 +87,47 @@ def main() -> None:
         if h in seen:
             dup += 1
             continue
-        hcls = DI.classify_hierarchical(text[: a.max_chars], top_k=5, collection=a.collection,
-                                        exclude_codes=_adm_exclude or None)
-        top = hcls.get("top") or {}
-        root = (top.get("ancestor_codes") or [top.get("code", "")])[0].split(".")[0]
-        if root in DOMAIN_ROOTS and hcls["rel_margin"] >= a.tau:
+        # ITEM SEMANTICS (RH 2026-07-23): sliding ≤512-token windows, every window
+        # seeing the whole aperture; NON-OVERLAPPING admitted items resolved greedily
+        # by genus margin; root-preponderance-without-genus-admission → ACP review
+        # worklist (ontology extension/refinement proposals accumulate; never dropped).
+        scan = AI.item_scan(text, collection=a.collection, tau=a.tau,
+                            exclude_codes=_adm_exclude or None,
+                            stride=a.stride_tokens, max_windows=a.max_windows)
+        kept = [i for i in scan["items"] if i["admitted"]]
+        if kept:
+            best = max(kept, key=lambda i: i["genus_margin"])
+            root = str(best["code"]).split(".")[0]
             (STORE / "docs" / f"{h}.txt").write_text(text, encoding="utf-8")
-            mf.write(json.dumps({"hash": h, "domain": root, "code": top.get("code"),
-                                 "label": top.get("pref_label"), "rel_margin": hcls["rel_margin"],
-                                 "chars": len(text), "dataset": f"{a.dataset}/{a.config}"}) + "\n")
+            mf.write(json.dumps({"hash": h, "domain": root, "code": best["code"],
+                                 "label": best.get("label", ""),
+                                 "rel_margin": best["genus_margin"],
+                                 "chars": len(text), "window_mode": "items",
+                                 "n_windows": len(scan["candidates"]),
+                                 "n_admitted_items": len(kept),
+                                 "dataset": f"{a.dataset}/{a.config}"}) + "\n")
             mf.flush()
+            imf.write(json.dumps({"hash": h, "items": scan["items"]}) + "\n")
+            imf.flush()
             seen.add(h)
             by_domain[root] += 1
+        elif scan["review"]:
+            rvf.write(json.dumps({"hash": h, "chars": len(text),
+                                  "head": text[:280], **scan["review"]}) + "\n")
+            rvf.flush()
+            n_review += 1
         if scanned % 1000 == 0:
             print(f"  …scanned {scanned} · matched {sum(by_domain.values())} · {scanned / max(time.time() - t0, 1):.0f} docs/s",
                   flush=True)
     mf.close()
+    imf.close()
+    rvf.close()
     cursor_f.write_text(json.dumps({"cursor": cursor + scanned, "dataset": a.dataset, "config": a.config}, indent=1))
     dt = time.time() - t0
     print(f"HARVEST: scanned {scanned} · short {short} · dup {dup} · matched {sum(by_domain.values())} "
           f"[{dt:.0f}s, {scanned / max(dt, 1):.0f} docs/s]")
-    print(f"  by domain (root): {dict(by_domain)}  (9=LIMS 10=MFG 11=energy 12=CSG)")
+    print(f"  by domain (root): {dict(by_domain)}  (9=LIMS 10=MFG 11=ENERGY 12=CSG 13=UTILITY 14=DATAENG)")
+    print(f"  ACP review worklist: +{n_review} root-preponderance docs → aperture_review.jsonl")
     print(f"  store: {len(seen)} unique in-domain docs total · cursor → {cursor + scanned}")
     import os
     os._exit(0)  # avoid the datasets/grpc teardown SIGABRT (exit 134)
