@@ -147,3 +147,27 @@ def make_router():
         return dataset_lineage(namespace, name)
 
     return router
+
+
+def ingest_events_dir(events_dir) -> int:
+    """Ingest a directory of OpenLineage RunEvent JSON files (kvasir's native emission,
+    file transport) into aegir_hx. Idempotent: ingested files gain a ``.ingested``
+    marker; a bad event never blocks the caller. The raw files REMAIN — they are the
+    durable OL record the run tree persists (Marquez-servable at whim)."""
+    import json as _json
+    from pathlib import Path as _Path
+    d = _Path(events_dir)
+    if not d.exists():
+        return 0
+    n = 0
+    for f in sorted(d.glob("*.json")):
+        marker = f.with_suffix(f.suffix + ".ingested")
+        if marker.exists():
+            continue
+        try:
+            ingest_run_event(_json.loads(f.read_text()))
+            marker.touch()
+            n += 1
+        except Exception:  # noqa: BLE001
+            continue
+    return n

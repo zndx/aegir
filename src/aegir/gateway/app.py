@@ -66,6 +66,11 @@ def create_app(cfg: Config | None = None) -> FastAPI:
     # Extended OpenLineage variant over aegir_hx (/api/v1/lineage, /api/lineage/*).
     from aegir.governance.ol import make_router as _ol_router
     app.include_router(_ol_router())
+    try:
+        from aegir.gateway.marquez import router as _mq
+        app.include_router(_mq)   # Marquez-compatible OL read API (RH 2026-07-23)
+    except Exception:  # noqa: BLE001 — no graph DB in this env; OL surface absent
+        pass
     _mount_static_bundle(app, cfg)
     _wire_lineup_upkeep(app, cfg)
     return app

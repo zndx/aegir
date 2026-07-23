@@ -122,11 +122,17 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     def start(self):
         if self.strategy_ref:
             os.environ["AEGIR_STRATEGY_REF"] = self.strategy_ref  # one seam: all resolvers follow
+        # OL-first (RH 2026-07-23): kvasir emits OpenLineage RunEvents natively; the
+        # flow CONSUMES AND PERSISTS them run-scoped ({run_out}/ol_events — the durable
+        # raw record) and projects them into governed provenance at step boundaries,
+        # alongside the flow's own OL emission — one lineage spine, Marquez-servable.
         self.run_out = self.output_dir or (
             str(ART / "sdg-corpora" /
                 (self._shadow_dir() if self.strategy_ref else "corpus")) if self.corpus_mode
             else str(ART / "sdg-corpora" / current.run_id))
         Path(self.run_out, "entities").mkdir(parents=True, exist_ok=True)
+        os.environ["KVASIR_OL_DIR"] = str(Path(self.run_out, "ol_events").resolve())
+        Path(self.run_out, "ol_events").mkdir(exist_ok=True)
         manifest = REPO / "build/domain_harvest/manifest.jsonl"
         docs = sorted((REPO / "build/domain_harvest/docs").glob("*.txt"))
         if not docs:
@@ -317,6 +323,13 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             raise RuntimeError(f"realize failed (exit {r.returncode})")
         self.structure = json.loads(Path(self.run_out, "ontology/structure.json").read_text())
         self.emit_event("realize.done", {"shape_emd": str(self.structure.get("shape_emd"))})
+        try:
+            from aegir.governance.ol import ingest_events_dir
+            n_ol = ingest_events_dir(Path(self.run_out, 'ol_events'))
+            if n_ol:
+                print(f'   OL: {n_ol} kvasir run event(s) → governed provenance')
+        except Exception:  # noqa: BLE001 — provenance never blocks the pass
+            pass
         self.next(self.build_constructs)
 
     @traced_step
