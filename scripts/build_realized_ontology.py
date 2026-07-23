@@ -90,6 +90,10 @@ if _os.environ.get("AEGIR_PROPERTY_DOMAINS", "1") == "1":        # DEFAULT ON (2
 # ⊑ cco ICE, shipped in every release so a database-only consumer can tag every entity.
 from aegir.ontology.relational_concepts import RELATIONAL_CONCEPTS_OMN as _RELC
 NUMERIC_BFO = NUMERIC_BFO + _RELC
+# spec interop — PRODML + SysMLv2 mapped entities (RH 2026-07-23: certain, RC-released;
+# rdfs:seeAlso carries the source-spec join for HDF5/database-side consumers).
+from aegir.ontology.spec_mappings import SPEC_MAPPINGS_OMN as _SPEC
+NUMERIC_BFO = NUMERIC_BFO + _SPEC
 if _os.environ.get("AEGIR_RELATION_SIGNATURES", "1") != "0":     # DEFAULT ON since 2026-07-19:
     # the 39 miscasts are re-authored (UNSAT=0 verified) — signatures now guard every realize.
     from aegir.ontology.relation_signatures import SIGNATURES_OMN as _SIG

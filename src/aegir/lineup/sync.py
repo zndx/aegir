@@ -31,6 +31,7 @@ dry materialization + diff so the change can be reviewed first.
 """
 from __future__ import annotations
 
+import json
 import shutil
 import subprocess
 import sys
@@ -213,7 +214,14 @@ def _regen_vocabulary() -> bool:
     print("   " + _last(r.stdout, "(SKOS build produced no output)"))
     if r.returncode != 0:
         print("   SKOS build FAILED:\n" + (r.stderr or "")[-400:])
-    return r.returncode == 0
+        return False
+    # the SCHEME layer ships verbatim (RH 2026-07-23: six tops + PRODML/SYSML mapped-spec
+    # schemes CONFIRMED — the overlay is the ConceptScheme SoT; vocabulary.ttl carries
+    # the derived concept census, this file carries the graduated organization)
+    shutil.copy2(SRC_ONTO / "domain_concepts.ttl", CORPORA / "vocabulary" / "domain-concepts.ttl")
+    print("   scheme layer shipped → vocabulary/domain-concepts.ttl (confirmed tops + "
+          "mapped-spec schemes)")
+    return True
 
 
 def _regen_ddl() -> bool:
@@ -310,6 +318,89 @@ def _verify_pg_load(run_dir: Path) -> bool:
     return True
 
 
+def _mirror_comprehensive() -> bool:
+    """Ship the comprehensive (certified-union) lowering (RH 2026-07-23: comprehensive
+    is the DEFAULT scope): mirror build/comprehensive_release → corpora/ddl-comprehensive/
+    <omn-sha16>/, content-addressed and swap-only-on-change like the spine. HARD GATE:
+    a missing or non-consistent certificate ships NOTHING (never publish uncertified);
+    the postgres loadability gate then proves the shipped DDL (database
+    ``sdg_comprehensive``, left loaded for direct testing)."""
+    import hashlib
+    src = REPO / "build/comprehensive_release"
+    need = ["ddl.sql", "plan.json", "shapes.ttl", "certificate.json", "structure.json",
+            "ontology_entity_associations.json", "sdg-ontology.omn"]
+    if not all((src / f).exists() for f in need):
+        print("   comprehensive release dir incomplete — not shipped (run the "
+              "comprehensive realize first)")
+        return True
+    try:
+        cert = json.loads((src / "certificate.json").read_text())
+    except Exception as e:  # noqa: BLE001
+        print(f"   comprehensive certificate unreadable — NOT shipped: {e}")
+        return False
+    if cert.get("skipped") or not cert.get("isConsistent"):
+        print(f"   comprehensive certificate not green (skipped={cert.get('skipped')} "
+              f"consistent={cert.get('isConsistent')}) — NOT shipped")
+        return False
+    run_id = hashlib.sha256((src / "sdg-ontology.omn").read_bytes()).hexdigest()[:16]
+    out = CORPORA / "ddl-comprehensive"
+    dst = out / run_id
+    if dst.exists():
+        print(f"   comprehensive unchanged (run {run_id}) — kept committed bytes (idempotent)")
+    else:
+        out.mkdir(parents=True, exist_ok=True)
+        for d in out.iterdir():                # content changed → new id: swap
+            if d.is_dir():
+                shutil.rmtree(d)
+        dst.mkdir()
+        for f in need:
+            shutil.copy2(src / f, dst / f)
+        (dst / "README.md").write_text(
+            f"# Comprehensive relational lowering — `{run_id}`\n\n"
+            "kvasir's deterministic DDL over the CERTIFIED union (released catalog ∪ "
+            "entity generations ∪ armed domains ∪ mapped-spec entities): schema-only "
+            "(no row data), postgres-proven, FK constraints as a post-CREATE ALTER "
+            "pass so it loads in one `psql -f ddl.sql`.\n\n"
+            "| file | role |\n|---|---|\n"
+            "| `ddl.sql` | the loadable schema (see `just load-comprehensive`) |\n"
+            "| `plan.json` | kvasir's cited election record (class/property IRIs per "
+            "table/junction/lookup) |\n"
+            "| `ontology_entity_associations.json` | the closure artifact — every "
+            "relational entity → its ontological source (exact-IRI, generator-recorded) |\n"
+            "| `shapes.ttl` | SHACL Core constraint view |\n"
+            "| `certificate.json` | the HermiT verdict this release shipped under |\n"
+            "| `structure.json` | SchemaPile structure score |\n"
+            "| `sdg-ontology.omn` | the certified union the DDL was lowered from |\n")
+        print(f"   comprehensive shipped → ddl-comprehensive/{run_id} "
+              f"(cert: consistent, {cert.get('n_classes')} classes)")
+    # loadability gate (schema-only): database sdg_comprehensive, recreated + left loaded
+    import os
+    env = {**os.environ,
+           "PGHOST": os.environ.get("PGHOST", "127.0.0.1"),
+           "PGPORT": os.environ.get("PGPORT", "5555"),
+           "PGUSER": os.environ.get("PGUSER", os.environ.get("USER", "postgres"))}
+
+    def _psql(*a: str) -> subprocess.CompletedProcess:
+        return subprocess.run(["psql", *a], capture_output=True, text=True, env=env)
+
+    pre = _psql("-d", "postgres", "-qc", "DROP DATABASE IF EXISTS sdg_comprehensive",
+                "-c", "CREATE DATABASE sdg_comprehensive")
+    if pre.returncode != 0:
+        print(f"   comprehensive pg load SKIPPED (instance unavailable): "
+              f"{(pre.stderr or '').strip()[:120]}")
+        return True
+    r = _psql("-d", "sdg_comprehensive", "-v", "ON_ERROR_STOP=1", "-q",
+              "-f", str(dst / "ddl.sql"))
+    if r.returncode != 0:
+        print(f"   comprehensive pg load FAILED: {(r.stderr or '').strip()[-300:]}")
+        return False
+    m = _psql("-d", "sdg_comprehensive", "-tAc",
+              "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'")
+    print(f"   comprehensive pg load VERIFIED → database sdg_comprehensive "
+          f"({(m.stdout or '').strip()} tables) — at the ready for direct testing")
+    return True
+
+
 def run(args=None) -> int:
     commit = bool(getattr(args, "commit", False))
     push = bool(getattr(args, "push", False))
@@ -329,6 +420,8 @@ def run(args=None) -> int:
     _regen_ddl()
     print("4b) loadable SQL bundle (postgres/trino/spark) → corpora/ddl/<run>/sql/")
     _emit_sql_bundle()
+    print("4c) comprehensive lowering (certificate-gated) → corpora/ddl-comprehensive/")
+    _mirror_comprehensive()
 
     st = _sh(["git", "status", "--short"], cwd=CORPORA)
     changed = bool((st.stdout or "").strip())

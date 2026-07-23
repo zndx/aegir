@@ -30,6 +30,54 @@ if str(REPO) not in sys.path:  # `scripts.` imports when exec'd as a file (sys.p
     sys.path.insert(0, str(REPO))
 
 
+def _scope_shared_enum_members(omn: str) -> str:
+    """Tier-1 mechanical repair (fictional-particulars policy): a bare enum member
+    shared across DISTINCT oneOf vocabularies (``sdg:intermediate`` in AcademicLevelKind
+    AND FitnessLevelKind…) types ONE individual into category-incompatible Kind classes —
+    the exact ABox clash HermiT reports as inconsistent-with-zero-unsat while kvasir's
+    EL core (no nominals) sees nothing. Per-vocabulary codes are DISTINCT particulars we
+    own, so shared members are scoped per enum (``sdg:AcademicLevelKind__intermediate``),
+    declarations emitted, every rename worklisted — never silent."""
+    enum_pat = re.compile(
+        r"(^Class:\s*(\S+)\n(?:[ \t][^\n]*\n)*?[ \t]+EquivalentTo:\s*\{)([^}]*)(\})", re.M)
+    counts: dict = {}
+    for m in enum_pat.finditer(omn):
+        for mem in (x.strip() for x in m.group(3).split(",") if x.strip()):
+            counts[mem] = counts.get(mem, 0) + 1
+    shared = {k for k, v in counts.items() if v > 1}
+    if not shared:
+        return omn
+    worklist = []
+    new_decls: "set[str]" = set()
+
+    def _rewrite(m: "re.Match") -> str:
+        cls_local = m.group(2).split(":")[-1]
+        members = [x.strip() for x in m.group(3).split(",") if x.strip()]
+        out = []
+        for mem in members:
+            if mem in shared:
+                scoped = f"sdg:{cls_local}__{mem.split(':')[-1]}"
+                worklist.append({"enum": m.group(2), "member": mem, "scoped": scoped})
+                new_decls.add(scoped)
+                out.append(scoped)
+            else:
+                out.append(mem)
+        return m.group(1) + ", ".join(out) + m.group(4)
+
+    omn = enum_pat.sub(_rewrite, omn)
+    # the original shared-member declarations may now be unreferenced; the scoped ones
+    # MUST be declared for Manchester to parse the enumerations
+    omn += "\n" + "".join(f"\nIndividual: {d}\n" for d in sorted(new_decls))
+    Path("build/enum_member_scoping.json").write_text(json.dumps(
+        {"n_shared_members": len(shared), "n_rewrites": len(worklist),
+         "rule": "shared oneOf members are distinct per-vocabulary particulars — "
+                 "scoped per enum, never merged across Kinds",
+         "rewrites": worklist}, indent=1))
+    print(f"unified: {len(shared)} shared enum members scoped per-enum "
+          f"({len(worklist)} rewrites) → build/enum_member_scoping.json")
+    return omn
+
+
 def _splice_ontology(base_omn: str, extra_path: Path) -> str:
     """GENERATION UNIFICATION (RH 2026-07-21): OMN-text union of an additional realized
     ontology (the catalog realization) into the entity-derived doc. The extra doc's prefix
@@ -45,6 +93,10 @@ def _splice_ontology(base_omn: str, extra_path: Path) -> str:
             base_pfx[k] = v
     body = re.sub(r"^Prefix:[^\n]*\n", "", extra, flags=re.M)
     body = re.sub(r"^Ontology:[^\n]*\n", "", body, flags=re.M)
+    # the catalog's Import: line must NEVER ride the splice: it carries a machine-local
+    # file: path (standalone violation) and double-loads the theory beside
+    # --inline-theory — and an orphaned mid-document Import: derails OWLAPI parsing.
+    body = re.sub(r"^Import:[^\n]*\n", "", body, flags=re.M)
     base_kind = {m.group(2): m.group(1) for m in
                  re.finditer(r"^(Object|Data|Annotation)Property:\s*(\S+)$", base_omn, re.M)}
     # cross-generation PROPERTY PUNS (same sdg: name, different kind) are illegal in OWL 2 DL
@@ -66,10 +118,17 @@ def _splice_ontology(base_omn: str, extra_path: Path) -> str:
             {"property_kind_conflicts": conflicts}, indent=1))
     base_decls = set(re.findall(r"^((?:Object|Data|Annotation)Property: \S+)$", base_omn, re.M))
     body_lines = []
-    for ln in body.split("\n"):
+    lines = body.split("\n")
+    for i, ln in enumerate(lines):
         if ln.strip() and re.fullmatch(r"(?:Object|Data|Annotation)Property: \S+", ln.strip()) \
                 and ln.strip() in base_decls:
-            continue
+            nxt = lines[i + 1] if i + 1 < len(lines) else ""
+            if not nxt.startswith((" ", "\t")):
+                continue          # BARE duplicate declaration → dedup
+            # A frame HEADER with an indented body (post-domains-flip catalogs carry
+            # armed `Domain:` children): dropping the header orphans the children →
+            # "Encountered Domain:" parse failure. Headers stay; repeated frames are
+            # legal OMN axiom union.
         body_lines.append(ln)
     if add_pfx:
         base_omn = base_omn.replace("Ontology:", "\n".join(add_pfx) + "\nOntology:", 1)
@@ -354,7 +413,7 @@ def _reconcile_categories(omn: str) -> "tuple[str, list]":
 def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
             merge_ontology: "Path | None" = None, ground_entity_props: bool = False,
             reconcile_categories: bool = False, arm_property_domains: bool = False,
-            inline_theory: bool = False) -> dict:
+            inline_theory: bool = False, drop_individuals: bool = False) -> dict:
     from aegir.ontology.derive_loop import merge_entities
     from aegir.ontology.entities import from_json, to_manchester
 
@@ -367,16 +426,44 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
     if merge_ontology:
         omn = _splice_ontology(omn, merge_ontology)
         print(f"unified: merged ontology {merge_ontology} spliced (prefixes reconciled)")
+    if drop_individuals:
+        # TBox-projection posture (the comprehensive DDL release): the schema is a
+        # class-level artifact — typed ABox individuals bring cross-generation instance
+        # clashes that neither kvasir ddl nor the certificate should carry. EXCEPT:
+        # oneOf enum MEMBERS ({ sdg:elementary, … } in Kind classes) are structural —
+        # stripping them breaks the very axioms kvasir lowers to lookup tables
+        # (Manchester refuses to parse an enumeration of undeclared individuals).
+        enum_members: set = set()
+        for m in re.finditer(r"\{([^}]*)\}", omn):
+            enum_members.update(x.strip() for x in m.group(1).split(",") if x.strip())
+        pat = re.compile(r"^Individual:\s*(\S+)[^\n]*\n(?:[ \t][^\n]*\n|\n)*", re.M)
+        n_all = n_kept = 0
+
+        def _keep(mo: "re.Match") -> str:
+            nonlocal n_all, n_kept
+            n_all += 1
+            if mo.group(1) in enum_members:
+                n_kept += 1
+                return mo.group(0)
+            return ""
+
+        omn = pat.sub(_keep, omn)
+        print(f"unified: {n_all - n_kept}/{n_all} Individual frames dropped "
+              f"(TBox projection; {n_kept} oneOf enum members kept)")
+        omn = _scope_shared_enum_members(omn)
     if reconcile_categories:
         omn, _wl = _reconcile_categories(omn)
         Path("build/category_reconciliation.json").write_text(json.dumps(
             {"n": len(_wl), "repairs": _wl}, indent=1))
         print(f"category reconciliation: {len(_wl)} double-category classes repaired "
               f"(majority side kept) → build/category_reconciliation.json")
-    # the relational-concepts closure rides every union too (census + verify coverage)
+    # the relational-concepts closure rides every union too (census + verify coverage),
+    # and the PRODML/SysMLv2 mapped entities (RH 2026-07-23) with it
     try:
         from aegir.ontology.relational_concepts import RELATIONAL_CONCEPTS_OMN as _RELC
         omn += "\n" + _RELC
+        from aegir.ontology.spec_mappings import SPEC_MAPPINGS_OMN as _SPEC
+        omn += "\n" + _SPEC
     except Exception:  # noqa: BLE001
         pass
     if inline_theory:
@@ -566,7 +653,52 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
         from aegir.ontology.deeponto_harness import ensure_jvm
         ensure_jvm()  # MUST precede any deeponto import (click.prompt hangs non-interactively)
         from scripts.build_realized_ontology import _reason
-        _onto, _tmp, consistent, n_classes, unsat, why = _reason(omn, explain=bool(0))
+        reasoned_omn = omn
+        if drop_individuals:
+            # DECOMPOSED CERTIFICATION (the T1 posture; ABox × ≡-classes is the known
+            # HermiT grind — the full nominal union burned the 5400s budget without a
+            # verdict). Post-scoping each enum member types into EXACTLY one Kind and
+            # appears nowhere else, so consistency decomposes:
+            #   A. HermiT certifies the classes-only projection (enum ≡ and member
+            #      declarations removed) — every class incl. the Kinds;
+            #   B. the enum layer is verified MECHANICALLY below: member ∈ exactly one
+            #      enum ∧ no other axiom mentions it ⇒ {m : K} consistent iff K
+            #      satisfiable, which A certifies.
+            reasoned_omn = re.sub(r"^[ \t]+EquivalentTo:\s*\{[^}]*\}\s*\n", "", omn, flags=re.M)
+            reasoned_omn = re.sub(r"^Individual:[^\n]*\n(?:[ \t][^\n]*\n|\n)*", "",
+                                  reasoned_omn, flags=re.M)
+            cert["mode"] = "decomposed (classes-only HermiT ⊕ mechanical enum layer)"
+        _onto, _tmp, consistent, n_classes, unsat, why = _reason(reasoned_omn, explain=bool(0))
+        if drop_individuals:
+            # pass B is about INDIVIDUAL-POSITION assertions only: a member token also
+            # naming a class/property elsewhere is OWL 2 DL punning — distinct entity,
+            # outside the individual's constraint surface. Individual positions in this
+            # grammar: enum braces · Individual: declarations · HasValue (`value x`) ·
+            # Facts:/SameAs (none survive the TBox projection — measured, not assumed).
+            # ANCHORED to Class-frame EquivalentTo enumerations only — annotation
+            # prose uses {ClassName} template braces (137 false "members" measured)
+            enum_count: dict = {}
+            for m_ in re.finditer(r"^Class:\s*\S+\n(?:[ \t][^\n]*\n)*?"
+                                  r"[ \t]+EquivalentTo:\s*\{([^}]*)\}", omn, re.M):
+                for mem in (x.strip() for x in m_.group(1).split(",") if x.strip()):
+                    enum_count[mem] = enum_count.get(mem, 0) + 1
+            value_pos = set(re.findall(r"\bvalue\s+([\w]+:[\w]+)", omn))
+            n_facts = len(re.findall(r"^[ \t]+Facts:", omn, re.M))
+            viol = [{"member": mem, "n_enums": ne,
+                     "hasvalue_assertion": mem in value_pos}
+                    for mem, ne in enum_count.items()
+                    if ne != 1 or mem in value_pos]
+            cert["enum_layer"] = {
+                "n_members": len(enum_count), "n_violations": len(viol),
+                "n_facts_frames": n_facts, "violations": viol[:12],
+                "premise": "each member enumerated by exactly ONE Kind, with no other "
+                           "individual-position assertion (HasValue/Facts) ⇒ {m:K} is "
+                           "consistent iff K is satisfiable — certified in pass A; "
+                           "class/property token punning is OWL 2 DL-legal"}
+            if viol or n_facts:
+                consistent = False
+            print(f"enum layer: {len(enum_count)} members · {len(viol)} violations · "
+                  f"{n_facts} Facts frames (decomposed-cert pass B)")
         if int(n_classes) == 0 and merged:
             raise RuntimeError(
                 f"vacuous HermiT parse: {len(merged)} merged classes but OWLAPI loaded 0 — "
@@ -609,11 +741,16 @@ def main() -> int:
     ap.add_argument("--ground-entity-props", action="store_true",
                     help="ground bare entity sdg: properties by stem (signatures/domains bite; "
                          "phase-2 signal harvest)")
+    ap.add_argument("--drop-individuals", action="store_true",
+                    help="TBox projection: strip spliced Individual frames (the comprehensive "
+                         "DDL release posture — schema is class-level; ABox clashes are the "
+                         "individual-registry worklist, not this artifact's burden)")
     a = ap.parse_args()
     res = realize(a.entities_dir, a.output_dir, skip_hermit=a.skip_hermit,
                   merge_ontology=a.merge_ontology, ground_entity_props=a.ground_entity_props,
                   reconcile_categories=a.reconcile_categories,
-                  arm_property_domains=a.arm_property_domains, inline_theory=a.inline_theory)
+                  arm_property_domains=a.arm_property_domains, inline_theory=a.inline_theory,
+                  drop_individuals=a.drop_individuals)
     ok = res["certificate"].get("isConsistent", True) is not False
     return 0 if ok else 2
 

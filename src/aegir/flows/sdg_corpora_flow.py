@@ -116,10 +116,11 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     corpus_mode = Parameter("corpus", default=True, type=bool,
                             help="accrete into the persistent corpus dir (idempotent top-up per "
                                  "input window) instead of a fresh per-run dir")
-    ddl_scope = Parameter("ddl-scope", default="catalog",
+    ddl_scope = Parameter("ddl-scope", default="both",
                           help="the kvasir-scoped DDL stage's scope (pathway consolidation, RH "
-                               "2026-07-23): catalog (the released spine) | comprehensive (the "
-                               "certified-union kvasir lowering) | both | off")
+                               "2026-07-23): comprehensive is DEFAULT-ON by ruling — 'both' runs "
+                               "it alongside catalog (the released spine). catalog | "
+                               "comprehensive | both | off")
 
     @traced_step
     @step
@@ -396,6 +397,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                     "--entities-dir", f"{self.run_out}/entities",
                     "--merge-ontology", str(REPO / "corpora/ontology/sdg-ontology.omn"),
                     "--inline-theory", "--arm-property-domains", "--ground-entity-props",
+                    "--reconcile-categories", "--drop-individuals",
                     "--output-dir", str(out)]
             if self.skip_hermit:
                 args.append("--skip-hermit")

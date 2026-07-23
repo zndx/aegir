@@ -521,24 +521,33 @@
     dct:isReplacedBy <https://signals.zndx.org/sdg#UTILITY_WATER> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-# ── CANDIDATE top-concept declarations (RH 2026-07-21): rdfs:domain specification is
-# unconfirmed → ConceptScheme candidates unconfirmed → these topConceptOf/hasTopConcept
-# triples are PROVISIONAL; the aperture's settled condition is skos:broader proper, and
-# S9 (scheme ⊥ concept) may ultimately retire true tops from aperture membership. ──
+# ── CONFIRMED top-concept declarations (RH 2026-07-23, worklist-5 graduation): all six
+# candidates graduate candidate → confirmed ConceptScheme tops under the versioned-release
+# doctrine — released (as RC) inviting external review, incorporated into refined releases.
+# Evidence of record (the dossier): scheme coherence silhouette 0.353 (floor 0.15, every
+# family clears); domain purity 0.9941 mean · 99.2% ≥ 0.60 on the CERTIFIED released set.
+# The selectivity finding stands: SCHEMES ORGANIZE, CONCEPTS ADMIT — the admission-surface
+# recomposition (root de-weighting, ruling B) remains queued; this graduation changes
+# S9 structure, not aperture membership. ──
 <https://signals.zndx.org/sdg/scheme> a skos:ConceptScheme ;
     skos:hasTopConcept <https://signals.zndx.org/sdg#LIMS> ,
         <https://signals.zndx.org/sdg#MFG> ,
         <https://signals.zndx.org/sdg#ENERGY> ,
         <https://signals.zndx.org/sdg#CSG> ,
         <https://signals.zndx.org/sdg#UTILITY> ,
-        <https://signals.zndx.org/sdg#DATAENG> .
+        <https://signals.zndx.org/sdg#DATAENG> ,
+        <https://signals.zndx.org/sdg#PRODML> ,
+        <https://signals.zndx.org/sdg#SYSML> .
 
-# ── CANDIDATE scheme families (RH 2026-07-21): PRODML (sibling of CSG — pure constructive
-# solid geometry, distinct from the consumer-electronics design concept) and SYSML (whose
-# rdfs:domain yields Model-Based Systems Engineering practices and tools). PROVISIONAL until
-# rdfs:domain confirmation; NOT aperture points (no admission-surface change until ratified
-# and content-backed). PRODML extension is comprehensive-into-SDG; FIBO/FHIR remain foreign
-# under-management integrations — SDG stays distinctly our own. ──
+# ── CONFIRMED mapped-spec scheme families (RH 2026-07-23): PRODML and SYSML enter the SDG
+# namespace as MAPPED ONTOLOGY ENTITIES (spec_mappings module: sdg:Prodml*/sdg:Sysml*
+# classes, BFO/CCO-grounded, rdfs:seeAlso carrying the source-spec join) so SDG
+# inter-operates with any conforming data source — HDF5 files structured to both specs
+# are in the downstream analytical queue. Confirmed by decree of certainty, shipped as
+# RC under the versioned-release doctrine. STILL NOT aperture admission points (the
+# schemes-organize/concepts-admit finding; ruling B pending). PRODML extension is
+# comprehensive-into-SDG; FIBO/FHIR remain foreign under-management integrations —
+# SDG stays distinctly our own. ──
 
 <https://signals.zndx.org/sdg#PRODML> a skos:Concept ;
     skos:prefLabel "Production Markup Language Domain" ;
