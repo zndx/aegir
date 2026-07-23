@@ -504,6 +504,25 @@ def project_released_ddl(rd: dict) -> list[N.Note]:
     out: list[N.Note] = []
     fam_tables: dict[str, list[str]] = {}
     seen: set[str] = set()
+    # high-fidelity substrate, loaded once (RH 2026-07-23 — released tables render at
+    # the SAME fidelity as the trunk spine: typed columns with slot classes, sample
+    # rows, and the DDL itself as a copyable native block)
+    run_dir = S.REPO / "corpora" / "ddl" / str(rd["run"])
+    col_slots: "dict[tuple, str]" = {}
+    samples: "dict[str, dict]" = {}
+    try:
+        import pyarrow.parquet as _pq
+        nm_ = _pq.read_table(run_dir / "naming_map.parquet").to_pylist()
+        for r_ in nm_:
+            if r_.get("slot_ref") and str(r_["slot_ref"]) != "__pk__":
+                col_slots[(str(r_["table_name"]), str(r_["col_name"]))] = str(r_["slot_ref"])
+        br_ = _pq.read_table(run_dir / "base_rows.parquet").to_pylist()
+        for r_ in br_:
+            t_ = str(r_["table_name"])
+            samples.setdefault(t_, {}).setdefault(int(r_["row_ix"]), {})[
+                str(r_["col_name"])] = str(r_["value"])
+    except Exception:  # noqa: BLE001
+        pass
     for r in rd["rows"]:
         name = r.get("table_name")
         if not name or name in seen:
@@ -514,6 +533,27 @@ def project_released_ddl(rd: dict) -> list[N.Note]:
         fam_tables.setdefault(fam, []).append(rid)
         cols = _json.loads(r.get("columns_json") or "[]")
         col_names = [(c.get("name") if isinstance(c, dict) else c) for c in cols]
+        col_rows = ["| column | sql type | key | slot (class) |", "|---|---|---|---|"]
+        for c in cols:
+            if not isinstance(c, dict):
+                col_rows.append(f"| `{c}` | — | — | — |")
+                continue
+            key_ = "PK" if c.get("pk") else ("NULL" if c.get("nullable") else "NOT NULL")
+            slot_ = col_slots.get((name, c.get("name", "")))
+            slot_md = (N.wl(f"ontology/self-census/class/{slot_}", slot_) if slot_ else "—")
+            col_rows.append(f"| `{c.get('name')}` | {c.get('sql_type', '—')} "
+                            f"| {key_} | {slot_md} |")
+        sample_md = ""
+        srows = samples.get(name) or {}
+        if srows:
+            ordered = [srows[k] for k in sorted(srows)][:3]
+            hdr = [c_ for c_ in col_names if any(c_ in r_ for r_ in ordered)][:8]
+            if hdr:
+                sample_md = ("\n**Sample rows** (materialized, RI-true).\n\n|"
+                             + "|".join(hdr) + "|\n|" + "|".join(["---"] * len(hdr)) + "|\n"
+                             + "\n".join("|" + "|".join(
+                                 str(r_.get(c_, ""))[:24] for c_ in hdr) + "|"
+                                 for r_ in ordered) + "\n")
         fks = _json.loads(r.get("fks_json") or "[]")
         fk_md = ""
         if fks:
@@ -521,6 +561,9 @@ def project_released_ddl(rd: dict) -> list[N.Note]:
                 f"- `{e.get('src_col', e.get('col', '?'))}` → "
                 f"`{e.get('dst_table', e.get('ref_table', '?'))}.{e.get('dst_col', e.get('ref_col', 'id'))}`"
                 for e in fks) + "\n")
+        ddl_md = ""
+        if r.get("ddl_text"):
+            ddl_md = "\n```sql\n" + str(r["ddl_text"]).strip() + "\n```\n"
         out.append(N.Note(
             id=rid, title=name, kind="relational-table", data_product="relational",
             frontmatter={"era": "release", "run": rd["run"], "category": fam,
@@ -528,8 +571,10 @@ def project_released_ddl(rd: dict) -> list[N.Note]:
             body=(f"**Released table `{name}`** (run `{rd['run']}`, corpora/ddl — the SHARE "
                   f"record). Realizes {N.wl('ontology/term/' + str(r.get('template_id')), str(r.get('template_id')))}"
                   f" · category {N.wl(f'relational/category/{fam}', fam)}.\n\n"
-                  f"Columns ({len(col_names)}): " + " · ".join(f"`{c}`" for c in col_names) + "\n"
-                  + fk_md)))
+                  + "\n".join(col_rows) + "\n"
+                  + sample_md
+                  + fk_md
+                  + ddl_md)))
     for fam, rids in sorted(fam_tables.items()):
         out.append(N.Note(
             id=f"relational/category/{fam}", title=f"{fam} (tables)", kind="relational-category",
