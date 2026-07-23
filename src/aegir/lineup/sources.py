@@ -512,8 +512,10 @@ def sdg_constructs() -> "dict | None":
                 pk = t.get("pk")
                 pk_cols = set(pk if isinstance(pk, list) else [pk] if pk else [])
                 fk_by_col = {fk.get("col"): fk for fk in (t.get("fks") or [])}
+                aligned: "list[list[str]]" = []
                 for c in t.get("columns") or []:
                     cells = [str(x.get("value", "")) for x in (c.get("cells") or [])]
+                    aligned.append([v[:40] for v in cells[:4]])
                     distinct = list(dict.fromkeys(v for v in cells if v))
                     fk = fk_by_col.get(c.get("name"))
                     e["columns"].append({
@@ -521,7 +523,19 @@ def sdg_constructs() -> "dict | None":
                         "samples": [v[:40] for v in distinct[:3]],
                         "pk": c.get("name") in pk_cols,
                         "concept": c.get("concept"),
+                        # normalized concept-recording (consolidation ruling b): role +
+                        # exact prefixed IRIs ride into the panel when the construct
+                        # recorded them; legacy constructs fall back to `concept`
+                        "role": c.get("role"),
+                        "references_class": c.get("references_class"),
+                        "property_iri": c.get("property_iri"),
+                        "of_class": c.get("of_class"),
                         "fk": f"{fk.get('ref_table')}.{fk.get('ref_col')}" if fk else None})
+                # ALIGNED sample rows (cells are row-aligned per construct) — the
+                # current-root panels render row-samples; scratch conforms
+                n_rows = max((len(a) for a in aligned), default=0)
+                e["rows"] = [[a[i] if i < len(a) else "" for a in aligned]
+                             for i in range(min(n_rows, 4))]
                 e["fks"] = t.get("fks") or []
             e["constructs"].append(pid)
         for v in d.get("views") or []:

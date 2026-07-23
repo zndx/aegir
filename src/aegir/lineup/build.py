@@ -659,7 +659,22 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]],
         cat = S.relational_category(t)
         rid = f"relational/table/{_table_id(t.template_id)}"
         cat_tables.setdefault(cat, []).append(rid)
-        rowsmd = "\n".join(f"| `{c.name}` | {c.slot_type} | {c.slot_ref} |" for c in cols)
+        # layout CONFORMS to the current-root released-table panels (RH 2026-07-23:
+        # one panel class, root-true substrates): key column + slot-as-class links —
+        # scratch keeps its root-true extras (realizes-term pivot, verbalization,
+        # quality badge, realized subgraph) on top of the shared shape.
+        _nn = getattr(st, "not_null", set()) or set()
+
+        def _slot_md(ref: str) -> str:
+            if not ref or ref == "__pk__":
+                return "—"
+            return (N.wl(f"ontology/self-census/class/{ref}", ref)
+                    if ref[:1].isupper() else f"`{ref}`")
+
+        rowsmd = "\n".join(
+            f"| `{c.name}` | {c.slot_type} | "
+            f"{'PK' if (c.slot_ref == '__pk__' or c.name == 'id') else ('NOT NULL' if c.name in _nn else 'NULL')} | "
+            f"{_slot_md(str(c.slot_ref or ''))} |" for c in cols)
         sub = subgraphs.get(t.template_id) or {}
         sats = {n: c for n, c in (sub.get("tables") or {}).items() if n != st.table.name}
         sfks = sub.get("fks") or []
@@ -710,14 +725,21 @@ def project_relational(rows: list[tuple[str, CatalogTemplate]],
                          f"{len(frames)} verbalization frame{'s' if len(frames) != 1 else ''} · "
                          f"de-canning H={h:.2f} {hmark} (anchor `{anchor}`)\n")
 
+        ddl_md = ""
+        try:
+            from aegir.ontology.ddl import render_ddl as _render_ddl
+            ddl_md = "\n```sql\n" + _render_ddl(st, []).strip() + "\n```\n"
+        except Exception:  # noqa: BLE001 — notes are valid without the DDL block
+            pass
         body = (
             f"**Realizes term.** {N.wl(f'ontology/term/{t.template_id}', t.template_id)}  "
             f"(the ontology↔DDL pivot — DeepOnto semantics ↔ polyglot SQL syntax)\n"
             f"{vb_md}\n"
             f"**Columns** ({len(cols)}).\n\n"
-            f"| column | owl/sql type | slot |\n|---|---|---|\n{rowsmd}\n"
+            f"| column | sql type | key | slot (class) |\n|---|---|---|---|\n{rowsmd}\n"
             f"{sample_md}"
             f"{fk_md}"
+            f"{ddl_md}"
         )
         out.append(N.Note(
             id=rid, title=st.table.name, kind="relational-table", data_product="relational",
@@ -2993,15 +3015,34 @@ def run(args=None) -> int:
                         fk_lines.append(f"- `{_col} ∈ {{{' · '.join(sorted(_val))}}}` "
                                         f"— shape-bound domain (sh:in)")
             prov = ", ".join(e["constructs"][:4]) + ("…" if len(e["constructs"]) > 4 else "")
-            # the column detail TABLE — schema only; `key` stays the bounded at-a-glance marker, the
-            # full (unbounded) constraint statements render in the Constraints section below.
-            col_rows = ["| column | type | key |", "|---|---|---|"]
+            # the column detail TABLE — LAYOUT CONFORMS to the current-root released
+            # panels (RH 2026-07-23: one panel class, root-true substrates): the 4th
+            # column links each column's ontological source (normalized role records
+            # where the construct carries them; legacy `concept` as fallback).
+            def _slot_cell(c: dict) -> str:
+                ref = str(c.get("references_class") or "").split(":")[-1]
+                if ref:
+                    return N.wl(f"ontology/self-census/class/{ref}", ref)
+                if str(c.get("role") or "").endswith("AuditTimestampColumn"):
+                    return "—"
+                ofc = str(c.get("of_class") or "").split(":")[-1]
+                if ofc:
+                    return N.wl(f"ontology/self-census/class/{ofc}", ofc)
+                prop = str(c.get("property_iri") or "").split(":")[-1]
+                if prop:
+                    return f"`{prop}`"
+                con = str(c.get("concept") or "")
+                if con and con[:1].isupper():
+                    return N.wl(f"ontology/self-census/class/{con}", con)
+                return f"`{con}`" if con and con not in ("created", "updated") else "—"
+
+            col_rows = ["| column | type | key | slot (class) |", "|---|---|---|---|"]
             for c in e["columns"]:
                 key = ("PK" if c["pk"] else "") + ("+" if c["pk"] and c["fk"] else "") + \
                       (f"FK → {N.wl('relational/table/' + c['fk'].split('.')[0], c['fk'])}"
                        if c["fk"] and c["fk"].split(".")[0] in known
                        else (f"FK → `{c['fk']}`" if c["fk"] else ""))
-                col_rows.append(f"| `{c['name']}` | {c['type']} | {key or '—'} |")
+                col_rows.append(f"| `{c['name']}` | {c['type']} | {key or '—'} | {_slot_cell(c)} |")
             ref_by = [f"- {N.wl('relational/table/' + r['table'], r['table'])} · `{r['col']}`"
                       for r in e.get("referenced_by", [])[:10] if r["table"] in known]
             more_ref = len(e.get("referenced_by", [])) - len(ref_by)
@@ -3009,11 +3050,29 @@ def run(args=None) -> int:
             vw_lines = [f"- {N.wl('relational/view/' + v, v)}"
                         + (f" ({vws[v].get('kind')})" if vws.get(v, {}).get("kind") else "")
                         for v in vw[:8]]
-            sample_tables = []
-            for c in e["columns"]:
-                if c["samples"]:
-                    sample_tables.append(f"| `{c['name']}` |\n|---|\n"
-                                         + "\n".join(f"| {s} |" for s in c["samples"]))
+            # ROW-sample table (conforms to the current-root panels' Sample rows) —
+            # cells are row-aligned in the construct record; per-column stacks retired
+            sample_md = ""
+            rows_ = e.get("rows") or []
+            if rows_:
+                hdr = "| " + " | ".join(f"`{c['name']}`" for c in e["columns"]) + " |"
+                sep = "|" + "|".join("---" for _ in e["columns"]) + "|"
+                body_rows = "\n".join("| " + " | ".join(r) + " |" for r in rows_)
+                sample_md = (f"**Sample rows** (verbatim, from the construct record).\n\n"
+                             f"{hdr}\n{sep}\n{body_rows}\n\n")
+            ddl_md = ""
+            try:
+                cdefs = ",\n".join(f"  {c['name']} {str(c['type']).upper()}"
+                                   for c in e["columns"])
+                pk_c = ", ".join(pk_cols) if pk_cols else ""
+                fk_c = "".join(f",\n  FOREIGN KEY ({fk.get('col')}) REFERENCES "
+                               f"{fk.get('ref_table')}({fk.get('ref_col')})"
+                               for fk in e["fks"] if fk.get("ref_table"))
+                ddl_md = ("```sql\nCREATE TABLE " + n + " (\n" + cdefs
+                          + (f",\n  PRIMARY KEY ({pk_c})" if pk_c else "") + fk_c
+                          + "\n);\n```\n\n")
+            except Exception:  # noqa: BLE001 — notes are valid without the DDL block
+                pass
             # the first-order ERD payload (rendered by the React panel; bounded neighborhood)
             erd_nodes = [{"id": n, "kind": "junction" if e.get("junction") else "table", "focal": True,
                           "cols": [f"{c['name']}: {c['type']}" for c in e["columns"][:8]]}]
@@ -3053,8 +3112,8 @@ def run(args=None) -> int:
                          + (f"\n- _…{more_ref} more_" if more_ref > 0 else "") + "\n\n" if ref_by else "")
                       + ((f"**Views over this table** ({len(vw)})\n" + "\n".join(vw_lines)
                           + (f"\n- _…{len(vw) - 8} more_" if len(vw) > 8 else "") + "\n\n") if vw else "")
-                      + (("**Sample Values**\n\n" + "\n\n".join(sample_tables) + "\n\n")
-                         if sample_tables else "")
+                      + sample_md
+                      + ddl_md
                       + (("**Collections** (" + str(len(maps.get("table_colls", {}).get(n, []))) + ")\n"
                           + "\n".join(f"- {N.wl(c + '/terms', c.split('/')[-1] + ' · terms')}"
                                        for c in maps.get("table_colls", {}).get(n, [])[:10]) + "\n\n")
