@@ -12,11 +12,14 @@ RH semantics (2026-07-23):
   potentially-overlapping admitted candidates, the final item is the highest-genus-
   margin match to a single aperture topic; overlapped rivals yield. Several high-margin
   topic matches per doc are expected; zero is normal.
-- **Root preponderance** — a doc where ≥ ``REVIEW_ROOT_SHARE`` of windows top-match a
-  ``skos:topConcept`` (unfiltered view) while NO genus-level window admits — routes to
-  the agent-mediated (ACP) review worklist: these docs are evidence of MISSING genus
-  anchors, and the review accumulates ontology extension/refinement proposals (the
-  escalation-organ pattern; the worklist is never dropped).
+- **Root preponderance** — a doc with ≥ ``REVIEW_MIN_STRONG`` STRONG ``skos:topConcept``
+  matches (unfiltered top is a root AND its unfiltered rel_margin clears τ — i.e. the
+  doc would have been root-ADMITTED under the pre-recomposition surface) while NO
+  genus-level item admits — routes to the agent-mediated (ACP) review worklist: these
+  docs are evidence of MISSING genus anchors, and the review accumulates ontology
+  extension/refinement proposals (the escalation-organ pattern; never dropped).
+  A weak nearest-neighbor drift toward a root is NOT a match and never reviews
+  (measured: an unqualified trigger fire-hosed 332 out-of-domain docs in minutes).
 
 Batch posture: all of a doc's windows encode in ONE forward pass (GPU-friendly; the
 6-local-GPU sharding rides above this at the stream level).
@@ -25,7 +28,8 @@ from __future__ import annotations
 
 from pathlib import Path  # noqa: F401 — callers type against Path
 
-REVIEW_ROOT_SHARE = 0.5      # REGISTERED: "preponderance" of root-top windows
+REVIEW_MIN_STRONG = 1        # REGISTERED: ≥ this many STRONG root matches (τ-cleared,
+                             # would-have-admitted) with zero genus items → ACP review
 
 
 def token_windows(text: str, *, stride: int = 256, size: int = 512,
@@ -83,13 +87,16 @@ def item_scan(text: str, *, url: "str | None" = None, collection: "str | None" =
         res = client.query_points(collection_name=collection, query=v.tolist(),
                                   limit=10, with_payload=True).points
         hits = [{"score": float(p.score), **(p.payload or {})} for p in res]
-        base_top, _ = view(hits)
+        base_top, base_margin = view(hits)
         genus_top, genus_margin = view([h for h in hits
                                         if str(h.get("code", "")) not in excl])
+        is_root_top = str(base_top.get("code", "")) in excl
         candidates.append({
             "ix": ix, "span": [c0, c1],
             "unfiltered_top": str(base_top.get("code", "")),
-            "root_top": str(base_top.get("code", "")) in excl,
+            "unfiltered_margin": round(base_margin, 4),
+            "root_top": is_root_top,
+            "root_strong": is_root_top and base_margin >= tau,
             "code": str(genus_top.get("code", "")),
             "label": str(genus_top.get("pref_label", "")),
             "genus_margin": round(genus_margin, 4),
@@ -129,17 +136,21 @@ def item_scan(text: str, *, url: "str | None" = None, collection: "str | None" =
         items.append({"span": [cursor, len(text)], "admitted": False, "code": "",
                       "genus_margin": 0.0})
 
-    n_root_top = sum(c["root_top"] for c in candidates)
+    n_root_strong = sum(c["root_strong"] for c in candidates)
     review = None
-    if not kept and candidates and n_root_top / len(candidates) >= REVIEW_ROOT_SHARE:
+    if not kept and n_root_strong >= REVIEW_MIN_STRONG:
         from collections import Counter
-        review = {"reason": "root-preponderance without genus admission — ontology "
+        review = {"reason": "STRONG topConcept match(es) without genus admission — the "
+                            "old surface would have root-admitted this doc; ontology "
                             "extension/refinement candidate (ACP review)",
-                  "n_windows": len(candidates), "n_root_top": n_root_top,
-                  "root_share": round(n_root_top / len(candidates), 3),
+                  "n_windows": len(candidates), "n_root_strong": n_root_strong,
+                  "n_root_top": sum(c["root_top"] for c in candidates),
+                  "strong_share": round(n_root_strong / max(1, len(candidates)), 3),
                   "root_histogram": dict(Counter(c["unfiltered_top"]
                                                  for c in candidates
-                                                 if c["root_top"]).most_common()),
+                                                 if c["root_strong"]).most_common()),
+                  "best_root_margin": max((c["unfiltered_margin"] for c in candidates
+                                           if c["root_strong"]), default=0.0),
                   "best_genus_margin": max((c["genus_margin"] for c in candidates),
                                            default=0.0)}
     return {"candidates": candidates, "items": items, "n_admitted": len(kept),
