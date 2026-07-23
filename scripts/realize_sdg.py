@@ -519,6 +519,12 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
         print(f"grounded {len(grounded)}/{len(props)} entity properties by stem "
               f"(signature-checked: {n_split} sites split to occurrentPartOf · "
               f"{len(escal)} sites escalated) → build/grounding_escalations.json")
+    # OL participation (RH 2026-07-23): kvasir emits OpenLineage RunEvents natively
+    # (KVASIR_OL_DIR, file transport); after the run they ingest into the governed
+    # provenance (governance.ol → aegir_hx/Atlas) — every stage, deterministic and
+    # not, lands in PROVENANCE.
+    import os as _os
+    _os.environ.setdefault("KVASIR_OL_DIR", str(Path("build/ol_events").resolve()))
     output_dir.mkdir(parents=True, exist_ok=True)
     omn_path = output_dir / "sdg-ontology.omn"
     omn_path.write_text(omn)
@@ -611,3 +617,31 @@ if __name__ == "__main__":
         rc = 3
     from aegir.utils.clean_exit import clean_exit
     clean_exit(rc)
+
+
+def ingest_ol_events(events_dir: "Path | str" = "build/ol_events") -> int:
+    """Ingest kvasir-emitted OpenLineage RunEvents into the governed provenance
+    (governance.ol → aegir_hx). Idempotent (MERGE); ingested files gain a .ingested
+    marker so re-runs skip them. Call after any kvasir-invoking pass."""
+    import json as _json
+    d = Path(events_dir)
+    if not d.exists():
+        return 0
+    try:
+        from aegir.governance.ol import ingest_run_event
+    except Exception:  # noqa: BLE001 — no DB in this environment; events stay on disk
+        return 0
+    n = 0
+    for f in sorted(d.glob("*.json")):
+        marker = f.with_suffix(f.suffix + ".ingested")
+        if marker.exists():
+            continue
+        try:
+            ingest_run_event(_json.loads(f.read_text()))
+            marker.touch()
+            n += 1
+        except Exception:  # noqa: BLE001 — a bad event never blocks the pass
+            continue
+    if n:
+        print(f"OL: ingested {n} kvasir run event(s) into governed provenance")
+    return n
