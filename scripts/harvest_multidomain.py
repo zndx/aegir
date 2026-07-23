@@ -21,7 +21,7 @@ from aegir.ontology import domain_index as DI
 
 REPO = Path(__file__).resolve().parents[1]
 STORE = REPO / "build" / "domain_harvest"
-DOMAIN_ROOTS = {"9", "10", "11", "12", "13"}  # LIMS, SysML-manufacturing, energy/WITSML, CSG-electronics, utility networks
+DOMAIN_ROOTS = {"9", "10", "11", "12", "13", "14"}  # LIMS, MFG, ENERGY, CSG, UTILITY, DATAENG
 
 
 def _hash(t: str) -> str:
@@ -39,6 +39,11 @@ def main() -> None:
     ap.add_argument("--collection", default=DI.DEFAULT_APERTURE)
     ap.add_argument("--no-resume", action="store_true")
     a = ap.parse_args()
+    _af = DI.armed_admission_filter()
+    _adm_exclude = _af.get("effective_exclude") or set()
+    if _adm_exclude:
+        print(f"admission filter ARMED: excluding codes {sorted(_adm_exclude)} "
+              f"({', '.join((_af.get('excluded_concepts') or {}).values())})")
 
     (STORE / "docs").mkdir(parents=True, exist_ok=True)
     manifest = STORE / "manifest.jsonl"
@@ -77,7 +82,8 @@ def main() -> None:
         if h in seen:
             dup += 1
             continue
-        hcls = DI.classify_hierarchical(text[: a.max_chars], top_k=5, collection=a.collection)
+        hcls = DI.classify_hierarchical(text[: a.max_chars], top_k=5, collection=a.collection,
+                                        exclude_codes=_adm_exclude or None)
         top = hcls.get("top") or {}
         root = (top.get("ancestor_codes") or [top.get("code", "")])[0].split(".")[0]
         if root in DOMAIN_ROOTS and hcls["rel_margin"] >= a.tau:
