@@ -48,6 +48,7 @@ def main() -> int:
         alt = (getattr(c, "alt_label", "") or "") if c else ""
         alt_ok = alt == frag
         rows.append({"point": p.id, "iri": iri, "fragment": frag,
+                     "code": str((p.payload or {}).get("code", "")),
                      "in_vocab": c is not None, "broader": has_broader,
                      "top_concept": is_top,
                      "hierarchy_position": has_broader or is_top,
@@ -102,27 +103,51 @@ def main() -> int:
     # released admission_filter arms (aperture ∩ topConcepts = ∅). GENUS-STATUS: the
     # genus-first anchor directive (skos:broader ∧ skos:narrower ∧ ¬top) measured as
     # realized — 0/N until the hierarchy deepens ("fill in as needed").
+    # §4.6.3 DISCIPLINE (RH 2026-07-23): skos:hasTopConcept is CONVENTION without
+    # integrity conditions — a declared topConcept need not be topmost, and atypical
+    # ConceptScheme presentations (foreign/mapped/future aperture-genera schemes) may
+    # declare tops that are structurally genus. Therefore: admission EXCLUSION is only
+    # ever the ENUMERATED released filter set; genus status is STRUCTURAL (broader ∧
+    # narrower); topConcept declarations are MEASURED against both, never trusted.
     _af = DI.armed_admission_filter()
     _excl = set(_af.get("exclude_codes") or [])
     _armed = bool(_af.get("effective_exclude"))
     _top_pts = [r for r in rows if r["top_concept"]]
-    _s9_settled = _armed or not _top_pts
-    n_genus = sum(1 for r in rows if r["broader"] and r["narrower"]
-                  and not r["top_concept"])
-    n_nonroot = sum(1 for r in rows if not r["top_concept"])
+    _top_codes = {r["code"] for r in _top_pts if r["code"]}
+    tops_not_excluded = sorted(_top_codes - _excl)
+    excluded_not_tops = sorted(_excl - _top_codes)
+    _s9_settled = _armed and not tops_not_excluded
+    n_genus = sum(1 for r in rows if r["broader"] and r["narrower"])
+    n_pts = len(rows)
+    atypical = [{"code": r["code"], "fragment": r["fragment"],
+                 "top_with_broader": bool(r["broader"]),
+                 "structurally_genus": bool(r["broader"] and r["narrower"])}
+                for r in _top_pts if r["broader"] or (r["broader"] and r["narrower"])]
     print(f"S9-settled driver: filter {'ARMED' if _armed else 'staged (disarmed)'} · "
-          f"{len(_top_pts)} top-concept points in the collection · effective admission "
-          f"surface {'excludes tops ✓' if _s9_settled else 'still includes tops'}")
-    print(f"genus-status driver: {n_genus}/{n_nonroot} non-root anchors are genus-level "
-          "(broader ∧ narrower) — deepening converges this toward full-depth support")
+          f"{len(_top_pts)} declared tops · enumerated excludes {sorted(_excl)} · "
+          f"declared-tops NOT in filter: {tops_not_excluded or 'none'} · "
+          f"filter entries NOT declared tops: {excluded_not_tops or 'none'}")
+    print(f"genus-status driver (STRUCTURAL, §4.6.3-aware): {n_genus}/{n_pts} aperture "
+          f"points are genus-level (broader ∧ narrower, regardless of topConcept "
+          f"declaration) · atypical top presentations: {len(atypical)}")
 
     (REPO / "build/aperture_contract.json").write_text(json.dumps(
         {"n": n, "broader_ok": ok_b, "narrower_ok": ok_n, "altlabel_ok": ok_a,
          "top_concept_candidates": n_top, "quality_drivers": True,
          "s9_settled": {"filter_staged": bool(_excl), "armed": _armed,
-                        "top_points_in_collection": len(_top_pts),
-                        "effective_surface_excludes_tops": _s9_settled},
-         "genus_status": {"n_genus": n_genus, "n_nonroot": n_nonroot,
+                        "declared_tops": sorted(_top_codes),
+                        "enumerated_excludes": sorted(_excl),
+                        "declared_tops_not_excluded": tops_not_excluded,
+                        "excluded_not_declared_tops": excluded_not_tops,
+                        "effective_surface_excludes_declared_tops": _s9_settled,
+                        "doctrine": "exclusion is ENUMERATED (released filter), never "
+                                    "derived from hasTopConcept — SKOS §4.6.3: the "
+                                    "topConcept convention has no integrity conditions"},
+         "genus_status": {"n_genus": n_genus, "n_points": n_pts,
+                          "structural": "broader ∧ narrower, regardless of topConcept "
+                                        "declaration (atypical presentations measured, "
+                                        "not trusted)",
+                          "atypical_top_presentations": atypical,
                           "directive": "anchors gain genus status as skos:narrower "
                                        "children are authored (fill in as needed)"},
          "meta_s2_s9": {"schemes": len(_schemes), "concepts": len(_concepts),
