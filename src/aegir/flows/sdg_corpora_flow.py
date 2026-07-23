@@ -116,6 +116,10 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     corpus_mode = Parameter("corpus", default=True, type=bool,
                             help="accrete into the persistent corpus dir (idempotent top-up per "
                                  "input window) instead of a fresh per-run dir")
+    ddl_scope = Parameter("ddl-scope", default="catalog",
+                          help="the kvasir-scoped DDL stage's scope (pathway consolidation, RH "
+                               "2026-07-23): catalog (the released spine) | comprehensive (the "
+                               "certified-union kvasir lowering) | both | off")
 
     @traced_step
     @step
@@ -330,6 +334,97 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                 print(f'   OL: {n_ol} kvasir run event(s) → governed provenance')
         except Exception:  # noqa: BLE001 — provenance never blocks the pass
             pass
+        self.next(self.ddl_stage)
+
+    @traced_step
+    @step
+    def ddl_stage(self):
+        """THE kvasir-scoped DDL stage (pathway consolidation, RH 2026-07-23): ontology →
+        relational under the ONE conductor, scope as a parameter. `catalog` regenerates the
+        RELEASED spine (content-addressed run_id — an unchanged catalog swaps nothing);
+        `comprehensive` runs the certified-union kvasir lowering (covers the classes the
+        catalog spine leaves unpopulated). Each scope emits its closure artifact NATIVELY
+        (associations module — generation and record are one act) and its own OL RunEvent
+        into governed PROVENANCE; kvasir's native events ride KVASIR_OL_DIR alongside."""
+        scope = str(self.ddl_scope or "catalog").lower()
+        self.ddl_stage_report = {"scope": scope}
+        if scope in ("off", "none"):
+            print("  ddl_stage: off", flush=True)
+            self.next(self.build_constructs)
+            return
+        from aegir.governance.ol import emit_run_event, file_dataset
+        from aegir.ontology.associations import (emit_comprehensive_closure,
+                                                 emit_spine_associations)
+        ev_dir = Path(self.run_out, "ol_events")
+        if scope in ("catalog", "both"):
+            from aegir.lineup.sync import _regen_ddl
+            ok = _regen_ddl()
+            runs = sorted((REPO / "corpora/ddl").glob("*/manifest.json"))
+            if ok and runs:
+                run_dir = runs[-1].parent
+                s = emit_spine_associations(run_dir) or {}
+                self.ddl_stage_report["catalog"] = s
+                try:
+                    emit_run_event(
+                        "ddl-spine", run_key=run_dir.name, events_dir=ev_dir,
+                        inputs=[file_dataset(REPO / "src/aegir/ontology/catalog/catalog.json")],
+                        outputs=[file_dataset(run_dir / f) for f in
+                                 ("naming_map.parquet", "ddl_statements.parquet", "views.parquet",
+                                  "ontology_entity_associations.json") if (run_dir / f).exists()],
+                        facets={"scope": "catalog",
+                                "closure": {k: s.get(k) for k in
+                                            ("n_tables", "n_without_pattern", "n_unpopulated",
+                                             "n_classes", "n_name_matches_rejected")}})
+                except Exception as e:  # noqa: BLE001 — provenance never blocks the pass
+                    print(f"  ddl[catalog] OL deferred ({str(e)[:80]})", flush=True)
+                print(f"  ddl[catalog]: run {run_dir.name} · closure {s.get('n_tables')} tables "
+                      f"({s.get('n_without_pattern')} without pattern) · "
+                      f"{s.get('n_unpopulated')} classes unpopulated", flush=True)
+        if scope in ("comprehensive", "both"):
+            out = Path(self.run_out, "ddl_comprehensive")
+            args = ["uv", "run", "--no-sync", "python", "scripts/realize_sdg.py",
+                    "--entities-dir", f"{self.run_out}/entities",
+                    "--merge-ontology", str(REPO / "corpora/ontology/sdg-ontology.omn"),
+                    "--inline-theory", "--arm-property-domains", "--ground-entity-props",
+                    "--output-dir", str(out)]
+            if self.skip_hermit:
+                args.append("--skip-hermit")
+            r = subprocess.run(args, cwd=str(REPO), env=dict(os.environ, LD_LIBRARY_PATH=JVM))
+            if r.returncode == 2:
+                raise RuntimeError("comprehensive union INCONSISTENT — see "
+                                   f"{out}/certificate.json")
+            if r.returncode != 0:
+                # shakedown doctrine: artifacts land before the certificate; unsat is
+                # worklist signal, never blindness
+                print(f"  ddl[comprehensive]: certificate refused (exit {r.returncode}) — "
+                      "artifacts stand, unsat set = the re-author worklist", flush=True)
+            s = emit_comprehensive_closure(out) or {}
+            self.ddl_stage_report["comprehensive"] = s
+            if s:
+                try:
+                    emit_run_event(
+                        "ddl-comprehensive", run_key=Path(self.run_out).name, events_dir=ev_dir,
+                        inputs=[file_dataset(REPO / "corpora/ontology/sdg-ontology.omn")],
+                        outputs=[file_dataset(out / f) for f in
+                                 ("ddl.sql", "plan.json", "shapes.ttl",
+                                  "ontology_entity_associations.json") if (out / f).exists()],
+                        facets={"scope": "comprehensive",
+                                "closure": {k: s.get(k) for k in
+                                            ("n_tables", "n_without_pattern",
+                                             "n_unpopulated", "n_classes")}})
+                except Exception as e:  # noqa: BLE001
+                    print(f"  ddl[comprehensive] OL deferred ({str(e)[:80]})", flush=True)
+                print(f"  ddl[comprehensive]: closure {s.get('n_tables')} tables "
+                      f"({s.get('n_without_pattern')} without pattern) · "
+                      f"{s.get('n_unpopulated')} classes unpopulated", flush=True)
+        try:
+            from aegir.governance.ol import ingest_events_dir
+            n_ol = ingest_events_dir(ev_dir)
+            if n_ol:
+                print(f"   OL: {n_ol} run event(s) → governed provenance", flush=True)
+        except Exception:  # noqa: BLE001
+            pass
+        self.emit_event("ddl_stage.done", {"scope": scope})
         self.next(self.build_constructs)
 
     @traced_step

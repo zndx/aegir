@@ -149,6 +149,54 @@ def make_router():
     return router
 
 
+def file_dataset(path, namespace: str = "file") -> dict:
+    """An OL dataset for a file artifact, with a sha256 content facet — both sides of
+    every lineage edge carry verifiable fingerprints (reverse-verifiability doctrine)."""
+    import hashlib
+    from pathlib import Path as _Path
+    p = _Path(path)
+    ds = {"namespace": namespace, "name": str(p)}
+    try:
+        ds["facets"] = {"content": {"_producer": PRODUCER,
+                                    "_schemaURL": f"{PRODUCER}#content",
+                                    "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}}
+    except Exception:  # noqa: BLE001 — a missing file still names the edge
+        pass
+    return ds
+
+
+def emit_run_event(job_name: str, *, run_key: str, inputs: "list | None" = None,
+                   outputs: "list | None" = None, namespace: str = "aegir",
+                   facets: "dict | None" = None, events_dir=None) -> dict:
+    """The flow's OWN OpenLineage emission (OL-first mandate, RH 2026-07-23): build one
+    COMPLETE RunEvent for a flow-conducted stage, persist it to the run's ``ol_events``
+    file transport (parity with kvasir — the durable, Marquez-servable raw record), and
+    project it into governed provenance. runId is deterministic in (job, run_key), so
+    re-running an idempotent stage MERGEs rather than multiplying runs."""
+    import json as _json
+    import uuid as _uuid
+    from datetime import datetime, timezone
+    from pathlib import Path as _Path
+    run_id = str(_uuid.uuid5(_uuid.NAMESPACE_URL, f"{PRODUCER}/{namespace}/{job_name}/{run_key}"))
+    job: dict = {"namespace": namespace, "name": job_name}
+    if facets:
+        job["facets"] = {"aegir": {"_producer": PRODUCER,
+                                   "_schemaURL": f"{PRODUCER}#aegir", "detail": facets}}
+    event = {"eventType": "COMPLETE",
+             "eventTime": datetime.now(timezone.utc).isoformat(),
+             "producer": PRODUCER,
+             "schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json",
+             "run": {"runId": run_id}, "job": job,
+             "inputs": inputs or [], "outputs": outputs or []}
+    if events_dir:
+        d = _Path(events_dir)
+        d.mkdir(parents=True, exist_ok=True)
+        f = d / f"{job_name}-{run_id}.complete.json"
+        f.write_text(_json.dumps(event, indent=1))
+        f.with_suffix(f.suffix + ".ingested").touch()  # ingested here; dir sweeps skip it
+    return ingest_run_event(event)
+
+
 def ingest_events_dir(events_dir) -> int:
     """Ingest a directory of OpenLineage RunEvent JSON files (kvasir's native emission,
     file transport) into aegir_hx. Idempotent: ingested files gain a ``.ingested``

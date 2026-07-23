@@ -540,7 +540,10 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
     # ARTIFACTS FIRST (RH shakedown doctrine): shapes/ddl/structure land even when the
     # certificate refuses — exit-3-before-kvasir would blind the unification shakedown.
     for sub, out in (("ddl", "ddl.sql"), ("shapes", "shapes.ttl")):
-        args = [str(KVASIR), sub, str(omn_path)] + (["--sql"] if sub == "ddl" else [])
+        # --plan: kvasir's cited election record (class/property IRIs per table/junction/
+        # lookup) — the closure artifact's confirmed-generation evidence, generator-recorded
+        args = [str(KVASIR), sub, str(omn_path)] + (
+            ["--sql", "--plan", str(output_dir / "plan.json")] if sub == "ddl" else [])
         r = subprocess.run(args, capture_output=True, text=True, timeout=300)
         if r.returncode == 0:
             (output_dir / out).write_text(r.stdout)
