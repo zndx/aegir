@@ -538,6 +538,11 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
             base = rng.choice([1, 1, 1, 100, 1000])
             pk_vals[e.iri()] = [str(base + i) for i in range(n_rows)]
 
+    # normalized concept-recording convention (pathway consolidation ruling (b), RH
+    # 2026-07-23): every column carries an explicit ROLE from the relational-concepts
+    # extension + an exact prefixed IRI (or, for plumbing, an explicit no-claim role) —
+    # the reverse-verification R←O hop reads the record, never infers a convention.
+    ename_by_iri = {e.iri(): camel(e.name) for e in entities}
     tables = []
     for e in entities:
         plan = plans[e.iri()]
@@ -546,6 +551,8 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
         cols = []
         if plan["kind"] != "natural":
             cols.append({"name": plan["pk"], "concept": camel(e.name),
+                         "role": "sdg:SurrogateIdentifierColumn",
+                         "of_class": f"sdg:{camel(e.name)}",
                          "cells": [{"value": v} for v in pk_vals[e.iri()]]})
             own.add(plan["pk"])
         for a in e.attributes:
@@ -553,6 +560,8 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
             if cname in own:
                 continue
             cols.append({"name": cname, "concept": prop_name(a.name),
+                         "role": "sdg:AttributeColumn",
+                         "property_iri": f"sdg:{prop_name(a.name)}",
                          "cells": [{"value": pk_vals[e.iri()][i] if a.name == plan["pk_attr"]
                                     else _cell(a, i, constraints.get(a.name), ectx)} for i in range(n_rows)]})
             own.add(cname)
@@ -565,6 +574,10 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
                 continue
             fk = _fk_col_name(r.prop, plans[tgt], own, col_style)
             cols.append({"name": fk, "concept": prop_name(r.prop),
+                         "role": "sdg:ForeignKeyColumn",
+                         "property_iri": f"sdg:{prop_name(r.prop)}",
+                         "fk_target": plans[tgt]["table"],
+                         "references_class": f"sdg:{ename_by_iri[tgt]}",
                          "cells": [{"value": pk_vals[tgt][i % len(pk_vals[tgt])]}
                                    for i in range(n_rows)]})
             fks.append({"col": fk, "ref_table": plans[tgt]["table"],
@@ -574,14 +587,18 @@ def to_construct(entities: list[Entity], *, n_rows: int = 4, style_anchor: str =
         if rng.random() < kp["audit_rate"]:
             ts = "created_at" if col_style == "snake" else "createdAt"
             cols.append({"name": ts, "concept": "created",
+                         "role": "sdg:AuditTimestampColumn",
                          "cells": [{"value": f"2025-{(i % 12) + 1:02d}-{(i * 5 % 27) + 1:02d} "
                                              f"{(i * 3 % 24):02d}:14:00"} for i in range(n_rows)]})
             if rng.random() < 0.6:
                 us = "updated_at" if col_style == "snake" else "updatedAt"
                 cols.append({"name": us, "concept": "updated",
+                             "role": "sdg:AuditTimestampColumn",
                              "cells": [{"value": f"2025-{(i % 12) + 1:02d}-{(i * 7 % 27) + 2:02d} "
                                                  f"{(i * 5 % 24):02d}:41:00"} for i in range(n_rows)]})
-        tables.append({"name": plan["table"], "pk": plan["pk"], "fks": fks, "columns": cols})
+        tables.append({"name": plan["table"], "pk": plan["pk"], "fks": fks, "columns": cols,
+                       "pattern": "sdg:EntityTable",
+                       "realized_from_class": f"sdg:{camel(e.name)}"})
     return {"tables": tables, "style_anchor": style_anchor,
             "entities": [e.iri() for e in entities], "key_plan": kp}
 
@@ -649,6 +666,7 @@ def add_views(construct: dict, entities: "list[Entity]", *, n_rows: int = 4) -> 
                         continue
                     rows.append([acols[c][i] for c in a_show] + [bcols[c][j] for c in b_show])
                 views.append({"name": name, "kind": "fk_join", "sql": sql,
+                              "pattern": "sdg:RelationalView",
                               "columns": a_show + [f"{bstem}_{c}" for c in b_show],
                               "rows": rows})
             elif m2m:
@@ -665,10 +683,17 @@ def add_views(construct: dict, entities: "list[Entity]", *, n_rows: int = 4) -> 
                     tbl = {"name": jt, "pk": [ja, jb], "fks": [
                                {"col": ja, "ref_table": a["name"], "ref_col": apk},
                                {"col": jb, "ref_table": b["name"], "ref_col": bpk}],
+                           "pattern": "sdg:AssociationTable",
+                           "realized_from_property": f"sdg:{prop_name(r.prop)}",
                            "columns": [
                                {"name": ja, "concept": a["name"],
+                                "role": "sdg:ForeignKeyColumn", "fk_target": a["name"],
+                                "references_class": f"sdg:{camel(e.name)}",
                                 "cells": [{"value": r0} for r0, _ in jrows]},
                                {"name": jb, "concept": b["name"],
+                                "role": "sdg:ForeignKeyColumn", "fk_target": b["name"],
+                                "references_class": f"sdg:{camel(tgt.name)}",
+                                "property_iri": f"sdg:{prop_name(r.prop)}",
                                 "cells": [{"value": r1} for _, r1 in jrows]}]}
                     construct["tables"].append(tbl)
                     byname[jt] = tbl
@@ -683,6 +708,7 @@ def add_views(construct: dict, entities: "list[Entity]", *, n_rows: int = 4) -> 
                 rows = [[acols[c][aidx[x]] for c in a_show[:3]] + [bcols[c][bidx[y]] for c in b_show]
                         for x, y in jrows if x in aidx and y in bidx]
                 views.append({"name": name, "kind": "junction_join", "sql": sql,
+                              "pattern": "sdg:RelationalView",
                               "columns": a_show[:3] + [f"{bstem}_{c}" for c in b_show],
                               "rows": rows})
     construct["views"] = views

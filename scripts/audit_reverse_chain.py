@@ -61,7 +61,11 @@ def main() -> int:
             fails["missing_record"].append({"pid": pid, "segment": "T_R",
                                             "chapter": bool(ch), "constructs": bool(con)})
         row["T_R"] = t_ok
-        # R←O: every construct column carries a recorded concept resolvable IN-RECORD
+        # R←O: every construct column carries a recorded concept resolvable IN-RECORD.
+        # Two record generations (consolidation ruling (b), RH 2026-07-23): NORMALIZED
+        # constructs carry explicit per-column roles + exact prefixed IRIs (read the
+        # record, no inference); legacy constructs fall back to the measured recording
+        # conventions (entity col → class · FK col → target table · plumbing = no claim).
         r_ok = False
         if con:
             ents = {str(e.get("name") if isinstance(e, dict) else e).split(":", 1)[-1]
@@ -69,15 +73,29 @@ def main() -> int:
             omn = con.get("ontology_omn") or ""
             cols = [c for t in (con.get("tables") or []) for c in (t.get("columns") or [])]
             tnames = {t.get("name") for t in (con.get("tables") or [])}
-            # the constructs web's recording conventions (measured, not assumed):
-            # entity columns record the CLASS; FK columns record the TARGET TABLE
-            # (in-record); created/updated/id are plumbing — no ontology claim made.
-            PLUMBING = {"created", "updated", "id"}
-            with_c = [c for c in cols
-                      if c.get("concept") and c["concept"] not in PLUMBING]
-            resolved = [c for c in with_c
-                        if c["concept"] in ents or f"sdg:{c['concept']}" in omn
-                        or c["concept"] in omn or c["concept"] in tnames]
+            normalized = any("role" in c for c in cols)
+            row["recording"] = "normalized" if normalized else "convention_inferred"
+            if normalized:
+                def _res(c: dict) -> bool:
+                    role = c.get("role") or ""
+                    if role in ("sdg:AuditTimestampColumn",):
+                        return True                     # explicit no-claim record
+                    if role == "sdg:SurrogateIdentifierColumn":
+                        return c.get("of_class", "").split(":")[-1] in ents
+                    if role == "sdg:ForeignKeyColumn":
+                        return (c.get("references_class", "").split(":")[-1] in ents
+                                or c.get("fk_target") in tnames)
+                    prop = c.get("property_iri", "").split(":")[-1]
+                    return bool(prop) and prop in omn
+                with_c = [c for c in cols if c.get("role")]
+                resolved = [c for c in with_c if _res(c)]
+            else:
+                PLUMBING = {"created", "updated", "id"}
+                with_c = [c for c in cols
+                          if c.get("concept") and c["concept"] not in PLUMBING]
+                resolved = [c for c in with_c
+                            if c["concept"] in ents or f"sdg:{c['concept']}" in omn
+                            or c["concept"] in omn or c["concept"] in tnames]
             row["cols"] = len(cols)
             row["cols_with_concept"] = len(with_c)
             row["concepts_resolved_in_record"] = len(resolved)
@@ -86,8 +104,8 @@ def main() -> int:
             if with_c and len(resolved) < len(with_c):
                 fails["in_record_mismatch"].append(
                     {"pid": pid, "segment": "R_O",
-                     "unresolved": sorted({c["concept"] for c in with_c
-                                           if c not in resolved})[:4]})
+                     "unresolved": sorted({c.get("concept") or c.get("property_iri", "?")
+                                           for c in with_c if c not in resolved})[:4]})
             # cross-pathway seam measurement (not a chain failure): construct tables
             # unknown to the RELEASED spine
             tnames = {t.get("name") for t in (con.get("tables") or [])}
@@ -117,8 +135,12 @@ def main() -> int:
 
     scores = {k: round(v["ok"] / max(1, v["ok"] + v["fail"]), 4) for k, v in seg.items()}
     full = sum(1 for r in per_pid if all(r.get(k) for k in ("T_R", "R_O", "O_P", "P_F")))
+    modes = {"normalized": sum(1 for r in per_pid if r.get("recording") == "normalized"),
+             "convention_inferred": sum(1 for r in per_pid
+                                        if r.get("recording") == "convention_inferred")}
     out = {"doctrine": "recorded links only; verification reads backward, creates no edges",
            "n_passages": len(pids),
+           "recording_modes": modes,
            "segment_scores": scores,
            "full_chain_verified": full,
            "full_chain_rate": round(full / max(1, len(pids)), 4),
@@ -133,6 +155,8 @@ def main() -> int:
           f"{scores['R_O']:.1%} · Ontology←Passages {scores['O_P']:.1%} · "
           f"Passages←FinePDFs {scores['P_F']:.1%}")
     print(f"FULL CHAIN verified end-to-end: {full}/{len(pids)} ({out['full_chain_rate']:.1%})")
+    print(f"R←O recording: {modes['normalized']} normalized (record-explicit) · "
+          f"{modes['convention_inferred']} legacy (convention-inferred)")
     print(f"failures: {out['failures']['n_missing_record']} missing-record · "
           f"{out['failures']['n_in_record_mismatch']} in-record mismatch · "
           f"{fails['cross_pathway_seam']} cross-pathway seam tables (constructs∉spine)")
