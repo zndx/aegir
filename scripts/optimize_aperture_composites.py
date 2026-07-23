@@ -36,13 +36,71 @@ sys.path.insert(0, str(REPO))                 # scripts.* imports (the recompose
 TOKEN_BUDGET = 500          # headroom under the registered 512-token item grain
 
 
+def _contrast_terms(anchor_docs: "dict[str, list[str]]", code: str,
+                    top_k: int = 24) -> "list[str]":
+    """Log-odds-with-Dirichlet-prior (Monroe et al.) contrastive vocabulary: terms
+    frequent in THIS anchor's admitted passages and rare in every other anchor's —
+    the anti-convergence proposer (v1's similarity enrichment CONVERGED anchors;
+    contrast is the measured lever). Fitness carries NO share-uniformity term —
+    organic dominance (an anchor aligned with a family's central value proposition)
+    is domain shape, never a defect (RH)."""
+    import math
+    import re as _re
+    from collections import Counter
+    STOP = set("the a an and or of to in for on with by is are was were be been this "
+               "that these those it its as at from which who whom will shall may can "
+               "must not no if then than so such per each all any other more most "
+               "under over between into about we you they he she i our your their "
+               "his her have has had do does did done also both only own same".split())
+
+    def toks(texts: "list[str]") -> Counter:
+        c: Counter = Counter()
+        for t in texts:
+            for w in _re.findall(r"[a-z][a-z\-]{2,}", t.lower()):
+                if w not in STOP:
+                    c[w] += 1
+        return c
+
+    mine = toks(anchor_docs.get(code, []))
+    rest: Counter = Counter()
+    for k, docs in anchor_docs.items():
+        if k != code:
+            rest.update(toks(docs))
+    if not mine:
+        return []
+    n1, n2 = sum(mine.values()), sum(rest.values()) or 1
+    prior = mine + rest
+    a0 = sum(prior.values())
+    scored = []
+    for w, f1 in mine.items():
+        if f1 < 3:
+            continue
+        f2 = rest.get(w, 0)
+        aw = prior[w]
+        d1 = math.log((f1 + aw * 0.01) / (n1 + a0 * 0.01 - f1 - aw * 0.01))
+        d2 = math.log((f2 + aw * 0.01) / (n2 + a0 * 0.01 - f2 - aw * 0.01))
+        var = 1.0 / (f1 + aw * 0.01) + 1.0 / (f2 + aw * 0.01)
+        scored.append(((d1 - d2) / math.sqrt(var), w))
+    scored.sort(reverse=True)
+    return [w for _, w in scored[:top_k]]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--proposer", choices=["constituents", "contrast"], default="contrast",
+                    help="constituents = v1 similarity enrichment (measured: CONVERGES "
+                         "anchors); contrast = log-odds differentia vocabulary from each "
+                         "anchor's own admitted passages vs every other anchor's")
     ap.add_argument("--constituents", type=int, default=8,
                     help="top-K vocab concepts composed into each leaf candidate")
+    ap.add_argument("--contrast-terms", type=int, default=24,
+                    help="top-K contrastive terms appended per anchor (contrast proposer)")
+    ap.add_argument("--min-passages", type=int, default=3,
+                    help="contrast proposer: anchors with fewer admitted passages keep "
+                         "their base text (no evidence to contrast — never penalized)")
     ap.add_argument("--corpus-eval", action="store_true",
                     help="also re-score the admitted corpus against the candidates "
-                         "(the recompose instrument, candidate-pointed)")
+                         "(the recompose instrument, candidate-pointed — THE fitness)")
     a = ap.parse_args()
 
     from qdrant_client import models
@@ -61,12 +119,49 @@ def main() -> int:
     def n_tokens(t: str) -> int:
         return len(enc._tokenizer(t)["input_ids"])
 
-    # ── propose: leaf composites from constituent concepts (roots ship unchanged) ──
+    # contrast proposer grounding: each anchor's OWN admitted passages (genus rows only)
+    anchor_docs: "dict[str, list[str]]" = {}
+    if a.proposer == "contrast":
+        mpath = REPO / "build/domain_harvest/manifest.jsonl"
+        for line in mpath.read_text().splitlines():
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            code = str(r.get("code", ""))
+            if code in roots or "." not in code:
+                continue
+            dp = REPO / "build/domain_harvest/docs" / f"{r['hash']}.txt"
+            if dp.exists():
+                anchor_docs.setdefault(code, []).append(
+                    dp.read_text(errors="ignore")[:8000])
+
+    # ── propose: leaf composites (roots ship unchanged) ──
     composites = {}
     for code, pl in sorted(live.items()):
         base = pl.get("retrieval_text") or ""
         if code in roots:
             composites[code] = {"text": base, "changed": False}
+            continue
+        if a.proposer == "contrast":
+            if len(anchor_docs.get(code, [])) < a.min_passages:
+                composites[code] = {"text": base, "changed": False,
+                                    "note": f"kept base ({len(anchor_docs.get(code, []))} "
+                                            "passages < min — no evidence to contrast)"}
+                continue
+            terms = _contrast_terms(anchor_docs, code, top_k=a.contrast_terms)
+            kept_terms = []
+            for t_ in terms:
+                cand = base + ". Characteristic vocabulary: " + ", ".join(kept_terms + [t_])
+                if n_tokens(cand) > TOKEN_BUDGET:
+                    break
+                kept_terms.append(t_)
+            text = (base + ". Characteristic vocabulary: " + ", ".join(kept_terms)) \
+                if kept_terms else base
+            composites[code] = {"text": text, "changed": text != base,
+                                "contrast_terms": kept_terms,
+                                "n_passages": len(anchor_docs.get(code, [])),
+                                "tokens": n_tokens(text), "base_tokens": n_tokens(base)}
             continue
         hits = DI.classify(base, collection=DI.DEFAULT_COLLECTION,
                            top_k=a.constituents + 4)
