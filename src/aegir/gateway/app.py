@@ -372,6 +372,13 @@ def _register_api_routes(app: FastAPI) -> None:
                         f"[[relational/table/{tb_}|{tb_}]].`{co_}`" for tb_, co_ in refs_))
                 if parts_:
                     rel_md = "**Relational realization.** " + " · ".join(parts_) + "\n\n"
+                else:
+                    # unpopulated = a WORK SIGNAL (RH 2026-07-23): this construct awaits
+                    # the next agent-mediated generative pass (ontology → relational);
+                    # the published association record carries the same worklist.
+                    rel_md = ("**Relational realization.** _unpopulated — no relational "
+                              "entity generated from this construct yet; queued for the "
+                              "next agent-mediated generative pass._\n\n")
 
             # native-syntax blocks (RH 2026-07-22): the VERBATIM artifacts, copyable —
             # the Manchester frame reconstructed prefixed, and the class's SHACL shape

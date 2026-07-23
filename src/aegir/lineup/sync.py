@@ -189,6 +189,78 @@ def _standalone_bundle(dst: Path) -> None:
         '</catalog>\n')
     print(f"   standalone bundle: theory module shipped · imports → {IMPORT_IRI} "
           f"(catalog-v001.xml) · comprehensive union artifacts: {n_comp}")
+    _emit_entity_associations()
+
+
+def _emit_entity_associations() -> None:
+    """ontology → relational-entity associations, BY CONSTRUCTION, published (RH
+    2026-07-23): every census class with its generated relational entities (own table
+    via the catalog head→template map or the naming map's recorded slot_ref↔semantic_col
+    pairs; FK references via exact slot_ref) — in an Atlas-updatable shape
+    (rdbms_table qualifiedNames per the aegir Atlas projector convention). Classes with
+    NO associations ship with an empty list: the worklist for the next agent-mediated
+    generative pass, visible in the publication itself."""
+    import json as _json
+    try:
+        import pandas as _pd
+        ddl_dirs = sorted((CORPORA / "ddl").glob("*/naming_map.parquet"))
+        frag = _json.loads((REPO / "build/foreign_fragments/sdg.json").read_text())
+        if not ddl_dirs:
+            return
+        run_dir = ddl_dirs[-1].parent
+        nm = _pd.read_parquet(ddl_dirs[-1])
+        own: dict = {}
+        for t_, tb_ in zip(nm[nm["kind"] == "entity"]["template_id"],
+                           nm[nm["kind"] == "entity"]["table_name"]):
+            own.setdefault(str(t_), str(tb_))
+        refs: dict = {}
+        name_tid: dict = {}
+        for rf_, tb_, co_, sc_ in zip(nm["slot_ref"], nm["table_name"],
+                                      nm["col_name"], nm["semantic_col"]):
+            if rf_ and str(rf_) != "__pk__":
+                refs.setdefault(str(rf_), []).append({"table": str(tb_), "column": str(co_)})
+                if sc_:
+                    name_tid.setdefault(str(rf_), str(sc_))
+        head_tid: dict = {}
+        try:
+            cat = _json.loads((REPO / "src/aegir/ontology/catalog/catalog.json").read_text())
+            import re as _re2
+            for t_ in cat.get("templates", []):
+                h_ = _re2.search(r"Class:\s*\{(\w+):Class\}", t_.get("manchester_template") or "")
+                if h_:
+                    head_tid[h_.group(1)] = t_["template_id"]
+        except Exception:  # noqa: BLE001
+            pass
+        rows = []
+        n_unpop = 0
+        classes = sorted({k for fam in ("frames", "equiv") for k in (frag.get(fam) or {})})
+        for iri in classes:
+            if "signals.zndx.org" not in iri:
+                continue
+            local = iri.rsplit("#", 1)[-1]
+            tid = head_tid.get(local) or name_tid.get(local)
+            own_t = own.get(tid) if tid else None
+            assoc = ([{"kind": "own_table", "table": own_t,
+                       "atlas_qualifiedName": f"{own_t}@aegir"}] if own_t else [])                 + [{"kind": "fk_reference", **r_,
+                    "atlas_qualifiedName": f"{r_['table']}@aegir"}
+                   for r_ in refs.get(local, [])]
+            if not assoc:
+                n_unpop += 1
+            rows.append({"class_iri": iri, "class": local, "template_id": tid or "",
+                         "associations": assoc})
+        out = {"run": run_dir.name, "atlas_typeName": "rdbms_table",
+               "provenance": "by construction: catalog head→template + naming_map "
+                             "(slot_ref, semantic_col) recorded pairs — no name transforms",
+               "n_classes": len(rows),
+               "n_unpopulated": n_unpop,
+               "note": "associations == [] marks constructs awaiting the next "
+                       "agent-mediated generative pass (ontology → relational)",
+               "classes": rows}
+        (run_dir / "ontology_entity_associations.json").write_text(_json.dumps(out, indent=1))
+        print(f"   entity associations: {len(rows)} classes · {n_unpop} unpopulated "
+              f"(the generative-pass worklist) → ddl/{run_dir.name}/ontology_entity_associations.json")
+    except Exception as e:  # noqa: BLE001
+        print(f"   entity associations skipped: {e}")
 
 
 def _regen_vocabulary() -> bool:
