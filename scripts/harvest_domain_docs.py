@@ -37,6 +37,28 @@ def _hash(text: str) -> str:
     return hashlib.sha256(" ".join(text.split()).encode("utf-8")).hexdigest()
 
 
+def _token_windows(text: str, *, stride: int = 256, size: int = 512,
+                   max_windows: int = 16) -> "list[tuple[int, int]]":
+    """CHAR spans of ≤``size``-token windows at ``stride`` tokens — the 512-token
+    encoder limit IS the item grain (RH), so every window is a valid ITEM. Offsets come
+    from the encoder's own tokenizer (no second tokenization scheme)."""
+    from aegir.ontology.colbert_encoder import get_encoder
+    tk = get_encoder()._tokenizer(text, truncation=False, return_offsets_mapping=True,
+                                  add_special_tokens=False)
+    offs = [o for o in tk["offset_mapping"] if o[1] > o[0]]
+    if not offs:
+        return [(0, len(text))]
+    out = []
+    i = 0
+    while i < len(offs) and len(out) < max_windows:
+        j = min(i + size, len(offs))
+        out.append((offs[i][0], offs[j - 1][1]))
+        if j >= len(offs):
+            break
+        i += stride
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dataset", default="HuggingFaceFW/finepdfs")
@@ -54,6 +76,15 @@ def main() -> int:
     ap.add_argument("--domain-collection", default=DI.DEFAULT_APERTURE,
                     help="domains-only AIMING collection (the full vocab's abstract catalog absorbs the top concept)")
     ap.add_argument("--no-resume", action="store_true", help="ignore the saved stream cursor (start at 0)")
+    ap.add_argument("--window-mode", choices=["head", "items"], default="head",
+                    help="head = one decision on the head slice (legacy); items = the ORIGINAL "
+                         "design realized (RH 2026-07-23): sliding ≤512-token windows, optimal-"
+                         "match windows admitted as fedwiki ITEMS, non-admitted candidate windows "
+                         "recorded interstitially (manifest_items.jsonl)")
+    ap.add_argument("--stride-tokens", type=int, default=256,
+                    help="items mode: window stride (window size = the 512-token encoder limit)")
+    ap.add_argument("--max-windows", type=int, default=16,
+                    help="items mode: max windows per doc (bounds encode cost; 16 ≈ 8k tokens)")
     args = ap.parse_args()
 
     store = Path(args.store)
@@ -94,6 +125,7 @@ def main() -> int:
     t0 = time.time()
     scanned = short = dup = matched = 0
     mf = manifest.open("a")
+    imf = (store / "manifest_items.jsonl").open("a") if args.window_mode == "items" else None
     for row in ds:
         if scanned >= args.max_stream or matched >= args.target:
             break
@@ -105,6 +137,49 @@ def main() -> int:
         h = _hash(text)
         if h in seen:
             dup += 1
+            continue
+        if args.window_mode == "items":
+            # THE ORIGINAL DESIGN (RH 2026-07-23): sliding ≤512-token windows over the
+            # WHOLE doc; each window is a candidate ITEM. Admitted items are the optimal-
+            # match windows; non-admitted candidates persist interstitially — the fedwiki
+            # stream where every item becomes an editable block. The doc admits iff ANY
+            # window admits; the doc-grain manifest row (P←F lineage shape) carries the
+            # BEST window's anchor so both grains stay auditable.
+            windows = _token_windows(text, stride=args.stride_tokens,
+                                     max_windows=args.max_windows)
+            items = []
+            best = None
+            for ix, (c0, c1) in enumerate(windows):
+                wcls = DI.classify_hierarchical(text[c0:c1], top_k=5,
+                                                url=args.domain_url,
+                                                collection=args.domain_collection,
+                                                exclude_codes=_adm_exclude or None)
+                wtop = wcls.get("top") or {}
+                w_admit = DI.in_subtree(wtop, codes) and wcls["rel_margin"] >= args.domain_tau
+                items.append({"ix": ix, "span": [c0, c1], "code": wtop.get("code"),
+                              "rel_margin": wcls["rel_margin"], "admitted": w_admit})
+                if w_admit and (best is None or wcls["rel_margin"] > best[1]["rel_margin"]):
+                    best = (wtop, wcls)
+            if best:
+                top, hcls = best
+                (store / "docs" / f"{h}.txt").write_text(text, encoding="utf-8")
+                mf.write(json.dumps({"hash": h, "domain": args.domain, "code": top.get("code"),
+                                     "label": top.get("pref_label"),
+                                     "rel_margin": hcls["rel_margin"],
+                                     "id": str(row.get("id") or ""), "chars": len(text),
+                                     "window_mode": "items",
+                                     "n_windows": len(items),
+                                     "n_admitted_items": sum(i["admitted"] for i in items),
+                                     "dataset": f"{args.dataset}/{args.config}"}) + "\n")
+                mf.flush()
+                imf.write(json.dumps({"hash": h, "items": items}) + "\n")
+                imf.flush()
+                seen.add(h)
+                matched += 1
+                print(f"  ✓ [{matched}/{args.target}] {top.get('code')} "
+                      f"{(top.get('pref_label') or '')[:30]:30s} "
+                      f"rel_margin={hcls['rel_margin']:.3f} "
+                      f"items={sum(i['admitted'] for i in items)}/{len(items)}  {h[:12]}")
             continue
         hcls = DI.classify_hierarchical(text[: args.max_chars], top_k=5,
                                         url=args.domain_url, collection=args.domain_collection,
@@ -122,6 +197,8 @@ def main() -> int:
             print(f"  ✓ [{matched}/{args.target}] {top.get('code')} {(top.get('pref_label') or '')[:30]:30s} "
                   f"rel_margin={hcls['rel_margin']:.3f}  {h[:12]}")
     mf.close()
+    if imf:
+        imf.close()
     cursor_f.write_text(json.dumps({"cursor": cursor + scanned, "dataset": args.dataset, "config": args.config}, indent=1))
 
     rate = matched / max(1, scanned - short - dup)

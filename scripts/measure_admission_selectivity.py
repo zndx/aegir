@@ -53,7 +53,8 @@ def maxsim(q: "np.ndarray", d: "np.ndarray") -> float:
     return float((q @ d.T).max(axis=1).mean())
 
 
-def recompose(sample: int = 0) -> int:
+def recompose(sample: int = 0, collection: "str | None" = None,
+              out_path: "Path | None" = None) -> int:
     """The leaves-only re-admission simulation over the ALREADY-ADMITTED corpus:
     per doc, ONE encode + one top-10 MaxSim query; the baseline view keeps roots, the
     recomposed view drops them client-side (29 points, 6 roots → top-10 always holds
@@ -82,7 +83,7 @@ def recompose(sample: int = 0) -> int:
     per_anchor = Counter()
     for i, p in enumerate(docs):
         text = p.read_text(errors="ignore")[:RECOMPOSE_WINDOW]
-        hits = DI.classify(text, top_k=10)
+        hits = DI.classify(text, top_k=10, collection=collection or DI.DEFAULT_APERTURE)
         base = view(hits)
         filt = view([h for h in hits if str(h.get("code", "")) not in excl])
         readmit = bool(filt["top"]) and filt["rel_margin"] >= RECOMPOSE_TAU
@@ -102,8 +103,8 @@ def recompose(sample: int = 0) -> int:
     base_low = sum(r["base_rel_margin"] < LOW_MARGIN_REL for r in rows)
     leaf_low = sum(r["leaf_rel_margin"] < LOW_MARGIN_REL for r in rows if r["readmit"])
     # coverage vs the registered floor — the ADVANCE-INPUT-WINDOW signal set
-    pts, _ = DI._client(DI.DEFAULT_QDRANT_URL).scroll(DI.DEFAULT_APERTURE, limit=256,
-                                                      with_payload=True)
+    pts, _ = DI._client(DI.DEFAULT_QDRANT_URL).scroll(collection or DI.DEFAULT_APERTURE,
+                                                      limit=256, with_payload=True)
     leaf_codes = {str((p_.payload or {}).get("code", "")) for p_ in pts} - excl - {""}
     below = sorted((c, per_anchor.get(c, 0)) for c in leaf_codes
                    if per_anchor.get(c, 0) < ANCHOR_COVERAGE_FLOOR)
@@ -126,7 +127,8 @@ def recompose(sample: int = 0) -> int:
            "orphans_by_historical_anchor": dict(Counter(r["historical_code"]
                                                         for r in orphans).most_common()),
            "rows": rows}
-    (REPO / "build/admission_recomposition.json").write_text(json.dumps(out, indent=1))
+    (out_path or REPO / "build/admission_recomposition.json").write_text(
+        json.dumps(out, indent=1))
     print(f"\nRECOMPOSITION: {n_re}/{n} re-admit leaves-only ({out['readmit_rate']:.1%}) — "
           f"{out['vs_floor']}")
     print(f"low-margin: baseline {base_low}/{n} → recomposed {leaf_low}/{n_re}")
@@ -134,7 +136,7 @@ def recompose(sample: int = 0) -> int:
           f"{dict(list(out['orphans_by_historical_anchor'].items())[:5])})")
     print(f"advance-input-window signals: {len(below)} leaf anchors below the "
           f"{ANCHOR_COVERAGE_FLOOR}-passage floor")
-    print("→ build/admission_recomposition.json")
+    print(f"→ {out_path or 'build/admission_recomposition.json'}")
     return 0
 
 
