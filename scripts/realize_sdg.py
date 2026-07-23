@@ -373,6 +373,12 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
             {"n": len(_wl), "repairs": _wl}, indent=1))
         print(f"category reconciliation: {len(_wl)} double-category classes repaired "
               f"(majority side kept) → build/category_reconciliation.json")
+    # the relational-concepts closure rides every union too (census + verify coverage)
+    try:
+        from aegir.ontology.relational_concepts import RELATIONAL_CONCEPTS_OMN as _RELC
+        omn += "\n" + _RELC
+    except Exception:  # noqa: BLE001
+        pass
     if inline_theory:
         theory = Path("build/grounding/cco-taxonomy.omn")
         if theory.exists():

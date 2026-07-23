@@ -76,7 +76,20 @@ if _os.environ.get("AEGIR_PROPERTY_DOMAINS", "1") == "1":        # DEFAULT ON (2
     # and REFUSES on staged-identity mismatch, so this path arms exactly the certified
     # set or fails loudly (the #27 discipline completed at property-domain scale).
     from aegir.ontology.property_domains import armed_domains_omn as _dom
-    NUMERIC_BFO = NUMERIC_BFO + _dom()   # exclusion-aware: demoted ∪ deferred filtered
+    _armed = _dom()
+    # the armed frames may reference bfo:/cco: classes beyond the catalog scaffold —
+    # Manchester requires declarations at use, so declare every referenced class not
+    # already present (the first full realize under the flip found bfo:0000016 undeclared)
+    import re as _re3
+    _refs = set(_re3.findall(r"(?:Domain|Range):\s*((?:bfo|cco):[\w]+)", _armed))
+    _missing = sorted(c for c in _refs if f"Class: {c}" not in NUMERIC_BFO + _armed)
+    _decls = "".join(f"\nClass: {c}\n" for c in _missing)
+    NUMERIC_BFO = NUMERIC_BFO + _decls + _armed   # exclusion-aware: demoted ∪ deferred filtered
+# The relational-concepts closure (RH 2026-07-23): the ontology extends over its own
+# relational projection — pattern + column-role classes, authored (not FinePDFs-derived),
+# ⊑ cco ICE, shipped in every release so a database-only consumer can tag every entity.
+from aegir.ontology.relational_concepts import RELATIONAL_CONCEPTS_OMN as _RELC
+NUMERIC_BFO = NUMERIC_BFO + _RELC
 if _os.environ.get("AEGIR_RELATION_SIGNATURES", "1") != "0":     # DEFAULT ON since 2026-07-19:
     # the 39 miscasts are re-authored (UNSAT=0 verified) — signatures now guard every realize.
     from aegir.ontology.relation_signatures import SIGNATURES_OMN as _SIG

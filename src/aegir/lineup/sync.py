@@ -277,6 +277,51 @@ def _emit_entity_associations() -> None:
             rows.append({"class_iri": iri, "class": local,
                          "template_id": (head_tid.get(local) or name_tid.get(local) or ""),
                          "associations": assoc})
+        # THE CLOSURE SECTION (RH 2026-07-23): every relational entity — including
+        # association/EAV patterns and plumbing columns — carries its ontological
+        # source, so a database-only consumer can tag each entity. Patterns and column
+        # roles come from the RELATIONAL-CONCEPTS extension (authored, ⊑ cco ICE);
+        # evidence stays record-grade (naming_map kinds, pk records, slot_refs).
+        tid_head = {v: k for k, v in head_tid.items()}
+        by_table: dict = {}
+        for r_ in nm.to_dict("records"):
+            by_table.setdefault(str(r_["table_name"]), []).append(r_)
+        PATTERN_OF_KIND = {"entity": "sdg:EntityTable", "junction": "sdg:AssociationTable",
+                           "lookup": "sdg:LookupTable", "eav": "sdg:EntityAttributeValueTable",
+                           "view": "sdg:RelationalView"}
+        tables_out = []
+        n_no_pattern = 0
+        for tname, trs in sorted(by_table.items()):
+            kind_ = str(trs[0].get("kind") or "")
+            pattern = PATTERN_OF_KIND.get(kind_)
+            if not pattern:
+                n_no_pattern += 1
+            tid_ = str(trs[0].get("template_id") or "")
+            dom_cls = tid_head.get(tid_, "")
+            cols_out = []
+            for r_ in trs:
+                col, sref = str(r_.get("col_name")), str(r_.get("slot_ref") or "")
+                if sref == "__pk__":
+                    role = "sdg:SurrogateIdentifierColumn"
+                elif sref and sref[:1].isupper():
+                    role = "sdg:ForeignKeyColumn"
+                elif col in ("created", "updated"):
+                    role = "sdg:AuditTimestampColumn"
+                else:
+                    role = "sdg:AttributeColumn"
+                c_ = {"column": col, "role": role,
+                      "confirmed_by": "naming_map_record"}
+                if role == "sdg:ForeignKeyColumn":
+                    c_["references_class"] = sref
+                elif role == "sdg:AttributeColumn" and r_.get("semantic_col"):
+                    c_["concept"] = str(r_["semantic_col"])
+                cols_out.append(c_)
+            tables_out.append({
+                "table": tname, "atlas_qualifiedName": f"{tname}@aegir",
+                "schema_pattern": pattern or "sdg:RelationalSchemaEntity",
+                "pattern_confirmed_by": "naming_map_kind_record",
+                "realized_from_class": dom_cls,
+                "columns": cols_out})
         out = {"run": run_dir.name, "atlas_typeName": "rdbms_table",
                "generated_from": {"inputs": manifest.get("catalog_files", []),
                                   "n_templates": manifest.get("n_templates"),
@@ -290,6 +335,13 @@ def _emit_entity_associations() -> None:
                "n_name_matches_rejected": n_rejected,
                "note": "associations == [] marks constructs awaiting the next "
                        "agent-mediated generative pass (ontology → relational)",
+               "closure": {"n_tables": len(tables_out),
+                           "n_without_pattern": n_no_pattern,
+                           "rule": "every relational entity carries its ontological "
+                                   "source (pattern + column roles from the "
+                                   "relational-concepts extension; domain class where "
+                                   "generated) — the database-only tagging guarantee"},
+               "tables": tables_out,
                "classes": rows}
         (run_dir / "ontology_entity_associations.json").write_text(_json.dumps(out, indent=1))
         print(f"   entity associations: {len(rows)} classes · {n_unpop} unpopulated "
