@@ -330,6 +330,49 @@ def _register_api_routes(app: FastAPI) -> None:
             body = (f"**{lbl or local}** — realized class "
                     + f"`https://signals.zndx.org/sdg#{local}`{grp_line}\n\n" if tag == "sdg"
                     else f"**{lbl or local}** — a class of {tag.upper()}{grp_line} (`{iri}`)\n\n")
+            # relational realization (RH 2026-07-23): the generated relational entities
+            # this realized class informed — own table (template_id) + referencing FKs
+            # (slot_ref), identity-joined from the RELEASED naming map.
+            rel_md = ""
+            if tag == "sdg":
+                nm_ = getattr(app.state, "naming_map", None)
+                if nm_ is None:
+                    # BY-CONSTRUCTION associations only (RH 2026-07-23): the naming map
+                    # RECORDS class-name ↔ template pairs on its FK rows (slot_ref,
+                    # semantic_col) and the catalog records head → template — no name
+                    # transforms, no oblique references; these are the same associations
+                    # the Atlas relational projector holds.
+                    nm_ = {"own": {}, "refs": {}, "name_tid": {}}
+                    try:
+                        import pandas as _pd
+                        dirs_ = sorted(_P("corpora/ddl").glob("*/naming_map.parquet"))
+                        if dirs_:
+                            df_ = _pd.read_parquet(dirs_[-1])
+                            ent_ = df_[df_["kind"] == "entity"]
+                            for t_, tb_ in zip(ent_["template_id"], ent_["table_name"]):
+                                nm_["own"].setdefault(str(t_), str(tb_))
+                            for rf_, tb_, co_, sc_ in zip(df_["slot_ref"], df_["table_name"],
+                                                          df_["col_name"], df_["semantic_col"]):
+                                if rf_ and str(rf_) != "__pk__":
+                                    nm_["refs"].setdefault(str(rf_), []).append(
+                                        (str(tb_), str(co_)))
+                                    if sc_:
+                                        nm_["name_tid"].setdefault(str(rf_), str(sc_))
+                    except Exception:  # noqa: BLE001
+                        pass
+                    app.state.naming_map = nm_
+                tid_own = cm["head_tid"].get(local) or nm_["name_tid"].get(local)
+                own_ = nm_["own"].get(tid_own) if tid_own else None
+                refs_ = nm_["refs"].get(local, [])[:8]
+                parts_ = []
+                if own_:
+                    parts_.append(f"[[relational/table/{own_}|{own_}]] (own table)")
+                if refs_:
+                    parts_.append("referenced by " + " · ".join(
+                        f"[[relational/table/{tb_}|{tb_}]].`{co_}`" for tb_, co_ in refs_))
+                if parts_:
+                    rel_md = "**Relational realization.** " + " · ".join(parts_) + "\n\n"
+
             # native-syntax blocks (RH 2026-07-22): the VERBATIM artifacts, copyable —
             # the Manchester frame reconstructed prefixed, and the class's SHACL shape
             # from the certified union's kvasir emission where one exists.
@@ -369,6 +412,7 @@ def _register_api_routes(app: FastAPI) -> None:
                      + (catalog_md if tag == "sdg" else "")
                      + "**Axioms (realized OWL).**\n" + ax_rows + "\n\n"
                      + props_md
+                     + rel_md
                      + (usage_md if tag == "sdg" else "")
                      + native_md
                      + f"_Source: build/foreign_fragments/{tag}.json (census extraction of the "

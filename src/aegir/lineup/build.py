@@ -3191,6 +3191,10 @@ def run(args=None) -> int:
         _reflog.error("reference integrity: %d structural failure(s) this build "
                       "→ build/reference_integrity.json (remediation worklist)", len(REF_DEFECTS))
     notes += project_sources()
+    # PROVENANCE parity across roots (RH 2026-07-23): the Sources surface is
+    # root-independent epistemic lineage — current carries it like scratch.
+    import dataclasses as _dc2
+    notes += [_dc2.replace(n_, root="current") for n_ in project_sources()]
     notes += project_escalation_channel()
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
                                   zettel_head=zs[-1]["id"] if zs else None,
