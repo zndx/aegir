@@ -365,12 +365,22 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                 s = emit_spine_associations(run_dir) or {}
                 self.ddl_stage_report["catalog"] = s
                 try:
+                    from aegir.ontology.sql_bundle import emit_sql_bundle
+                    sb = emit_sql_bundle(run_dir)
+                    self.ddl_stage_report["sql_bundle"] = sb["dialects"]
+                    print("  ddl[catalog]: sql bundle "
+                          + " · ".join(f"{d}:{x['tables']}t/{x['views']}v"
+                                       for d, x in sb["dialects"].items()), flush=True)
+                except Exception as e:  # noqa: BLE001 — emission failure is visible, not fatal
+                    print(f"  ddl[catalog] sql bundle deferred ({str(e)[:80]})", flush=True)
+                try:
                     emit_run_event(
                         "ddl-spine", run_key=run_dir.name, events_dir=ev_dir,
                         inputs=[file_dataset(REPO / "src/aegir/ontology/catalog/catalog.json")],
                         outputs=[file_dataset(run_dir / f) for f in
                                  ("naming_map.parquet", "ddl_statements.parquet", "views.parquet",
-                                  "ontology_entity_associations.json") if (run_dir / f).exists()],
+                                  "ontology_entity_associations.json",
+                                  "sql/postgres/00_schema.sql") if (run_dir / f).exists()],
                         facets={"scope": "catalog",
                                 "closure": {k: s.get(k) for k in
                                             ("n_tables", "n_without_pattern", "n_unpopulated",

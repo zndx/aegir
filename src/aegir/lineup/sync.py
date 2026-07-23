@@ -250,6 +250,66 @@ def _regen_ddl() -> bool:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def _emit_sql_bundle() -> bool:
+    """Directly-loadable SQL (RH 2026-07-23): derive the per-database ``sql/`` bundle
+    from the released spine parquets (postgres record-assembled + polyglot-transpiled;
+    trino/spark native), then PROVE postgres loadability against the devenv instance.
+    Degradations print, never silent; exclusions are named."""
+    runs = sorted((CORPORA / "ddl").glob("*/manifest.json"))
+    if not runs:
+        print("   no spine run — bundle skipped")
+        return True
+    run_dir = runs[-1].parent
+    try:
+        from aegir.ontology.sql_bundle import emit_sql_bundle
+        s = emit_sql_bundle(run_dir)
+        for d, x in s["dialects"].items():
+            extra = f" · EXCLUDED {x['excluded']}" if x.get("excluded") else ""
+            print(f"   {d}: {x['tables']} tables · {x['insert_rows']} rows · "
+                  f"{x['views']} views{extra}")
+    except Exception as e:  # noqa: BLE001
+        print(f"   sql bundle FAILED: {e}")
+        return False
+    return _verify_pg_load(run_dir)
+
+
+def _verify_pg_load(run_dir: Path) -> bool:
+    """The loadability gate: load the postgres flavor into the devenv instance
+    (database ``sdg_corpora``, recreated each pass and LEFT LOADED — at the ready for
+    direct testing). An unreachable instance degrades VISIBLY; a load failure fails."""
+    import os
+    env = {**os.environ,
+           "PGHOST": os.environ.get("PGHOST", "127.0.0.1"),
+           "PGPORT": os.environ.get("PGPORT", "5555"),
+           "PGUSER": os.environ.get("PGUSER", os.environ.get("USER", "postgres"))}
+
+    def _psql(*args: str) -> subprocess.CompletedProcess:
+        return subprocess.run(["psql", *args], capture_output=True, text=True, env=env)
+
+    sqldir = run_dir / "sql" / "postgres"
+    pre = _psql("-d", "postgres", "-qc", "DROP DATABASE IF EXISTS sdg_corpora",
+                "-c", "CREATE DATABASE sdg_corpora")
+    if pre.returncode != 0:
+        print(f"   pg load SKIPPED (instance unavailable): "
+              f"{(pre.stderr or '').strip()[:120]}")
+        return True
+    r = _psql("-d", "sdg_corpora", "-v", "ON_ERROR_STOP=1", "-q",
+              "-f", str(sqldir / "00_schema.sql"), "-f", str(sqldir / "01_data.sql"),
+              "-f", str(sqldir / "02_views.sql"))
+    if r.returncode != 0:
+        print(f"   pg load FAILED: {(r.stderr or '').strip()[-300:]}")
+        return False
+    m = _psql("-d", "sdg_corpora", "-tAc",
+              "SELECT count(*) FROM information_schema.tables WHERE "
+              "table_schema='public' AND table_type='BASE TABLE'")
+    v = _psql("-d", "sdg_corpora", "-tAc",
+              "SELECT count(*) FROM information_schema.views WHERE table_schema='public'")
+    print(f"   pg load VERIFIED → database sdg_corpora "
+          f"({(m.stdout or '').strip()} tables · {(v.stdout or '').strip()} views) — "
+          "at the ready for direct testing")
+    return True
+
+
 def run(args=None) -> int:
     commit = bool(getattr(args, "commit", False))
     push = bool(getattr(args, "push", False))
@@ -267,6 +327,8 @@ def run(args=None) -> int:
     _regen_vocabulary()
     print("4) regenerate DDL spine → corpora/ddl/")
     _regen_ddl()
+    print("4b) loadable SQL bundle (postgres/trino/spark) → corpora/ddl/<run>/sql/")
+    _emit_sql_bundle()
 
     st = _sh(["git", "status", "--short"], cwd=CORPORA)
     changed = bool((st.stdout or "").strip())
