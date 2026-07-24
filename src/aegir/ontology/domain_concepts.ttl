@@ -546,8 +546,10 @@
 # are in the downstream analytical queue. Confirmed by decree of certainty, shipped as
 # RC under the versioned-release doctrine. STILL NOT aperture admission points (the
 # schemes-organize/concepts-admit finding; ruling B pending). PRODML extension is
-# comprehensive-into-SDG; FIBO/FHIR remain foreign under-management integrations —
-# SDG stays distinctly our own. ──
+# comprehensive-into-SDG. FIBO/FHIR are IN-SCOPE EXTERNAL (RH 2026-07-24 — the
+# BFO/CCO posture: never managed nor extended by us, leveraged extensively; our SDG
+# ontology enriches WITH full appreciation for what they provide) — SDG stays
+# distinctly our own. ──
 
 <https://signals.zndx.org/sdg#PRODML> a skos:Concept ;
     skos:prefLabel "Production Markup Language Domain" ;
