@@ -14,7 +14,7 @@ interface IndexEntry {
 interface KBIndex { counts: { total: number; by_data_product: Record<string, number> }; notes: IndexEntry[]; }
 
 const LENSES = [
-  { key: "terms", label: "Lexicon", seed: "lens/terms", hint: "aperture · terms · topics" },
+  { key: "terms", label: "Lexicon", seed: "lens/terms", hint: "aperture · topics" },
   { key: "schema", label: "Schema", seed: "lens/schema", hint: "relational projection" },
   { key: "content", label: "Content", seed: "lens/content", hint: "corpus + topics" },
 ];
