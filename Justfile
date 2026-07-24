@@ -873,3 +873,12 @@ scan-sensitive-nouns:
 # honors calibrated coarseness (the rout_stop_address doctrine); results sliced by name-provenance.
 score-atelier predictions release="build/atelier_release_preview" out="build/atelier_score.json":
     uv run --no-sync python scripts/score_atelier_predictions.py --predictions {{predictions}} --release {{release}} --out {{out}}
+
+# Brave web-evidence channel, AGENT-MEDIATED (RH 2026-07-23: "employ ACP and provide a
+# proper tmp scratchpad"): harness gathers materials (Brave + fetch) into a per-session
+# workspace; the ACP agent curates deliverable evidence files; item_scan membranes
+# dispose (armed filter). Raw fetcher lives in harvest_web_domain.py (the library).
+# Wire into the flow's harvest stage once field-proven.
+harvest-web domain="MFG":
+    AEGIR_ADMISSION_FILTER=1 LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs \
+      uv run --no-sync python scripts/acp_web_evidence.py --domain {{domain}}
