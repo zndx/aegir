@@ -30,7 +30,7 @@ const TRAINING = [
 // every external source directly referenced, in scope via SDG.
 const PROVENANCE = [
   { key: "lineage", label: "Lineage", seed: "training/provenance", hint: "internal DAG" },
-  { key: "reasoning", label: "Reasoning", seed: "provenance/reasoning", hint: "retained thinking traces" },
+  { key: "reasoning", label: "Reasoning", seed: "provenance/reasoning", hint: "thinking traces" },
   { key: "sources", label: "Sources", seed: "provenance/sources", hint: "external inputs" },
 ];
 // Roots are refs (RH 2026-07-06, git-style): current = the latest sdg-corpora release kasten ·
