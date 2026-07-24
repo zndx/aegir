@@ -160,7 +160,8 @@ def main() -> int:
         # engine-drafted definitions (the ACP-propose half; membranes dispose)
         if not a.no_engine and children:
             try:
-                from aegir.engine.client import complete
+                from aegir.engine.client import complete_detailed
+                _rf = (run_dir / "reasoning.jsonl").open("a")
                 for ch in children:
                     prompt = (
                         f"Parent concept: {local} — "
@@ -172,8 +173,16 @@ def main() -> int:
                         "sub-concept as a narrower specialization of the parent. State "
                         "the differentia — what distinguishes it from sibling "
                         "sub-concepts — in domain language. Output only the sentence.")
-                    d = complete(prompt, capability="instruct").strip()
+                    r = complete_detailed(prompt, capability="instruct",
+                                          max_tokens=2048, temperature=0.5)
+                    d = (r.get("text") or "").strip()
                     ch["definition_draft"] = d.split("\n")[0][:400]
+                    # REASONING RETENTION (RH 2026-07-24): the thinking trace persists
+                    _rf.write(json.dumps({"anchor": local,
+                                          "child": ch["proposed_local"],
+                                          "reasoning": r.get("reasoning_content", ""),
+                                          "definition": ch["definition_draft"]}) + "\n")
+                _rf.close()
             except Exception as e:  # noqa: BLE001 — drafts degrade visibly, never block
                 for ch in children:
                     ch.setdefault("definition_draft",

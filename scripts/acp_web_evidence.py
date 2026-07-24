@@ -31,6 +31,7 @@ import argparse
 import asyncio
 import hashlib
 import json
+import os
 import re
 import sys
 import time
@@ -57,7 +58,7 @@ def main() -> int:
     from aegir.ontology import admission_items as AI
     from aegir.ontology import domain_index as DI
 
-    ws = REPO / "build" / "acp_web" / f"{time.strftime('%Y%m%d_%H%M%S')}_{a.domain}"
+    ws = REPO / "build" / "acp_web" / f"{time.strftime('%Y%m%d_%H%M%S')}_{os.getpid()}_{a.domain}"
     mat = ws / "materials"
     dlv = ws / "deliverable"
     mat.mkdir(parents=True)
@@ -165,6 +166,12 @@ evidence is rejected with a reason, never padded into a deliverable."""
         try:
             res = asyncio.run(_run())
             agent_notes.append(getattr(res, "text", "") or "")
+            # REASONING RETENTION (RH 2026-07-24): the trace is a corpus value-add —
+            # every batch's thought chunks persist beside the deliverables
+            with (ws / "reasoning.jsonl").open("a") as rf:
+                rf.write(json.dumps({"batch": b0 // BATCH + 1,
+                                     "thoughts": list(getattr(res, "thoughts", []) or []),
+                                     "text": (getattr(res, "text", "") or "")[:2000]}) + "\n")
             print(f"  batch {b0 // BATCH + 1}/{(len(index) + BATCH - 1) // BATCH}: "
                   f"{len(list(dlv.glob('evidence_*.md')))} deliverables so far", flush=True)
         except Exception as e:  # noqa: BLE001 — the ledger records; the next batch proceeds

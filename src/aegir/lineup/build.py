@@ -1780,6 +1780,79 @@ SOURCES = [
 ]
 
 
+def project_reasoning() -> "list[N.Note]":
+    """PROVENANCE › Reasoning (RH 2026-07-24): the retained THINKING TRACES of every
+    local-model generation act — a corpus value-add held beside its lineage, never
+    discarded. Sits between Lineage (the internal DAG) and Sources (the epistemic
+    lineage): what the model REASONED on the way from inputs to outputs. Stores are
+    enumerated honestly (absent → omitted); each store links its generating act."""
+    notes: "list[N.Note]" = []
+    rows = ["| store | acts | traces | generating act |", "|---|---|---|---|"]
+    detail_notes: "list[N.Note]" = []
+
+    # 1. chapter generation — the Iceberg raw.exchange discipline (full exchanges
+    #    incl. reasoning_content per chapter call)
+    wh = S.REPO / "build" / "warehouse" / "raw" / "exchange"
+    if wh.exists():
+        n_files = sum(1 for _ in wh.rglob("*.parquet"))
+        rows.append("| chapter exchanges (`raw.exchange`) | corpus runs | "
+                    f"{n_files} parquet file(s) | `generate_chapter`/flow prose |")
+
+    # 2. genus deepening — per-child definition drafts with reasoning_content
+    dr = S.REPO / "build" / "genus_deepening" / "reasoning.jsonl"
+    if dr.exists():
+        traces = [json.loads(l_) for l_ in dr.read_text().splitlines() if l_.strip()]
+        rows.append(f"| genus deepening definitions | {len({t_['anchor'] for t_ in traces})} "
+                    f"anchors | {len(traces)} traces | `deepen_genus_anchors` |")
+        secs = []
+        for t_ in traces:
+            r_ = (t_.get("reasoning") or "").strip()
+            if not r_:
+                continue
+            secs.append(f"### {t_['child']}\n\n_{t_.get('definition', '')}_\n\n"
+                        f"> {r_[:1200].replace(chr(10), chr(10) + '> ')}"
+                        + ("\n> _…trace continues in the store._" if len(r_) > 1200 else ""))
+        detail_notes.append(N.Note(
+            id="provenance/reasoning/deepening", title="Reasoning · genus deepening",
+            kind="provenance-reasoning", data_product="ontology", root="scratch",
+            links=["provenance/reasoning"],
+            body=("**Definition-draft reasoning** — the engine's retained thinking "
+                  f"trace per proposed child ({len(secs)} with traces of {len(traces)} "
+                  "drafts; full store `build/genus_deepening/reasoning.jsonl`).\n\n"
+                  + "\n\n".join(secs[:24])
+                  + (f"\n\n_…{len(secs) - 24} more in the store._" if len(secs) > 24 else ""))))
+
+    # 3. ACP web-evidence sessions — per-batch agent thought chunks
+    acp_traces = sorted(S.REPO.glob("build/acp_web/*/reasoning.jsonl"))
+    if acp_traces:
+        n_batches = sum(1 for f_ in acp_traces for _ in f_.read_text().splitlines())
+        rows.append(f"| ACP web-evidence sessions | {len(acp_traces)} sessions | "
+                    f"{n_batches} batch traces | `acp_web_evidence` |")
+
+    # 4. elaboration organ — membrane dialogues ride the worklist entries
+    wl = S.REPO / "build" / "elaboration_acp_worklist.json"
+    if wl.exists():
+        try:
+            n_wl = len(json.loads(wl.read_text()) or [])
+            rows.append(f"| elaboration membrane dialogues | worklist | {n_wl} entries "
+                        "| `refine_escalations` organ |")
+        except Exception:  # noqa: BLE001
+            pass
+
+    notes.append(N.Note(
+        id="provenance/reasoning", title="Reasoning", kind="provenance-reasoning",
+        data_product="ontology", root="scratch",
+        links=[n_.id for n_ in detail_notes],
+        body=("**Retained reasoning traces** — every local-model generation act keeps "
+              "its thinking trace beside its lineage (the trace is a corpus value-add, "
+              "never discarded; engine `reasoning_content` + ACP thought chunks).\n\n"
+              + "\n".join(rows) + "\n\n"
+              + ("Drill-down: " + " · ".join(N.wl(n_.id, n_.title) for n_ in detail_notes)
+                 if detail_notes else
+                 "_No trace stores present in this projection yet._"))))
+    return notes + detail_notes
+
+
 def project_sources() -> "list[N.Note]":
     notes: "list[N.Note]" = []
     rows = ["| source | kind | in-scope role |", "|---|---|---|"]
@@ -3295,10 +3368,12 @@ def run(args=None) -> int:
         _reflog.error("reference integrity: %d structural failure(s) this build "
                       "→ build/reference_integrity.json (remediation worklist)", len(REF_DEFECTS))
     notes += project_sources()
-    # PROVENANCE parity across roots (RH 2026-07-23): the Sources surface is
-    # root-independent epistemic lineage — current carries it like scratch.
+    notes += project_reasoning()
+    # PROVENANCE parity across roots (RH 2026-07-23/24): Sources AND Reasoning are
+    # root-independent provenance surfaces — current carries them like scratch.
     import dataclasses as _dc2
     notes += [_dc2.replace(n_, root="current") for n_ in project_sources()]
+    notes += [_dc2.replace(n_, root="current") for n_ in project_reasoning()]
     notes += project_escalation_channel()
     notes += project_trunk_lenses(categories, rel_cats, bool(sc),
                                   zettel_head=zs[-1]["id"] if zs else None,
