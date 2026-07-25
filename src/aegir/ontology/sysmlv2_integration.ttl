@@ -98,15 +98,24 @@ sdg:SYSML_VERIFICATION a sdg:SysMLv2Concept ;
 # TRIAD BY GENERATION: kvasir's scheme→lookup lowering will emit
 # sysml_metaclasses / sysml_relationship_kinds DDL + seed rows FROM these
 # members (Collection = table, member = row; spec_ref/sdg_concept_iri columns
-# carry rdfs:seeAlso + these IRIs). Layering follows the spec's own strata:
-# Root/Core/Kernel terms are KerML (inScheme sdg:KerMLScheme); Systems terms
-# are SysMLv2. NEVER aperture points; metamodel-internal specialization links
-# await census (confirmed links only — no hierarchy invented from memory).
+# carry rdfs:seeAlso + these IRIs).
+#
+# CENSUS-VERIFIED (2026-07-25) against the OFFICIAL metamodel —
+# Systems-Modeling/SysML-v2-Pilot-Implementation org.omg.sysml/model/SysML.ecore
+# (182 EClasses; artifact: build/foreign/sysmlv2/census_30.json). Every abstract
+# flag and every specialization link below is READ FROM the metamodel, never
+# folklore (the census corrected three wrong abstract flags on first run, and
+# caught that Allocation/Connection/ItemFlow are NOT metaclasses — the language
+# reifies them as AllocationUsage/ConnectionUsage/Flow-family usages; those
+# three rows are SDG RELATIONAL FLATTENINGS, marked as such). In-set
+# specializations are skos:broader; out-of-set supertypes are recorded in
+# editorial notes without minting concepts (census discipline: confirmed links
+# only, no scope creep). NEVER aperture points.
 # ─────────────────────────────────────────────────────────────────────────────
 
 sdg:SysMLv2Metaclasses a skos:Collection ;
     skos:prefLabel "SysMLv2 Metaclasses" ;
-    skos:definition "The controlled vocabulary of KerML/SysMLv2 metaclasses used by the semantic layer's element backbone — the SKOS source of the sysml_metaclasses reference table." ;
+    skos:definition "The controlled vocabulary of KerML/SysMLv2 metaclasses used by the semantic layer's element backbone — the SKOS source of the sysml_metaclasses reference table. Census-verified against the official Ecore metamodel." ;
     skos:member sdg:SysMLv2_Element , sdg:SysMLv2_Namespace , sdg:SysMLv2_Relationship ,
         sdg:SysMLv2_Type , sdg:SysMLv2_Classifier , sdg:SysMLv2_Feature , sdg:SysMLv2_Class ,
         sdg:SysMLv2_PartDefinition , sdg:SysMLv2_PartUsage ,
@@ -119,85 +128,91 @@ sdg:SysMLv2Metaclasses a skos:Collection ;
 
 sdg:SysMLv2RelationshipKinds a skos:Collection ;
     skos:prefLabel "SysMLv2 Relationship Kinds" ;
-    skos:definition "The controlled vocabulary of KerML/SysMLv2 relationship kinds used by the semantic layer's relations backbone — the SKOS source of the sysml_relationship_kinds reference table." ;
+    skos:definition "The controlled vocabulary for the semantic layer's relations backbone — the SKOS source of the sysml_relationship_kinds reference table. Seven members are census-verified Relationship-family metaclasses; three (Allocation, Connection, ItemFlow) are SDG relational flattenings of constructs the language reifies as usages, marked as such per member." ;
     skos:member sdg:SysMLv2_OwningMembership , sdg:SysMLv2_FeatureMembership ,
         sdg:SysMLv2_Specialization , sdg:SysMLv2_Subsetting , sdg:SysMLv2_FeatureTyping ,
         sdg:SysMLv2_Succession , sdg:SysMLv2_Allocation , sdg:SysMLv2_Connection ,
         sdg:SysMLv2_ItemFlow , sdg:SysMLv2_Dependency .
 
-# ── KerML-layer metaclasses (Root/Core/Kernel) ──────────────────────────────────
+# ── KerML-layer metaclasses (Root/Core/Kernel) — census-confirmed ──────────────
 
 sdg:SysMLv2_Element a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Element" ;
     skos:definition "Root syntactic element of the KerML abstract syntax — the common supertype of everything in a model." ;
-    skos:editorialNote "layer: Root · abstract metaclass" ;
+    skos:editorialNote "layer: Root · ABSTRACT (census) · no supertype" ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Namespace a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Namespace" ;
     skos:definition "An element that contains and names other elements via memberships." ;
-    skos:editorialNote "layer: Root" ;
+    skos:editorialNote "layer: Root · specializes (census): Element" ;
+    skos:broader sdg:SysMLv2_Element ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Relationship a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Relationship" ;
     skos:definition "Reified relationship element relating source and target elements." ;
-    skos:editorialNote "layer: Root · abstract metaclass" ;
+    skos:editorialNote "layer: Root · ABSTRACT (census) · specializes (census): Element" ;
+    skos:broader sdg:SysMLv2_Element ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Type a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Type" ;
     skos:definition "A namespace classifying things by conditions on membership — the root of the classification hierarchy." ;
-    skos:editorialNote "layer: Core · abstract metaclass" ;
+    skos:editorialNote "layer: Core · concrete (census corrected 2026-07-25: NOT abstract) · specializes (census): Namespace" ;
+    skos:broader sdg:SysMLv2_Namespace ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Classifier a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Classifier" ;
     skos:definition "A type classifying instances directly." ;
-    skos:editorialNote "layer: Core · abstract metaclass" ;
+    skos:editorialNote "layer: Core · concrete (census corrected 2026-07-25: NOT abstract) · specializes (census): Type" ;
+    skos:broader sdg:SysMLv2_Type ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Feature a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Feature" ;
     skos:definition "A type classifying how instances relate — the usage/role side of the type system." ;
-    skos:editorialNote "layer: Core · abstract metaclass" ;
+    skos:editorialNote "layer: Core · concrete (census corrected 2026-07-25: NOT abstract) · specializes (census): Type" ;
+    skos:broader sdg:SysMLv2_Type ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Class a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Class" ;
     skos:definition "Kernel classifier of occurrences and objects." ;
-    skos:editorialNote "layer: Kernel" ;
+    skos:editorialNote "layer: Kernel · specializes (census): Classifier" ;
+    skos:broader sdg:SysMLv2_Classifier ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
-# ── Systems-layer metaclasses ───────────────────────────────────────────────────
+# ── Systems-layer metaclasses — census-confirmed ────────────────────────────────
 
 sdg:SysMLv2_PartDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "PartDefinition" ;
     skos:definition "Definition of a class of systems or parts of systems." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): ItemDefinition — parts ARE items in SysMLv2" ;
+    skos:broader sdg:SysMLv2_ItemDefinition ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_PartUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "PartUsage" ;
     skos:definition "Usage of a part within a context — the Definition/Usage pattern's usage side for parts." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): ItemUsage" ;
+    skos:broader sdg:SysMLv2_ItemUsage ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ActionDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "ActionDefinition" ;
     skos:definition "Definition of a class of actions or processes." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): OccurrenceDefinition, Behavior (out-of-set — await census expansion)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -205,7 +220,7 @@ sdg:SysMLv2_ActionDefinition a skos:Concept, sdg:SysMLv2Concept ;
 sdg:SysMLv2_ActionUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "ActionUsage" ;
     skos:definition "Usage of an action within a behavior or process context." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): OccurrenceUsage, Step (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -213,7 +228,7 @@ sdg:SysMLv2_ActionUsage a skos:Concept, sdg:SysMLv2Concept ;
 sdg:SysMLv2_RequirementDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "RequirementDefinition" ;
     skos:definition "Definition of a requirement — a constraint that must be satisfied." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): ConstraintDefinition (out-of-set) — requirements ARE constraints in SysMLv2" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -221,7 +236,7 @@ sdg:SysMLv2_RequirementDefinition a skos:Concept, sdg:SysMLv2Concept ;
 sdg:SysMLv2_RequirementUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "RequirementUsage" ;
     skos:definition "Usage of a requirement within a context." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): ConstraintUsage (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -229,15 +244,15 @@ sdg:SysMLv2_RequirementUsage a skos:Concept, sdg:SysMLv2Concept ;
 sdg:SysMLv2_AllocationDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "AllocationDefinition" ;
     skos:definition "Definition of an allocation — a mapping of one model element onto another." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): ConnectionDefinition — allocations ARE connections in SysMLv2" ;
+    skos:broader sdg:SysMLv2_ConnectionDefinition ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_AllocationUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "AllocationUsage" ;
     skos:definition "Usage of an allocation within a context." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): ConnectionUsage (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -245,15 +260,15 @@ sdg:SysMLv2_AllocationUsage a skos:Concept, sdg:SysMLv2Concept ;
 sdg:SysMLv2_ConnectionDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "ConnectionDefinition" ;
     skos:definition "Definition of a connection between parts." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): PartDefinition, AssociationStructure (2nd out-of-set) — connections ARE parts in SysMLv2" ;
+    skos:broader sdg:SysMLv2_PartDefinition ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ItemDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "ItemDefinition" ;
     skos:definition "Definition of a class of items — things flowing through or handled by a system." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): OccurrenceDefinition, Structure (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -261,7 +276,7 @@ sdg:SysMLv2_ItemDefinition a skos:Concept, sdg:SysMLv2Concept ;
 sdg:SysMLv2_ItemUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "ItemUsage" ;
     skos:definition "Usage of an item within a context." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): OccurrenceUsage (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -269,7 +284,7 @@ sdg:SysMLv2_ItemUsage a skos:Concept, sdg:SysMLv2Concept ;
 sdg:SysMLv2_AttributeDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "AttributeDefinition" ;
     skos:definition "Definition of an attribute — a data-valued feature." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): Definition, DataType (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -277,79 +292,81 @@ sdg:SysMLv2_AttributeDefinition a skos:Concept, sdg:SysMLv2Concept ;
 sdg:SysMLv2_AttributeUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "AttributeUsage" ;
     skos:definition "Usage of an attribute within a context." ;
-    skos:editorialNote "layer: Systems" ;
+    skos:editorialNote "layer: Systems · specializes (census): Usage (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
     skos:broader sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
-# ── relationship kinds ──────────────────────────────────────────────────────────
+# ── relationship kinds — 7 census-verified metaclasses + 3 SDG flattenings ─────
 
 sdg:SysMLv2_OwningMembership a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "OwningMembership" ;
     skos:definition "Ownership / containment membership — the relationship by which a namespace owns an element." ;
-    skos:editorialNote "layer: Root · membership" ;
+    skos:editorialNote "specializes (census): Membership (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_FeatureMembership a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "FeatureMembership" ;
     skos:definition "Membership of a feature in a type." ;
-    skos:editorialNote "layer: Core · membership" ;
+    skos:editorialNote "specializes (census): OwningMembership" ;
+    skos:broader sdg:SysMLv2_OwningMembership ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Specialization a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Specialization" ;
     skos:definition "Generalization / specialization between types." ;
-    skos:editorialNote "layer: Core · specialization" ;
+    skos:editorialNote "specializes (census): Relationship" ;
+    skos:broader sdg:SysMLv2_Relationship ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Subsetting a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Subsetting" ;
     skos:definition "Subsetting between features — one feature's values are a subset of another's." ;
-    skos:editorialNote "layer: Core · specialization" ;
+    skos:editorialNote "specializes (census): Specialization" ;
+    skos:broader sdg:SysMLv2_Specialization ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_FeatureTyping a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "FeatureTyping" ;
     skos:definition "Typing of a feature by a classifier." ;
-    skos:editorialNote "layer: Core" ;
+    skos:editorialNote "specializes (census): Specialization" ;
+    skos:broader sdg:SysMLv2_Specialization ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Succession a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Succession" ;
     skos:definition "Temporal / sequential succession between occurrences — the ordering relationship process plans lower to operation sequences." ;
-    skos:editorialNote "layer: Kernel" ;
+    skos:editorialNote "specializes (census): Connector (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Allocation a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Allocation" ;
-    skos:definition "Allocation of one model element onto another — requirements onto parts, functions onto resources." ;
-    skos:editorialNote "layer: Systems" ;
-    rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
+    skos:definition "Allocation edge in the semantic layer's relations backbone — an SDG relational flattening of what SysMLv2 reifies as AllocationUsage (a connection usage, not an edge kind)." ;
+    skos:editorialNote "SDG RELATIONAL FLATTENING (census 2026-07-25: NOT a SysMLv2 metaclass) — the reified form is sdg:SysMLv2_AllocationUsage; this row exists for the relations table's pragmatic edge vocabulary." ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_Connection a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Connection" ;
-    skos:definition "Connection relationship between parts or ports." ;
-    skos:editorialNote "layer: Systems" ;
-    rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
+    skos:definition "Connection edge in the semantic layer's relations backbone — an SDG relational flattening of what SysMLv2 reifies as ConnectionUsage (itself a part usage, not an edge kind)." ;
+    skos:editorialNote "SDG RELATIONAL FLATTENING (census 2026-07-25: NOT a SysMLv2 metaclass) — the reified form is ConnectionUsage (out-of-set); this row exists for the relations table's pragmatic edge vocabulary." ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ItemFlow a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "ItemFlow" ;
-    skos:definition "Item / material flow along a connection — what moves between parts." ;
-    skos:editorialNote "layer: Systems" ;
-    rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
+    skos:definition "Item / material flow edge in the semantic layer's relations backbone — an SDG relational flattening; the current metamodel reifies flows as the Flow / FlowUsage family (the older ItemFlow name has been superseded upstream)." ;
+    skos:editorialNote "SDG RELATIONAL FLATTENING (census 2026-07-25: NOT a current metaclass — the metamodel's Flow/FlowDefinition/FlowUsage family superseded the ItemFlow name; version-watch with the scheme)." ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_Dependency a skos:Concept, sdg:SysMLv2Concept ;
     skos:prefLabel "Dependency" ;
     skos:definition "Generic dependency between elements." ;
-    skos:editorialNote "layer: Root" ;
+    skos:editorialNote "specializes (census): Relationship" ;
+    skos:broader sdg:SysMLv2_Relationship ;
     rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
     skos:inScheme sdg:KerMLScheme .
