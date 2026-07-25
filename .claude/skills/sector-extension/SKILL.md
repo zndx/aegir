@@ -45,9 +45,9 @@ description: Extend SDG with a new sector-level topic domain — the full arc fr
 6. **Measurement and procession IS the discipline.** Every structural change is
    delta-gated before release; every release seeds the strategy and checks
    drift; every surprise gets its contested artifacts READ before iterating.
-7. **SKOS may skate ahead; the ontology must catch the puck** (RH 2026-07-25).
+7. **SKOS evolves quickly; ontology updates enforce consistency** (RH 2026-07-25).
    Iterating at the SKOS level first is LEGITIMATE convenience — labels,
-   membership, scope notes are the fast authoring surface, and the 2026-07
+   membership, scope notes are a fast authoring surface, and the 2026-07
    sector arc worked exactly this way. But SKOS-ahead-of-OWL is a **gap signal
    co-equal with unsat and underspecification**: the invariant OWL ⊨ SKOS ⊨
    SHACL is only real when the OWL leg exists to do the entailing. Closure is

@@ -112,10 +112,15 @@ def parse_enum_from_definition(defn: str | None) -> list[str] | None:
         return None
     vals: list[str] = []
     for p in re.split(r"\s*[,/|]\s*|\s+or\s+", cand):
-        p = p.strip().strip(".").strip().lower()
-        if (re.fullmatch(r"[a-z][a-z0-9 ]{1,20}", p) and p not in _GENERIC_TOK
-                and p not in ("a", "an", "of", "etc", "such", "value", "the")):
-            vals.append(p)
+        # PRESERVE SOURCE CASE (differential twin with kvasir lower.rs, 2026-07-25):
+        # controlled vocabularies carry case as identity (InProgress, PartDefinition);
+        # validation is case-insensitive, emission is verbatim — lut seeds and
+        # generated row values must agree on case or FK integrity breaks between them.
+        raw = p.strip().strip(".").strip()
+        low = raw.lower()
+        if (re.fullmatch(r"[a-z][a-z0-9 ]{1,20}", low) and low not in _GENERIC_TOK
+                and low not in ("a", "an", "of", "etc", "such", "value", "the")):
+            vals.append(raw)
     return vals if len(vals) >= 2 else None
 
 
