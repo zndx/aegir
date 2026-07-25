@@ -8,13 +8,13 @@ description: Extend SDG with a new sector-level topic domain — the full arc fr
 > **STATUS: DRAFT (by definition — RH 2026-07-25).** Phases 1–7 carry five field
 > executions (FIBO→FinancialSector/FINTECH · FHIR→Healthcare/BIOTECH ·
 > Energistics→HeavyIndustries/ENERGY · SysMLv2→Engineering/MBSE · the
-> Manufacturing sector + MFG re-aim). Phase 8 — the relational projection
-> integrating external-standard-informed formal ontology constructs — is
-> **anticipated, not yet executed**: the manufacturing-operations realization
-> (task #44, parity vs the banked DDL yardstick) is its first execution and
-> WILL revise this document. Treat phase 8 as design intent; refine this skill
-> as that arc lands. The material final product of the pipeline is a
-> semantic-layer API over the sector — every earlier phase is in its service.
+> Manufacturing sector + MFG re-aim). Phase 8's **controlled-vocabulary tier is
+> now executed once** (SysMLv2, census-verified against the official Ecore —
+> the machine-readable census in Phase 1b is PROVEN procedure); the lowering
+> and parity steps remain **anticipated**: the manufacturing-operations
+> realization (task #44) is their first execution and WILL revise this
+> document. The material final product of the pipeline is a semantic-layer API
+> over the sector — every earlier phase is in its service.
 
 ## Doctrines (load-bearing; violating these is how extensions go wrong)
 
@@ -57,6 +57,50 @@ description: Extend SDG with a new sector-level topic domain — the full arc fr
     membership (`<external-iri> skos:inScheme <our-scheme>`).
   - No RDF (Energistics XSD/UML, OMG SysMLv2/KerML) → family-grain
     `rdfs:seeAlso` (namespace URIs / spec pages) + spec_mappings entities.
+
+### Phase 1b — The machine-readable census [PROVEN: SysMLv2, 2026-07-25]
+
+For metamodel/schema-publishing externals (SysMLv2/KerML Ecore; **WITSML/
+PRODML/RESQML energyML XSDs — same spec flavor, same procedure**; ISA-95 UML),
+every vocabulary claim must trace to the external's OFFICIAL machine-readable
+artifact — the practitioners of that standard are the scrutiny audience, and
+folklore is what they smell first.
+
+**Source hierarchy**: machine-readable metamodel/schema (Ecore/XMI, XSD, RDF)
+> normative spec text (clause-cited) > memory/folklore (BANNED — the first
+SysMLv2 census run caught three wrong abstract flags written from folklore).
+
+**Procedure**:
+1. Acquire the official artifact (SysMLv2: Systems-Modeling pilot
+   `SysML.ecore`; WITSML: the energyML XSD set for the pinned version) into
+   `build/foreign/<external>/`.
+2. Parse mechanically (ecore/XSD are XML — extract per term: presence,
+   structural flags like `abstract`, the specialization/extension hierarchy,
+   documentation fields). Census OUR claimed vocabulary against it; bank
+   `census_*.json` as the evidence artifact.
+3. Apply verdicts to the TTL:
+   - Confirmed structural facts → recorded (in-set specializations as
+     `skos:broader`; out-of-set supertypes in `skos:editorialNote` WITHOUT
+     minting concepts — confirmed links only, no scope creep).
+   - Wrong claims → corrected, with "(census corrected <date>)" notes.
+   - **Terms NOT in the external's vocabulary** → retype honestly as **SDG
+     RELATIONAL FLATTENINGS** (ours, in our namespace, marked as such, naming
+     the external's actual reified form). A pragmatic edge vocabulary is a
+     legitimate engineering choice; a false attribution is not. (Measured:
+     Allocation/Connection/ItemFlow are usages in SysMLv2, not edge kinds.)
+   - **Version drift** → the census catches superseded names (ItemFlow →
+     Flow family); record a version-watch note tied to the scheme's
+     `dct:hasVersion` pin.
+4. The census verdicts feed the reference tables' honesty: census-verified
+   rows vs SDG-extension rows are distinguishable in the lookup's provenance
+   columns (`spec_ref` present vs absent).
+
+**The epistemic split, enforced structurally**: OUR namespace authors freely
+(BFO/CCO foundations, bare names, HermiT-gated — the logical foundations we
+are uniquely positioned to define). THEIR vocabulary is evidence-governed —
+census-confirmed or explicitly marked ours. When a domain class claims
+representability atop the external (`sdg:InventoryItem` atop `ItemUsage`),
+the claim cites a census-confirmed construct, never a guess.
 
 ## Phase 2 — Sector + scheme structure
 
@@ -141,11 +185,23 @@ aegir (+ pointer) → `manifest drift` must print CLEAN. Scratch note in
 `docs/scratch/<date>/HHMMSS_*.md`; memory updated. Integration files ship as
 lens components automatically (the glob).
 
-## Phase 8 — Semantic-layer realization [DRAFT — first execution = task #44]
+## Phase 8 — Semantic-layer realization [PARTIALLY EXECUTED — task #44]
 
 The sector's material product: a relational projection whose rows are the
-individuals the domain tracks, with a semantic-layer API over it. Anticipated
-shape (to be PROVEN and revised by the manufacturing-operations arc):
+individuals the domain tracks, with a semantic-layer API over it.
+
+**Executed once (SysMLv2, 2026-07-25) — the controlled-vocabulary tier**: the
+target DDL's reference-table seed rows become SKOS scheme members, layered by
+the spec's own strata (kernel terms → the kernel scheme, language terms → the
+integration scheme), grouped by `skos:Collection`s — **Collection = reference
+table, member = row**. Each member carries the census verdict (Phase 1b);
+`rdfs:seeAlso` feeds the table's `spec_ref` column and the member IRI feeds
+`sdg_concept_iri`. Vocabulary-tier members are never aperture points and never
+enter the chord (the constituents builder reads overlay + enumerated includes
+only).
+
+Anticipated shape for the rest (to be PROVEN and revised by the
+manufacturing-operations arc):
 
 - **Author the sector OWL module**, BFO/CCO-grounded (orders/plans ⊑ directive
   ICE · physical things ⊑ artifact · sites ⊑ facility · flows/runs ⊑ process ·
