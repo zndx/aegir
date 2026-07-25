@@ -9,7 +9,7 @@
 # the FHIR v6 IN-PROGRESS CI build (https://build.fhir.org/rdf.html, RH 2026-07-25;
 # fhir: binds <http://hl7.org/fhir/>). Version-watch: re-verify mappings at R6
 # release (IRIs expected stable; definitions may shift until then).
-# Both scheme tops now carry skos:broader sdg:Domain (the cross-scheme apex,
+# Both scheme tops now carry skos:broader sdg:Sector (the cross-scheme apex,
 # declared in fibo_integration.ttl) — tops-with-broader are the §4.6.3 atypical
 # presentation our contract driver ENUMERATES by design.
 # NOT IN THE APERTURE SEED PATH — admission only via staged → selectivity-delta →
@@ -37,7 +37,7 @@ sdg:Healthcare a skos:Concept, sdg:FHIRConcept ;
     skos:definition "Top-level concept for healthcare, clinical, and biomedical terminology aligned with FHIR and the HL7 RIM." ;
     skos:topConceptOf sdg:FHIRIntegrationScheme ;
     skos:inScheme sdg:FHIRIntegrationScheme ;
-    skos:broader sdg:Domain .
+    skos:broader sdg:Sector .
 
 sdg:BioTech a skos:Concept, sdg:FHIRConcept ;
     skos:prefLabel "BioTech" ;
