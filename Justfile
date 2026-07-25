@@ -104,6 +104,12 @@ _restore-patched-wheels:
 check-ontology-schema:
     uv run --no-sync python scripts/check_ontology_schema.py
     uv run --no-sync python scripts/check_triad_entailment.py
+    # in-flight lineage validation (#45): every GitTables valueProvenance claim
+    # checked against the kvasir value index; SKIPS VISIBLY when the index is
+    # absent (build artifact — regenerate: emit_gittables_postings + kvasir index)
+    @if [ -f build/foreign/gittables/values.kci ]; then \
+        uv run --no-sync python scripts/validate_value_provenance.py; \
+      else echo "value-provenance gate: SKIPPED (no build/foreign/gittables/values.kci)"; fi
 
 # External-namespace integrity: every cco:/bfo: ref on the live surface (code + current docs + cards)
 # must EXIST in the authority, and the named …ICE / InformationContentEntity hallucinations are banned
