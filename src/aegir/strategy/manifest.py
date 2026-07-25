@@ -101,8 +101,10 @@ def collect_lens() -> "dict[str, bytes]":
         af = Path(__file__).resolve().parents[1] / "ontology" / "admission_filter.json"
         if af.exists():
             out["lens/admission_filter.json"] = af.read_bytes()
-        # in-scope-external contributor schemes (RH 2026-07-24): shipped with the lens,
-        # deliberately OUTSIDE the aperture seed path until delta-gated + enumerated
+        # in-scope-external contributor schemes (RH 2026-07-24): shipped with the lens.
+        # 2026-07-25: their genera (FINTECH/BIOTECH) ENTERED the aperture seed path —
+        # delta-gated (recompose over the frozen store: 12 outcome changes, all gains)
+        # and enumerated via admission_filter aperture_include (§4.6.3 discipline)
         for _nm in ("fibo_integration", "fhir_integration"):
             _f = Path(__file__).resolve().parents[1] / "ontology" / f"{_nm}.ttl"
             if _f.exists():
