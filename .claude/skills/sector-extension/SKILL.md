@@ -102,6 +102,47 @@ census-confirmed or explicitly marked ours. When a domain class claims
 representability atop the external (`sdg:InventoryItem` atop `ItemUsage`),
 the claim cites a census-confirmed construct, never a guess.
 
+### Phase 1c — The fidelity probe [PROVEN: SysMLv2, 2026-07-25]
+
+History's existence proof (RH): EMF demonstrated that full applications
+generate from strongly typed persisted state objects — Ecore/XSD-flavor
+externals are therefore LOAD-BEARING generation sources, and our arc
+(ontology → triad → kvasir-lowered relational → semantic-layer API) is the
+same shape with a logic upgrade. That footing earns an adversarial obligation.
+
+**The question every agent must ask**: *what can be expressed and stored in
+the external modeling framework which CANNOT be serialized in our ontology
+with equivalent or superior fidelity?* Run it mechanically against the same
+artifact the census parsed: enumerate the framework's expressive constructs
+(containment references, bidirectional opposites, ordered multi-valued
+features, multiplicity bounds, derived/transient features, defaults, enums,
+operations; for XSD: choice/substitution groups, xs:key/keyref, facets) and
+give each a verdict:
+
+- **EQUIVALENT/SUPERIOR** — record WHICH leg carries it: containment →
+  part-whole axioms + SHACL + `ON DELETE CASCADE`; eOpposite pairs → inverse
+  object properties + SHACL pair shapes; xs:keyref → FKs (kvasir's native
+  ground); enums/defaults → lookup tables / DDL `DEFAULT`; derived features →
+  SQL views + OWL entailment (SUPERIOR where the derivation becomes
+  HermiT-checkable instead of an OCL/Java implementation — claim superiority
+  only with the demonstration).
+- **TENSION** — a construct needing real design (e.g. ordered multi-valued
+  features: RDF has no native ordering; the relational answer is
+  `sequence_number` discipline; decide and record). Tensions enter the
+  worklist (escalation organ — never dropped); **resolving them IS the
+  quality signal**.
+- **GAP-ACKNOWLEDGED** — a deliberate non-goal, documented (e.g. behavioral
+  operations: we serialize state, not behavior).
+
+**First run (SysML.ecore, artifact `build/foreign/sysmlv2/fidelity_probe.json`)
+— the probe can DISSOLVE apparent tension**: 79% of the metamodel's features
+(328/~415) are derived+transient — computed views, not persisted state. The
+persisted core is 3 containment refs + non-derived references + 24 defaults +
+7 enums: EXACTLY the thin elements+relations backbone the target DDL designs,
+independently confirmed by the external's own statistics. Real tensions
+isolated: ordered multi-valued (153), operations (70, gap-acknowledged),
+the derived layer (superior-candidate via entailment).
+
 ## Phase 2 — Sector + scheme structure
 
 - **Tier shape**: `sdg:TopicDomains` Collection member + `a sdg:TopicDomain`
