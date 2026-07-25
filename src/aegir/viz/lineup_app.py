@@ -168,10 +168,14 @@ def _aperture_chord(root: str = "scratch", ref: str = "", target: str = ""):
     # scheme-aware ring order (SKOS S5-S8): arcs group by TOP-CONCEPT family — the ring
     # itself reads as the ConceptScheme's structure; edges stay the constituent lattice
     fam = {}
+    bro: "dict[str, str]" = {}
     try:
         from aegir.ontology import domain_index as DI
-        ov = {k: c for k, c in DI.load_skos(str(DI.DEFAULT_OVERLAY)).items()
+        ov = {k: c for k, c in {**DI.load_skos(str(DI.DEFAULT_OVERLAY)),
+                                **DI.integration_overlay_concepts()}.items()
               if not getattr(c, "deprecated", False)}
+        bro = {str(k).rsplit("#", 1)[-1]: str(getattr(c, "broader", "") or "").rsplit("#", 1)[-1]
+               for k, c in ov.items()}
         def _root(k, seen=frozenset()):
             c = ov.get(k)
             b = (getattr(c, "broader", "") or "") if c else ""
@@ -202,6 +206,22 @@ def _aperture_chord(root: str = "scratch", ref: str = "", target: str = ""):
         n = sum(1 for c in a["cons"] & b["cons"] if df.get(c, 9) <= 3)
         if n:
             eds_rows.append((idx[a["frag"]], idx[b["frag"]], n))
+    # EVERY ARC MUST BE CONNECTED (RH's off-by-one, root-caused 2026-07-25):
+    # holoviews' chord-label pass filters label POSITIONS to connected nodes but
+    # draws TEXTS for all — one edge-less arc shifts every later label onto the
+    # wrong arc. Hierarchy edges (value 1, broader first, else a child on the
+    # ring) connect constituent-isolated arcs — real structure, never dummies.
+    connected = {s for s, t, _ in eds_rows} | {t for s, t, _ in eds_rows}
+    for i, r in enumerate(rows_):
+        if i in connected:
+            continue
+        b = bro.get(r["frag"], "")
+        j = idx.get(b)
+        if j is None:
+            j = next((idx[q["frag"]] for q in rows_ if bro.get(q["frag"]) == r["frag"]), None)
+        if j is not None and j != i:
+            eds_rows.append((i, j, 1))
+            connected |= {i, j}
     # Every tap lands on the ANCHOR's panel — the facet vertex (RH 2026-07-22): the
     # panel leads schema-forward (identity → encoded text → relational affordances), so
     # the lens flavor lives in the PANEL, and the tapped IRI is never lost to a shared
