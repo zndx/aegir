@@ -93,18 +93,21 @@
 
 <https://signals.zndx.org/sdg#MFG> a skos:Concept ;
     skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
+    skos:broader <https://signals.zndx.org/sdg#Manufacturing> ;
     skos:narrower <https://signals.zndx.org/sdg#MFG_STRUCTURE> ,
         <https://signals.zndx.org/sdg#MFG_INTERFACE> ,
         <https://signals.zndx.org/sdg#MFG_REQUIREMENT> ,
-        <https://signals.zndx.org/sdg#MFG_PROCESS> ;
+        <https://signals.zndx.org/sdg#MFG_PROCESS> ,
+        <https://signals.zndx.org/sdg#MFG_LOGISTICS> ;
     skos:altLabel "MFG" ;
-    skos:prefLabel "Manufacturing and Systems Engineering" ;
+    skos:prefLabel "Manufacturing Operations" ;
     skos:notation "10" ;
-    skos:altLabel "Systems Engineering" ;
-    skos:definition "The domain of designing, specifying, and producing engineered physical systems and their components. A system is decomposed into parts, assemblies, and subassemblies connected through ports and interfaces; its required capabilities are captured as requirements and constraints and checked by analysis and verification cases; and its behaviour is modeled as actions and states. Designs are realized through manufacturing processes — machining, molding, fabrication, welding, and assembly — governed by tolerances, materials, and bills of material. This is the SysML v2 systems view: parts and items bearing ports, connections, and allocations, with requirements, constraints, and quantities and units (ISQ/SI) as first-class." ;
-    skos:scopeNote "Covers consumer electronics, networking and telecommunications hardware, mechanical and electromechanical assemblies, industrial equipment, and laboratory-automation hardware. Maps onto the SysML v2 standard library (Parts, Items, Ports, Interfaces, Connections, Actions, States, Requirements, Constraints, AnalysisCases) and the Quantities-and-Units (ISQ/SI) domain library." ;
-    rdfs:comment "Parts, assemblies, interfaces, requirements, tolerances, manufacturing processes, bills of material, verification." ;
+    skos:altLabel "Manufacturing Enterprise Operations" ;
+    skos:definition "The domain of operating manufacturing enterprises: planning and executing production, procuring and consuming materials, and managing the inventory that flows between them. Work orders schedule production runs on work cells and lines; purchase orders bring materials and components into receiving; inventory items are stocked, counted, reserved, and issued from warehouses and storerooms; finished goods are picked, packed, and fulfilled against customer orders. Enterprise resource planning workflows bind these into auditable business processes — demand to plan, procure to pay, order to cash — over the plant's physical artifacts: parts, assemblies, tooling, and the interface components that connect them." ;
+    skos:scopeNote "Covers production planning and execution, procurement and receiving, inventory and warehouse operations, order fulfillment, and the ERP workflows that integrate them, across consumer electronics, electromechanical assembly, industrial equipment, and laboratory-automation manufacture. Physical product structure — parts, assemblies, bills of material, and physical interfaces — is managed as the artifact side of these operations." ;
+    rdfs:comment "Work orders, purchase orders, inventory, warehouses, fulfillment, ERP workflows, parts, assemblies, bills of material, production processes." ;
     bfo:0000023 cco:Artifact ;
+    skos:editorialNote "Re-aimed 2026-07-25 (RH): the former 'Manufacturing and Systems Engineering' article blended domain semantics with the modeling language. The methodology now lives under Engineering → MBSE; manufacturing concepts are domain-specific elements representable ATOP SysMLv2, grounded in SDG's BFO/CCO spine (artifacts, facilities, directive information content entities, processes, qualities)." ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#MFG_STRUCTURE> a skos:Concept ;
@@ -112,38 +115,42 @@
     skos:prefLabel "Parts, Assemblies and Bills of Material" ;
     skos:notation "10.1" ;
     skos:altLabel "Product Structure" ;
-    skos:definition "The structural decomposition of an engineered product into parts, components, assemblies, and subassemblies, with the bill of material that enumerates them by quantity, material, and fastener. A part is a designed physical artifact; an assembly composes parts through joints and mates; the product structure is a hierarchy from the top-level system down to piece-parts and standard hardware. Each part carries a part number, revision, material, mass, finish, and reference designators, and the engineering bill of material drives procurement and production." ;
-    skos:scopeNote "Includes part numbering and revision control, make-versus-buy, standard-part and fastener libraries, and the engineering bill of material. Corresponds to SysML PartDefinition/PartUsage and Items." ;
+    skos:definition "The structural decomposition of an engineered product into parts, components, assemblies, and subassemblies, with the bill of material that enumerates them by quantity, material, and fastener. A part is a designed physical artifact; an assembly composes parts through joints and mates; the product structure is a hierarchy from the top-level system down to piece-parts and standard hardware. Each part carries a part number, revision, material, mass, finish, and reference designators; the engineering bill of material drives procurement and the manufacturing bill of material drives production, consumption, and as-built records." ;
+    skos:scopeNote "Includes part numbering and revision control, make-versus-buy, standard-part and fastener libraries, engineering and manufacturing bills of material, and BOM-line consumption against work orders." ;
+    skos:editorialNote "Representable atop SysMLv2 part/item semantics (spec_mappings carries the join); the retrieval text grounds in the managed artifacts, not the language." ;
     skos:broader <https://signals.zndx.org/sdg#MFG> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#MFG_INTERFACE> a skos:Concept ;
     skos:altLabel "MFG_INTERFACE" ;
-    skos:prefLabel "Interfaces, Ports and Connections" ;
+    skos:prefLabel "Physical Interfaces and Connections" ;
     skos:notation "10.2" ;
     skos:altLabel "System Interconnection" ;
-    skos:definition "The points and means by which parts of a system connect and interact. A port is a connection point of a part exposing a capability; an interface defines the interaction realized between mated ports; a connection is the structural link that carries signals, power, fluid, or mechanical load between parts. Interface definitions specify the form, fit, and function of a junction — mechanical mating, electrical pinout, fluid coupling, or data protocol — and connections compose parts into a functioning assembly or network." ;
-    skos:scopeNote "Includes connectors, harnesses, buses, mounts, and mating features; mechanical, electrical, fluid, and signal interfaces. Corresponds to SysML Ports, Interfaces, and Connections." ;
+    skos:definition "The physical interface components a manufacturing operation builds, stocks, and installs: connectors, harnesses and cable assemblies, mounts, brackets, and mating features that join parts into functioning assemblies. An interface definition specifies the form, fit, and function of a junction — mechanical mating, electrical pinout, or fluid coupling — and a connection is the realized link carrying power, fluid, or mechanical load between parts. Harnesses and cable assemblies are serialized, inventoried artifacts fabricated to wire lists and pinouts; connection lists drive assembly work instructions and continuity test points at the workbench." ;
+    skos:scopeNote "Includes connectors, harnesses, mounts, brackets, and mating features; mechanical, electrical, and fluid interfaces between fabricated parts; wire lists, pinouts, and harness fabrication as manufacturing deliverables." ;
+    skos:editorialNote "The individuals here are plant-floor artifacts (tracked, stocked, installed) implemented as SDG OWL classes under cco:Artifact; SysMLv2 port/interface/connection semantics represent them (spec_mappings carries the join) — the language represents, the ontology grounds." ;
     skos:broader <https://signals.zndx.org/sdg#MFG> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#MFG_REQUIREMENT> a skos:Concept ;
     skos:altLabel "MFG_REQUIREMENT" ;
-    skos:prefLabel "Requirements, Constraints and Analysis" ;
+    skos:prefLabel "Specifications, Tolerances and Quality" ;
     skos:notation "10.3" ;
     skos:altLabel "Specification and Verification" ;
-    skos:definition "The specification of what a system shall do and the analyses that confirm it does. A requirement is a required condition or capability a system shall satisfy; a constraint is an expression bounding system properties; an analysis case evaluates a model against those requirements. Specifications are verified by analysis and test — stress and finite-element analysis, tolerance stack-up and geometric dimensioning and tolerancing, thermal and signal-integrity studies — and traced from requirement to design to verification result. Quantities and units (ISQ/SI) make the bounds measurable." ;
-    skos:scopeNote "Includes requirement traceability, constraint blocks, verification and validation, tolerance analysis (GD&T), and engineering analysis cases. Corresponds to SysML Requirements, Constraints, and AnalysisCases." ;
+    skos:definition "What a manufactured part shall satisfy and the shop-floor records that confirm each unit does. An engineering drawing and its specification state dimensions, materials, and finishes; tolerances and geometric dimensioning and tolerancing (GD&T) bound allowable variation on features; first-article and in-process inspection measure actual parts against nominal geometry with gauges, calipers, and coordinate measuring machines. Nonconforming parts are dispositioned by the material review board — use-as-is, rework, or scrap — and corrective action feeds back into tooling and process parameters. The unit of account is the manufactured part and its dimensional conformance." ;
+    skos:scopeNote "Includes engineering drawings and specifications, tolerance stack-up and GD&T, first-article inspection, gauge and CMM measurement of parts, material review board disposition of nonconforming units, and corrective action on tooling and process." ;
+    skos:editorialNote "Differentia: PART-dimensional conformance (drawings, GD&T, CMM, MRB) — laboratory/analytical quality (assay QC, calibration, chain-of-custody) is LIMS territory; verification-case METHODOLOGY lives under Engineering → MBSE." ;
     skos:broader <https://signals.zndx.org/sdg#MFG> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#MFG_PROCESS> a skos:Concept ;
     skos:altLabel "MFG_PROCESS" ;
-    skos:prefLabel "Manufacturing Processes and Behaviour" ;
+    skos:prefLabel "Manufacturing Processes and Execution" ;
     skos:notation "10.4" ;
-    skos:altLabel "Production and Behaviour" ;
-    skos:definition "How engineered systems are produced and how they behave in operation. Manufacturing processes transform stock and components into finished parts and assemblies — machining and CNC milling, injection molding, sheet-metal forming, welding, additive manufacturing, and assembly operations — using tooling, fixtures, and process parameters. System behaviour is modeled as actions performed and states maintained over time, the dynamic counterpart to the structural decomposition. Process plans, routings, and work instructions sequence the operations that realize a design." ;
-    skos:scopeNote "Includes process planning and routing, tooling and fixturing, CNC and additive workflows, assembly sequencing, and operational state machines. Corresponds to SysML Actions and States and to manufacturing-process vocabulary." ;
+    skos:altLabel "Production Execution" ;
+    skos:definition "How product is made and how production runs. Manufacturing processes transform stock and components into finished parts and assemblies — machining and CNC milling, injection molding, sheet-metal forming, welding, additive manufacturing, and assembly operations — using tooling, fixtures, and process parameters. Process plans, routings, and work instructions sequence the operations that realize a design; work orders release them to work cells and lines; execution records operation start and completion, labor and machine time, consumed material, and yield. Lights-out and automated cells execute the same routings under supervisory control." ;
+    skos:scopeNote "Includes process planning and routing, tooling and fixturing, CNC and additive workflows, assembly sequencing, work-order execution and completion reporting, and automated/lights-out cell operation." ;
+    skos:editorialNote "Behavioral-modeling METHODOLOGY (actions/states practice) lives under Engineering → MBSE; this concept grounds the production processes and their execution records." ;
     skos:broader <https://signals.zndx.org/sdg#MFG> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
@@ -477,4 +484,20 @@
     skos:altLabel "SYSML_VERIFICATION" ;
     skos:definition "Verification and validation cases binding requirements to analysis, inspection, and test evidence in SysMLv2 practice." ;
     skos:broader <https://signals.zndx.org/sdg#SYSML> ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+# ── MFG_LOGISTICS sits at FILE END, not beside its family: aperture point ids
+# follow seed (file) order, so new concepts append at the tail to keep existing
+# ids stable (append-only discipline). Family membership is the broader link,
+# never file position. ──
+
+<https://signals.zndx.org/sdg#MFG_LOGISTICS> a skos:Concept ;
+    skos:altLabel "MFG_LOGISTICS" ;
+    skos:prefLabel "Inventory, Warehousing and Fulfillment" ;
+    skos:notation "10.5" ;
+    skos:altLabel "Manufacturing Logistics" ;
+    skos:definition "The flow of material through the manufacturing enterprise: inventory items identified, stocked, and counted at storage locations; stock levels maintained against reorder points and safety stock; purchase orders placed with suppliers and received as goods receipts; material reserved, allocated, and issued to production; and finished goods picked, packed, and shipped against customer orders. Warehouses and storerooms organize locations, put-away, and cycle counting; fulfillment closes the loop from order to delivery; and ERP workflows — procure to pay, order to cash, plan to produce — record every movement as an auditable transaction." ;
+    skos:scopeNote "Includes inventory items and lot/serial control, stock levels and reorder policy, storage locations and warehouse operations, purchase orders and goods receipt, reservations and material issues, picking, packing, shipping, and fulfillment, and the ERP transaction workflows integrating them." ;
+    skos:editorialNote "The RH-named territory of the Manufacturing sector (2026-07-25): domain-specific elements representable atop SysMLv2, grounded in the BFO/CCO spine (artifacts, facilities, directive information content entities like purchase orders, processes like fulfillment, qualities like stock level)." ;
+    skos:broader <https://signals.zndx.org/sdg#MFG> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .

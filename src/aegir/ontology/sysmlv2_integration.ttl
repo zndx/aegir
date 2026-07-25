@@ -16,8 +16,12 @@
 # link) → sdg:MBSE as the ALL-CAPS genus chord (18.1) → sdg:SYSML re-homed
 # beneath it (prefLabel "SysMLv2"), chord-VISIBLE, never a point. MBSE itself is
 # ENUMERATED into the admission surface (aperture_include) and delta-gated like
-# FINTECH/BIOTECH before it. MFG's family carries SysMLv2 scheme memberships —
-# its scope notes map SysML objects explicitly (the WITSML-membership pattern).
+# FINTECH/BIOTECH before it. THE LANGUAGE REPRESENTS; THE ONTOLOGY GROUNDS (RH
+# 2026-07-25): manufacturing-domain concepts are NOT members of this scheme —
+# they are domain-specific elements representable ATOP SysMLv2, grounded in
+# their own sector (sdg:Manufacturing); the representability evidence lives in
+# spec_mappings, never in scheme membership. Only genuine language concepts
+# (the SYSML family) belong here.
 # ─────────────────────────────────────────────────────────────────────────────────
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -67,14 +71,15 @@ sdg:MBSE a skos:Concept, sdg:SysMLv2Concept ;
     skos:altLabel "MBSE" , "SysMLv2-aligned Concepts" ;
     skos:notation "18.1" ;
     skos:definition "The practice domain where systems are specified, analyzed, and verified through coherent models rather than documents — the genus for SysMLv2-aligned modeling concepts within SDG." ;
-    skos:scopeNote "Covers the modeled system across its engineering lifecycle — requirement definitions with satisfaction and verification traceability; structural decomposition into parts, ports, and connection usages; behavioral modeling of actions, states, and sequence-structured occurrences; parametric constraints; and verification cases binding requirements to analysis, inspection, and test evidence. Terminology traces to the OMG SysMLv2 language atop the KerML kernel, adjacent to the manufacturing structure, interface, requirement, and process domains." ;
+    skos:scopeNote "Covers the modeled system across its engineering lifecycle — requirement definitions with satisfaction and verification traceability; structural decomposition into parts, ports, and connection usages; behavioral modeling of actions, states, and sequence-structured occurrences; parametric constraints; and verification cases binding requirements to analysis, inspection, and test evidence. Terminology traces to the OMG SysMLv2 language atop the KerML kernel — the methodology axis: manufacturing and other domain semantics are represented atop it as domain-specific elements, grounded in their own sectors." ;
     skos:broader sdg:Engineering ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 # ── multi-scheme memberships (many-to-many lattice; membership shift, never
 # re-rooting). The concepts stay DECLARED in domain_concepts.ttl (their home);
-# these assertions add standard-scheme membership only. MFG's family qualifies
-# by its own scope notes (each maps SysML objects explicitly). ──────────────────
+# these assertions add standard-scheme membership only. LANGUAGE concepts only —
+# the former MFG memberships were the blend in miniature and were edited away
+# (Scratch-edit doctrine) when the Manufacturing sector separated the axes. ─────
 
 sdg:SYSML a sdg:SysMLv2Concept ;
     skos:topConceptOf sdg:SysMLv2IntegrationScheme ;
@@ -87,9 +92,3 @@ sdg:SYSML_BEHAVIOR a sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 sdg:SYSML_VERIFICATION a sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
-
-sdg:MFG skos:inScheme sdg:SysMLv2IntegrationScheme .
-sdg:MFG_STRUCTURE skos:inScheme sdg:SysMLv2IntegrationScheme .
-sdg:MFG_INTERFACE skos:inScheme sdg:SysMLv2IntegrationScheme .
-sdg:MFG_REQUIREMENT skos:inScheme sdg:SysMLv2IntegrationScheme .
-sdg:MFG_PROCESS skos:inScheme sdg:SysMLv2IntegrationScheme .

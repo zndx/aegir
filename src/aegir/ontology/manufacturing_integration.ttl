@@ -1,0 +1,38 @@
+# ── Manufacturing sector (RH ruling 2026-07-25) ─────────────────────────────────
+# THE LANGUAGE REPRESENTS; THE ONTOLOGY GROUNDS. Manufacturing-domain semantics
+# (inventory items, stock levels, purchase orders, warehouses, fulfillment, ERP
+# workflows) are domain-specific elements REPRESENTED ATOP SysMLv2, grounded in
+# OUR BFO/CCO-grounded OWL classes and SKOS-aligned to this sector — never
+# standard SysMLv2 primitives, and never scheme members of the language's scheme.
+# The methodology axis (Engineering → MBSE → SysMLv2) says HOW systems get
+# modeled; this sector says WHAT the manufacturing enterprise is and manages.
+#
+# No contributor scheme yet: candidate in-scope externals for census + RH
+# ratification are ISA-95 / IEC 62264 (enterprise-control integration — the
+# canonical manufacturing-operations standard), OASIS UBL (purchase-order
+# documents), and GS1 (identification and logistics). They arrive by the
+# established mold (own scheme, dct:requires as needed, seeAlso at the grain
+# their publications support) when censused.
+#
+# The first application target (RH): a lights-out modular manufacturing
+# enterprise — CSG designs and simulates the physical hub (does it fit a
+# high-cube container?), UTILITY_TELECOM carries the integrated networking
+# (terrestrial switching; LoRaWAN and line-of-sight wireless are future narrower
+# candidates there), MBSE binds the system model, and kvasir lowers the classes
+# to the operational relational schema (postgres/trino/spark) whose rows are
+# exactly the individuals the operation tracks — OWL ⊨ SKOS ⊨ SHACL end to end.
+# ─────────────────────────────────────────────────────────────────────────────────
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdg:  <https://signals.zndx.org/sdg#> .
+
+# ── the sector tier (fifth forest top; topic-domain-hood is INSTANTIATION via
+# the sdg:TopicDomain class + sdg:TopicDomains membership, declared in
+# fibo_integration.ttl, never a broader link) ───────────────────────────────────
+
+sdg:Manufacturing a skos:Concept, sdg:TopicDomain ;
+    skos:prefLabel "Manufacturing" ;
+    skos:altLabel "Manufacturing" ;
+    skos:notation "19" ;
+    skos:definition "The sector-tier top for manufacturing topic domains within SDG — hosting the manufacturing-operations genus (sdg:MFG), organizing without admitting. Spans light and heavy manufacture alike, deliberately its own sector: neither a heavy-industry subtopic nor a methodology under engineering. Domain semantics ground here; the modeling language that represents them lives under the Engineering sector. A sector-tier forest top (a sdg:TopicDomain, member of sdg:TopicDomains) — no parent above it." ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .

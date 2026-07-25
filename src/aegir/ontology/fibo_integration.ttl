@@ -54,9 +54,9 @@ sdg:TopicDomain rdfs:subClassOf skos:Concept ;
 
 sdg:TopicDomains a skos:Collection ;
     skos:prefLabel "Topic Domains" ;
-    skos:definition "The cross-scheme grouping of the sector-tier forest tops: grouping WITHOUT hierarchy (skos:Collection is disjoint from Concept and ConceptScheme) — the financial, healthcare, heavy-industrial, and engineering topic domains stay parallel and jointly navigable with no apex above them." ;
+    skos:definition "The cross-scheme grouping of the sector-tier forest tops: grouping WITHOUT hierarchy (skos:Collection is disjoint from Concept and ConceptScheme) — the financial, healthcare, heavy-industrial, engineering, and manufacturing topic domains stay parallel and jointly navigable with no apex above them." ;
     skos:member sdg:FinancialSector , sdg:Healthcare , sdg:HeavyIndustries ,
-        sdg:Engineering .
+        sdg:Engineering , sdg:Manufacturing .
 
 sdg:FIBOIntegrationScheme a skos:ConceptScheme ;
     rdfs:label "FIBO Integration Scheme" ;
