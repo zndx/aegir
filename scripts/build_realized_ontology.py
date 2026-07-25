@@ -99,6 +99,11 @@ NUMERIC_BFO = NUMERIC_BFO + _SPEC
 # flow's own gates (HermiT certificate, kvasir checks) do the proving on-path).
 from aegir.ontology.manufacturing_module import MANUFACTURING_OMN as _MFG
 NUMERIC_BFO = NUMERIC_BFO + _MFG
+# scheme→lookup lowering (#44 (c)): lowersToProperty-annotated skos:Collections
+# serialize into DataProperty definition-enums — kvasir's designed-dormant path
+# turns them into lookup tables + FKs wherever an elected class uses the property.
+from aegir.ontology.vocab_lowering import vocab_enums_omn as _venum
+NUMERIC_BFO = NUMERIC_BFO + _venum()
 if _os.environ.get("AEGIR_RELATION_SIGNATURES", "1") != "0":     # DEFAULT ON since 2026-07-19:
     # the 39 miscasts are re-authored (UNSAT=0 verified) — signatures now guard every realize.
     from aegir.ontology.relation_signatures import SIGNATURES_OMN as _SIG

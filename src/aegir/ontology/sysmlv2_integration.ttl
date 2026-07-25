@@ -115,6 +115,7 @@ sdg:SYSML_VERIFICATION a sdg:SysMLv2Concept ;
 
 sdg:SysMLv2Metaclasses a skos:Collection ;
     skos:prefLabel "SysMLv2 Metaclasses" ;
+    sdg:lowersToProperty "sdg:metaclass" ;
     skos:definition "The controlled vocabulary of KerML/SysMLv2 metaclasses used by the semantic layer's element backbone — the SKOS source of the sysml_metaclasses reference table. Census-verified against the official Ecore metamodel." ;
     skos:member sdg:SysMLv2_Element , sdg:SysMLv2_Namespace , sdg:SysMLv2_Relationship ,
         sdg:SysMLv2_Type , sdg:SysMLv2_Classifier , sdg:SysMLv2_Feature , sdg:SysMLv2_Class ,
@@ -128,6 +129,7 @@ sdg:SysMLv2Metaclasses a skos:Collection ;
 
 sdg:SysMLv2RelationshipKinds a skos:Collection ;
     skos:prefLabel "SysMLv2 Relationship Kinds" ;
+    sdg:lowersToProperty "sdg:relationshipKind" ;
     skos:definition "The controlled vocabulary for the semantic layer's relations backbone — the SKOS source of the sysml_relationship_kinds reference table. Seven members are census-verified Relationship-family metaclasses; three (Allocation, Connection, ItemFlow) are SDG relational flattenings of constructs the language reifies as usages, marked as such per member." ;
     skos:member sdg:SysMLv2_OwningMembership , sdg:SysMLv2_FeatureMembership ,
         sdg:SysMLv2_Specialization , sdg:SysMLv2_Subsetting , sdg:SysMLv2_FeatureTyping ,

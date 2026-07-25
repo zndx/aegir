@@ -26,6 +26,7 @@ from aegir.ontology.manufacturing_module import MANUFACTURING_OMN  # noqa: E402
 _PREFIXES = ("Prefix: owl: <http://www.w3.org/2002/07/owl#>\n"
              "Prefix: rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
              "Prefix: xsd: <http://www.w3.org/2001/XMLSchema#>\n"
+             "Prefix: skos: <http://www.w3.org/2004/02/skos/core#>\n"
              "Prefix: sdg: <https://signals.zndx.org/sdg#>\n"
              "Prefix: bfo: <http://purl.obolibrary.org/obo/BFO_>\n"
              "Prefix: cco: <https://www.commoncoreontologies.org/>\n"

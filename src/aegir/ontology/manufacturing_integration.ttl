@@ -24,6 +24,7 @@
 # ─────────────────────────────────────────────────────────────────────────────────
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix sdg:  <https://signals.zndx.org/sdg#> .
 
 # ── the sector tier (fifth forest top; topic-domain-hood is INSTANTIATION via
@@ -36,3 +37,41 @@ sdg:Manufacturing a skos:Concept, sdg:TopicDomain ;
     skos:notation "19" ;
     skos:definition "The sector-tier top for manufacturing topic domains within SDG — hosting the manufacturing-operations genus (sdg:MFG), organizing without admitting. Spans light and heavy manufacture alike, deliberately its own sector: neither a heavy-industry subtopic nor a methodology under engineering. Domain semantics ground here; the modeling language that represents them lives under the Engineering sector. A sector-tier forest top (a sdg:TopicDomain, member of sdg:TopicDomains) — no parent above it." ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+# ── SCHEME→LOOKUP sources (#44 (c)): Collections annotated sdg:lowersToProperty
+# are the SKOS sources of relational reference tables. The vocab_lowering
+# generator serializes each into a DataProperty whose skos:definition carries
+# the canonical parenthesized value list — activating kvasir's designed-dormant
+# definition-enum path (lower.rs: "the deriver carrying skos:definition into
+# the realized omn activates it") → lookup table + FK, on the one critical path.
+
+sdg:lowersToProperty a owl:AnnotationProperty ;
+    rdfs:label "lowers to property" ;
+    rdfs:comment "Names the sdg data property this skos:Collection's members enumerate — the scheme→lookup lowering's explicit, deterministic join (never name-derived)." .
+
+sdg:WorkOrderStatuses a skos:Collection ;
+    skos:prefLabel "Work Order Statuses" ;
+    sdg:lowersToProperty "sdg:workOrderStatus" ;
+    skos:definition "The lifecycle states of a work order — the SKOS source of the work-order status reference table (RH yardstick: work_order_statuses)." ;
+    skos:member sdg:WorkOrderStatus_Planned , sdg:WorkOrderStatus_Released ,
+        sdg:WorkOrderStatus_InProgress , sdg:WorkOrderStatus_Completed ,
+        sdg:WorkOrderStatus_Cancelled , sdg:WorkOrderStatus_OnHold .
+
+sdg:WorkOrderStatus_Planned a skos:Concept ;
+    skos:prefLabel "Planned" ;
+    skos:definition "Scheduled but not yet released to the floor." .
+sdg:WorkOrderStatus_Released a skos:Concept ;
+    skos:prefLabel "Released" ;
+    skos:definition "Released to a work center; material may be issued." .
+sdg:WorkOrderStatus_InProgress a skos:Concept ;
+    skos:prefLabel "InProgress" ;
+    skos:definition "Operations have started and are reporting." .
+sdg:WorkOrderStatus_Completed a skos:Concept ;
+    skos:prefLabel "Completed" ;
+    skos:definition "All operations complete; quantities reported." .
+sdg:WorkOrderStatus_Cancelled a skos:Concept ;
+    skos:prefLabel "Cancelled" ;
+    skos:definition "Terminated before completion; no further reporting." .
+sdg:WorkOrderStatus_OnHold a skos:Concept ;
+    skos:prefLabel "OnHold" ;
+    skos:definition "Suspended pending disposition; no operations report while held." .

@@ -109,9 +109,10 @@ Class: sdg:GoodsReceipt
 
 Class: sdg:WorkOrder
     Annotations: rdfs:label "Work Order",
-        rdfs:comment "A directive information content entity authorizing production: releases routings to work cells and lines. Grounds directly against the CCO Act of Manufacturing. Representable atop SysMLv2 as directing domain-specific ActionUsages (census-confirmed metaclass)."
+        rdfs:comment "A directive information content entity authorizing production: releases routings to work cells and lines, carrying its lifecycle status from the WorkOrderStatuses vocabulary. Grounds directly against the CCO Act of Manufacturing. Representable atop SysMLv2 as directing domain-specific ActionUsages (census-confirmed metaclass)."
     SubClassOf: cco:ont00000958,
-        sdg:authorizesManufacturingAct some cco:ont00001359
+        sdg:authorizesManufacturingAct some cco:ont00001359,
+        sdg:workOrderStatus some xsd:string
 
 Class: sdg:StockLevel
     Annotations: rdfs:label "Stock Level",
