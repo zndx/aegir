@@ -180,11 +180,13 @@ def integration_overlay_concepts() -> "dict[str, SkosConcept]":
                 return vals[0] if vals else ""
 
             alts = [str(o) for o in g.objects(node, SK.altLabel)]
+            OWL = rdflib.Namespace("http://www.w3.org/2002/07/owl#")
             out[iri] = SkosConcept(
                 iri=iri, code=_v(SK.notation), pref_label=_v(SK.prefLabel),
                 alt_label=next((a for a in alts if a == frag), frag),
                 definition=_v(SK.definition), scope_note=_v(SK.scopeNote),
-                broader=_v(SK.broader))
+                broader=_v(SK.broader),
+                deprecated=_v(OWL.deprecated).lower() == "true")
     return out
 
 

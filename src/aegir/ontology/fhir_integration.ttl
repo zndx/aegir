@@ -10,9 +10,10 @@
 # the FHIR v6 IN-PROGRESS CI build (https://build.fhir.org/rdf.html, RH 2026-07-25;
 # fhir: binds <http://hl7.org/fhir/>). Version-watch: re-verify mappings at R6
 # release (IRIs expected stable; definitions may shift until then).
-# Both scheme tops now carry skos:broader sdg:TopicDomain (the cross-scheme apex,
-# declared in fibo_integration.ttl) — tops-with-broader are the §4.6.3 atypical
-# presentation our contract driver ENUMERATES by design.
+# Sector tier (RH 2026-07-25): sdg:Healthcare is a FOREST TOP — no apex above it.
+# Topic-domain-hood is INSTANTIATION (a sdg:TopicDomainConcept typing + membership
+# in the sdg:TopicDomains Collection, both declared in fibo_integration.ttl),
+# never a broader link — grouping without hierarchy.
 # NOT IN THE APERTURE SEED PATH — admission only via staged → selectivity-delta →
 # enumerated-exclusion → shadow → armed.
 # ─────────────────────────────────────────────────────────────────────────────────
@@ -31,14 +32,13 @@ sdg:FHIRIntegrationScheme a skos:ConceptScheme ;
     skos:editorialNote "Mappings censused against the FHIR v6 in-progress CI build (build.fhir.org); re-verify at R6 release." ;
     skos:hasTopConcept sdg:Healthcare .
 
-sdg:Healthcare a skos:Concept, sdg:FHIRConcept ;
+sdg:Healthcare a skos:Concept, sdg:FHIRConcept, sdg:TopicDomainConcept ;
     skos:prefLabel "Healthcare Domain" ;
     skos:altLabel "Healthcare" ;
     skos:notation "16" ;
-    skos:definition "Top-level concept for healthcare, clinical, and biomedical terminology aligned with FHIR and the HL7 RIM." ;
+    skos:definition "Top-level concept for healthcare, clinical, and biomedical terminology aligned with FHIR and the HL7 RIM. A sector-tier forest top (sdg:TopicDomainConcept, member of sdg:TopicDomains) — no parent above it." ;
     skos:topConceptOf sdg:FHIRIntegrationScheme ;
-    skos:inScheme sdg:FHIRIntegrationScheme ;
-    skos:broader sdg:TopicDomain .
+    skos:inScheme sdg:FHIRIntegrationScheme .
 
 sdg:BIOTECH a skos:Concept, sdg:FHIRConcept ;
     skos:prefLabel "BioTech" ;

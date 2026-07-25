@@ -72,21 +72,16 @@ sdg:RESQMLIntegrationScheme a skos:ConceptScheme ;
     skos:editorialNote "No members yet: the reservoir/earth-model coverage gap under sdg:ENERGY (grids, horizons, subsurface models — an ENERGY_RESERVOIR candidate) is surfaced by this scheme and authored through the differentia CAS loop, delta-gated like any child." .
 
 # ── the sector tier (RH 2026-07-25: plural HeavyIndustries, tier-mate of
-# FinancialSector and Healthcare under the sdg:TopicDomain apex) ────────────────
+# FinancialSector and Healthcare — a FOREST TOP; topic-domain-hood is
+# INSTANTIATION via sdg:TopicDomainConcept + sdg:TopicDomains membership, both
+# declared in fibo_integration.ttl, never a broader link) ───────────────────────
 
-sdg:HeavyIndustries a skos:Concept ;
+sdg:HeavyIndustries a skos:Concept, sdg:TopicDomainConcept ;
     skos:prefLabel "Heavy Industries" ;
     skos:altLabel "HeavyIndustries" ;
     skos:notation "17" ;
-    skos:definition "The sector-tier top for heavy-industrial topic domains within SDG — initially hosting the upstream-energy genus (sdg:ENERGY), organizing without admitting. Deliberately broader than any one standards body: Energistics contributes through the WITSML/PRODML/RESQML schemes, and future heavy-industrial contributors join as siblings." ;
-    skos:broader sdg:TopicDomain ;
+    skos:definition "The sector-tier top for heavy-industrial topic domains within SDG — initially hosting the upstream-energy genus (sdg:ENERGY), organizing without admitting. Deliberately broader than any one standards body: Energistics contributes through the WITSML/PRODML/RESQML schemes, and future heavy-industrial contributors join as siblings. A sector-tier forest top (sdg:TopicDomainConcept, member of sdg:TopicDomains) — no parent above it." ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
-
-# the cross-scheme apex belongs to every contributor scheme (Primer §3.2 doctrine,
-# as declared at its fibo_integration.ttl birth)
-sdg:TopicDomain skos:inScheme sdg:WITSMLIntegrationScheme ,
-        sdg:PRODMLIntegrationScheme ,
-        sdg:RESQMLIntegrationScheme .
 
 # ── multi-scheme memberships (many-to-many lattice; membership shift, never
 # re-rooting). The concepts stay DECLARED in domain_concepts.ttl (their home);

@@ -129,11 +129,34 @@ def main() -> int:
         for s, o in gi.subject_objects(_SK.inScheme):
             if not _is_scheme(o):
                 s_viol.append(f"S4(integration): inScheme object not a scheme: {s} → {o}")
+        # Collection disjointness (SKOS data model: Collection ⊥ Concept, ⊥ Scheme —
+        # RH 2026-07-25: the standing signal to Atlas curators that richer conceptual
+        # frameworks belong in HermiT/kvasir-checked OWL, never in SKOS hierarchy claims)
+        g_colls = set(gi.subjects(rdflib.RDF.type, _SK.Collection))
+        for bad in g_colls & (g_concepts | g_schemes):
+            s_viol.append(f"S13(integration): {bad} typed Collection AND Concept/Scheme")
+        for s, o in gi.subject_objects(_SK.member):
+            if not _is_concept(o) and o not in g_colls:
+                s_viol.append(f"S13(integration): member not a Concept/Collection: {s} → {o}")
+        # TOPIC-DOMAINS SYNC (RH 2026-07-25, instantiation-not-specialization):
+        # members(sdg:TopicDomains) ≡ instances(sdg:TopicDomainConcept) — the
+        # OWL ⊨ SKOS correspondence for the sector tier, plus NO broader link may
+        # point at the retired apex (the false-root regression guard).
+        _SDG = rdflib.Namespace("https://signals.zndx.org/sdg#")
+        members = set(gi.objects(_SDG.TopicDomains, _SK.member))
+        typed = set(gi.subjects(rdflib.RDF.type, _SDG.TopicDomainConcept))
+        for d in members ^ typed:
+            s_viol.append(f"SYNC(topic-domains): {d} "
+                          f"{'member-not-typed' if d in members else 'typed-not-member'}")
+        for s in gi.subjects(_SK.broader, _SDG.TopicDomain):
+            s_viol.append(f"SYNC(topic-domains): {s} broader→retired apex (false root)")
+        n_td = len(members & typed)
     except Exception as e:  # noqa: BLE001 — an unreadable overlay is a violation, not a crash
         s_viol.append(f"integration overlays unreadable: {e}")
-    print(f"meta-structure (S2–S9): schemes {len(_schemes)}+{n_int_schemes} · "
+        n_td = 0
+    print(f"meta-structure (S2–S9+S13): schemes {len(_schemes)}+{n_int_schemes} · "
           f"concepts {len(_concepts)}+{n_int_concepts} (overlay+integration) · "
-          f"violations {len(s_viol)}")
+          f"topic-domains sync {n_td} members≡typed · violations {len(s_viol)}")
     for v in s_viol[:8]:
         print(f"  ✘ {v}")
 
