@@ -122,3 +122,16 @@ Class: sdg:StockLevel
         sdg:stockAtLocation exactly 1 sdg:StorageLocation,
         sdg:quantityOnHand some xsd:decimal
 """
+
+# BOTH SHAPES, RI BY CONSTRUCTION (RH 2026-07-25): the normalized tables above
+# are authoritative; the element face is a standalone MATERIALIZED VIEW derived
+# from them (one fact one home — the view cannot drift). This DECLARED map
+# (never prose-derived) names each class's census-confirmed SysMLv2 metaclass;
+# only cited correspondences appear — kvasir ddl --element-projections emits the
+# union view from it.
+ELEMENT_PROJECTIONS = {
+    "InventoryItem": "ItemUsage",
+    "WorkOrder": "ActionUsage",
+    "StockLevel": "AttributeUsage",
+    "PurchaseOrder": "ItemDefinition",
+}
