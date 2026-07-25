@@ -272,6 +272,18 @@ ROWS fall under the value-provenance doctrine — reference-table seeds included
     fabricated-pool pattern applies to vocabulary seeds exactly as it applies
     to generated row data).
 
+**kvasir reads ontologies, not pipelines (RH 2026-07-25).** Foreign users
+arrive with valid ontologies that know nothing of our machinery — kvasir must
+accept ANY valid OMN and produce valid, useful relational output. Therefore:
+REQUIRED output derives from the OMN alone — the shape (class hierarchy = the
+type system → `instance_projection` emits for every ontology, zero
+configuration) plus DOCUMENTED annotation conventions any ontology may adopt
+(`projectsAs` for projection kinds, definition-enums for lookups). Optional
+enrichments (e.g. the `--vocab-provenance` sidecar) degrade gracefully —
+absence never invalidates or empties the output. A "map declared beside the
+OMN" that required output depends on is DRIFT; dissolve it into the ontology
+(measured: the element-projections sidecar, deleted same day it was written).
+
 **Executed twice (the OWL module + lowering, 2026-07-25)** — two rulings now
 govern:
 
