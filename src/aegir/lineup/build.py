@@ -1960,6 +1960,27 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
     def _lnorm2(x: str) -> str:
         return re.sub(r"[^a-z0-9]", "", (x or "").lower())
     point_by_iri = {str(p0.get("iri") or ""): p0 for p0 in pts if p0.get("iri")}
+    # provenance annotations (one channel, authority by kind — RH 2026-07-25):
+    # sdg:valueProvenance (census | gittables | AUTHORED) + sdg:groundedByModule
+    # (the SKOS-ahead gap-closure declaration) render on every concept panel
+    prov_by_iri: "dict[str, str]" = {}
+    ground_by_iri: "dict[str, str]" = {}
+    try:
+        import rdflib
+        from aegir.ontology.domain_index import DEFAULT_OVERLAY, integration_overlay_files
+        _SDGNS = rdflib.Namespace("https://signals.zndx.org/sdg#")
+        _gp = rdflib.Graph()
+        for _f in [DEFAULT_OVERLAY, *integration_overlay_files()]:
+            try:
+                _gp.parse(str(_f))
+            except Exception:  # noqa: BLE001
+                pass
+        for s, o in _gp.subject_objects(_SDGNS.valueProvenance):
+            prov_by_iri[str(s)] = str(o)
+        for s, o in _gp.subject_objects(_SDGNS.groundedByModule):
+            ground_by_iri[str(s)] = str(o)
+    except Exception:  # noqa: BLE001
+        pass
     in_anchors: "dict[str, list]" = {}
     for p0 in pts:
         for x in p0.get("constituents") or []:
@@ -2073,6 +2094,16 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
                          "nothing of this text is embedded in the admission surface. It may "
                          "enter point embeddings only as GEPA composite constituent vocabulary "
                          "(chord ≠ point).\n\n")
+        _pv = prov_by_iri.get(str(key))
+        if _pv:
+            admission += ("**Value provenance.** "
+                          + ("⚑ " if _pv.upper().startswith("AUTHORED") else "")
+                          + _pv + "\n\n")
+        _gm = ground_by_iri.get(str(key))
+        if _gm:
+            admission += (f"**Grounded by module.** `{_gm}` — this anchor's territory carries "
+                          "OWL differentia on the realized critical path (the SKOS-ahead gap, "
+                          "closed).\n\n")
         notes.append(N.Note(
             id=f"lexicon/concept/{code}", title=label[:64], kind="lexicon-construct",
             data_product="ontology", root="scratch",
