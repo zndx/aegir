@@ -2675,7 +2675,15 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
               + " · ".join(N.wl(f"lexicon/construct/{c}", c) for c in
                            ("domain", "concept", "topic", "collection", "term", "genus",
                             "differentia")) + "\n"))
-    schema_body = ("**Schema (trunk).** The live relational surfaces.\n")
+    # chord-panel parity with current (RH 2026-07-25): same aperture chord embed,
+    # root-true substrate — scratch renders the LIVE surface (points + chord-visible
+    # non-points + hierarchy edges) where current renders the released snapshot
+    schema_body = (
+        "*The chord above is the LIVE Aperture (trunk): tap an anchor for its panel — "
+        "identity, the exact encoded admission text, and its relational surface. "
+        "Chord-visible non-points (the PRODML/SysMLv2 families) open their concept "
+        "panels; the ontology informs the DDL by construction.*\n\n"
+        "**Schema (trunk).** The live relational surfaces.\n")
     if has_sdg:
         schema_body += (f"\n**The generated web (earned).** {N.wl('relational/sdg-schema', 'SDG schema')} — "
                         "the `just metaflow` constructs, verbatim, with their earned cross-entity FK edges.\n")
@@ -2683,7 +2691,8 @@ def project_trunk_lenses(categories: list[str], rel_cats: list[str], has_sdg: bo
                     + "\n".join(f"- {N.wl(f'relational/category/{c}', c)}" for c in rel_cats))
     schema = N.Note(
         id="lens/schema", title="Schema (trunk)", kind="lens", data_product="relational",
-        root="scratch", frontmatter={"lens": "schema", "lexicon": LEXICON, "chord": False},
+        root="scratch", frontmatter={"lens": "schema", "lexicon": LEXICON, "chord": False,
+                                     "viz_view": "aperture", "viz_onto": "sdg"},
         body=schema_body)
     content_body = ("**Content × Topics (trunk).** The accreting corpus, pivoted over the "
                     "INVERTED TOPIC LAYER — term-grounded topics and the items that "
