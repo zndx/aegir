@@ -60,3 +60,44 @@ def vocab_enums_omn() -> str:
             f"Generated from the {str(coll).rsplit('#', 1)[-1]} skos:Collection — the SKOS "
             f'source of this lookup (scheme-to-lookup lowering, one source of truth)."\n')
     return ("\n" + "\n".join(frames)) if frames else ""
+
+def vocab_provenance_sidecar(out_path=None) -> dict:
+    """Per-value provenance for the lut columns (#44⇄#45 convergence): keyed by the
+    FULL property IRI → {value → {prov, iri}}, drawn from the members' uniform
+    ``sdg:valueProvenance`` channel. kvasir ``ddl --vocab-provenance`` widens the
+    reference tables so every seeded row carries its authority IN THE DATABASE
+    (census | gittables lineage | AUTHORED flag), continuously validatable
+    against the corpus indexes."""
+    import json
+    from pathlib import Path as _P
+    try:
+        import rdflib
+    except Exception:  # noqa: BLE001
+        return {}
+    from aegir.ontology.domain_index import integration_overlay_files
+
+    SK = rdflib.Namespace("http://www.w3.org/2004/02/skos/core#")
+    SDG = rdflib.Namespace("https://signals.zndx.org/sdg#")
+    g = rdflib.Graph()
+    for f in integration_overlay_files():
+        try:
+            g.parse(str(f))
+        except Exception:  # noqa: BLE001
+            pass
+    out: dict = {}
+    for coll in g.subjects(SDG.lowersToProperty, None):
+        prop = str(next(g.objects(coll, SDG.lowersToProperty), "")).strip()
+        if not prop.startswith("sdg:"):
+            continue
+        prop_iri = "https://signals.zndx.org/sdg#" + prop.split(":", 1)[-1]
+        vals = {}
+        for m in g.objects(coll, SK.member):
+            label = str(next(g.objects(m, SK.prefLabel), ""))
+            prov = str(next(g.objects(m, SDG.valueProvenance), ""))
+            if label:
+                vals[label] = {"prov": prov, "iri": str(m)}
+        if vals:
+            out[prop_iri] = vals
+    if out_path:
+        _P(out_path).write_text(json.dumps(out, indent=1))
+    return out
