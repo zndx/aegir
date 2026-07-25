@@ -28,6 +28,16 @@ sdg:FIBOConcept rdfs:subClassOf skos:Concept ;
     rdfs:label "FIBO-aligned Concept" ;
     skos:definition "A curated SDG concept aligned to the Financial Industry Business Ontology; carries SDG governance annotations while the mapped FIBO concept remains external and authoritative for its own definition." .
 
+# The CROSS-SCHEME APEX (RH 2026-07-25): every integration-scheme top carries
+# skos:broader sdg:Domain — scheme tops WITH broader are the §4.6.3 atypical
+# presentation our contract driver enumerates by design. Multi-scheme membership
+# (Primer §3.2) is deliberate: the apex belongs to every contributor scheme.
+sdg:Domain a skos:Concept ;
+    skos:prefLabel "Domain" ;
+    skos:altLabel "Domain" ;
+    skos:definition "The cross-scheme apex over the integration-scheme top concepts — the shared parent that keeps Financial, Healthcare, and future in-scope-external domains parallel and jointly navigable." ;
+    skos:inScheme sdg:FIBOIntegrationScheme , sdg:FHIRIntegrationScheme .
+
 sdg:FIBOIntegrationScheme a skos:ConceptScheme ;
     rdfs:label "FIBO Integration Scheme" ;
     skos:definition "Curated entry point into selected FIBO concepts for use within Signals Data Governance." ;
@@ -38,6 +48,7 @@ sdg:FinancialDomain a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FinancialDomain" ;
     skos:notation "15" ;
     skos:definition "The single logical top for financial-industry terminology within SDG: the discoverable entry point over FIBO-aligned concepts, organizing without admitting." ;
+    skos:broader sdg:Domain ;
     skos:topConceptOf sdg:FIBOIntegrationScheme ;
     skos:inScheme sdg:FIBOIntegrationScheme .
 

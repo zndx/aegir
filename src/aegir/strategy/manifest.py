@@ -103,9 +103,10 @@ def collect_lens() -> "dict[str, bytes]":
             out["lens/admission_filter.json"] = af.read_bytes()
         # in-scope-external contributor schemes (RH 2026-07-24): shipped with the lens,
         # deliberately OUTSIDE the aperture seed path until delta-gated + enumerated
-        fibo = Path(__file__).resolve().parents[1] / "ontology" / "fibo_integration.ttl"
-        if fibo.exists():
-            out["lens/fibo_integration.skos.ttl"] = fibo.read_bytes()
+        for _nm in ("fibo_integration", "fhir_integration"):
+            _f = Path(__file__).resolve().parents[1] / "ontology" / f"{_nm}.ttl"
+            if _f.exists():
+                out[f"lens/{_nm}.skos.ttl"] = _f.read_bytes()
         try:
             out["lens/aperture.snapshot.json"] = _canon(_scroll_snapshot(cl, DEFAULT_APERTURE))
         except Exception as e:  # noqa: BLE001 — aiming collection absent: captured explicitly

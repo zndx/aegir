@@ -1,0 +1,252 @@
+# ── FHIR Integration Scheme (RH sketch 2026-07-25, imperfections corrected) ──────
+# FHIR is IN-SCOPE EXTERNAL (the BFO/CCO posture): never managed nor extended,
+# leveraged extensively. Same mold as sdg:FIBOIntegrationScheme: OUR entry point
+# (sdg:Healthcare, the official top per the ruling's opening line — the sketch's
+# stray `sdg:HealthcareDomain` in BioTech's broader is corrected to sdg:Healthcare)
+# → sdg:BioTech (genus-level, the FinTech juxtaposition) → a curated 20-resource
+# FHIR subset, closeMatch-mapped (non-transitive by design) to official hl7.org
+# IRIs, all 20 resolved against our censused build/foreign/fhir/fhir.ttl — which is
+# the FHIR v6 IN-PROGRESS CI build (https://build.fhir.org/rdf.html, RH 2026-07-25;
+# fhir: binds <http://hl7.org/fhir/>). Version-watch: re-verify mappings at R6
+# release (IRIs expected stable; definitions may shift until then).
+# Both scheme tops now carry skos:broader sdg:Domain (the cross-scheme apex,
+# declared in fibo_integration.ttl) — tops-with-broader are the §4.6.3 atypical
+# presentation our contract driver ENUMERATES by design.
+# NOT IN THE APERTURE SEED PATH — admission only via staged → selectivity-delta →
+# enumerated-exclusion → shadow → armed.
+# ─────────────────────────────────────────────────────────────────────────────────
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdg:  <https://signals.zndx.org/sdg#> .
+
+sdg:FHIRConcept rdfs:subClassOf skos:Concept ;
+    rdfs:label "FHIR-aligned Concept" ;
+    skos:definition "A curated SDG concept aligned to HL7 FHIR; carries SDG governance annotations while the mapped FHIR resource remains external and authoritative for its own definition." .
+
+sdg:FHIRIntegrationScheme a skos:ConceptScheme ;
+    rdfs:label "FHIR Integration Scheme" ;
+    skos:prefLabel "FHIR Integration Scheme" ;
+    skos:definition "Curated entry point into selected FHIR resources for use within Signals Data Governance." ;
+    skos:editorialNote "Mappings censused against the FHIR v6 in-progress CI build (build.fhir.org); re-verify at R6 release." ;
+    skos:hasTopConcept sdg:Healthcare .
+
+sdg:Healthcare a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Healthcare Domain" ;
+    skos:altLabel "Healthcare" ;
+    skos:notation "16" ;
+    skos:definition "Top-level concept for healthcare, clinical, and biomedical terminology aligned with FHIR and the HL7 RIM." ;
+    skos:topConceptOf sdg:FHIRIntegrationScheme ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:broader sdg:Domain .
+
+sdg:BioTech a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "BioTech" ;
+    skos:altLabel "BioTech" , "Healthcare Technology Concepts" , "FHIR-aligned Concepts" ;
+    skos:notation "16.1" ;
+    skos:definition "Technology-oriented view of the Healthcare Domain, useful for juxtaposition with FinTech." ;
+    skos:broader sdg:Healthcare ;
+    skos:inScheme sdg:FHIRIntegrationScheme .
+
+# ── the curated subset (clinical core + the LIMS and FinTech touch-points) ──────
+
+sdg:BIO_PATIENT a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Patient" ;
+    skos:altLabel "BIO_PATIENT" ;
+    skos:notation "16.1.1" ;
+    skos:definition "A person or animal receiving care — the subject demographic and administrative record that clinical resources reference." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Patient> .
+
+sdg:BIO_PRACTITIONER a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Practitioner" ;
+    skos:altLabel "BIO_PRACTITIONER" ;
+    skos:notation "16.1.2" ;
+    skos:definition "A person formally involved in delivering care — the credentialed actor performing, ordering, and attesting clinical acts." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Practitioner> .
+
+sdg:BIO_ORGANIZATION a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Healthcare Organization" ;
+    skos:altLabel "BIO_ORGANIZATION" ;
+    skos:notation "16.1.3" ;
+    skos:definition "A formally recognized grouping delivering or administering care — hospitals, laboratories, payers, and departments as accountable parties." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Organization> .
+
+sdg:BIO_ENCOUNTER a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Encounter" ;
+    skos:altLabel "BIO_ENCOUNTER" ;
+    skos:notation "16.1.4" ;
+    skos:definition "An interaction between a patient and the healthcare system — the visit or admission that clinical events occur within." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Encounter> .
+
+sdg:BIO_OBSERVATION a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Observation" ;
+    skos:altLabel "BIO_OBSERVATION" ;
+    skos:notation "16.1.5" ;
+    skos:definition "A measured or asserted finding about a subject — vitals, laboratory results, and assessments as the atomic clinical measurement." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Observation> .
+
+sdg:BIO_CONDITION a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Condition" ;
+    skos:altLabel "BIO_CONDITION" ;
+    skos:notation "16.1.6" ;
+    skos:definition "A clinical state, problem, or diagnosis attributed to a subject — the persistent finding care plans and encounters address." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Condition> .
+
+sdg:BIO_PROCEDURE a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Procedure" ;
+    skos:altLabel "BIO_PROCEDURE" ;
+    skos:notation "16.1.7" ;
+    skos:definition "An action performed on or for a patient — surgical, diagnostic, or therapeutic — as the recorded clinical intervention." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Procedure> .
+
+sdg:BIO_MEDICATION a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Medication" ;
+    skos:altLabel "BIO_MEDICATION" ;
+    skos:notation "16.1.8" ;
+    skos:definition "A manufactured or compounded substance intended for therapeutic administration — the identified product beneath prescribing and dispensing." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Medication> .
+
+sdg:BIO_MEDICATION_REQUEST a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Medication Request" ;
+    skos:altLabel "BIO_MEDICATION_REQUEST" ;
+    skos:notation "16.1.9" ;
+    skos:definition "An authorization or order for supply and administration of a medication — the prescription as a workflow artifact." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/MedicationRequest> .
+
+sdg:BIO_DIAGNOSTIC_REPORT a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Diagnostic Report" ;
+    skos:altLabel "BIO_DIAGNOSTIC_REPORT" ;
+    skos:notation "16.1.10" ;
+    skos:definition "The clinically attested set of findings from a diagnostic service — grouped observations, interpretation, and conclusion as a released result." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/DiagnosticReport> .
+
+sdg:BIO_SPECIMEN a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Specimen" ;
+    skos:altLabel "BIO_SPECIMEN" ;
+    skos:notation "16.1.11" ;
+    skos:definition "A sample collected from a subject for analysis — the chain-of-custody material entity joining clinical care to the laboratory (the LIMS touch-point)." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Specimen> .
+
+sdg:BIO_ALLERGY_INTOLERANCE a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Allergy Intolerance" ;
+    skos:altLabel "BIO_ALLERGY_INTOLERANCE" ;
+    skos:notation "16.1.12" ;
+    skos:definition "A recorded propensity for adverse reaction to a substance — the risk assertion safety checks are gated on." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/AllergyIntolerance> .
+
+sdg:BIO_IMMUNIZATION a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Immunization" ;
+    skos:altLabel "BIO_IMMUNIZATION" ;
+    skos:notation "16.1.13" ;
+    skos:definition "An administered or reported vaccination event — the immunity-conferring intervention tracked across registries." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Immunization> .
+
+sdg:BIO_CARE_PLAN a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Care Plan" ;
+    skos:altLabel "BIO_CARE_PLAN" ;
+    skos:notation "16.1.14" ;
+    skos:definition "An intended course of care for a subject — goals, planned activities, and responsible parties coordinated over time." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/CarePlan> .
+
+sdg:BIO_DEVICE a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Medical Device" ;
+    skos:altLabel "BIO_DEVICE" ;
+    skos:notation "16.1.15" ;
+    skos:definition "A manufactured item used in care — instruments, implants, and equipment as identified, regulated artifacts." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Device> .
+
+sdg:BIO_LOCATION a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Care Location" ;
+    skos:altLabel "BIO_LOCATION" ;
+    skos:notation "16.1.16" ;
+    skos:definition "A physical place where care is delivered or resources are stationed — wards, rooms, and facilities as addressable sites." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Location> .
+
+sdg:BIO_COVERAGE a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Coverage" ;
+    skos:altLabel "BIO_COVERAGE" ;
+    skos:notation "16.1.17" ;
+    skos:definition "An insurance or self-pay arrangement underwriting care costs — the financial-responsibility record (the FinTech touch-point)." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Coverage> .
+
+sdg:BIO_CLAIM a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Claim" ;
+    skos:altLabel "BIO_CLAIM" ;
+    skos:notation "16.1.18" ;
+    skos:definition "A request for payer adjudication and reimbursement of provided services — the billing artifact joining clinical acts to monetary amounts." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/Claim> .
+
+sdg:BIO_SERVICE_REQUEST a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Service Request" ;
+    skos:altLabel "BIO_SERVICE_REQUEST" ;
+    skos:notation "16.1.19" ;
+    skos:definition "An order or proposal for a diagnostic or therapeutic service — the referral and lab-order workflow artifact." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/ServiceRequest> .
+
+sdg:BIO_IMAGING_STUDY a skos:Concept, sdg:FHIRConcept ;
+    skos:prefLabel "Imaging Study" ;
+    skos:altLabel "BIO_IMAGING_STUDY" ;
+    skos:notation "16.1.20" ;
+    skos:definition "A DICOM-organized set of images and series acquired for a subject — the imaging counterpart of the diagnostic report." ;
+    skos:broader sdg:BioTech ;
+    skos:inScheme sdg:FHIRIntegrationScheme ;
+    skos:closeMatch <http://hl7.org/fhir/ImagingStudy> .
+
+# ── Layer A: zero-copy membership — official FHIR IRIs, resolved at source ──────
+<http://hl7.org/fhir/Patient> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Practitioner> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Organization> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Encounter> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Observation> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Condition> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Procedure> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Medication> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/MedicationRequest> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/DiagnosticReport> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Specimen> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/AllergyIntolerance> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Immunization> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/CarePlan> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Device> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Location> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Coverage> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/Claim> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/ServiceRequest> skos:inScheme sdg:FHIRIntegrationScheme .
+<http://hl7.org/fhir/ImagingStudy> skos:inScheme sdg:FHIRIntegrationScheme .
