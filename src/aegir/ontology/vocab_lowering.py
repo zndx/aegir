@@ -101,17 +101,3 @@ def vocab_provenance_sidecar(out_path=None) -> dict:
     if out_path:
         _P(out_path).write_text(json.dumps(out, indent=1))
     return out
-
-def element_projections_sidecar(out_path=None) -> dict:
-    """The both-shapes projection map (RH 2026-07-25): normalized domain tables
-    stay authoritative; the element face is a MATERIALIZED VIEW derived from
-    them (RI by construction). Keys = full class IRIs, values = census-confirmed
-    SysMLv2 metaclasses (lut codes — the correspondence to metaclass_lut holds
-    by construction since both derive from the census)."""
-    import json
-    from pathlib import Path as _P
-    from aegir.ontology.manufacturing_module import ELEMENT_PROJECTIONS
-    out = {f"https://signals.zndx.org/sdg#{k}": v for k, v in ELEMENT_PROJECTIONS.items()}
-    if out_path:
-        _P(out_path).write_text(json.dumps(out, indent=1))
-    return out

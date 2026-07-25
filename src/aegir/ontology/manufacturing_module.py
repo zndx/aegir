@@ -72,7 +72,8 @@ DataProperty: sdg:facilityCode
         rdfs:comment "The operational identifier a WMS/ERP tracks for a facility — the underspecification-signal remediation that earned Warehouse its table."
 
 Class: sdg:InventoryItem
-    Annotations: rdfs:label "Inventory Item",
+    Annotations: sdg:projectsAs "ItemUsage",
+        rdfs:label "Inventory Item",
         rdfs:comment "A material entity under inventory management: identified, stocked, counted, reserved, and issued. Inventory-hood is a borne role; the class grounds the artifact side. Representable atop SysMLv2 as a domain-specific ItemUsage (census-confirmed metaclass)."
     SubClassOf: bfo:0000040
 
@@ -89,7 +90,8 @@ Class: sdg:StorageLocation
         sdg:withinFacility some cco:ont00000192
 
 Class: sdg:PurchaseOrder
-    Annotations: rdfs:label "Purchase Order",
+    Annotations: sdg:projectsAs "ItemDefinition",
+        rdfs:label "Purchase Order",
         rdfs:comment "A directive information content entity ordering supply from a supplier: the procure-to-pay workflow's opening act. Representable atop SysMLv2 as a domain-specific ItemDefinition specialization with attribute usages (census-confirmed metaclasses)."
     SubClassOf: cco:ont00000958
 
@@ -108,30 +110,19 @@ Class: sdg:GoodsReceipt
         sdg:documentsReceiptAgainst some sdg:PurchaseOrder
 
 Class: sdg:WorkOrder
-    Annotations: rdfs:label "Work Order",
+    Annotations: sdg:projectsAs "ActionUsage",
+        rdfs:label "Work Order",
         rdfs:comment "A directive information content entity authorizing production: releases routings to work cells and lines, carrying its lifecycle status from the WorkOrderStatuses vocabulary. Grounds directly against the CCO Act of Manufacturing. Representable atop SysMLv2 as directing domain-specific ActionUsages (census-confirmed metaclass)."
     SubClassOf: cco:ont00000958,
         sdg:authorizesManufacturingAct some cco:ont00001359,
         sdg:workOrderStatus some xsd:string
 
 Class: sdg:StockLevel
-    Annotations: rdfs:label "Stock Level",
+    Annotations: sdg:projectsAs "AttributeUsage",
+        rdfs:label "Stock Level",
         rdfs:comment "A descriptive information content entity stating the quantity of one inventory item at one storage location at a time — the persisted fact; aggregates and valuations are DERIVED views (the fidelity probe's persist-the-core discipline). Representable atop SysMLv2 as an AttributeUsage (census-confirmed metaclass)."
     SubClassOf: cco:ont00000853,
         sdg:stockOfItem exactly 1 sdg:InventoryItem,
         sdg:stockAtLocation exactly 1 sdg:StorageLocation,
         sdg:quantityOnHand some xsd:decimal
 """
-
-# BOTH SHAPES, RI BY CONSTRUCTION (RH 2026-07-25): the normalized tables above
-# are authoritative; the element face is a standalone MATERIALIZED VIEW derived
-# from them (one fact one home — the view cannot drift). This DECLARED map
-# (never prose-derived) names each class's census-confirmed SysMLv2 metaclass;
-# only cited correspondences appear — kvasir ddl --element-projections emits the
-# union view from it.
-ELEMENT_PROJECTIONS = {
-    "InventoryItem": "ItemUsage",
-    "WorkOrder": "ActionUsage",
-    "StockLevel": "AttributeUsage",
-    "PurchaseOrder": "ItemDefinition",
-}
