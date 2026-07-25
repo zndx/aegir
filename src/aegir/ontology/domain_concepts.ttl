@@ -495,6 +495,7 @@
     skos:altLabel "MFG_LOGISTICS" ;
     skos:prefLabel "Inventory, Warehousing and Fulfillment" ;
     skos:notation "10.5" ;
+    <https://signals.zndx.org/sdg#groundedByModule> "manufacturing_module" ;
     skos:altLabel "Manufacturing Logistics" ;
     skos:definition "The flow of material through the manufacturing enterprise: inventory items identified, stocked, and counted at storage locations; stock levels maintained against reorder points and safety stock; purchase orders placed with suppliers and received as goods receipts; material reserved, allocated, and issued to production; and finished goods picked, packed, and shipped against customer orders. Warehouses and storerooms organize locations, put-away, and cycle counting; fulfillment closes the loop from order to delivery; and ERP workflows — procure to pay, order to cash, plan to produce — record every movement as an auditable transaction." ;
     skos:scopeNote "Includes inventory items and lot/serial control, stock levels and reorder policy, storage locations and warehouse operations, purchase orders and goods receipt, reservations and material issues, picking, packing, shipping, and fulfillment, and the ERP transaction workflows integrating them." ;

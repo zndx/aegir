@@ -51,6 +51,10 @@ sdg:lowersToProperty a owl:AnnotationProperty ;
     rdfs:label "lowers to property" ;
     rdfs:comment "Names the sdg data property this skos:Collection's members enumerate — the scheme→lookup lowering's explicit, deterministic join (never name-derived)." .
 
+sdg:groundedByModule a owl:AnnotationProperty ;
+    rdfs:label "grounded by module" ;
+    rdfs:comment "Names the OWL module (python module carrying the OMN block on the realized critical path) that grounds this SKOS anchor's territory with logical differentia. ABSENCE on an entity-bearing anchor = the SKOS-ahead gap signal (RH 2026-07-25: co-equal with unsat and underspecification) — the ACP gap-closure loop's declared join, never name-derived." .
+
 sdg:WorkOrderStatuses a skos:Collection ;
     skos:prefLabel "Work Order Statuses" ;
     sdg:lowersToProperty "sdg:workOrderStatus" ;

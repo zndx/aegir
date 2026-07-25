@@ -45,6 +45,15 @@ description: Extend SDG with a new sector-level topic domain — the full arc fr
 6. **Measurement and procession IS the discipline.** Every structural change is
    delta-gated before release; every release seeds the strategy and checks
    drift; every surprise gets its contested artifacts READ before iterating.
+7. **SKOS may skate ahead; the ontology must catch the puck** (RH 2026-07-25).
+   Iterating at the SKOS level first is LEGITIMATE convenience — labels,
+   membership, scope notes are the fast authoring surface, and the 2026-07
+   sector arc worked exactly this way. But SKOS-ahead-of-OWL is a **gap signal
+   co-equal with unsat and underspecification**: the invariant OWL ⊨ SKOS ⊨
+   SHACL is only real when the OWL leg exists to do the entailing. Closure is
+   an IMPERATIVE, not tidying — see "The gap-closure loop" below. Read
+   comments and docs written during SKOS-first phases under this rule: they
+   record expedient sequence, never authority.
 
 ## Phase 1 — Census the external
 
@@ -294,6 +303,48 @@ manufacturing-operations arc):
 - **One fact, one home**: domain tables authoritative; interchange relations
   are a generated projection. HEAD-state store: history is the procession +
   OL/Atlas lineage, never a second git in the database.
+
+## The gap-closure loop — when SKOS skates ahead of the SDG puck [ACP]
+
+Three remediation signals, one pattern (detect → signal → agentic remediation
+→ gate). None is ever silently accepted; each names its fix:
+
+| signal | detector | remediation |
+|---|---|---|
+| unsat | HermiT — realize REFUSES | re-author the axioms (CAS loop, justification-guided) |
+| underspecified | kvasir `Plan.underspecified` | add what the domain actually tracks |
+| **SKOS-ahead** | ungrounded anchors (below) | **BACKFILL the OWL module** |
+
+**Detection — declared joins, never name-derived**: a SKOS anchor whose
+territory is grounded DECLARES it (`sdg:groundedByModule "<python module>"` on
+the anchor concept); the gap worklist = sdg anchors carrying entity semantics
+with no grounding declaration. SKOS concepts are TOPICS, OWL classes are
+ENTITIES — the join is territory-coverage, which only a declaration can state
+honestly. First closed case: `sdg:MFG_LOGISTICS` → `manufacturing_module`
+(8 classes). Standing worklist: the FINTECH / BIOTECH / MBSE / ENERGY-children
+territories — SKOS-ahead today, modules owed.
+
+**The ACP closure procedure** (what an agent does with a gap):
+1. Read the anchor's SKOS content (definition + scopeNote = the TERRITORY
+   spec) and the sector's census artifacts (`build/foreign/<external>/`).
+2. Author the OWL module in OUR namespace: bare-name classes; BFO/CCO
+   grounding via the external index's OPAQUE IRIs only (coined-alias ban);
+   representable-atop notes citing census-confirmed constructs; restrictions
+   carrying the relational intent (`exactly 1` → NOT NULL FK; enumerable
+   vocabularies via `sdg:lowersToProperty` Collections → definition-enums).
+3. Append UNCONDITIONALLY to the realized assembly (one critical path, no
+   flags); the gates prove it on-path — HermiT (unsat), kvasir
+   (underspecified), the dev-loop probe for fast iteration.
+4. Declare the grounding on the SKOS anchor — the gap closes MEASURABLY.
+5. Any logical claim about SKOS-held vocabulary (status distinctness,
+   transition constraints) moves INTO the module as axioms — SKOS keeps
+   content only.
+
+**The imperative**: an ungrounded anchor is DEBT against the invariant.
+Worklist-tracked under escalation-organ discipline — closure or explicit
+deferral with a reason that names the fix, never dropped — because every
+downstream product (admission, corpus, the semantic-layer API) inherits
+exactly the logic the OWL leg provides and nothing more.
 
 > After #44 lands: replace this phase's "anticipated" framing with the measured
 > procedure, record what the yardstick diff taught, and promote the yardstick
