@@ -29,7 +29,9 @@ def main() -> int:
     ap.add_argument("--fix-mechanical", action="store_true")
     a = ap.parse_args()
     from aegir.ontology import domain_index as DI
-    vocab = DI.load_skos()
+    # overlay (regex block form) + integration overlays (prefixed-subject TTLs,
+    # rdflib-read) — the contract measures the WHOLE admission-surface vocabulary
+    vocab = {**DI.load_skos(), **DI.integration_overlay_concepts()}
     client = DI._client(DI.DEFAULT_QDRANT_URL)
     pts, _ = client.scroll(DI.DEFAULT_APERTURE, limit=256, with_payload=True)
     narrower: "dict[str, list]" = {}
@@ -93,7 +95,38 @@ def main() -> int:
         s_viol += [f"S4: inScheme object not a scheme: {m.group(1)} → {o}"
                    for o in _re.findall(r"skos:inScheme <([^>]+)>", m.group(2))
                    if o not in _schemes]
-    print(f"meta-structure (S2–S9): schemes {len(_schemes)} · concepts {len(_concepts)} · "
+    # integration overlays (prefixed-subject TTLs — invisible to the regex forms
+    # above): the SAME S2–S9 conditions, graph-based. Layer-A external URIs are
+    # inScheme members WITHOUT a skos:Concept typing in our files — §4.6.3 allows
+    # this (inScheme has no such integrity condition), so S4 checks only the RANGE.
+    n_int_schemes = n_int_concepts = 0
+    try:
+        import rdflib
+        _SK = rdflib.Namespace("http://www.w3.org/2004/02/skos/core#")
+        gi = rdflib.Graph()
+        for f in DI.integration_overlay_files():
+            gi.parse(str(f))
+        g_schemes = set(gi.subjects(rdflib.RDF.type, _SK.ConceptScheme))
+        g_concepts = set(gi.subjects(rdflib.RDF.type, _SK.Concept))
+        n_int_schemes, n_int_concepts = len(g_schemes), len(g_concepts)
+        if g_schemes & g_concepts:
+            s_viol.append(f"S9(integration): {len(g_schemes & g_concepts)} IRIs typed "
+                          f"both Concept and ConceptScheme")
+        for s, o in gi.subject_objects(_SK.hasTopConcept):
+            if s not in g_schemes:
+                s_viol.append(f"S5(integration): hasTopConcept subject not a scheme: {s}")
+            if o not in g_concepts:
+                s_viol.append(f"S6(integration): hasTopConcept object not a concept: {o}")
+        for s, o in gi.subject_objects(_SK.topConceptOf):
+            if o not in g_schemes:
+                s_viol.append(f"S8(integration): topConceptOf object not a scheme: {s} → {o}")
+        for s, o in gi.subject_objects(_SK.inScheme):
+            if o not in g_schemes:
+                s_viol.append(f"S4(integration): inScheme object not a scheme: {s} → {o}")
+    except Exception as e:  # noqa: BLE001 — an unreadable overlay is a violation, not a crash
+        s_viol.append(f"integration overlays unreadable: {e}")
+    print(f"meta-structure (S2–S9): schemes {len(_schemes)}+{n_int_schemes} · "
+          f"concepts {len(_concepts)}+{n_int_concepts} (overlay+integration) · "
           f"violations {len(s_viol)}")
     for v in s_viol[:8]:
         print(f"  ✘ {v}")

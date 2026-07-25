@@ -22,7 +22,8 @@ from aegir.ontology import admission_items as AI
 
 REPO = Path(__file__).resolve().parents[1]
 STORE = REPO / "build" / "domain_harvest"
-DOMAIN_ROOTS = {"9", "10", "11", "12", "13", "14"}  # LIMS, MFG, ENERGY, CSG, UTILITY, DATAENG
+# domain rollup = first code segment of the admitted item (9=LIMS … 14=DATAENG,
+# 15=FINTECH, 16=BIOTECH) — membership lives in the aperture collection, not here
 
 
 def _hash(t: str) -> str:
@@ -126,7 +127,7 @@ def main() -> None:
     dt = time.time() - t0
     print(f"HARVEST: scanned {scanned} · short {short} · dup {dup} · matched {sum(by_domain.values())} "
           f"[{dt:.0f}s, {scanned / max(dt, 1):.0f} docs/s]")
-    print(f"  by domain (root): {dict(by_domain)}  (9=LIMS 10=MFG 11=ENERGY 12=CSG 13=UTILITY 14=DATAENG)")
+    print(f"  by domain (root): {dict(by_domain)}  (9=LIMS 10=MFG 11=ENERGY 12=CSG 13=UTILITY 14=DATAENG 15=FINTECH 16=BIOTECH)")
     print(f"  ACP review worklist: +{n_review} root-preponderance docs → aperture_review.jsonl")
     print(f"  store: {len(seen)} unique in-domain docs total · cursor → {cursor + scanned}")
     import os

@@ -128,6 +128,70 @@ def subtree_codes(concepts: "dict[str, SkosConcept]", root: str) -> "set[str]":
             if c.code == root_code or c.code.startswith(root_code + ".")}
 
 
+# ── integration overlays (in-scope-external contributor schemes) ─────────────────
+
+def _sot_admission_filter() -> dict:
+    """The SoT admission_filter.json, unresolved — AUTHORING-time membership.
+    (armed_admission_filter resolves the RELEASED strategy copy for classify-time
+    policy; seeding and contract measurement must see membership edits immediately.)"""
+    import json as _json
+    try:
+        return _json.loads((Path(__file__).resolve().parent
+                            / "admission_filter.json").read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001 — absent SoT = no includes, never a crash
+        return {}
+
+
+def integration_overlay_files() -> "list[Path]":
+    """Distinct integration-overlay TTLs enumerated by aperture_include members."""
+    here = Path(__file__).resolve().parent
+    seen: "set[Path]" = set()
+    out: "list[Path]" = []
+    for m in _sot_admission_filter().get("aperture_include", {}).get("members", []):
+        p = here / str(m.get("file", ""))
+        if m.get("file") and p.exists() and p not in seen:
+            seen.add(p)
+            out.append(p)
+    return out
+
+
+def integration_overlay_concepts() -> "dict[str, SkosConcept]":
+    """ALL skos:Concept subjects across the integration overlays, rdflib-read.
+
+    The integration TTLs (fibo/fhir) use prefixed subjects + multi-typing
+    (``sdg:FINTECH a skos:Concept, sdg:FIBOConcept``) — outside load_skos's regex
+    block form, so they get a real parser. alt_label is the fragment-equal
+    skos:altLabel when present (the chord convention: the fragment IS the chord)."""
+    out: "dict[str, SkosConcept]" = {}
+    try:
+        import rdflib
+    except Exception:  # noqa: BLE001 — no rdflib = no integration overlays
+        return out
+    SK = rdflib.Namespace("http://www.w3.org/2004/02/skos/core#")
+    for f in integration_overlay_files():
+        g = rdflib.Graph()
+        try:
+            g.parse(str(f))
+        except Exception as e:  # noqa: BLE001 — an unreadable overlay is VISIBLE
+            print(f"integration overlay unreadable: {f.name}: {e}")
+            continue
+        for node in set(g.subjects(rdflib.RDF.type, SK.Concept)):
+            iri = str(node)
+            frag = iri.rsplit("#", 1)[-1]
+
+            def _v(pred) -> str:
+                vals = [str(o) for o in g.objects(node, pred)]
+                return vals[0] if vals else ""
+
+            alts = [str(o) for o in g.objects(node, SK.altLabel)]
+            out[iri] = SkosConcept(
+                iri=iri, code=_v(SK.notation), pref_label=_v(SK.prefLabel),
+                alt_label=next((a for a in alts if a == frag), frag),
+                definition=_v(SK.definition), scope_note=_v(SK.scopeNote),
+                broader=_v(SK.broader))
+    return out
+
+
 # ── Qdrant multivector index ─────────────────────────────────────────────────────
 
 def _client(url: str = DEFAULT_QDRANT_URL):
@@ -138,12 +202,34 @@ def _client(url: str = DEFAULT_QDRANT_URL):
 def build_index(*, vocab: "str | Path" = DEFAULT_VOCAB, url: str = DEFAULT_QDRANT_URL,
                 collection: str = DEFAULT_COLLECTION, recreate: bool = True) -> dict:
     """Encode every SKOS concept's text → ColBERT multi-vectors → a Qdrant MAX_SIM collection. The ontology
-    IS the index."""
+    IS the index.
+
+    When seeding the AIMING aperture: (a) the overlay base is NOTATION-GATED — only
+    concepts in the aperture code space seed points (no-notation scheme organization
+    like PRODML/SYSML never enters MaxSim competition); (b) the SoT admission_filter's
+    ``aperture_include`` members (ENUMERATED — §4.6.3 discipline: membership is never
+    inferred from scheme structure) are appended AFTER the overlay concepts, so
+    existing point ids stay stable and the includes take the tail ids."""
     from qdrant_client import models
 
     from aegir.ontology.colbert_encoder import get_encoder
 
     concepts = load_skos(vocab)
+    if collection == DEFAULT_APERTURE:
+        # NOTATION-GATED base: only concepts in the aperture CODE SPACE (skos:notation)
+        # are point candidates — confirmed schemes' tops/children without notations
+        # (PRODML/SYSML) are S9 organization, NOT admission points (measured 2026-07-25:
+        # an ungated reseed silently admitted 10 of them as MaxSim competitors).
+        concepts = {iri: c for iri, c in concepts.items() if getattr(c, "code", "")}
+        # seeding is AUTHORING: membership comes from the SoT file, not the released
+        # strategy (armed_admission_filter pins CLASSIFY-time policy and lags edits)
+        inc = integration_overlay_concepts()
+        for m in _sot_admission_filter().get("aperture_include", {}).get("members", []):
+            iri = str(m.get("iri", ""))
+            if iri in inc and iri not in concepts:
+                concepts[iri] = inc[iri]
+            elif iri not in inc:
+                print(f"aperture include NOT FOUND in integration overlays: {iri}")
     enc = get_encoder()
     client = _client(url)
     if recreate and client.collection_exists(collection):
