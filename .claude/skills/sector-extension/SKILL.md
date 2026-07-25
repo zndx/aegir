@@ -276,12 +276,21 @@ manufacturing-operations arc):
   external-standard identity backbone + controlled-vocabulary lookups + typed
   domain tables); kvasir-lower the module; diff; converge. The functional
   requirement becomes checkable.
-- **Triad by generation**: controlled-vocab tables = the SKOS image (kvasir
-  scheme→lookup-DDL lowering, seed rows carrying spec_ref + sdg_concept_iri);
-  domain tables = the OWL image (existing projection-total lowering);
-  FK/CHECK/UNIQUE lattice = the SHACL image (composite-FK metaclass pattern:
-  `UNIQUE(id, metaclass)` + subtype FK on the pair). One source of truth;
-  OWL ⊨ SKOS ⊨ SHACL maintained by regeneration, not discipline.
+- **Triad by generation, with the AUTHORITY ORDER explicit** (RH 2026-07-25):
+  the entailment direction OWL ⊨ SKOS ⊨ SHACL IS the authority direction.
+  **The realized OMN is the source of LOGICAL truth** — differentia,
+  subsumption, restrictions, HermiT-checkable consistency; it is the one
+  artifact certified and lowered. SKOS is the controlled-vocabulary CONTENT
+  model only (the Primer's scope: labels, membership, scheme structure —
+  `skos:broader` carries no subsumption). SHACL is the validation image.
+  Concretely: controlled-vocab tables draw CONTENT from SKOS Collections,
+  carried INTO the realized OMN by the vocab-lowering generator
+  (definition-enums → kvasir's designed-dormant `@Enum` path → lookup + FK);
+  domain tables = the OWL image (projection-total lowering); FK/CHECK/UNIQUE
+  lattice = the SHACL image (composite-FK metaclass pattern: `UNIQUE(id,
+  metaclass)` + subtype FK on the pair). Any logical claim about vocabulary
+  values (distinctness, transitions) authors in OMN, never SKOS. Maintained
+  by regeneration, not discipline.
 - **One fact, one home**: domain tables authoritative; interchange relations
   are a generated projection. HEAD-state store: history is the procession +
   OL/Atlas lineage, never a second git in the database.
