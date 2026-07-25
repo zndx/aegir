@@ -390,11 +390,12 @@
         <https://signals.zndx.org/sdg#ENERGY> ,
         <https://signals.zndx.org/sdg#CSG> ,
         <https://signals.zndx.org/sdg#UTILITY> ,
-        <https://signals.zndx.org/sdg#DATAENG> ,
-        <https://signals.zndx.org/sdg#SYSML> .
-# (PRODML re-homed 2026-07-25: no longer a sibling top — chord-visible under
-#  sdg:ENERGY, scheme-organized by sdg:PRODMLIntegrationScheme; see
-#  energistics_integration.ttl. SYSML circles back later under an MBSE sector.)
+        <https://signals.zndx.org/sdg#DATAENG> .
+# (PRODML re-homed 2026-07-25: chord-visible under sdg:ENERGY, scheme-organized
+#  by sdg:PRODMLIntegrationScheme — energistics_integration.ttl. SYSML re-homed
+#  same day: chord-visible under sdg:MBSE (Engineering sector), scheme-organized
+#  by sdg:SysMLv2IntegrationScheme — sysmlv2_integration.ttl. Neither is a
+#  sibling top; neither is an aperture point.)
 
 # ── CONFIRMED mapped-spec scheme families (RH 2026-07-23): PRODML and SYSML enter the SDG
 # namespace as MAPPED ONTOLOGY ENTITIES (spec_mappings module: sdg:Prodml*/sdg:Sysml*
@@ -444,10 +445,10 @@
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#SYSML> a skos:Concept ;
-    skos:prefLabel "Model Based Systems Engineering Domain" ;
+    skos:prefLabel "SysMLv2" ;
     skos:altLabel "SYSML" ;
-    skos:definition "The SysMLv2/KerML domain whose rdfs:domain realization yields Model-Based Systems Engineering practices and tools into the Lexicon: requirements, structure, behavior, parametric constraints, and verification cases as first-class modeled artifacts." ;
-    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
+    skos:definition "The OMG SysMLv2 language (atop the KerML kernel) whose rdfs:domain realization yields Model-Based Systems Engineering practices and tools into the Lexicon: requirements, structure, behavior, parametric constraints, and verification cases as first-class modeled artifacts — chord-visible under the MBSE genus (re-homed from sibling-top, RH 2026-07-25)." ;
+    skos:broader <https://signals.zndx.org/sdg#MBSE> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#SYSML_REQUIREMENTS> a skos:Concept ;

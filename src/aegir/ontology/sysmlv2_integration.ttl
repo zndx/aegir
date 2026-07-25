@@ -1,0 +1,95 @@
+# ── SysMLv2 Integration Scheme (RH ruling 2026-07-25) ───────────────────────────
+# SysMLv2 is IN-SCOPE EXTERNAL (the BFO/CCO posture: never managed nor extended
+# by us, leveraged extensively). Written "SysMLv2" by convention (per the OMG MBSE
+# wiki's usage, without the space). The language builds normatively on the KerML
+# kernel, so the scheme dct:requires a KerML scheme — the Energistics-common
+# dependency spine: each external advances its own versions, we adapt selectively.
+#
+# Like Energistics (and unlike FIBO/FHIR), OMG publishes no canonical RDF concept
+# IRIs for SysMLv2 — mapping is at STANDARD grain (rdfs:seeAlso the OMG spec
+# pages) and the spec_mappings module (sdg:Sysml* mapped entities) carries the
+# entity-level evidence. seeAlso, never closeMatch (RH 2026-07-25).
+#
+# Sector entry (RH-ratified shape): sdg:Engineering at the sector tier
+# (natural-cased tier-mate of FinancialSector/Healthcare/HeavyIndustries, member
+# of sdg:TopicDomains + typed sdg:TopicDomain — instantiation, never a broader
+# link) → sdg:MBSE as the ALL-CAPS genus chord (18.1) → sdg:SYSML re-homed
+# beneath it (prefLabel "SysMLv2"), chord-VISIBLE, never a point. MBSE itself is
+# ENUMERATED into the admission surface (aperture_include) and delta-gated like
+# FINTECH/BIOTECH before it. MFG's family carries SysMLv2 scheme memberships —
+# its scope notes map SysML objects explicitly (the WITSML-membership pattern).
+# ─────────────────────────────────────────────────────────────────────────────────
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix sdg:  <https://signals.zndx.org/sdg#> .
+
+# TopQuadrant thin-subclass pattern (mirrors sdg:FIBOConcept / sdg:FHIRConcept /
+# sdg:EnergisticsConcept): the attachment point for governance annotations.
+sdg:SysMLv2Concept rdfs:subClassOf skos:Concept ;
+    rdfs:label "SysMLv2-aligned Concept" ;
+    skos:definition "A curated SDG concept aligned to the OMG SysMLv2 language (atop the KerML kernel); carries SDG governance annotations while the standard remains external and authoritative." .
+
+# ── the kernel + the language scheme ────────────────────────────────────────────
+
+sdg:KerMLScheme a skos:ConceptScheme ;
+    rdfs:label "KerML Scheme" ;
+    dct:hasVersion "1.0" ;
+    rdfs:seeAlso <https://www.omg.org/spec/KerML/> ;
+    skos:definition "The OMG Kernel Modeling Language — the semantic kernel SysMLv2 builds on." .
+
+sdg:SysMLv2IntegrationScheme a skos:ConceptScheme ;
+    rdfs:label "SysMLv2 Integration Scheme" ;
+    dct:hasVersion "2.0" ;
+    dct:requires sdg:KerMLScheme ;
+    rdfs:seeAlso <https://www.omg.org/spec/SysML/> ,
+        <https://www.omgwiki.org/MBSE/doku.php?id=mbse:sysml_v2_transition> ;
+    skos:definition "Curated entry point into SysMLv2-aligned model-based systems engineering concepts within Signals Data Governance." ;
+    skos:editorialNote "Version watch: the SysML v1→v2 transition is ongoing across the tool ecosystem (see the OMG MBSE wiki transition page); mappings pin to the v2 formal specification and adapt selectively as it revises." ;
+    skos:hasTopConcept sdg:SYSML .
+
+# ── the sector tier (RH 2026-07-25: sdg:Engineering, natural-cased tier-mate of
+# FinancialSector/Healthcare/HeavyIndustries — a FOREST TOP; topic-domain-hood is
+# INSTANTIATION via the sdg:TopicDomain class + sdg:TopicDomains membership, both
+# declared in fibo_integration.ttl, never a broader link) ───────────────────────
+
+sdg:Engineering a skos:Concept, sdg:TopicDomain ;
+    skos:prefLabel "Engineering" ;
+    skos:altLabel "Engineering" ;
+    skos:notation "18" ;
+    skos:definition "The sector-tier top for engineering topic domains within SDG — initially hosting the model-based systems engineering genus (sdg:MBSE), organizing without admitting. Deliberately broader than any one language or standards body: SysMLv2 and KerML contribute through their integration schemes, and future engineering contributors join as siblings. A sector-tier forest top (a sdg:TopicDomain, member of sdg:TopicDomains) — no parent above it." ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+# ── the genus chord (admission anchor — ENUMERATED via aperture_include) ────────
+
+sdg:MBSE a skos:Concept, sdg:SysMLv2Concept ;
+    skos:prefLabel "Model-Based Systems Engineering" ;
+    skos:altLabel "MBSE" , "SysMLv2-aligned Concepts" ;
+    skos:notation "18.1" ;
+    skos:definition "The practice domain where systems are specified, analyzed, and verified through coherent models rather than documents — the genus for SysMLv2-aligned modeling concepts within SDG." ;
+    skos:scopeNote "Covers the modeled system across its engineering lifecycle — requirement definitions with satisfaction and verification traceability; structural decomposition into parts, ports, and connection usages; behavioral modeling of actions, states, and sequence-structured occurrences; parametric constraints; and verification cases binding requirements to analysis, inspection, and test evidence. Terminology traces to the OMG SysMLv2 language atop the KerML kernel, adjacent to the manufacturing structure, interface, requirement, and process domains." ;
+    skos:broader sdg:Engineering ;
+    skos:inScheme sdg:SysMLv2IntegrationScheme .
+
+# ── multi-scheme memberships (many-to-many lattice; membership shift, never
+# re-rooting). The concepts stay DECLARED in domain_concepts.ttl (their home);
+# these assertions add standard-scheme membership only. MFG's family qualifies
+# by its own scope notes (each maps SysML objects explicitly). ──────────────────
+
+sdg:SYSML a sdg:SysMLv2Concept ;
+    skos:topConceptOf sdg:SysMLv2IntegrationScheme ;
+    skos:inScheme sdg:SysMLv2IntegrationScheme .
+sdg:SYSML_REQUIREMENTS a sdg:SysMLv2Concept ;
+    skos:inScheme sdg:SysMLv2IntegrationScheme .
+sdg:SYSML_STRUCTURE a sdg:SysMLv2Concept ;
+    skos:inScheme sdg:SysMLv2IntegrationScheme .
+sdg:SYSML_BEHAVIOR a sdg:SysMLv2Concept ;
+    skos:inScheme sdg:SysMLv2IntegrationScheme .
+sdg:SYSML_VERIFICATION a sdg:SysMLv2Concept ;
+    skos:inScheme sdg:SysMLv2IntegrationScheme .
+
+sdg:MFG skos:inScheme sdg:SysMLv2IntegrationScheme .
+sdg:MFG_STRUCTURE skos:inScheme sdg:SysMLv2IntegrationScheme .
+sdg:MFG_INTERFACE skos:inScheme sdg:SysMLv2IntegrationScheme .
+sdg:MFG_REQUIREMENT skos:inScheme sdg:SysMLv2IntegrationScheme .
+sdg:MFG_PROCESS skos:inScheme sdg:SysMLv2IntegrationScheme .

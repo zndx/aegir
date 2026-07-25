@@ -39,7 +39,7 @@
   "invariant": "the underlying ontology MUST remain in sync with the skos hierarchy AND internally consistent (HermiT) as composites and differentia evolve — composite text changes are point-layer moves; hierarchy changes go through the ontology gates"
  },
  "aperture_include": {
-  "rationale": "RH 2026-07-25: FINTECH and BIOTECH join the admission surface \u2014 the contributor schemes' genus anchors, chord-conformant; membership is ENUMERATED (never inferred from scheme structure, \u00a74.6.3 discipline)",
+  "rationale": "RH 2026-07-25: FINTECH, BIOTECH, and MBSE join the admission surface \u2014 the contributor schemes' genus anchors, chord-conformant; membership is ENUMERATED (never inferred from scheme structure, \u00a74.6.3 discipline)",
   "members": [
    {
     "iri": "https://signals.zndx.org/sdg#FINTECH",
@@ -50,6 +50,11 @@
     "iri": "https://signals.zndx.org/sdg#BIOTECH",
     "file": "fhir_integration.ttl",
     "code": "16.1"
+   },
+   {
+    "iri": "https://signals.zndx.org/sdg#MBSE",
+    "file": "sysmlv2_integration.ttl",
+    "code": "18.1"
    }
   ]
  }
