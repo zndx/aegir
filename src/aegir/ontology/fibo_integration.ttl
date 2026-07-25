@@ -21,8 +21,6 @@
 # ─────────────────────────────────────────────────────────────────────────────────
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl:  <http://www.w3.org/2002/07/owl#> .
-@prefix dct:  <http://purl.org/dc/terms/> .
 @prefix sdg:  <https://signals.zndx.org/sdg#> .
 
 # TopQuadrant thin-subclass pattern: the attachment point for governance
@@ -39,41 +37,36 @@ sdg:FIBOConcept rdfs:subClassOf skos:Concept ;
 #   SKOS leg: sdg:TopicDomains (skos:Collection — disjoint from Concept AND
 #             ConceptScheme by the SKOS data model, so it structurally CANNOT
 #             become a root) holds the sector members for navigation/faceting.
-#   OWL leg:  sdg:TopicDomainConcept (fresh-IRI thin class, TopQuadrant pattern)
-#             types the same concepts for axioms that quantify over sectors.
-# SYNC: members(sdg:TopicDomains) ≡ instances(sdg:TopicDomainConcept) — measured
-# by the contract driver (a triad-shaped OWL ⊨ SKOS correspondence). The
-# Collection disjointness is the standing signal to Atlas curators: richer
-# conceptual frameworks belong in HermiT/kvasir-checked OWL, never in SKOS
-# hierarchy claims. (Naming: the Topic- qualifier avoids the rdfs:domain
-# collision and resonates with the topic layer — topics ≡ aperture anchors.)
-sdg:TopicDomainConcept rdfs:subClassOf skos:Concept ;
-    rdfs:label "Topic Domain Concept" ;
-    skos:definition "A sector-tier concept playing the topic-domain role: a forest top organizing one topical sector (financial, healthcare, heavy-industrial, …) with NO shared parent — topic-domain-hood is instantiation of this class plus membership in sdg:TopicDomains, never a broader link." .
+#   OWL leg:  sdg:TopicDomain (thin class, TopQuadrant pattern) types the same
+#             concepts for axioms that quantify over sectors.
+# SYNC: members(sdg:TopicDomains) ≡ instances(sdg:TopicDomain) — measured by the
+# contract driver (a triad-shaped OWL ⊨ SKOS correspondence). The Collection
+# disjointness is the standing signal to Atlas curators: richer conceptual
+# frameworks belong in HermiT/kvasir-checked OWL, never in SKOS hierarchy claims.
+# (Naming: the Topic- qualifier avoids the rdfs:domain collision and resonates
+# with the topic layer — topics ≡ aperture anchors. Scratch-edit doctrine, RH
+# 2026-07-25: the earlier Concept-typed apex under this IRI was simply EDITED
+# AWAY — no retirement ceremony. Bridges are for Current-shipped IRIs with real
+# consumers; the Scratch→Current→Archive procession is the history mechanism.)
+sdg:TopicDomain rdfs:subClassOf skos:Concept ;
+    rdfs:label "Topic Domain" ;
+    skos:definition "The class of sector-tier concepts playing the topic-domain role: forest tops each organizing one topical sector (financial, healthcare, heavy-industrial, …) with no shared parent. Topic-domain-hood is instantiation of this class plus membership in the sdg:TopicDomains Collection — never a broader link." .
 
 sdg:TopicDomains a skos:Collection ;
     skos:prefLabel "Topic Domains" ;
     skos:definition "The cross-scheme grouping of the sector-tier forest tops: grouping WITHOUT hierarchy (skos:Collection is disjoint from Concept and ConceptScheme) — the financial, healthcare, and heavy-industrial topic domains stay parallel and jointly navigable with no apex above them." ;
     skos:member sdg:FinancialSector , sdg:Healthcare , sdg:HeavyIndustries .
 
-# deprecated bridge (reference resolution only, never re-linked): the former
-# Concept-typed apex made a single false root over the forest
-sdg:TopicDomain a skos:Concept ;
-    owl:deprecated true ;
-    dct:isReplacedBy sdg:TopicDomains ;
-    skos:prefLabel "Topic Domain" ;
-    skos:editorialNote "Retired 2026-07-25 (RH): apex-as-Concept conflated instantiation with specialization; replaced by the sdg:TopicDomains Collection (SKOS leg) + sdg:TopicDomainConcept thin class (OWL leg)." .
-
 sdg:FIBOIntegrationScheme a skos:ConceptScheme ;
     rdfs:label "FIBO Integration Scheme" ;
     skos:definition "Curated entry point into selected FIBO concepts for use within Signals Data Governance." ;
     skos:hasTopConcept sdg:FinancialSector .
 
-sdg:FinancialSector a skos:Concept, sdg:FIBOConcept, sdg:TopicDomainConcept ;
+sdg:FinancialSector a skos:Concept, sdg:FIBOConcept, sdg:TopicDomain ;
     skos:prefLabel "Financial Sector" ;
     skos:altLabel "FinancialSector" ;
     skos:notation "15" ;
-    skos:definition "The single logical top for financial-industry terminology within SDG: the discoverable entry point over FIBO-aligned concepts, organizing without admitting. A sector-tier forest top (sdg:TopicDomainConcept, member of sdg:TopicDomains) — no parent above it." ;
+    skos:definition "The single logical top for financial-industry terminology within SDG: the discoverable entry point over FIBO-aligned concepts, organizing without admitting. A sector-tier forest top (a sdg:TopicDomain, member of sdg:TopicDomains) — no parent above it." ;
     skos:topConceptOf sdg:FIBOIntegrationScheme ;
     skos:inScheme sdg:FIBOIntegrationScheme .
 

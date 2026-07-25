@@ -139,17 +139,18 @@ def main() -> int:
             if not _is_concept(o) and o not in g_colls:
                 s_viol.append(f"S13(integration): member not a Concept/Collection: {s} → {o}")
         # TOPIC-DOMAINS SYNC (RH 2026-07-25, instantiation-not-specialization):
-        # members(sdg:TopicDomains) ≡ instances(sdg:TopicDomainConcept) — the
-        # OWL ⊨ SKOS correspondence for the sector tier, plus NO broader link may
-        # point at the retired apex (the false-root regression guard).
+        # members(sdg:TopicDomains) ≡ instances(sdg:TopicDomain) — the OWL ⊨ SKOS
+        # correspondence for the sector tier, plus NO broader link may point at
+        # the sdg:TopicDomain CLASS (the false-root regression guard: sector-hood
+        # is typing + Collection membership, never a hierarchy claim).
         _SDG = rdflib.Namespace("https://signals.zndx.org/sdg#")
         members = set(gi.objects(_SDG.TopicDomains, _SK.member))
-        typed = set(gi.subjects(rdflib.RDF.type, _SDG.TopicDomainConcept))
+        typed = set(gi.subjects(rdflib.RDF.type, _SDG.TopicDomain))
         for d in members ^ typed:
             s_viol.append(f"SYNC(topic-domains): {d} "
                           f"{'member-not-typed' if d in members else 'typed-not-member'}")
         for s in gi.subjects(_SK.broader, _SDG.TopicDomain):
-            s_viol.append(f"SYNC(topic-domains): {s} broader→retired apex (false root)")
+            s_viol.append(f"SYNC(topic-domains): {s} broader→the TopicDomain class (false root)")
         n_td = len(members & typed)
     except Exception as e:  # noqa: BLE001 — an unreadable overlay is a violation, not a crash
         s_viol.append(f"integration overlays unreadable: {e}")
