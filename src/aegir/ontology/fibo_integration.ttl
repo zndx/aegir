@@ -29,15 +29,16 @@ sdg:FIBOConcept rdfs:subClassOf skos:Concept ;
     skos:definition "A curated SDG concept aligned to the Financial Industry Business Ontology; carries SDG governance annotations while the mapped FIBO concept remains external and authoritative for its own definition." .
 
 # The CROSS-SCHEME APEX (RH 2026-07-25): every integration-scheme top carries
-# skos:broader sdg:Sector — scheme tops WITH broader are the §4.6.3 atypical
+# skos:broader sdg:TopicDomain — scheme tops WITH broader are the §4.6.3 atypical
 # presentation our contract driver enumerates by design. Multi-scheme membership
 # (Primer §3.2) is deliberate: the apex belongs to every contributor scheme.
-# Named sdg:Sector, NOT sdg:Domain (RH 2026-07-25): "Domain" collides conceptually
-# with rdfs:domain — a load-bearing term in this project's arming programme.
-sdg:Sector a skos:Concept ;
-    skos:prefLabel "Sector" ;
-    skos:altLabel "Sector" ;
-    skos:definition "The cross-scheme apex over the integration-scheme top concepts — the shared parent that keeps the financial, healthcare, and future in-scope-external sectors parallel and jointly navigable." ;
+# Named sdg:TopicDomain (RH 2026-07-25): bare "Domain" collides with rdfs:domain
+# (load-bearing in the arming programme); the Topic- qualifier disambiguates AND
+# resonates correctly with the topic layer (topics ≡ aperture anchors).
+sdg:TopicDomain a skos:Concept ;
+    skos:prefLabel "Topic Domain" ;
+    skos:altLabel "TopicDomain" ;
+    skos:definition "The cross-scheme apex over the integration-scheme top concepts — the shared parent that keeps the financial, healthcare, and future in-scope-external topic domains parallel and jointly navigable." ;
     skos:inScheme sdg:FIBOIntegrationScheme , sdg:FHIRIntegrationScheme .
 
 sdg:FIBOIntegrationScheme a skos:ConceptScheme ;
@@ -50,7 +51,7 @@ sdg:FinancialDomain a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FinancialDomain" ;
     skos:notation "15" ;
     skos:definition "The single logical top for financial-industry terminology within SDG: the discoverable entry point over FIBO-aligned concepts, organizing without admitting." ;
-    skos:broader sdg:Sector ;
+    skos:broader sdg:TopicDomain ;
     skos:topConceptOf sdg:FIBOIntegrationScheme ;
     skos:inScheme sdg:FIBOIntegrationScheme .
 
