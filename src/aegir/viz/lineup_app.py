@@ -206,8 +206,12 @@ def _aperture_chord(root: str = "scratch", ref: str = "", target: str = ""):
     # panel leads schema-forward (identity → encoded text → relational affordances), so
     # the lens flavor lives in the PANEL, and the tapped IRI is never lost to a shared
     # landing. (`target` reserved for future lens-specific tap policies.)
+    # tap-through for EVERY arc: points open their dossier; chord-visible
+    # non-points (PRODML/SYSML subtrees) open their concept note (RH 2026-07-25:
+    # arcs that render must open — a chord member with no panel is a dead end)
     nodes = pd.DataFrame([{"index": i, "name": r["frag"][:30],
-                           "nid": f"lexicon/aperture/{r['pid']}" if r["pid"] is not None else ""}
+                           "nid": (f"lexicon/aperture/{r['pid']}" if r["pid"] is not None
+                                   else f"lexicon/concept/{r['frag']}")}
                           for i, r in enumerate(rows_)])
     eds = pd.DataFrame(eds_rows, columns=["source", "target", "value"])
 

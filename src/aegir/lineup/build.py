@@ -1959,6 +1959,7 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
     # payload refresh) rides the next index cycle.
     def _lnorm2(x: str) -> str:
         return re.sub(r"[^a-z0-9]", "", (x or "").lower())
+    point_by_iri = {str(p0.get("iri") or ""): p0 for p0 in pts if p0.get("iri")}
     in_anchors: "dict[str, list]" = {}
     for p0 in pts:
         for x in p0.get("constituents") or []:
@@ -2000,12 +2001,9 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
         # surface), which a panel must never present as the definition (RH 2026-07-21).
         defn = re.sub(r"\s+", " ", getattr(c, "definition", "") or "").strip()
         scope = re.sub(r"\s+", " ", getattr(c, "scope_note", "") or "").strip()
-
-        def _clip(t: str, n: int = 700) -> str:
-            if len(t) <= n:
-                return t
-            cut = t[:n].rfind(". ")
-            return t[:cut + 1] if cut > 200 else t[:n] + "…"
+        # NO display truncation (RH 2026-07-25): the note IS the reading surface —
+        # clipped definitional content made the EMBEDDING truncation question
+        # unanswerable from the panel. Embedding truth renders separately below.
         snake = re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_")
         # ONTOLOGY BINDING: the vocab code embeds the template_id (…_<TID_UPPER>) — resolve it
         # and the template's realized head class, so the concept's OWL situation is one hop away
@@ -2054,9 +2052,27 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
                    N.wl("lexicon/concept/" + locs[k2], locs[k2][:32]) for k2 in kids[:6])
                    + (f" _…+{len(kids) - 6}_" if len(kids) > 6 else "")) if kids else "")
                + "\n\n")
-        admission = ("**Admission role.** Encoded (with every ancestor code) into the "
-                     "`sdg_domains` MaxSim collection — the surface that admits materials into "
-                     "the pipeline; the anchors above composite it into the aperture.\n\n")
+        # EMBEDDING TRUTH per concept (RH 2026-07-25: "what exactly lands in
+        # qdrant?"): aperture POINTS carry their exact encoded text + token count
+        # in the payload/snapshot; everything else is chord-visible with NO
+        # aperture embedding (chord ≠ point).
+        _pt = point_by_iri.get(str(key))
+        if _pt:
+            _tok = _pt.get("retrieval_tokens")
+            admission = ("**Admission role.** An APERTURE POINT (id `" + str(_pt.get("id"))
+                         + "`): its retrieval text (label · altLabel · definition · scopeNote "
+                         + "· comment) is encoded verbatim as the MaxSim multivector — "
+                         + (f"**{_tok}/512 tokens**" if _tok else "token count unrecorded")
+                         + (" ⚠ exceeds the encoder limit: only the first 512 are in the vector"
+                            if _tok and int(_tok) > 512 else " (512 = the encoder truncation limit; "
+                            "this text fits entirely)")
+                         + " · " + N.wl(f"lexicon/aperture/{_pt.get('id')}", "anchor dossier")
+                         + " renders the encoded text verbatim.\n\n")
+        else:
+            admission = ("**Admission role.** Chord-visible concept — NOT an aperture point: "
+                         "nothing of this text is embedded in the admission surface. It may "
+                         "enter point embeddings only as GEPA composite constituent vocabulary "
+                         "(chord ≠ point).\n\n")
         notes.append(N.Note(
             id=f"lexicon/concept/{code}", title=label[:64], kind="lexicon-construct",
             data_product="ontology", root="scratch",
@@ -2066,12 +2082,9 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
                    + ([f"ontology/term/{tid}"] if tid else [])),
             body=(f"**{label}** — a vocab concept (the admission surface's unit — "
                   f"see {N.wl('lexicon/construct/concept', 'concept (construct)')}).\n\n"
-                  + (f"> {_clip(defn)}\n\n" if defn else "")
-                  + (f"**Scope.** {_clip(scope, 400)}\n\n" if scope else "")
-                  + "\n".join(skos_rows) + "\n\n" + pos + cross + anchors_md + admission
-                  + "_Retrieval surface: label · abbrev · definition · scope, concatenated and "
-                  "encoded to qdrant as the MaxSim multivector — an engineering serialization, "
-                  "distinct from the definition above._\n")))
+                  + (f"> {defn}\n\n" if defn else "")
+                  + (f"**Scope.** {scope}\n\n" if scope else "")
+                  + "\n".join(skos_rows) + "\n\n" + pos + cross + anchors_md + admission)))
     return notes
 
 
@@ -2083,7 +2096,10 @@ def _in_the_vector(p0: dict) -> str:
     if not t:
         return ""
     tok = p0.get("retrieval_tokens")
-    budget = f" · {tok}/512 tokens" if tok else ""
+    over = tok and int(tok) > 512
+    budget = (f" · {tok}/512 tokens"
+              + (" ⚠ EXCEEDS the encoder limit — only the first 512 are in the vector"
+                 if over else "")) if tok else ""
     return ("**In the vector**" + budget + " — the encoded admission text, verbatim "
             "(prefLabel · altLabel · definition · scopeNote):\n\n> "
             + str(t).replace("\n", " ").strip() + "\n\n")
