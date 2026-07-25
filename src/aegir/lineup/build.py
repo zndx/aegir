@@ -1946,7 +1946,10 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
     (reverse of the snapshot lattice), and a term/class crosslink when resolvable."""
     try:
         from aegir.ontology import domain_index as DI
-        vocab = DI.load_skos()
+        # overlay + corpora vocab (regex form) + INTEGRATION overlays (rdflib —
+        # sector tier, include genera, external-scheme members): every concept a
+        # panel references must BE a note, or broader/narrower render dead
+        vocab = {**DI.load_skos(), **DI.integration_overlay_concepts()}
     except Exception:  # noqa: BLE001
         return []
     live_ids = live_ids or set()
@@ -2294,7 +2297,8 @@ def project_aperture_anchors(root: str = "scratch") -> list[N.Note]:
         _contract = {}
     try:
         from aegir.ontology import domain_index as _DI
-        _ov = {k: c for k, c in _DI.load_skos(str(_DI.DEFAULT_OVERLAY)).items()
+        _ov = {k: c for k, c in {**_DI.load_skos(str(_DI.DEFAULT_OVERLAY)),
+                                 **_DI.integration_overlay_concepts()}.items()
                if not getattr(c, "deprecated", False)}
     except Exception:  # noqa: BLE001
         _ov = {}
@@ -2314,17 +2318,21 @@ def project_aperture_anchors(root: str = "scratch") -> list[N.Note]:
         if c_:
             for a_ in _aslist(getattr(c_, "alt_label", None))[:4]:
                 skos_rows.append(f"| `altLabel` | `{a_}` |")
+            # link to the anchor dossier when the target is a point, else to its
+            # concept note (sector tier, chord-visible non-points) — never dead text
             for b_ in _aslist(getattr(c_, "broader", None)):
                 bl = b_.rsplit("#", 1)[-1]
                 b_aid = iri_to_aid.get(b_)
                 skos_rows.append("| `broader` | "
-                                 + (N.wl(f"lexicon/aperture/{b_aid}", bl) if b_aid else f"`{bl}`")
+                                 + (N.wl(f"lexicon/aperture/{b_aid}", bl) if b_aid
+                                    else N.wl(f"lexicon/concept/{bl}", bl))
                                  + " |")
             for n_ in _ov_narrower.get(iri, [])[:8]:
                 nl = n_.rsplit("#", 1)[-1]
                 n_aid = iri_to_aid.get(n_)
                 skos_rows.append("| `narrower` | "
-                                 + (N.wl(f"lexicon/aperture/{n_aid}", nl) if n_aid else f"`{nl}`")
+                                 + (N.wl(f"lexicon/aperture/{n_aid}", nl) if n_aid
+                                    else N.wl(f"lexicon/concept/{nl}", nl))
                                  + " |")
             if getattr(c_, "top_concept_of", ""):
                 skos_rows.append("| `topConceptOf` | `sdg/scheme` _(CANDIDATE — pending "
@@ -2370,8 +2378,8 @@ def project_aperture_anchors(root: str = "scratch") -> list[N.Note]:
                   + _content_affordances(aid)
                   + f"**Derivation.** MaxSim over `sdg_domains` · top-k {_art.get('top_k', '?')} "
                   f"· α-band {_art.get('alpha', '?')} × best concept score · df = constituency "
-                  "count across all 29 anchors (⚠ ≥4 = promiscuous — the selectivity "
-                  "watchlist; chord edges count df≤3 shares only).\n\n"
+                  f"count across all {len(_art.get('anchors') or {}) or '?'} anchors (⚠ ≥4 = "
+                  "promiscuous — the selectivity watchlist; chord edges count df≤3 shares only).\n\n"
                   + "\n".join(crow) + "\n\n" + adj_md
                   + "Part of " + N.wl("lexicon/aperture/index", "the Canonical Aperture") + " · "
                   + N.wl("lexicon/construct/aperture", "aperture (construct)"))))
