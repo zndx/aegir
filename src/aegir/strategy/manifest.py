@@ -105,10 +105,9 @@ def collect_lens() -> "dict[str, bytes]":
         # 2026-07-25: their genera (FINTECH/BIOTECH) ENTERED the aperture seed path —
         # delta-gated (recompose over the frozen store: 12 outcome changes, all gains)
         # and enumerated via admission_filter aperture_include (§4.6.3 discipline)
-        for _nm in ("fibo_integration", "fhir_integration"):
-            _f = Path(__file__).resolve().parents[1] / "ontology" / f"{_nm}.ttl"
-            if _f.exists():
-                out[f"lens/{_nm}.skos.ttl"] = _f.read_bytes()
+        for _f in sorted((Path(__file__).resolve().parents[1] / "ontology")
+                         .glob("*_integration.ttl")):
+            out[f"lens/{_f.stem}.skos.ttl"] = _f.read_bytes()
         try:
             out["lens/aperture.snapshot.json"] = _canon(_scroll_snapshot(cl, DEFAULT_APERTURE))
         except Exception as e:  # noqa: BLE001 — aiming collection absent: captured explicitly

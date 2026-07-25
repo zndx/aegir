@@ -1,0 +1,110 @@
+# ── Energistics Integration Schemes (RH ruling 2026-07-25) ──────────────────────
+# WITSML, PRODML, and RESQML are EACH an in-scope external (the BFO/CCO posture:
+# never managed nor extended by us, leveraged extensively) with its OWN
+# skos:ConceptScheme, and each standard scheme dct:requires the shared
+# sdg:EnergisticsCommonScheme — mirroring the standards' actual dependency
+# (WITSML v2.1, PRODML v2.3, RESQML v2.2 all build on Energistics common v2.3).
+# Each external advances its own versions and cross-relationships as it will; we
+# adapt SELECTIVELY over time (version pins + editorial notes are the watch surface).
+#
+# Unlike FIBO/FHIR, Energistics publishes XSD/UML (energyML XML namespaces), not
+# RDF concept IRIs — so there is no concept-level closeMatch target; mapping is at
+# STANDARD-FAMILY grain (rdfs:seeAlso the namespace URI) and the spec_mappings
+# module carries the entity-level evidence.
+#
+# CHORD vs POINT (RH 2026-07-25): sdg:PRODML and its children are chord-VISIBLE
+# under the sdg:ENERGY genus (skos:broader re-homing in domain_concepts.ttl) but
+# are NEVER aperture points (no enumeration, and no notation puts them in the code
+# space) — they do not compete with the ENERGY qdrant-point. GEPA composite
+# optimization MAY draw their vocabulary as differentia constituents into point
+# embeddings; the SKOS hierarchy and the OWL ontology must remain in sync and
+# HermiT-consistent as composites evolve (doctrine captured in admission_filter).
+# ─────────────────────────────────────────────────────────────────────────────────
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix sdg:  <https://signals.zndx.org/sdg#> .
+
+# TopQuadrant thin-subclass pattern (mirrors sdg:FIBOConcept / sdg:FHIRConcept):
+# one common parent for governance annotations, one thin subclass per standard.
+sdg:EnergisticsConcept rdfs:subClassOf skos:Concept ;
+    rdfs:label "Energistics-aligned Concept" ;
+    skos:definition "A curated SDG concept aligned to an Energistics standard family (WITSML, PRODML, or RESQML over Energistics common); carries SDG governance annotations while the standards remain external and authoritative." .
+
+sdg:WITSMLConcept rdfs:subClassOf sdg:EnergisticsConcept ;
+    rdfs:label "WITSML-aligned Concept" .
+sdg:PRODMLConcept rdfs:subClassOf sdg:EnergisticsConcept ;
+    rdfs:label "PRODML-aligned Concept" .
+sdg:RESQMLConcept rdfs:subClassOf sdg:EnergisticsConcept ;
+    rdfs:label "RESQML-aligned Concept" .
+
+# ── the shared base + the three standard schemes ────────────────────────────────
+
+sdg:EnergisticsCommonScheme a skos:ConceptScheme ;
+    rdfs:label "Energistics Common Scheme" ;
+    dct:hasVersion "2.3" ;
+    rdfs:seeAlso <http://www.energistics.org/energyml/data/commonv2> ;
+    skos:definition "The shared Energistics common technical architecture (data objects, units of measure, transfer protocol) that WITSML, PRODML, and RESQML build on." ;
+    skos:editorialNote "Version watch: WITSML v2.1, PRODML v2.3, and RESQML v2.2 all currently use common v2.3 — when a standard moves to a newer common, its scheme's dct:requires target versions diverge and we adapt selectively (RH 2026-07-25)." .
+
+sdg:WITSMLIntegrationScheme a skos:ConceptScheme ;
+    rdfs:label "WITSML Integration Scheme" ;
+    dct:hasVersion "2.1" ;
+    dct:requires sdg:EnergisticsCommonScheme ;
+    rdfs:seeAlso <http://www.energistics.org/energyml/data/witsmlv2> ;
+    skos:definition "Curated entry point into WITSML-aligned drilling and well-construction concepts within Signals Data Governance." ;
+    skos:editorialNote "The home ENERGY family's wellbore/logging/trajectory anchors already map WITSML objects in their scope notes; their membership here is the vestigial-transition mechanism (multi-scheme inScheme), not re-rooting." .
+
+sdg:PRODMLIntegrationScheme a skos:ConceptScheme ;
+    rdfs:label "PRODML Integration Scheme" ;
+    dct:hasVersion "2.3" ;
+    dct:requires sdg:EnergisticsCommonScheme ;
+    rdfs:seeAlso <http://www.energistics.org/energyml/data/prodmlv2> ;
+    skos:definition "Curated entry point into PRODML-aligned production-data concepts within Signals Data Governance." ;
+    skos:hasTopConcept sdg:PRODML .
+
+sdg:RESQMLIntegrationScheme a skos:ConceptScheme ;
+    rdfs:label "RESQML Integration Scheme" ;
+    dct:hasVersion "2.2" ;
+    dct:requires sdg:EnergisticsCommonScheme ;
+    rdfs:seeAlso <http://www.energistics.org/energyml/data/resqmlv2> ;
+    skos:definition "Curated entry point into RESQML-aligned reservoir and earth-model concepts within Signals Data Governance." ;
+    skos:editorialNote "No members yet: the reservoir/earth-model coverage gap under sdg:ENERGY (grids, horizons, subsurface models — an ENERGY_RESERVOIR candidate) is surfaced by this scheme and authored through the differentia CAS loop, delta-gated like any child." .
+
+# ── the sector tier (RH 2026-07-25: plural HeavyIndustries, tier-mate of
+# FinancialSector and Healthcare under the sdg:TopicDomain apex) ────────────────
+
+sdg:HeavyIndustries a skos:Concept ;
+    skos:prefLabel "Heavy Industries" ;
+    skos:altLabel "HeavyIndustries" ;
+    skos:notation "17" ;
+    skos:definition "The sector-tier top for heavy-industrial topic domains within SDG — initially hosting the upstream-energy genus (sdg:ENERGY), organizing without admitting. Deliberately broader than any one standards body: Energistics contributes through the WITSML/PRODML/RESQML schemes, and future heavy-industrial contributors join as siblings." ;
+    skos:broader sdg:TopicDomain ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+# the cross-scheme apex belongs to every contributor scheme (Primer §3.2 doctrine,
+# as declared at its fibo_integration.ttl birth)
+sdg:TopicDomain skos:inScheme sdg:WITSMLIntegrationScheme ,
+        sdg:PRODMLIntegrationScheme ,
+        sdg:RESQMLIntegrationScheme .
+
+# ── multi-scheme memberships (many-to-many lattice; membership shift, never
+# re-rooting). The concepts stay DECLARED in domain_concepts.ttl (their home);
+# these assertions add standard-scheme membership only. ─────────────────────────
+
+sdg:ENERGY skos:inScheme sdg:WITSMLIntegrationScheme .
+sdg:ENERGY_WELLBORE skos:inScheme sdg:WITSMLIntegrationScheme .
+sdg:ENERGY_LOGGING skos:inScheme sdg:WITSMLIntegrationScheme .
+sdg:ENERGY_TRAJECTORY skos:inScheme sdg:WITSMLIntegrationScheme .
+
+sdg:PRODML a sdg:PRODMLConcept ;
+    skos:topConceptOf sdg:PRODMLIntegrationScheme ;
+    skos:inScheme sdg:PRODMLIntegrationScheme .
+sdg:PRODML_PRODUCT_VOLUME a sdg:PRODMLConcept ;
+    skos:inScheme sdg:PRODMLIntegrationScheme .
+sdg:PRODML_FLUID_ANALYSIS a sdg:PRODMLConcept ;
+    skos:inScheme sdg:PRODMLIntegrationScheme .
+sdg:PRODML_DISTRIBUTED_SENSING a sdg:PRODMLConcept ;
+    skos:inScheme sdg:PRODMLIntegrationScheme .
+sdg:PRODML_PRODUCTION_OPERATIONS a sdg:PRODMLConcept ;
+    skos:inScheme sdg:PRODMLIntegrationScheme .

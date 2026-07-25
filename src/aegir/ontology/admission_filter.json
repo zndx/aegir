@@ -33,6 +33,11 @@
   "staged_by": "admission recomposition phase 1",
   "arming": "flip armed=true only after the shadow-harvest window proves the recomposition (leaf re-admission vs the registered floor + derive-side metrology); AEGIR_ADMISSION_FILTER=1 force-arms for shadow runs"
  },
+ "composite_doctrine": {
+  "ruling": "RH 2026-07-25: chord ≠ point. The SKOS chord renders the FULL hierarchy (home families, sector tier, in-scope-external scheme members like PRODML under ENERGY); the point layer stays sparse — one qdrant point per admission anchor, membership ENUMERATED. A chord-visible concept does NOT compete in MaxSim unless enumerated.",
+  "gepa": "points are COMPOSITES: GEPA optimization may draw differentia-constituent vocabulary from the anchor's chord subtree INCLUDING in-scope-external scheme members that are not points (e.g. PRODML skos:narrower concepts into the ENERGY point embedding)",
+  "invariant": "the underlying ontology MUST remain in sync with the skos hierarchy AND internally consistent (HermiT) as composites and differentia evolve — composite text changes are point-layer moves; hierarchy changes go through the ontology gates"
+ },
  "aperture_include": {
   "rationale": "RH 2026-07-25: FINTECH and BIOTECH join the admission surface \u2014 the contributor schemes' genus anchors, chord-conformant; membership is ENUMERATED (never inferred from scheme structure, \u00a74.6.3 discipline)",
   "members": [

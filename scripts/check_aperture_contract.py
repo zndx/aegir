@@ -112,16 +112,22 @@ def main() -> int:
         if g_schemes & g_concepts:
             s_viol.append(f"S9(integration): {len(g_schemes & g_concepts)} IRIs typed "
                           f"both Concept and ConceptScheme")
+        # cross-source references are LEGAL (integration files assert memberships on
+        # overlay-declared concepts and vice versa) — test against the UNION
+        def _is_scheme(o):
+            return o in g_schemes or str(o) in _schemes
+        def _is_concept(o):
+            return o in g_concepts or str(o) in _concepts
         for s, o in gi.subject_objects(_SK.hasTopConcept):
-            if s not in g_schemes:
+            if not _is_scheme(s):
                 s_viol.append(f"S5(integration): hasTopConcept subject not a scheme: {s}")
-            if o not in g_concepts:
+            if not _is_concept(o):
                 s_viol.append(f"S6(integration): hasTopConcept object not a concept: {o}")
         for s, o in gi.subject_objects(_SK.topConceptOf):
-            if o not in g_schemes:
+            if not _is_scheme(o):
                 s_viol.append(f"S8(integration): topConceptOf object not a scheme: {s} → {o}")
         for s, o in gi.subject_objects(_SK.inScheme):
-            if o not in g_schemes:
+            if not _is_scheme(o):
                 s_viol.append(f"S4(integration): inScheme object not a scheme: {s} → {o}")
     except Exception as e:  # noqa: BLE001 — an unreadable overlay is a violation, not a crash
         s_viol.append(f"integration overlays unreadable: {e}")

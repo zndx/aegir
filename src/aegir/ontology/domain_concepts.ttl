@@ -151,10 +151,12 @@
 
 <https://signals.zndx.org/sdg#ENERGY> a skos:Concept ;
     skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
+    skos:broader <https://signals.zndx.org/sdg#HeavyIndustries> ;
     skos:narrower <https://signals.zndx.org/sdg#ENERGY_WELLBORE> ,
         <https://signals.zndx.org/sdg#ENERGY_LOGGING> ,
         <https://signals.zndx.org/sdg#ENERGY_TRAJECTORY> ,
-        <https://signals.zndx.org/sdg#ENERGY_OPERATIONS> ;
+        <https://signals.zndx.org/sdg#ENERGY_OPERATIONS> ,
+        <https://signals.zndx.org/sdg#PRODML> ;
     skos:altLabel "ENERGY" ;
     skos:prefLabel "Energy and Well Drilling" ;
     skos:notation "11" ;
@@ -536,8 +538,10 @@
         <https://signals.zndx.org/sdg#CSG> ,
         <https://signals.zndx.org/sdg#UTILITY> ,
         <https://signals.zndx.org/sdg#DATAENG> ,
-        <https://signals.zndx.org/sdg#PRODML> ,
         <https://signals.zndx.org/sdg#SYSML> .
+# (PRODML re-homed 2026-07-25: no longer a sibling top — chord-visible under
+#  sdg:ENERGY, scheme-organized by sdg:PRODMLIntegrationScheme; see
+#  energistics_integration.ttl. SYSML circles back later under an MBSE sector.)
 
 # ── CONFIRMED mapped-spec scheme families (RH 2026-07-23): PRODML and SYSML enter the SDG
 # namespace as MAPPED ONTOLOGY ENTITIES (spec_mappings module: sdg:Prodml*/sdg:Sysml*
@@ -554,8 +558,8 @@
 <https://signals.zndx.org/sdg#PRODML> a skos:Concept ;
     skos:prefLabel "Production Markup Language Domain" ;
     skos:altLabel "PRODML" ;
-    skos:definition "The Energistics PRODML production-data domain extended comprehensively into SDG: well production volumes, fluid analyses, distributed sensing, and production operations reporting, as a scheme family sibling to Constructive Solid Geometry." ;
-    skos:topConceptOf <https://signals.zndx.org/sdg/scheme> ;
+    skos:definition "The Energistics PRODML production-data domain extended comprehensively into SDG: well production volumes, fluid analyses, distributed sensing, and production operations reporting — chord-visible under the upstream-energy genus (re-homed from sibling-top, RH 2026-07-25)." ;
+    skos:broader <https://signals.zndx.org/sdg#ENERGY> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#PRODML_PRODUCT_VOLUME> a skos:Concept ;

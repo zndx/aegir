@@ -143,16 +143,12 @@ def _sot_admission_filter() -> dict:
 
 
 def integration_overlay_files() -> "list[Path]":
-    """Distinct integration-overlay TTLs enumerated by aperture_include members."""
-    here = Path(__file__).resolve().parent
-    seen: "set[Path]" = set()
-    out: "list[Path]" = []
-    for m in _sot_admission_filter().get("aperture_include", {}).get("members", []):
-        p = here / str(m.get("file", ""))
-        if m.get("file") and p.exists() and p not in seen:
-            seen.add(p)
-            out.append(p)
-    return out
+    """The canonical in-scope-external integration overlays: ``*_integration.ttl``.
+
+    File discovery is DECOUPLED from point enumeration (a file may contribute
+    schemes and chord structure with zero enumerated points — energistics); which
+    concepts become aperture points remains solely aperture_include's business."""
+    return sorted(Path(__file__).resolve().parent.glob("*_integration.ttl"))
 
 
 def integration_overlay_concepts() -> "dict[str, SkosConcept]":
