@@ -43,11 +43,13 @@ def _load(name: str, path: Path):
 def main() -> int:
     bro = _load("bro", REPO / "scripts/build_realized_ontology.py")
     et = _load("et", REPO / "scripts/emit_taxonomy.py")
-    # referenced externals absent from the backbone get bare declarations
+    # NUMERIC_BFO already carries the module (unconditional critical-path append) —
+    # never append it twice; referenced externals absent from the backbone get
+    # bare declarations
     extra = "".join(f"Class: {c}\n" for c in ("cco:ont00000192", "cco:ont00000853",
                                               "cco:ont00001359")
                     if f"Class: {c}" not in bro.NUMERIC_BFO)
-    omn = _PREFIXES + bro.NUMERIC_BFO + "\n" + extra + MANUFACTURING_OMN
+    omn = _PREFIXES + bro.NUMERIC_BFO + "\n" + extra
     omn_p = REPO / "build/manufacturing_module.omn"
     omn_p.write_text(omn)
 
@@ -60,38 +62,44 @@ def main() -> int:
                          capture_output=True, text=True)
     print(f"kvasir lower: exit {chk.returncode}"
           + (f" · {chk.stderr.strip()[:160]}" if chk.returncode else ""))
-    ddl = subprocess.run([str(kv), "ddl", str(omn_p), "--sql"],
+    plan_p = REPO / "build/manufacturing_module_plan.json"
+    ddl = subprocess.run([str(kv), "ddl", str(omn_p), "--sql", "--plan", str(plan_p)],
                          capture_output=True, text=True)
     ddl_sql = ddl.stdout if ddl.returncode == 0 else ""
     (REPO / "build/manufacturing_module_ddl.sql").write_text(ddl_sql)
-    tables = [ln.split()[5 if "IF NOT EXISTS" in ln else 2].strip('"(')
-              for ln in ddl_sql.splitlines() if ln.upper().startswith("CREATE TABLE")]
+    plan = json.loads(plan_p.read_text()) if plan_p.exists() else {}
+    tables = [t.get("name") for t in plan.get("tables", [])]
     print(f"kvasir ddl: exit {ddl.returncode} · {len(tables)} tables: {tables}")
 
-    # UNDERSPECIFICATION SIGNAL (RH 2026-07-25): the requirement to produce a
-    # complete, functional relational schema DRIVES ontology completeness — a
-    # declared class the lowering folds/drops is UNDERSPECIFIED, a remediation
-    # signal co-equal with unsat. Silent folds are the Sweep-B sin at the
-    # lowering boundary; this gate FAILS on them until kvasir complains natively.
+    # UNDERSPECIFICATION (RH 2026-07-25, native — no aegir-side shim): kvasir's
+    # Plan.underspecified IS the signal, co-equal with unsat. This gate FAILS
+    # only on THIS MODULE's classes (scoping which signals block is the gate's
+    # job; producing signals is kvasir's alone). Everything else sdg-scoped is
+    # REPORTED as the standing worklist — annotation-layer vocab (relational
+    # concepts, spec mappings) is increment (c)'s subject: reference-table rows,
+    # not entity tables.
     import re as _re
-    declared = _re.findall(r"Class:\s+sdg:(\w+)", MANUFACTURING_OMN)
-    def _snake(n: str) -> str:
-        return _re.sub(r"(?<!^)(?=[A-Z])", "_", n).lower()
-    underspec = sorted(n for n in declared if _snake(n) not in set(tables))
-    if underspec:
-        print(f"⚑ UNDERSPECIFIED (declared but not materialized — remediate, never accept): "
-              f"{underspec}")
+    module_frags = set(_re.findall(r"Class:\s+sdg:(\w+)", MANUFACTURING_OMN))
+    sdg_under = sorted(c.rsplit("#", 1)[-1] for c in plan.get("underspecified", [])
+                       if "signals.zndx.org/sdg#" in c)
+    gate_under = sorted(set(sdg_under) & module_frags)
+    worklist = sorted(set(sdg_under) - module_frags)
+    if gate_under:
+        print(f"⚑ UNDERSPECIFIED module classes (kvasir-native — remediate): {gate_under}")
     else:
-        print(f"underspecification: NONE — all {len(declared)} declared classes materialize")
+        print(f"underspecification (kvasir-native): module NONE — all {len(module_frags)} "
+              f"classes materialize · assembly worklist {len(worklist)} "
+              f"(annotation-layer vocab → increment (c) reference tables)")
 
     (REPO / "build/manufacturing_module_verify.json").write_text(json.dumps(
         {"hermit": {k: v.get(k) for k in ("consistent", "exit", "unsat")},
          "kvasir_lower_exit": chk.returncode, "kvasir_ddl_exit": ddl.returncode,
-         "tables": tables, "declared": declared, "underspecified": underspec},
-        indent=1))
+         "tables": tables, "underspecified_module": gate_under,
+         "underspecified_worklist": worklist,
+         "underspecified_total": len(plan.get("underspecified", []))}, indent=1))
     print("→ build/manufacturing_module_verify.json")
     return 0 if (v.get("consistent") and not v.get("unsat") and ddl.returncode == 0
-                 and not underspec) else 1
+                 and not gate_under) else 1
 
 
 if __name__ == "__main__":

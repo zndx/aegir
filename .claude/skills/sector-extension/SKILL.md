@@ -255,10 +255,13 @@ govern:
   underspecification is a remediation signal CO-EQUAL with logical
   inconsistency — both inform agentic remediation, neither is ever silently
   accepted (silent folds are the emit-signals-not-drops sin at the lowering
-  boundary). The gate fails on underspec until kvasir complains natively.
-  Remediate with what the domain actually tracks, never appeasement
-  (measured: Warehouse folded for lacking a distinguishing feature →
-  `facilityCode`, what a WMS tracks → materialized).
+  boundary). kvasir complains NATIVELY (`Plan.underspecified` in the plan
+  sidecar + a stderr complaint; inconsistency REFUSES, underspecification
+  COMPLAINS while emitting the specified part). Gates CONSUME that signal —
+  never re-derive it with a side shim. Remediate with what the domain
+  actually tracks, never appeasement (measured: Warehouse folded for lacking
+  a distinguishing feature → `facilityCode`, what a WMS tracks →
+  materialized; first production contact surfaced 89 genuine finds).
 
 Anticipated shape for the rest (to be PROVEN and revised by the
 manufacturing-operations arc):

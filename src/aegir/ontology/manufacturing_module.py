@@ -24,10 +24,11 @@ COMPLETENESS DOCTRINE (RH 2026-07-25): the REQUIREMENT to produce a complete,
 functional relational schema DRIVES ontology completeness — a class the
 lowering folds or drops is UNDERSPECIFIED, and underspecification is a
 remediation signal co-equal with logical inconsistency (never an accepted
-lowering behavior; kvasir must complain — silent folds are the Sweep-B sin at
-the lowering boundary). First measured case: Warehouse folded silently for
-lacking a distinguishing feature → remediated with sdg:facilityCode (what a
-WMS actually tracks), not appeasement.
+lowering behavior — silent folds are the Sweep-B sin at the lowering boundary).
+kvasir complains NATIVELY (Plan.underspecified + stderr, kvasir 95da21b); the
+dev-loop probe consumes that signal, never re-derives it. First measured case:
+Warehouse folded silently for lacking a distinguishing feature → remediated
+with sdg:facilityCode (what a WMS actually tracks), not appeasement.
 
 FIDELITY-PROBE TENSIONS RESOLVED HERE (Phase 1c quality signal):
   * ordered collections → ``sdg:lineNumber`` (xsd:integer) on PurchaseOrderLine
