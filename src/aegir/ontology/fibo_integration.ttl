@@ -3,7 +3,7 @@
 # leveraged extensively — our SDG ontology enriches with full appreciation for what
 # FIBO provides. FIBO's own SKOS vocabulary declares NO topConceptOf/hasTopConcept
 # (a ~450-root FOREST — the §4.6.3 atypical presentation, measured); we therefore
-# author OUR OWN entry point: sdg:FinancialDomain (the single logical top) →
+# author OUR OWN entry point: sdg:FinancialSector (the single logical top) →
 # sdg:FinTech (genus-level: broader ∧ narrower AT BIRTH) → a curated ~20-concept
 # subset of high-value FIBO roots, each skos:closeMatch-mapped to its official IRI
 # (closeMatch, NOT exactMatch: non-transitive by design — our curated concepts may
@@ -44,11 +44,11 @@ sdg:TopicDomain a skos:Concept ;
 sdg:FIBOIntegrationScheme a skos:ConceptScheme ;
     rdfs:label "FIBO Integration Scheme" ;
     skos:definition "Curated entry point into selected FIBO concepts for use within Signals Data Governance." ;
-    skos:hasTopConcept sdg:FinancialDomain .
+    skos:hasTopConcept sdg:FinancialSector .
 
-sdg:FinancialDomain a skos:Concept, sdg:FIBOConcept ;
-    skos:prefLabel "Financial Domain" ;
-    skos:altLabel "FinancialDomain" ;
+sdg:FinancialSector a skos:Concept, sdg:FIBOConcept ;
+    skos:prefLabel "Financial Sector" ;
+    skos:altLabel "FinancialSector" ;
     skos:notation "15" ;
     skos:definition "The single logical top for financial-industry terminology within SDG: the discoverable entry point over FIBO-aligned concepts, organizing without admitting." ;
     skos:broader sdg:TopicDomain ;
@@ -60,7 +60,7 @@ sdg:FinTech a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FinTech" , "Financial Industry Concepts" , "FIBO-aligned Concepts" ;
     skos:notation "15.1" ;
     skos:definition "Top-level concept grouping financial industry and FinTech-related terminology, primarily drawn from or aligned with the Financial Industry Business Ontology (FIBO)." ;
-    skos:broader sdg:FinancialDomain ;
+    skos:broader sdg:FinancialSector ;
     skos:inScheme sdg:FIBOIntegrationScheme .
 
 # ── the curated subset (Core FND + FBC/SEC/DER roots) ───────────────────────────
