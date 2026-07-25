@@ -50,6 +50,14 @@ def main() -> int:
 
     anchors = {k: c for k, c in DI.load_skos(str(DI.DEFAULT_OVERLAY)).items()
                if not getattr(c, "deprecated", False)}   # bridges are resolution aids, never anchors
+    # the ENUMERATED include points (FINTECH/BIOTECH/MBSE …) live in integration
+    # files — outside load_skos's regex; without them the scratch chord drops
+    # live aperture points (measured 2026-07-25: 30/33 rendered)
+    _inc = DI.integration_overlay_concepts()
+    for m in DI._sot_admission_filter().get("aperture_include", {}).get("members", []):
+        iri = str(m.get("iri", ""))
+        if iri in _inc and iri not in anchors:
+            anchors[iri] = _inc[iri]
     vocab = DI.load_skos()                                   # full vocab (defaults)
     client = DI._client(a.url)
     from aegir.ontology.colbert_encoder import get_encoder
