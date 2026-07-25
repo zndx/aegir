@@ -4,7 +4,8 @@
 # FIBO provides. FIBO's own SKOS vocabulary declares NO topConceptOf/hasTopConcept
 # (a ~450-root FOREST — the §4.6.3 atypical presentation, measured); we therefore
 # author OUR OWN entry point: sdg:FinancialSector (the single logical top) →
-# sdg:FinTech (genus-level: broader ∧ narrower AT BIRTH) → a curated ~20-concept
+# sdg:FINTECH (genus-level: broader ∧ narrower AT BIRTH; chord-conformant ALL-CAPS
+# fragment per RH 2026-07-25) → a curated ~20-concept
 # subset of high-value FIBO roots, each skos:closeMatch-mapped to its official IRI
 # (closeMatch, NOT exactMatch: non-transitive by design — our curated concepts may
 # carry governance annotations and composite texts; equivalence must not propagate
@@ -55,11 +56,12 @@ sdg:FinancialSector a skos:Concept, sdg:FIBOConcept ;
     skos:topConceptOf sdg:FIBOIntegrationScheme ;
     skos:inScheme sdg:FIBOIntegrationScheme .
 
-sdg:FinTech a skos:Concept, sdg:FIBOConcept ;
+sdg:FINTECH a skos:Concept, sdg:FIBOConcept ;
     skos:prefLabel "FinTech" ;
-    skos:altLabel "FinTech" , "Financial Industry Concepts" , "FIBO-aligned Concepts" ;
+    skos:altLabel "FINTECH" , "Financial Industry Concepts" , "FIBO-aligned Concepts" ;
     skos:notation "15.1" ;
     skos:definition "Top-level concept grouping financial industry and FinTech-related terminology, primarily drawn from or aligned with the Financial Industry Business Ontology (FIBO)." ;
+    skos:scopeNote "Covers the foundational financial constructs — agreements, contracts, and legal constructs binding parties; assets, ownership, and control; monetary amounts and occurrences — and the instruments built on them: financial instruments spanning securities, debt instruments, equity instruments, and derivative instruments with their underliers; the market and service fabric of exchanges, financial services, accounts, pools, and collateral. Terminology traces to FIBO's Foundations (FND), Business & Commerce (FBC), Securities (SEC), and Derivatives (DER) modules." ;
     skos:broader sdg:FinancialSector ;
     skos:inScheme sdg:FIBOIntegrationScheme .
 
@@ -70,7 +72,7 @@ sdg:FIN_AGREEMENT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_AGREEMENT" ;
     skos:notation "15.1.1" ;
     skos:definition "A negotiated and typically legally enforceable understanding between parties — the foundational construct beneath contracts, commitments, and financial arrangements." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/Agreements/Agreements/Agreement> .
 
@@ -79,7 +81,7 @@ sdg:FIN_CONTRACT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_CONTRACT" ;
     skos:notation "15.1.2" ;
     skos:definition "A voluntary, deliberate agreement between competent parties creating binding obligations — the instrumented form financial products and services take." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/Agreements/Contracts/Contract> .
 
@@ -88,7 +90,7 @@ sdg:FIN_ASSET a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_ASSET" ;
     skos:notation "15.1.3" ;
     skos:definition "Anything of monetary value owned or controlled by a party, tangible or intangible, appearing on balance sheets and as the subject of ownership and transfer." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/OwnershipAndControl/Ownership/Asset> .
 
@@ -97,7 +99,7 @@ sdg:FIN_MONETARY_AMOUNT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_MONETARY_AMOUNT" ;
     skos:notation "15.1.4" ;
     skos:definition "A quantity of money expressed in a specific currency — the measured value carried by prices, balances, fees, and settlements." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/Accounting/CurrencyAmount/MonetaryAmount> .
 
@@ -106,7 +108,7 @@ sdg:FIN_PERSON a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_PERSON" ;
     skos:notation "15.1.5" ;
     skos:definition "A natural person as a financial actor — account holder, beneficial owner, executive, or counterparty — distinct from legal entities constructed by law." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/AgentsAndPeople/People/Person> .
 
@@ -115,7 +117,7 @@ sdg:FIN_LEGAL_CONSTRUCT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_LEGAL_CONSTRUCT" ;
     skos:notation "15.1.6" ;
     skos:definition "Something created and recognized through the operation of law — capacities, statuses, and instruments whose existence is juridical rather than material." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/Law/LegalCapacity/LegalConstruct> .
 
@@ -124,7 +126,7 @@ sdg:FIN_OCCURRENCE a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_OCCURRENCE" ;
     skos:notation "15.1.7" ;
     skos:definition "An event or happening realized at some time — trade executions, corporate actions, defaults, and lifecycle transitions as recorded financial history." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/DatesAndTimes/Occurrences/Occurrence> .
 
@@ -133,7 +135,7 @@ sdg:FIN_OWNERSHIP a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_OWNERSHIP" ;
     skos:notation "15.1.8" ;
     skos:definition "The situation of holding rights in an asset — the relation between owner and owned that transfers, divides, and encumbers through financial activity." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/OwnershipAndControl/Ownership/Ownership> .
 
@@ -142,7 +144,7 @@ sdg:FIN_CONTROL a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_CONTROL" ;
     skos:notation "15.1.9" ;
     skos:definition "The power to direct or restrict an entity or asset — de jure or de facto — central to consolidation, beneficial ownership, and regulatory perimeters." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FND/OwnershipAndControl/Control/Control> .
 
@@ -151,7 +153,7 @@ sdg:FIN_FINANCIAL_INSTRUMENT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_FINANCIAL_INSTRUMENT" ;
     skos:notation "15.1.10" ;
     skos:definition "A written or electronic contract giving rise to both a financial asset of one party and a financial liability or equity instrument of another." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/FinancialInstrument> .
 
@@ -160,7 +162,7 @@ sdg:FIN_SECURITY a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_SECURITY" ;
     skos:notation "15.1.11" ;
     skos:definition "A tradable financial instrument representing debt, equity, or rights thereto, typically fungible and issued under a regulated framework." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/Security> .
 
@@ -169,7 +171,7 @@ sdg:FIN_DEBT_INSTRUMENT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_DEBT_INSTRUMENT" ;
     skos:notation "15.1.12" ;
     skos:definition "An instrument evidencing a creditor relationship — an obligation to repay borrowed value, with bonds, notes, and loans as principal kinds." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/DebtInstrument> .
 
@@ -178,7 +180,7 @@ sdg:FIN_EQUITY_INSTRUMENT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_EQUITY_INSTRUMENT" ;
     skos:notation "15.1.13" ;
     skos:definition "An instrument evidencing residual ownership interest in an entity after liabilities — shares and equity participations conferring owner rights." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/EquityInstrument> .
 
@@ -187,7 +189,7 @@ sdg:FIN_DERIVATIVE_INSTRUMENT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_DERIVATIVE_INSTRUMENT" ;
     skos:notation "15.1.14" ;
     skos:definition "An instrument whose value derives from one or more underliers — options, futures, swaps, and forwards as risk-transfer contracts." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/DerivativeInstrument> .
 
@@ -196,7 +198,7 @@ sdg:FIN_UNDERLIER a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_UNDERLIER" ;
     skos:notation "15.1.15" ;
     skos:definition "The asset, rate, index, or instrument from which a derivative's value is determined — the reference the contract is written over." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/Underlier> .
 
@@ -205,7 +207,7 @@ sdg:FIN_EXCHANGE a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_EXCHANGE" ;
     skos:notation "15.1.16" ;
     skos:definition "An organized marketplace operating facilities for listing, trading, and price discovery in securities and other instruments." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/FunctionalEntities/Markets/Exchange> .
 
@@ -214,7 +216,7 @@ sdg:FIN_FINANCIAL_SERVICE a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_FINANCIAL_SERVICE" ;
     skos:notation "15.1.17" ;
     skos:definition "A service provided by the financial sector — banking, payments, custody, advisory, underwriting — as the offered counterpart of financial products." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/ProductsAndServices/FinancialProductsAndServices/FinancialService> .
 
@@ -223,7 +225,7 @@ sdg:FIN_ACCOUNT a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_ACCOUNT" ;
     skos:notation "15.1.18" ;
     skos:definition "A provider-maintained record of financial relationships and balances for a client — the container through which services are delivered and value moves." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/ProductsAndServices/ClientsAndAccounts/Account> .
 
@@ -232,7 +234,7 @@ sdg:FIN_POOL a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_POOL" ;
     skos:notation "15.1.19" ;
     skos:definition "A collection of assets or obligations aggregated for issuance, securitization, or collective management — the structured grouping beneath asset-backed instruments." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/SEC/Securities/Pools/Pool> .
 
@@ -241,7 +243,7 @@ sdg:FIN_COLLATERAL a skos:Concept, sdg:FIBOConcept ;
     skos:altLabel "FIN_COLLATERAL" ;
     skos:notation "15.1.20" ;
     skos:definition "Assets pledged to secure an obligation, transferable to the creditor upon default — the risk-mitigating counterpart of credit exposure." ;
-    skos:broader sdg:FinTech ;
+    skos:broader sdg:FINTECH ;
     skos:inScheme sdg:FIBOIntegrationScheme ;
     skos:closeMatch <https://spec.edmcouncil.org/fibo/ontology/FBC/DebtAndEquities/Debt/Collateral> .
 
