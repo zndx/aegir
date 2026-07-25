@@ -47,6 +47,33 @@ DataProperty: sdg:qualifiedName
 DataProperty: sdg:isDefinition
     Annotations: rdfs:label "is definition"
 
+ObjectProperty: sdg:partOfModelProject
+    Annotations: rdfs:label "part of model project"
+
+ObjectProperty: sdg:previousCommit
+    Annotations: rdfs:label "previous commit",
+        rdfs:comment "OPTIONAL self-reference: the interchange chain's parent commit. HEAD-STATE STORE (ruled 2026-07-25): history is the procession + OL/Atlas lineage — this is the SysML-API interchange shape, never a second git."
+
+ObjectProperty: sdg:inCommit
+    Annotations: rdfs:label "in commit"
+
+DataProperty: sdg:commitMessage
+    Annotations: rdfs:label "commit message"
+
+Class: sdg:ModelProject
+    Annotations: rdfs:label "Model Project",
+        rdfs:comment "A record naming one modeling initiative — the initiative layer's root (yardstick §1). An information content entity about the modeling effort, not the modeled system."
+    SubClassOf: cco:ont00000958,
+        sdg:qualifiedName some xsd:string
+
+Class: sdg:ModelCommit
+    Annotations: rdfs:label "Model Commit",
+        rdfs:comment "A record of one interchange commit within a model project (yardstick §1) — head-state semantics: the chain exists for interchange, the procession owns history."
+    SubClassOf: cco:ont00000958,
+        sdg:partOfModelProject exactly 1 sdg:ModelProject,
+        sdg:commitMessage some xsd:string,
+        sdg:previousCommit only sdg:ModelCommit
+
 Class: sdg:ModelElement
     Annotations: rdfs:label "Model Element",
         rdfs:comment "A record designating one element of a modeled system — the identity backbone's unit, typed by the census-verified SysMLv2 metaclass vocabulary. An information content entity ABOUT the model, not a part of the plant. Representable atop SysMLv2 as Element (census-confirmed root metaclass, abstract)."
@@ -54,7 +81,9 @@ Class: sdg:ModelElement
         sdg:metaclass some xsd:string,
         sdg:isDefinition some xsd:boolean,
         sdg:elementOwner only sdg:ModelElement,
-        sdg:elementDefinition only sdg:ModelElement
+        sdg:elementDefinition only sdg:ModelElement,
+        sdg:partOfModelProject exactly 1 sdg:ModelProject,
+        sdg:inCommit only sdg:ModelCommit
 
 Class: sdg:ModelRelationship
     Annotations: rdfs:label "Model Relationship",

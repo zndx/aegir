@@ -48,11 +48,13 @@ def main() -> int:
     bro = _load("bro", REPO / "scripts/build_realized_ontology.py")
     et = _load("et", REPO / "scripts/emit_taxonomy.py")
     # NUMERIC_BFO already carries the module (unconditional critical-path append) —
-    # never append it twice; referenced externals absent from the backbone get
-    # bare declarations
-    extra = "".join(f"Class: {c}\n" for c in ("cco:ont00000192", "cco:ont00000853",
-                                              "cco:ont00001359")
-                    if f"Class: {c}" not in bro.NUMERIC_BFO)
+    # never append it twice; referenced externals absent from the backbone are
+    # declared WITH their authoritative labels (any-valid-OMN doctrine: the
+    # ontology carries the knowledge; kvasir's label machinery does the rest)
+    from aegir.ontology.external_index import declare_externals
+    extra = declare_externals(c for c in ("cco:ont00000192", "cco:ont00000853",
+                                          "cco:ont00001359")
+                              if f"Class: {c}" not in bro.NUMERIC_BFO)
     omn = _PREFIXES + bro.NUMERIC_BFO + "\n" + extra
     omn_p = REPO / "build/manufacturing_module.omn"
     omn_p.write_text(omn)

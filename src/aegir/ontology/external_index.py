@@ -202,3 +202,26 @@ def verify_external_refs(manchester: str, index: "ExternalIndex | None" = None) 
             violations.append((ref, f"{ref} does NOT exist in {ns.upper()} ({ver}); "
                                     f"external namespaces may not be coined{tail}"))
     return violations
+
+
+def declare_externals(iris) -> str:
+    """OMN declarations for bare external classes WITH their authoritative labels
+    (any-valid-OMN doctrine, RH 2026-07-25: the ONTOLOGY carries the knowledge —
+    kvasir's ordinary label machinery then renders readable reference tables;
+    table names stay IRI-local per its semantic-register rule). ``iris`` are
+    prefixed forms (``cco:ont00000192``); labels resolve from the authority
+    index, absent labels degrade to a bare declaration."""
+    idx = get_index()
+    out = []
+    for pref in iris:
+        frag = pref.split(":", 1)[-1]
+        label = ""
+        for iri, l in idx.iri_labels.items():
+            if iri.rsplit("/", 1)[-1] == frag or iri.rsplit("#", 1)[-1] == frag:
+                label = l
+                break
+        if label:
+            out.append(f'Class: {pref}\n    Annotations: rdfs:label "{label}"\n')
+        else:
+            out.append(f"Class: {pref}\n")
+    return "".join(out)

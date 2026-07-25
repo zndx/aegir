@@ -626,11 +626,21 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
 
     # ARTIFACTS FIRST (RH shakedown doctrine): shapes/ddl/structure land even when the
     # certificate refuses — exit-3-before-kvasir would blind the unification shakedown.
+    # --vocab-provenance (#44⇄#45): OPTIONAL enrichment, degrades gracefully —
+    # the reference-table rows carry census/gittables authority in-database when
+    # the sidecar generates; a plain OMN still produces full valid output
+    _vp = output_dir / "vocab_provenance.json"
+    try:
+        from aegir.ontology.vocab_lowering import vocab_provenance_sidecar
+        vocab_provenance_sidecar(_vp)
+    except Exception as _e:  # noqa: BLE001 — enrichment absence is visible, never fatal
+        print(f"vocab-provenance sidecar skipped: {_e}", file=sys.stderr)
     for sub, out in (("ddl", "ddl.sql"), ("shapes", "shapes.ttl")):
         # --plan: kvasir's cited election record (class/property IRIs per table/junction/
         # lookup) — the closure artifact's confirmed-generation evidence, generator-recorded
         args = [str(KVASIR), sub, str(omn_path)] + (
-            ["--sql", "--plan", str(output_dir / "plan.json")] if sub == "ddl" else [])
+            ["--sql", "--plan", str(output_dir / "plan.json")] if sub == "ddl" else []) + (
+            ["--vocab-provenance", str(_vp)] if sub == "ddl" and _vp.exists() else [])
         r = subprocess.run(args, capture_output=True, text=True, timeout=300)
         if r.returncode == 0:
             (output_dir / out).write_text(r.stdout)
