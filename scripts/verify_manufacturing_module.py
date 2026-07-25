@@ -21,7 +21,10 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
 
+from aegir.ontology.elements_backbone import ELEMENTS_BACKBONE_OMN  # noqa: E402
 from aegir.ontology.manufacturing_module import MANUFACTURING_OMN  # noqa: E402
+
+_GATED_OMN = MANUFACTURING_OMN + ELEMENTS_BACKBONE_OMN  # the fail-scope: OUR modules
 
 _PREFIXES = ("Prefix: owl: <http://www.w3.org/2002/07/owl#>\n"
              "Prefix: rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
@@ -80,7 +83,7 @@ def main() -> int:
     # concepts, spec mappings) is increment (c)'s subject: reference-table rows,
     # not entity tables.
     import re as _re
-    module_frags = set(_re.findall(r"Class:\s+sdg:(\w+)", MANUFACTURING_OMN))
+    module_frags = set(_re.findall(r"Class:\s+sdg:(\w+)", _GATED_OMN))
     sdg_under = sorted(c.rsplit("#", 1)[-1] for c in plan.get("underspecified", [])
                        if "signals.zndx.org/sdg#" in c)
     gate_under = sorted(set(sdg_under) & module_frags)

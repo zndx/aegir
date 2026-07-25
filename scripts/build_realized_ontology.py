@@ -99,6 +99,11 @@ NUMERIC_BFO = NUMERIC_BFO + _SPEC
 # flow's own gates (HermiT certificate, kvasir checks) do the proving on-path).
 from aegir.ontology.manufacturing_module import MANUFACTURING_OMN as _MFG
 NUMERIC_BFO = NUMERIC_BFO + _MFG
+# the SysML identity backbone (#44, yardstick §2) — elements + relationships,
+# the first consumer of the metaclass/relationship-kind enums (ignites the
+# census-verified reference tables). UNCONDITIONAL, one critical path.
+from aegir.ontology.elements_backbone import ELEMENTS_BACKBONE_OMN as _ELEM
+NUMERIC_BFO = NUMERIC_BFO + _ELEM
 # scheme→lookup lowering (#44 (c)): lowersToProperty-annotated skos:Collections
 # serialize into DataProperty definition-enums — kvasir's designed-dormant path
 # turns them into lookup tables + FKs wherever an elected class uses the property.
