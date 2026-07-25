@@ -250,6 +250,23 @@ table, member = row**. Each member carries the census verdict (Phase 1b);
 enter the chord (the constituents builder reads overlay + enumerated includes
 only).
 
+**Seed-value provenance (RH 2026-07-25).** Individual values that yield table
+ROWS fall under the value-provenance doctrine — reference-table seeds included:
+
+- The plan/DDL is DOWNSTREAM ONLY. Nothing ever reads values from the plan or
+  the emitted SQL back into any source (no circular provenance).
+- Every seed value carries COMPLETE LINEAGE to its authority, by kind:
+  - **Spec vocabularies** (metaclasses, relationship kinds) → the
+    machine-readable census artifact (Phase 1b; `spec_ref`).
+  - **Empirical vocabularies** (statuses, categories, kinds as used in the
+    world) → **GitTables observations** in the gtvs lineage shape
+    (`[value, "<table_sha1>:<column>"]`), evidence artifact banked under
+    `build/foreign/gittables/`; members carry the evidence via
+    `sdg:valueProvenance`. Values with NO observation are FLAGGED authored —
+    provenance ≻ exclusion, never silent fabrication (the retired
+    fabricated-pool pattern applies to vocabulary seeds exactly as it applies
+    to generated row data).
+
 **Executed twice (the OWL module + lowering, 2026-07-25)** — two rulings now
 govern:
 
