@@ -94,6 +94,11 @@ NUMERIC_BFO = NUMERIC_BFO + _RELC
 # rdfs:seeAlso carries the source-spec join for HDF5/database-side consumers).
 from aegir.ontology.spec_mappings import SPEC_MAPPINGS_OMN as _SPEC
 NUMERIC_BFO = NUMERIC_BFO + _SPEC
+# the Manufacturing sector's entity cluster (#44 (b)) — UNCONDITIONAL (RH 2026-07-25:
+# no per-module feature flags; ONE unified critical path via `just metaflow` — the
+# flow's own gates (HermiT certificate, kvasir checks) do the proving on-path).
+from aegir.ontology.manufacturing_module import MANUFACTURING_OMN as _MFG
+NUMERIC_BFO = NUMERIC_BFO + _MFG
 if _os.environ.get("AEGIR_RELATION_SIGNATURES", "1") != "0":     # DEFAULT ON since 2026-07-19:
     # the 39 miscasts are re-authored (UNSAT=0 verified) — signatures now guard every realize.
     from aegir.ontology.relation_signatures import SIGNATURES_OMN as _SIG

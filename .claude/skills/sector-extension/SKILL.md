@@ -241,6 +241,25 @@ table, member = row**. Each member carries the census verdict (Phase 1b);
 enter the chord (the constituents builder reads overlay + enumerated includes
 only).
 
+**Executed twice (the OWL module + lowering, 2026-07-25)** — two rulings now
+govern:
+
+- **One unified critical path.** No per-module feature flags: sector modules
+  append UNCONDITIONALLY into the realized-ontology assembly (the
+  relational-concepts/spec-mappings precedent) and the flow's own gates
+  (`just metaflow`: HermiT certificate, kvasir checks) prove them on-path.
+  An isolated verify script is a fast dev-loop probe, never a staging gate.
+- **The completeness doctrine.** The REQUIREMENT to produce a complete,
+  functional relational schema DRIVES ontology completeness and quality: a
+  declared class the lowering folds or drops is UNDERSPECIFIED, and
+  underspecification is a remediation signal CO-EQUAL with logical
+  inconsistency — both inform agentic remediation, neither is ever silently
+  accepted (silent folds are the emit-signals-not-drops sin at the lowering
+  boundary). The gate fails on underspec until kvasir complains natively.
+  Remediate with what the domain actually tracks, never appeasement
+  (measured: Warehouse folded for lacking a distinguishing feature →
+  `facilityCode`, what a WMS tracks → materialized).
+
 Anticipated shape for the rest (to be PROVEN and revised by the
 manufacturing-operations arc):
 

@@ -68,12 +68,30 @@ def main() -> int:
               for ln in ddl_sql.splitlines() if ln.upper().startswith("CREATE TABLE")]
     print(f"kvasir ddl: exit {ddl.returncode} · {len(tables)} tables: {tables}")
 
+    # UNDERSPECIFICATION SIGNAL (RH 2026-07-25): the requirement to produce a
+    # complete, functional relational schema DRIVES ontology completeness — a
+    # declared class the lowering folds/drops is UNDERSPECIFIED, a remediation
+    # signal co-equal with unsat. Silent folds are the Sweep-B sin at the
+    # lowering boundary; this gate FAILS on them until kvasir complains natively.
+    import re as _re
+    declared = _re.findall(r"Class:\s+sdg:(\w+)", MANUFACTURING_OMN)
+    def _snake(n: str) -> str:
+        return _re.sub(r"(?<!^)(?=[A-Z])", "_", n).lower()
+    underspec = sorted(n for n in declared if _snake(n) not in set(tables))
+    if underspec:
+        print(f"⚑ UNDERSPECIFIED (declared but not materialized — remediate, never accept): "
+              f"{underspec}")
+    else:
+        print(f"underspecification: NONE — all {len(declared)} declared classes materialize")
+
     (REPO / "build/manufacturing_module_verify.json").write_text(json.dumps(
         {"hermit": {k: v.get(k) for k in ("consistent", "exit", "unsat")},
          "kvasir_lower_exit": chk.returncode, "kvasir_ddl_exit": ddl.returncode,
-         "tables": tables}, indent=1))
+         "tables": tables, "declared": declared, "underspecified": underspec},
+        indent=1))
     print("→ build/manufacturing_module_verify.json")
-    return 0 if (v.get("consistent") and not v.get("unsat") and ddl.returncode == 0) else 1
+    return 0 if (v.get("consistent") and not v.get("unsat") and ddl.returncode == 0
+                 and not underspec) else 1
 
 
 if __name__ == "__main__":

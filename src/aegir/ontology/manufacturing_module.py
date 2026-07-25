@@ -13,10 +13,21 @@ verified; coined-alias ban honored):
   cco:ont00000853  Descriptive Information Content Entity
   cco:ont00001359  Act of Manufacturing
 
-STAGED (``AEGIR_MANUFACTURING_MODULE=1``, default OFF — staged→proven→armed):
-increment (b) verifies ISOLATED (verify_manufacturing_module.py: HermiT
-consistency + kvasir check/ddl → the first parity diff vs the DDL yardstick);
-the realize-path merge is a later arming decision at 0 unsat.
+ON THE CRITICAL PATH (RH 2026-07-25: no per-module feature flags — one unified
+path via ``just metaflow``): appended unconditionally in
+build_realized_ontology (the RELATIONAL_CONCEPTS/SPEC_MAPPINGS precedent); the
+flow's own gates prove it on-path. verify_manufacturing_module.py remains the
+FAST DEV-LOOP PROBE (isolated HermiT + kvasir + the parity/underspecification
+diff), not a staging gate.
+
+COMPLETENESS DOCTRINE (RH 2026-07-25): the REQUIREMENT to produce a complete,
+functional relational schema DRIVES ontology completeness — a class the
+lowering folds or drops is UNDERSPECIFIED, and underspecification is a
+remediation signal co-equal with logical inconsistency (never an accepted
+lowering behavior; kvasir must complain — silent folds are the Sweep-B sin at
+the lowering boundary). First measured case: Warehouse folded silently for
+lacking a distinguishing feature → remediated with sdg:facilityCode (what a
+WMS actually tracks), not appeasement.
 
 FIDELITY-PROBE TENSIONS RESOLVED HERE (Phase 1c quality signal):
   * ordered collections → ``sdg:lineNumber`` (xsd:integer) on PurchaseOrderLine
@@ -55,6 +66,10 @@ DataProperty: sdg:quantityOrdered
 DataProperty: sdg:quantityOnHand
     Annotations: rdfs:label "quantity on hand"
 
+DataProperty: sdg:facilityCode
+    Annotations: rdfs:label "facility code",
+        rdfs:comment "The operational identifier a WMS/ERP tracks for a facility — the underspecification-signal remediation that earned Warehouse its table."
+
 Class: sdg:InventoryItem
     Annotations: rdfs:label "Inventory Item",
         rdfs:comment "A material entity under inventory management: identified, stocked, counted, reserved, and issued. Inventory-hood is a borne role; the class grounds the artifact side. Representable atop SysMLv2 as a domain-specific ItemUsage (census-confirmed metaclass)."
@@ -62,8 +77,9 @@ Class: sdg:InventoryItem
 
 Class: sdg:Warehouse
     Annotations: rdfs:label "Warehouse",
-        rdfs:comment "A facility organizing storage locations, put-away, and cycle counting."
-    SubClassOf: cco:ont00000192
+        rdfs:comment "A facility organizing storage locations, put-away, and cycle counting, identified operationally by its facility code."
+    SubClassOf: cco:ont00000192,
+        sdg:facilityCode some xsd:string
 
 Class: sdg:StorageLocation
     Annotations: rdfs:label "Storage Location",
