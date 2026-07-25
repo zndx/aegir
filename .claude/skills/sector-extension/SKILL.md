@@ -255,9 +255,14 @@ ROWS fall under the value-provenance doctrine — reference-table seeds included
 
 - The plan/DDL is DOWNSTREAM ONLY. Nothing ever reads values from the plan or
   the emitted SQL back into any source (no circular provenance).
-- Every seed value carries COMPLETE LINEAGE to its authority, by kind:
+- Every seed value carries COMPLETE LINEAGE to its authority, by kind — and
+  through the SAME channel: `sdg:valueProvenance` on the member, uniform for
+  every consumer (lut provenance columns, ACP loops, panels); only the
+  AUTHORITY differs by kind:
   - **Spec vocabularies** (metaclasses, relationship kinds) → the
-    machine-readable census artifact (Phase 1b; `spec_ref`).
+    machine-readable census artifact (Phase 1b): term@source, structural
+    facts (abstract, supers), artifact ref. SDG relational flattenings are
+    marked AUTHORED with the reified form cited.
   - **Empirical vocabularies** (statuses, categories, kinds as used in the
     world) → **GitTables observations** in the gtvs lineage shape
     (`[value, "<table_sha1>:<column>"]`), evidence artifact banked under
