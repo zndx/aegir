@@ -94,9 +94,12 @@ sdg:SYSML_VERIFICATION a sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 # ── the CONTROLLED-VOCABULARY tier (task #44 increment (a), RH's DDL yardstick
-# 2026-07-25): the SKOS SOURCE for the semantic layer's reference tables.
-# TRIAD BY GENERATION: kvasir's scheme→lookup lowering will emit
-# sysml_metaclasses / sysml_relationship_kinds DDL + seed rows FROM these
+# 2026-07-25): the CONTENT source for the semantic layer's reference tables —
+# SKOS in its Primer scope (labels, membership, scheme structure; no logical
+# semantics). AUTHORITY ORDER: OWL ⊨ SKOS ⊨ SHACL — logical truth (differentia,
+# consistency) lives in the realized OMN, which the vocab_lowering generator
+# carries this content into. TRIAD BY GENERATION: the scheme→lookup lowering
+# emits sysml_metaclasses / sysml_relationship_kinds DDL + seed rows from these
 # members (Collection = table, member = row; spec_ref/sdg_concept_iri columns
 # carry rdfs:seeAlso + these IRIs).
 #

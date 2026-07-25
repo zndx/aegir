@@ -1,15 +1,21 @@
 """vocab_lowering — the scheme→lookup lowering's aegir half (#44 increment (c)).
 
-Collections annotated ``sdg:lowersToProperty`` in the integration overlays are
-the SKOS SOURCES of relational reference tables (Collection = table, member =
-row). This generator serializes each into an OMN ``DataProperty`` frame whose
-``skos:definition`` carries the canonical parenthesized value list — activating
-kvasir's designed-dormant definition-enum path (manchester/lower.rs: "the
-deriver carrying skos:definition into the realized omn activates it") →
-``@Enum`` → lookup table + FK wherever an elected class uses the property.
+AUTHORITY ORDER (RH 2026-07-25): the entailment direction OWL ⊨ SKOS ⊨ SHACL IS
+the authority direction — **the realized OMN is the source of logical truth**
+(differentia, subsumption, restrictions, HermiT-checkable consistency); SKOS is
+the controlled-vocabulary CONTENT model only (labels, membership, scheme
+structure — the Primer's scope: thesauri/taxonomies/controlled vocabularies,
+with no logical semantics). Collections annotated ``sdg:lowersToProperty``
+supply CONTENT (Collection = table, member = row); this generator carries that
+content INTO the realized OMN — the one artifact HermiT certifies and kvasir
+consumes — as ``DataProperty`` frames whose ``skos:definition`` carries the
+canonical parenthesized value list, activating kvasir's designed-dormant
+definition-enum path → ``@Enum`` → lookup table + FK wherever an elected class
+uses the property.
 
-ONE SOURCE OF TRUTH, one critical path: edit the Collection in the TTL, the
-realized OMN regenerates the enum, kvasir regenerates the lookup. The join is
+One critical path: edit the Collection, the realized OMN regenerates the enum,
+kvasir regenerates the lookup — and any LOGICAL claims about the values (status
+distinctness, transition constraints) author in OMN, never in SKOS. The join is
 the EXPLICIT annotation, never name derivation. Values are the members'
 prefLabels, sorted for determinism (lookup rows are a set; lifecycle ordering
 is presentation).

@@ -38,12 +38,14 @@ sdg:Manufacturing a skos:Concept, sdg:TopicDomain ;
     skos:definition "The sector-tier top for manufacturing topic domains within SDG — hosting the manufacturing-operations genus (sdg:MFG), organizing without admitting. Spans light and heavy manufacture alike, deliberately its own sector: neither a heavy-industry subtopic nor a methodology under engineering. Domain semantics ground here; the modeling language that represents them lives under the Engineering sector. A sector-tier forest top (a sdg:TopicDomain, member of sdg:TopicDomains) — no parent above it." ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
-# ── SCHEME→LOOKUP sources (#44 (c)): Collections annotated sdg:lowersToProperty
-# are the SKOS sources of relational reference tables. The vocab_lowering
-# generator serializes each into a DataProperty whose skos:definition carries
-# the canonical parenthesized value list — activating kvasir's designed-dormant
-# definition-enum path (lower.rs: "the deriver carrying skos:definition into
-# the realized omn activates it") → lookup table + FK, on the one critical path.
+# ── SCHEME→LOOKUP content sources (#44 (c)): Collections annotated
+# sdg:lowersToProperty supply reference-table CONTENT (labels, membership — the
+# SKOS Primer's controlled-vocabulary scope; no logical semantics). AUTHORITY
+# ORDER (RH 2026-07-25): OWL ⊨ SKOS ⊨ SHACL — the realized OMN is the source of
+# LOGICAL truth; the vocab_lowering generator carries this content into it as
+# DataProperty definition-enums, activating kvasir's designed-dormant path →
+# lookup table + FK on the one critical path. Logical claims about the values
+# (distinctness, transitions) author in OMN, never here.
 
 sdg:lowersToProperty a owl:AnnotationProperty ;
     rdfs:label "lowers to property" ;
