@@ -16,6 +16,7 @@ words >= 2 chars) so the graph answer is never stricter than the bag it replaces
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import uuid
@@ -182,3 +183,97 @@ if __name__ == "__main__":
     else:
         for job, res in backfill().items():
             print(f"{job}: run {res['run_id'][:8]}… · {res['outputs']} pool datasets · {res['tokens']} tokens")
+
+
+# ── value-provenance grounding (RH 2026-07-26) ───────────────────────────────────────────────────
+# `sdg:valueProvenance` was a good idea grounded badly: it cited a probe artifact under build/, i.e. a
+# filesystem that exists on one machine, as its article of record. The claim text itself was always
+# fine — `in progress@plantdear-20210102_1:status` is an upstream coordinate anyone can resolve — so
+# grounding it means making that coordinate EXIST IN THE GRAPH as a column identity, not rewriting the
+# claim. ol.py's columnLineage ingestion already builds exactly the shape needed: Column nodes on both
+# sides plus `Column -DERIVES_FROM-> Column`. So this is wiring, not new machinery.
+
+_VP_GITTABLES = re.compile(r"^gittables\b.*?·\s*(?P<value>[^·]+?)@(?P<table>[^\s·:(]+):(?P<column>[^\s·(]+)")
+_VP_CENSUS = re.compile(r"^census\s*·\s*(?P<name>[^·@]+)@(?P<file>[^·@]+)@(?P<repo>[^\s·]+)")
+
+
+def _vp_claims() -> "tuple[list[dict], dict]":
+    """Every sdg:valueProvenance claim, classified by the authority it cites.
+
+    Three kinds, and the third matters: an AUTHORED-flagged member has NO external coordinate by
+    construction (provenance ≻ exclusion — we flag rather than fabricate), so it is counted and left
+    UNGROUNDED rather than given an invented source. A graph that quietly invented an input edge for
+    it would be the same defect as the build/ path it replaced.
+    """
+    import rdflib
+
+    from aegir.ontology.domain_index import DEFAULT_OVERLAY, integration_overlay_files
+
+    SDG = rdflib.Namespace("https://signals.zndx.org/sdg#")
+    g = rdflib.Graph()
+    for f in [DEFAULT_OVERLAY, *integration_overlay_files()]:
+        g.parse(str(f))
+    out: "list[dict]" = []
+    stats = {"gittables": 0, "census": 0, "authored": 0, "unparsed": 0}
+    for s, o in g.subject_objects(SDG.valueProvenance):
+        term, text = str(s).rsplit("#", 1)[-1], str(o)
+        if text.upper().startswith("AUTHORED"):
+            stats["authored"] += 1
+            continue
+        if (m := _VP_GITTABLES.match(text)):
+            out.append({"term": term, "ns": "gittables", "dataset": m.group("table"),
+                        "field": m.group("column"), "value": m.group("value").strip()})
+            stats["gittables"] += 1
+        elif (m := _VP_CENSUS.match(text)):
+            # the census coordinate is repo/file + the named metaclass — a column-shaped identity
+            out.append({"term": term, "ns": "sysmlv2",
+                        "dataset": f"{m.group('repo')}/{m.group('file')}",
+                        "field": m.group("name").strip(), "value": m.group("name").strip()})
+            stats["census"] += 1
+        else:
+            stats["unparsed"] += 1
+    return out, stats
+
+
+def emit_value_provenance_lineage(*, dry_run: bool = False) -> dict:
+    """Ground every sdg:valueProvenance claim as an OL COLUMN identity in the governed graph.
+
+    Emits ONE run whose outputs carry a `columnLineage` facet mapping each vocabulary term to the
+    upstream column it cites, so the graph gains `sdg:vocabulary#<term> DERIVES_FROM
+    <ns>:<dataset>#<field>`. The run id is content-addressed over the claim set, so re-emission is a
+    no-op MERGE rather than a duplicate — the property worth keeping from the existing emission.
+    """
+    claims, stats = _vp_claims()
+    if not claims:
+        return {"claims": 0, **stats}
+    digest = hashlib.sha256(
+        "\n".join(sorted(f"{c['term']}|{c['ns']}:{c['dataset']}#{c['field']}" for c in claims))
+        .encode()).hexdigest()[:32]
+    inputs = [{"namespace": c["ns"], "name": c["dataset"]} for c in claims]
+    seen, dedup = set(), []
+    for d in inputs:
+        k = (d["namespace"], d["name"])
+        if k not in seen:
+            seen.add(k)
+            dedup.append(d)
+    fields = {c["term"]: {"inputFields": [{"namespace": c["ns"], "name": c["dataset"],
+                                          "field": c["field"]}],
+                          "transformationDescription": f"cited value {c['value']!r}",
+                          "transformationType": "IDENTITY"}
+              for c in claims}
+    event = {
+        "eventType": "COMPLETE",
+        "eventTime": datetime.now(timezone.utc).isoformat(),
+        "run": {"runId": f"vp-{digest}"},
+        "job": {"namespace": "aegir", "name": "value-provenance-grounding"},
+        "inputs": dedup,
+        "outputs": [{"namespace": "sdg", "name": "vocabulary",
+                     "facets": {"columnLineage": {"fields": fields}}}],
+    }
+    if dry_run:
+        return {"claims": len(claims), "inputs": len(dedup), "run_id": event["run"]["runId"],
+                "ingested": None, **stats}
+    from aegir.governance.ol import ingest_run_event
+    res = ingest_run_event(event)
+    return {"claims": len(claims), "inputs": len(dedup), "run_id": event["run"]["runId"],
+            "ingested": res, **stats}
