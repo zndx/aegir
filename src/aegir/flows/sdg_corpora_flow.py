@@ -461,6 +461,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         try:
             from gaius.hx.exchange import ExchangeRecord
 
+            from aegir.hx import append_exchange
             rec = ExchangeRecord(
                 provider="engine",
                 request_messages=[{"role": "user", "content": "derive preflight canary"}],
