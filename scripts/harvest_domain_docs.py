@@ -63,6 +63,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dataset", default="HuggingFaceFW/finepdfs")
     ap.add_argument("--config", default="eng_Latn")
+    ap.add_argument("--revision", default=None,
+                    help="pin the upstream dataset revision (HF commit sha or tag). Omitted = read "
+                         "whatever is current AND record the sha it resolved to — attribution must "
+                         "be reproducible, not merely declared (ODC-By 1.0 attribution obligation).")
     ap.add_argument("--split", default="train")
     ap.add_argument("--text-field", default="text")
     ap.add_argument("--domain", default="Laboratory Information Management", help="SKOS subtree to keep (code or prefLabel)")
@@ -118,7 +122,22 @@ def main() -> int:
           f"resume cursor={cursor} · already stored={len(seen)} · target={args.target}")
 
     from datasets import load_dataset
-    ds = load_dataset(args.dataset, args.config, split=args.split, streaming=True)
+
+    # RESOLVE AND RECORD the upstream revision actually read. FinePDFs is ODC-By 1.0, which imposes a
+    # POSITIVE attribution obligation, and an attribution that cannot be checked against a specific
+    # upstream state is not verifiable. Recording the resolved sha also gives the cross-reference
+    # check its baseline: a later run can tell `unchanged` from `content-changed` from `withdrawn`
+    # per document, which is how a takedown gets an actual remedy instead of a silent divergence.
+    upstream_revision = args.revision
+    try:
+        from huggingface_hub import dataset_info
+        upstream_revision = dataset_info(args.dataset, revision=args.revision).sha
+    except Exception as e:  # noqa: BLE001 — offline/unauthenticated: say so, never fabricate a sha
+        print(f"  ⚑ could not resolve {args.dataset} revision ({type(e).__name__}): recording "
+              f"{upstream_revision or 'UNPINNED'} — attribution is not reproducible until pinned")
+    print(f"  upstream: {args.dataset}/{args.config} @ {upstream_revision or 'UNPINNED'} (ODC-By 1.0)")
+    ds = load_dataset(args.dataset, args.config, split=args.split, streaming=True,
+                      **({"revision": args.revision} if args.revision else {}))
     if cursor:
         ds = ds.skip(cursor)
 
@@ -170,7 +189,8 @@ def main() -> int:
                                      "window_mode": "items",
                                      "n_windows": len(items),
                                      "n_admitted_items": sum(i["admitted"] for i in items),
-                                     "dataset": f"{args.dataset}/{args.config}"}) + "\n")
+                                     "dataset": f"{args.dataset}/{args.config}",
+                                     "revision": upstream_revision or "UNPINNED"}) + "\n")
                 mf.flush()
                 imf.write(json.dumps({"hash": h, "items": items}) + "\n")
                 imf.flush()
@@ -190,7 +210,8 @@ def main() -> int:
             mf.write(json.dumps({"hash": h, "domain": args.domain, "code": top.get("code"),
                                  "label": top.get("pref_label"), "rel_margin": hcls["rel_margin"],
                                  "id": str(row.get("id") or ""), "chars": len(text),
-                                 "dataset": f"{args.dataset}/{args.config}"}) + "\n")
+                                 "dataset": f"{args.dataset}/{args.config}",
+                                     "revision": upstream_revision or "UNPINNED"}) + "\n")
             mf.flush()
             seen.add(h)
             matched += 1
