@@ -84,6 +84,15 @@ def ingest_run_event(event: dict) -> dict:
         G.merge_node(conn, "Job", {"namespace": job_ns, "name": job_name})
         G.merge_edge(conn, "Job", {"namespace": job_ns, "name": job_name}, "EXECUTES",
                      "Run", {"run_id": run_id})
+        # PARENT NESTING (RH 2026-07-26): project OL's `parent` run facet into a Run→Run edge, so a
+        # per-step run chain hangs beneath its flow run instead of floating. Without this the facet is
+        # recorded in the event and invisible in the graph — the nesting would be asserted, not shown,
+        # and the whole point is that the UI tells the story.
+        parent_id = (((run.get("facets") or {}).get("parent") or {}).get("run") or {}).get("runId")
+        if parent_id and str(parent_id) != str(run_id):
+            G.merge_node(conn, "Run", {"run_id": str(parent_id)})
+            G.merge_edge(conn, "Run", {"run_id": str(parent_id)}, "PARENT_OF",
+                         "Run", {"run_id": run_id})
         n_in = n_out = n_cols = 0
         for ds in event.get("inputs") or []:
             qn = _ds_qn(ds)

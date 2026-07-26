@@ -33,6 +33,7 @@ apply_metaflow_config(os.environ.get("AEGIR_METAFLOW_MODE", "rke2"))
 import json  # noqa: E402
 import subprocess  # noqa: E402
 import time  # noqa: E402
+import hashlib  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
@@ -277,7 +278,23 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                                             for r in e.relations]} for e in entities],
             }, indent=1))
             (ent_dir / f"{pid}.omn").write_text(to_manchester(entities))
-            self.derive_reports[pid] = report.summary()
+            # PERSIST the reasoning traces (RH 2026-07-26: reasoning belongs WITH the generated
+            # corpora, along with the agentic intermediates that produced and validated it). The
+            # traces go to a partitioned exchanges tree and the Metaflow artifact keeps only a
+            # content-addressed REFERENCE — facets point, they never inline, or the graph stops being
+            # navigable at 3,027 passages x rounds.
+            summary = report.summary()
+            for rnd in summary.get("rounds", []):
+                trace_text = rnd.pop("reasoning", "") or ""
+                if not trace_text:
+                    continue
+                sha = hashlib.sha256(trace_text.encode("utf-8")).hexdigest()
+                xdir = Path(self.run_out, "exchanges", "derive")
+                xdir.mkdir(parents=True, exist_ok=True)
+                (xdir / f"{sha}.txt").write_text(trace_text, encoding="utf-8")
+                rnd["reasoning_sha256"] = sha          # the citation; content-addressed, so a re-run
+                rnd["reasoning_ref"] = f"exchanges/derive/{sha}.txt"   # reuses rather than duplicates
+            self.derive_reports[pid] = summary
             print(f"  [{i+1}/{len(self.passages)}] {pid}: {len(entities)} entities, "
                   f"verdict={report.final_verdict} (round {report.accepted_round})", flush=True)
         self.derive_stats = stats

@@ -92,7 +92,14 @@ def derive_with_metrology(passage: str, *, max_rounds: int = 2, temperature: flo
         report.rounds.append({
             "round": rnd, "n_entities": len(entities), "verdict": signal.get("verdict"),
             "ddl_yield": signal.get("ddl_yield"), "parity": signal.get("parity"),
-            "reasoning_len": len(meta.get("reasoning", "") or "")})
+            "reasoning_len": len(meta.get("reasoning", "") or ""),
+            # RETAIN the trace, do not measure it away (RH 2026-07-26). `propose()` returns the full
+            # reasoning_content "for tracing" and engine/dspy_lm documents it as retained "NOT reduced
+            # to a token count" — and this line was reducing it to exactly a token count, so every
+            # trace across 3,027 passages became an integer. What a model thinks while admitting a
+            # passage is the evidence for why a construct materialized; the CALLER decides where it is
+            # persisted (see SdgCorporaFlow.derive), which keeps the storage policy out of the loop.
+            "reasoning": meta.get("reasoning", "") or ""})
         if rank > best[0]:
             best = (rank, entities)
             report.accepted_round = rnd

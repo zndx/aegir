@@ -69,7 +69,20 @@ def traced_step(func):
                         span.set_attribute(k, v)
             except Exception:  # noqa: BLE001 — lineage facets must never sink a step
                 pass
-            return func(self, *args, **kwargs)
+            # PER-STEP OPENLINEAGE (RH 2026-07-26). Wired HERE, in the one decorator every step
+            # already carries, rather than in twelve step bodies — a step cannot silently opt out of
+            # lineage by nobody remembering to add the call, which is exactly how nine of twelve came
+            # to contribute nothing. START before, COMPLETE/FAIL after; never raises.
+            from aegir.governance.step_lineage import emit_step
+            flow_run = str(rid or self.correlation_id)
+            emit_step(step, flow_run_id=flow_run, state="START")
+            try:
+                result = func(self, *args, **kwargs)
+            except BaseException:
+                emit_step(step, flow_run_id=flow_run, state="FAIL")
+                raise
+            emit_step(step, flow_run_id=flow_run, state="COMPLETE")
+            return result
     return wrapper
 
 
