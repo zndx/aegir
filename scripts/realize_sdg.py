@@ -410,6 +410,78 @@ def _reconcile_categories(omn: str) -> "tuple[str, list]":
     return omn, worklist
 
 
+# ── certification TIERS (RH 2026-07-26) ─────────────────────────────────────────
+# A reasoner that cannot finish is not a failure — it is a GRADE. Merges keep
+# outgrowing monolithic reasoning as the ontology grows, so this boundary reports how
+# much of what it SHIPS it actually certified, and the release act reads that grade:
+#
+#   certified    completed over the artifact's FULL shipped scope (monolithically, or
+#                by a decomposition whose premise is mechanically discharged), 0 unsat
+#                → eligible for an un-suffixed release
+#   rc           completed, but some SHIPPED content's satisfiability was NOT
+#                established (an undischarged decomposition premise) → eligible for a
+#                `-rcNN` release only; the residue is NAMED, never implied
+#   refused      completed and found unsatisfiable classes — a sick TBox ships at no level
+#   uncertified  no verdict at all (--skip-hermit, or a budget trip) → ships at no level
+#
+# The decomposition is not a weaker claim than a monolithic pass. Nominal-free TBox ∧
+# "every enum member is enumerated by exactly ONE Kind and appears in no other
+# individual position" ⇒ the shipped {m:K} assertions are consistent iff K is
+# satisfiable, which the TBox pass certifies. When that premise holds with zero
+# violations, scope_certified EQUALS scope_shipped and the grade is `certified`. When it
+# does not, the flagged members ARE the residue — which is exactly rc status.
+LEVEL_CERTIFIED, LEVEL_RC = "certified", "rc"
+LEVEL_REFUSED, LEVEL_UNCERTIFIED = "refused", "uncertified"
+RELEASABLE = {LEVEL_CERTIFIED: "release", LEVEL_RC: "release-candidate"}
+
+
+def _certification(cert: dict, *, skip_hermit: bool, decomposed: bool) -> dict:
+    """Derive the certification tier + an honest scope record from a finished certificate.
+
+    Stamped into certificate.json so the release gate never has to re-derive the grade —
+    and so a STALE certificate can never be cited as this run's evidence (the failure in
+    run 1785041579228975, where a budget trip pointed the operator at a 13-day-old file).
+    """
+    import datetime as _dt
+    import os as _os
+
+    enum = cert.get("enum_layer") or {}
+    residue: "list[str]" = []
+    if skip_hermit:
+        level = LEVEL_UNCERTIFIED
+    elif cert.get("unsat"):
+        level = LEVEL_REFUSED
+    elif not cert.get("isConsistent"):
+        # Two very different things reach here. A theory HermiT found unmodellable is
+        # REFUSED. But an undischarged decomposition premise (pass B forcing
+        # isConsistent=False) is an uncertified REMAINDER over a theory HermiT
+        # ACCEPTED — release-candidate status, not a sick TBox.
+        if decomposed and (enum.get("n_violations") or enum.get("n_facts_frames")):
+            level = LEVEL_RC
+            if enum.get("n_violations"):
+                residue.append(f"{enum['n_violations']} enum member(s) not enumerated by exactly "
+                               "one Kind, or carrying a HasValue assertion — {m:K} satisfiability "
+                               "not established for these")
+            if enum.get("n_facts_frames"):
+                residue.append(f"{enum['n_facts_frames']} Facts: frame(s) put an individual in a "
+                               "relational position the TBox pass does not cover")
+        else:
+            level = LEVEL_REFUSED
+    else:
+        level = LEVEL_CERTIFIED
+    return {
+        "level": level,
+        "releasable_as": RELEASABLE.get(level, "none"),
+        "method": cert.get("mode") or ("decomposed" if decomposed else "monolithic"),
+        "scope_certified": ("nominal-free TBox ⊕ mechanically-discharged enum layer"
+                            if decomposed else "full nominal union (TBox ∧ ABox, one pass)"),
+        "scope_shipped": "every emitted class and oneOf enum member",
+        "uncertified_residue": residue,
+        "budget_s": int(_os.environ.get("AEGIR_REASON_BUDGET_S", "5400")),
+        "generated_at": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
+    }
+
+
 def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
             merge_ontology: "Path | None" = None, ground_entity_props: bool = False,
             reconcile_categories: bool = False, arm_property_domains: bool = False,
@@ -719,12 +791,25 @@ def realize(entities_dir: Path, output_dir: Path, *, skip_hermit: bool = False,
         print(f"HermiT: consistent={consistent} classes={n_classes} unsat={len(unsat or [])}")
         if unsat:
             cert["why"] = why or {}
+            cert.update(_certification(cert, skip_hermit=False, decomposed=drop_individuals))
             (output_dir / "certificate.json").write_text(json.dumps(cert, indent=2))
             names = [u.rsplit('#', 1)[-1] for u in list(unsat)[:5]]
-            raise SystemExit(
-                f"REFUSED: {len(unsat)} unsatisfiable classes (first: {names}) — a sick TBox "
-                "is not scored or shipped; certificate.json carries the full list (exit 3)")
+            print(f"REFUSED: {len(unsat)} unsatisfiable classes (first: {names}) — a sick TBox "
+                  "is not scored or shipped; certificate.json carries the full list",
+                  file=sys.stderr, flush=True)
+            # EXIT 4 = refused/sick-TBox. Distinct from 3, which is the tractability budget
+            # signal EVERYWHERE in this codebase (emit_taxonomy, differentia_authoring both
+            # read 3 as "hermit budget exceeded"). Previously this raised SystemExit(<str>),
+            # which exits 1 while its own message claimed "exit 3" — so refusal was
+            # indistinguishable from any other failure and the flow mislabelled budget trips
+            # as a sick TBox (RH 2026-07-26).
+            raise SystemExit(4)
+    cert.update(_certification(cert, skip_hermit=skip_hermit, decomposed=drop_individuals))
     (output_dir / "certificate.json").write_text(json.dumps(cert, indent=2))
+    print(f"certification: level={cert['level']} (releasable as {cert['releasable_as']}) "
+          f"method={cert['method']}"
+          + (f" · residue: {'; '.join(cert['uncertified_residue'])}"
+             if cert["uncertified_residue"] else ""), flush=True)
 
     return {"n_classes": len(merged), "certificate": cert, "structure": structure,
             "omn": str(omn_path)}
@@ -752,9 +837,14 @@ def main() -> int:
                     help="ground bare entity sdg: properties by stem (signatures/domains bite; "
                          "phase-2 signal harvest)")
     ap.add_argument("--drop-individuals", action="store_true",
-                    help="TBox projection: strip spliced Individual frames (the comprehensive "
-                         "DDL release posture — schema is class-level; ABox clashes are the "
-                         "individual-registry worklist, not this artifact's burden)")
+                    help="CERTIFY BY DECOMPOSITION (+ TBox projection). Reasons over a "
+                         "nominal-free projection and discharges the residue mechanically, so "
+                         "HermiT never pays ABox x =-classes — the shape that burns the budget. "
+                         "NOTE the name undersells it: oneOf enum MEMBERS are always KEPT in the "
+                         "artifact (kvasir lowers those axioms to lookup tables) and members "
+                         "shared across Kinds are scoped per-Kind, a repair. Only TYPE-ASSERTED "
+                         "individuals leave. For an enum-only ABox this drops nothing at all and "
+                         "still yields level=certified (RH 2026-07-26).")
     a = ap.parse_args()
     res = realize(a.entities_dir, a.output_dir, skip_hermit=a.skip_hermit,
                   merge_ontology=a.merge_ontology, ground_entity_props=a.ground_entity_props,

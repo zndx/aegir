@@ -338,10 +338,26 @@ def _mirror_comprehensive() -> bool:
     except Exception as e:  # noqa: BLE001
         print(f"   comprehensive certificate unreadable — NOT shipped: {e}")
         return False
-    if cert.get("skipped") or not cert.get("isConsistent"):
-        print(f"   comprehensive certificate not green (skipped={cert.get('skipped')} "
-              f"consistent={cert.get('isConsistent')}) — NOT shipped")
+    # SHIP GATE, tier-aware (RH 2026-07-26). `certified` and `rc` both ship — an rc simply
+    # ships as a CANDIDATE, and `just release-tag` gives it the -rcNN suffix. `refused` and
+    # `uncertified` ship nothing, as before. This must read `level`, not isConsistent: an rc
+    # certificate carries isConsistent=False (pass B forces it when the decomposition premise
+    # is undischarged) even though HermiT accepted the theory — the old check would have
+    # blocked precisely the case the rc tier exists to release.
+    level = cert.get("level")
+    if level is None:  # legacy certificate, pre-tiers: the original all-or-nothing check
+        if cert.get("skipped") or not cert.get("isConsistent"):
+            print(f"   comprehensive certificate not green (skipped={cert.get('skipped')} "
+                  f"consistent={cert.get('isConsistent')}) — NOT shipped")
+            return False
+    elif level not in ("certified", "rc"):
+        print(f"   comprehensive certificate level={level} — NOT shipped "
+              f"({'a sick TBox ships at no level' if level == 'refused' else 'no verdict'})")
         return False
+    elif level == "rc":
+        residue = "; ".join(cert.get("uncertified_residue") or []) or "(not itemised)"
+        print(f"   comprehensive certificate level=rc — shipping as a RELEASE CANDIDATE; "
+              f"uncertified: {residue}")
     run_id = hashlib.sha256((src / "sdg-ontology.omn").read_bytes()).hexdigest()[:16]
     out = CORPORA / "ddl-comprehensive"
     dst = out / run_id

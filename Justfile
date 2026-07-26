@@ -242,6 +242,17 @@ kb-snapshot *args:
 kb-sync *args:
     uv run --no-sync python -m aegir.lineup sync {{args}}
 
+# TAG: the sdg-corpora release tag the CERTIFICATE earns (RH 2026-07-26). Not a judgement
+# call — the certification tier decides: level=certified → vX.Y, level=rc → vX.Y-rcNN
+# (zero-padded, monotonic), refused/uncertified → no tag at all. A HermiT budget backstop
+# therefore yields a RELEASE CANDIDATE rather than a failed release. Dry by default;
+# `--tag` creates the annotated tag (refusing a dirty corpora tree — arrange changes first).
+# The suffix is an ARTIFACT-repo tag, never ontology owl:versionInfo (pre-1.0 L11 holds).
+#   just release-tag v0.7            # what would this certificate earn?
+#   just release-tag v0.7 --tag      # create it
+release-tag version *args:
+    uv run --no-sync python scripts/release_tag.py {{version}} {{args}}
+
 # RELEASE: complete sync+release across the sdg-* deliverables (RH 2026-07-22) — ONE
 # command for the release act over both independently published submodules:
 #   corpora  (zndx/sdg-corpora)   — the ontology Data Product (kb-sync: catalog + SKOS + DDL)

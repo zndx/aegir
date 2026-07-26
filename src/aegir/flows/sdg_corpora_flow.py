@@ -310,22 +310,71 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     @traced_step
     @step
     def realize(self):
-        """Merge → HermiT certificate → kvasir DDL + SHACL shapes → SchemaPile structure score."""
-        args = ["uv", "run", "--no-sync", "python", "scripts/realize_sdg.py",
-                "--entities-dir", f"{self.run_out}/entities",
-                "--output-dir", f"{self.run_out}/ontology"]
-        if self.skip_hermit:
-            args.append("--skip-hermit")
+        """Merge → HermiT certificate → kvasir DDL + SHACL shapes → SchemaPile structure score.
+
+        CERTIFICATION LADDER (RH 2026-07-26): a reasoner that cannot finish is a GRADE, not a
+        stop — merges keep outgrowing monolithic reasoning as the ontology grows. Attempt the
+        full-scope pass; on the tractability signal (exit 3) re-attempt with decomposed
+        certification; record the achieved tier and CONTINUE. Only an unmodellable theory
+        (exit 2) or genuine unsatisfiable classes (exit 4) stop the flow.
+
+        A budget trip must never cost the downstream steps again: in run 1785041579228975 the
+        90-min grind failed the flow outright, banking derive's 6.5h but leaving chapters,
+        congruence, assemble, project and ddl_stage unrun — and reporting the tractability
+        limit as a sick TBox, which is the opposite remediation.
+        """
         env = dict(os.environ, LD_LIBRARY_PATH=JVM)
-        r = subprocess.run(args, cwd=str(REPO), env=env)
-        if r.returncode == 2:
-            raise RuntimeError("HermiT refused the merged ontology (inconsistent) — see "
-                               f"{self.run_out}/ontology/certificate.json")
+
+        def _attempt(repaired: bool):
+            args = ["uv", "run", "--no-sync", "python", "scripts/realize_sdg.py",
+                    "--entities-dir", f"{self.run_out}/entities",
+                    "--output-dir", f"{self.run_out}/ontology"]
+            if self.skip_hermit:
+                args.append("--skip-hermit")
+            if repaired:
+                # BOTH ratified tier-1 repairs, measured 2026-07-26 on the 3027-passage merge:
+                #   full nominal union            > 5400s, no verdict (run 1785041579228975;
+                #                                 realize_sdg's own comment records an earlier one)
+                #   --drop-individuals alone      > 5400s, no verdict  ← nominals were NOT the cause
+                #   + --reconcile-categories        21s, consistent, unsat=0, level=certified
+                # The driver was 38,975 union-global `Functional` axioms — per-passage "=1"
+                # readings that do not lift (the catalog asserts none). Functionality plus
+                # max-cardinality forces equality reasoning across 112,463 existentials; the
+                # projection is otherwise almost EL (no only/not/or/inverse/disjoint at all).
+                args += ["--drop-individuals", "--reconcile-categories"]
+            return subprocess.run(args, cwd=str(REPO), env=env)
+
+        r = _attempt(repaired=False)
         if r.returncode == 3:
+            print("  realize: HermiT exceeded the budget at full scope → re-attempting with the "
+                  "ratified tier-1 repairs (decomposed certification + functional-overassertion "
+                  "and double-category reconciliation)", flush=True)
+            r = _attempt(repaired=True)
+        if r.returncode == 2:
+            raise RuntimeError("HermiT refused the merged ontology (INCONSISTENT — no model) — "
+                               f"see {self.run_out}/ontology/certificate.json")
+        if r.returncode == 4:
             raise RuntimeError("HermiT found UNSATISFIABLE classes in the merge — the TBox is "
                                f"sick; see {self.run_out}/ontology/certificate.json (unsat list)")
+        if r.returncode == 3:
+            raise RuntimeError(
+                "HermiT exceeded AEGIR_REASON_BUDGET_S at BOTH full and decomposed scope, so "
+                "there is NO verdict — nothing is certified and nothing ships. This is a "
+                "tractability limit, NOT a sick TBox: raise the budget deliberately, or "
+                "decompose further (kvasir T1). The emitted artifacts still stand for "
+                "inspection; do not read a stale certificate.json as this run's evidence.")
         if r.returncode != 0:
             raise RuntimeError(f"realize failed (exit {r.returncode})")
+        cert = json.loads(Path(self.run_out, "ontology/certificate.json").read_text())
+        self.certification = {k: cert.get(k) for k in (
+            "level", "releasable_as", "method", "scope_certified", "uncertified_residue",
+            "generated_at")}
+        lvl, rel = self.certification.get("level"), self.certification.get("releasable_as")
+        residue = self.certification.get("uncertified_residue") or []
+        print(f"  realize: certification level={lvl} → releasable as {rel}"
+              + (f"; uncertified residue: {'; '.join(residue)}" if residue else ""), flush=True)
+        self.emit_event("realize.certified", {"level": lvl, "releasable_as": rel,
+                                              "n_residue": len(residue)})
         self.structure = json.loads(Path(self.run_out, "ontology/structure.json").read_text())
         self.emit_event("realize.done", {"shape_emd": str(self.structure.get("shape_emd"))})
         try:
