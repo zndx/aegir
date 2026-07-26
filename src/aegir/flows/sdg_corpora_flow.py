@@ -239,6 +239,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         self.exchange_ids = []   # Iceberg raw.exchange row ids — the lineage join
         self._hx_failed = 0
         self._hx_expected = 0
+        self._hx_buffer = []
         # FAIL FAST, NOT SILENT: probe the exchange store before committing hours of engine time.
         hx_err = self._hx_preflight()
         if hx_err:
@@ -329,6 +330,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         # produced its output. Content lives in raw.exchange (columnar); the graph carries structure
         # and REFERENCES. Ids only — a facet that inlined 3,027 traces would stop being navigable.
         from aegir.governance.step_lineage import emit_step
+        self._flush_exchanges()      # drain before counting, or the tail reads as loss
         # RECONCILE: expected == recorded + spooled, or the accounting is wrong and we say so. A
         # shortfall must be a NUMBER IN THE ARTIFACT, not a line in a 3,000-line log.
         recorded, spooled = len(self.exchange_ids), int(getattr(self, "_hx_failed", 0))
@@ -375,7 +377,6 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         try:
             from gaius.hx.exchange import ExchangeRecord
 
-            from aegir.hx import append_exchange
             rec = ExchangeRecord(
                 provider="engine",
                 request_messages=[{"role": "system", "content": xc.get("system_prompt", "")},
@@ -393,7 +394,13 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                                            "passage_sha": passage_sha,
                                            "model": xc.get("model", "")}),
             )
-            append_exchange(rec)
+            # BUFFER, do not commit per record. One Iceberg append is one commit (a parquet file plus
+            # a snapshot), so a per-record loop over ~6,000 exchanges is the small-file anti-pattern
+            # AND, measured, would add ~73 h to a 6.5 h derive. Batched it is ~3 min. The record id is
+            # known at construction, so the lineage join is available immediately regardless.
+            self._hx_buffer.append(rec)
+            if len(self._hx_buffer) >= self._HX_BATCH:
+                self._flush_exchanges()
             return rec.id
         except Exception as exc:  # noqa: BLE001 — SPOOLED, never dropped; see the accounting below
             # RH 2026-07-26: a swallowed capture failure means the lineage is silently lost while we
@@ -417,6 +424,33 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                       f"exchanges/spool/ for backfill; counted and reconciled at step end", flush=True)
             return None
 
+    _HX_BATCH = 250          # ~24 commits for a 3,027-passage derive instead of ~6,000
+
+    def _flush_exchanges(self) -> None:
+        """Commit the buffered exchanges in ONE Iceberg append. Spools the batch on failure.
+
+        Called on a full buffer and again at step end. A failure here loses the whole batch to the
+        spool rather than one record — which is why the spool carries the full payload, not a stub:
+        it must be sufficient to backfill from, or it is theatre.
+        """
+        if not self._hx_buffer:
+            return
+        batch, self._hx_buffer = self._hx_buffer, []
+        try:
+            from aegir.hx import append_exchanges
+            append_exchanges(batch)
+        except Exception as exc:  # noqa: BLE001 — spool the batch; never drop, never silent
+            self._hx_failed += len(batch)
+            spool = Path(self.run_out, "exchanges", "spool")
+            spool.mkdir(parents=True, exist_ok=True)
+            for rec in batch:
+                row = rec.to_dict() if hasattr(rec, "to_dict") else dict(rec)
+                (spool / f"{rec.id}.json").write_text(
+                    json.dumps({"error": f"{type(exc).__name__}: {exc}", **row}, default=str),
+                    encoding="utf-8")
+            print(f"  ⚑ exchange batch of {len(batch)} FAILED ({type(exc).__name__}) → spooled to "
+                  f"exchanges/spool/ for backfill; counted and reconciled at step end", flush=True)
+
     def _hx_preflight(self) -> "str | None":
         """Probe the exchange store BEFORE the expensive work. Returns an error string, or None if OK.
 
@@ -427,7 +461,6 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         try:
             from gaius.hx.exchange import ExchangeRecord
 
-            from aegir.hx import append_exchange
             rec = ExchangeRecord(
                 provider="engine",
                 request_messages=[{"role": "user", "content": "derive preflight canary"}],

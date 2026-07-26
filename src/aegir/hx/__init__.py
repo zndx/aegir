@@ -11,6 +11,7 @@ For deeper machinery (multi-record buffering, async writes, health
 checks), call into ``gaius.hx.exchange.ExchangeCapture`` directly.
 """
 
-from aegir.hx.catalog import append_exchange, get_catalog, get_exchange_table
+from aegir.hx.catalog import (append_exchange, append_exchanges, get_catalog,
+                              get_exchange_table)
 
-__all__ = ["append_exchange", "get_catalog", "get_exchange_table"]
+__all__ = ["append_exchange", "append_exchanges", "get_catalog", "get_exchange_table"]
