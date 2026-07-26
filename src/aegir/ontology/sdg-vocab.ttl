@@ -15,6 +15,21 @@
 ## License: Apache-2.0
 ## ----------------------------------------------------------------------
 
+# ── CCO term glossary (opaque IRIs are authoritative; labels are for readers) ──
+#   bfo:0000004 = independent continuant
+#   bfo:0000015 = process
+#   cco:ont00000686 = Designative Information Content Entity (alt: Designative ICE)
+#   cco:ont00000853 = Descriptive Information Content Entity (alt: Descriptive ICE)
+#   cco:ont00000958 = Information Content Entity (alt: ICE)
+#   cco:ont00000965 = 'Prescriptive Information Content Entity' in the CCO develop snapshot
+#                     we index (2026-04-04); released mirrors still show 'Directive
+#                     information content entity'. Alternate label 'Directive ICE' in both.
+#                     The IRI is stable; only the display label is in churn (RH 2026-07-26).
+#   cco:ont00001262 = Person
+# Remediated 2026-07-26 by `kvasir refs` against the internalized CCO/BFO authority
+# (CCO 2026-04-04 develop, sha256 0daf9173…). Coined CamelCase tokens were replaced with
+# the opaque IRIs their authoritative labels/alternates uniquely identify.
+
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
@@ -23,7 +38,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix bfo:     <http://purl.obolibrary.org/obo/BFO_> .
-@prefix cco:     <http://www.commoncoreontologies.org/> .
+@prefix cco:     <https://www.commoncoreontologies.org/> .
 @prefix sdg:     <https://signals.zndx.org/sdg#> .
 
 <https://signals.zndx.org/sdg> a owl:Ontology ;
@@ -45,7 +60,7 @@ sdg:producesMeasurement a owl:ObjectProperty ;
     rdfs:label "produces measurement" ;
     skos:definition "Relates an instrument or program to a measurement it produces during an observation process. Instances of the domain emit data values that the range class characterizes." ;
     rdfs:domain cco:Artifact ;
-    rdfs:range cco:DescriptiveICE .
+    rdfs:range cco:ont00000853 .
 
 sdg:emitsSignal a owl:ObjectProperty ;
     rdfs:label "emits signal" ;
@@ -96,32 +111,32 @@ sdg:collectedFrom a owl:ObjectProperty ;
 sdg:identifies a owl:ObjectProperty ;
     rdfs:label "identifies" ;
     skos:definition "Relates a designative information content entity (e.g., an identifier) to the entity it picks out. Inverse-functional in practice for unique identifiers." ;
-    rdfs:domain cco:DesignativeICE .
+    rdfs:domain cco:ont00000686 .
 
 sdg:describesProperty a owl:ObjectProperty ;
     rdfs:label "describes property" ;
     skos:definition "Relates an attribute key to the property of a target entity that it names. Used for OpenTelemetry SemConv and EAV-style attribute modeling." ;
-    rdfs:domain cco:DesignativeICE .
+    rdfs:domain cco:ont00000686 .
 
 sdg:hasValueType a owl:ObjectProperty ;
     rdfs:label "has value type" ;
     skos:definition "Relates an attribute key to the data type of values associated with it. Bridges to schema.org / DBpedia / OTel SemConv typed attributes." ;
-    rdfs:domain cco:DesignativeICE .
+    rdfs:domain cco:ont00000686 .
 
 sdg:pointsTo a owl:ObjectProperty ;
     rdfs:label "points to" ;
     skos:definition "Relates a reference (foreign key, cross-table pointer, OpenLineage facet) to its target entity." ;
-    rdfs:domain cco:DesignativeICE .
+    rdfs:domain cco:ont00000686 .
 
 sdg:assignedBy a owl:ObjectProperty ;
     rdfs:label "assigned by" ;
     skos:definition "Relates a designative information content entity to the agent or organization that issued or assigned it. Enables identifier-namespace governance." ;
-    rdfs:domain cco:DesignativeICE .
+    rdfs:domain cco:ont00000686 .
 
 sdg:hasIdentifier a owl:ObjectProperty ;
     rdfs:label "has identifier" ;
     skos:definition "Inverse of sdg:identifies. Relates an entity to a designative information content entity that picks it out." ;
-    rdfs:range cco:DesignativeICE .
+    rdfs:range cco:ont00000686 .
 
 sdg:describedBy a owl:ObjectProperty ;
     rdfs:label "described by" ;
@@ -130,42 +145,42 @@ sdg:describedBy a owl:ObjectProperty ;
 sdg:isAbout a owl:ObjectProperty ;
     rdfs:label "is about" ;
     skos:definition "Relates an information content entity to the entity it concerns. Inverse of sdg:describedBy in many usage patterns; aligned with iao:is_about (IAO_0000136)." ;
-    rdfs:domain cco:InformationContentEntity .
+    rdfs:domain cco:ont00000958 .
 
 sdg:constrains a owl:ObjectProperty ;
     rdfs:label "constrains" ;
     skos:definition "Relates a directive information content entity (constraint) to the entity it constrains. Foundation for SQL CHECK constraints and SysMLv2 Constraint patterns." ;
-    rdfs:domain cco:DirectiveICE .
+    rdfs:domain cco:ont00000965 .
 
 sdg:onViolation a owl:ObjectProperty ;
     rdfs:label "on violation" ;
     skos:definition "Relates a constraint to the consequence triggered when the constraint is violated. Captures alarm / event / governance-action linkages." ;
-    rdfs:domain cco:DirectiveICE .
+    rdfs:domain cco:ont00000965 .
 
 sdg:governs a owl:ObjectProperty ;
     rdfs:label "governs" ;
-    skos:definition "Relates a policy to the entities or processes it governs. Specialization of cco:DirectiveICE relations for governance and compliance." ;
-    rdfs:domain cco:DirectiveICE .
+    skos:definition "Relates a policy to the entities or processes it governs. Specialization of cco:ont00000965 relations for governance and compliance." ;
+    rdfs:domain cco:ont00000965 .
 
 sdg:appliesTo a owl:ObjectProperty ;
     rdfs:label "applies to" ;
     skos:definition "Relates a policy or rule to the scope of entities it applies to. Universal restriction on this property captures policy-scope boundaries." ;
-    rdfs:domain cco:DirectiveICE .
+    rdfs:domain cco:ont00000965 .
 
 sdg:authoredBy a owl:ObjectProperty ;
     rdfs:label "authored by" ;
     skos:definition "Relates a policy or document to the agent that authored it. Aligned with prov:wasAttributedTo for provenance tracking." ;
-    rdfs:domain cco:DirectiveICE .
+    rdfs:domain cco:ont00000965 .
 
 sdg:effectiveDuring a owl:ObjectProperty ;
     rdfs:label "effective during" ;
     skos:definition "Relates a policy to the temporal interval during which it is in force. Range typically aligns with bfo:0000038 (one-dimensional temporal region)." ;
-    rdfs:domain cco:DirectiveICE .
+    rdfs:domain cco:ont00000965 .
 
 sdg:governedBy a owl:ObjectProperty ;
     rdfs:label "governed by" ;
     skos:definition "Inverse of sdg:governs. Relates an entity or process to the policies that govern it." ;
-    rdfs:range cco:DirectiveICE .
+    rdfs:range cco:ont00000965 .
 
 sdg:uses a owl:ObjectProperty ;
     rdfs:label "uses" ;
@@ -450,7 +465,7 @@ sdg:addressesRisk a owl:ObjectProperty ;
 sdg:hasOwner a owl:ObjectProperty ;
     rdfs:label "has owner" ;
     skos:definition "Relates a control or directive to the agent accountable for its operation." ;
-    rdfs:range cco:Person .
+    rdfs:range cco:ont00001262 .
 
 sdg:requiresEvidence a owl:ObjectProperty ;
     rdfs:label "requires evidence" ;
@@ -539,7 +554,7 @@ sdg:attestsToControl a owl:ObjectProperty ;
 sdg:signedBy a owl:ObjectProperty ;
     rdfs:label "signed by" ;
     skos:definition "Relates a formal artifact (attestation, audit report) to the agent who signed it." ;
-    rdfs:range cco:Person .
+    rdfs:range cco:ont00001262 .
 
 sdg:atAttestationPeriod a owl:ObjectProperty ;
     rdfs:label "at attestation period" ;
@@ -576,7 +591,7 @@ sdg:hasFindings a owl:ObjectProperty ;
 sdg:conductedBy a owl:ObjectProperty ;
     rdfs:label "conducted by" ;
     skos:definition "Relates an audit, assessment, or verification process to the agent or organization performing it." ;
-    rdfs:range cco:Person .
+    rdfs:range cco:ont00001262 .
 
 sdg:forAuditPeriod a owl:ObjectProperty ;
     rdfs:label "for audit period" ;
@@ -589,8 +604,8 @@ sdg:forAuditPeriod a owl:ObjectProperty ;
 ## SDG does not introduce new top-level class subbranches in Batch 1
 ## beyond what the catalog templates parameterize. The Batch 1 catalog
 ## composes axioms over public-namespace anchors (cco:Artifact,
-## cco:DesignativeICE, cco:DescriptiveICE, cco:DirectiveICE,
-## cco:InformationContentEntity, bfo:0000004, bfo:0000015) plus the
+## cco:ont00000686, cco:ont00000853, cco:ont00000965,
+## cco:ont00000958, bfo:0000004, bfo:0000015) plus the
 ## sdg:* object properties declared above. Subsequent batches
 ## (sdg:LabRun, sdg:Trace, sdg:OutlierClaim, sdg:eBPFProgram,
 ## sdg:KernelHook, etc.) populate the remaining bespoke classes per
@@ -609,7 +624,7 @@ sdg:forAuditPeriod a owl:ObjectProperty ;
 ## only the displayed label changes. See
 ## `docs/current/ontology/charter.md#naming-note--directiveice-vs-ccos-prescriptiveice`.
 
-cco:DirectiveICE owl:equivalentClass <http://www.commoncoreontologies.org/ont00000965> ;
+cco:ont00000965 owl:equivalentClass <http://www.commoncoreontologies.org/ont00000965> ;
     rdfs:label "directive information content entity" ;
     rdfs:comment "SDG-named alias for the CCO 'Prescriptive Information Content Entity' branch (cco:ont00000965). Captures normative content: requirements, controls, policies, constraints." .
 
@@ -867,7 +882,7 @@ sdg:wasAttributedTo a owl:ObjectProperty ;
 ## ======================================================================
 ## Batch 6 — BeliefStructure (Dempster-Shafer theory primitives:
 ## sdg:MassFunction, sdg:BeliefInterval, sdg:Evidence, sdg:Claim
-## under cco:DescriptiveICE, with supporting predicates).
+## under cco:ont00000853, with supporting predicates).
 ##
 ## DST integration enables explicit uncertainty handling in the
 ## RL signal layer: MassFunction encodes belief over a frame of
@@ -1457,28 +1472,28 @@ sdg:yagerCombines a owl:ObjectProperty ;
 sdg:hasStartTime a owl:DatatypeProperty ;
     rdfs:label "has start time" ;
     skos:definition "The time at which a process began." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:dateTime .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:dateTime .
 sdg:hasEndTime a owl:DatatypeProperty ;
     rdfs:label "has end time" ;
     skos:definition "The time at which a process completed." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:dateTime .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:dateTime .
 sdg:hasStatus a owl:DatatypeProperty ;
     rdfs:label "has status" ;
     skos:definition "The lifecycle status of a process (pending / running / complete / failed)." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:string .
 sdg:hasDurationSeconds a owl:DatatypeProperty ;
     rdfs:label "has duration seconds" ;
     skos:definition "The duration of a process in seconds." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:decimal .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:decimal .
 
 sdg:hasName a owl:DatatypeProperty ;
     rdfs:label "has name" ;
     skos:definition "The human-readable name of a continuant." ;
-    rdfs:domain bfo:IndependentContinuant ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000004 ; rdfs:range xsd:string .
 sdg:hasLocation a owl:DatatypeProperty ;
     rdfs:label "has location" ;
     skos:definition "A location descriptor for a continuant." ;
-    rdfs:domain bfo:IndependentContinuant ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000004 ; rdfs:range xsd:string .
 
 sdg:hasIdentifier a owl:DatatypeProperty ;
     rdfs:label "has identifier" ;
@@ -1496,54 +1511,54 @@ sdg:hasVersion a owl:DatatypeProperty ;
 sdg:hasLabelText a owl:DatatypeProperty ;
     rdfs:label "has label text" ;
     skos:definition "A short label for an information content entity." ;
-    rdfs:domain cco:InformationContentEntity ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000958 ; rdfs:range xsd:string .
 sdg:hasLanguage a owl:DatatypeProperty ;
     rdfs:label "has language" ;
     skos:definition "The language code of an information content entity." ;
-    rdfs:domain cco:InformationContentEntity ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000958 ; rdfs:range xsd:string .
 
 sdg:hasValue a owl:DatatypeProperty ;
     rdfs:label "has value" ;
     skos:definition "The numeric value a descriptive information content entity records." ;
-    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:decimal .
+    rdfs:domain cco:ont00000853 ; rdfs:range xsd:decimal .
 sdg:hasUnit a owl:DatatypeProperty ;
     rdfs:label "has unit" ;
     skos:definition "The unit of measure for a recorded value." ;
-    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000853 ; rdfs:range xsd:string .
 sdg:hasRecordedAt a owl:DatatypeProperty ;
     rdfs:label "has recorded at" ;
     skos:definition "The timestamp at which a descriptive ICE was recorded." ;
-    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:dateTime .
+    rdfs:domain cco:ont00000853 ; rdfs:range xsd:dateTime .
 sdg:hasConfidence a owl:DatatypeProperty ;
     rdfs:label "has confidence" ;
     skos:definition "A confidence score in [0,1] for a recorded value." ;
-    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:decimal .
+    rdfs:domain cco:ont00000853 ; rdfs:range xsd:decimal .
 
 sdg:hasEffectiveDate a owl:DatatypeProperty ;
     rdfs:label "has effective date" ;
     skos:definition "The date a directive takes effect." ;
-    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:date .
+    rdfs:domain cco:ont00000965 ; rdfs:range xsd:date .
 sdg:hasPriority a owl:DatatypeProperty ;
     rdfs:label "has priority" ;
     skos:definition "An integer priority rank for a directive." ;
-    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:integer .
+    rdfs:domain cco:ont00000965 ; rdfs:range xsd:integer .
 sdg:isMandatory a owl:DatatypeProperty ;
     rdfs:label "is mandatory" ;
     skos:definition "Whether a directive is mandatory." ;
-    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:boolean .
+    rdfs:domain cco:ont00000965 ; rdfs:range xsd:boolean .
 
 sdg:hasCode a owl:DatatypeProperty ;
     rdfs:label "has code" ;
     skos:definition "The code string a designative information content entity carries." ;
-    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000686 ; rdfs:range xsd:string .
 sdg:hasFormat a owl:DatatypeProperty ;
     rdfs:label "has format" ;
     skos:definition "The format of a designative code (e.g. ISO, RFC)." ;
-    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000686 ; rdfs:range xsd:string .
 sdg:hasIssuedDate a owl:DatatypeProperty ;
     rdfs:label "has issued date" ;
     skos:definition "The date a designative ICE was issued." ;
-    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:date .
+    rdfs:domain cco:ont00000686 ; rdfs:range xsd:date .
 
 ## ======================================================================
 ## DataProperty enrichment (Semantic-Layer-Upkeep Comp 4) — widen the typed-attribute
@@ -1559,41 +1574,41 @@ sdg:hasIssuedDate a owl:DatatypeProperty ;
 sdg:hasPhase a owl:DatatypeProperty ;
     rdfs:label "has phase" ;
     skos:definition "The lifecycle phase of a process (initiation / execution / review / closeout)." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:string .
 sdg:hasTriggeredBy a owl:DatatypeProperty ;
     rdfs:label "has triggered by" ;
     skos:definition "What initiated a process run (schedule / manual / event / api / retry)." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:string .
 sdg:hasLogLevel a owl:DatatypeProperty ;
     rdfs:label "has log level" ;
     skos:definition "The severity threshold a process emits at (debug / info / warning / error / critical)." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:string .
 sdg:hasExitCode a owl:DatatypeProperty ;
     rdfs:label "has exit code" ;
     skos:definition "The integer exit status a process terminated with." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:integer .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:integer .
 sdg:hasRetryCount a owl:DatatypeProperty ;
     rdfs:label "has retry count" ;
     skos:definition "The number of times a process was retried." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:integer .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:integer .
 sdg:hasScheduledAt a owl:DatatypeProperty ;
     rdfs:label "has scheduled at" ;
     skos:definition "The timestamp at which a process was scheduled to begin." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:dateTime .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:dateTime .
 sdg:hasHostName a owl:DatatypeProperty ;
     rdfs:label "has host name" ;
     skos:definition "The host or node on which a process executed." ;
-    rdfs:domain bfo:Process ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000015 ; rdfs:range xsd:string .
 
 # --- IndependentContinuant (shared by Artifact and below) ---
 sdg:hasOwner a owl:DatatypeProperty ;
     rdfs:label "has owner" ;
     skos:definition "The team or service accountable for a continuant." ;
-    rdfs:domain bfo:IndependentContinuant ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000004 ; rdfs:range xsd:string .
 sdg:hasTags a owl:DatatypeProperty ;
     rdfs:label "has tags" ;
     skos:definition "A governance tag on a continuant (pii / internal / public / archived / verified)." ;
-    rdfs:domain bfo:IndependentContinuant ; rdfs:range xsd:string .
+    rdfs:domain bfo:0000004 ; rdfs:range xsd:string .
 
 # --- Artifact ---
 sdg:hasChecksum a owl:DatatypeProperty ;
@@ -1621,42 +1636,42 @@ sdg:hasUri a owl:DatatypeProperty ;
 sdg:hasEncoding a owl:DatatypeProperty ;
     rdfs:label "has encoding" ;
     skos:definition "The character encoding of an information content entity (utf8 / ascii / latin1 / unicode)." ;
-    rdfs:domain cco:InformationContentEntity ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000958 ; rdfs:range xsd:string .
 
 # --- DescriptiveICE (measurements / records) ---
 sdg:hasMethod a owl:DatatypeProperty ;
     rdfs:label "has method" ;
     skos:definition "How a value was obtained (manual / automated / hybrid / inferred)." ;
-    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000853 ; rdfs:range xsd:string .
 sdg:hasDimensionKind a owl:DatatypeProperty ;
     rdfs:label "has dimension kind" ;
     skos:definition "The dimensional kind of a measured value (length / time / temperature / count / mass / pressure)." ;
-    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000853 ; rdfs:range xsd:string .
 sdg:hasUncertainty a owl:DatatypeProperty ;
     rdfs:label "has uncertainty" ;
     skos:definition "The standard uncertainty associated with a recorded value." ;
-    rdfs:domain cco:DescriptiveICE ; rdfs:range xsd:decimal .
+    rdfs:domain cco:ont00000853 ; rdfs:range xsd:decimal .
 
 # --- DirectiveICE (policies / constraints) ---
 sdg:hasEnforcement a owl:DatatypeProperty ;
     rdfs:label "has enforcement" ;
     skos:definition "The enforcement disposition of a directive (advisory / mandatory / deprecated / blocking)." ;
-    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000965 ; rdfs:range xsd:string .
 sdg:hasScope a owl:DatatypeProperty ;
     rdfs:label "has scope" ;
     skos:definition "The applicability scope of a directive (global / regional / local / team)." ;
-    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000965 ; rdfs:range xsd:string .
 sdg:hasReviewCycleDays a owl:DatatypeProperty ;
     rdfs:label "has review cycle days" ;
     skos:definition "The review cadence of a directive in days." ;
-    rdfs:domain cco:DirectiveICE ; rdfs:range xsd:integer .
+    rdfs:domain cco:ont00000965 ; rdfs:range xsd:integer .
 
 # --- DesignativeICE (identifiers / codes) ---
 sdg:hasNamespace a owl:DatatypeProperty ;
     rdfs:label "has namespace" ;
     skos:definition "The issuing namespace of a designator (telemetry / governance / lineage / catalog / provenance)." ;
-    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000686 ; rdfs:range xsd:string .
 sdg:hasChecksumAlgo a owl:DatatypeProperty ;
     rdfs:label "has checksum algo" ;
     skos:definition "The algorithm a designative checksum uses (sha256 / md5 / crc32 / blake2b / sha1)." ;
-    rdfs:domain cco:DesignativeICE ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000686 ; rdfs:range xsd:string .
