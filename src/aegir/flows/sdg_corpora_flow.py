@@ -242,16 +242,26 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         # FAIL FAST, NOT SILENT: probe the exchange store before committing hours of engine time.
         hx_err = self._hx_preflight()
         if hx_err:
-            if not os.environ.get("AEGIR_ALLOW_UNTRACED"):
-                raise RuntimeError(
-                    f"exchange store unavailable ({hx_err}). Refusing to start a long derive that "
-                    "would produce artifacts with no retained reasoning — that is hours of compute "
-                    "for provenance we cannot reconstruct. Fix the store, or set "
-                    "AEGIR_ALLOW_UNTRACED=1 to accept untraced derivation DELIBERATELY.")
-            print(f"  ⚑ AEGIR_ALLOW_UNTRACED: proceeding with exchange store DOWN ({hx_err}) — "
-                  "this run's derivation will have no retained reasoning", flush=True)
-        else:
-            print("  exchange store preflight OK (raw.exchange writable)", flush=True)
+            # NO BYPASS, deliberately (RH 2026-07-26: eliminate the opt-out with extreme prejudice).
+            # An escape hatch for "derive without provenance" ends up in a shell profile or a CI
+            # config, and the deliberateness it was meant to encode evaporates — leaving a supported
+            # way to spend hours producing artifacts nobody can account for. If the store is down, the
+            # store gets fixed. There is no legitimate reason to generate an unaccountable corpus.
+            raise RuntimeError(
+                f"exchange store unavailable: {hx_err}\n"
+                "  Refusing to start derive. Reasoning traces are the only record of why each\n"
+                "  construct materialized, and they cannot be reconstructed after the fact — this\n"
+                "  would be hours of engine time spent on artifacts with no provenance.\n"
+                "  Check, in order:\n"
+                "    1. postgres is up and the PyIceberg catalog is reachable "
+                f"(PGHOST={os.environ.get('PGHOST', '127.0.0.1')} "
+                f"PGPORT={os.environ.get('PGPORT', '5555')})\n"
+                "    2. the raw.exchange table exists:  python -c \"from aegir.hx import "
+                "get_exchange_table; print(get_exchange_table().schema())\"\n"
+                "    3. a canary append succeeds:        python -c \"from aegir.hx import "
+                "append_exchange; ...\"  (see _hx_preflight)\n"
+                "  There is no override flag. This is the one artifact class that cannot be redone.")
+        print("  exchange store preflight OK (raw.exchange writable)", flush=True)
         dv = deriver_version()
         try:
             from aegir.strategy.lineage import stage_key
