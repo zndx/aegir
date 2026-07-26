@@ -25,6 +25,10 @@
 #                     we index (2026-04-04); released mirrors still show 'Directive
 #                     information content entity'. Alternate label 'Directive ICE' in both.
 #                     The IRI is stable; only the display label is in churn (RH 2026-07-26).
+#   cco:ont00000798 = Information Bearing Artifact (alt: Information Carrying Artifact)
+#   cco:ont00000995 = Material Artifact  [IBA is a SUBCLASS of it; rdfs:domain entails
+#                     membership, so the broader class is used unless every subject
+#                     certainly bears information]
 #   cco:ont00001262 = Person
 # Remediated 2026-07-26 by `kvasir refs` against the internalized CCO/BFO authority
 # (CCO 2026-04-04 develop, sha256 0daf9173…). Coined CamelCase tokens were replaced with
@@ -59,18 +63,18 @@
 sdg:producesMeasurement a owl:ObjectProperty ;
     rdfs:label "produces measurement" ;
     skos:definition "Relates an instrument or program to a measurement it produces during an observation process. Instances of the domain emit data values that the range class characterizes." ;
-    rdfs:domain cco:Artifact ;
+    rdfs:domain cco:ont00000995 ;
     rdfs:range cco:ont00000853 .
 
 sdg:emitsSignal a owl:ObjectProperty ;
     rdfs:label "emits signal" ;
     skos:definition "Relates an instrument to a signal it emits during operation. Distinct from produces-measurement: a signal is the raw output a measurement is derived from." ;
-    rdfs:domain cco:Artifact .
+    rdfs:domain cco:ont00000995 .
 
 sdg:realizesFunction a owl:ObjectProperty ;
     rdfs:label "realizes function" ;
     skos:definition "Relates an artifact to the BFO function it realizes when in operation. Indirect equivalent of bfo:0000055 (realizes) when the realized entity is a function." ;
-    rdfs:domain cco:Artifact .
+    rdfs:domain cco:ont00000995 .
 
 sdg:hasRole a owl:ObjectProperty ;
     rdfs:label "has role" ;
@@ -80,12 +84,12 @@ sdg:hasRole a owl:ObjectProperty ;
 sdg:hasColumn a owl:ObjectProperty ;
     rdfs:label "has column" ;
     skos:definition "Relates a tabular dataset to one of its columns. Foundational for column-type-annotation use cases that the Aegir model targets." ;
-    rdfs:domain cco:Artifact .
+    rdfs:domain cco:ont00000798 .
 
 sdg:hasRecord a owl:ObjectProperty ;
     rdfs:label "has record" ;
     skos:definition "Relates a tabular or event-log dataset to a contained record. Cardinality restrictions on this property express minimum population thresholds." ;
-    rdfs:domain cco:Artifact .
+    rdfs:domain cco:ont00000798 .
 
 sdg:hasInput a owl:ObjectProperty ;
     rdfs:label "has input" ;
@@ -98,7 +102,7 @@ sdg:hasOutput a owl:ObjectProperty ;
 sdg:hasEntryPoint a owl:ObjectProperty ;
     rdfs:label "has entry point" ;
     skos:definition "Relates a program to its execution entry point. Cardinality typically restricted to exactly one for deterministic-entry programs." ;
-    rdfs:domain cco:Artifact .
+    rdfs:domain cco:ont00000798 .
 
 sdg:processedBy a owl:ObjectProperty ;
     rdfs:label "processed by" ;
@@ -1498,15 +1502,15 @@ sdg:hasLocation a owl:DatatypeProperty ;
 sdg:hasIdentifier a owl:DatatypeProperty ;
     rdfs:label "has identifier" ;
     skos:definition "An external identifier string for an artifact." ;
-    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000995 ; rdfs:range xsd:string .
 sdg:hasCreatedDate a owl:DatatypeProperty ;
     rdfs:label "has created date" ;
     skos:definition "The date an artifact was created." ;
-    rdfs:domain cco:Artifact ; rdfs:range xsd:date .
+    rdfs:domain cco:ont00000995 ; rdfs:range xsd:date .
 sdg:hasVersion a owl:DatatypeProperty ;
     rdfs:label "has version" ;
     skos:definition "The integer version number of an artifact." ;
-    rdfs:domain cco:Artifact ; rdfs:range xsd:integer .
+    rdfs:domain cco:ont00000995 ; rdfs:range xsd:integer .
 
 sdg:hasLabelText a owl:DatatypeProperty ;
     rdfs:label "has label text" ;
@@ -1614,23 +1618,23 @@ sdg:hasTags a owl:DatatypeProperty ;
 sdg:hasChecksum a owl:DatatypeProperty ;
     rdfs:label "has checksum" ;
     skos:definition "The content checksum of an artifact." ;
-    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000798 ; rdfs:range xsd:string .
 sdg:hasSizeBytes a owl:DatatypeProperty ;
     rdfs:label "has size bytes" ;
     skos:definition "The on-disk size of an artifact in bytes." ;
-    rdfs:domain cco:Artifact ; rdfs:range xsd:long .
+    rdfs:domain cco:ont00000798 ; rdfs:range xsd:long .
 sdg:hasMimeType a owl:DatatypeProperty ;
     rdfs:label "has mime type" ;
     skos:definition "The media type of an artifact's content." ;
-    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000798 ; rdfs:range xsd:string .
 sdg:hasLicense a owl:DatatypeProperty ;
     rdfs:label "has license" ;
     skos:definition "The SPDX license an artifact is distributed under." ;
-    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000995 ; rdfs:range xsd:string .
 sdg:hasUri a owl:DatatypeProperty ;
     rdfs:label "has uri" ;
     skos:definition "The canonical locator of an artifact." ;
-    rdfs:domain cco:Artifact ; rdfs:range xsd:string .
+    rdfs:domain cco:ont00000995 ; rdfs:range xsd:string .
 
 # --- InformationContentEntity (shared by the ICE families) ---
 sdg:hasEncoding a owl:DatatypeProperty ;
