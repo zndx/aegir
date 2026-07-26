@@ -8,7 +8,7 @@
 # Like Energistics (and unlike FIBO/FHIR), OMG publishes no canonical RDF concept
 # IRIs for SysMLv2 — mapping is at STANDARD grain (rdfs:seeAlso the OMG spec
 # pages) and the spec_mappings module (sdg:Sysml* mapped entities) carries the
-# entity-level evidence. seeAlso, never closeMatch (RH 2026-07-25).
+# entity-level evidence. seeAlso, never closeMatch.
 #
 # Sector entry (RH-ratified shape): sdg:Engineering at the sector tier
 # (natural-cased tier-mate of FinancialSector/Healthcare/HeavyIndustries, member
@@ -54,7 +54,7 @@ sdg:SysMLv2IntegrationScheme a skos:ConceptScheme ;
     skos:editorialNote "Version watch: the SysML v1→v2 transition is ongoing across the tool ecosystem (see the OMG MBSE wiki transition page); mappings pin to the v2 formal specification and adapt selectively as it revises." ;
     skos:hasTopConcept sdg:SYSML .
 
-# ── the sector tier (RH 2026-07-25: sdg:Engineering, natural-cased tier-mate of
+# ── the sector tier (sdg:Engineering, natural-cased tier-mate of
 # FinancialSector/Healthcare/HeavyIndustries — a FOREST TOP; topic-domain-hood is
 # INSTANTIATION via the sdg:TopicDomain class + sdg:TopicDomains membership, both
 # declared in fibo_integration.ttl, never a broader link) ───────────────────────
@@ -72,7 +72,7 @@ sdg:MBSE a skos:Concept ;
     skos:prefLabel "Model-Based Systems Engineering" ;
     skos:altLabel "MBSE" ;
     skos:notation "18.1" ;
-    skos:definition "The engineering discipline in which systems are specified, analyzed, and verified through coherent models rather than documents. MBSE contributes a set of modeling PRINCIPLES — requirement traceability, structural decomposition, behavioral and parametric modeling, verification cases — applied across domains (manufacturing operations among them, sdg:MFG). The concrete SysMLv2 SYNTAX that realizes these principles is an engineering practice housed beneath this genus (sdg:SYSML); domain semantics are represented atop that syntax but grounded in their own sectors. MBSE is the discipline, not the syntax — hence a plain topic genus, not an sdg:SysMLv2Concept (RH 2026-07-26)." ;
+    skos:definition "The engineering discipline in which systems are specified, analyzed, and verified through coherent models rather than documents. MBSE contributes a set of modeling PRINCIPLES — requirement traceability, structural decomposition, behavioral and parametric modeling, verification cases — applied across domains (manufacturing operations among them, sdg:MFG). The concrete SysMLv2 SYNTAX that realizes these principles is an engineering practice housed beneath this genus (sdg:SYSML); domain semantics are represented atop that syntax but grounded in their own sectors. MBSE is the discipline, not the syntax — hence a plain topic genus, not an sdg:SysMLv2Concept." ;
     skos:scopeNote "Covers the modeled system across its engineering lifecycle — requirement definitions with satisfaction and verification traceability; structural decomposition into parts, ports, and connection usages; behavioral modeling of actions, states, and sequence-structured occurrences; parametric constraints; and verification cases binding requirements to analysis, inspection, and test evidence. Terminology traces to the OMG SysMLv2 language atop the KerML kernel — the methodology axis: manufacturing and other domain semantics are represented atop it as domain-specific elements, grounded in their own sectors." ;
     skos:broader sdg:Engineering ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
@@ -144,7 +144,7 @@ sdg:SysMLv2RelationshipKinds a skos:Collection ;
 # ── KerML-layer metaclasses (Root/Core/Kernel) — census-confirmed ──────────────
 
 sdg:SysMLv2_Element a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Element@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=true · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Element@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=true" ;
     skos:prefLabel "Element" ;
     skos:definition "Root syntactic element of the KerML abstract syntax — the common supertype of everything in a model." ;
     skos:editorialNote "layer: Root · ABSTRACT (census) · no supertype" ;
@@ -152,7 +152,7 @@ sdg:SysMLv2_Element a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Namespace a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Namespace@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Element · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Namespace@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Element" ;
     skos:prefLabel "Namespace" ;
     skos:definition "An element that contains and names other elements via memberships." ;
     skos:editorialNote "layer: Root · specializes (census): Element" ;
@@ -161,7 +161,7 @@ sdg:SysMLv2_Namespace a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Relationship a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Relationship@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=true · supers=Element · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Relationship@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=true · supers=Element" ;
     skos:prefLabel "Relationship" ;
     skos:definition "Reified relationship element relating source and target elements." ;
     skos:editorialNote "layer: Root · ABSTRACT (census) · specializes (census): Element" ;
@@ -170,7 +170,7 @@ sdg:SysMLv2_Relationship a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Type a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Type@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Namespace · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Type@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Namespace" ;
     skos:prefLabel "Type" ;
     skos:definition "A namespace classifying things by conditions on membership — the root of the classification hierarchy." ;
     skos:editorialNote "layer: Core · concrete (census corrected 2026-07-25: NOT abstract) · specializes (census): Namespace" ;
@@ -179,7 +179,7 @@ sdg:SysMLv2_Type a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Classifier a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Classifier@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Type · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Classifier@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Type" ;
     skos:prefLabel "Classifier" ;
     skos:definition "A type classifying instances directly." ;
     skos:editorialNote "layer: Core · concrete (census corrected 2026-07-25: NOT abstract) · specializes (census): Type" ;
@@ -188,7 +188,7 @@ sdg:SysMLv2_Classifier a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Feature a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Feature@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Type · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Feature@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Type" ;
     skos:prefLabel "Feature" ;
     skos:definition "A type classifying how instances relate — the usage/role side of the type system." ;
     skos:editorialNote "layer: Core · concrete (census corrected 2026-07-25: NOT abstract) · specializes (census): Type" ;
@@ -197,7 +197,7 @@ sdg:SysMLv2_Feature a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Class a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Class@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Classifier · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Class@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Classifier" ;
     skos:prefLabel "Class" ;
     skos:definition "Kernel classifier of occurrences and objects." ;
     skos:editorialNote "layer: Kernel · specializes (census): Classifier" ;
@@ -208,7 +208,7 @@ sdg:SysMLv2_Class a skos:Concept, sdg:SysMLv2Concept ;
 # ── Systems-layer metaclasses — census-confirmed ────────────────────────────────
 
 sdg:SysMLv2_PartDefinition a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · PartDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ItemDefinition · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · PartDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ItemDefinition" ;
     skos:prefLabel "PartDefinition" ;
     skos:definition "Definition of a class of systems or parts of systems." ;
     skos:editorialNote "layer: Systems · specializes (census): ItemDefinition — parts ARE items in SysMLv2" ;
@@ -217,7 +217,7 @@ sdg:SysMLv2_PartDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_PartUsage a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · PartUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ItemUsage · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · PartUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ItemUsage" ;
     skos:prefLabel "PartUsage" ;
     skos:definition "Usage of a part within a context — the Definition/Usage pattern's usage side for parts." ;
     skos:editorialNote "layer: Systems · specializes (census): ItemUsage" ;
@@ -226,7 +226,7 @@ sdg:SysMLv2_PartUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ActionDefinition a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · ActionDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OccurrenceDefinition,Behavior · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · ActionDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OccurrenceDefinition,Behavior" ;
     skos:prefLabel "ActionDefinition" ;
     skos:definition "Definition of a class of actions or processes." ;
     skos:editorialNote "layer: Systems · specializes (census): OccurrenceDefinition, Behavior (out-of-set — await census expansion)" ;
@@ -235,7 +235,7 @@ sdg:SysMLv2_ActionDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ActionUsage a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · ActionUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OccurrenceUsage,Step · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · ActionUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OccurrenceUsage,Step" ;
     skos:prefLabel "ActionUsage" ;
     skos:definition "Usage of an action within a behavior or process context." ;
     skos:editorialNote "layer: Systems · specializes (census): OccurrenceUsage, Step (out-of-set)" ;
@@ -244,7 +244,7 @@ sdg:SysMLv2_ActionUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_RequirementDefinition a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · RequirementDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ConstraintDefinition · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · RequirementDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ConstraintDefinition" ;
     skos:prefLabel "RequirementDefinition" ;
     skos:definition "Definition of a requirement — a constraint that must be satisfied." ;
     skos:editorialNote "layer: Systems · specializes (census): ConstraintDefinition (out-of-set) — requirements ARE constraints in SysMLv2" ;
@@ -253,7 +253,7 @@ sdg:SysMLv2_RequirementDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_RequirementUsage a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · RequirementUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ConstraintUsage · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · RequirementUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ConstraintUsage" ;
     skos:prefLabel "RequirementUsage" ;
     skos:definition "Usage of a requirement within a context." ;
     skos:editorialNote "layer: Systems · specializes (census): ConstraintUsage (out-of-set)" ;
@@ -262,7 +262,7 @@ sdg:SysMLv2_RequirementUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_AllocationDefinition a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · AllocationDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ConnectionDefinition · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · AllocationDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ConnectionDefinition" ;
     skos:prefLabel "AllocationDefinition" ;
     skos:definition "Definition of an allocation — a mapping of one model element onto another." ;
     skos:editorialNote "layer: Systems · specializes (census): ConnectionDefinition — allocations ARE connections in SysMLv2" ;
@@ -271,7 +271,7 @@ sdg:SysMLv2_AllocationDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_AllocationUsage a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · AllocationUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ConnectionUsage · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · AllocationUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=ConnectionUsage" ;
     skos:prefLabel "AllocationUsage" ;
     skos:definition "Usage of an allocation within a context." ;
     skos:editorialNote "layer: Systems · specializes (census): ConnectionUsage (out-of-set)" ;
@@ -280,7 +280,7 @@ sdg:SysMLv2_AllocationUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ConnectionDefinition a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · ConnectionDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=PartDefinition,AssociationStructure · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · ConnectionDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=PartDefinition,AssociationStructure" ;
     skos:prefLabel "ConnectionDefinition" ;
     skos:definition "Definition of a connection between parts." ;
     skos:editorialNote "layer: Systems · specializes (census): PartDefinition, AssociationStructure (2nd out-of-set) — connections ARE parts in SysMLv2" ;
@@ -289,7 +289,7 @@ sdg:SysMLv2_ConnectionDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ItemDefinition a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · ItemDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OccurrenceDefinition,Structure · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · ItemDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OccurrenceDefinition,Structure" ;
     skos:prefLabel "ItemDefinition" ;
     skos:definition "Definition of a class of items — things flowing through or handled by a system." ;
     skos:editorialNote "layer: Systems · specializes (census): OccurrenceDefinition, Structure (out-of-set)" ;
@@ -298,7 +298,7 @@ sdg:SysMLv2_ItemDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ItemUsage a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · ItemUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OccurrenceUsage · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · ItemUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OccurrenceUsage" ;
     skos:prefLabel "ItemUsage" ;
     skos:definition "Usage of an item within a context." ;
     skos:editorialNote "layer: Systems · specializes (census): OccurrenceUsage (out-of-set)" ;
@@ -307,7 +307,7 @@ sdg:SysMLv2_ItemUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_AttributeDefinition a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · AttributeDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Definition,DataType · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · AttributeDefinition@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Definition,DataType" ;
     skos:prefLabel "AttributeDefinition" ;
     skos:definition "Definition of an attribute — a data-valued feature." ;
     skos:editorialNote "layer: Systems · specializes (census): Definition, DataType (out-of-set)" ;
@@ -316,7 +316,7 @@ sdg:SysMLv2_AttributeDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_AttributeUsage a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · AttributeUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Usage · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · AttributeUsage@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Usage" ;
     skos:prefLabel "AttributeUsage" ;
     skos:definition "Usage of an attribute within a context." ;
     skos:editorialNote "layer: Systems · specializes (census): Usage (out-of-set)" ;
@@ -327,7 +327,7 @@ sdg:SysMLv2_AttributeUsage a skos:Concept, sdg:SysMLv2Concept ;
 # ── relationship kinds — 7 census-verified metaclasses + 3 SDG flattenings ─────
 
 sdg:SysMLv2_OwningMembership a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · OwningMembership@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Membership · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · OwningMembership@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Membership" ;
     skos:prefLabel "OwningMembership" ;
     skos:definition "Ownership / containment membership — the relationship by which a namespace owns an element." ;
     skos:editorialNote "specializes (census): Membership (out-of-set)" ;
@@ -335,7 +335,7 @@ sdg:SysMLv2_OwningMembership a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_FeatureMembership a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · FeatureMembership@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OwningMembership · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · FeatureMembership@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=OwningMembership" ;
     skos:prefLabel "FeatureMembership" ;
     skos:definition "Membership of a feature in a type." ;
     skos:editorialNote "specializes (census): OwningMembership" ;
@@ -344,7 +344,7 @@ sdg:SysMLv2_FeatureMembership a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Specialization a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Specialization@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Relationship · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Specialization@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Relationship" ;
     skos:prefLabel "Specialization" ;
     skos:definition "Generalization / specialization between types." ;
     skos:editorialNote "specializes (census): Relationship" ;
@@ -353,7 +353,7 @@ sdg:SysMLv2_Specialization a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Subsetting a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Subsetting@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Specialization · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Subsetting@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Specialization" ;
     skos:prefLabel "Subsetting" ;
     skos:definition "Subsetting between features — one feature's values are a subset of another's." ;
     skos:editorialNote "specializes (census): Specialization" ;
@@ -362,7 +362,7 @@ sdg:SysMLv2_Subsetting a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_FeatureTyping a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · FeatureTyping@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Specialization · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · FeatureTyping@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Specialization" ;
     skos:prefLabel "FeatureTyping" ;
     skos:definition "Typing of a feature by a classifier." ;
     skos:editorialNote "specializes (census): Specialization" ;
@@ -371,7 +371,7 @@ sdg:SysMLv2_FeatureTyping a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Succession a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Succession@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Connector · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Succession@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Connector" ;
     skos:prefLabel "Succession" ;
     skos:definition "Temporal / sequential succession between occurrences — the ordering relationship process plans lower to operation sequences." ;
     skos:editorialNote "specializes (census): Connector (out-of-set)" ;
@@ -379,28 +379,28 @@ sdg:SysMLv2_Succession a skos:Concept, sdg:SysMLv2Concept ;
     skos:inScheme sdg:KerMLScheme .
 
 sdg:SysMLv2_Allocation a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "AUTHORED (SDG relational flattening — not in the metamodel; reified form census-cited in the editorial note) · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "AUTHORED (SDG relational flattening — not in the metamodel; reified form census-cited in the editorial note)" ;
     skos:prefLabel "Allocation" ;
     skos:definition "Allocation edge in the semantic layer's relations backbone — an SDG relational flattening of what SysMLv2 reifies as AllocationUsage (a connection usage, not an edge kind)." ;
     skos:editorialNote "SDG RELATIONAL FLATTENING (census 2026-07-25: NOT a SysMLv2 metaclass) — the reified form is sdg:SysMLv2_AllocationUsage; this row exists for the relations table's pragmatic edge vocabulary." ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_Connection a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "AUTHORED (SDG relational flattening — not in the metamodel; reified form census-cited in the editorial note) · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "AUTHORED (SDG relational flattening — not in the metamodel; reified form census-cited in the editorial note)" ;
     skos:prefLabel "Connection" ;
     skos:definition "Connection edge in the semantic layer's relations backbone — an SDG relational flattening of what SysMLv2 reifies as ConnectionUsage (itself a part usage, not an edge kind)." ;
     skos:editorialNote "SDG RELATIONAL FLATTENING (census 2026-07-25: NOT a SysMLv2 metaclass) — the reified form is ConnectionUsage (out-of-set); this row exists for the relations table's pragmatic edge vocabulary." ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ItemFlow a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "AUTHORED (SDG relational flattening — not in the metamodel; reified form census-cited in the editorial note) · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "AUTHORED (SDG relational flattening — not in the metamodel; reified form census-cited in the editorial note)" ;
     skos:prefLabel "ItemFlow" ;
     skos:definition "Item / material flow edge in the semantic layer's relations backbone — an SDG relational flattening; the current metamodel reifies flows as the Flow / FlowUsage family (the older ItemFlow name has been superseded upstream)." ;
     skos:editorialNote "SDG RELATIONAL FLATTENING (census 2026-07-25: NOT a current metaclass — the metamodel's Flow/FlowDefinition/FlowUsage family superseded the ItemFlow name; version-watch with the scheme)." ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_Dependency a skos:Concept, sdg:SysMLv2Concept ;
-    sdg:valueProvenance "census · Dependency@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Relationship · artifact build/foreign/sysmlv2/census_30.json" ;
+    sdg:valueProvenance "census · Dependency@SysML.ecore@Systems-Modeling/SysML-v2-Pilot-Implementation · abstract=false · supers=Relationship" ;
     skos:prefLabel "Dependency" ;
     skos:definition "Generic dependency between elements." ;
     skos:editorialNote "specializes (census): Relationship" ;

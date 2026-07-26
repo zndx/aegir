@@ -12,11 +12,11 @@
 # STANDARD-FAMILY grain (rdfs:seeAlso the namespace URI) and the spec_mappings
 # module carries the entity-level evidence.
 #
-# TOPIC PLACEMENT (RH 2026-07-25): sdg:PRODML and its children are topic concepts
+# TOPIC PLACEMENT: sdg:PRODML and its children are topic concepts
 # under the sdg:ENERGY genus (skos:broader in domain_concepts.ttl) carrying full
 # dotted notation (11.5·) in the code space — a complete, consistent SKOS subtree.
 # Which topic anchors seed the sparse aperture point-layer is enumerated separately
-# (the sdg:AperturePoints Collection); notation ≠ point-hood (RH 2026-07-26). GEPA
+# (the sdg:AperturePoints Collection); notation ≠ point-hood. GEPA
 # composite optimization MAY draw their vocabulary as differentia constituents into
 # point embeddings; the SKOS hierarchy and the OWL ontology must remain in sync and
 # HermiT-consistent as composites evolve.
@@ -46,7 +46,7 @@ sdg:EnergisticsCommonScheme a skos:ConceptScheme ;
     dct:hasVersion "2.3" ;
     rdfs:seeAlso <http://www.energistics.org/energyml/data/commonv2> ;
     skos:definition "The shared Energistics common technical architecture (data objects, units of measure, transfer protocol) that WITSML, PRODML, and RESQML build on." ;
-    skos:editorialNote "Version watch: WITSML v2.1, PRODML v2.3, and RESQML v2.2 all currently use common v2.3 — when a standard moves to a newer common, its scheme's dct:requires target versions diverge and we adapt selectively (RH 2026-07-25)." .
+    skos:editorialNote "Version watch: WITSML v2.1, PRODML v2.3, and RESQML v2.2 all currently use common v2.3 — when a standard moves to a newer common, its scheme's dct:requires target versions diverge and we adapt selectively." .
 
 sdg:WITSMLIntegrationScheme a skos:ConceptScheme ;
     rdfs:label "WITSML Integration Scheme" ;
@@ -72,7 +72,7 @@ sdg:RESQMLIntegrationScheme a skos:ConceptScheme ;
     skos:definition "Curated entry point into RESQML-aligned reservoir and earth-model concepts within Signals Data Governance." ;
     skos:editorialNote "No members yet: the reservoir/earth-model coverage gap under sdg:ENERGY (grids, horizons, subsurface models — an ENERGY_RESERVOIR candidate) is surfaced by this scheme and authored through the differentia CAS loop, delta-gated like any child." .
 
-# ── the sector tier (RH 2026-07-25: plural HeavyIndustries, tier-mate of
+# ── the sector tier (plural HeavyIndustries, tier-mate of
 # FinancialSector and Healthcare — a FOREST TOP; topic-domain-hood is
 # INSTANTIATION via the sdg:TopicDomain class + sdg:TopicDomains membership, both
 # declared in fibo_integration.ttl, never a broader link) ───────────────────────

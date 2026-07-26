@@ -41,7 +41,7 @@ sdg:Manufacturing a skos:Concept, sdg:TopicDomain ;
 # ── SCHEME→LOOKUP content sources (#44 (c)): Collections annotated
 # sdg:lowersToProperty supply reference-table CONTENT (labels, membership — the
 # SKOS Primer's controlled-vocabulary scope; no logical semantics). AUTHORITY
-# ORDER (RH 2026-07-25): OWL ⊨ SKOS ⊨ SHACL — the realized OMN is the source of
+# ORDER: OWL ⊨ SKOS ⊨ SHACL — the realized OMN is the source of
 # LOGICAL truth; the vocab_lowering generator carries this content into it as
 # DataProperty definition-enums, activating kvasir's designed-dormant path →
 # lookup table + FK on the one critical path. Logical claims about the values
@@ -53,11 +53,11 @@ sdg:lowersToProperty a owl:AnnotationProperty ;
 
 sdg:valueProvenance a owl:AnnotationProperty ;
     rdfs:label "value provenance" ;
-    rdfs:comment "Evidence reference for an EMPIRICAL vocabulary value (a seed that yields table rows): GitTables observations in the gtvs lineage shape, banked under build/foreign/gittables/. Absence on an empirical member = FLAGGED authored (provenance ≻ exclusion — never silent fabrication). Spec vocabularies cite the census instead." .
+    rdfs:comment "Evidence reference for an EMPIRICAL vocabulary value (a seed that yields table rows): a GitTables observation cited by its upstream coordinates in the gtvs lineage shape (value@table:column), resolvable in the governed lineage graph. Deliberately carries no local artifact path: a filesystem that exists on one machine is not an article of record. Absence on an empirical member = FLAGGED authored (provenance ≻ exclusion — never silent fabrication). Spec vocabularies cite the census instead." .
 
 sdg:groundedByModule a owl:AnnotationProperty ;
     rdfs:label "grounded by module" ;
-    rdfs:comment "Names the OWL module (python module carrying the OMN block on the realized critical path) that grounds this SKOS anchor's territory with logical differentia. ABSENCE on an entity-bearing anchor = the SKOS-ahead gap signal (RH 2026-07-25: co-equal with unsat and underspecification) — the ACP gap-closure loop's declared join, never name-derived." .
+    rdfs:comment "Names the OWL module (python module carrying the OMN block on the realized critical path) that grounds this SKOS anchor's territory with logical differentia. ABSENCE on an entity-bearing anchor = the SKOS-ahead gap signal (co-equal with unsat and underspecification) — the ACP gap-closure loop's declared join, never name-derived." .
 
 sdg:WorkOrderStatuses a skos:Collection ;
     skos:prefLabel "Work Order Statuses" ;
@@ -68,26 +68,26 @@ sdg:WorkOrderStatuses a skos:Collection ;
         sdg:WorkOrderStatus_Cancelled , sdg:WorkOrderStatus_OnHold .
 
 sdg:WorkOrderStatus_Planned a skos:Concept ;
-    sdg:valueProvenance "gittables n=1 · planned@main_39:tender/status · probe build/foreign/gittables/status_vocab_probe.json" ;
+    sdg:valueProvenance "gittables n=1 · planned@main_39:tender/status" ;
     skos:prefLabel "Planned" ;
     skos:definition "Scheduled but not yet released to the floor." .
 sdg:WorkOrderStatus_Released a skos:Concept ;
-    sdg:valueProvenance "gittables n=29 · Released@gerrit-issues%20-%202020-12-21T000327.757_1:Status · probe build/foreign/gittables/status_vocab_probe.json" ;
+    sdg:valueProvenance "gittables n=29 · Released@gerrit-issues%20-%202020-12-21T000327.757_1:Status" ;
     skos:prefLabel "Released" ;
     skos:definition "Released to a work center; material may be issued." .
 sdg:WorkOrderStatus_InProgress a skos:Concept ;
-    sdg:valueProvenance "gittables n=4 · in progress@plantdear-20210102_1:status (observed spaced/hyphenated; compact form is our canonicalization) · probe build/foreign/gittables/status_vocab_probe.json" ;
+    sdg:valueProvenance "gittables n=4 · in progress@plantdear-20210102_1:status (observed spaced/hyphenated; compact form is our canonicalization)" ;
     skos:prefLabel "InProgress" ;
     skos:definition "Operations have started and are reporting." .
 sdg:WorkOrderStatus_Completed a skos:Concept ;
-    sdg:valueProvenance "gittables n=29 · completed@raw_orders_7:status · probe build/foreign/gittables/status_vocab_probe.json" ;
+    sdg:valueProvenance "gittables n=29 · completed@raw_orders_7:status" ;
     skos:prefLabel "Completed" ;
     skos:definition "All operations complete; quantities reported." .
 sdg:WorkOrderStatus_Cancelled a skos:Concept ;
-    sdg:valueProvenance "gittables n=4 · Cancelled@ClassicModels_Orders_1:status (co-occurs with On Hold in the same real orders vocabulary) · probe build/foreign/gittables/status_vocab_probe.json" ;
+    sdg:valueProvenance "gittables n=4 · Cancelled@ClassicModels_Orders_1:status (co-occurs with On Hold in the same real orders vocabulary)" ;
     skos:prefLabel "Cancelled" ;
     skos:definition "Terminated before completion; no further reporting." .
 sdg:WorkOrderStatus_OnHold a skos:Concept ;
-    sdg:valueProvenance "gittables n=1 · On Hold@ClassicModels_Orders_1:status (observed spaced; compact form is our canonicalization) · probe build/foreign/gittables/status_vocab_probe.json" ;
+    sdg:valueProvenance "gittables n=1 · On Hold@ClassicModels_Orders_1:status (observed spaced; compact form is our canonicalization)" ;
     skos:prefLabel "OnHold" ;
     skos:definition "Suspended pending disposition; no operations report while held." .
