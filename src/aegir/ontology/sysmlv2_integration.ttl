@@ -14,9 +14,11 @@
 # (natural-cased tier-mate of FinancialSector/Healthcare/HeavyIndustries, member
 # of sdg:TopicDomains + typed sdg:TopicDomain — instantiation, never a broader
 # link) → sdg:MBSE as the ALL-CAPS genus chord (18.1) → sdg:SYSML re-homed
-# beneath it (prefLabel "SysMLv2"), chord-VISIBLE, never a point. MBSE itself is
-# ENUMERATED into the admission surface (aperture_include) and delta-gated like
-# FINTECH/BIOTECH before it. THE LANGUAGE REPRESENTS; THE ONTOLOGY GROUNDS (RH
+# beneath it (prefLabel "SysMLv2", notation 18.1.1), a topic subdomain with its
+# own fully-noted modeling children (18.1.1·). MBSE itself is ENUMERATED into the
+# admission surface (aperture_include) and delta-gated like FINTECH/BIOTECH before
+# it; SYSML is a topic anchor not currently seeded into that sparse point-layer
+# (notation ≠ point-hood, RH 2026-07-26). THE LANGUAGE REPRESENTS; THE ONTOLOGY GROUNDS (RH
 # 2026-07-25): manufacturing-domain concepts are NOT members of this scheme —
 # they are domain-specific elements representable ATOP SysMLv2, grounded in
 # their own sector (sdg:Manufacturing); the representability evidence lives in
@@ -229,7 +231,7 @@ sdg:SysMLv2_ActionDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Definition of a class of actions or processes." ;
     skos:editorialNote "layer: Systems · specializes (census): OccurrenceDefinition, Behavior (out-of-set — await census expansion)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ActionUsage a skos:Concept, sdg:SysMLv2Concept ;
@@ -238,7 +240,7 @@ sdg:SysMLv2_ActionUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Usage of an action within a behavior or process context." ;
     skos:editorialNote "layer: Systems · specializes (census): OccurrenceUsage, Step (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_RequirementDefinition a skos:Concept, sdg:SysMLv2Concept ;
@@ -247,7 +249,7 @@ sdg:SysMLv2_RequirementDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Definition of a requirement — a constraint that must be satisfied." ;
     skos:editorialNote "layer: Systems · specializes (census): ConstraintDefinition (out-of-set) — requirements ARE constraints in SysMLv2" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_RequirementUsage a skos:Concept, sdg:SysMLv2Concept ;
@@ -256,7 +258,7 @@ sdg:SysMLv2_RequirementUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Usage of a requirement within a context." ;
     skos:editorialNote "layer: Systems · specializes (census): ConstraintUsage (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_AllocationDefinition a skos:Concept, sdg:SysMLv2Concept ;
@@ -274,7 +276,7 @@ sdg:SysMLv2_AllocationUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Usage of an allocation within a context." ;
     skos:editorialNote "layer: Systems · specializes (census): ConnectionUsage (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ConnectionDefinition a skos:Concept, sdg:SysMLv2Concept ;
@@ -292,7 +294,7 @@ sdg:SysMLv2_ItemDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Definition of a class of items — things flowing through or handled by a system." ;
     skos:editorialNote "layer: Systems · specializes (census): OccurrenceDefinition, Structure (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_ItemUsage a skos:Concept, sdg:SysMLv2Concept ;
@@ -301,7 +303,7 @@ sdg:SysMLv2_ItemUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Usage of an item within a context." ;
     skos:editorialNote "layer: Systems · specializes (census): OccurrenceUsage (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_AttributeDefinition a skos:Concept, sdg:SysMLv2Concept ;
@@ -310,7 +312,7 @@ sdg:SysMLv2_AttributeDefinition a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Definition of an attribute — a data-valued feature." ;
     skos:editorialNote "layer: Systems · specializes (census): Definition, DataType (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 sdg:SysMLv2_AttributeUsage a skos:Concept, sdg:SysMLv2Concept ;
@@ -319,7 +321,7 @@ sdg:SysMLv2_AttributeUsage a skos:Concept, sdg:SysMLv2Concept ;
     skos:definition "Usage of an attribute within a context." ;
     skos:editorialNote "layer: Systems · specializes (census): Usage (out-of-set)" ;
     rdfs:seeAlso <https://www.omg.org/spec/SysML/> ;
-    skos:broader sdg:SYSML ;
+    skos:broadMatch sdg:SYSML ;
     skos:inScheme sdg:SysMLv2IntegrationScheme .
 
 # ── relationship kinds — 7 census-verified metaclasses + 3 SDG flattenings ─────

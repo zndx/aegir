@@ -104,6 +104,10 @@ _restore-patched-wheels:
 check-ontology-schema:
     uv run --no-sync python scripts/check_ontology_schema.py
     uv run --no-sync python scripts/check_triad_entailment.py
+    # topic notation-tree gate (RH 2026-07-26): every coded parent has coded,
+    # prefix-consistent children — notation ≡ topic-hierarchy position, complete
+    # and consistent (notation ≠ point-hood; roles are explicit skos:Collections)
+    uv run --no-sync python scripts/check_notation_consistency.py
     # in-flight lineage validation (#45): every GitTables valueProvenance claim
     # checked against the kvasir value index; SKIPS VISIBLY when the index is
     # absent (build artifact — regenerate: emit_gittables_postings + kvasir index)

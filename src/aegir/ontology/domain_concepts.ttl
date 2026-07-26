@@ -398,19 +398,19 @@
         <https://signals.zndx.org/sdg#CSG> ,
         <https://signals.zndx.org/sdg#UTILITY> ,
         <https://signals.zndx.org/sdg#DATAENG> .
-# (PRODML re-homed 2026-07-25: chord-visible under sdg:ENERGY, scheme-organized
+# (PRODML re-homed 2026-07-25: a subdomain under sdg:ENERGY, scheme-organized
 #  by sdg:PRODMLIntegrationScheme — energistics_integration.ttl. SYSML re-homed
-#  same day: chord-visible under sdg:MBSE (Engineering sector), scheme-organized
-#  by sdg:SysMLv2IntegrationScheme — sysmlv2_integration.ttl. Neither is a
-#  sibling top; neither is an aperture point.)
+#  same day: a subdomain under sdg:MBSE (Engineering sector), scheme-organized
+#  by sdg:SysMLv2IntegrationScheme — sysmlv2_integration.ttl. Both carry full
+#  dotted notation as topic concepts (11.5·, 18.1.1·); which topic anchors seed
+#  the sparse aperture point-layer is enumerated separately in admission_filter.json.)
 
 # ── CONFIRMED mapped-spec scheme families (RH 2026-07-23): PRODML and SYSML enter the SDG
 # namespace as MAPPED ONTOLOGY ENTITIES (spec_mappings module: sdg:Prodml*/sdg:Sysml*
 # classes, BFO/CCO-grounded, rdfs:seeAlso carrying the source-spec join) so SDG
 # inter-operates with any conforming data source — HDF5 files structured to both specs
 # are in the downstream analytical queue. Confirmed by decree of certainty, shipped as
-# RC under the versioned-release doctrine. STILL NOT aperture admission points (the
-# schemes-organize/concepts-admit finding; ruling B pending). PRODML extension is
+# RC under the versioned-release doctrine. PRODML extension is
 # comprehensive-into-SDG. FIBO/FHIR are IN-SCOPE EXTERNAL (RH 2026-07-24 — the
 # BFO/CCO posture: never managed nor extended by us, leveraged extensively; our SDG
 # ontology enriches WITH full appreciation for what they provide) — SDG stays
@@ -419,13 +419,15 @@
 <https://signals.zndx.org/sdg#PRODML> a skos:Concept ;
     skos:prefLabel "Production Markup Language Domain" ;
     skos:altLabel "PRODML" ;
-    skos:definition "The Energistics PRODML production-data domain extended comprehensively into SDG: well production volumes, fluid analyses, distributed sensing, and production operations reporting — chord-visible under the upstream-energy genus (re-homed from sibling-top, RH 2026-07-25)." ;
+    skos:notation "11.5" ;
+    skos:definition "The Energistics PRODML production-data domain extended comprehensively into SDG: well production volumes, fluid analyses, distributed sensing, and production operations reporting — a subdomain of upstream energy (re-homed from sibling-top, RH 2026-07-25)." ;
     skos:broader <https://signals.zndx.org/sdg#ENERGY> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#PRODML_PRODUCT_VOLUME> a skos:Concept ;
     skos:prefLabel "Product Volume Reporting" ;
     skos:altLabel "PRODML_PRODUCT_VOLUME" ;
+    skos:notation "11.5.1" ;
     skos:definition "Reported production volumes and dispositions per well, facility, and period — PRODML's product volume object family." ;
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -433,6 +435,7 @@
 <https://signals.zndx.org/sdg#PRODML_FLUID_ANALYSIS> a skos:Concept ;
     skos:prefLabel "Fluid Sample Analysis" ;
     skos:altLabel "PRODML_FLUID_ANALYSIS" ;
+    skos:notation "11.5.2" ;
     skos:definition "Laboratory analyses of reservoir fluid samples — PVT studies, compositional assays, and sample chain-of-custody in the PRODML fluid analysis family." ;
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -440,6 +443,7 @@
 <https://signals.zndx.org/sdg#PRODML_DISTRIBUTED_SENSING> a skos:Concept ;
     skos:prefLabel "Distributed Sensing Surveys" ;
     skos:altLabel "PRODML_DISTRIBUTED_SENSING" ;
+    skos:notation "11.5.3" ;
     skos:definition "Distributed temperature and acoustic sensing installations and surveys along the wellbore — PRODML DTS/DAS object families." ;
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -447,6 +451,7 @@
 <https://signals.zndx.org/sdg#PRODML_PRODUCTION_OPERATIONS> a skos:Concept ;
     skos:prefLabel "Production Operations Reporting" ;
     skos:altLabel "PRODML_PRODUCTION_OPERATIONS" ;
+    skos:notation "11.5.4" ;
     skos:definition "Daily production operations reports: activities, shutdowns, safety events, and operational parameters across producing assets." ;
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -454,13 +459,15 @@
 <https://signals.zndx.org/sdg#SYSML> a skos:Concept ;
     skos:prefLabel "SysMLv2" ;
     skos:altLabel "SYSML" ;
-    skos:definition "The OMG SysMLv2 language (atop the KerML kernel) whose rdfs:domain realization yields Model-Based Systems Engineering practices and tools into the Lexicon: requirements, structure, behavior, parametric constraints, and verification cases as first-class modeled artifacts — chord-visible under the MBSE genus (re-homed from sibling-top, RH 2026-07-25)." ;
+    skos:notation "18.1.1" ;
+    skos:definition "The OMG SysMLv2 language (atop the KerML kernel) whose rdfs:domain realization yields Model-Based Systems Engineering practices and tools into the Lexicon: requirements, structure, behavior, parametric constraints, and verification cases as first-class modeled artifacts — a subdomain of the MBSE genus (re-homed from sibling-top, RH 2026-07-25)." ;
     skos:broader <https://signals.zndx.org/sdg#MBSE> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
 <https://signals.zndx.org/sdg#SYSML_REQUIREMENTS> a skos:Concept ;
     skos:prefLabel "Requirements Modeling" ;
     skos:altLabel "SYSML_REQUIREMENTS" ;
+    skos:notation "18.1.1.1" ;
     skos:definition "Requirement definitions, satisfaction and verification relationships, and traceability structure per SysMLv2 requirements modeling practice." ;
     skos:broader <https://signals.zndx.org/sdg#SYSML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -468,6 +475,7 @@
 <https://signals.zndx.org/sdg#SYSML_STRUCTURE> a skos:Concept ;
     skos:prefLabel "Structural Decomposition Modeling" ;
     skos:altLabel "SYSML_STRUCTURE" ;
+    skos:notation "18.1.1.2" ;
     skos:definition "Part, port, and connection usage decomposition — SysMLv2 structural modeling of systems as compositional hierarchies." ;
     skos:broader <https://signals.zndx.org/sdg#SYSML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -475,6 +483,7 @@
 <https://signals.zndx.org/sdg#SYSML_BEHAVIOR> a skos:Concept ;
     skos:prefLabel "Behavioral Modeling" ;
     skos:altLabel "SYSML_BEHAVIOR" ;
+    skos:notation "18.1.1.3" ;
     skos:definition "Actions, states, and sequence-structured occurrence modeling — SysMLv2 behavioral practice over system operation." ;
     skos:broader <https://signals.zndx.org/sdg#SYSML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -482,6 +491,7 @@
 <https://signals.zndx.org/sdg#SYSML_VERIFICATION> a skos:Concept ;
     skos:prefLabel "Verification Case Modeling" ;
     skos:altLabel "SYSML_VERIFICATION" ;
+    skos:notation "18.1.1.4" ;
     skos:definition "Verification and validation cases binding requirements to analysis, inspection, and test evidence in SysMLv2 practice." ;
     skos:broader <https://signals.zndx.org/sdg#SYSML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .

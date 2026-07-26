@@ -2053,7 +2053,13 @@ def project_vocab_concepts(pts: "list[dict]", live_ids: "set | None" = None,
         if alts:
             skos_rows.append("| `altLabel` | " + " · ".join(a[:36] for a in alts[:6])
                              + (f" _…+{len(alts) - 6}_" if len(alts) > 6 else "") + " |")
-        skos_rows.append(f"| `notation` | `{getattr(c, 'code', '')}` |")
+        # notation ≠ point-hood, and notation ≡ topic-scheme membership (RH 2026-07-26):
+        # the dotted code is the topic ConceptScheme's hierarchy encoding, so render it
+        # only when present. A concept with no code isn't in the topic notation space —
+        # its functional role is carried by its skos:Collection / skos:ConceptScheme
+        # (metamodel vocabulary, enum value), never by a phantom empty-notation row.
+        if getattr(c, "code", ""):
+            skos_rows.append(f"| `notation` | `{c.code}` |")
         for b in broaders:
             bl = locs.get(b, b.rsplit("#", 1)[-1])
             skos_rows.append(f"| `broader` | {N.wl('lexicon/concept/' + bl, bl)} |")
