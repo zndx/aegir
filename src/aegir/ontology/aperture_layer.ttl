@@ -1,0 +1,104 @@
+# aperture_layer.ttl — the AIMING aperture's role Collections (RH 2026-07-26).
+#
+# Functional roles are EXPLICIT skos:Collections, never inferred from structural
+# patterns (RH: "instead of looking for existing structural patterns"). Two roles,
+# two Collections — membership is authored here and read by the seeders, so adding
+# a skos:notation NEVER promotes a concept to a point (notation != point-hood), and
+# chord visibility is a decision, not a side-effect of being in an overlay file.
+#
+#   sdg:AperturePoints  — the sparse MaxSim point layer (qdrant points that compete
+#                         in classify()). Supersedes the notation-gated base + the
+#                         admission_filter.json aperture_include enumeration.
+#   sdg:ChordDisplay    — the concepts rendered as chord arcs in the lineup. A
+#                         superset of AperturePoints (adds the chord-visible
+#                         non-points: the SysMLv2 + PRODML family anchors).
+#
+# AperturePoints ⊆ ChordDisplay is an invariant (a point is always chord-visible).
+# Migrated verbatim from the live aperture (33 points / 43 arcs) on 2026-07-26.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdg:  <https://signals.zndx.org/sdg#> .
+
+sdg:AperturePoints a skos:Collection ;
+    rdfs:label "Aperture Points" ;
+    rdfs:comment "The sparse MaxSim point layer — the concepts seeded as qdrant points that compete in aiming/classify. Explicit membership (notation != point-hood)." ;
+    skos:member sdg:BIOTECH ,
+        sdg:CSG ,
+        sdg:CSG_BOOLEAN ,
+        sdg:CSG_BREP ,
+        sdg:CSG_FABRICATION ,
+        sdg:CSG_PRIMITIVE ,
+        sdg:DATAENG ,
+        sdg:DATAENG_CATALOG ,
+        sdg:DATAENG_LINEAGE ,
+        sdg:DATAENG_MODELING ,
+        sdg:DATAENG_QUALITY ,
+        sdg:ENERGY ,
+        sdg:ENERGY_LOGGING ,
+        sdg:ENERGY_OPERATIONS ,
+        sdg:ENERGY_TRAJECTORY ,
+        sdg:ENERGY_WELLBORE ,
+        sdg:FINTECH ,
+        sdg:LIMS ,
+        sdg:LIMS_ASSAY_EXECUTION ,
+        sdg:LIMS_QUALITY_TRACEABILITY ,
+        sdg:LIMS_RESULT_INTERPRETATION ,
+        sdg:LIMS_SPECIMEN_LIFECYCLE ,
+        sdg:MBSE ,
+        sdg:MFG ,
+        sdg:MFG_INTERFACE ,
+        sdg:MFG_LOGISTICS ,
+        sdg:MFG_PROCESS ,
+        sdg:MFG_REQUIREMENT ,
+        sdg:MFG_STRUCTURE ,
+        sdg:UTILITY ,
+        sdg:UTILITY_POWER ,
+        sdg:UTILITY_TELECOM ,
+        sdg:UTILITY_WATER .
+
+sdg:ChordDisplay a skos:Collection ;
+    rdfs:label "Chord Display" ;
+    rdfs:comment "The concepts rendered as arcs in the aperture chord — every point plus the chord-visible non-points (SysMLv2 + PRODML families). A superset of sdg:AperturePoints." ;
+    skos:member sdg:BIOTECH ,
+        sdg:CSG ,
+        sdg:CSG_BOOLEAN ,
+        sdg:CSG_BREP ,
+        sdg:CSG_FABRICATION ,
+        sdg:CSG_PRIMITIVE ,
+        sdg:DATAENG ,
+        sdg:DATAENG_CATALOG ,
+        sdg:DATAENG_LINEAGE ,
+        sdg:DATAENG_MODELING ,
+        sdg:DATAENG_QUALITY ,
+        sdg:ENERGY ,
+        sdg:ENERGY_LOGGING ,
+        sdg:ENERGY_OPERATIONS ,
+        sdg:ENERGY_TRAJECTORY ,
+        sdg:ENERGY_WELLBORE ,
+        sdg:FINTECH ,
+        sdg:LIMS ,
+        sdg:LIMS_ASSAY_EXECUTION ,
+        sdg:LIMS_QUALITY_TRACEABILITY ,
+        sdg:LIMS_RESULT_INTERPRETATION ,
+        sdg:LIMS_SPECIMEN_LIFECYCLE ,
+        sdg:MBSE ,
+        sdg:MFG ,
+        sdg:MFG_INTERFACE ,
+        sdg:MFG_LOGISTICS ,
+        sdg:MFG_PROCESS ,
+        sdg:MFG_REQUIREMENT ,
+        sdg:MFG_STRUCTURE ,
+        sdg:PRODML ,
+        sdg:PRODML_DISTRIBUTED_SENSING ,
+        sdg:PRODML_FLUID_ANALYSIS ,
+        sdg:PRODML_PRODUCTION_OPERATIONS ,
+        sdg:PRODML_PRODUCT_VOLUME ,
+        sdg:SYSML ,
+        sdg:SYSML_BEHAVIOR ,
+        sdg:SYSML_REQUIREMENTS ,
+        sdg:SYSML_STRUCTURE ,
+        sdg:SYSML_VERIFICATION ,
+        sdg:UTILITY ,
+        sdg:UTILITY_POWER ,
+        sdg:UTILITY_TELECOM ,
+        sdg:UTILITY_WATER .

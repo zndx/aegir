@@ -101,7 +101,7 @@
         <https://signals.zndx.org/sdg#MFG_LOGISTICS> ;
     skos:altLabel "MFG" ;
     skos:prefLabel "Manufacturing Operations" ;
-    skos:notation "10" ;
+    skos:notation "19.1" ;
     skos:altLabel "Manufacturing Enterprise Operations" ;
     skos:definition "The domain of operating manufacturing enterprises: planning and executing production, procuring and consuming materials, and managing the inventory that flows between them. Work orders schedule production runs on work cells and lines; purchase orders bring materials and components into receiving; inventory items are stocked, counted, reserved, and issued from warehouses and storerooms; finished goods are picked, packed, and fulfilled against customer orders. Enterprise resource planning workflows bind these into auditable business processes — demand to plan, procure to pay, order to cash — over the plant's physical artifacts: parts, assemblies, tooling, and the interface components that connect them." ;
     skos:scopeNote "Covers production planning and execution, procurement and receiving, inventory and warehouse operations, order fulfillment, and the ERP workflows that integrate them, across consumer electronics, electromechanical assembly, industrial equipment, and laboratory-automation manufacture. Physical product structure — parts, assemblies, bills of material, and physical interfaces — is managed as the artifact side of these operations." ;
@@ -113,7 +113,7 @@
 <https://signals.zndx.org/sdg#MFG_STRUCTURE> a skos:Concept ;
     skos:altLabel "MFG_STRUCTURE" ;
     skos:prefLabel "Parts, Assemblies and Bills of Material" ;
-    skos:notation "10.1" ;
+    skos:notation "19.1.1" ;
     skos:altLabel "Product Structure" ;
     skos:definition "The structural decomposition of an engineered product into parts, components, assemblies, and subassemblies, with the bill of material that enumerates them by quantity, material, and fastener. A part is a designed physical artifact; an assembly composes parts through joints and mates; the product structure is a hierarchy from the top-level system down to piece-parts and standard hardware. Each part carries a part number, revision, material, mass, finish, and reference designators; the engineering bill of material drives procurement and the manufacturing bill of material drives production, consumption, and as-built records." ;
     skos:scopeNote "Includes part numbering and revision control, make-versus-buy, standard-part and fastener libraries, engineering and manufacturing bills of material, and BOM-line consumption against work orders." ;
@@ -124,7 +124,7 @@
 <https://signals.zndx.org/sdg#MFG_INTERFACE> a skos:Concept ;
     skos:altLabel "MFG_INTERFACE" ;
     skos:prefLabel "Physical Interfaces and Connections" ;
-    skos:notation "10.2" ;
+    skos:notation "19.1.2" ;
     skos:altLabel "System Interconnection" ;
     skos:definition "The physical interface components a manufacturing operation builds, stocks, and installs: connectors, harnesses and cable assemblies, mounts, brackets, and mating features that join parts into functioning assemblies. An interface definition specifies the form, fit, and function of a junction — mechanical mating, electrical pinout, or fluid coupling — and a connection is the realized link carrying power, fluid, or mechanical load between parts. Harnesses and cable assemblies are serialized, inventoried artifacts fabricated to wire lists and pinouts; connection lists drive assembly work instructions and continuity test points at the workbench." ;
     skos:scopeNote "Includes connectors, harnesses, mounts, brackets, and mating features; mechanical, electrical, and fluid interfaces between fabricated parts; wire lists, pinouts, and harness fabrication as manufacturing deliverables." ;
@@ -135,7 +135,7 @@
 <https://signals.zndx.org/sdg#MFG_REQUIREMENT> a skos:Concept ;
     skos:altLabel "MFG_REQUIREMENT" ;
     skos:prefLabel "Specifications, Tolerances and Quality" ;
-    skos:notation "10.3" ;
+    skos:notation "19.1.3" ;
     skos:altLabel "Specification and Verification" ;
     skos:definition "What a manufactured part shall satisfy and the shop-floor records that confirm each unit does. An engineering drawing and its specification state dimensions, materials, and finishes; tolerances and geometric dimensioning and tolerancing (GD&T) bound allowable variation on features; first-article and in-process inspection measure actual parts against nominal geometry with gauges, calipers, and coordinate measuring machines. Nonconforming parts are dispositioned by the material review board — use-as-is, rework, or scrap — and corrective action feeds back into tooling and process parameters. The unit of account is the manufactured part and its dimensional conformance." ;
     skos:scopeNote "Includes engineering drawings and specifications, tolerance stack-up and GD&T, first-article inspection, gauge and CMM measurement of parts, material review board disposition of nonconforming units, and corrective action on tooling and process." ;
@@ -146,7 +146,7 @@
 <https://signals.zndx.org/sdg#MFG_PROCESS> a skos:Concept ;
     skos:altLabel "MFG_PROCESS" ;
     skos:prefLabel "Manufacturing Processes and Execution" ;
-    skos:notation "10.4" ;
+    skos:notation "19.1.4" ;
     skos:altLabel "Production Execution" ;
     skos:definition "How product is made and how production runs. Manufacturing processes transform stock and components into finished parts and assemblies — machining and CNC milling, injection molding, sheet-metal forming, welding, additive manufacturing, and assembly operations — using tooling, fixtures, and process parameters. Process plans, routings, and work instructions sequence the operations that realize a design; work orders release them to work cells and lines; execution records operation start and completion, labor and machine time, consumed material, and yield. Lights-out and automated cells execute the same routings under supervisory control." ;
     skos:scopeNote "Includes process planning and routing, tooling and fixturing, CNC and additive workflows, assembly sequencing, work-order execution and completion reporting, and automated/lights-out cell operation." ;
@@ -164,7 +164,7 @@
         <https://signals.zndx.org/sdg#PRODML> ;
     skos:altLabel "ENERGY" ;
     skos:prefLabel "Energy and Well Drilling" ;
-    skos:notation "11" ;
+    skos:notation "17.1" ;
     skos:altLabel "Upstream Oil and Gas" ;
     skos:definition "The upstream energy domain of drilling, logging, and operating wells to access subsurface hydrocarbons. A well is a constructed feature whose wellbore is drilled along a planned trajectory through geological formations; the operation is instrumented by well logs and downhole measurement, recorded as channels and mud logs, and surveyed as trajectory stations. Drilling is executed by a rig running a bottom-hole assembly with a bit on tubulars, supported by cementing, casing, and well-stimulation operations, and documented in drilling and operations reports. This is the WITSML systems view of well construction and data transfer." ;
     skos:scopeNote "Covers well planning, directional drilling, well logging and petrophysics, mud logging, casing and completion, and drilling operations. Maps onto the WITSML 2.0 data model (Well, Wellbore, Trajectory, Log, Channel, MudLog, Rig, BhaRun, Tubular, DrillReport) and the Energistics transfer protocol." ;
@@ -175,7 +175,7 @@
 <https://signals.zndx.org/sdg#ENERGY_WELLBORE> a skos:Concept ;
     skos:altLabel "ENERGY_WELLBORE" ;
     skos:prefLabel "Wells, Wellbores and Subsurface Targets" ;
-    skos:notation "11.1" ;
+    skos:notation "17.1.1" ;
     skos:altLabel "Well Construction" ;
     skos:definition "The constructed subsurface features of a drilling project. A well is the facility that accesses a subsurface target; a wellbore is the drilled hole within it, with an as-built geometry of hole sizes, casing strings, and cement. Wells are planned to reach geological targets at depth, drilled in sections, and cased and completed to produce or inject fluids. Each wellbore records its geometry, the formations it penetrates, and the casing and completion that line it." ;
     skos:scopeNote "Includes hole sections, casing and tubing strings, completions, and subsurface targets. Corresponds to WITSML Well, Wellbore, WellboreGeometry, and Target." ;
@@ -185,7 +185,7 @@
 <https://signals.zndx.org/sdg#ENERGY_LOGGING> a skos:Concept ;
     skos:altLabel "ENERGY_LOGGING" ;
     skos:prefLabel "Well Logging and Downhole Measurement" ;
-    skos:notation "11.2" ;
+    skos:notation "17.1.2" ;
     skos:altLabel "Formation Evaluation" ;
     skos:definition "The measurement of subsurface properties along a wellbore and the records it produces. A well log is a record of one or more measurement channels indexed by depth or time; a mud log records formation and cuttings observations made while drilling; formation markers pick the boundaries of geological units. Logging quantifies petrophysical properties — porosity, resistivity, gamma, density — through wireline and measurement-while-drilling tools, and the resulting channels and channel-sets are the primary evidence for formation evaluation." ;
     skos:scopeNote "Includes wireline and measurement-while-drilling logs, channel sets, petrophysical curves, mud logs, and formation tops. Corresponds to WITSML Log, WellLog, ChannelSet, Channel, MudLog, and FormationMarker." ;
@@ -195,7 +195,7 @@
 <https://signals.zndx.org/sdg#ENERGY_TRAJECTORY> a skos:Concept ;
     skos:altLabel "ENERGY_TRAJECTORY" ;
     skos:prefLabel "Wellbore Trajectory and Survey" ;
-    skos:notation "11.3" ;
+    skos:notation "17.1.3" ;
     skos:altLabel "Directional Survey" ;
     skos:definition "The geometric path of a wellbore through space and its measurement. A trajectory is the three-dimensional path the wellbore follows from surface to target; trajectory stations are surveyed points along it, each recording measured depth, inclination, and azimuth from which position is computed. Directional drilling steers the wellbore along a planned trajectory to hit subsurface targets while honouring dogleg and anti-collision constraints, and the survey program defines how and where the path is measured." ;
     skos:scopeNote "Includes directional plans, survey stations, minimum-curvature position computation, dogleg severity, and anti-collision. Corresponds to WITSML Trajectory, TrajectoryStation, and SurveyProgram." ;
@@ -205,7 +205,7 @@
 <https://signals.zndx.org/sdg#ENERGY_OPERATIONS> a skos:Concept ;
     skos:altLabel "ENERGY_OPERATIONS" ;
     skos:prefLabel "Drilling Operations and Rig Equipment" ;
-    skos:notation "11.4" ;
+    skos:notation "17.1.4" ;
     skos:altLabel "Rig Operations" ;
     skos:definition "The operations and equipment that drill and service a well. A rig is the equipment assembly that drills the well, running a bottom-hole assembly with a bit on a string of tubulars; operations include drilling ahead, tripping, cementing, and well stimulation, each recorded against a plan in drilling and operations reports. Equipment, fluids, time breakdown, and operational risks are logged so that performance and non-productive time can be analysed and the next operation planned." ;
     skos:scopeNote "Includes bottom-hole-assembly runs, bits and tubulars, cementing and stimulation jobs, daily drilling reports, fluids reports, and risk logs. Corresponds to WITSML Rig, BhaRun, Tubular, Bit, CementJob, StimJob, DrillReport, FluidsReport, and Risk." ;
@@ -419,7 +419,7 @@
 <https://signals.zndx.org/sdg#PRODML> a skos:Concept ;
     skos:prefLabel "Production Markup Language Domain" ;
     skos:altLabel "PRODML" ;
-    skos:notation "11.5" ;
+    skos:notation "17.1.5" ;
     skos:definition "The Energistics PRODML production-data domain extended comprehensively into SDG: well production volumes, fluid analyses, distributed sensing, and production operations reporting — a subdomain of upstream energy (re-homed from sibling-top, RH 2026-07-25)." ;
     skos:broader <https://signals.zndx.org/sdg#ENERGY> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -427,7 +427,7 @@
 <https://signals.zndx.org/sdg#PRODML_PRODUCT_VOLUME> a skos:Concept ;
     skos:prefLabel "Product Volume Reporting" ;
     skos:altLabel "PRODML_PRODUCT_VOLUME" ;
-    skos:notation "11.5.1" ;
+    skos:notation "17.1.5.1" ;
     skos:definition "Reported production volumes and dispositions per well, facility, and period — PRODML's product volume object family." ;
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -435,7 +435,7 @@
 <https://signals.zndx.org/sdg#PRODML_FLUID_ANALYSIS> a skos:Concept ;
     skos:prefLabel "Fluid Sample Analysis" ;
     skos:altLabel "PRODML_FLUID_ANALYSIS" ;
-    skos:notation "11.5.2" ;
+    skos:notation "17.1.5.2" ;
     skos:definition "Laboratory analyses of reservoir fluid samples — PVT studies, compositional assays, and sample chain-of-custody in the PRODML fluid analysis family." ;
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -443,7 +443,7 @@
 <https://signals.zndx.org/sdg#PRODML_DISTRIBUTED_SENSING> a skos:Concept ;
     skos:prefLabel "Distributed Sensing Surveys" ;
     skos:altLabel "PRODML_DISTRIBUTED_SENSING" ;
-    skos:notation "11.5.3" ;
+    skos:notation "17.1.5.3" ;
     skos:definition "Distributed temperature and acoustic sensing installations and surveys along the wellbore — PRODML DTS/DAS object families." ;
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -451,7 +451,7 @@
 <https://signals.zndx.org/sdg#PRODML_PRODUCTION_OPERATIONS> a skos:Concept ;
     skos:prefLabel "Production Operations Reporting" ;
     skos:altLabel "PRODML_PRODUCTION_OPERATIONS" ;
-    skos:notation "11.5.4" ;
+    skos:notation "17.1.5.4" ;
     skos:definition "Daily production operations reports: activities, shutdowns, safety events, and operational parameters across producing assets." ;
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
@@ -504,7 +504,7 @@
 <https://signals.zndx.org/sdg#MFG_LOGISTICS> a skos:Concept ;
     skos:altLabel "MFG_LOGISTICS" ;
     skos:prefLabel "Inventory, Warehousing and Fulfillment" ;
-    skos:notation "10.5" ;
+    skos:notation "19.1.5" ;
     <https://signals.zndx.org/sdg#groundedByModule> "manufacturing_module" ;
     skos:altLabel "Manufacturing Logistics" ;
     skos:definition "The flow of material through the manufacturing enterprise: inventory items identified, stocked, and counted at storage locations; stock levels maintained against reorder points and safety stock; purchase orders placed with suppliers and received as goods receipts; material reserved, allocated, and issued to production; and finished goods picked, packed, and shipped against customer orders. Warehouses and storerooms organize locations, put-away, and cycle counting; fulfillment closes the loop from order to delivery; and ERP workflows — procure to pay, order to cash, plan to produce — record every movement as an auditable transaction." ;

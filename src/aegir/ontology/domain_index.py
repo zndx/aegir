@@ -142,12 +142,38 @@ def _sot_admission_filter() -> dict:
         return {}
 
 
+def aperture_collection(name: str) -> "list[str]":
+    """Member IRIs of a named skos:Collection in aperture_layer.ttl (RH 2026-07-26).
+
+    The aperture's functional roles are EXPLICIT Collections, never inferred from
+    structural patterns: ``AperturePoints`` (the sparse MaxSim point layer, once the
+    notation-gated base + admission_filter aperture_include) and ``ChordDisplay``
+    (the chord-visible superset). Membership here is authoritative — adding a
+    skos:notation does not promote a concept to a point (notation ≠ point-hood)."""
+    try:
+        import rdflib
+    except Exception:  # noqa: BLE001
+        return []
+    f = Path(__file__).resolve().parent / "aperture_layer.ttl"
+    if not f.exists():
+        return []
+    SK = rdflib.Namespace("http://www.w3.org/2004/02/skos/core#")
+    SDG = rdflib.Namespace("https://signals.zndx.org/sdg#")
+    g = rdflib.Graph()
+    try:
+        g.parse(str(f))
+    except Exception as e:  # noqa: BLE001 — an unreadable layer is VISIBLE, never silent
+        print(f"aperture_layer.ttl unreadable: {e}")
+        return []
+    return sorted(str(o) for o in g.objects(SDG[name], SK.member))
+
+
 def integration_overlay_files() -> "list[Path]":
     """The canonical in-scope-external integration overlays: ``*_integration.ttl``.
 
     File discovery is DECOUPLED from point enumeration (a file may contribute
-    schemes and chord structure with zero enumerated points — energistics); which
-    concepts become aperture points remains solely aperture_include's business."""
+    schemes and chord structure with zero points — energistics); which concepts
+    become aperture points is solely the sdg:AperturePoints Collection's business."""
     return sorted(Path(__file__).resolve().parent.glob("*_integration.ttl"))
 
 
@@ -202,32 +228,33 @@ def build_index(*, vocab: "str | Path" = DEFAULT_VOCAB, url: str = DEFAULT_QDRAN
     """Encode every SKOS concept's text → ColBERT multi-vectors → a Qdrant MAX_SIM collection. The ontology
     IS the index.
 
-    When seeding the AIMING aperture: (a) the overlay base is NOTATION-GATED — only
-    concepts in the aperture code space seed points (no-notation scheme organization
-    like PRODML/SYSML never enters MaxSim competition); (b) the SoT admission_filter's
-    ``aperture_include`` members (ENUMERATED — §4.6.3 discipline: membership is never
-    inferred from scheme structure) are appended AFTER the overlay concepts, so
-    existing point ids stay stable and the includes take the tail ids."""
+    When seeding the AIMING aperture, the point layer is the EXPLICIT
+    ``sdg:AperturePoints`` Collection (RH 2026-07-26) — membership is authored, never
+    inferred from a structural pattern (not notation: notation ≠ point-hood; not the
+    overlay file a concept lives in). Members resolve from the base overlay + the
+    integration overlays; point-id order is base-file order then the remainder by code,
+    so existing ids stay stable across reseeds and the includes take the tail ids."""
     from qdrant_client import models
 
     from aegir.ontology.colbert_encoder import get_encoder
 
     concepts = load_skos(vocab)
     if collection == DEFAULT_APERTURE:
-        # NOTATION-GATED base: only concepts in the aperture CODE SPACE (skos:notation)
-        # are point candidates — confirmed schemes' tops/children without notations
-        # (PRODML/SYSML) are S9 organization, NOT admission points (measured 2026-07-25:
-        # an ungated reseed silently admitted 10 of them as MaxSim competitors).
-        concepts = {iri: c for iri, c in concepts.items() if getattr(c, "code", "")}
-        # seeding is AUTHORING: membership comes from the SoT file, not the released
-        # strategy (armed_admission_filter pins CLASSIFY-time policy and lags edits)
-        inc = integration_overlay_concepts()
-        for m in _sot_admission_filter().get("aperture_include", {}).get("members", []):
-            iri = str(m.get("iri", ""))
-            if iri in inc and iri not in concepts:
-                concepts[iri] = inc[iri]
-            elif iri not in inc:
-                print(f"aperture include NOT FOUND in integration overlays: {iri}")
+        # POINT LAYER = the explicit sdg:AperturePoints Collection (RH 2026-07-26):
+        # membership is AUTHORED, never inferred from a structural pattern — not from
+        # skos:notation (notation ≠ point-hood; adding a code must not silently admit a
+        # MaxSim competitor) and not from which overlay file a concept lives in. Resolve
+        # each member from the base overlay + the integration overlays; point-id order is
+        # base-file order then the remainder by code (the historical tail-append), so
+        # existing ids stay stable across reseeds.
+        members = set(aperture_collection("AperturePoints"))
+        pool = {**concepts, **integration_overlay_concepts()}
+        base = [iri for iri in concepts if iri in members]
+        rest = sorted((iri for iri in members if iri not in concepts and iri in pool),
+                      key=lambda i: pool[i].code)
+        for iri in sorted(members - set(pool)):
+            print(f"AperturePoints member NOT FOUND in overlays: {iri}")
+        concepts = {iri: pool[iri] for iri in base + rest}
     enc = get_encoder()
     client = _client(url)
     if recreate and client.collection_exists(collection):

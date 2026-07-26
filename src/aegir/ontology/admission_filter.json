@@ -1,61 +1,42 @@
 {
- "component": "lens/admission_filter",
- "armed": false,
- "exclude_codes": [
-  "9",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14"
- ],
- "excluded_concepts": {
-  "9": "LIMS",
-  "10": "MFG",
-  "11": "ENERGY",
-  "12": "CSG",
-  "13": "UTILITY",
-  "14": "DATAENG"
- },
- "rule": "S9-settled admission (schemes ORGANIZE via skos:hasTopConcept; concepts ADMIT): scheme roots are retired from MaxSim admission competition by QUERY-TIME payload filter (code NOT IN exclude_codes). The qdrant collection and the topic identity space are UNCHANGED \u2014 this is policy, not a rebuild. Roots remain scoreable as a shadow gap-net (a root-best/no-leaf passage is an aperture-coverage signal, never an admission).",
- "registered": {
-  "leaf_readmit_floor": 0.5,
-  "anchor_coverage_floor": 3,
-  "domain_tau": 0.1,
-  "window_chars": 4000,
-  "colbert_token_limit": 512,
-  "note": "the encoder truncates at 512 tokens \u2014 the EFFECTIVE admission grain today is a ~512-token head item regardless of window_chars, and 512 tokens is the maximum ITEM size for sliding-window procedures (RH 2026-07-23)"
- },
- "evidence": "worklist-5 dossier: 57.5% low-margin admissions, 86% of ties root-vs-root; 2026-07-23 measurement: 316/453 admitted docs root-admitted, 3 singleton + 10 zero-coverage leaf anchors",
- "doctrine": "zero/low-coverage anchors are REAL-WORLD aim points (MFG/CSG/UTILITY/LIMS target areas), never quality demerits \u2014 the signal they emit is ADVANCE THE INPUT WINDOW (full FinePDFs-edu ~49M docs; the local slice is tiny). Genus-first anchor composition (skos:broader AND skos:narrower) is measured as realized: 0/23 at staging (the hierarchy is two tiers; deepening is the programme).",
- "provenance": {
-  "ruling": "RH 2026-07-23 \u2014 payload filter ratified; apparatus captured in sdg-strategy for reproducibility and go-forward iteration",
-  "staged_by": "admission recomposition phase 1",
-  "arming": "flip armed=true only after the shadow-harvest window proves the recomposition (leaf re-admission vs the registered floor + derive-side metrology); AEGIR_ADMISSION_FILTER=1 force-arms for shadow runs"
- },
- "composite_doctrine": {
-  "ruling": "RH 2026-07-25: chord ≠ point. The SKOS chord renders the FULL hierarchy (home families, sector tier, in-scope-external scheme members like PRODML under ENERGY); the point layer stays sparse — one qdrant point per admission anchor, membership ENUMERATED. A chord-visible concept does NOT compete in MaxSim unless enumerated.",
-  "gepa": "points are COMPOSITES: GEPA optimization may draw differentia-constituent vocabulary from the anchor's chord subtree INCLUDING in-scope-external scheme members that are not points (e.g. PRODML skos:narrower concepts into the ENERGY point embedding)",
-  "invariant": "the underlying ontology MUST remain in sync with the skos hierarchy AND internally consistent (HermiT) as composites and differentia evolve — composite text changes are point-layer moves; hierarchy changes go through the ontology gates"
- },
- "aperture_include": {
-  "rationale": "RH 2026-07-25: FINTECH, BIOTECH, and MBSE join the admission surface \u2014 the contributor schemes' genus anchors, chord-conformant; membership is ENUMERATED (never inferred from scheme structure, \u00a74.6.3 discipline)",
-  "members": [
-   {
-    "iri": "https://signals.zndx.org/sdg#FINTECH",
-    "file": "fibo_integration.ttl",
-    "code": "15.1"
-   },
-   {
-    "iri": "https://signals.zndx.org/sdg#BIOTECH",
-    "file": "fhir_integration.ttl",
-    "code": "16.1"
-   },
-   {
-    "iri": "https://signals.zndx.org/sdg#MBSE",
-    "file": "sysmlv2_integration.ttl",
-    "code": "18.1"
-   }
-  ]
- }
+  "component": "lens/admission_filter",
+  "armed": false,
+  "exclude_codes": [
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+  ],
+  "excluded_concepts": {
+    "9": "LIMS",
+    "10": "MFG",
+    "11": "ENERGY",
+    "12": "CSG",
+    "13": "UTILITY",
+    "14": "DATAENG"
+  },
+  "rule": "S9-settled admission (schemes ORGANIZE via skos:hasTopConcept; concepts ADMIT): scheme roots are retired from MaxSim admission competition by QUERY-TIME payload filter (code NOT IN exclude_codes). The qdrant collection and the topic identity space are UNCHANGED — this is policy, not a rebuild. Roots remain scoreable as a shadow gap-net (a root-best/no-leaf passage is an aperture-coverage signal, never an admission).",
+  "registered": {
+    "leaf_readmit_floor": 0.5,
+    "anchor_coverage_floor": 3,
+    "domain_tau": 0.1,
+    "window_chars": 4000,
+    "colbert_token_limit": 512,
+    "note": "the encoder truncates at 512 tokens — the EFFECTIVE admission grain today is a ~512-token head item regardless of window_chars, and 512 tokens is the maximum ITEM size for sliding-window procedures (RH 2026-07-23)"
+  },
+  "evidence": "worklist-5 dossier: 57.5% low-margin admissions, 86% of ties root-vs-root; 2026-07-23 measurement: 316/453 admitted docs root-admitted, 3 singleton + 10 zero-coverage leaf anchors",
+  "doctrine": "zero/low-coverage anchors are REAL-WORLD aim points (MFG/CSG/UTILITY/LIMS target areas), never quality demerits — the signal they emit is ADVANCE THE INPUT WINDOW (full FinePDFs-edu ~49M docs; the local slice is tiny). Genus-first anchor composition (skos:broader AND skos:narrower) is measured as realized: 0/23 at staging (the hierarchy is two tiers; deepening is the programme).",
+  "provenance": {
+    "ruling": "RH 2026-07-23 — payload filter ratified; apparatus captured in sdg-strategy for reproducibility and go-forward iteration",
+    "staged_by": "admission recomposition phase 1",
+    "arming": "flip armed=true only after the shadow-harvest window proves the recomposition (leaf re-admission vs the registered floor + derive-side metrology); AEGIR_ADMISSION_FILTER=1 force-arms for shadow runs"
+  },
+  "composite_doctrine": {
+    "ruling": "RH 2026-07-25: chord ≠ point. The SKOS chord renders the FULL hierarchy (home families, sector tier, in-scope-external scheme members like PRODML under ENERGY); the point layer stays sparse — one qdrant point per admission anchor, membership ENUMERATED. A chord-visible concept does NOT compete in MaxSim unless enumerated.",
+    "gepa": "points are COMPOSITES: GEPA optimization may draw differentia-constituent vocabulary from the anchor's chord subtree INCLUDING in-scope-external scheme members that are not points (e.g. PRODML skos:narrower concepts into the ENERGY point embedding)",
+    "invariant": "the underlying ontology MUST remain in sync with the skos hierarchy AND internally consistent (HermiT) as composites and differentia evolve — composite text changes are point-layer moves; hierarchy changes go through the ontology gates"
+  },
+  "aperture_include_superseded": "RH 2026-07-26: replaced by sdg:AperturePoints skos:Collection in aperture_layer.ttl (explicit membership; notation != point-hood). This block previously enumerated FINTECH/BIOTECH/MBSE."
 }

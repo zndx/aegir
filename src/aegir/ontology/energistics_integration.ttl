@@ -16,7 +16,7 @@
 # under the sdg:ENERGY genus (skos:broader in domain_concepts.ttl) carrying full
 # dotted notation (11.5·) in the code space — a complete, consistent SKOS subtree.
 # Which topic anchors seed the sparse aperture point-layer is enumerated separately
-# (admission_filter aperture_include); notation ≠ point-hood (RH 2026-07-26). GEPA
+# (the sdg:AperturePoints Collection); notation ≠ point-hood (RH 2026-07-26). GEPA
 # composite optimization MAY draw their vocabulary as differentia constituents into
 # point embeddings; the SKOS hierarchy and the OWL ontology must remain in sync and
 # HermiT-consistent as composites evolve.

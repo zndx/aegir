@@ -101,10 +101,15 @@ def collect_lens() -> "dict[str, bytes]":
         af = Path(__file__).resolve().parents[1] / "ontology" / "admission_filter.json"
         if af.exists():
             out["lens/admission_filter.json"] = af.read_bytes()
+        # the aperture role Collections (RH 2026-07-26): sdg:AperturePoints (the sparse
+        # MaxSim point layer) + sdg:ChordDisplay (chord-visible superset) — explicit
+        # membership that supersedes the notation-gated base + admission_filter
+        # aperture_include; rides the lens so the released aperture is reproducible.
+        al = Path(__file__).resolve().parents[1] / "ontology" / "aperture_layer.ttl"
+        if al.exists():
+            out["lens/aperture_layer.ttl"] = al.read_bytes()
         # in-scope-external contributor schemes (RH 2026-07-24): shipped with the lens.
-        # 2026-07-25: their genera (FINTECH/BIOTECH) ENTERED the aperture seed path —
-        # delta-gated (recompose over the frozen store: 12 outcome changes, all gains)
-        # and enumerated via admission_filter aperture_include (§4.6.3 discipline)
+        # Their genera (FINTECH/BIOTECH/MBSE) are aperture points via sdg:AperturePoints.
         for _f in sorted((Path(__file__).resolve().parents[1] / "ontology")
                          .glob("*_integration.ttl")):
             out[f"lens/{_f.stem}.skos.ttl"] = _f.read_bytes()

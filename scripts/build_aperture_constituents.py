@@ -48,16 +48,13 @@ def main() -> int:
     ap.add_argument("--write-payloads", action="store_true", default=True)
     a = ap.parse_args()
 
-    anchors = {k: c for k, c in DI.load_skos(str(DI.DEFAULT_OVERLAY)).items()
-               if not getattr(c, "deprecated", False)}   # bridges are resolution aids, never anchors
-    # the ENUMERATED include points (FINTECH/BIOTECH/MBSE …) live in integration
-    # files — outside load_skos's regex; without them the scratch chord drops
-    # live aperture points (measured 2026-07-25: 30/33 rendered)
-    _inc = DI.integration_overlay_concepts()
-    for m in DI._sot_admission_filter().get("aperture_include", {}).get("members", []):
-        iri = str(m.get("iri", ""))
-        if iri in _inc and iri not in anchors:
-            anchors[iri] = _inc[iri]
+    # CHORD DISPLAY = the explicit sdg:ChordDisplay Collection (RH 2026-07-26): which
+    # concepts render as chord arcs is AUTHORED, never inferred from which overlay file
+    # a concept lives in or from notation. Resolve members from base + integration
+    # overlays (bridges are resolution aids, never anchors — deprecated filtered out).
+    _pool = {**DI.load_skos(str(DI.DEFAULT_OVERLAY)), **DI.integration_overlay_concepts()}
+    anchors = {iri: _pool[iri] for iri in DI.aperture_collection("ChordDisplay")
+               if iri in _pool and not getattr(_pool[iri], "deprecated", False)}
     vocab = DI.load_skos()                                   # full vocab (defaults)
     client = DI._client(a.url)
     from aegir.ontology.colbert_encoder import get_encoder
