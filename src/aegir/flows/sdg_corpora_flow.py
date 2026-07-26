@@ -237,6 +237,21 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         from aegir.ontology.derive_loop import derive_with_metrology
         from aegir.ontology.entities import to_manchester
         self.exchange_ids = []   # Iceberg raw.exchange row ids — the lineage join
+        self._hx_failed = 0
+        self._hx_expected = 0
+        # FAIL FAST, NOT SILENT: probe the exchange store before committing hours of engine time.
+        hx_err = self._hx_preflight()
+        if hx_err:
+            if not os.environ.get("AEGIR_ALLOW_UNTRACED"):
+                raise RuntimeError(
+                    f"exchange store unavailable ({hx_err}). Refusing to start a long derive that "
+                    "would produce artifacts with no retained reasoning — that is hours of compute "
+                    "for provenance we cannot reconstruct. Fix the store, or set "
+                    "AEGIR_ALLOW_UNTRACED=1 to accept untraced derivation DELIBERATELY.")
+            print(f"  ⚑ AEGIR_ALLOW_UNTRACED: proceeding with exchange store DOWN ({hx_err}) — "
+                  "this run's derivation will have no retained reasoning", flush=True)
+        else:
+            print("  exchange store preflight OK (raw.exchange writable)", flush=True)
         dv = deriver_version()
         try:
             from aegir.strategy.lineage import stage_key
@@ -289,6 +304,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                 xc = rnd.pop("exchange", None) or {}
                 if not xc.get("response_text"):
                     continue
+                self._hx_expected += 1
                 xid = self._record_derive_exchange(xc, passage_sha=pid)
                 if xid:
                     rnd["exchange_id"] = xid          # the join: Iceberg row ← lineage facet
@@ -303,6 +319,22 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         # produced its output. Content lives in raw.exchange (columnar); the graph carries structure
         # and REFERENCES. Ids only — a facet that inlined 3,027 traces would stop being navigable.
         from aegir.governance.step_lineage import emit_step
+        # RECONCILE: expected == recorded + spooled, or the accounting is wrong and we say so. A
+        # shortfall must be a NUMBER IN THE ARTIFACT, not a line in a 3,000-line log.
+        recorded, spooled = len(self.exchange_ids), int(getattr(self, "_hx_failed", 0))
+        self.exchange_accounting = {"expected": self._hx_expected, "recorded": recorded,
+                                    "spooled": spooled, "reconciled": recorded + spooled == self._hx_expected}
+        if not self.exchange_accounting["reconciled"]:
+            raise RuntimeError(
+                f"exchange accounting does not reconcile: expected {self._hx_expected}, recorded "
+                f"{recorded}, spooled {spooled}. Traces are unaccounted for, so the derivation's "
+                "provenance is incomplete in a way we cannot quantify — that is a defect, not a warning.")
+        if spooled:
+            print(f"  ⚑ {spooled}/{self._hx_expected} exchanges SPOOLED (not in raw.exchange) — "
+                  f"backfill from {self.run_out}/exchanges/spool/ before this run is released",
+                  flush=True)
+        else:
+            print(f"  exchanges: {recorded}/{self._hx_expected} recorded in raw.exchange", flush=True)
         models = sorted({r.get("model", "") for rep in self.derive_reports.values()
                          for r in rep.get("rounds", []) if r.get("model")})
         emit_step("derive", flow_run_id=str(current.run_id), state="COMPLETE",
@@ -311,6 +343,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                       "n_exchanges": len(self.exchange_ids),
                       "exchange_table": "raw.exchange",
                       "exchange_ids": self.exchange_ids[:2000],
+                      "accounting": self.exchange_accounting,
                       "note": "reasoning CONTENT is in Iceberg raw.exchange; these are row "
                               "references. A trace records what was said — authority remains with "
                               "the gates."}})
@@ -352,12 +385,49 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             )
             append_exchange(rec)
             return rec.id
-        except Exception as exc:  # noqa: BLE001 — HX capture is best-effort; never lose the derive
-            if not getattr(self, "_hx_warned", False):
-                print(f"  HX capture unavailable ({type(exc).__name__}: {exc}) — traces not "
-                      "persisted this run", flush=True)
-                self._hx_warned = True
+        except Exception as exc:  # noqa: BLE001 — SPOOLED, never dropped; see the accounting below
+            # RH 2026-07-26: a swallowed capture failure means the lineage is silently lost while we
+            # keep burning tokens and hours. So a failure here is neither fatal nor silent: the record
+            # SPOOLS to disk (the derive survives, and so does the trace — backfillable), the failure
+            # is COUNTED, and `derive` reconciles expected-vs-recorded at the end. Mass cannot vanish.
+            self._hx_failed = getattr(self, "_hx_failed", 0) + 1
+            try:
+                spool = Path(self.run_out, "exchanges", "spool")
+                spool.mkdir(parents=True, exist_ok=True)
+                (spool / f"{rec.id}.json").write_text(json.dumps(
+                    {"id": rec.id, "passage_sha": passage_sha, "error": f"{type(exc).__name__}: {exc}",
+                     **xc}, default=str), encoding="utf-8")
+            except Exception as spool_exc:  # noqa: BLE001 — cannot even spool: that IS fatal
+                raise RuntimeError(
+                    f"exchange capture failed ({type(exc).__name__}) AND spooling failed "
+                    f"({type(spool_exc).__name__}) — refusing to continue a long derive whose "
+                    f"provenance would be unrecoverable") from exc
+            if self._hx_failed == 1:
+                print(f"  ⚑ HX capture failing ({type(exc).__name__}: {exc}) — SPOOLING to "
+                      f"exchanges/spool/ for backfill; counted and reconciled at step end", flush=True)
             return None
+
+    def _hx_preflight(self) -> "str | None":
+        """Probe the exchange store BEFORE the expensive work. Returns an error string, or None if OK.
+
+        The point is timing: a broken store discovered in second 1 costs nothing, while the same
+        breakage discovered by inspecting artifacts after a 6.5-hour derive costs the whole run's
+        provenance. A canary write is the only honest probe — reachability is not writability.
+        """
+        try:
+            from gaius.hx.exchange import ExchangeRecord
+
+            from aegir.hx import append_exchange
+            rec = ExchangeRecord(
+                provider="engine",
+                request_messages=[{"role": "user", "content": "derive preflight canary"}],
+                request_model="instruct", response_content="canary",
+                source_context=json.dumps({"aegir_module": "sdg_corpora_flow.derive.preflight",
+                                           "run_id": str(current.run_id)}))
+            append_exchange(rec)
+            return None
+        except Exception as exc:  # noqa: BLE001 — the whole purpose is to report, not to raise here
+            return f"{type(exc).__name__}: {exc}"
 
     @traced_step
     @step
