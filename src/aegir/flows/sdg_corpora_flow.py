@@ -33,7 +33,7 @@ apply_metaflow_config(os.environ.get("AEGIR_METAFLOW_MODE", "rke2"))
 import json  # noqa: E402
 import subprocess  # noqa: E402
 import time  # noqa: E402
-import hashlib  # noqa: E402
+
 from pathlib import Path  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
@@ -236,6 +236,7 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         from aegir.ontology.derive_harness import deriver_version
         from aegir.ontology.derive_loop import derive_with_metrology
         from aegir.ontology.entities import to_manchester
+        self.exchange_ids = []   # Iceberg raw.exchange row ids — the lineage join
         dv = deriver_version()
         try:
             from aegir.strategy.lineage import stage_key
@@ -285,21 +286,78 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
             # navigable at 3,027 passages x rounds.
             summary = report.summary()
             for rnd in summary.get("rounds", []):
-                trace_text = rnd.pop("reasoning", "") or ""
-                if not trace_text:
+                xc = rnd.pop("exchange", None) or {}
+                if not xc.get("response_text"):
                     continue
-                sha = hashlib.sha256(trace_text.encode("utf-8")).hexdigest()
-                xdir = Path(self.run_out, "exchanges", "derive")
-                xdir.mkdir(parents=True, exist_ok=True)
-                (xdir / f"{sha}.txt").write_text(trace_text, encoding="utf-8")
-                rnd["reasoning_sha256"] = sha          # the citation; content-addressed, so a re-run
-                rnd["reasoning_ref"] = f"exchanges/derive/{sha}.txt"   # reuses rather than duplicates
+                xid = self._record_derive_exchange(xc, passage_sha=pid)
+                if xid:
+                    rnd["exchange_id"] = xid          # the join: Iceberg row ← lineage facet
+                    self.exchange_ids.append(xid)
+                rnd["model"] = xc.get("model", "")
+                rnd["reasoning_len"] = len(xc.get("reasoning") or "")
             self.derive_reports[pid] = summary
             print(f"  [{i+1}/{len(self.passages)}] {pid}: {len(entities)} entities, "
                   f"verdict={report.final_verdict} (round {report.accepted_round})", flush=True)
         self.derive_stats = stats
+        # THE EXCHANGE JOIN (RH 2026-07-26): the step's lineage run references the Iceberg rows that
+        # produced its output. Content lives in raw.exchange (columnar); the graph carries structure
+        # and REFERENCES. Ids only — a facet that inlined 3,027 traces would stop being navigable.
+        from aegir.governance.step_lineage import emit_step
+        models = sorted({r.get("model", "") for rep in self.derive_reports.values()
+                         for r in rep.get("rounds", []) if r.get("model")})
+        emit_step("derive", flow_run_id=str(current.run_id), state="COMPLETE",
+                  facets={"agentMediation": {
+                      "mediated": True, "capability": "instruct", "models": models,
+                      "n_exchanges": len(self.exchange_ids),
+                      "exchange_table": "raw.exchange",
+                      "exchange_ids": self.exchange_ids[:2000],
+                      "note": "reasoning CONTENT is in Iceberg raw.exchange; these are row "
+                              "references. A trace records what was said — authority remains with "
+                              "the gates."}})
         self.emit_event("derive.done", stats)
         self.next(self.refine_escalations)
+
+    def _record_derive_exchange(self, xc: dict, *, passage_sha: str) -> "str | None":
+        """Append one derive exchange to Iceberg ``raw.exchange``; return its row id.
+
+        Reasoning CONTENT belongs in the columnar store (RH 2026-07-26) — Iceberg/parquet, which
+        `generate_chapter` and `refine/lineage` already write to — while the lineage graph holds
+        STRUCTURE and REFERENCES. An earlier pass of mine wrote loose .txt files, which was neither
+        the declared spec nor iceberg-ready; this is the corrected path.
+
+        `source_context` carries `passage_sha`, so an exchange links back to the FinePDFs document it
+        derived from — the same content hash the harvest manifest and the cross-reference check use.
+        That is what makes the chain walkable end to end: document → passage → exchange → entities.
+        """
+        try:
+            from gaius.hx.exchange import ExchangeRecord
+
+            from aegir.hx import append_exchange
+            rec = ExchangeRecord(
+                provider="engine",
+                request_messages=[{"role": "system", "content": xc.get("system_prompt", "")},
+                                  {"role": "user", "content": xc.get("prompt", "")}],
+                request_model=xc.get("model") or xc.get("capability") or "instruct",
+                request_params=json.dumps({"capability": xc.get("capability", ""),
+                                           "finish_reason": xc.get("finish_reason", "")}),
+                response_content=xc.get("response_text", ""),
+                response_reasoning=(xc.get("reasoning") or None),
+                input_tokens=xc.get("prompt_tokens") or None,
+                output_tokens=xc.get("completion_tokens") or None,
+                latency_ms=xc.get("latency_ms") or None,
+                source_context=json.dumps({"aegir_module": "sdg_corpora_flow.derive",
+                                           "run_id": str(current.run_id),
+                                           "passage_sha": passage_sha,
+                                           "model": xc.get("model", "")}),
+            )
+            append_exchange(rec)
+            return rec.id
+        except Exception as exc:  # noqa: BLE001 — HX capture is best-effort; never lose the derive
+            if not getattr(self, "_hx_warned", False):
+                print(f"  HX capture unavailable ({type(exc).__name__}: {exc}) — traces not "
+                      "persisted this run", flush=True)
+                self._hx_warned = True
+            return None
 
     @traced_step
     @step

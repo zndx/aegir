@@ -99,7 +99,11 @@ def derive_with_metrology(passage: str, *, max_rounds: int = 2, temperature: flo
             # trace across 3,027 passages became an integer. What a model thinks while admitting a
             # passage is the evidence for why a construct materialized; the CALLER decides where it is
             # persisted (see SdgCorporaFlow.derive), which keeps the storage policy out of the loop.
-            "reasoning": meta.get("reasoning", "") or ""})
+            # the whole exchange, for the caller to record in Iceberg raw.exchange
+            "exchange": {k: meta.get(k) for k in
+                         ("prompt", "system_prompt", "response_text", "reasoning", "capability",
+                          "model", "prompt_tokens", "completion_tokens", "latency_ms",
+                          "finish_reason")}})
         if rank > best[0]:
             best = (rank, entities)
             report.accepted_round = rnd

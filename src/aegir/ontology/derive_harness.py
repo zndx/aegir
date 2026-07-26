@@ -86,7 +86,21 @@ def propose(passage: str, *, capability: str = "instruct", temperature: float = 
         except json.JSONDecodeError:
             obj = {"entities": []}
     entities = from_json(obj)
+    # Carry the FULL exchange provenance, not a summary of it. `complete_detailed` returns model,
+    # token counts and latency; this meta used to drop all of them alongside the reasoning, so the
+    # boundary that lost the trace also lost WHICH MODEL produced the entities. provider/model are
+    # first-class provenance (the doctrine refine/lineage.py already states): each data element should
+    # record the agent and model that produced it. The caller writes the Iceberg exchange record.
     meta = {"n_entities": len(entities),
             "reasoning": out.get("reasoning_content", "") if isinstance(out, dict) else "",
-            "raw_len": len(text)}
+            "raw_len": len(text),
+            "prompt": prompt,
+            "system_prompt": _SYSTEM,
+            "response_text": text,
+            "capability": capability,
+            "model": (out.get("model") or "") if isinstance(out, dict) else "",
+            "prompt_tokens": (out.get("prompt_tokens") or 0) if isinstance(out, dict) else 0,
+            "completion_tokens": (out.get("completion_tokens") or 0) if isinstance(out, dict) else 0,
+            "latency_ms": (out.get("latency_ms") or 0) if isinstance(out, dict) else 0,
+            "finish_reason": (out.get("finish_reason") or "") if isinstance(out, dict) else ""}
     return entities, meta
