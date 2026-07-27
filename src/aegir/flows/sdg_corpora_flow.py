@@ -117,12 +117,14 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     corpus_mode = Parameter("corpus", default=True, type=bool,
                             help="accrete into the persistent corpus dir (idempotent top-up per "
                                  "input window) instead of a fresh per-run dir")
-    realize_unrepaired = Parameter("realize-unrepaired", default=False, type=bool,
-                                   help="attempt realize WITHOUT the ratified tier-1 repairs first "
-                                        "(the full nominal union). A known failure mode at corpus "
-                                        "scale — >5400s twice with no verdict — so it is opt-in for "
-                                        "deliberate comparison only; the repaired path certifies in "
-                                        "~21s (RH 2026-07-27)")
+    realize_repairs = Parameter("realize-repairs", default=False, type=bool,
+                                help="let realize REWRITE the generated ontology in place (scope "
+                                     "shared enum members, reconcile double-category classes, drop "
+                                     "union-global functionals). OFF by default and deliberately: "
+                                     "the pipeline exists to SURFACE defects for the generator to "
+                                     "fix, and a repair applied every run hides the defect it "
+                                     "repairs. Opt in for a one-off scratch comparison only "
+                                     "(RH 2026-07-27)")
     ddl_scope = Parameter("ddl-scope", default="both",
                           help="the kvasir-scoped DDL stage's scope (pathway consolidation, RH "
                                "2026-07-23): comprehensive is DEFAULT-ON by ruling — 'both' runs "
@@ -430,6 +432,67 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                       f"exchanges/spool/ for backfill; counted and reconciled at step end", flush=True)
             return None
 
+    def _emit_realize_recommendations(self) -> dict:
+        """Measure the generated ontology's untractability and emit SOURCE-SIDE recommendations.
+
+        The inversion that matters (RH 2026-07-27): the pipeline exists to surface defects and missing
+        functionality so they get fixed or implemented — so when realize cannot certify, the output is
+        a set of explicit proposals addressed to the GENERATOR, not a silently-repaired artifact. Each
+        recommendation names the defect, its measured evidence, and where the source-side fix belongs.
+        Deliberately measurement-only: this function reads and reports, it never edits.
+        """
+        import collections
+        import re as _re
+        omn_path = Path(self.run_out, "ontology", "sdg-ontology.omn")
+        text = omn_path.read_text(encoding="utf-8") if omn_path.exists() else ""
+        recs: "list[dict]" = []
+
+        n_func = len(_re.findall(r"^\s*Characteristics:\s*Functional\s*$", text, _re.M))
+        if n_func:
+            recs.append({
+                "defect": "union-global Functional axioms lifted from per-passage cardinality",
+                "evidence": f"{n_func} `Characteristics: Functional` in the merged ontology; the "
+                            "catalog realization asserts none",
+                "why_it_costs": "functionality plus max-cardinality forces equality reasoning across "
+                                "the existential layer — the measured tractability wall",
+                "fix_at_source": "aegir.ontology.derive_harness / derive_loop.merge_entities — a "
+                                 "per-passage '=1' reading is evidence about ONE passage and must not "
+                                 "lift to a global functional property (see task #63)"})
+
+        cnt: "collections.Counter[str]" = collections.Counter()
+        for m in _re.finditer(r"^Class:\s*\S+\n(?:[ \t][^\n]*\n)*?[ \t]+EquivalentTo:\s*\{([^}]*)\}",
+                              text, _re.M):
+            for mem in (x.strip() for x in m.group(1).split(",") if x.strip()):
+                cnt[mem] += 1
+        shared = {k: v for k, v in cnt.items() if v > 1}
+        if shared:
+            hot = sorted(shared.items(), key=lambda kv: -kv[1])[:5]
+            recs.append({
+                "defect": "oneOf enum members shared across distinct Kind vocabularies",
+                "evidence": f"{len(shared)} members in >1 Kind; hottest {hot}",
+                "why_it_costs": "one individual typed into category-incompatible Kinds — the ABox "
+                                "clash a reasoner reports as inconsistent-with-zero-unsat",
+                "fix_at_source": "the value generator should mint per-vocabulary particulars "
+                                 "(Kind__member) rather than reusing a bare token across Kinds"})
+
+        if not _re.search(r"^\s*DisjointClasses:|^\s*DisjointWith:|^Import:", text, _re.M):
+            recs.append({
+                "defect": "no imports and no disjointness in the generated union",
+                "evidence": "0 Import: · 0 DisjointClasses/DisjointWith",
+                "why_it_costs": "every refutation rule roots in disjointness, so a no-clash verdict "
+                                "over this theory is a tautology rather than assurance",
+                "fix_at_source": "realize should inline the told theory (build/grounding/"
+                                 "cco-taxonomy.omn, 42 DisjointClasses) — see tasks #64/#65"})
+
+        out = Path(self.run_out, "realize_recommendations.json")
+        payload = {"run_id": str(current.run_id), "ontology": str(omn_path),
+                   "recommendations": recs,
+                   "posture": "proposals for the generator; this pass edited nothing"}
+        out.write_text(json.dumps(payload, indent=1), encoding="utf-8")
+        for r in recs:
+            print(f"  ⚑ RECOMMEND: {r['defect']} — {r['evidence']}", flush=True)
+        return {"path": str(out), "recommendations": recs}
+
     _HX_BATCH = 250          # ~24 commits for a 3,027-passage derive instead of ~6,000
 
     def _flush_exchanges(self) -> None:
@@ -549,11 +612,26 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
         # The unrepaired path stays REACHABLE, not default: --realize-unrepaired runs it deliberately
         # for comparison. Deeper logic validation happens incrementally, out of band; the metaflow path
         # runs the configuration that works, with kvasir fast-refuting in-loop.
-        r = _attempt(repaired=not self.realize_unrepaired)
-        if r.returncode == 3 and self.realize_unrepaired:
-            print("  realize: HermiT exceeded the budget on the deliberately-unrepaired attempt → "
-                  "falling back to the ratified tier-1 repairs", flush=True)
-            r = _attempt(repaired=True)
+        # THE MAIN PATH EDITS NOTHING (RH 2026-07-27). A one-off remediation had been elevated to
+        # routine procedure: `--reconcile-categories --drop-individuals` rewrites agent-generated
+        # ontology source on EVERY run — scoping 964 enum members, re-parenting 56 classes, deleting
+        # 38,975 functional axioms — which means the deriver keeps emitting those defects forever and
+        # nobody ever sees them, because the repair launders the output each time. Editing a scratch
+        # artifact while we fix the generator is remediation; doing it in the pipeline is concealment.
+        #
+        # So: no repairs here. When the input is untractable we SURFACE an explicit recommendation
+        # back to the agentic pipeline and stop, rather than quietly making the input tractable.
+        r = _attempt(repaired=self.realize_repairs)
+        if r.returncode == 3 and not self.realize_repairs:
+            rec = self._emit_realize_recommendations()
+            raise RuntimeError(
+                "realize exceeded AEGIR_REASON_BUDGET_S and the main path does NOT self-repair.\n"
+                f"  Wrote {len(rec['recommendations'])} explicit recommendation(s) → "
+                f"{rec['path']}\n"
+                "  These are proposals for the GENERATOR, not edits to its output: each names the\n"
+                "  defect, the evidence, and the source-side fix. Applying them by hand to a scratch\n"
+                "  artifact is remediation; applying them in-pipeline would hide the defect forever.\n"
+                "  `--realize-repairs` applies them in-place for a deliberate one-off comparison.")
         if r.returncode == 2:
             raise RuntimeError("HermiT refused the merged ontology (INCONSISTENT — no model) — "
                                f"see {self.run_out}/ontology/certificate.json")
