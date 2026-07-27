@@ -95,7 +95,11 @@ class Entity:
     definition, typed attributes, and cardinality-bounded relations."""
     name: str                       # concept name (→ sdg:Name)
     label: str = ""
-    genus: str = "cco:ont00000995"     # BFO/CCO anchor (prefixed IRI)
+    # BFO/CCO anchor (prefixed IRI). Defaults to UNANCHORED, not to Material Artifact: a
+    # missing genus that silently becomes a material continuant is a wrong claim, and a wrong
+    # anchor is strictly worse than none — it contradicts the disjointness axioms and makes the
+    # class unsatisfiable, where an absent one merely marks work to do.
+    genus: str = ""
     definition: str = ""
     attributes: list[DataAttr] = field(default_factory=list)
     relations: list[Relation] = field(default_factory=list)

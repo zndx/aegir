@@ -31,9 +31,28 @@ bibliographic wrapper is noise; the domain phenomena the text is ABOUT are the s
 
 For each entity (a real named class):
 - give a CamelCase `name` and a plain-English `label`;
-- anchor it to a `genus` — a real BFO/CCO IRI: cco:ont00000995 (a made thing / record / sample),
-  bfo:0000015 (a process / activity / measurement), cco:ont00000958 (a document
-  / dataset / designator), bfo:0000023 (a role);
+- anchor it to a `genus` — a real BFO/CCO IRI. Ask what KIND of thing it is and pick from that
+  branch. Getting the branch wrong makes the class logically INCONSISTENT, not merely imprecise:
+  a role filed as a thing, or an act filed as an artifact, contradicts BFO's continuant/occurrent
+  split and the class becomes unsatisfiable.
+    · a PERSON or people — cco:ont00001262 (Person), cco:ont00000914 (Group of Persons)
+    · an ORGANIZATION — cco:ont00001180 (Organization), cco:ont00000443 (Commercial Organization)
+    · a ROLE something BEARS — cco:ont00000175 (Organization Member Role), cco:ont00000187
+      (Authority Role), cco:ont00000984 (Occupation Role), bfo:0000023 (Role, when none fits).
+      Employee, Member, Owner, Donor, Authority, Participant name ROLES — never things.
+    · an ACT or PROCESS unfolding in time — bfo:0000015 (Process). Anything named as an activity,
+      request, assessment, enrolment, transfer, or approval belongs here.
+    · INFORMATION — a record, dataset, plan, curriculum, standard, specification, measurement
+      result, requirement: cco:ont00000958 (Information Content Entity), cco:ont00002039
+      (Document Content Entity), cco:ont00000853 (Descriptive Information). A record is
+      INFORMATION; it is not a physical object.
+    · a MADE PHYSICAL THING — cco:ont00000995 (Material Artifact), bfo:0000040 (Material Entity).
+      Only for things with mass that you could point at. This is NOT the fallback.
+    · a PLACE — cco:ont00000472 (Geospatial Region)
+    · a CAPABILITY or disposition — cco:ont00000568 (Organization Capability)
+  Prefer the most specific class you are confident in. If two branches seem possible, decide what
+  the entity IS — a person, a role, an act, information, a physical object, a place — and take
+  that branch. Never guess at Material Artifact to avoid choosing;
 - write a one-sentence `definition`;
 - give it MANY `attributes` (typed DataProperties) — 4 to 10 per entity, the real measured and
   recorded fields: identifiers, dates, quantities, names, statuses, codes. Use xsd types
