@@ -117,6 +117,12 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
     corpus_mode = Parameter("corpus", default=True, type=bool,
                             help="accrete into the persistent corpus dir (idempotent top-up per "
                                  "input window) instead of a fresh per-run dir")
+    realize_unrepaired = Parameter("realize-unrepaired", default=False, type=bool,
+                                   help="attempt realize WITHOUT the ratified tier-1 repairs first "
+                                        "(the full nominal union). A known failure mode at corpus "
+                                        "scale — >5400s twice with no verdict — so it is opt-in for "
+                                        "deliberate comparison only; the repaired path certifies in "
+                                        "~21s (RH 2026-07-27)")
     ddl_scope = Parameter("ddl-scope", default="both",
                           help="the kvasir-scoped DDL stage's scope (pathway consolidation, RH "
                                "2026-07-23): comprehensive is DEFAULT-ON by ruling — 'both' runs "
@@ -533,11 +539,20 @@ class SdgCorporaFlow(TracedFlow, FlowSpec):
                 args += ["--drop-individuals", "--reconcile-categories"]
             return subprocess.run(args, cwd=str(REPO), env=env)
 
-        r = _attempt(repaired=False)
-        if r.returncode == 3:
-            print("  realize: HermiT exceeded the budget at full scope → re-attempting with the "
-                  "ratified tier-1 repairs (decomposed certification + functional-overassertion "
-                  "and double-category reconciliation)", flush=True)
+        # REPAIRS LEAD (RH 2026-07-27: "kill and run the known working path"). The unrepaired
+        # full-nominal union is a KNOWN failure mode at this scale — >5400s twice with no verdict —
+        # so attempting it first buys nothing and costs 90 minutes per run. The repairs are ratified
+        # tier-1 mechanical fixes that make the artifact MORE correct (964 shared enum members scoped,
+        # 56 double-category classes repaired, 38,975 false union-global functionals dropped), and the
+        # measured outcome is 21s / consistent / unsat=0 / level=certified.
+        #
+        # The unrepaired path stays REACHABLE, not default: --realize-unrepaired runs it deliberately
+        # for comparison. Deeper logic validation happens incrementally, out of band; the metaflow path
+        # runs the configuration that works, with kvasir fast-refuting in-loop.
+        r = _attempt(repaired=not self.realize_unrepaired)
+        if r.returncode == 3 and self.realize_unrepaired:
+            print("  realize: HermiT exceeded the budget on the deliberately-unrepaired attempt → "
+                  "falling back to the ratified tier-1 repairs", flush=True)
             r = _attempt(repaired=True)
         if r.returncode == 2:
             raise RuntimeError("HermiT refused the merged ontology (INCONSISTENT — no model) — "
