@@ -62,6 +62,13 @@ def create_app(cfg: Config | None = None) -> FastAPI:
     )
     app.state.cfg = cfg
 
+    # Wire-size discipline for the KB surface (#89): the lineup's first render blocks on
+    # /api/kb/index — 55.3 MB of link-heavy JSON after run 5 (43,909 → 106,745 notes), which
+    # compresses ~10×. Without this, every page load ships the full payload uncompressed to
+    # an iPad over WiFi and the UI's retry ladder makes slow transfers read as hangs.
+    from starlette.middleware.gzip import GZipMiddleware
+    app.add_middleware(GZipMiddleware, minimum_size=1024)
+
     _register_api_routes(app)
     # Extended OpenLineage variant over aegir_hx (/api/v1/lineage, /api/lineage/*).
     from aegir.governance.ol import make_router as _ol_router
@@ -145,14 +152,17 @@ def _register_api_routes(app: FastAPI) -> None:
     # `just kb-build`. Returns 404 with a hint if the projection isn't built.
 
     @app.get("/api/kb/index")
-    def kb_index() -> dict:
-        import json as _json
+    def kb_index():
+        from fastapi.responses import FileResponse
 
         from aegir.lineup import sources as _S
         p = _S.kb_dir() / "index.json"
         if not p.exists():
             raise HTTPException(404, "KB projection not built — run `just kb-build`")
-        return _json.loads(p.read_text())
+        # Stream the bytes; never json.loads a 55 MB file per request only for FastAPI to
+        # re-serialize it — that cost ~320 ms CPU + the whole object graph in memory, per
+        # page load, and every caller wanted the bytes anyway (#89).
+        return FileResponse(p, media_type="application/json")
 
     @app.post("/api/kb/verify-path")
     def kb_verify_path(payload: dict) -> dict:
