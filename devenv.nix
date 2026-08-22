@@ -83,6 +83,16 @@ in {
     package = pkgs.python312;
     uv.enable = true;
     uv.sync.enable = true;
+    # LOAD-BEARING: without these extras uv sync PRUNES the URL-pinned flash-attn /
+    # mamba-ssm / causal-conv1d wheels (pyproject [tool.uv.sources]; patched-wheel
+    # era closed 2026-07-19 — see CLAUDE.md "CUDA Extension Notes").
+    uv.sync.extras = [ "flash" "mamba" ];
+    # --inexact: the shell-entry auto-sync must be ADDITIVE — exact mode would prune
+    # the task-built polyglot-sql editable install (deliberately not a uv source) on
+    # every pyproject change. The deliberate full-consistency path stays `just sync`
+    # (exact). First two flags = devenv's defaults, repeated because setting the
+    # option replaces them.
+    uv.sync.arguments = [ "--frozen" "--no-install-workspace" "--inexact" ];
     venv.enable = true;
   };
 
@@ -205,6 +215,9 @@ in {
       handle /api/atlas/* {
         reverse_proxy 127.0.0.1:21000
       }
+      handle /viz/* {
+        reverse_proxy 127.0.0.1:5006
+      }
       handle /api/* {
         reverse_proxy 127.0.0.1:8091
       }
@@ -235,6 +248,7 @@ in {
     # from git.  Provisioned empty in M1; populated in M2.
     qdrant = {
       exec = ''
+        python3 bin/reclaim-port.py qdrant 6355 6356
         mkdir -p $DEVENV_STATE/qdrant
         QDRANT__STORAGE__STORAGE_PATH=$DEVENV_STATE/qdrant/storage \
         QDRANT__SERVICE__HTTP_PORT=6355 \
@@ -308,6 +322,7 @@ in {
     atlas = {
       exec = ''
         set -e
+        python3 bin/reclaim-port.py atlas 21000
         ATLAS_DIR="$PWD/components/atlas"
         ATLAS_WEBAPP="$ATLAS_DIR/webapp/target/atlas-webapp-3.0.0-SNAPSHOT"
         ATLAS_CONF="$PWD/config/atlas"
@@ -368,8 +383,14 @@ in {
     # (NOT separate processes) per the established pattern. The lineup projection is
     # non-blocking: if it fails the gateway still serves (the rest of the app), and
     # /api/kb 404s until `just kb-build` succeeds.
+    # PORT RECLAIM FIRST, build LAST-before-exec: the reclaim step evicts orphans/zombies
+    # holding :8091 (a manually-launched gateway that outlives its session), and its
+    # position AHEAD of the expensive KB build means a bind conflict can never again
+    # crash-loop the wipe/rebuild under a stale server (2026-08-07: 1,130 restarts,
+    # lineup "non-existent" — see docs/scratch/2026-08-07/181500_*).
     gateway = {
       exec = ''
+        python3 bin/reclaim-port.py gateway 8091
         uv run --no-sync python -m aegir.db.bootstrap && \
         { uv run --no-sync python -m aegir.lineup build || echo "[gateway] lineup projection failed — /api/kb will 404 until 'just kb-build' succeeds"; } && \
         AEGIR_LINEUP_UPKEEP=1 AEGIR_GATEWAY_RELOAD=1 exec uv run --no-sync python -m aegir.gateway
@@ -389,24 +410,65 @@ in {
       };
     };
 
+    # Live HoloViews / Bokeh server (topology B) — lineup chords, runs, sweeps.
+    # Vite and the gateway reverse-proxy /viz → :5006. Without this process the
+    # lineup Lexicon chord 404s `/viz/static/js/bokeh-gl.min.js`.
+    viz = {
+      exec = ''
+        python3 bin/reclaim-port.py viz 5006
+        export BOKEH_RESOURCES=server
+        export LD_LIBRARY_PATH="${config.devenv.root}/build/cuda-driver-libs''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        exec uv run --no-sync bokeh serve \
+          src/aegir/viz/lineup_app.py src/aegir/viz/runs_app.py \
+          src/aegir/viz/sweeps_app.py src/aegir/viz/reward_app.py \
+          src/aegir/viz/provenance_app.py \
+          --prefix /viz --port 5006 --allow-websocket-origin='*'
+      '';
+      process-compose = {
+        readiness_probe = {
+          http_get = {
+            host = "localhost";
+            port = 5006;
+            path = "/viz/static/js/bokeh.min.js";
+          };
+          initial_delay_seconds = 3;
+          period_seconds = 3;
+          failure_threshold = 40;
+        };
+      };
+    };
+
     # Vite dev server for the React UI.  Starts after gateway so the
     # /api proxy (vite.config.ts) has something to talk to.
     vite-dev = {
-      exec = "cd ui && pnpm install --silent --prefer-offline && pnpm dev";
+      exec = ''
+        python3 bin/reclaim-port.py vite-dev 5173
+        cd ui && pnpm install --silent --prefer-offline && pnpm dev
+      '';
       process-compose.depends_on.gateway.condition = "process_healthy";
+    };
+
+    # Capability / lattice engine (:50151) — multi-service gRPC for signals.target.
+    # Full-stack doctrine: devenv up owns product UI *and* the federation engine.
+    # Does not wait for vLLM SERVING; readiness is gRPC listen + Status.
+    capability-engine = {
+      exec = ''
+        python3 bin/reclaim-port.py capability-engine 50151 || true
+        export LD_LIBRARY_PATH="${config.devenv.root}/build/cuda-driver-libs''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        export AEGIR_ENGINE_PORT="''${AEGIR_ENGINE_PORT:-50151}"
+        exec uv run --no-sync python -m aegir.engine.server
+      '';
+      process-compose = {
+        readiness_probe = {
+          exec.command = "bash -c '</dev/tcp/127.0.0.1/50151'";
+          initial_delay_seconds = 3;
+          period_seconds = 2;
+          failure_threshold = 60;
+        };
+      };
     };
   };
 
-  # ── Patched CUDA-extension reinstall ─────────────────────────
-  #
-  # ``uv.sync.enable = true`` runs ``uv sync`` on every ``devenv up`` /
-  # ``devenv shell``, which replaces our ABI-patched flash-attn +
-  # mamba-ssm wheels with the PyPI versions (which are built against
-  # cxx11abi=TRUE while torch cu124 is cxx11abi=FALSE — see
-  # bin/build-flash-attn-aggressive.sh). This task runs *after* the
-  # sync and reinstalls the patched wheels from build/wheels/ when
-  # they exist. No-op on a fresh clone (the user runs ``just
-  # build-flash-attn`` once to populate build/wheels/).
   # Build the forked Apache Atlas webapp with the AGE graph provider (one-time, ~minutes).
   tasks."atlas:build" = {
     description = "Build the forked Apache Atlas webapp (AGE backend)";
@@ -430,19 +492,9 @@ in {
     '';
   };
 
-  tasks."aegir:cuda-ext-reinstall" = {
-    description = "Reinstall ABI-patched CUDA extensions from build/wheels/";
-    after = [ "devenv:python:uv" ];
-    before = [ "devenv:enterShell" ];
-    # Delegate to the canonical Justfile recipe so the patched-wheel
-    # restore step has one implementation. ``just sync`` calls the
-    # same recipe directly when the user runs uv sync outside of
-    # devenv up / devenv shell.
-    exec = ''
-      cd "$DEVENV_ROOT"
-      just _restore-patched-wheels
-    '';
-  };
+  # (The aegir:cuda-ext-reinstall task that restored ABI-0 patched wheels from
+  # build/wheels/ after every sync was REMOVED 2026-08-07 — the patched-wheel era is
+  # closed; uv.sync.extras above keeps the good upstream wheels installed instead.)
 
   # https://devenv.sh/git-hooks/
   # git-hooks.hooks.shellcheck.enable = true;

@@ -49,6 +49,21 @@ class EngineStub:
                 request_serializer=zndx_dot_engine_dot_v1_dot_engine__pb2.RemediationRequest.SerializeToString,
                 response_deserializer=zndx_dot_engine_dot_v1_dot_engine__pb2.RemediationResponse.FromString,
                 _registered_method=True)
+        self.Yield = channel.unary_unary(
+                '/zndx.engine.v1.Engine/Yield',
+                request_serializer=zndx_dot_engine_dot_v1_dot_engine__pb2.YieldRequest.SerializeToString,
+                response_deserializer=zndx_dot_engine_dot_v1_dot_engine__pb2.YieldResponse.FromString,
+                _registered_method=True)
+        self.ServerQuery = channel.unary_unary(
+                '/zndx.engine.v1.Engine/ServerQuery',
+                request_serializer=zndx_dot_engine_dot_v1_dot_engine__pb2.ServerQueryRequest.SerializeToString,
+                response_deserializer=zndx_dot_engine_dot_v1_dot_engine__pb2.ServerQueryResponse.FromString,
+                _registered_method=True)
+        self.RecordLineage = channel.unary_unary(
+                '/zndx.engine.v1.Engine/RecordLineage',
+                request_serializer=zndx_dot_engine_dot_v1_dot_engine__pb2.LineageRequest.SerializeToString,
+                response_deserializer=zndx_dot_engine_dot_v1_dot_engine__pb2.LineageResponse.FromString,
+                _registered_method=True)
 
 
 class EngineServicer:
@@ -83,6 +98,35 @@ class EngineServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Yield(self, request, context):
+        """C2 (or a later NiFi processor) tells the owning engine to end the local
+        process that a YK-admitted sentinel Application represents. Sentinels
+        never call this; they speak MiNiFi C2 HTTP to the C2 server, which is a
+        gRPC client of this RPC.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ServerQuery(self, request, context):
+        """Server-to-server snapshot query (Matrix S2S Queries, not epidemic gossip
+        and not CZMQ zgossip). Pairwise request/response: remotes, schedules,
+        known peers, notes, advertised surfaces.
+        (added 2026-08-16, gaius — additive v1.)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RecordLineage(self, request, context):
+        """Persist a runtime lineage event to the Signals SoR (Atlas OpenLineage).
+        Producers (Metaflow, Flink, peers) MUST NOT write a private catalog.
+        (added 2026-08-19, gaius — additive v1.)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_EngineServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -100,6 +144,21 @@ def add_EngineServicer_to_server(servicer, server):
                     servicer.Remediate,
                     request_deserializer=zndx_dot_engine_dot_v1_dot_engine__pb2.RemediationRequest.FromString,
                     response_serializer=zndx_dot_engine_dot_v1_dot_engine__pb2.RemediationResponse.SerializeToString,
+            ),
+            'Yield': grpc.unary_unary_rpc_method_handler(
+                    servicer.Yield,
+                    request_deserializer=zndx_dot_engine_dot_v1_dot_engine__pb2.YieldRequest.FromString,
+                    response_serializer=zndx_dot_engine_dot_v1_dot_engine__pb2.YieldResponse.SerializeToString,
+            ),
+            'ServerQuery': grpc.unary_unary_rpc_method_handler(
+                    servicer.ServerQuery,
+                    request_deserializer=zndx_dot_engine_dot_v1_dot_engine__pb2.ServerQueryRequest.FromString,
+                    response_serializer=zndx_dot_engine_dot_v1_dot_engine__pb2.ServerQueryResponse.SerializeToString,
+            ),
+            'RecordLineage': grpc.unary_unary_rpc_method_handler(
+                    servicer.RecordLineage,
+                    request_deserializer=zndx_dot_engine_dot_v1_dot_engine__pb2.LineageRequest.FromString,
+                    response_serializer=zndx_dot_engine_dot_v1_dot_engine__pb2.LineageResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -183,6 +242,87 @@ class Engine:
             '/zndx.engine.v1.Engine/Remediate',
             zndx_dot_engine_dot_v1_dot_engine__pb2.RemediationRequest.SerializeToString,
             zndx_dot_engine_dot_v1_dot_engine__pb2.RemediationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Yield(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/zndx.engine.v1.Engine/Yield',
+            zndx_dot_engine_dot_v1_dot_engine__pb2.YieldRequest.SerializeToString,
+            zndx_dot_engine_dot_v1_dot_engine__pb2.YieldResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ServerQuery(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/zndx.engine.v1.Engine/ServerQuery',
+            zndx_dot_engine_dot_v1_dot_engine__pb2.ServerQueryRequest.SerializeToString,
+            zndx_dot_engine_dot_v1_dot_engine__pb2.ServerQueryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RecordLineage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/zndx.engine.v1.Engine/RecordLineage',
+            zndx_dot_engine_dot_v1_dot_engine__pb2.LineageRequest.SerializeToString,
+            zndx_dot_engine_dot_v1_dot_engine__pb2.LineageResponse.FromString,
             options,
             channel_credentials,
             insecure,

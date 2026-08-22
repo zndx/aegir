@@ -50,10 +50,34 @@ class VllmManager:
             if ep and ep.proc and ep.proc.poll() is None and ep.healthy:
                 return ep
             if ep is None or (ep.proc and ep.proc.poll() is not None):
+                self._request_share(capability)
                 ep = self._launch(capability)
                 self._ep[capability] = ep
             self._wait_healthy(ep)
             return ep
+
+    @staticmethod
+    def _request_share(capability: str) -> None:
+        """Record WRK occupancy intent before occupying GPUs. Never writes queues.yaml."""
+        from aegir.engine.queue_share import (
+            request_queue_share,
+            resource_class_for_capability,
+        )
+
+        spec = CAPABILITY_MODELS[capability]
+        rc = resource_class_for_capability(capability, spec.tensor_parallel_size)
+        try:
+            request_queue_share(capability, rc)
+        except RuntimeError as e:
+            if "SHAREFAIL" in str(e):
+                raise
+            import logging
+            logging.getLogger("aegir.engine.vllm_manager").warning(
+                "RequestQueueShare skipped: %s", e)
+        except Exception as e:  # noqa: BLE001 — admit still proceeds unless SHAREFAIL
+            import logging
+            logging.getLogger("aegir.engine.vllm_manager").warning(
+                "RequestQueueShare skipped: %s", e)
 
     def _launch(self, capability: str) -> Endpoint:
         spec = CAPABILITY_MODELS[capability]

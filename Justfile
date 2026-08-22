@@ -54,52 +54,71 @@ whoami:
     @echo "all worktrees:"
     @git worktree list | sed 's/^/  /'
 
+# ── Stack up + health gate ─────────────────────────────────────
+#
+# ``just up`` = ``devenv up -d`` (tolerant of an already-running daemon) + the health
+# gate. The gate polls the REAL user-facing surfaces — gateway health, a live lineup
+# note (the deep probe that catches a wiped/empty KB even while /api/health is green),
+# vite, and Atlas (only when its webapp is built) — and on failure names the culprit
+# and surfaces recent gateway bind errors. Every port-owning managed process also
+# reclaims its port at start (bin/reclaim-port.py), so lingering orphans/zombies get
+# evicted instead of crash-looping the stack (the 2026-08-07 lineup incident:
+# docs/scratch/2026-08-07/181500_*).
+up:
+    @devenv up -d 2>&1 || echo "[up] devenv daemon already running — verifying the existing stack"
+    @just stack-health
+
+# Poll the stack to a verified-working web experience (shared deadline across probes).
+stack-health timeout="300":
+    #!/usr/bin/env bash
+    set -uo pipefail
+    deadline=$(( $(date +%s) + {{timeout}} ))
+    probe() { curl -sf -o /dev/null --max-time 5 "$1"; }
+    wait_for() {
+        until probe "$2"; do
+            if [ "$(date +%s)" -ge "$deadline" ]; then echo "✗ $1 NOT healthy within {{timeout}}s ($2)"; return 1; fi
+            sleep 3
+        done
+        echo "✓ $1"
+    }
+    ok=0
+    wait_for "gateway /api/health"         "http://127.0.0.1:8091/api/health" || ok=1
+    wait_for "lineup note (deep KB probe)" "http://127.0.0.1:8091/api/kb/note/lens/terms?root=current" || ok=1
+    wait_for "vite dev server"             "http://127.0.0.1:5173/" || ok=1
+    wait_for "viz bokeh-js (lineup chord)" "http://127.0.0.1:5006/viz/static/js/bokeh.min.js" || ok=1
+    if [ -d components/atlas/webapp/target/atlas-webapp-3.0.0-SNAPSHOT/WEB-INF ]; then
+        wait_for "atlas admin/status"      "http://127.0.0.1:21000/api/atlas/admin/status" || ok=1
+    else
+        echo "- atlas skipped (webapp not built — devenv tasks run atlas:build)"
+    fi
+    if [ "$ok" -ne 0 ]; then
+        log=$(ls -t /run/user/$(id -u)/devenv-*/processes/logs/gateway.stderr.log 2>/dev/null | head -1)
+        if [ -n "$log" ]; then
+            echo "— recent gateway stderr ($log):"; tail -5 "$log" | sed 's/^/  /'
+            echo "— lifetime 'Address already in use' count: $(grep -c 'Address already in use' "$log" 2>/dev/null || echo 0)"
+        fi
+        exit 1
+    fi
+    echo "stack healthy — lineup serving, web experience verified"
+
 # ── Dependency sync ───────────────────────────────────────────
 #
-# ``just sync`` is the single entry point that reliably brings the
-# venv to a consistent state. It runs ``uv sync`` and then re-applies
-# the patched flash-attn / mamba-ssm / causal-conv1d wheels under
-# ``build/wheels/`` — those wheels are ABI-patched per CLAUDE.md and
-# are clobbered by every plain ``uv sync``. Idempotent; safe to run
-# any number of times.
+# The patched-wheel era is CLOSED (2026-07-19, see CLAUDE.md "CUDA
+# Extension Notes"): flash-attn / mamba-ssm / causal-conv1d are
+# standard upstream URL wheels declared in pyproject.toml
+# ([tool.uv.sources] pins behind the ``flash``/``mamba`` extras) and
+# locked. The extras flags are LOAD-BEARING — a plain ``uv sync``
+# without them PRUNES all three (that is exactly how the ABI-0 corpse
+# wheels under build/wheels/ kept sneaking back in via the old
+# restore hook, removed 2026-08-07; never reinstall those files).
+# devenv's checksum-gated sync passes the same extras via
+# ``uv.sync.extras`` in devenv.nix.
 #
-# Use ``just sync`` after pulling new commits, after editing
-# pyproject.toml, or any time the venv feels stale. The devenv
-# post-uv-sync hook (in devenv.nix) calls the same restore logic so
-# ``devenv up`` / ``devenv shell`` users do not need to remember.
-#
-# If ``build/wheels/`` is empty, ``just sync`` skips the restore step
-# and prints a hint. To populate it, run ``just cuda-deps`` (or
-# ``just build-flash-attn`` for the aggressive 25-min path).
+# NOTE: an exact sync still prunes the task-built polyglot-sql
+# editable install (maturin-built, deliberately NOT a uv source) —
+# rerun the ``polyglot:build`` devenv task after a real sync.
 sync:
-    uv sync
-    @just _restore-patched-wheels
-
-# Hidden recipe — used by ``just sync`` and by devenv's
-# aegir:cuda-ext-reinstall task. Single canonical implementation.
-# Works whether invoked from inside ``devenv shell`` (VIRTUAL_ENV is
-# already set) or directly (we fall back to the devenv-managed venv
-# under .devenv/state/venv).
-_restore-patched-wheels:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    cd "$(git rev-parse --show-toplevel)"
-    if [ -z "${VIRTUAL_ENV:-}" ]; then
-        if [ -d ".devenv/state/venv" ]; then
-            export VIRTUAL_ENV="$PWD/.devenv/state/venv"
-        else
-            echo "[aegir] no VIRTUAL_ENV set and no .devenv/state/venv found — run 'devenv up' first or activate the venv"
-            exit 1
-        fi
-    fi
-    shopt -s nullglob
-    wheels=(build/wheels/*.whl)
-    if [ "${#wheels[@]}" -eq 0 ]; then
-        echo "[aegir] no patched wheels under build/wheels/ — run 'just cuda-deps' to populate"
-        exit 0
-    fi
-    echo "[aegir] restoring patched CUDA extensions: ${wheels[*]##*/}"
-    uv pip install --reinstall --no-deps "${wheels[@]}" >/dev/null
+    uv sync --extra flash --extra mamba
 
 check-ontology-schema:
     uv run --no-sync python scripts/check_ontology_schema.py
@@ -303,6 +322,9 @@ kb-render *args:
 # selection and is the ONLY thing that talks to vLLM (strict layering — no vLLM URL ever
 # leaves the engine). vLLM runs in a dedicated cu129 venv (see engine/config.py VLLM_PYTHON);
 # the cuda-driver-libs prefix unmasks libcuda (Nix). Override the model via AEGIR_INSTRUCT_MODEL.
+#
+# Lattice peer unit (signals.target / aegir.service) uses scripts/systemd_{start,stop}.sh —
+# start waits on codegen Engine/Status, not just up stack-health and not vLLM SERVING.
 engine-serve:
     LD_LIBRARY_PATH=$(pwd)/build/cuda-driver-libs uv run --no-sync python -m aegir.engine.server
 
@@ -322,6 +344,28 @@ engine-supervise *args:
 # workload commits. Exits non-zero if not ready within the timeout, so a run can gate on it.
 engine-ready timeout="1200":
     uv run --no-sync python -c "import sys; from aegir.engine.readiness import wait_for_ready, Readiness; r = wait_for_ready(level=Readiness.SERVING, timeout=float('{{timeout}}')); print(r.detail); sys.exit(0 if r.ok else 1)"
+
+# Regenerate the engine's gRPC stubs — all three registered faces: native (aegir_engine.proto,
+# in-tree), zndx.engine.v1 (from the signals-protocol submodule), and KServe OIP
+# (open_inference_grpc.proto, vendored from upstream KServe — byte-identical to the Gaius copy;
+# that symmetry is the interop contract). The -I root is each proto's OWN root, NOT src: the
+# descriptor-pool canonical name must stay the SHARED bare path (`zndx/engine/v1/engine.proto`,
+# `open_inference_grpc.proto`) that every federation peer's stubs also register — a src-rooted
+# name is a different file identity and collides with a peer's copy in shared processes. The sed
+# afterward package-qualifies only the import line (protoc emits a top-level import otherwise).
+# grpcio-tools is pinned to the GRPC_GENERATED_VERSION already in the checked-in stubs.
+engine-proto-gen:
+    uv run --no-sync --with grpcio-tools==1.81.1 python -m grpc_tools.protoc \
+        -I src/aegir/engine/proto --python_out=src/aegir/engine/proto --grpc_python_out=src/aegir/engine/proto \
+        src/aegir/engine/proto/aegir_engine.proto src/aegir/engine/proto/open_inference_grpc.proto
+    uv run --no-sync --with grpcio-tools==1.81.1 python -m grpc_tools.protoc \
+        -I components/signals-protocol/proto --python_out=src/aegir/engine/proto --grpc_python_out=src/aegir/engine/proto \
+        components/signals-protocol/proto/zndx/engine/v1/engine.proto \
+        components/signals-protocol/proto/zndx/scheduler/v1/scheduler.proto
+    sed -i 's/^import aegir_engine_pb2 as/from aegir.engine.proto import aegir_engine_pb2 as/' src/aegir/engine/proto/aegir_engine_pb2_grpc.py
+    sed -i 's/^import open_inference_grpc_pb2 as/from aegir.engine.proto import open_inference_grpc_pb2 as/' src/aegir/engine/proto/open_inference_grpc_pb2_grpc.py
+    sed -i 's/^from zndx.engine.v1 import/from aegir.engine.proto.zndx.engine.v1 import/' src/aegir/engine/proto/zndx/engine/v1/engine_pb2_grpc.py
+    sed -i 's/^from zndx.scheduler.v1 import/from aegir.engine.proto.zndx.scheduler.v1 import/' src/aegir/engine/proto/zndx/scheduler/v1/scheduler_pb2_grpc.py
 
 # ── mdbook documentation ──────────────────────────────────────
 #
@@ -804,85 +848,16 @@ zarf-build:
 pglite-smoke:
     AEGIR_GATEWAY_PORT=8100 CDSW_APP_PORT=8100 bash bin/start-app.sh
 
-# ── Patched CUDA extensions ────────────────────────────────────
+# ── Patched CUDA extensions: ERA CLOSED ────────────────────────
 #
-# flash-attn / mamba-ssm / causal-conv1d publish prebuilt wheels on
-# GitHub releases, but both `cxx11abiTRUE` and `cxx11abiFALSE`
-# variants link against the __cxx11 ABI form of c10::Error::Error
-# while torch cu124's libc10 defines only the OLD ABI form
-# (``_GLIBCXX_USE_CXX11_ABI=0``). Neither prebuilt wheel is ABI-
-# compatible with our torch. See CLAUDE.md for background.
-#
-# The recipe:
-#   - causal-conv1d installs fine from PyPI (prebuilt wheel is
-#     built with old ABI, matches torch). Listed for completeness.
-#   - mamba-ssm + flash-attn must be built from source with
-#     ``_GLIBCXX_USE_CXX11_ABI=0`` (set automatically by setup.py
-#     reading torch._C._GLIBCXX_USE_CXX11_ABI), single-arch
-#     sm_89 (TORCH_CUDA_ARCH_LIST=8.9), NVCC_THREADS=1 to avoid an
-#     nvcc 12.4 segfault in PTX generation on template-heavy .cu
-#     files, and ninja on PATH.
-#
-# ``just cuda-deps`` rebuilds all three from source under
-# ``build/patched-src/`` into wheels under ``build/wheels/``.  No
-# explicit install step: devenv's ``aegir:cuda-ext-reinstall`` task
-# (in devenv.nix) reinstalls from build/wheels/ on every ``devenv up``
-# / ``devenv shell``, right after uv sync.  Idempotent.  Target the
-# 6×RTX-4090 box only (sm_89 is hardcoded for now).
-
-cuda-deps:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    mkdir -p build/wheels
-    # causal-conv1d: prebuilt wheel from PyPI is ABI-compatible.
-    # Not built from source; listed here so devenv won't strip it.
-    uv pip install --reinstall --no-build-isolation causal-conv1d==1.6.1
-    # mamba-ssm: build from source
-    rm -rf build/patched-src/mamba_ssm-2.3.1/{build,dist,*.egg-info}
-    bash bin/build-cuda-ext.sh build/patched-src/mamba_ssm-2.3.1 MAMBA_FORCE_BUILD
-    cp build/patched-src/mamba_ssm-2.3.1/dist/mamba_ssm-*.whl build/wheels/
-    # flash-attn: build from source (~25 min on 6×4090 via the
-    # aggressive recipe; this fall-back path uses the conservative
-    # defaults from build-cuda-ext.sh and takes 2-3 h).
-    # For the 25-min path use ``just build-flash-attn`` instead.
-    rm -rf build/patched-src/flash_attn-2.8.3/{build,dist,*.egg-info}
-    bash bin/build-cuda-ext.sh build/patched-src/flash_attn-2.8.3 FLASH_ATTENTION_FORCE_BUILD
-    cp build/patched-src/flash_attn-2.8.3/dist/flash_attn-*.whl build/wheels/
-    # Trigger devenv's reinstall task to pick up the new wheels without
-    # requiring a full ``devenv up`` cycle.
-    wheels=(build/wheels/*.whl)
-    uv pip install --reinstall --no-deps "$${wheels[@]}"
-    echo "=== verifying imports ==="
-    uv run --no-sync python -c "import causal_conv1d; import mamba_ssm; import flash_attn; \
-        print('causal_conv1d', causal_conv1d.__version__); \
-        print('mamba_ssm', mamba_ssm.__version__); \
-        print('flash_attn', flash_attn.__version__)"
-
-# Aggressive flash-attn build tuned for the 64-core / 125 GB / 6×4090
-# box. See bin/build-flash-attn-aggressive.sh for full rationale.
-#
-# Highlights:
-#   MAX_JOBS=16, NVCC_THREADS=1  → ~40 GB cicc RAM peak, ~25 min wall
-#                                  (vs 2-3 h at MAX_JOBS=4)
-#   Temporary 16 GB swapfile     → safety net for memory spikes; an
-#                                  overshoot spills to disk instead of
-#                                  triggering a kernel deadlock
-#   Devenv stack stopped         → frees postgres/qdrant/gateway RAM
-#                                  during the build, restarted on exit
-#   Stray-cicc pre-check         → refuses to start if an earlier build
-#                                  left D-state children behind
-#   Stall monitor                → aborts after 15 min of no progress
-#   Cleanup trap                 → always reaps children + drops swap,
-#                                  even on Ctrl-C / failure
-#
-# After a successful build, the wheel lands in ``build/wheels/`` and is
-# auto-reinstalled by devenv's ``aegir:cuda-ext-reinstall`` task on
-# every ``devenv up`` / ``devenv shell`` — no need to run a separate
-# install command.
-#
-# Override: ``MAX_JOBS=8 just build-flash-attn`` etc.
-build-flash-attn:
-    bash bin/build-flash-attn-aggressive.sh
+# The ``cuda-deps`` / ``build-flash-attn`` source-build recipes lived
+# here until 2026-08-07. They existed for the torch-cu124 ABI=0 era;
+# torch ≥2.7 ships ABI=1 and the upstream ``cxx11abiTRUE`` release
+# wheels install clean (CLAUDE.md "CUDA Extension Notes" has the
+# URL-wheel pins; ``just sync`` keeps them via the flash/mamba
+# extras). The leftover ABI-0 wheels under ``build/wheels/`` and
+# sources under ``build/patched-src/`` are import-broken corpses —
+# never reinstall them; safe to delete.
 
 # Sensitive-noun regression gate — REAL UNIVERSALS, FICTIONAL PARTICULARS: the corpus asserts nothing
 # about real-world organizations/products/people. Deterministic denylist tier (head brands); the

@@ -1,9 +1,12 @@
+import { SettingOutlined } from "@ant-design/icons";
 import { Moon, Sun } from "@phosphor-icons/react";
 import { Layout as AntLayout, Typography } from "antd";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import { useBrandLogo } from "../theme/brand";
 import { getColorMode, toggleColorMode, useColorMode } from "../theme/colorMode";
+import WaffleMenu from "./WaffleMenu";
 
 const { Header, Content, Footer } = AntLayout;
 const { Text } = Typography;
@@ -28,6 +31,7 @@ function ModeGlyph() {
 
 function Layout({ children, fullHeight }: LayoutProps) {
   const { pathname } = useLocation();
+  const logo = useBrandLogo();
 
   return (
     <AntLayout
@@ -47,14 +51,18 @@ function Layout({ children, fullHeight }: LayoutProps) {
         }}
       >
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Text
-            strong
-            style={{ color: "var(--text-color-kumo-strong)", fontSize: 20, letterSpacing: 0.5 }}
-          >
-            Ægir
-          </Text>
+          {logo ? (
+            <img src={logo.href} alt={logo.alt} className="brand-logo" height={28} />
+          ) : (
+            <Text
+              strong
+              style={{ color: "var(--text-color-kumo-strong)", fontSize: 20, letterSpacing: 0.5 }}
+            >
+              Ægir
+            </Text>
+          )}
           <Text style={{ color: "var(--text-color-kumo-subtle)", fontSize: 12 }}>
-            v0.2.0 · relational metadata tagging
+            Ægir · v0.2.0
           </Text>
         </Link>
         <nav style={{ display: "flex", gap: 4, marginLeft: 16 }}>
@@ -79,19 +87,39 @@ function Layout({ children, fullHeight }: LayoutProps) {
             );
           })}
         </nav>
-        <button
-          aria-label="Toggle color mode"
-          title="Toggle color mode"
-          onClick={() => toggleColorMode(getColorMode())}
-          style={{
-            marginLeft: "auto", display: "flex", alignItems: "center", justifyContent: "center",
-            width: 30, height: 30, borderRadius: 6, cursor: "pointer",
-            background: "transparent", border: "1px solid var(--color-kumo-hairline)",
-            color: "var(--text-color-kumo-subtle)",
-          }}
-        >
-          <ModeGlyph />
-        </button>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+          <WaffleMenu />
+          <button
+            aria-label="Toggle color mode"
+            title="Toggle color mode"
+            onClick={() => toggleColorMode(getColorMode())}
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 30, height: 30, borderRadius: 6, cursor: "pointer",
+              background: "transparent", border: "1px solid var(--color-kumo-hairline)",
+              color: "var(--text-color-kumo-subtle)",
+            }}
+          >
+            <ModeGlyph />
+          </button>
+          <Link
+            to="/settings"
+            aria-label="Settings"
+            title="Settings — deployment configuration"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 30, height: 30, borderRadius: 6,
+              background: pathname.startsWith("/settings") ? "var(--color-kumo-fill)" : "transparent",
+              border: "1px solid var(--color-kumo-hairline)",
+              color: pathname.startsWith("/settings")
+                ? "var(--text-color-kumo-strong)"
+                : "var(--text-color-kumo-subtle)",
+              fontSize: 16,
+            }}
+          >
+            <SettingOutlined />
+          </Link>
+        </div>
       </Header>
       <Content
         style={fullHeight

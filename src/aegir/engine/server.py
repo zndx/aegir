@@ -47,6 +47,74 @@ class AegirEngineServicer(pbg.AegirEngineServicer):
         return pb.EngineStatusResponse(endpoints=eps, total_gpus=n)
 
 
+PROJECT = "aegir"
+CAPABILITY_INSTRUCT = "instruct"
+# Service names advertised via gRPC reflection (lattice-ci external grpcurl).
+LATTICE_SERVICE_NAMES = (
+    "aegir.engine.AegirEngine",
+    "zndx.engine.v1.Engine",
+    "inference.GRPCInferenceService",
+)
+
+
+def build_status_response(mgr):
+    """Project manager state onto zndx.engine.v1.StatusResponse.
+
+    Always advertises capability=instruct so lattice-ci --expect-capability
+    passes at gRPC bind — vLLM residency is on-demand and is NOT the accept
+    gate (Gaius lesson: Status early, models later). Live endpoints overlay
+    the placeholder when VllmManager has launched them.
+    """
+    from aegir.engine.config import CAPABILITY_MODELS
+    from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
+
+    spec = CAPABILITY_MODELS.get(CAPABILITY_INSTRUCT)
+    live = {e.capability: e for e in mgr.status()}
+    instruct = live.get(CAPABILITY_INSTRUCT)
+    if instruct is not None:
+        instruct_ep = zpb.Endpoint(
+            capability=CAPABILITY_INSTRUCT,
+            model=instruct.spec.model,
+            healthy=instruct.healthy,
+            gpu_ids=list(instruct.gpu_ids),
+            detail="lattice face; native AegirEngine + OIP on :50151",
+        )
+    else:
+        instruct_ep = zpb.Endpoint(
+            capability=CAPABILITY_INSTRUCT,
+            model=spec.model if spec else "",
+            healthy=True,
+            gpu_ids=[],
+            detail="lattice face; native AegirEngine + OIP on :50151",
+        )
+    eps = [instruct_ep]
+    for e in live.values():
+        if e.capability == CAPABILITY_INSTRUCT:
+            continue
+        eps.append(zpb.Endpoint(
+            capability=e.capability, model=e.spec.model, healthy=e.healthy,
+            gpu_ids=list(e.gpu_ids)))
+    try:
+        import torch
+        n = torch.cuda.device_count() if torch.cuda.is_available() else 0
+    except Exception:  # noqa: BLE001 — Status must answer even without torch/CUDA
+        n = 0
+    from aegir.engine.s2s import local_surfaces
+    return zpb.StatusResponse(
+        project=PROJECT, endpoints=eps, total_gpus=n, surfaces=local_surfaces())
+
+
+def enable_reflection(server) -> None:
+    """Enable gRPC server reflection; required on the lattice port.
+
+    Bare ``grpcurl -plaintext host:port list`` / ``Engine/Status`` must work
+    without local descriptors (signals-protocol engine_grpc.md).
+    """
+    from grpc_reflection.v1alpha import reflection
+    reflection.enable_server_reflection(
+        (*LATTICE_SERVICE_NAMES, reflection.SERVICE_NAME), server)
+
+
 class ZndxEngineServicer:
     """The FEDERATION face — zndx.engine.v1.Engine (signals-protocol submodule), registered beside
     the native service so any signals engine's shared stub reaches us (the service-identity fix:
@@ -72,12 +140,7 @@ class ZndxEngineServicer:
             context.abort(grpc.StatusCode.INTERNAL, f"complete[{cap}] failed: {e}")
 
     def Status(self, request, context):
-        from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
-        eps = [zpb.Endpoint(capability=e.capability, model=e.spec.model, healthy=e.healthy,
-                            gpu_ids=e.gpu_ids) for e in self.mgr.status()]
-        import torch
-        n = torch.cuda.device_count() if torch.cuda.is_available() else 0
-        return zpb.StatusResponse(project="aegir", endpoints=eps, total_gpus=n)
+        return build_status_response(self.mgr)
 
     def Remediate(self, request, context):
         """Adapt to a boundary signal: compose the canonical signal+context into a re-authoring prompt,
@@ -148,6 +211,137 @@ class ZndxEngineServicer:
             model=out["model"], reasoning_content=out["reasoning_content"],
             completion_tokens=out["completion_tokens"], latency_ms=out["latency_ms"])
 
+    def Yield(self, request, context):
+        """C2 → engine. Aegir has no sentinel workloads; unknown id is idempotent."""
+        from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
+        return zpb.YieldResponse(
+            ok=True, process_ended=False, restore_started=False,
+            message="aegir has no sentinel workloads")
+
+    def ServerQuery(self, request, context):
+        from aegir.engine.s2s import local_response
+        return local_response(int(request.kind))
+
+    def RecordLineage(self, request, context):
+        context.abort(
+            grpc.StatusCode.UNIMPLEMENTED,
+            "RecordLineage is Signals Atlas SoR (POST /api/v1/lineage).")
+
+
+class OipInferenceServicer:
+    """The STANDARD face — inference.GRPCInferenceService (KServe Open Inference Protocol),
+    registered beside the native + zndx services so OIP-native peers (Gaius chose OIP as its peer
+    protocol; vanilla Triton/TGI/CIS clients) reach us without speaking zndx.engine.v1. Lowering per
+    engine_grpc.md §"OIP mapping": capability names ARE model names; Complete lowers to ModelInfer
+    with a text tensor. Tensor conventions mirror Gaius's servicer exactly (BYTES "prompt" /
+    "system_prompt" inputs, max_tokens/temperature request parameters, BYTES "completion" output,
+    metadata as response parameters) — that symmetry is the interop contract, don't drift it.
+    Additive extras a Gaius client simply ignores: a "json_schema" string_param (engine-enforced
+    structured output, same as the other faces) and a "reasoning_content" output tensor when the
+    model separates its trace (retained, never dropped — traces are corpus value-adds)."""
+
+    def __init__(self, mgr) -> None:
+        self.mgr = mgr
+
+    @staticmethod
+    def _bytes_input(request, name: str) -> str:
+        """First element of a BYTES input tensor, from either OIP representation: `contents`
+        (what Gaius sends) or `raw_input_contents` (what tritonclient sends by default —
+        4-byte-LE-length-prefixed framing per tensor)."""
+        for i, t in enumerate(request.inputs):
+            if t.name != name:
+                continue
+            if t.contents.bytes_contents:
+                return t.contents.bytes_contents[0].decode("utf-8")
+            if i < len(request.raw_input_contents):
+                raw = request.raw_input_contents[i]
+                if len(raw) >= 4:
+                    n = int.from_bytes(raw[:4], "little")
+                    if 4 + n <= len(raw):
+                        return raw[4:4 + n].decode("utf-8")
+                return raw.decode("utf-8")
+        return ""
+
+    def ServerLive(self, request, context):
+        from aegir.engine.proto import open_inference_grpc_pb2 as opb
+        return opb.ServerLiveResponse(live=True)
+
+    def ServerReady(self, request, context):
+        # Always ready: capabilities cold-load inside ModelInfer (the engine blocks rather than
+        # returning UNAVAILABLE — the choice engine_grpc.md leaves to each engine).
+        from aegir.engine.proto import open_inference_grpc_pb2 as opb
+        return opb.ServerReadyResponse(ready=True)
+
+    def ModelReady(self, request, context):
+        # RESIDENCY, not configurability: peers use this for co-tenancy planning (forward to a
+        # resident capability in preference to moving GPUs), so a cold capability reports not-ready
+        # even though ModelInfer would serve it after a cold load.
+        from aegir.engine.proto import open_inference_grpc_pb2 as opb
+        ready = any(e.capability == request.name and e.healthy for e in self.mgr.status())
+        return opb.ModelReadyResponse(ready=ready)
+
+    def ServerMetadata(self, request, context):
+        from aegir.engine.proto import open_inference_grpc_pb2 as opb
+        from importlib.metadata import PackageNotFoundError, version
+        try:
+            v = version("aegir")
+        except PackageNotFoundError:
+            v = "0.0.0"
+        # Extensions advertise the richer co-registered faces so an OIP peer can upgrade.
+        return opb.ServerMetadataResponse(
+            name="aegir-engine", version=v,
+            extensions=["zndx.engine.v1.Engine", "aegir.engine.AegirEngine"])
+
+    def ModelMetadata(self, request, context):
+        from aegir.engine.proto import open_inference_grpc_pb2 as opb
+        from aegir.engine.config import CAPABILITY_MODELS
+        if request.name not in CAPABILITY_MODELS:
+            context.abort(grpc.StatusCode.NOT_FOUND,
+                          f"unknown capability {request.name!r}; known: {list(CAPABILITY_MODELS)}")
+        tm = opb.ModelMetadataResponse.TensorMetadata
+        return opb.ModelMetadataResponse(
+            name=request.name, versions=["v1"], platform="vllm",
+            inputs=[tm(name="prompt", datatype="BYTES", shape=[1]),
+                    tm(name="system_prompt", datatype="BYTES", shape=[1])],
+            outputs=[tm(name="completion", datatype="BYTES", shape=[1]),
+                     tm(name="reasoning_content", datatype="BYTES", shape=[1])])
+
+    def ModelInfer(self, request, context):
+        from aegir.engine.proto import open_inference_grpc_pb2 as opb
+        cap = request.model_name or "instruct"
+        prompt = self._bytes_input(request, "prompt")
+        if not prompt:
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, 'no "prompt" input tensor provided')
+        system_prompt = self._bytes_input(request, "system_prompt")
+        p = request.parameters
+        max_tokens = int(p["max_tokens"].int64_param) if "max_tokens" in p else 2048
+        temperature = float(p["temperature"].double_param) if "temperature" in p else 0.7
+        json_schema = p["json_schema"].string_param if "json_schema" in p else ""
+        try:
+            out = self.mgr.complete(cap, prompt, system_prompt, max_tokens, temperature,
+                                    json_schema=json_schema)
+        except KeyError as e:
+            context.abort(grpc.StatusCode.NOT_FOUND, str(e))
+        except Exception as e:  # noqa: BLE001 — surface as a gRPC error, keep the engine up
+            context.abort(grpc.StatusCode.INTERNAL, f"infer[{cap}] failed: {e}")
+        resp = opb.ModelInferResponse(model_name=cap, model_version="v1", id=request.id)
+        o = resp.outputs.add()
+        o.name, o.datatype = "completion", "BYTES"
+        o.shape.extend([1])
+        o.contents.bytes_contents.append(out["text"].encode("utf-8"))
+        if out.get("reasoning_content"):
+            r = resp.outputs.add()
+            r.name, r.datatype = "reasoning_content", "BYTES"
+            r.shape.extend([1])
+            r.contents.bytes_contents.append(out["reasoning_content"].encode("utf-8"))
+        resp.parameters["tokens_used"].int64_param = out["completion_tokens"]
+        resp.parameters["prompt_tokens"].int64_param = out["prompt_tokens"]
+        resp.parameters["latency_ms"].double_param = out["latency_ms"]
+        resp.parameters["backend"].string_param = "vllm"
+        resp.parameters["model"].string_param = out["model"]
+        resp.parameters["finish_reason"].string_param = out["finish_reason"]
+        return resp
+
 
 def serve(port: int = ENGINE_GRPC_PORT) -> None:
     servicer = AegirEngineServicer()
@@ -155,10 +349,15 @@ def serve(port: int = ENGINE_GRPC_PORT) -> None:
     pbg.add_AegirEngineServicer_to_server(servicer, server)
     from aegir.engine.proto.zndx.engine.v1 import engine_pb2_grpc as zpbg
     zpbg.add_EngineServicer_to_server(ZndxEngineServicer(servicer.mgr), server)
+    from aegir.engine.proto import open_inference_grpc_pb2_grpc as opbg
+    opbg.add_GRPCInferenceServiceServicer_to_server(OipInferenceServicer(servicer.mgr), server)
+    enable_reflection(server)
     server.add_insecure_port(f"[::]:{port}")
     server.start()
     print(f"aegir-engine gRPC listening on :{port} — services: aegir.engine.AegirEngine + "
-          f"zndx.engine.v1.Engine (federation face)", flush=True)
+          f"zndx.engine.v1.Engine (federation face) + inference.GRPCInferenceService (KServe OIP) "
+          f"+ reflection",
+          flush=True)
 
     def _stop(*_):
         servicer.mgr.shutdown()

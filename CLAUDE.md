@@ -98,8 +98,10 @@ just check-ontology-schema   # mechanical CI: TTL parses, labels/definitions pre
 just docs-build           # → docs/current/book/
 just docs-serve           # → http://localhost:3000
 
-# Package management — `uv sync` and bare `uv run` will re-resolve deps and wipe patched wheels
+# Package management — the flash/mamba extras are LOAD-BEARING: a plain `uv sync` without them
+# PRUNES the URL-pinned CUDA wheels (never "restore" from build/wheels/ — those are ABI-0 corpses)
 uv add <package>
+just sync                 # = uv sync --extra flash --extra mamba (exact; rerun polyglot:build after)
 ```
 
 There is no pytest suite; `main.py` and `train.py --smoke-test` are the primary verification path for the model, and `just check-ontology-schema` for the ontology. Checkpoints land in `outputs/best_model.pt`.

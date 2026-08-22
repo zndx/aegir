@@ -36,3 +36,169 @@
       monospace;
   }
 }
+
+/* Federation waffle — matches Signals/Gaius chrome (9-dot, FEDERATION header). */
+.waffle-toggle,
+.waffle-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--color-kumo-hairline);
+  color: var(--text-color-kumo-subtle);
+}
+.waffle-toggle.active,
+.waffle-toggle:hover,
+.waffle-close:hover {
+  color: var(--text-color-kumo-strong);
+  background: var(--color-kumo-fill);
+}
+.waffle-toggle .icon-waffle { display: block; }
+.waffle-rail {
+  position: fixed;
+  top: 56px;
+  right: 0;
+  z-index: 45;
+  width: min(280px, 92vw);
+  max-height: calc(100vh - 56px);
+  overflow: auto;
+  background: var(--color-kumo-base, #101418);
+  color: var(--text-color-kumo-default, #e5e8ec);
+  border-left: 1px solid var(--color-kumo-hairline, #30363c);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.25);
+}
+.waffle-rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-color-kumo-subtle, #9fa5ac);
+  border-bottom: 1px solid var(--color-kumo-hairline, #30363c);
+}
+.waffle-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+}
+.waffle-list a {
+  display: block;
+  padding: 0.55rem 0.85rem;
+  color: inherit;
+  text-decoration: none;
+}
+.waffle-list a:hover {
+  background: var(--color-kumo-fill, #30363c);
+  text-decoration: none;
+}
+.waffle-list .waffle-project {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.waffle-empty {
+  padding: 0.85rem;
+  font-size: 0.82rem;
+  color: var(--text-color-kumo-subtle, #9fa5ac);
+}
+
+.brand-logo {
+  display: block;
+  height: 28px;
+  width: auto;
+  max-width: 168px;
+}
+.settings-page { max-width: 880px; }
+.settings-card {
+  margin: 1.25rem 0;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--color-kumo-hairline, #30363c);
+  border-radius: 8px;
+  background: var(--color-kumo-elevated, #191d22);
+}
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin: 0.75rem 0 0.5rem;
+}
+.brand-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--color-kumo-hairline, #30363c);
+  border-radius: 8px;
+  background: var(--color-kumo-recessed, #21272d);
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.brand-card:hover {
+  border-color: var(--text-color-kumo-link, #5b9fd4);
+}
+.brand-card.selected,
+.brand-card:has(input:checked) {
+  border-color: var(--text-color-kumo-link, #5b9fd4);
+  box-shadow: 0 0 0 1px var(--text-color-kumo-link, #5b9fd4);
+}
+.brand-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.brand-card-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.5rem;
+  background: #101418;
+  border-radius: 4px;
+}
+.brand-card-preview img {
+  max-height: 28px;
+  width: auto;
+}
+.brand-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.brand-card-name {
+  font-weight: 600;
+  color: var(--text-color-kumo-strong);
+}
+.brand-card-id {
+  font-size: 0.75rem;
+  color: var(--text-color-kumo-subtle);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+.brand-plus {
+  display: block;
+  width: 32px;
+  height: 32px;
+  color: #e5e8ec;
+}
+.brand-card-empty { cursor: pointer; }
+.brand-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.saved-hint {
+  color: var(--text-color-kumo-success, #3d9a6a);
+  font-size: 0.9rem;
+}
+.settings-error {
+  color: var(--text-color-kumo-danger, #e06c75);
+  font-size: 0.9rem;
+}

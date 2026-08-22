@@ -37,5 +37,6 @@
   - [Leaderboard → Convergence Observatory (ideas)](./roadmap/leaderboard_observatory.md)
   - [Provenance — Verifiable Tasks & Lineage (reframe)](./roadmap/provenance.md)
 - [Development Guide](./development.md)
+- [Signals Peer Unit](./operations/peer-unit.md)
 - [Worktree Aware Development](./worktree_aware.md)
   - [Cross-worktree SAE streaming](./worktree_aware/sae_streaming.md)

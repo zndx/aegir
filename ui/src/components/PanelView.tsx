@@ -16,24 +16,41 @@ interface PanelViewProps {
 
 // BokehJS bundles served by the bokeh server (same-origin via the /viz proxy → air-gapped, and the
 // GraphRenderer-correct build — unlike npm @bokeh/bokehjs). Loaded once, globally, before the autoload.
-const BOKEH_BUNDLES = ["bokeh", "bokeh-gl", "bokeh-widgets", "bokeh-tables", "bokeh-mathjax"]
+const BOKEH_CORE = "/viz/static/js/bokeh.min.js";
+const BOKEH_OPTIONAL = ["bokeh-gl", "bokeh-widgets", "bokeh-tables", "bokeh-mathjax"]
   .map((n) => `/viz/static/js/${n}.min.js`);
 
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[data-bk-src="${CSS.escape(src)}"]`)) { resolve(); return; }
+    const existing = document.querySelector(`script[data-bk-src="${CSS.escape(src)}"]`) as HTMLScriptElement | null;
+    if (existing?.dataset.bkOk === "1") { resolve(); return; }
+    existing?.remove();
     const s = document.createElement("script");
     s.src = src;
     s.async = false;                 // preserve order: core before gl/widgets/tables
     s.dataset.bkSrc = src;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error(`failed to load ${src}`));
+    s.onload = () => { s.dataset.bkOk = "1"; resolve(); };
+    s.onerror = () => {
+      s.remove();
+      reject(new Error(`failed to load ${src}`));
+    };
     document.head.appendChild(s);
   });
 }
 
 async function ensureBokeh(): Promise<void> {
-  for (const url of BOKEH_BUNDLES) await loadScript(url);
+  try {
+    await loadScript(BOKEH_CORE);
+  } catch {
+    throw new Error(
+      "viz server not reachable at /viz/static/js/bokeh.min.js — start with `just viz-serve` (devenv process `viz` on :5006)",
+    );
+  }
+  // gl/widgets/tables/mathjax are extensions; a missing one must not hide the core
+  // (Bokeh 3.x still ships them, but a 404 here used to fail the whole live view).
+  for (const url of BOKEH_OPTIONAL) {
+    try { await loadScript(url); } catch { /* optional */ }
+  }
 }
 
 /**

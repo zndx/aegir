@@ -78,6 +78,8 @@ def create_app(cfg: Config | None = None) -> FastAPI:
         app.include_router(_mq)   # Marquez-compatible OL read API (RH 2026-07-23)
     except Exception:  # noqa: BLE001 — no graph DB in this env; OL surface absent
         pass
+    from aegir.gateway.viz_proxy import mount_viz_proxy
+    mount_viz_proxy(app)
     _mount_static_bundle(app, cfg)
     _wire_lineup_upkeep(app, cfg)
     return app
@@ -146,6 +148,62 @@ def _register_api_routes(app: FastAPI) -> None:
             "gittables_dir_exists": gittables_dir.exists(),
             "gateway_port": cfg.gateway.port,
         }
+
+    @app.get("/api/settings")
+    def settings_get() -> dict:
+        from aegir.gateway import brand as B
+        return B.settings_payload()
+
+    @app.post("/api/settings/brand")
+    async def settings_set_brand(request: Request) -> dict:
+        from aegir.gateway import brand as B
+        try:
+            body = await request.json()
+        except Exception:  # noqa: BLE001
+            body = {}
+        brand_id = str((body or {}).get("brand_id") or "")
+        try:
+            return B.apply_brand(brand_id)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e)) from e
+
+    @app.post("/api/settings/brand/upload")
+    async def settings_upload_brand(request: Request) -> dict:
+        from aegir.gateway import brand as B
+        form = await request.form()
+        upload = form.get("pack")
+        raw = await upload.read() if upload is not None and hasattr(upload, "read") else b""
+        if not raw:
+            raise HTTPException(status_code=400, detail="no pack file in upload")
+        try:
+            return B.ingest_tgz(raw)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e)) from e
+
+    @app.get("/brand/custom/{name}")
+    def brand_custom_file(name: str):
+        from fastapi.responses import FileResponse
+
+        from aegir.gateway import brand as B
+        path = B.custom_file(name)
+        if path is None:
+            raise HTTPException(status_code=404, detail="custom brand asset not found")
+        media = "image/svg+xml" if path.suffix == ".svg" else "application/octet-stream"
+        if path.suffix == ".json":
+            media = "application/json"
+        return FileResponse(path, media_type=media)
+
+    @app.get("/api/aegir/v1/federation/surfaces")
+    def federation_surfaces() -> dict:
+        """Waffle roster: this engine plus peers that advertise a primary UI.
+
+        Discovery is S2S (Status + ServerQuery PEERS). Do not invent peer URLs.
+        """
+        from aegir.engine.s2s import collect_peer_surfaces
+        try:
+            return {"items": collect_peer_surfaces()}
+        except Exception as e:  # noqa: BLE001 — waffle degrades to empty
+            return {"items": [], "error": str(e)}
 
     # ── /api/kb — the lineup projection (build/dev/{current,scratch,archive}) ──
     # Thin: delegate to aegir.lineup readers. Read-only; reflects the latest

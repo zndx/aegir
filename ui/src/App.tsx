@@ -3,12 +3,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Layout from "./components/Layout";
 import Landing from "./pages/Landing";
+import { BrandProvider } from "./theme/brand";
 import { useColorMode } from "./theme/colorMode";
 
 const Leaderboards = lazy(() => import("./pages/Leaderboards"));
 const Classifications = lazy(() => import("./pages/Classifications"));
 const Ontologies = lazy(() => import("./pages/Ontologies"));
 const Lineup = lazy(() => import("./pages/Lineup"));
+const Settings = lazy(() => import("./pages/Settings"));
 
 function App() {
   // org norm: dark default, toggleable; the antd BRIDGE follows the kumo data-mode, with
@@ -24,6 +26,7 @@ function App() {
           : { colorPrimary: "#4338ca", borderRadius: 6, colorBgBase: "#f8f9fb", colorTextBase: "#25292f" },
       }}
     >
+      <BrandProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout><Landing /></Layout>} />
@@ -67,8 +70,19 @@ function App() {
               </Layout>
             }
           />
+          <Route
+            path="/settings"
+            element={
+              <Layout>
+                <Suspense fallback={null}>
+                  <Settings />
+                </Suspense>
+              </Layout>
+            }
+          />
         </Routes>
       </BrowserRouter>
+      </BrandProvider>
     </ConfigProvider>
   );
 }

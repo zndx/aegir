@@ -28,9 +28,12 @@ DEFAULT_HF_HUB_CACHE = os.environ.get("AEGIR_HF_HUB_CACHE", "/raid/cache/rch/hug
 ENGINE_GRPC_PORT = int(os.environ.get("AEGIR_ENGINE_PORT", "50151"))
 VLLM_BASE_PORT = int(os.environ.get("AEGIR_VLLM_BASE_PORT", "8100"))
 FIRST_GPU = int(os.environ.get("AEGIR_ENGINE_GPU0", "0"))
-# Federation (roadmap): if set (host:port), the client delegates capability requests to a remote
-# (e.g. Gaius) engine instead of the local one.
+# Federation: if set (host:port), the client delegates capability requests to a remote
+# (e.g. Gaius) engine instead of the local one. The client negotiates the peer's protocol face
+# (native → zndx.engine.v1 → KServe OIP); set AEGIR_ENGINE_FEDERATE_PROTOCOL to pin one
+# ("native" | "zndx" | "oip") and skip the probe.
 FEDERATE_TARGET = os.environ.get("AEGIR_ENGINE_FEDERATE", "")
+FEDERATE_PROTOCOL = os.environ.get("AEGIR_ENGINE_FEDERATE_PROTOCOL", "")
 
 
 @dataclass
