@@ -262,6 +262,8 @@ def local_response(
         resp.surfaces.extend(local_surfaces())
     if kind == zpb.SERVER_QUERY_KIND_QUEUES:
         resp.queues.extend(declared_queues())
+    if kind == zpb.SERVER_QUERY_KIND_WORKLOADS:
+        resp.workloads.extend(declared_workloads())
     return resp
 
 
@@ -278,7 +280,7 @@ def declared_queues() -> list:
             max_applications=LIGHT.max_applications,
             preemption_delay="5s",
             role="light",
-            examples="aegir.instruct;tp1",
+            examples="aegir.instruct",
         ),
         zpb.QueueHint(
             path=MEDIUM.queue,
@@ -288,7 +290,7 @@ def declared_queues() -> list:
             max_applications=MEDIUM.max_applications,
             preemption_delay="5s",
             role="medium",
-            examples="aegir.instruct;tp2",
+            examples="aegir.instruct",
         ),
         zpb.QueueHint(
             path=HEAVY.queue,
@@ -298,9 +300,30 @@ def declared_queues() -> list:
             max_applications=HEAVY.max_applications,
             preemption_policy="fence",
             role="heavy",
-            examples="aegir.instruct;tp4-35b",
+            examples="aegir.instruct",
         ),
     ]
+
+
+def declared_workloads() -> list:
+    """WRK model + capabilities + tp/pp. Queue names stay resource-class FQNs."""
+    from aegir.engine.config import CAPABILITY_MODELS
+
+    out = []
+    for cap, spec in CAPABILITY_MODELS.items():
+        tp = int(spec.tensor_parallel_size)
+        pp = int(getattr(spec, "pipeline_parallel_size", 1) or 1)
+        out.append(
+            zpb.WorkloadHint(
+                wrk=cap.replace("_", "-"),
+                model=spec.model,
+                capabilities=[cap.replace("_", "-")],
+                tensor_parallel=tp,
+                pipeline_parallel=pp,
+                gpu_tokens=tp * pp,
+            )
+        )
+    return out
 
 
 def primary_ui_of(status: zpb.StatusResponse) -> str:

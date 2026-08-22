@@ -158,3 +158,19 @@ def test_servicer_server_query_and_yield() -> None:
     y = svc.Yield(zpb.YieldRequest(workload_id="none"), None)
     assert y.ok is True
     assert y.process_ended is False
+
+
+def test_server_query_workloads_advertises_model_and_tp_pp() -> None:
+    from aegir.engine.s2s import declared_workloads
+
+    q = local_response(zpb.SERVER_QUERY_KIND_WORKLOADS)
+    assert q.project == "aegir"
+    assert [w.wrk for w in q.workloads] == [h.wrk for h in declared_workloads()]
+    instruct = next(w for w in q.workloads if w.wrk == "instruct")
+    assert instruct.model
+    assert instruct.tensor_parallel >= 1
+    assert instruct.pipeline_parallel >= 1
+    assert instruct.gpu_tokens == instruct.tensor_parallel * instruct.pipeline_parallel
+    via_svc = ZndxEngineServicer(_mgr()).ServerQuery(
+        zpb.ServerQueryRequest(kind=zpb.SERVER_QUERY_KIND_WORKLOADS), None)
+    assert [w.wrk for w in via_svc.workloads] == [w.wrk for w in q.workloads]

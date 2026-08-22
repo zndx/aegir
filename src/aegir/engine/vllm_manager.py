@@ -59,25 +59,14 @@ class VllmManager:
     @staticmethod
     def _request_share(capability: str) -> None:
         """Record WRK occupancy intent before occupying GPUs. Never writes queues.yaml."""
-        from aegir.engine.queue_share import (
-            request_queue_share,
-            resource_class_for_capability,
-        )
+        from aegir.engine.queue_share import notify_admit
 
         spec = CAPABILITY_MODELS[capability]
-        rc = resource_class_for_capability(capability, spec.tensor_parallel_size)
-        try:
-            request_queue_share(capability, rc)
-        except RuntimeError as e:
-            if "SHAREFAIL" in str(e):
-                raise
-            import logging
-            logging.getLogger("aegir.engine.vllm_manager").warning(
-                "RequestQueueShare skipped: %s", e)
-        except Exception as e:  # noqa: BLE001 — admit still proceeds unless SHAREFAIL
-            import logging
-            logging.getLogger("aegir.engine.vllm_manager").warning(
-                "RequestQueueShare skipped: %s", e)
+        notify_admit(
+            capability,
+            spec.tensor_parallel_size,
+            spec.pipeline_parallel_size,
+        )
 
     def _launch(self, capability: str) -> Endpoint:
         spec = CAPABILITY_MODELS[capability]
@@ -198,6 +187,8 @@ class VllmManager:
         return list(self._ep.values())
 
     def shutdown(self) -> None:
+        from aegir.engine.queue_share import notify_release
+
         for ep in self._ep.values():
             if ep.proc and ep.proc.poll() is None:
                 # Kill the whole process group (see start_new_session in _launch) so TP workers die too.
@@ -205,3 +196,6 @@ class VllmManager:
                     os.killpg(os.getpgid(ep.proc.pid), signal.SIGKILL)
                 except (ProcessLookupError, PermissionError):
                     ep.proc.kill()
+            tp = ep.spec.tensor_parallel_size if ep.spec is not None else None
+            pp = ep.spec.pipeline_parallel_size if ep.spec is not None else None
+            notify_release(ep.capability, tp, pp)

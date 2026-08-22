@@ -40,6 +40,7 @@ FEDERATE_PROTOCOL = os.environ.get("AEGIR_ENGINE_FEDERATE_PROTOCOL", "")
 class ModelSpec:
     model: str                              # vLLM model id (resolved from DEFAULT_HF_HUB_CACHE) or a local path
     tensor_parallel_size: int = 4           # FP8 35B-A3B fits TP=4 (~9GB/GPU) on the 6×24GB; configurable
+    pipeline_parallel_size: int = 1         # advertised on WORKLOADS; share is tp×pp
     gpu_memory_utilization: float = 0.90
     extra_args: list[str] = field(default_factory=list)
 
@@ -49,6 +50,7 @@ CAPABILITY_MODELS: dict[str, ModelSpec] = {
     "instruct": ModelSpec(
         model=os.environ.get("AEGIR_INSTRUCT_MODEL", "Qwen/Qwen3.6-35B-A3B-FP8"),
         tensor_parallel_size=int(os.environ.get("AEGIR_ENGINE_TP", "4")),
+        pipeline_parallel_size=int(os.environ.get("AEGIR_ENGINE_PP", "1")),
         gpu_memory_utilization=float(os.environ.get("AEGIR_ENGINE_GPU_MEM", "0.90")),
         # Sized for THINKING-trace retention (Qwen3.x reasons verbosely; the trace is a corpus value-add,
         # so we keep it and give it room) WITHOUT OOM: 16384 ctx × 8 seqs has the SAME KV footprint as the
