@@ -172,11 +172,25 @@ def share_for_class(
         max=spb.ResourceMap(quantities={GPU_KEY: max_gpu}),
         max_applications=int(rc.max_applications),
     )
+    from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
+    _rc_enum = (
+        zpb.RESOURCE_CLASS_COMPUTE if tokens <= 0
+        else zpb.RESOURCE_CLASS_LIGHT if tokens == 1
+        else zpb.RESOURCE_CLASS_MEDIUM if tokens == 2
+        else zpb.RESOURCE_CLASS_HEAVY
+    )
     wrk = spb.WorkloadIntent(
         wrk=kind.replace("_", "-"),
         queue=rc.queue,
-        resource_class=rc.name,
+        resource_class=_rc_enum,
         applications=apps,
+        requirements=zpb.WorkloadRequirements(
+            backend=(
+                zpb.SERVING_BACKEND_VLLM_LOCAL if tokens > 0
+                else zpb.SERVING_BACKEND_CPU_PROXY
+            ),
+            footprint=zpb.ResourceFootprint(gpu=tokens),
+        ),
     )
     return spb.QueueShareRequest(
         peer=PEER,
