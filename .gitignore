@@ -61,3 +61,8 @@ data/correspondence_*/T_I_centroids.npy
 
 # Metaflow local-mode run metadata (local datastore lives on /raid)
 .metaflow/
+
+# editor swap files + JVM crash logs (junk)
+*.swp
+*~
+hs_err_pid*.log
