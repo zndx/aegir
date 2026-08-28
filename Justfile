@@ -365,6 +365,7 @@ engine-proto-gen:
     sed -i 's/^import aegir_engine_pb2 as/from aegir.engine.proto import aegir_engine_pb2 as/' src/aegir/engine/proto/aegir_engine_pb2_grpc.py
     sed -i 's/^import open_inference_grpc_pb2 as/from aegir.engine.proto import open_inference_grpc_pb2 as/' src/aegir/engine/proto/open_inference_grpc_pb2_grpc.py
     sed -i 's/^from zndx.engine.v1 import/from aegir.engine.proto.zndx.engine.v1 import/' src/aegir/engine/proto/zndx/engine/v1/engine_pb2_grpc.py
+    sed -i 's/^from zndx.engine.v1 import/from aegir.engine.proto.zndx.engine.v1 import/' src/aegir/engine/proto/zndx/scheduler/v1/scheduler_pb2.py
     sed -i 's/^from zndx.scheduler.v1 import/from aegir.engine.proto.zndx.scheduler.v1 import/' src/aegir/engine/proto/zndx/scheduler/v1/scheduler_pb2_grpc.py
 
 # ── mdbook documentation ──────────────────────────────────────
