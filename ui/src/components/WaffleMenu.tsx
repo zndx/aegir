@@ -39,6 +39,8 @@ export default function WaffleMenu() {
   const [emptyMsg, setEmptyMsg] = useState("No peers advertising a primary UI.");
 
   const load = useCallback(async () => {
+    // Honest in-flight state: never show "no peers" while discovering.
+    setEmptyMsg("Discovering federation peers…");
     try {
       const r = await fetch("/api/aegir/v1/federation/surfaces");
       const data = await r.json();
@@ -58,6 +60,12 @@ export default function WaffleMenu() {
   useEffect(() => {
     if (open) void load();
   }, [open, load]);
+
+  // Prime the varnish-backed surfaces cache at mount so the first open
+  // is already populated.
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   return (
     <>

@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
@@ -193,17 +194,47 @@ def _register_api_routes(app: FastAPI) -> None:
             media = "application/json"
         return FileResponse(path, media_type=media)
 
+    def _federation_surfaces_live() -> dict:
+        from aegir.engine.s2s import collect_peer_surfaces
+
+        return {"items": collect_peer_surfaces()}
+
     @app.get("/api/aegir/v1/federation/surfaces")
     def federation_surfaces() -> dict:
         """Waffle roster: this engine plus peers that advertise a primary UI.
 
+        Varnish loop-through (federated menu pattern): the roster is cached
+        at the *_origin route (ttl+grace = instant serves with background
+        refresh); falls back to the live collector when varnish is absent.
         Discovery is S2S (Status + ServerQuery PEERS). Do not invent peer URLs.
         """
-        from aegir.engine.s2s import collect_peer_surfaces
+        import httpx
+
+        vport = (os.environ.get("VARNISH_PORT") or "6093").strip()
+        url = f"http://127.0.0.1:{vport}/api/aegir/v1/federation/surfaces_origin"
         try:
-            return {"items": collect_peer_surfaces()}
+            resp = httpx.get(url, timeout=6.0)
+            if resp.status_code == 200:
+                return resp.json()
+        except Exception:  # noqa: BLE001 — varnish absent → live fallback
+            pass
+        try:
+            return _federation_surfaces_live()
         except Exception as e:  # noqa: BLE001 — waffle degrades to empty
             return {"items": [], "error": str(e)}
+
+    @app.get("/api/aegir/v1/federation/surfaces_origin")
+    def federation_surfaces_origin() -> dict:
+        """Raw roster for the varnish cache — the live collector only.
+
+        Failures must be real HTTP errors (502), never 200+error, so the
+        VCL error discipline holds: a failed background refresh is
+        abandoned and the last good object keeps serving.
+        """
+        try:
+            return _federation_surfaces_live()
+        except Exception as e:  # noqa: BLE001
+            raise HTTPException(status_code=502, detail=str(e)) from e
 
     # ── /api/kb — the lineup projection (build/dev/{current,scratch,archive}) ──
     # Thin: delegate to aegir.lineup readers. Read-only; reflects the latest

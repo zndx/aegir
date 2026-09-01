@@ -172,6 +172,53 @@ in {
     # metaflow-service pod can't reach postgres at deploy, append a `host all all 10.42.0.0/16 md5` rule.
   };
 
+  services.varnish = {
+    enable = true;
+    # 608x is Ranger territory (6080 HTTP, 6085 Tomcat shutdown socket) —
+    # the varnish lattice lives in the 609x decade: gaius 6091, signals 6092,
+    # aegir 6093, atelier 6094.
+    listen = "127.0.0.1:6093";
+    # Federated menu pattern (gaius precedent): only the *_origin route is
+    # cached — ttl+grace serves the waffle instantly while a background
+    # fetch refreshes. Backend is the gateway (:8091), which serves the
+    # raw roster; everything else passes through untouched.
+    vcl = ''
+      vcl 4.1;
+
+      backend aegir_gateway {
+        .host = "127.0.0.1";
+        .port = "8091";
+        .connect_timeout = 2s;
+        .first_byte_timeout = 120s;
+      }
+
+      sub vcl_recv {
+        if (req.url ~ "^/api/aegir/v1/federation/surfaces_origin") {
+          return (hash);
+        }
+        return (pass);
+      }
+
+      sub vcl_backend_response {
+        if (bereq.url ~ "^/api/aegir/v1/federation/surfaces_origin") {
+          if (beresp.status >= 400) {
+            # A background refresh that fails must not displace the good
+            # stale object; a foreground error must not stick in cache.
+            if (bereq.is_bgfetch) {
+              return (abandon);
+            }
+            set beresp.ttl = 1s;
+            set beresp.grace = 0s;
+            set beresp.uncacheable = true;
+          } else {
+            set beresp.ttl = 60s;
+            set beresp.grace = 6h;
+          }
+        }
+      }
+    '';
+  };
+
   # ── MinIO (Metaflow S3 datastore) — devenv-native, mirrors gaius ─────────────
   # API :9012 / console :9013 (gaius uses 9010/9011 — disambiguated for shared-host coexistence).
   services.minio = lib.mkIf isPrimary {
@@ -391,6 +438,11 @@ in {
     gateway = {
       exec = ''
         python3 bin/reclaim-port.py gateway 8091
+        # Canonical federation identity — the gateway builds the waffle
+        # roster in-process (self row + peers), so it needs the same
+        # advertise host as the engine or FQDN detection leaks the WAN
+        # reverse-DNS name.
+        export AEGIR_ADVERTISE_HOST="''${AEGIR_ADVERTISE_HOST:-''${SIGNALS_ADVERTISE_HOST:-tinybox.dev.vista.zndx.org}}"
         uv run --no-sync python -m aegir.db.bootstrap && \
         { uv run --no-sync python -m aegir.lineup build || echo "[gateway] lineup projection failed — /api/kb will 404 until 'just kb-build' succeeds"; } && \
         AEGIR_LINEUP_UPKEEP=1 AEGIR_GATEWAY_RELOAD=1 exec uv run --no-sync python -m aegir.gateway
@@ -456,6 +508,10 @@ in {
         python3 bin/reclaim-port.py capability-engine 50151 || true
         export LD_LIBRARY_PATH="${config.devenv.root}/build/cuda-driver-libs''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         export AEGIR_ENGINE_PORT="''${AEGIR_ENGINE_PORT:-50151}"
+        # Canonical federation identity: without this advertise_host() falls
+        # back to FQDN detection, which picks up the WAN reverse-DNS name
+        # (customer.*.isp.starlink.com) — unresolvable over WARP/off-LAN.
+        export AEGIR_ADVERTISE_HOST="''${AEGIR_ADVERTISE_HOST:-''${SIGNALS_ADVERTISE_HOST:-tinybox.dev.vista.zndx.org}}"
         exec uv run --no-sync python -m aegir.engine.server
       '';
       process-compose = {
