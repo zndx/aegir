@@ -54,7 +54,8 @@ sdg:AperturePoints a skos:Collection ;
         sdg:UTILITY ,
         sdg:UTILITY_POWER ,
         sdg:UTILITY_TELECOM ,
-        sdg:UTILITY_WATER .
+        sdg:UTILITY_WATER ,
+        sdg:AGENTMESH .   # PROPOSED 2026-09-04 — cas_integration.ttl; arms the corpus-belief diagnostic
 
 sdg:ChordDisplay a skos:Collection ;
     rdfs:label "Chord Display" ;
@@ -101,4 +102,5 @@ sdg:ChordDisplay a skos:Collection ;
         sdg:UTILITY ,
         sdg:UTILITY_POWER ,
         sdg:UTILITY_TELECOM ,
-        sdg:UTILITY_WATER .
+        sdg:UTILITY_WATER ,
+        sdg:AGENTMESH .   # PROPOSED 2026-09-04 — cas_integration.ttl; arms the corpus-belief diagnostic

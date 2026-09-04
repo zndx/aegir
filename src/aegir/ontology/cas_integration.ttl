@@ -1,0 +1,53 @@
+# cas_integration.ttl — the Complex Adaptive Systems sector and its first genus,
+# Agent Mesh Operations (PROPOSED, RH 2026-09-04).
+#
+# Pattern: one per-sector integration overlay, like fibo_/fhir_/energistics_/
+# manufacturing_/sysmlv2_integration.ttl — a sector-tier forest top typed
+# sdg:TopicDomain (bare-integer notation; organizes WITHOUT admitting; member of
+# sdg:TopicDomains, never a skos:broader link) plus the genus chord beneath it that
+# is the admission anchor. Point-hood is NOT a side-effect of notation: sdg:AGENTMESH
+# becomes an aperture point only by its explicit membership in sdg:AperturePoints
+# (aperture_layer.ttl), where this proposal adds it so the corpus-belief diagnostic
+# can measure whether the genus separates real input. "Expand the hierarchy first."
+#
+# Content doctrine (domain_concepts.ttl header): the point is the CONTENT — MaxSim
+# scores documents against the definitional text, so the genus carries a thorough
+# skos:definition + skos:scopeNote. Original synthesis; BFO/CCO-compatible (a mesh is
+# an object aggregate of agents; operations are processes); no proprietary content.
+#
+# Empirical origin: the 2026-09-04 gaius/signals operations day — declared resource
+# intents arbitrated by YuniKorn, a 28-tick admission deadlock invisible to a
+# 6-hour objective, restart windows, Brier-scored probe forecasts, and the Operations
+# Backlog design (Fibonacci-hour slots 0–9, a 34 h remediation window, Nautilus as
+# the model-free supervisor, backlogs as governed data products).
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo:  <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cco:  <https://www.commoncoreontologies.org/> .
+@prefix sdg:  <https://signals.zndx.org/sdg#> .
+
+# ── the sector tier (a FOREST TOP; topic-domain-hood is INSTANTIATION via the
+# sdg:TopicDomain class + sdg:TopicDomains membership — the latter is asserted in
+# fibo_integration.ttl's canonical member list) ────────────────────────────────
+
+sdg:ComplexAdaptiveSystems a skos:Concept, sdg:TopicDomain ;
+    skos:prefLabel "Complex Adaptive Systems" ;
+    skos:altLabel "CAS" , "ComplexAdaptiveSystems" , "Complexity Science" ;
+    skos:notation "20" ;
+    skos:definition "The sector-tier top for complex adaptive systems within SDG: systems composed of many interacting, adapting agents whose collective behaviour emerges from local interactions and feedback rather than from central design — nonlinear dynamics, self-organization, emergence, path dependence, phase transitions, attractors, and resilience and adaptation across scales, whether the agents are organisms, markets, institutions, or autonomous software. Organizes without admitting: the sector groups the genera below it for navigation and roll-up; admission happens at genus anchors that are explicit members of sdg:AperturePoints. Initially hosting the agent-mesh operations genus (sdg:AGENTMESH), the operational face of the sector." ;
+    skos:scopeNote "The sector spans the study and the operation of adaptive multi-agent systems. Candidate sibling genera, deliberately NOT declared until real input calls for them: emergence and self-organization; feedback, control and homeostasis; resilience, adaptation and evolutionary dynamics; network topology and cascades. Excludes the mathematics of dynamical systems as such (a method, not a domain) and single-agent behaviour in isolation." ;
+    skos:editorialNote "PROPOSED 2026-09-04 (RH). Sector top in the Scratch→Current→Archive procession; graduates with its first confirmed genus." ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+# ── the genus chord (admission anchor — a member of sdg:AperturePoints) ─────────
+
+sdg:AGENTMESH a skos:Concept ;
+    skos:prefLabel "Agent Mesh Operations" ;
+    skos:altLabel "AGENTMESH" , "Agent Mesh Ops" , "Multi-Agent Systems Operations" , "Federated Agent Operations" ;
+    skos:notation "20.1" ;
+    skos:definition "The operation of a federated mesh of autonomous software agents and their host engines as one adaptive system. Peers discover one another and exchange messages over a common peer protocol, and no single agent holds the global state. Each agent declares resource intents — a queue leaf, an occupancy, a floor, a priority — against shared, contended capacity, and an arbiter admits, defers, yields or preempts work by those declarations within admission windows; time spent waiting inside a window is the design working, while an exhausted window is the first entry into an operations backlog. Supervisors standing outside the agents' trust boundary observe declared cadences and nets, fill horizon-indexed state tables, and escalate delays along a fixed progression of hours to agendas, reminder lists and briefings. Every probe, timeout and heuristic verdict is recorded as a forecast with an implied probability and later scored against outcomes established by objective verification of the surfaced result or by an independent judge, so the mesh's confidence in its own instruments is measured rather than assumed, and the judge is scored like any other forecaster. Remediation is chosen from the observed state — self-healing first, then escalation to an agent-mediated repair, then operator action taken in a quiet window — and each cycle's inputs, outputs and decisions are governed as lineaged data products. Agent mesh operations is the discipline of keeping such a mesh coherent, calibrated and progressing under contention, where stability is an emergent property of declared intents, bounded escalation and honest measurement." ;
+    skos:scopeNote "Includes: admission and arbitration (queue shares, floors and priorities, intra- and cross-queue preemption, admission windows, deferral versus failure); supervision and backlog (expectation categories, forward horizons and delay-escalation thresholds on a Fibonacci-hour progression, per-workflow state tables over a remediation window, model-free watchers that validate a project's supervision instance); calibration (forecast ledgers, Brier scoring per observer and call site, salt that annotates rather than overrides); objective verification (mechanics versus intent objectives, rubrics on the surfaced result, silver from verification and gold from a human or an external judge); remediation circuits (self-healing strategies, agent-mediated escalation with cadence limits, controlled maintenance windows, progress-based rather than wall-clock timeouts); peer messaging and propagation of supervisory messages across the mesh; and governance of the operations record as data products with lineage and catalog affordances. Excludes: prompt engineering of a single agent; the internals of consensus algorithms; IT service management without autonomous agents; and the formal theory of complexity, which belongs to sibling genera." ;
+    rdfs:comment "Declared intents and arbitration; admission windows and backlog entry; outside-the-boundary supervision on Fibonacci-hour horizons; forecasts scored against verified objectives; self-healing, escalation, operator windows; the operations record as lineaged data products." ;
+    skos:editorialNote "PROPOSED 2026-09-04 (RH): armed as an aperture point (sdg:AperturePoints, aperture_layer.ttl) so the corpus-belief diagnostic can run; graduation requires classify() to show the genus separating real mesh-operations input — belief and margin — from its nearest neighbours (sdg:DATAENG_QUALITY observability, sdg:MBSE systems modelling, sdg:SYSML_VERIFICATION). Until then it is a Scratch concept." ;
+    skos:broader sdg:ComplexAdaptiveSystems ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
