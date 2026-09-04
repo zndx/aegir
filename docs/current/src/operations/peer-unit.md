@@ -63,7 +63,13 @@ export METAFLOW_SERVICE_URL=http://127.0.0.1:30180
 ## Federation waffle
 
 `Status.surfaces` advertises the lineup UI (never loopback). `Engine/ServerQuery`
-answers remotes (`git remote -v` + HEAD), configured lattice peers, and the
-same surfaces. The header waffle (`/api/aegir/v1/federation/surfaces`) lists
-only engines that advertise a primary UI; LAN IP visits rebase this-host
-links onto the browser Host (same as Signals / Gaius).
+answers remotes (`git remote -v` + HEAD), configured lattice peers **plus**
+live `Engine/Announce` hints, and the same surfaces. The header waffle
+(`/api/aegir/v1/federation/surfaces`) walks that PEERS set over S2S and lists
+only engines that advertise a primary UI; a foreign `host:port` keeps its
+own identity (multi-host). LAN IP visits rebase this-host links onto the
+browser Host (same as Signals / Gaius).
+
+External engines (Hermes, Metabase) join by `Announce`ing their lattice
+`host:port` here; Ægir remembers the hint until TTL. Launchers stay
+pull-only.

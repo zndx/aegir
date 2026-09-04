@@ -5,16 +5,22 @@ import json
 import subprocess
 from pathlib import Path
 
+import pytest
+
 from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
 from aegir.engine.s2s import (
     advertise_host,
     advertised_head,
+    announced_peers,
+    collect_peer_surfaces,
     configured_peers,
     is_loopback_host,
     list_named_remotes,
     local_primary_ui,
     local_response,
     local_surfaces,
+    remember_announce,
+    reset_announced,
     rewrite_public_url,
 )
 from aegir.engine.server import ZndxEngineServicer, build_status_response
@@ -23,6 +29,13 @@ from aegir.engine.server import ZndxEngineServicer, build_status_response
 def _mgr(endpoints=()):
     from types import SimpleNamespace
     return SimpleNamespace(status=lambda: list(endpoints))
+
+
+@pytest.fixture(autouse=True)
+def _clear_announce_roster():
+    reset_announced()
+    yield
+    reset_announced()
 
 
 def test_list_named_remotes_from_checkout(tmp_path: Path) -> None:
@@ -165,12 +178,140 @@ def test_server_query_workloads_advertises_model_and_tp_pp() -> None:
 
     q = local_response(zpb.SERVER_QUERY_KIND_WORKLOADS)
     assert q.project == "aegir"
-    assert [w.wrk for w in q.workloads] == [h.wrk for h in declared_workloads()]
-    instruct = next(w for w in q.workloads if w.wrk == "instruct")
+    offers = list(declared_workloads())
+    assert [w.model for w in q.workloads] == [h.model for h in offers]
+    instruct = next(w for w in q.workloads if "instruct" in list(w.capabilities))
     assert instruct.model
-    assert instruct.tensor_parallel >= 1
-    assert instruct.pipeline_parallel >= 1
-    assert instruct.gpu_tokens == instruct.tensor_parallel * instruct.pipeline_parallel
+    tp = instruct.requirements.parallelism.tensor_parallel
+    pp = instruct.requirements.parallelism.pipeline_parallel
+    assert tp >= 1
+    assert pp >= 1
+    assert instruct.requirements.footprint.gpu == tp * pp
     via_svc = ZndxEngineServicer(_mgr()).ServerQuery(
         zpb.ServerQueryRequest(kind=zpb.SERVER_QUERY_KIND_WORKLOADS), None)
-    assert [w.wrk for w in via_svc.workloads] == [w.wrk for w in q.workloads]
+    assert [w.model for w in via_svc.workloads] == [w.model for w in q.workloads]
+
+
+def test_announce_joins_peers_until_ttl() -> None:
+    ok, ttl, err = remember_announce(
+        project="hermes",
+        engine_target="otherbox.lan:50651",
+        ttl_seconds=30,
+    )
+    assert ok is True
+    assert err == ""
+    assert ttl == 30
+    assert announced_peers() == [("hermes", "otherbox.lan:50651")]
+    q = local_response(zpb.SERVER_QUERY_KIND_PEERS)
+    assert any(p.project == "hermes" and p.target == "otherbox.lan:50651" for p in q.peers)
+    ack = ZndxEngineServicer(_mgr()).Announce(
+        zpb.PeerAnnounce(project="hermes", engine_target="otherbox.lan:50651", ttl_seconds=45),
+        None,
+    )
+    assert ack.accepted is True
+    assert ack.ttl_seconds == 45
+    refused = remember_announce(project="aegir", engine_target="tinybox:50151")
+    assert refused[0] is False
+    empty = remember_announce(project="hermes", engine_target="not-a-target")
+    assert empty[0] is False
+
+
+def test_announce_expires(monkeypatch) -> None:
+    import aegir.engine.s2s as s2s
+
+    clock = {"t": 100.0}
+    monkeypatch.setattr(s2s.time, "monotonic", lambda: clock["t"])
+    monkeypatch.setattr(s2s, "MIN_ANNOUNCE_TTL_S", 1)
+    ok, ttl, _ = remember_announce(
+        project="hermes", engine_target="otherbox.lan:50651", ttl_seconds=1,
+    )
+    assert ok and ttl == 1
+    assert announced_peers() == [("hermes", "otherbox.lan:50651")]
+    clock["t"] = 102.0
+    assert announced_peers() == []
+
+
+def test_collect_skips_peers_without_primary_ui(monkeypatch) -> None:
+    monkeypatch.setattr("aegir.engine.s2s.configured_peers", lambda contract=None: [])
+    monkeypatch.setattr("aegir.engine.s2s.directory_seeds", lambda: [("", "127.0.0.1:50551")])
+    monkeypatch.setattr(
+        "aegir.engine.s2s.status_peer",
+        lambda target, timeout=4.0: zpb.StatusResponse(project="signals"),
+    )
+    monkeypatch.setattr(
+        "aegir.engine.s2s.query_peer",
+        lambda *a, **k: zpb.ServerQueryResponse(project="signals"),
+    )
+    monkeypatch.delenv("AEGIR_PRIMARY_UI", raising=False)
+    monkeypatch.delenv("AEGIR_ADVERTISE_HOST", raising=False)
+    rows = collect_peer_surfaces()
+    assert all(r["project"] != "signals" for r in rows)
+
+
+def test_collect_walks_peers_to_foreign_hermes(monkeypatch) -> None:
+    monkeypatch.setenv("AEGIR_ADVERTISE_HOST", "tinybox.dev.vista.zndx.org")
+    monkeypatch.delenv("AEGIR_PRIMARY_UI", raising=False)
+    monkeypatch.setenv("AEGIR_UI_BIND", "0.0.0.0:5173")
+    monkeypatch.setattr("aegir.engine.s2s.configured_peers", lambda contract=None: [])
+    monkeypatch.setattr("aegir.engine.s2s.directory_seeds", lambda: [("", "127.0.0.1:50551")])
+
+    def _status(target, timeout=4.0):
+        if "50651" in target:
+            return zpb.StatusResponse(
+                project="hermes",
+                surfaces=[zpb.Surface(
+                    kind="primary", url="http://otherbox.lan:9119", healthy=True,
+                )],
+            )
+        if "50551" in target:
+            return zpb.StatusResponse(
+                project="signals",
+                surfaces=[zpb.Surface(
+                    kind="primary",
+                    url="http://tinybox.dev.vista.zndx.org:9889",
+                    healthy=True,
+                )],
+            )
+        return None
+
+    def _query(target, **_k):
+        if "50551" in target:
+            return zpb.ServerQueryResponse(
+                project="signals",
+                peers=[zpb.PeerHint(project="hermes", target="otherbox.lan:50651")],
+            )
+        return zpb.ServerQueryResponse(project="hermes")
+
+    monkeypatch.setattr("aegir.engine.s2s.status_peer", _status)
+    monkeypatch.setattr("aegir.engine.s2s.query_peer", _query)
+    rows = {r["project"]: r for r in collect_peer_surfaces()}
+    assert rows["hermes"]["title"] == "Hermes"
+    assert rows["hermes"]["primary_ui"] == "http://otherbox.lan:9119"
+    assert rows["hermes"]["engine_target"] == "otherbox.lan:50651"
+    assert rows["signals"]["primary_ui"] == "http://tinybox.dev.vista.zndx.org:9889"
+
+
+def test_collect_lists_announced_hermes_same_box(monkeypatch) -> None:
+    monkeypatch.setenv("AEGIR_ADVERTISE_HOST", "tinybox.dev.vista.zndx.org")
+    monkeypatch.delenv("AEGIR_PRIMARY_UI", raising=False)
+    monkeypatch.setenv("AEGIR_UI_BIND", "0.0.0.0:5173")
+    monkeypatch.setattr("aegir.engine.s2s.configured_peers", lambda contract=None: [])
+    monkeypatch.setattr("aegir.engine.s2s.directory_seeds", lambda: [])
+    remember_announce(project="hermes", engine_target="127.0.0.1:50651", ttl_seconds=60)
+
+    def _status(target, timeout=4.0):
+        return zpb.StatusResponse(
+            project="hermes",
+            surfaces=[zpb.Surface(
+                kind="primary", url="http://127.0.0.1:9119", healthy=True,
+            )],
+        )
+
+    monkeypatch.setattr("aegir.engine.s2s.status_peer", _status)
+    monkeypatch.setattr(
+        "aegir.engine.s2s.query_peer",
+        lambda *a, **k: zpb.ServerQueryResponse(project="hermes"),
+    )
+    rows = {r["project"]: r for r in collect_peer_surfaces()}
+    assert rows["hermes"]["primary_ui"] == "http://tinybox.dev.vista.zndx.org:9119"
+    assert rows["hermes"]["engine_target"] == "tinybox.dev.vista.zndx.org:50651"

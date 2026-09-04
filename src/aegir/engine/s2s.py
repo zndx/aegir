@@ -9,6 +9,9 @@ import logging
 import os
 import socket
 import subprocess
+import threading
+import time
+from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse
 
@@ -24,6 +27,21 @@ _LOOPBACK = frozenset(
     {"", "localhost", "127.0.0.1", "0.0.0.0", "::1", "::", "[::1]", "[::]"}
 )
 _LAB_CONTRACT = Path.home() / "local/src/wxs/signals/config/platform/peer-contract.json"
+
+DEFAULT_ANNOUNCE_TTL_S = 90
+MIN_ANNOUNCE_TTL_S = 15
+MAX_ANNOUNCE_TTL_S = 600
+
+
+@dataclass(frozen=True)
+class AnnouncedPeer:
+    project: str
+    target: str
+    expires_at: float
+
+
+_ANNOUNCE_LOCK = threading.Lock()
+_ANNOUNCED: dict[str, AnnouncedPeer] = {}
 
 
 def is_loopback_host(host: str) -> bool:
@@ -184,6 +202,7 @@ def surface_title(project: str) -> str:
         "atelier": "Atelier",
         "metabase": "Metabase",
         "synth": "Synth",
+        "hermes": "Hermes",
     }
     if raw.lower() in known:
         return known[raw.lower()]
@@ -237,6 +256,62 @@ def directory_seeds() -> list[tuple[str, str]]:
     return [("", hub.replace("grpc://", ""))]
 
 
+def clamp_announce_ttl(raw: int) -> int:
+    if raw <= 0:
+        return DEFAULT_ANNOUNCE_TTL_S
+    return max(MIN_ANNOUNCE_TTL_S, min(MAX_ANNOUNCE_TTL_S, int(raw)))
+
+
+def parse_engine_target(raw: str) -> str:
+    """Lattice Engine host:port, or empty if the string is not a target."""
+    addr = (raw or "").replace("grpc://", "").strip()
+    if not addr:
+        return ""
+    host, sep, port = addr.rpartition(":")
+    if not sep or not host or not port.isdigit():
+        return ""
+    return addr
+
+
+def remember_announce(
+    *,
+    project: str,
+    engine_target: str,
+    ttl_seconds: int = 0,
+) -> tuple[bool, int, str]:
+    """Record a PeerAnnounce. Process-local, TTL'd — not a lineage store."""
+    pid = (project or "").strip()
+    if not pid:
+        return False, 0, "empty project"
+    if pid.lower() == PROJECT:
+        return False, 0, "self-announce"
+    target = parse_engine_target(engine_target)
+    if not target:
+        return False, 0, "engine_target must be host:port"
+    ttl = clamp_announce_ttl(ttl_seconds)
+    with _ANNOUNCE_LOCK:
+        _ANNOUNCED[pid.lower()] = AnnouncedPeer(
+            project=pid,
+            target=target,
+            expires_at=time.monotonic() + ttl,
+        )
+    return True, ttl, ""
+
+
+def announced_peers() -> list[tuple[str, str]]:
+    """Live Announce roster. Expired rows are dropped here (honest miss)."""
+    now = time.monotonic()
+    with _ANNOUNCE_LOCK:
+        for key in [k for k, row in _ANNOUNCED.items() if row.expires_at <= now]:
+            del _ANNOUNCED[key]
+        return [(row.project, row.target) for row in _ANNOUNCED.values()]
+
+
+def reset_announced() -> None:
+    with _ANNOUNCE_LOCK:
+        _ANNOUNCED.clear()
+
+
 def local_response(
     kind: int,
     *,
@@ -254,10 +329,13 @@ def local_response(
         )
         resp.head = advertised_head(root)
     if kind == zpb.SERVER_QUERY_KIND_PEERS:
-        resp.peers.extend(
-            zpb.PeerHint(project=pid, target=tgt)
-            for pid, tgt in configured_peers(contract)
-        )
+        seen: set[str] = set()
+        for pid, tgt in (*configured_peers(contract), *announced_peers()):
+            key = (pid or "").strip().lower() or tgt
+            if key in seen or key == PROJECT:
+                continue
+            seen.add(key)
+            resp.peers.append(zpb.PeerHint(project=pid, target=tgt))
     if kind == zpb.SERVER_QUERY_KIND_SURFACES:
         resp.surfaces.extend(local_surfaces())
     if kind == zpb.SERVER_QUERY_KIND_QUEUES:
@@ -432,27 +510,36 @@ def _canonical_target(addr: str) -> str:
     return addr
 
 
+def _url_is_loopback(url: str) -> bool:
+    return is_loopback_host(urlparse(url).hostname or "")
+
+
 def collect_peer_surfaces(*, skip_project: str = PROJECT) -> list[dict[str, str]]:
-    """S2S waffle roster: self + PEERS + Status.surfaces. Only advertised primary UIs."""
+    """S2S waffle roster: self + PEERS + Announce + Status.surfaces.
+
+    Only advertised primary UIs. Foreign hosts keep their own identity;
+    same-box loopback is canonicalized onto advertise_host().
+    """
     queue: list[tuple[str, str]] = list(configured_peers())
+    queue.extend(announced_peers())
     queue.extend(directory_seeds())
-    seen: set[str] = set()
-    found: list[dict[str, str]] = []
+    seen_addr: set[str] = set()
+    by_project: dict[str, dict[str, str]] = {}
     self_ui = local_primary_ui()
     if self_ui:
         host = advertise_host() or "localhost"
-        found.append({
+        by_project[PROJECT] = {
             "project": PROJECT,
             "title": surface_title(PROJECT),
             "engine_target": f"{host}:50151",
             "primary_ui": self_ui,
-        })
+        }
     while queue:
         hint_project, target = queue.pop(0)
         addr = target.replace("grpc://", "").strip()
-        if not addr or addr in seen:
+        if not addr or addr in seen_addr:
             continue
-        seen.add(addr)
+        seen_addr.add(addr)
         status = status_peer(addr)
         if status is None:
             continue
@@ -460,15 +547,16 @@ def collect_peer_surfaces(*, skip_project: str = PROJECT) -> list[dict[str, str]
         if project and project == skip_project:
             continue
         ui = primary_ui_of(status)
+        key = (project or addr).lower()
         if ui:
-            if any(row["project"] == (project or addr) for row in found):
-                continue
-            found.append({
-                "project": project or addr,
-                "title": surface_title(project or ""),
-                "engine_target": _canonical_target(addr),
-                "primary_ui": _canonicalize_same_box(ui, addr),
-            })
+            prev = by_project.get(key)
+            if prev is None or _url_is_loopback(prev.get("primary_ui") or ""):
+                by_project[key] = {
+                    "project": project or addr,
+                    "title": surface_title(project or ""),
+                    "engine_target": _canonical_target(addr),
+                    "primary_ui": _canonicalize_same_box(ui, addr),
+                }
         peers = query_peer(addr, kind=zpb.SERVER_QUERY_KIND_PEERS)
         if peers is None:
             continue
@@ -476,5 +564,4 @@ def collect_peer_surfaces(*, skip_project: str = PROJECT) -> list[dict[str, str]
             tgt = (peer.target or "").strip()
             if tgt:
                 queue.append((peer.project or "", tgt))
-    found.sort(key=lambda row: row["project"])
-    return found
+    return sorted(by_project.values(), key=lambda row: row["project"])

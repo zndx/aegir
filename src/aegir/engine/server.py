@@ -227,6 +227,36 @@ class ZndxEngineServicer:
             grpc.StatusCode.UNIMPLEMENTED,
             "RecordLineage is Signals Atlas SoR (POST /api/v1/lineage).")
 
+    def WatchWorkload(self, request, context):
+        """Held-open intended serving set. Empty intents is honest until vLLM is up."""
+        import time as _time
+
+        from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
+
+        generation = 0
+        while context.is_active():
+            yield zpb.WorkloadProfile(
+                phase=zpb.WORKLOAD_PHASE_SETTLED,
+                generation=generation,
+                intents=[],
+                settled_at_unix_ms=int(_time.time() * 1000),
+                detail="aegir: empty intents until VllmManager reports a serving set",
+            )
+            _time.sleep(15)
+            generation += 1
+
+    def Announce(self, request, context):
+        """TTL'd S2S join — remember a PeerHint in this engine's PEERS set."""
+        from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
+        from aegir.engine.s2s import remember_announce
+
+        ok, ttl, err = remember_announce(
+            project=request.project,
+            engine_target=request.engine_target,
+            ttl_seconds=int(request.ttl_seconds or 0),
+        )
+        return zpb.AnnounceAck(accepted=ok, ttl_seconds=ttl, error=err)
+
 
 class OipInferenceServicer:
     """The STANDARD face — inference.GRPCInferenceService (KServe Open Inference Protocol),
