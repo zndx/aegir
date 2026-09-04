@@ -291,6 +291,49 @@ def test_collect_walks_peers_to_foreign_hermes(monkeypatch) -> None:
     assert rows["signals"]["primary_ui"] == "http://tinybox.dev.vista.zndx.org:9889"
 
 
+def test_collect_walks_own_engine_peers_from_gateway(monkeypatch) -> None:
+    """Gateway has no in-process roster; it must ServerQuery this engine."""
+    monkeypatch.setenv("AEGIR_ADVERTISE_HOST", "tinybox.dev.vista.zndx.org")
+    monkeypatch.delenv("AEGIR_PRIMARY_UI", raising=False)
+    monkeypatch.setenv("AEGIR_UI_BIND", "0.0.0.0:5173")
+    monkeypatch.setattr("aegir.engine.s2s.configured_peers", lambda contract=None: [])
+    monkeypatch.setattr("aegir.engine.s2s.directory_seeds", lambda: [])
+    monkeypatch.setattr("aegir.engine.s2s.announced_peers", lambda: [])
+
+    def _status(target, timeout=4.0):
+        if "50151" in target:
+            return zpb.StatusResponse(
+                project="aegir",
+                surfaces=[zpb.Surface(
+                    kind="primary",
+                    url="http://tinybox.dev.vista.zndx.org:5173",
+                    healthy=True,
+                )],
+            )
+        if "50651" in target:
+            return zpb.StatusResponse(
+                project="hermes",
+                surfaces=[zpb.Surface(
+                    kind="primary", url="http://otherbox.lan:9119", healthy=True,
+                )],
+            )
+        return None
+
+    def _query(target, **_k):
+        if "50151" in target:
+            return zpb.ServerQueryResponse(
+                project="aegir",
+                peers=[zpb.PeerHint(project="hermes", target="otherbox.lan:50651")],
+            )
+        return zpb.ServerQueryResponse(project="hermes")
+
+    monkeypatch.setattr("aegir.engine.s2s.status_peer", _status)
+    monkeypatch.setattr("aegir.engine.s2s.query_peer", _query)
+    rows = {r["project"]: r for r in collect_peer_surfaces()}
+    assert rows["hermes"]["primary_ui"] == "http://otherbox.lan:9119"
+    assert rows["hermes"]["engine_target"] == "otherbox.lan:50651"
+
+
 def test_collect_lists_announced_hermes_same_box(monkeypatch) -> None:
     monkeypatch.setenv("AEGIR_ADVERTISE_HOST", "tinybox.dev.vista.zndx.org")
     monkeypatch.delenv("AEGIR_PRIMARY_UI", raising=False)

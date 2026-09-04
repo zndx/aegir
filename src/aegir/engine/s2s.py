@@ -514,6 +514,18 @@ def _url_is_loopback(url: str) -> bool:
     return is_loopback_host(urlparse(url).hostname or "")
 
 
+def local_engine_targets() -> list[tuple[str, str]]:
+    """This engine's lattice listen addresses. Gateway collectors have no
+    in-process Announce roster — they must ServerQuery PEERS on :50151.
+    """
+    port = "50151"
+    out: list[tuple[str, str]] = [(PROJECT, f"127.0.0.1:{port}")]
+    host = advertise_host()
+    if host and not is_loopback_host(host):
+        out.append((PROJECT, f"{host}:{port}"))
+    return out
+
+
 def collect_peer_surfaces(*, skip_project: str = PROJECT) -> list[dict[str, str]]:
     """S2S waffle roster: self + PEERS + Announce + Status.surfaces.
 
@@ -523,6 +535,7 @@ def collect_peer_surfaces(*, skip_project: str = PROJECT) -> list[dict[str, str]
     queue: list[tuple[str, str]] = list(configured_peers())
     queue.extend(announced_peers())
     queue.extend(directory_seeds())
+    queue.extend(local_engine_targets())
     seen_addr: set[str] = set()
     by_project: dict[str, dict[str, str]] = {}
     self_ui = local_primary_ui()
@@ -544,11 +557,11 @@ def collect_peer_surfaces(*, skip_project: str = PROJECT) -> list[dict[str, str]
         if status is None:
             continue
         project = (status.project or hint_project or "").strip()
-        if project and project == skip_project:
-            continue
         ui = primary_ui_of(status)
         key = (project or addr).lower()
-        if ui:
+        # Skip adding our own Status row (already seeded) but still walk
+        # PEERS — Announce lives on the engine process, not the gateway.
+        if ui and project != skip_project:
             prev = by_project.get(key)
             if prev is None or _url_is_loopback(prev.get("primary_ui") or ""):
                 by_project[key] = {
