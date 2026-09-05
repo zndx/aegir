@@ -28,8 +28,23 @@ wait_for_postgres() {
   done
 }
 
-# The aegir coexistence footprint on the shared RKE2 (distinct from gaius's default/9010/30180).
+# The aegir coexistence footprint on the shared RKE2 (distinct from gaius's default ns / 30180).
 export AEGIR_MF_NAMESPACE="${AEGIR_MF_NAMESPACE:-aegir-metaflow}"
-export AEGIR_MINIO_PORT="${AEGIR_MINIO_PORT:-9012}"
+# Object store: Signals' RustFS (S3 API) — shared by every federated project; aegir runs
+# none of its own (the devenv MinIO on :9012 was retired 2026-09-05).
+export AEGIR_RUSTFS_PORT="${AEGIR_RUSTFS_PORT:-9010}"
+export AEGIR_RUSTFS_ENDPOINT="${AEGIR_RUSTFS_ENDPOINT:-127.0.0.1:${AEGIR_RUSTFS_PORT}}"
+export AEGIR_RUSTFS_ACCESS_KEY="${AEGIR_RUSTFS_ACCESS_KEY:-rustfsadmin}"
+export AEGIR_RUSTFS_SECRET_KEY="${AEGIR_RUSTFS_SECRET_KEY:-rustfsadmin}"
 export AEGIR_HOST_IP="${AEGIR_HOST_IP:-192.168.1.55}"   # tinybox host IP reachable from pods
 export KUBECONFIG="${KUBECONFIG:-$HOME/.config/kube/rke2.yaml}"
+
+# RustFS is owned by Signals: aegir never starts it. Fail fast, naming the owner.
+require_rustfs() {
+  if curl -sf --max-time 3 "http://${AEGIR_RUSTFS_ENDPOINT}/health" >/dev/null 2>&1; then return 0; fi
+  echo "ERROR: RustFS (Signals) not answering on ${AEGIR_RUSTFS_ENDPOINT}"
+  echo "  Guru: #AE.00000021.RUSTFSDOWN"
+  echo "  Try (in ~/local/src/wxs/signals): devenv processes start rustfs"
+  echo "  Or:  systemctl status signals.service"
+  exit 1
+}

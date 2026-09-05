@@ -199,7 +199,7 @@ kb-build:
 
 # Run the full content-first pipeline end-to-end as one Metaflow flow (harvest → derive → membrane/
 # promote → realized DDL → content-first chapters → verify → lineup → Atlas). The Metaflow service
-# plane (service+UI+MinIO on RKE2) comes up via `devenv up`; this just runs the flow, traced to the
+# plane (service+UI on RKE2; datastore = Signals' RustFS) comes up via `devenv up`; this just runs the flow, traced to the
 # OTel collector (→ NiFi). One command. e.g. `just metaflow --n-docs 8`.
 # THE complete pipeline: FinePDFs window -> qdrant-maxsim harvest -> metrology-informed derive
 # -> HermiT-certified ontology -> kvasir DDL/shapes -> parallel two-register chapters -> gated

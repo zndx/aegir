@@ -7,15 +7,16 @@ uiBackend:
     password: "metaflow"
     name: metaflow
   metaflowDatastoreSysRootS3: "s3://aegir-metaflow/metaflow"
-  metaflowS3EndpointURL: "http://aegir-minio:9000"
+  # Signals' RustFS via the namespace-local host Endpoints (aegir-rustfs → tinybox :9010).
+  metaflowS3EndpointURL: "http://aegir-rustfs:9010"
   image:
     name: public.ecr.aws/outerbounds/metaflow_metadata_service
     tag: "2.5.0"
   env:
     - name: AWS_ACCESS_KEY_ID
-      value: minioadmin
+      value: $AEGIR_RUSTFS_ACCESS_KEY
     - name: AWS_SECRET_ACCESS_KEY
-      value: minioadmin
+      value: $AEGIR_RUSTFS_SECRET_KEY
     - name: METAFLOW_CARD_S3ROOT
       value: "s3://aegir-metaflow/metaflow/cards"
   resources:

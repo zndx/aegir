@@ -65,7 +65,7 @@ in {
     flatbuffers
     maturin        # build polyglot-sql (Rust/PyO3) Python extension
     sops           # air-gap secret decryption (bin/bootstrap-secrets.sh)
-    minio-client   # `mc` — Metaflow datastore bucket management
+    minio-client   # `mc` — S3 client for bucket management on Signals' RustFS (:9010)
     tilt           # K8s deploy of the Metaflow service plane (`tilt ci`, mirrors gaius)
     kubectl        # RKE2 control for the Metaflow service plane
     kubernetes-helm # metaflow-tools chart (via tilt helm_remote)
@@ -121,12 +121,16 @@ in {
     # recipes and downstream scripts read the same value devenv
     # used to gate services.
     AEGIR_WORKTREE_ROLE = worktreeRole;
-    # Metaflow + MinIO (the orchestration substrate; see config/metaflow/, infra/tilt/).
+    # Metaflow (the orchestration substrate; see config/metaflow/, infra/tilt/). Its S3
+    # datastore is Signals' RustFS on 127.0.0.1:9010 — aegir runs NO object store of its
+    # own (the devenv MinIO, marked insecure upstream, was retired 2026-09-05). Never
+    # export AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY project-wide: the ambient default
+    # credential chain leaks into every S3 client; consumers read AEGIR_RUSTFS_* explicitly
+    # (config/metaflow/*.json carries the Metaflow copy).
     METAFLOW_HOME = "${config.devenv.root}/.metaflow";
-    AWS_ACCESS_KEY_ID = "minioadmin";
-    AWS_SECRET_ACCESS_KEY = "minioadmin";
-    MINIO_ROOT_USER = "minioadmin";
-    MINIO_ROOT_PASSWORD = "minioadmin";
+    AEGIR_RUSTFS_ENDPOINT = "127.0.0.1:9010";
+    AEGIR_RUSTFS_ACCESS_KEY = "rustfsadmin";
+    AEGIR_RUSTFS_SECRET_KEY = "rustfsadmin";
     # nix-native CUDA toolchain paths for the fused RWKV-7 kernel compile (the trainer reads these and sets
     # CUDA_HOME/CC/CXX/CUDAHOSTCXX for its own cpp_extension.load — see scripts/continue_pretrain_rwkv7.py).
     AEGIR_CUDA_HOME = "${cudaMerged}";
@@ -219,14 +223,8 @@ in {
     '';
   };
 
-  # ── MinIO (Metaflow S3 datastore) — devenv-native, mirrors gaius ─────────────
-  # API :9012 / console :9013 (gaius uses 9010/9011 — disambiguated for shared-host coexistence).
-  services.minio = lib.mkIf isPrimary {
-    enable = true;
-    buckets = [ "aegir-metaflow" ];
-    listenAddress = "0.0.0.0:9012";
-    consoleAddress = "0.0.0.0:9013";
-  };
+  # (services.minio retired 2026-09-05: the Metaflow S3 datastore is Signals' RustFS,
+  #  127.0.0.1:9010, bucket aegir-metaflow — see the env block above.)
 
   # ── OpenTelemetry collector — the Step→OTel→NiFi spine (mirrors gaius) ────────
   # Flow @traced_step spans → OTLP :4327/:4328 → forwarded to NiFi ListenOTLP :4329 (flow-viz) + debug.

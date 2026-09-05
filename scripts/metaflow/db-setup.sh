@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Create the metaflow metadata DB in the aegir devenv postgres + the MinIO bucket. One-shot, idempotent.
+# Create the metaflow metadata DB in the aegir devenv postgres + the datastore bucket on
+# Signals' RustFS. One-shot, idempotent.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
@@ -18,8 +19,9 @@ psql -h 127.0.0.1 -p "$PGPORT" -U "$USER" -d metaflow -c \
   "GRANT ALL PRIVILEGES ON DATABASE metaflow TO metaflow" 2>/dev/null || true
 echo "  metaflow user + database ready"
 
-echo "Ensuring MinIO bucket (aegir-metaflow) on :${AEGIR_MINIO_PORT}..."
-mc alias set aegir "http://localhost:${AEGIR_MINIO_PORT}" minioadmin minioadmin 2>/dev/null || true
-mc mb --ignore-existing aegir/aegir-metaflow 2>/dev/null || true
-echo "  MinIO bucket ready"
+echo "Ensuring RustFS bucket (aegir-metaflow) on ${AEGIR_RUSTFS_ENDPOINT}..."
+require_rustfs
+mc alias set aegir "http://${AEGIR_RUSTFS_ENDPOINT}" "$AEGIR_RUSTFS_ACCESS_KEY" "$AEGIR_RUSTFS_SECRET_KEY" >/dev/null
+mc mb --ignore-existing aegir/aegir-metaflow
+echo "  RustFS bucket ready"
 echo "Aegir Metaflow DB setup complete."

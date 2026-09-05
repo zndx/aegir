@@ -6,10 +6,8 @@ inputs:
 # If you're using non-OSS software, you can set allowUnfree to true.
 allowUnfree: true  # CUDA (cudaPackages_12_8) for the fused RWKV-7 training-kernel compile
 
-# MinIO is marked insecure upstream (abandoned); still used for local Metaflow
-# datastore until migration. Without this, `devenv up` under systemd fails eval.
-permittedInsecurePackages:
-  - "minio-2025-10-15T17-29-55Z"
+# No permittedInsecurePackages: the devenv MinIO (marked insecure upstream) was
+# retired 2026-09-05 — the object store is Signals' RustFS on 127.0.0.1:9010.
 
 # If you have more than one devenv you can merge them
 #imports:

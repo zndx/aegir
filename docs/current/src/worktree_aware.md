@@ -99,7 +99,7 @@ sets for downstream tools).
 
 The table shows the headline four; in fact the **entire primary
 `processes` set** — including the Metaflow service plane (RKE2
-bootstrap, port-forwards, UI), Atlas, MinIO, and the OTel collector —
+bootstrap, port-forwards, UI), Atlas, and the OTel collector —
 is gated behind `lib.mkIf isPrimary` in `devenv.nix`, so a secondary
 `devenv up` starts no shared-state services at all.
 

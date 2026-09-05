@@ -1,6 +1,8 @@
-# Host Endpoints exposing the aegir devenv postgres + MinIO to in-cluster Metaflow pods.
-# Rendered by scripts/metaflow/bootstrap.sh (envsubst): $PGPORT (runtime devenv pg port), $AEGIR_HOST_IP
-# (tinybox), $AEGIR_MINIO_PORT (9012), $AEGIR_MF_NAMESPACE. Distinct from gaius's devenv-postgres/minio.
+# Host Endpoints exposing the aegir devenv postgres + Signals' RustFS (the S3 datastore) to
+# in-cluster Metaflow pods. Rendered by scripts/metaflow/bootstrap.sh (envsubst): $PGPORT (runtime
+# devenv pg port), $AEGIR_HOST_IP (tinybox), $AEGIR_RUSTFS_PORT (9010), $AEGIR_RUSTFS_ACCESS_KEY /
+# $AEGIR_RUSTFS_SECRET_KEY, $AEGIR_MF_NAMESPACE. Distinct from gaius's devenv-postgres/devenv-rustfs
+# (default namespace). aegir runs no object store of its own (devenv MinIO retired 2026-09-05).
 ---
 apiVersion: v1
 kind: Service
@@ -30,34 +32,35 @@ subsets:
 apiVersion: v1
 kind: Service
 metadata:
-  name: aegir-minio
+  name: aegir-rustfs
   namespace: $AEGIR_MF_NAMESPACE
 spec:
   type: ClusterIP
   ports:
     - name: s3
-      port: 9000
-      targetPort: 9000
+      port: 9010
+      targetPort: 9010
       protocol: TCP
 ---
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: aegir-minio
+  name: aegir-rustfs
   namespace: $AEGIR_MF_NAMESPACE
 subsets:
   - addresses:
       - ip: "$AEGIR_HOST_IP"
     ports:
       - name: s3
-        port: $AEGIR_MINIO_PORT
+        port: $AEGIR_RUSTFS_PORT
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: aegir-minio-credentials
+  name: aegir-rustfs-credentials
   namespace: $AEGIR_MF_NAMESPACE
 type: Opaque
 stringData:
-  AWS_ACCESS_KEY_ID: minioadmin
-  AWS_SECRET_ACCESS_KEY: minioadmin
+  AWS_ACCESS_KEY_ID: $AEGIR_RUSTFS_ACCESS_KEY
+  AWS_SECRET_ACCESS_KEY: $AEGIR_RUSTFS_SECRET_KEY
+  AWS_ENDPOINT_URL_S3: http://devenv-rustfs.default.svc.cluster.local:9010

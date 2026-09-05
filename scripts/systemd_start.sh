@@ -9,8 +9,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 export PATH="/usr/local/bin:/usr/bin:/bin:${HOME}/.nix-profile/bin:${PATH:-}"
-# devenv/nix may need impure + insecure minio for Metaflow local S3
-export NIXPKGS_ALLOW_INSECURE="${NIXPKGS_ALLOW_INSECURE:-1}"
+# (NIXPKGS_ALLOW_INSECURE was needed only for the devenv MinIO, retired 2026-09-05;
+#  an insecure package showing up again must fail eval loudly, by name.)
 
 GRPC_PORT="${AEGIR_ENGINE_PORT:-50151}"
 GATEWAY_URL="${AEGIR_GATEWAY_HEALTH:-http://127.0.0.1:8091/api/health}"

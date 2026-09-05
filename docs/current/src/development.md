@@ -44,7 +44,7 @@ just metaflow                        # top-up the corpus from the current harves
 just metaflow --harvest-target 50    # advance the input window by ~50 in-domain docs
 ```
 
-Long runs use local Metaflow metadata mode (the recipe's default: `AEGIR_METAFLOW_MODE=local`); the service plane (service + UI + MinIO on RKE2) comes up via `devenv up`.
+Long runs use local Metaflow metadata mode (the recipe's default: `AEGIR_METAFLOW_MODE=local`); the service plane (service + UI on RKE2, datastore on Signals' RustFS) comes up via `devenv up`.
 
 Gates and checks:
 

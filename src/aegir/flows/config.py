@@ -1,8 +1,9 @@
 """Metaflow config helpers — load ``config/metaflow/<mode>.json`` and apply to the environment
 (lifted from Gaius). Call ``apply_metaflow_config(mode)`` BEFORE instantiating a FlowSpec.
 
-Modes: ``rke2`` (service plane on the local RKE2 cluster — metadata service + MinIO datastore via
-port-forwards; the flow runs LOCALLY so steps keep GPU/engine/JVM/qdrant/postgres access) and ``local``
+Modes: ``rke2`` (service plane on the local RKE2 cluster — metadata service + the RustFS S3 datastore
+(Signals', :9010) via port-forwards; the flow runs LOCALLY so steps keep GPU/engine/JVM/qdrant/postgres
+access) and ``local``
 (fully-local fallback: local metadata + local /raid datastore).
 """
 from __future__ import annotations
