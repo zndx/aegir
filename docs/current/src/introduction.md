@@ -29,25 +29,27 @@ pipeline is where current work lands.
    [Training Regime](./training_regime.md).
 
 2. **An ontology-grounded synthetic corpus and the SDG ontology that
-   generates it** (the active track, v0.3+). A BFO/CCO-grounded domain
+   generates it** (the active track). A BFO/CCO-grounded domain
    ontology, content-derived from FinePDFs and realized to a
-   HermiT-validated OWL artifact, drives engine generation of
+   HermiT-certified OWL artifact, drives engine generation of
    deterministically-verifiable, attribution-clean textbook chapters
-   and a relational DDL spine. The corpus is byte-level pretraining
-   data *and* an independent publishable deliverable (the `corpora/`
+   and a relational projection of that OWL. The published faces of the
+   ontology are entailed — **OWL ⊨ SKOS ⊨ SHACL** — not independently
+   authored vocabularies. The corpus is byte-level pretraining data
+   *and* an independent publishable deliverable (the `corpora/`
    submodule). The ontology, its quality gates, and the disposal
    membranes that enforce them are documented in the
    [SDG ontology chapter](./ontology.md) and the
    [Ontology Authors Guide](./ontology/authors_guide.md).
 
-The two outputs share substrate — the SDG ontology, the derived
-template catalog (`src/aegir/ontology/catalog/catalog.json`; every
-template in it is content-derived, with per-template provenance), the
+The two outputs share substrate — the SDG ontology and the
 verbalization pipeline — and are coupled downstream: the ontology
 produces verbalized, verified chapters that feed back into the
 byte-level pretraining corpus. The ontology is treated as a primary
 research output in its own right, not as plumbing; its rigor program
-is described below.
+is described below. Hand-authored axiom families were an early
+scaffold and are retired; the live ontology is content-derived and
+membrane-gated.
 
 ### The generation pipeline (the active track)
 
@@ -57,14 +59,13 @@ is [The Relational Data Generation Pipeline](./pipeline.md). FinePDFs
 passages are
 harvested through a qdrant/ColBERT **aperture**
 (`src/aegir/ontology/domain_index.py`) declared by the run's strategy;
-the engine **derives** axiom-pattern-bound templates, which are
-membrane-gated into the live catalog on **promotion**; the catalog is
-**realized** to HermiT-certified OWL
-(`corpora/ontology/sdg-ontology.{omn,owl}`), projected to a
-referential-integrity-true **DDL spine**, and elaborated into
-dual-register prose chapters; the run is **measured** (congruence,
-sensitive scan, naturalness norms, shape EMD) and sealed as an
-immutable run-zettel that the lineup re-projects.
+the engine **derives** axiom-pattern-bound primitives, which are
+membrane-gated on **promotion** and **realized** to HermiT-certified OWL
+(`corpora/ontology/sdg-ontology.{omn,owl}`). SKOS and SHACL are
+entailed views of that OWL; loadable SQL is a **relational projection**
+of it; dual-register prose chapters populate the projection. The run is
+**measured** (congruence, sensitive scan, naturalness norms, shape EMD)
+and sealed as an immutable run-zettel that the lineup re-projects.
 
 ```d2
 direction: right
@@ -74,12 +75,14 @@ aperture: Aperture\n(qdrant ColBERT)
 derive: Derive\n(engine)
 promote: Promote\n(membranes)
 realize: Realize\n(HermiT OWL)
-ddl: DDL spine\n(RI-true)
+faces: SKOS + SHACL\n(entailed)
+ddl: Relational\nprojection
 prose: Prose\n(dual-register)
 verify: Verify\n(congruence)
 zettel: Zettel\n(lineup)
 
 harvest -> aperture -> derive -> promote -> realize
+realize -> faces
 realize -> ddl -> prose -> verify -> zettel
 ```
 
@@ -209,8 +212,8 @@ emphasis on relational / data-element skill — the application of the
 byte-level model. The second is a measurably rigorous SDG ontology and
 the verifiable, attribution-clean corpus it generates — evaluated by
 intrinsic, reasoner-validated gates rather than by a judge. The two
-objectives share the SDG ontology and the derived catalog as
-substrate; the second feeds the first downstream as pretraining data.
+objectives share the SDG ontology as substrate; the second feeds the
+first downstream as pretraining data.
 
 ## Reading this document
 

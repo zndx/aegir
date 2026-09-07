@@ -31,7 +31,7 @@ ontology — the **Signals Data Governance (SDG)** ontology — that is
 **content-derived from FinePDFs** and **realized to a HermiT-validated
 OWL artifact**, together with the closed-loop pipeline that turns it
 into an ontology-grounded synthetic pretraining corpus and a
-relational DDL spine. The ontology's classes are **intermediate-depth
+relational projection of that OWL (SKOS and SHACL entailed). The ontology's classes are **intermediate-depth
 subsumers** that serve as the annotation vocabulary for Column Type /
 Column Property Annotation (CTA/CPA) over wide relational tables.
 

@@ -33,8 +33,8 @@ S2 EVOLVE ◄── THE META-HARNESS. mediate.py (spine + ACP/Grok mint + Contra
    │          [gap topic → mint construct → gate (DeepOnto+polyglot+R1+novelty+schema+CONSISTENCY)
    │           → promote]. THIS stage is what the OUTER LOOP (§2) optimizes.
 S2' REVIEW    charter: editorial review → promote .candidate → catalog.json (human-in-loop)
-S3 DDL/SKOS   ddl.py (template_to_table→render_ddl→validate_ddl/polyglot) + build_skos_vocab.py
-              → DDL spine + 548-concept SKOS + Atlas rdbms_* projection
+S3 OWL⊨SKOS⊨SHACL   realize_sdg.py (HermiT → SKOS face → shapes.ttl → kvasir DDL)
+              → entailed SKOS + SHACL + relational projection + Atlas as a view
 S4 CORPUS     generate_chapter.py (ontology+DDL → chapters + verifiable JSON + reasoning traces)
               → chapters.parquet + raw.exchange
 S5 VERIFY     verify_chapters.py → raw.chapter_verification

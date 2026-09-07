@@ -2,10 +2,10 @@
 
 This chapter documents the project's active track: a closed, membrane-gated
 pipeline that turns a window of real-world input text into a
-HermiT-certified ontology, a referential-integrity-true relational DDL
-spine, and a dual-register synthetic textbook corpus — with every artifact
-provenance-chained back to the exact input window, strategy, and code that
-produced it.
+HermiT-certified OWL ontology, its entailed SKOS and SHACL faces, a
+relational projection of that OWL, and a dual-register synthetic
+textbook corpus — with every artifact provenance-chained back to the
+exact input window, strategy, and code that produced it.
 
 One command runs the entire pipeline, idempotent per input window:
 
@@ -16,10 +16,10 @@ just metaflow    # → src/aegir/flows/sdg_corpora_flow.py
 The design commitments, stated up front:
 
 - **Content-first, fully derived.** No hand-authored axiom families
-  survive. Every template in the live catalog
-  (`src/aegir/ontology/catalog/catalog.json`) was derived from input
-  passages by the engine and admitted through membranes, with per-template
-  provenance (pattern / tier / `grounds_ddl` / domain / `source_span`).
+  survive. Live axioms are derived from input passages by the engine
+  and admitted through membranes, with provenance (pattern / tier /
+  `grounds_ddl` / domain / `source_span`). OWL is the source of truth;
+  SKOS and SHACL are entailed; SQL is a relational projection.
 - **Propose / dispose.** Agents propose; deterministic membranes dispose
   — and every membrane returns its *reason*, so rejection re-prompts
   rather than silently drops. The two strongest membranes (HermiT
@@ -49,7 +49,7 @@ gen: {
 realizearm: {
   label: "realize"
   realize: Realize\n(HermiT OWL)
-  ddl: DDL / constructs\n(RI-true spine)
+  ddl: Relational projection\n+ SHACL shapes
   prose: Prose\n(dual register)
   realize -> ddl -> prose
 }
@@ -150,19 +150,17 @@ certificate — exit 2 (inconsistent) or exit 3 (unsat) kills the run.
 - **Membrane:** HermiT itself, plus the OQuaRE/IOF metrology hard gate on
   the publish path (`aegir.lineup.sync`).
 - **Artifact:** `corpora/ontology/sdg-ontology.{omn,owl}` +
-  `HERMIT_CERTIFICATE` (the 10,570-certified-individuals era), and the
-  per-run `ontology/certificate.json`.
+  `HERMIT_CERTIFICATE`, and the per-run `ontology/certificate.json`.
 
-### 6 · DDL / constructs
+### 6 · Relational projection / constructs
 
-The deterministic spine: `src/aegir/ontology/ddl.py` +
-`scripts/build_ddl_spine.py` realize relational profiles from each
-template's `grounds_ddl` signal (junction / star / normalized / eav),
-generate RI-true rows, and validate every statement polyglot
-(Trino ∩ Spark). Per-chapter *constructs* carry the verbatim tables,
-views, and FKs the prose must embed. The family simplicial complex is
-**retired**: cross-entity FKs are the deriver's to *earn* from content
-(Convert 2), never name-match-wired.
+`scripts/realize_sdg.py` (and kvasir) lower certified OWL to loadable
+SQL and to `shapes.ttl`. Tables, keys, and foreign keys cite class and
+property IRIs; SHACL `sh:targetClass` names those same classes.
+Per-chapter *constructs* carry the verbatim tables, views, and FKs the
+prose must embed. Cross-entity FKs are earned from content, never
+name-matched from a family table. `scripts/check_triad_entailment.py`
+checks OWL ⊨ SKOS, OWL ⊨ SHACL, and SKOS ⊨ SHACL.
 
 - **Gate:** polyglot validation + the SchemaPile shape-EMD structure
   score (`ontology/structure.json`).

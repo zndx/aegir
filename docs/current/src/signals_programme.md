@@ -69,12 +69,12 @@ atlas -> ontology: edits suggest {
   and the Qdrant retrieval text are seen together, and from which curation decisions are made. Its three
   roots are **refs** (RH 2026-07-06): `current` = the latest sdg-corpora **release** as a complete kasten
   (released corpus + its era lexicon + released DDL + card); `scratch` = **trunk** (the full live
-  projection — live catalog, DDL spine, generated web, accreting corpus, zettel chain, strategy, items);
+  projection — live ontology, SKOS/SHACL, relational schema, generated web, accreting corpus, zettel chain, strategy, items);
   `archive` = past releases + frozen snapshots. Promotion = snapshot-freeze `current` → `archive`, project
   the new release, trunk rolls on; the same surface ids resolve per root (gateway `?root=`).
 
 **The verification membrane (corollary of commitment #2).** The anchors partition verification by *where
-reality is authored*. **Inside** the loop — the ontology and everything projected from it (DDL spine, corpus
+reality is authored*. **Inside** the loop — the ontology and everything projected from it (relational schema, corpus
 structure) — verification is **intrinsic**: HermiT is the oracle, correctness is *proved*, not checked.
 Validation-after-the-fact (shape checkers, assertion contracts, external catalogs) *compensates* for not
 generating-correct-by-construction and has no place inside the boundary. Extrinsic verification is legitimate

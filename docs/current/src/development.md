@@ -37,7 +37,7 @@ Byte-level pretraining on the synthetic corpus (Phase 0 / 0.5, rank-sharded parq
 
 ## The Ontology Pipeline (v0.3+)
 
-The active track's entry point is one command. `just metaflow` runs **the entire pipeline** — harvest → aperture → derive → membrane/promote → realize (HermiT-certified) → DDL spine → dual-register chapters → verify → zettel/lineup — as a single Metaflow flow (`src/aegir/flows/sdg_corpora_flow.py`), **idempotent per input window**: content-hashed passages, cursor-advanced harvest, per-stage skip keys, so rerunning with the same window is a no-op top-up. The stage-by-stage reference is [The Relational Data Generation Pipeline](./pipeline.md).
+The active track's entry point is one command. `just metaflow` runs **the entire pipeline** — harvest → aperture → derive → membrane/promote → realize (HermiT-certified OWL) → SKOS/SHACL entailment → relational projection → dual-register chapters → verify → zettel/lineup — as a single Metaflow flow (`src/aegir/flows/sdg_corpora_flow.py`), **idempotent per input window**: content-hashed passages, cursor-advanced harvest, per-stage skip keys, so rerunning with the same window is a no-op top-up. The stage-by-stage reference is [The Relational Data Generation Pipeline](./pipeline.md).
 
 ```bash
 just metaflow                        # top-up the corpus from the current harvest

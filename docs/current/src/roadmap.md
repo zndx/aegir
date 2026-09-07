@@ -112,19 +112,18 @@ GREEN**. The standing rule: no `sync --push` of the ontology Data
 Product below GREEN. See the repo-root `EVIDENCE.md` (OQ-Rigor /
 OQ-Structure).
 
-**The corpus pipeline + DDL spine (delivered; phase gate PASSED
-2026-06-07).** `just metaflow` is the entire corpus pipeline,
-idempotent per input window (`src/aegir/flows/sdg_corpora_flow.py`):
-harvest (FinePDFs, cursor-windowed) → the aperture (qdrant ColBERT
-MaxSim, `src/aegir/ontology/domain_index.py`) → derive (the gRPC
-engine over the axiom-pattern library, `src/aegir/ontology/patterns.py`)
-→ membrane-gated promotion into the live catalog
-(`src/aegir/ontology/catalog/catalog.json`) → realization
-(HermiT-certified OWL) → the **DDL spine** — referential-integrity-true
-tables / views / FKs, polyglot-validated (Trino ∩ Spark), projected
-into Atlas ([Phase Gate — Governance & DDL
-Spine](./roadmap/phase_gate_governance_ddl.md)) → dual-register prose
-chapters with retained thinking traces → verification and measurement
+**The corpus pipeline (delivered; phase gate PASSED 2026-06-07).**
+`just metaflow` is the entire corpus pipeline, idempotent per input
+window (`src/aegir/flows/sdg_corpora_flow.py`): harvest (FinePDFs,
+cursor-windowed) → the aperture (qdrant ColBERT MaxSim,
+`src/aegir/ontology/domain_index.py`) → derive (the gRPC engine over
+the axiom-pattern library, `src/aegir/ontology/patterns.py`) →
+membrane-gated promotion → realization (HermiT-certified OWL) →
+**OWL ⊨ SKOS ⊨ SHACL** and the **relational projection** (loadable
+SQL, FKs citing class/property IRIs) → Atlas as a view of that OWL
+([Phase Gate — Governance & DDL](./roadmap/phase_gate_governance_ddl.md))
+→ dual-register prose chapters with retained thinking traces →
+verification and measurement
 (congruence — input-window concepts ↔ chapter concepts over the same
 ColBERT substrate, `src/aegir/ontology/congruence.py` — plus the
 sensitive scan, naturalness norms, and shape EMD vs SchemaPile) → one

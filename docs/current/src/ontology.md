@@ -25,25 +25,27 @@ these decisions stay coherent.
 
 ## What the ontology is now
 
-The ontology is **content-first and fully derived**. The live catalog
-is **`src/aegir/ontology/catalog/catalog.json`** — 433 templates at
-the time of writing, every one derived from FinePDFs passages (the
-hand-authored 01–07 seed families were retired in `4d200e4`; the
-catalog *is* what the derive→promote loop has accreted). Discovery is
-via `schema.catalog_files()`, never globs. Each template is a
-Manchester-syntax axiom skeleton with typed slots (`{name:Type}` /
-`{name:Type:Bound}` — `SLOT_DSL.md`), bound to an **axiom pattern**
-from the pattern library (`src/aegir/ontology/patterns.py`, four
-tiers: `fhir_minimum` / `owl2_core` / `odp` / `sysmlv2`) and carrying
-provenance — `pattern` / `tier` / `grounds_ddl` / `domain` /
-`source_span` — that downstream stages consume: `grounds_ddl` drives
-the deterministic DDL realize profile, `domain` is the cross-domain
-tag, `source_span` is the "informed by the inputs" evidence.
+The ontology is **content-first and fully derived**. Hand-authored
+axiom families were an early scaffold and are retired; live axioms
+are derived from FinePDFs passages and admitted through membranes
+(parse → HermiT → OntoClean), with provenance (`pattern` / `tier` /
+`grounds_ddl` / `domain` / `source_span`) that downstream stages
+consume. Discovery is via `schema.catalog_files()`, never globs.
+Axiom patterns come from the library in
+`src/aegir/ontology/patterns.py` (`fhir_minimum` / `owl2_core` /
+`odp` / `sysmlv2`).
 
-The catalog realizes to a **HermiT-certified OWL artifact** at
-`corpora/ontology/sdg-ontology.{omn,owl}` with a consistency
-certificate at `corpora/ontology/HERMIT_CERTIFICATE.md` (828 named
-classes, 0 unsatisfiable, 10,570 membrane-admitted individuals).
+The published artifact is **HermiT-certified OWL** at
+`corpora/ontology/sdg-ontology.{omn,owl}` (`HERMIT_CERTIFICATE.md`).
+SKOS is an entailed annotation face of that OWL (every concept's
+defining class exists in the ontology). SHACL is the closed-world
+constraint view (`shapes.ttl`): `sh:targetClass` names a realized
+class; restrictions become cardinality and filler constraints.
+Loadable SQL is a **relational projection** of the same certified
+OWL, not a parallel schema. `scripts/check_triad_entailment.py`
+measures **OWL ⊨ SKOS ⊨ SHACL** mechanically. Snapshot sizes
+(classes, concepts, tables) belong to a given commit, not to the
+method.
 
 ## The derive → promote → realize → publish chain
 
@@ -54,7 +56,7 @@ passages: FinePDFs passages\n(aperture-filtered, content-hashed)
 derive: DERIVE\nscripts/derive_ontology.py\npattern-bound primitives
 candidate: catalog.candidate.json\n(staging)
 promote: PROMOTE\nscripts/promote_candidates.py\nparse → HermiT → provenance threading
-catalog: catalog.json\n(THE live catalog, 433 templates)
+catalog: live ontology\n(membrane-admitted axioms)
 realize: REALIZE\nscripts/build_realized_ontology.py\nBFO 2020 + CCO, HermiT certificate
 publish: PUBLISH\naegir.lineup.sync\nOQuaRE hard gate → corpora/ontology/
 
@@ -77,7 +79,7 @@ realize -> publish
   admission into `catalog.json`: re-parse (DeepOnto), HermiT
   consistency against BFO/CCO, and the provenance threading that
   carries the derivation signals across the boundary (severing
-  `grounds_ddl` here once left the DDL spine 100% dice-rolled — do
+  `grounds_ddl` here once left the relational projection ungrounded — do
   not re-sever). `combined.json` is rebuilt, never edited.
 - **Realize** — `scripts/build_realized_ontology.py` instantiates
   templates into concrete OWL over BFO 2020 + CCO (imported as a
@@ -106,13 +108,12 @@ reference for every metric, band, gate, and membrane.
 
 ## The topic layer — the retrieval / measurement face
 
-The same catalog terms are also the corpus's **topic registry**:
-topics ≡ ontology-grounded concept anchors in qdrant (`sdg_topics` —
-the 29 SKOS domains plus all 433 live terms;
+The same OWL classes are also the corpus's **topic registry**:
+topics ≡ ontology-grounded concept anchors in qdrant (`sdg_topics`;
 `src/aegir/ontology/topic_layer.py`). FinePDFs items
 (anchor-proportional passage windows) map to **one topic or none** by
-hierarchical-margin ColBERT MaxSim under the pre-registered,
-null-calibrated gate **τ\* = 0.1065**; every association is
+hierarchical-margin ColBERT MaxSim under a pre-registered,
+null-calibrated unambiguity gate; every association is
 content-addressed to the collection state that adjudicated it. The
 ambiguous mass is the error signal and the **lexicon is the
 parameter** — unaligned input indicts the topics, never the input
@@ -131,12 +132,12 @@ deprecated, kept for v0.3 reproducibility only.
 | Concern | Owner | Notes |
 |---|---|---|
 | SDG ontology IRIs + BFO/CCO grounding | **Ægir** | `src/aegir/ontology/catalog/catalog.json` → realized `corpora/ontology/sdg-ontology.{omn,owl}` |
-| Content-first derivation (FinePDFs → templates) | **Ægir** | `scripts/derive_ontology.py`, `scripts/promote_candidates.py`, `src/aegir/ontology/patterns.py` |
+| Content-first derivation (FinePDFs → OWL) | **Ægir** | `scripts/derive_ontology.py`, `scripts/promote_candidates.py`, `src/aegir/ontology/patterns.py` |
 | Grounding-anchor retrieval (CCO + FHIR + accretive) | **Ægir** | `scripts/grounding_anchors.py` |
 | Rigor metrology + OQuaRE publish gate | **Ægir** | `scripts/ontology_metrology.py`, `scripts/ontology_oquare.py`, `aegir.lineup.sync._gate` |
 | Disposal membranes (parse / HermiT / OntoClean / M1–M8) | **Ægir** | `scripts/build_realized_ontology.py`, `src/aegir/ontology/ontoclean.py`, `src/aegir/ontology/annotation_membrane.py` |
 | Topic layer + congruence (retrieval/measurement) | **Ægir** | `src/aegir/ontology/topic_layer.py`, `src/aegir/ontology/congruence.py` |
-| Ontology-grounded synthetic corpus + DDL spine | **Ægir** | `src/aegir/flows/sdg_corpora_flow.py` (`just metaflow`), `src/aegir/ontology/ddl.py`, `realize.py` |
+| Ontology-grounded corpus + relational projection | **Ægir** | `src/aegir/flows/sdg_corpora_flow.py` (`just metaflow`), `scripts/realize_sdg.py`, kvasir DDL/SHACL |
 | CTA / CPA dataset loaders | **Ægir** | `src/aegir/data/table_dataset.py` |
 | Model training + evaluation | **Ægir** | `train.py`, `train_pretrain.py`, `AegirForColumnAnnotation` |
 | **Consumer-side use of the above** | downstream projects | Outside Ægir's design constraints |
