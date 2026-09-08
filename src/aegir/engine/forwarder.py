@@ -144,17 +144,31 @@ class CapabilityForwarder:
             self._cache.pop(target, None)
 
     def resolve(self, capability: str) -> Route:
+        """First healthy offer wins, RESIDENT offers first: an Endpoint that names the GPUs it pins
+        is the hosting engine's own claim (engine_grpc.md §Status — "on which GPUs"); a healthy row
+        with no GPUs is a proxy or an over-claim (an engine advertising what it merely relays), and
+        is used only when no resident offer exists. Peer order breaks ties. Not a fallback: every
+        candidate still advertises THIS capability."""
         cap = (capability or DEFAULT_CAPABILITY).strip()
         asked: list[str] = []
+        resident: list[Route] = []
+        relayed: list[Route] = []
         for pid, tgt in self._peers():
             st = self._status(tgt)
             asked.append(f"{pid or '?'}@{tgt}")
             if st is None:
                 continue
             for ep in st.endpoints:
-                if ep.capability == cap and ep.healthy:
-                    return Route(capability=cap, peer=st.project or pid, target=tgt,
-                                 model=ep.model, gpu_ids=tuple(ep.gpu_ids))
+                if ep.capability != cap or not ep.healthy:
+                    continue
+                route = Route(capability=cap, peer=st.project or pid, target=tgt,
+                              model=ep.model, gpu_ids=tuple(ep.gpu_ids))
+                (resident if ep.gpu_ids else relayed).append(route)
+        if resident:
+            return resident[0]
+        if relayed:
+            log.info("capability=%s: no resident offer; using non-resident %s", cap, relayed[0].label)
+            return relayed[0]
         raise NoPeerServes(cap, asked)
 
     def routes(self, capabilities: tuple[str, ...] = ROUTE_CAPABILITIES) -> list[Route]:

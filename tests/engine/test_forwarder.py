@@ -130,3 +130,18 @@ def test_hosts_nothing():
     f = _fwd({"gaius": lambda: _status("gaius", ("instruct", True, "m"))})
     assert f.status() == []
     assert [r.capability for r in f.routes(("instruct", "thinking", "vision"))] == ["instruct"]
+
+
+def test_resident_offer_preferred_over_a_gpu_less_relay():
+    """A peer that lists `instruct` healthy but pins no GPUs is a relay/over-claim; the engine that
+    names its GPUs is the host. Peer order alone would have picked the relay."""
+    relay = zpb.StatusResponse(project="metabase")
+    relay.endpoints.add(capability="instruct", healthy=True, model="Qwen/Qwen3.8-27B")  # no gpu_ids
+    f = _fwd({
+        "metabase": lambda: relay,
+        "gaius": lambda: _status("gaius", ("instruct", True, "Qwen/Qwen3.8-27B")),
+    })
+    assert f.resolve("instruct").peer == "gaius"
+    # ...but a relay is still an honest advertised offer when nobody resident serves it
+    g = _fwd({"metabase": lambda: relay, "gaius": lambda: _status("gaius", ("thinking", True, "m"))})
+    assert g.resolve("instruct").peer == "metabase"
