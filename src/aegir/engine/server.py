@@ -374,6 +374,10 @@ class OipInferenceServicer:
 
 
 def serve(port: int = ENGINE_GRPC_PORT) -> None:
+    # Stamp the commit this process runs from ONCE, before serving: ServerQuery
+    # SOURCE_POSTURE reports it beside the live HEAD so peers see a moved checkout.
+    from aegir.engine.s2s import stamp_running_sha
+    stamp_running_sha()
     servicer = AegirEngineServicer()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=8))
     pbg.add_AegirEngineServicer_to_server(servicer, server)

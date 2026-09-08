@@ -358,3 +358,72 @@ def test_collect_lists_announced_hermes_same_box(monkeypatch) -> None:
     rows = {r["project"]: r for r in collect_peer_surfaces()}
     assert rows["hermes"]["primary_ui"] == "http://tinybox.dev.vista.zndx.org:9119"
     assert rows["hermes"]["engine_target"] == "tinybox.dev.vista.zndx.org:50651"
+
+
+# ── SOURCE_POSTURE: what code this peer is running ────────────────────────────
+
+
+def _init_repo(path: Path) -> None:
+    subprocess.run(["git", "init", "-q", "-b", "trunk", str(path)], check=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.email", "t@t"], check=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.name", "t"], check=True)
+    (path / "a.txt").write_text("one\n")
+    subprocess.run(["git", "-C", str(path), "add", "a.txt"], check=True)
+    subprocess.run(["git", "-C", str(path), "commit", "-q", "-m", "init"], check=True)
+
+
+def test_source_posture_reads_live_head_and_stamped_running_sha(tmp_path: Path) -> None:
+    from aegir.engine.s2s import build_source_posture, stamp_running_sha
+
+    _init_repo(tmp_path)
+    stamped = stamp_running_sha(tmp_path)
+    p = build_source_posture(tmp_path)
+    assert p.project == "aegir"
+    assert p.checkout == str(tmp_path)
+    assert p.branch == "trunk"
+    assert len(p.head) == 40 and p.head == stamped == p.running_sha
+    assert p.dirty is False
+    assert p.upstream == "" and p.ahead == 0 and p.behind == 0  # no tracking ref: honest zeros
+    assert list(p.submodules) == [] and list(p.migrations) == []  # no migrations/ dir → not reported
+
+    # the checkout moves under the live process: head advances, running_sha does not
+    (tmp_path / "a.txt").write_text("two\n")
+    subprocess.run(["git", "-C", str(tmp_path), "commit", "-q", "-am", "move"], check=True)
+    p2 = build_source_posture(tmp_path)
+    assert p2.head != p2.running_sha == stamped
+
+
+def test_source_posture_dirty_counts_tracked_changes_only(tmp_path: Path) -> None:
+    from aegir.engine.s2s import working_tree_dirty
+
+    _init_repo(tmp_path)
+    (tmp_path / "scratch-notes.txt").write_text("untracked\n")
+    assert working_tree_dirty(tmp_path) is False  # untracked does not change what runs
+    (tmp_path / "a.txt").write_text("edited\n")
+    assert working_tree_dirty(tmp_path) is True
+
+
+def test_parse_submodule_status_line_prefixes() -> None:
+    from aegir.engine.s2s import parse_submodule_status_line
+
+    sha = "c5d866619bb1b4640e70ffc12774785b7d2268d3"
+    assert parse_submodule_status_line(f" {sha} components/signals-protocol (heads/trunk)") == (
+        " ", sha, "components/signals-protocol")
+    assert parse_submodule_status_line(f"{sha} corpora (v0.3)") == (" ", sha, "corpora")  # stripped space
+    assert parse_submodule_status_line(f"+{sha} components/x (heads/main)") == ("+", sha, "components/x")
+    assert parse_submodule_status_line(f"-{sha} external/nautilus") == ("-", sha, "external/nautilus")
+    assert parse_submodule_status_line("") is None
+    assert parse_submodule_status_line("not a status line") is None
+
+
+def test_server_query_source_posture_is_the_local_checkout(tmp_path: Path) -> None:
+    from aegir.engine.s2s import stamp_running_sha
+
+    _init_repo(tmp_path)
+    stamp_running_sha(tmp_path)
+    resp = local_response(zpb.SERVER_QUERY_KIND_SOURCE_POSTURE, root=tmp_path)
+    assert resp.project == "aegir"
+    assert resp.HasField("posture")
+    assert resp.posture.head == advertised_head(tmp_path) == resp.posture.running_sha
+    # other kinds leave posture unset — honest empty, never invented
+    assert local_response(zpb.SERVER_QUERY_KIND_PEERS, root=tmp_path).HasField("posture") is False
