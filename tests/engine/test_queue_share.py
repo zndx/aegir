@@ -343,21 +343,32 @@ def test_declared_queues_are_leaf_shape_not_occupancy() -> None:
 
 
 def test_workloads_not_in_queue_name() -> None:
+    """WORKLOADS carries the typed WorkloadOffer (protocol 7cc9ad1, 2026-08-27):
+    model + capabilities + WorkloadRequirements (backend / parallelism / footprint)
+    + ResourceClass — never a queue path, never tp/pp folded into a name."""
     from aegir.engine.config import CAPABILITY_MODELS
     from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
-    from aegir.engine.s2s import declared_workloads, local_response
+    from aegir.engine.s2s import _resource_class_enum, declared_workloads, local_response
 
-    hints = declared_workloads()
-    wrks = {h.wrk: h for h in hints}
-    instruct = wrks["instruct"]
+    offers = declared_workloads()
+    by_cap = {c: o for o in offers for c in o.capabilities}
+    instruct = by_cap["instruct"]
     spec = CAPABILITY_MODELS["instruct"]
+    tp = spec.tensor_parallel_size
+    pp = getattr(spec, "pipeline_parallel_size", 1) or 1
+    assert instruct.peer == "aegir"
     assert instruct.model == spec.model
-    assert "instruct" in list(instruct.capabilities)
-    assert instruct.tensor_parallel == spec.tensor_parallel_size
-    assert instruct.pipeline_parallel == spec.pipeline_parallel_size
-    assert instruct.gpu_tokens == spec.tensor_parallel_size * spec.pipeline_parallel_size
-    assert instruct.gpu_tokens == 4
+    assert instruct.requirements.backend == zpb.SERVING_BACKEND_VLLM_LOCAL
+    assert instruct.requirements.parallelism.tensor_parallel == tp
+    assert instruct.requirements.parallelism.pipeline_parallel == pp
+    assert instruct.requirements.parallelism.data_parallel == 1
+    assert instruct.requirements.footprint.gpu == tp * pp == 4
+    assert instruct.resource_class == _resource_class_enum(4)
+    assert instruct.resource_class != zpb.RESOURCE_CLASS_UNSPECIFIED
     assert "root.internal" not in instruct.model
+    assert instruct.queue == ""  # occupancy is a hint chosen at RequestQueueShare, not baked here
     q = local_response(zpb.SERVER_QUERY_KIND_WORKLOADS)
-    assert [w.wrk for w in q.workloads] == [h.wrk for h in hints]
-    assert q.queues == []
+    assert [(w.peer, w.model, list(w.capabilities)) for w in q.workloads] == [
+        (o.peer, o.model, list(o.capabilities)) for o in offers
+    ]
+    assert list(q.queues) == []
