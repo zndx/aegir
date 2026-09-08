@@ -14,7 +14,7 @@ Two membranes DISPOSE (exactly as in define_intermediate_classes.py — the same
     clashes) is REJECTED. Rejects are re-prompted WITH the failure, up to --rounds. The agent RESPONDS to
     the reasoner. We narrow the domain of the offending CLASS (fix its conjunct); we never relax the theory.
 
-    just engine-serve                       # the gRPC engine must be up (Qwen3.6)
+    just engine-serve                       # the gRPC engine must be up (Qwen3.8-27B)
     # first produce a signal (a realize that narrows a class writes build/realize_signals.json):
     LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/build_realized_ontology.py
     LD_LIBRARY_PATH=$(pwd)/build/jvm-libs uv run --no-sync python scripts/reauthor_unsat.py --rounds 4

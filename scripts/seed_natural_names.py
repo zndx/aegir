@@ -6,7 +6,7 @@ Atlas/lineage *reference*, but (a) they echo the concept, so a model training on
 concept-from-header (a shortcut that doesn't transfer), and (b) downstream/Atelier consumers want realistic
 DB schemas, not ontology jargon; Atelier's ``name_match`` evidence channel matches column names against the
 very vocabulary we emit, so a semantic name IS the answer key — the natural register is what makes their
-benchmark measure comprehension. This script asks the local engine (Qwen3.6) for **natural physical names** —
+benchmark measure comprehension. This script asks the local engine (Qwen3.8-27B) for **natural physical names** —
 the way a working DBA would name the table + its columns — decoupled from the ontology label but plausible
 for the column's meaning, and DISPOSES each proposal through ``natural_naming.check_names`` (identifier
 validity, FULL coverage, distinctness, de-echo, aggregate echo rate), re-prompting with the returned reason
@@ -18,7 +18,7 @@ static map, exactly as the individual registry succeeded the frozen value pools 
 subgraph — base tables, junction/EAV/star sub-tables, FK columns, views, SQL — is constructed in the
 natural register from birth; the natural↔semantic map is the lineage edge (Atlas ``naming``).
 
-Sentinel-rigorous (Qwen3.6 leaks reasoning; only NAT_-tagged lines are read); cache is versioned so
+Sentinel-rigorous (Qwen3.8-27B leaks reasoning; only NAT_-tagged lines are read); cache is versioned so
 pre-membrane (static-era) entries never satisfy a membrane run.
 
     just engine-serve

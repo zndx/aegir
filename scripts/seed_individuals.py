@@ -16,7 +16,7 @@ sentinel contract, parse — it reuses). What converts:
   * **provenance stamped** (convert contract clause c): every record carries {domain, run, model, rounds,
     membrane verdicts} — the authenticity audit travels with the artifact.
 
-    just engine-serve   # the engine must be up (local Qwen3.6; not gated)
+    just engine-serve   # the engine must be up (Qwen3.8-27B via the capability engine; not gated)
     uv run --no-sync python scripts/seed_individuals.py --limit 20 --rounds 3   # cohort
     uv run --no-sync python scripts/seed_individuals.py --rounds 3              # full catalog (multi-hour)
 """

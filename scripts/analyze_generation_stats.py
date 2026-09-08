@@ -3,7 +3,7 @@
 
 Reads a ``generate_chapter`` run's ``chapters.parquet`` (the per-chapter stats the engine-backed run
 captures: prompt/completion tokens, latency, finish_reason, reasoning/response chars) and produces the
-data needed to choose between **local** Qwen3.6 serving and **remote** paid APIs as the corpus scales:
+data needed to choose between **local** Qwen3.8-27B serving and **remote** paid APIs as the corpus scales:
 
   * measured local characterization — generation throughput (tokens/s), end-to-end chapters/hour, tokens
     per chapter, the reasoning/answer split, and trace COMPLETENESS (finish_reason distribution: a "length"
@@ -131,7 +131,7 @@ def render_md(rep: dict) -> str:
     L.append(f"**{m['n_chapters']} chapters** · thinking-trace completeness: {tc_status} "
              f"(finish_reason {tc['finish_reason']})\n")
     th = m["throughput"]
-    L.append(f"## Measured (local Qwen3.6, {m['gpu']['n_gpus']} GPU)\n")
+    L.append(f"## Measured (Qwen3.8-27B via the capability engine, {m['gpu']['n_gpus']} GPU)\n")
     L.append(f"- generation: **{th['gen_tokens_per_s']} tok/s** ({m['gpu']['tokens_per_s_per_gpu']} tok/s/GPU) · "
              f"**{th['effective_chapters_per_hour']} chapters/hour** end-to-end\n")
     L.append(f"- tokens/chapter: {m['tokens']['mean_prompt']} in / {m['tokens']['mean_completion']} out · "

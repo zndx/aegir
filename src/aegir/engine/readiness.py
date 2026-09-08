@@ -1,6 +1,7 @@
 """Readiness probe — confirm the engine is *actually serving* before a long workload commits.
 
-The engine lazy-loads the model on the FIRST ``Complete`` (``vllm_manager.ensure`` launches vLLM and
+Ægir hosts no model: ``EngineStatus`` (native face) lists the federation ROUTES the engine resolved
+(peer whose Status serves the capability), and the first ``Complete`` is forwarded (formerly vLLM launched and
 health-waits up to 900 s on that call). So "the gRPC port is open" is NOT the same as "ready": a workload
 that fires its first real request at a cold engine either blocks for ~minutes on the cold load or, if it
 has a short deadline, times out and fails. For a multi-day derivation run we want the *driver* to WAIT for

@@ -5,16 +5,16 @@ enrichment — unblocks C2.5 L1 subtree-mixing + deepens the ontology).
 The SKOS ``broader`` graph is template→BFO-structural (every template attaches under one of 7 BFO/CCO
 anchors); there is no domain mid-tier (``specimen ⊃ {blood, serum, plasma}``). This script derives that
 mid-tier: it gathers the latent domain concepts (spine column-name concepts), embedding-clusters them into
-coherent groups, and asks the local engine (Qwen3.6) for **domain hypernyms** — each grounded under one BFO/CCO
+coherent groups, and asks the local engine (Qwen3.8-27B) for **domain hypernyms** — each grounded under one BFO/CCO
 anchor — that subsume ≥2 of the concepts. Output is candidate ``child subClassOf hypernym`` +
 ``hypernym subClassOf anchor`` edges, to be **HermiT-admitted** (next stage, reasoning_gates) before emission
 into the SKOS vocab.
 
-Sentinel-rigorous (the seed_entity_values lesson — Qwen3.6 leaks reasoning into content): the model emits
+Sentinel-rigorous (the seed_entity_values lesson — Qwen3.8-27B leaks reasoning into content): the model emits
 ``TAXON <hypernym> <- <anchor>: m1 | m2 | ...`` lines; untagged lines are ignored; budget is generous so the
 tagged lines land after the reasoning preamble. Cached + thinking-traces retained.
 
-    just engine-serve   # engine up (Qwen3.6)
+    just engine-serve   # engine up (Qwen3.8-27B)
     uv run --no-sync python scripts/derive_domain_taxonomy.py --k 18 --limit 2   # smoke (2 clusters)
     uv run --no-sync python scripts/derive_domain_taxonomy.py                    # full (cached, resumable)
 """

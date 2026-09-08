@@ -1,6 +1,6 @@
 """engine_selectivity_probe.py — engine-first de-risk: does the ITERATIVE loop close selectivity?
 
-Probe-1 (single-shot append) confirmed Qwen3.6 authors excellent positive-blind features, BUT naive append
+Probe-1 (single-shot append) confirmed Qwen3.8-27B authors excellent positive-blind features, BUT naive append
 raised MaxSim for true AND false alike ("token surface is mass") so held-out separation barely moved. This
 is the loop version: bounded REPLACEMENT (not unbounded append), sibling framing, a net-positive keep (only
 adopt an edit that improves held-out separation), and metrics-only specificity feedback across rounds. Still

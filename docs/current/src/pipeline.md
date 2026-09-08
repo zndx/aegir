@@ -98,7 +98,7 @@ retrieval surface selected its inputs.
 
 ### 3 · Derive
 
-The engine (Qwen3.6-35B via vLLM gRPC, `src/aegir/engine/` — workloads
+The engine (`src/aegir/engine/`, forwarding `instruct` over zndx.engine.v1 gRPC to the federation peer hosting Qwen3.8-27B — workloads
 speak only gRPC, never vLLM directly) reads each passage and derives
 axiom-pattern-bound primitives: entities with definitions, typed
 attributes, and relations, bound to the pattern library

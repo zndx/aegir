@@ -517,7 +517,7 @@ def declared_queues() -> list:
             max_applications=LIGHT.max_applications,
             preemption_delay="5s",
             role="light",
-            examples="aegir.instruct",
+            examples="",
         ),
         zpb.QueueHint(
             path=MEDIUM.queue,
@@ -527,7 +527,7 @@ def declared_queues() -> list:
             max_applications=MEDIUM.max_applications,
             preemption_delay="5s",
             role="medium",
-            examples="aegir.instruct",
+            examples="",
         ),
         zpb.QueueHint(
             path=HEAVY.queue,
@@ -537,7 +537,7 @@ def declared_queues() -> list:
             max_applications=HEAVY.max_applications,
             preemption_policy="fence",
             role="heavy",
-            examples="aegir.instruct",
+            examples="",
         ),
     ]
 
@@ -554,33 +554,14 @@ def _resource_class_enum(gpu_tokens: int) -> int:
 
 
 def declared_workloads(peer: str = "aegir") -> list:
-    """This peer's WorkloadOffers: model + capabilities + typed requirements."""
-    from aegir.engine.config import CAPABILITY_MODELS
+    """This peer's WorkloadOffers: NONE — Ægir hosts no model (2026-09-08).
 
-    out = []
-    for cap, spec in CAPABILITY_MODELS.items():
-        tp = int(spec.tensor_parallel_size)
-        pp = int(getattr(spec, "pipeline_parallel_size", 1) or 1)
-        gpu = tp * pp
-        out.append(
-            zpb.WorkloadOffer(
-                peer=peer,
-                model=spec.model,
-                capabilities=[cap.replace("_", "-")],
-                requirements=zpb.WorkloadRequirements(
-                    backend=(
-                        zpb.SERVING_BACKEND_CPU_PROXY if gpu <= 0
-                        else zpb.SERVING_BACKEND_VLLM_LOCAL
-                    ),
-                    parallelism=zpb.ModelParallelism(
-                        tensor_parallel=tp, pipeline_parallel=pp, data_parallel=1
-                    ),
-                    footprint=zpb.ResourceFootprint(gpu=gpu),
-                ),
-                resource_class=_resource_class_enum(gpu),
-            )
-        )
-    return out
+    `instruct` / `thinking` are served by the peer that hosts Qwen3.8-27B (Gaius) and forwarded by
+    this engine (`forwarder.py`); an engine that does not host a model MUST NOT advertise the
+    capability (capabilities.md §Operating profiles). Ægir's own GPU workloads (training / eval
+    windows) will arrive as workload-catalogue entries, not as model offers. Empty is honest.
+    """
+    return []
 
 
 def primary_ui_of(status: zpb.StatusResponse) -> str:

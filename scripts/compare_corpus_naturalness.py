@@ -5,7 +5,7 @@ The ontology-grounded generated corpus is *expected* to read mechanically at thi
 driven by the axiom structure). This harness establishes **reusable norms** for measuring that mechanical
 character so we can track progress as the pipeline is refined. It compares, on the SAME source docs:
 
-  - ``qwen``      — local Qwen3.6 generated chapters (the production generator)
+  - ``qwen``      — Qwen3.8-27B via the capability engine generated chapters (the production generator)
   - ``grok``      — Grok-4.3 generated chapters (remote)
   - ``glm``       — GLM-4.7 generated chapters (remote)
   - ``finepdfs``  — the raw input FinePDFs documents the chapters were grounded in (the NATURAL ANCHOR)

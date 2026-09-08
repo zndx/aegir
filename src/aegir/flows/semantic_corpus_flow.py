@@ -75,7 +75,7 @@ class SemanticCorpusFlow(TracedFlow, FlowSpec):
 
     n_docs = Parameter("n-docs", default=8, type=int, help="harvested docs to derive + write chapters from")
     domain = Parameter("domain", default="Laboratory Information Management", help="SKOS domain subtree")
-    mix = Parameter("mix", default="engine/instruct:1.0", help="chapter-gen LLM mix (local Qwen3.6 default)")
+    mix = Parameter("mix", default="engine/instruct:1.0", help="chapter-gen LLM mix (Qwen3.8-27B via the capability engine default)")
     oversample = Parameter("oversample", default=12, type=int, help="harvest stream multiplier for the domain gate")
     max_tokens = Parameter("max-tokens", default=24000, type=int,
                            help="chapter-gen output cap; needs a 32768-ctx engine for complete reasoning traces")

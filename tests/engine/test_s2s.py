@@ -173,23 +173,20 @@ def test_servicer_server_query_and_yield() -> None:
     assert y.process_ended is False
 
 
-def test_server_query_workloads_advertises_model_and_tp_pp() -> None:
+def test_server_query_workloads_offers_nothing_hosted() -> None:
+    """Ægir hosts no model: WORKLOADS is empty and never names instruct/thinking (honest)."""
     from aegir.engine.s2s import declared_workloads
 
+    assert declared_workloads() == []
     q = local_response(zpb.SERVER_QUERY_KIND_WORKLOADS)
     assert q.project == "aegir"
-    offers = list(declared_workloads())
-    assert [w.model for w in q.workloads] == [h.model for h in offers]
-    instruct = next(w for w in q.workloads if "instruct" in list(w.capabilities))
-    assert instruct.model
-    tp = instruct.requirements.parallelism.tensor_parallel
-    pp = instruct.requirements.parallelism.pipeline_parallel
-    assert tp >= 1
-    assert pp >= 1
-    assert instruct.requirements.footprint.gpu == tp * pp
+    assert list(q.workloads) == []
     via_svc = ZndxEngineServicer(_mgr()).ServerQuery(
         zpb.ServerQueryRequest(kind=zpb.SERVER_QUERY_KIND_WORKLOADS), None)
-    assert [w.model for w in via_svc.workloads] == [w.model for w in q.workloads]
+    assert list(via_svc.workloads) == []
+    # the declared leaf SHAPE stays, but no example claims a capability we do not host
+    for h in local_response(zpb.SERVER_QUERY_KIND_QUEUES).queues:
+        assert "instruct" not in (h.examples or "")
 
 
 def test_announce_joins_peers_until_ttl() -> None:

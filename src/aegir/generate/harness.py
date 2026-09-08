@@ -7,7 +7,8 @@ semantic harness gets kvasir DDL-check tools + a SHACL grounding resource; more 
 loadout roadmap). The agent iterates against its tools while writing; the CLIENT owns the tools so
 the agent can check but never fake (the membrane doctrine, ``refine/acp/client.py``).
 
-Backends are pluggable — ``local`` (mistral vibe-acp → Qwen3.6 on the engine's :8100 vLLM),
+Backends are pluggable — ``local`` (mistral vibe-acp → the capability engine's ``instruct`` over
+zndx.engine.v1 gRPC; the federation serves it on Qwen3.8-27B at effort low — never a vLLM URL),
 ``grok`` (Grok Build subscription), ``xai`` (metered API). Both registers run on ``local`` first;
 grok swaps in as the local+API worker mix shifts (a fixed pool per backend caps concurrency).
 
@@ -22,23 +23,30 @@ import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from aegir.engine.config import ENGINE_GRPC_PORT
 from aegir.refine._propose import _prompt, _strip_reasoning
 from aegir.refine.acp import BaseACPClient, MCPServer, grok_acp_spec, vibe_acp_spec
 
 REPO = Path(__file__).resolve().parents[3]
 FORK = os.environ.get("AEGIR_FORK_DIR", str(REPO / "components/oss-mistral-cli"))
 
-# vibe-acp config pointing at the local vLLM OpenAI endpoint (the engine's :8100).
+# vibe-acp config: the fork's ``zndx_engine`` backend speaks zndx.engine.v1 gRPC to THIS engine's
+# lattice port. The model name IS the capability (``instruct``); the engine forwards to the federation
+# peer that hosts the model and aligns to the capability's operating profile. No OpenAI-compatible
+# HTTP anywhere on this path (the old :8100 vLLM URL would fail on the next deployment — retired
+# 2026-09-08 along with Qwen3.6).
+_ENGINE_TARGET = os.environ.get("AEGIR_ENGINE_TARGET", f"127.0.0.1:{ENGINE_GRPC_PORT}")
 _LOCAL_TOML = (
-    'active_model = "local"\nsystem_prompt_id = "aegir_writer"\n'
-    '[[providers]]\nname = "local-vllm"\napi_base = "http://127.0.0.1:8100/v1"\n'
-    'api_style = "openai"\n[[models]]\nname = "instruct"\nprovider = "local-vllm"\nalias = "local"\n'
+    'active_model = "engine"\nsystem_prompt_id = "aegir_writer"\n'
+    '[[providers]]\nname = "aegir-engine"\n'
+    f'api_base = "{_ENGINE_TARGET}"\nbackend = "zndx_engine"\n'
+    '[[models]]\nname = "instruct"\nprovider = "aegir-engine"\nalias = "engine"\n'
 )
 
 
 def backend_spec(backend: str, home: str):
     """``(AgentSpec, cfg_toml|None, model_id, provider)`` for a NAMED backend (the work-queue
-    parameter form of ``_propose._agent_spec``'s env form). ``local`` → vibe-acp→Qwen3.6;
+    parameter form of ``_propose._agent_spec``'s env form). ``local`` → vibe-acp → the engine's ``instruct`` (gRPC);
     ``grok`` → the unmetered Grok Build CLI; ``xai`` → the metered xAI API."""
     b = backend.lower()
     if b in ("grok", "grok-build"):

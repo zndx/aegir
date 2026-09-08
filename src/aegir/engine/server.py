@@ -1,5 +1,11 @@
-"""Aegir capability/gRPC engine server. Implements `Complete` (forwards to vLLM *inside* the engine via
-the manager), plus admin `EnsureEndpoint`/`EngineStatus`. The vLLM endpoint is never exposed to callers.
+"""Ægir capability/gRPC engine server — hosts NO model; forwards inference to the federation.
+
+Three faces on one port: the native ``aegir.engine.AegirEngine`` (project-internal), the shared
+``zndx.engine.v1.Engine`` (federation), and KServe OIP. ``Complete`` on every face forwards the
+capability request over ``zndx.engine.v1`` to the peer whose Status serves it (Gaius today; see
+``forwarder.py``) — never a vLLM port, never an OpenAI URL. The lattice ``Status`` advertises NO
+endpoints (nothing hosted — honest); the native ``EngineStatus`` lists the resolved federation
+ROUTES so readiness / ``just engine-ready`` still have a signal.
 
     just engine-serve            # or: uv run --no-sync python -m aegir.engine.server
 """
@@ -11,44 +17,57 @@ from concurrent import futures
 
 import grpc
 
-from aegir.engine.config import ENGINE_GRPC_PORT
+from aegir.engine.config import DEFAULT_CAPABILITY, ENGINE_GRPC_PORT, REMEDIATE_CAPABILITY
+from aegir.engine.forwarder import CapabilityForwarder, NoPeerServes
 from aegir.engine.proto import aegir_engine_pb2 as pb
 from aegir.engine.proto import aegir_engine_pb2_grpc as pbg
-from aegir.engine.vllm_manager import VllmManager
 
 
 class AegirEngineServicer(pbg.AegirEngineServicer):
+    """The project-internal face. ``mgr`` is the CapabilityForwarder (the retired VllmManager's
+    surface: ``complete`` / ``status`` / ``shutdown``) so the other faces share one resolver."""
+
     def __init__(self) -> None:
-        self.mgr = VllmManager()
+        self.mgr = CapabilityForwarder()
 
     def Complete(self, request, context):
-        cap = request.capability or "instruct"
+        cap = request.capability or DEFAULT_CAPABILITY
         try:
             out = self.mgr.complete(cap, request.prompt, request.system_prompt or "",
                                     request.max_tokens or 512, request.temperature or 0.7,
                                     json_schema=getattr(request, "json_schema", "") or "")
-            return pb.CompleteResponse(
-                text=out["text"], model=out["model"], prompt_tokens=out["prompt_tokens"],
-                completion_tokens=out["completion_tokens"], latency_ms=out["latency_ms"],
-                reasoning_content=out["reasoning_content"], finish_reason=out["finish_reason"])
+        except NoPeerServes as e:
+            context.abort(grpc.StatusCode.FAILED_PRECONDITION, str(e))
+        except grpc.RpcError as e:  # the serving peer's answer IS the answer — no retry, no fallback
+            context.abort(e.code(), f"complete[{cap}] refused by the serving peer: {e.details()}")
         except Exception as e:  # noqa: BLE001 — surface as a gRPC error, keep the engine up
             context.abort(grpc.StatusCode.INTERNAL, f"complete[{cap}] failed: {e}")
+        return pb.CompleteResponse(
+            text=out["text"], model=out["model"], prompt_tokens=out["prompt_tokens"],
+            completion_tokens=out["completion_tokens"], latency_ms=out["latency_ms"],
+            reasoning_content=out["reasoning_content"], finish_reason=out["finish_reason"])
 
     def EnsureEndpoint(self, request, context):
-        ep = self.mgr.ensure(request.capability or "instruct")
-        return pb.EndpointStatus(capability=ep.capability, model=ep.spec.model, healthy=ep.healthy,
-                                 port=ep.port, gpu_ids=ep.gpu_ids, detail=str(ep.log_path))
+        cap = request.capability or DEFAULT_CAPABILITY
+        context.abort(
+            grpc.StatusCode.FAILED_PRECONDITION,
+            f"aegir hosts no models — nothing to ensure for {cap!r}; inference is forwarded to the "
+            f"federation peer whose Status serves it (see EngineStatus for the resolved routes)")
 
     def EngineStatus(self, request, context):
-        eps = [pb.EndpointStatus(capability=e.capability, model=e.spec.model, healthy=e.healthy,
-                                 port=e.port, gpu_ids=e.gpu_ids) for e in self.mgr.status()]
-        import torch
-        n = torch.cuda.device_count() if torch.cuda.is_available() else 0
+        """Native face: the resolved federation ROUTES (not hosted endpoints — those are none)."""
+        eps = [pb.EndpointStatus(capability=r.capability, model=r.model, healthy=True, port=0,
+                                 gpu_ids=list(r.gpu_ids), detail=f"forwarded → {r.label}")
+               for r in self.mgr.routes()]
+        try:
+            import torch
+            n = torch.cuda.device_count() if torch.cuda.is_available() else 0
+        except Exception:  # noqa: BLE001
+            n = 0
         return pb.EngineStatusResponse(endpoints=eps, total_gpus=n)
 
 
 PROJECT = "aegir"
-CAPABILITY_INSTRUCT = "instruct"
 # Service names advertised via gRPC reflection (lattice-ci external grpcurl).
 LATTICE_SERVICE_NAMES = (
     "aegir.engine.AegirEngine",
@@ -58,42 +77,19 @@ LATTICE_SERVICE_NAMES = (
 
 
 def build_status_response(mgr):
-    """Project manager state onto zndx.engine.v1.StatusResponse.
+    """Project engine state onto zndx.engine.v1.StatusResponse — the lattice face.
 
-    Always advertises capability=instruct so lattice-ci --expect-capability
-    passes at gRPC bind — vLLM residency is on-demand and is NOT the accept
-    gate (Gaius lesson: Status early, models later). Live endpoints overlay
-    the placeholder when VllmManager has launched them.
+    Ægir HOSTS NO MODEL: ``endpoints`` is what this engine serves on its own GPUs — nothing. An
+    engine that forwards a capability MUST NOT advertise it (capabilities.md §Operating profiles),
+    so there is no placeholder row; Signals' peer contract carries no capability hint for aegir and
+    lattice-ci accepts project=aegir at gRPC bind. ``mgr.status()`` is kept for symmetry and is
+    empty by construction.
     """
-    from aegir.engine.config import CAPABILITY_MODELS
     from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
 
-    spec = CAPABILITY_MODELS.get(CAPABILITY_INSTRUCT)
-    live = {e.capability: e for e in mgr.status()}
-    instruct = live.get(CAPABILITY_INSTRUCT)
-    if instruct is not None:
-        instruct_ep = zpb.Endpoint(
-            capability=CAPABILITY_INSTRUCT,
-            model=instruct.spec.model,
-            healthy=instruct.healthy,
-            gpu_ids=list(instruct.gpu_ids),
-            detail="lattice face; native AegirEngine + OIP on :50151",
-        )
-    else:
-        instruct_ep = zpb.Endpoint(
-            capability=CAPABILITY_INSTRUCT,
-            model=spec.model if spec else "",
-            healthy=True,
-            gpu_ids=[],
-            detail="lattice face; native AegirEngine + OIP on :50151",
-        )
-    eps = [instruct_ep]
-    for e in live.values():
-        if e.capability == CAPABILITY_INSTRUCT:
-            continue
-        eps.append(zpb.Endpoint(
-            capability=e.capability, model=e.spec.model, healthy=e.healthy,
-            gpu_ids=list(e.gpu_ids)))
+    eps = [zpb.Endpoint(capability=e.capability, model=e.spec.model, healthy=e.healthy,
+                        gpu_ids=list(e.gpu_ids))
+           for e in mgr.status()]
     try:
         import torch
         n = torch.cuda.device_count() if torch.cuda.is_available() else 0
@@ -120,22 +116,22 @@ class ZndxEngineServicer:
     the native service so any signals engine's shared stub reaches us (the service-identity fix:
     gRPC method paths embed package+service, so wire-identical messages under per-project packages
     still get UNIMPLEMENTED — measured by Atelier on the first live cross-engine call, 2026-07-03).
-    Delegates to the same VllmManager; engine-private details (internal vLLM ports) do not cross."""
+    Delegates to the same CapabilityForwarder; nothing engine-private crosses (there is no local vLLM)."""
 
     def __init__(self, mgr) -> None:
         self.mgr = mgr
 
     def Complete(self, request, context):
-        from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
-        cap = request.capability or "instruct"
+        """Forward VERBATIM (tools_json / messages_json / capabilities[] ride along) to the peer whose
+        Status serves the capability. The peer aligns to the capability's operating profile and
+        reports it (``profile``); this engine adds nothing and falls back to nothing."""
+        cap = request.capability or DEFAULT_CAPABILITY
         try:
-            out = self.mgr.complete(cap, request.prompt, request.system_prompt or "",
-                                    request.max_tokens or 512, request.temperature or 0.7,
-                                    json_schema=request.json_schema or "")
-            return zpb.CompleteResponse(
-                text=out["text"], model=out["model"], prompt_tokens=out["prompt_tokens"],
-                completion_tokens=out["completion_tokens"], latency_ms=out["latency_ms"],
-                reasoning_content=out["reasoning_content"], finish_reason=out["finish_reason"])
+            return self.mgr.forward(request)
+        except NoPeerServes as e:
+            context.abort(grpc.StatusCode.FAILED_PRECONDITION, str(e))
+        except grpc.RpcError as e:
+            context.abort(e.code(), f"complete[{cap}] refused by the serving peer: {e.details()}")
         except Exception as e:  # noqa: BLE001
             context.abort(grpc.StatusCode.INTERNAL, f"complete[{cap}] failed: {e}")
 
@@ -144,7 +140,7 @@ class ZndxEngineServicer:
 
     def Remediate(self, request, context):
         """Adapt to a boundary signal: compose the canonical signal+context into a re-authoring prompt,
-        serve the adaptive inference (same vLLM path as Complete), and return the agent's proposed
+        serve the adaptive inference (forwarded like Complete), and return the agent's proposed
         correction. The engine does NOT dispose it — the caller's membrane verifies + re-prompts. The
         prompt is composed HERE (server-side) so any federated caller sends only the structured signal."""
         import json
@@ -184,10 +180,18 @@ class ZndxEngineServicer:
             "correction": {"type": "string"},
             "disposition": {"type": "string", "enum": ["CORRECTED", "COINED_LOCAL", "UNRESOLVABLE"]},
             "rationale": {"type": "string"}}, "required": ["correction", "disposition", "rationale"]})
+        # `request.capability` ("reauthor") names Ægir's REMEDIATION class; the INFERENCE it needs is the
+        # full-trace `thinking` profile — a re-authoring decision reasons over a reasoner's justification.
         try:
-            out = self.mgr.complete(request.capability or "instruct", prompt, sysp,
+            out = self.mgr.complete(REMEDIATE_CAPABILITY, prompt, sysp,
                                     request.max_tokens or 12000, request.temperature or 0.3, json_schema=schema)
-        except Exception as e:  # noqa: BLE001 — a genuine vLLM/engine failure surfaces as a gRPC error
+        except NoPeerServes as e:
+            context.abort(grpc.StatusCode.FAILED_PRECONDITION, str(e))
+            return
+        except grpc.RpcError as e:
+            context.abort(e.code(), f"remediate[{kind}] refused by the serving peer: {e.details()}")
+            return
+        except Exception as e:  # noqa: BLE001 — a genuine engine failure surfaces as a gRPC error
             context.abort(grpc.StatusCode.INTERNAL, f"remediate[{kind}] failed: {e}")
             return
         # A truncated/malformed completion is an UNRESOLVABLE disposition, NOT an RPC failure: the caller's
@@ -228,7 +232,7 @@ class ZndxEngineServicer:
             "RecordLineage is Signals Atlas SoR (POST /api/v1/lineage).")
 
     def WatchWorkload(self, request, context):
-        """Held-open intended serving set. Empty intents is honest until vLLM is up."""
+        """Held-open intended serving set. Ægir hosts no model: intents are intentionally empty."""
         import time as _time
 
         from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
@@ -240,7 +244,7 @@ class ZndxEngineServicer:
                 generation=generation,
                 intents=[],
                 settled_at_unix_ms=int(_time.time() * 1000),
-                detail="aegir: empty intents until VllmManager reports a serving set",
+                detail="aegir hosts no model — intents intentionally empty; inference is forwarded to the federation",
             )
             _time.sleep(15)
             generation += 1
@@ -297,15 +301,14 @@ class OipInferenceServicer:
         return opb.ServerLiveResponse(live=True)
 
     def ServerReady(self, request, context):
-        # Always ready: capabilities cold-load inside ModelInfer (the engine blocks rather than
-        # returning UNAVAILABLE — the choice engine_grpc.md leaves to each engine).
+        # Always ready: the engine is up; whether a capability is served is the peer's answer at
+        # ModelInfer time (FAILED_PRECONDITION when no peer serves it — never a local fallback).
         from aegir.engine.proto import open_inference_grpc_pb2 as opb
         return opb.ServerReadyResponse(ready=True)
 
     def ModelReady(self, request, context):
-        # RESIDENCY, not configurability: peers use this for co-tenancy planning (forward to a
-        # resident capability in preference to moving GPUs), so a cold capability reports not-ready
-        # even though ModelInfer would serve it after a cold load.
+        # RESIDENCY, not configurability: nothing is resident HERE (Ægir hosts no model), so this
+        # is always false — peers plan co-tenancy against the hosting engine, not a forwarder.
         from aegir.engine.proto import open_inference_grpc_pb2 as opb
         ready = any(e.capability == request.name and e.healthy for e in self.mgr.status())
         return opb.ModelReadyResponse(ready=ready)
@@ -324,13 +327,13 @@ class OipInferenceServicer:
 
     def ModelMetadata(self, request, context):
         from aegir.engine.proto import open_inference_grpc_pb2 as opb
-        from aegir.engine.config import CAPABILITY_MODELS
-        if request.name not in CAPABILITY_MODELS:
-            context.abort(grpc.StatusCode.NOT_FOUND,
-                          f"unknown capability {request.name!r}; known: {list(CAPABILITY_MODELS)}")
+        if not request.name:
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "model name (= capability) is required")
+        # Capabilities are federation vocabulary, not a local registry: the tensor contract is the
+        # same for any capability this engine forwards. Residency is ModelReady's question.
         tm = opb.ModelMetadataResponse.TensorMetadata
         return opb.ModelMetadataResponse(
-            name=request.name, versions=["v1"], platform="vllm",
+            name=request.name, versions=["v1"], platform="zndx-forward",
             inputs=[tm(name="prompt", datatype="BYTES", shape=[1]),
                     tm(name="system_prompt", datatype="BYTES", shape=[1])],
             outputs=[tm(name="completion", datatype="BYTES", shape=[1]),
@@ -338,7 +341,7 @@ class OipInferenceServicer:
 
     def ModelInfer(self, request, context):
         from aegir.engine.proto import open_inference_grpc_pb2 as opb
-        cap = request.model_name or "instruct"
+        cap = request.model_name or DEFAULT_CAPABILITY
         prompt = self._bytes_input(request, "prompt")
         if not prompt:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, 'no "prompt" input tensor provided')
@@ -350,8 +353,10 @@ class OipInferenceServicer:
         try:
             out = self.mgr.complete(cap, prompt, system_prompt, max_tokens, temperature,
                                     json_schema=json_schema)
-        except KeyError as e:
-            context.abort(grpc.StatusCode.NOT_FOUND, str(e))
+        except NoPeerServes as e:
+            context.abort(grpc.StatusCode.FAILED_PRECONDITION, str(e))
+        except grpc.RpcError as e:
+            context.abort(e.code(), f"infer[{cap}] refused by the serving peer: {e.details()}")
         except Exception as e:  # noqa: BLE001 — surface as a gRPC error, keep the engine up
             context.abort(grpc.StatusCode.INTERNAL, f"infer[{cap}] failed: {e}")
         resp = opb.ModelInferResponse(model_name=cap, model_version="v1", id=request.id)
@@ -367,7 +372,7 @@ class OipInferenceServicer:
         resp.parameters["tokens_used"].int64_param = out["completion_tokens"]
         resp.parameters["prompt_tokens"].int64_param = out["prompt_tokens"]
         resp.parameters["latency_ms"].double_param = out["latency_ms"]
-        resp.parameters["backend"].string_param = "vllm"
+        resp.parameters["backend"].string_param = out.get("fulfilled_by") or "zndx-forward"
         resp.parameters["model"].string_param = out["model"]
         resp.parameters["finish_reason"].string_param = out["finish_reason"]
         return resp
@@ -390,7 +395,7 @@ def serve(port: int = ENGINE_GRPC_PORT) -> None:
     server.start()
     print(f"aegir-engine gRPC listening on :{port} — services: aegir.engine.AegirEngine + "
           f"zndx.engine.v1.Engine (federation face) + inference.GRPCInferenceService (KServe OIP) "
-          f"+ reflection",
+          f"+ reflection; hosts no model — inference capabilities are forwarded to the federation",
           flush=True)
 
     def _stop(*_):

@@ -1,7 +1,9 @@
 """GPU-exclusivity guard — stop two engine instances from claiming the same GPUs.
 
-The engine pins vLLM to a contiguous GPU range starting at :data:`FIRST_GPU` (``AEGIR_ENGINE_GPU0``),
-``tensor_parallel_size`` wide (see ``vllm_manager._launch``). Launching a *second* engine against the
+Historically the engine pinned vLLM to a contiguous GPU range starting at ``AEGIR_ENGINE_GPU0``,
+``tensor_parallel_size`` wide. Since 2026-09-08 Ægir hosts no model (``engine_gpu_ids()`` is empty and the
+supervisor skips the claim); the guard remains for GPU work Ægir runs itself (training / eval windows).
+Launching a *second* process against the
 same range silently double-commits VRAM: the new vLLM OOMs partway through model load (or, worse, both
 limp along thrashing the KV cache), and a multi-day derivation run dies hours in. This guard makes that
 failure FAST and LOUD at startup instead.
@@ -240,10 +242,11 @@ def _read_owner(path: Path) -> str:
 
 
 def engine_gpu_ids(first_gpu: "int | None" = None, tp: "int | None" = None) -> list[int]:
-    """The contiguous GPU index range the engine's ``instruct`` capability will pin (mirror of the
-    ``vllm_manager._launch`` arithmetic), for the supervisor/server to claim up-front.
+    """The GPU range the engine would pin for a HOSTED model — empty since 2026-09-08: Ægir hosts no
+    model (inference is forwarded to the federation), so the supervisor claims nothing. An explicit
+    ``tp`` keeps the old arithmetic for callers that size a range themselves.
     """
-    from aegir.engine.config import CAPABILITY_MODELS, FIRST_GPU
-    first = FIRST_GPU if first_gpu is None else first_gpu
-    width = tp if tp is not None else CAPABILITY_MODELS["instruct"].tensor_parallel_size
-    return list(range(first, first + width))
+    if tp is None:
+        return []
+    first = int(os.environ.get("AEGIR_ENGINE_GPU0", "0")) if first_gpu is None else first_gpu
+    return list(range(first, first + tp))

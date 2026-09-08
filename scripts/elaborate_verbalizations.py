@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """LLM elaboration of template verbalizations (Semantic-Layer-Upkeep Comp 3d).
 
-Takes each template's base verbalization frame(s) and asks the **local capability engine** (Qwen3.6 via
+Takes each template's base verbalization frame(s) and asks the **local capability engine** (Qwen3.8-27B via
 the gRPC client — strict layering, never vLLM directly) for additional *procedural*, semantically-faithful
 rephrasings in distinct syntactic styles. This is the natural-language diversity layer on top of the
 deterministic DeepOnto parse-tree frames (build_verbalization_frames.py): the deterministic frames raise

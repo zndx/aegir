@@ -1,7 +1,8 @@
 """Tests for the zndx.engine.v1 lattice face: Status body + server reflection.
 
-Lattice accept is Engine/Status (project=aegir, capability=instruct) at gRPC
-bind — no vLLM, no live :50151. Reflection is the external grpcurl surface.
+Ægir hosts NO model (2026-09-08): Status advertises project=aegir with EMPTY endpoints — an engine
+that forwards a capability must not claim it (capabilities.md §Operating profiles). Lattice accept is
+Engine/Status answering at gRPC bind; reflection is the external grpcurl surface.
 """
 from __future__ import annotations
 
@@ -12,52 +13,27 @@ import grpc
 
 from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
 from aegir.engine.proto.zndx.engine.v1 import engine_pb2_grpc as zpbg
-from aegir.engine.server import (
-    CAPABILITY_INSTRUCT,
-    PROJECT,
-    ZndxEngineServicer,
-    build_status_response,
-    enable_reflection,
-)
+from aegir.engine.server import PROJECT, ZndxEngineServicer, build_status_response, enable_reflection
 
 
 def _mgr(endpoints=()):
     return SimpleNamespace(status=lambda: list(endpoints))
 
 
-def _live(capability, model="Qwen/test", healthy=True, gpu_ids=()):
-    return SimpleNamespace(
-        capability=capability,
-        spec=SimpleNamespace(model=model),
-        healthy=healthy,
-        gpu_ids=list(gpu_ids),
-    )
-
-
 class TestBuildStatusResponse:
-    def test_always_advertises_aegir_and_instruct(self):
+    def test_advertises_aegir_with_no_hosted_endpoints(self):
         resp = build_status_response(_mgr())
         assert resp.project == PROJECT
-        caps = [ep.capability for ep in resp.endpoints]
-        assert CAPABILITY_INSTRUCT in caps
-        instruct = next(ep for ep in resp.endpoints if ep.capability == CAPABILITY_INSTRUCT)
-        assert instruct.healthy is True
+        assert list(resp.endpoints) == []  # nothing hosted — honest, never a placeholder
 
-    def test_overlays_live_instruct_endpoint(self):
-        resp = build_status_response(_mgr([
-            _live("instruct", model="Qwen/live", healthy=False, gpu_ids=[4, 5]),
-        ]))
-        instruct = next(ep for ep in resp.endpoints if ep.capability == "instruct")
-        assert instruct.model == "Qwen/live"
-        assert instruct.healthy is False
-        assert list(instruct.gpu_ids) == [4, 5]
-        assert sum(1 for ep in resp.endpoints if ep.capability == "instruct") == 1
+    def test_never_claims_instruct_or_thinking(self):
+        resp = build_status_response(_mgr())
+        assert not any(ep.capability in ("instruct", "thinking") for ep in resp.endpoints)
 
-    def test_appends_other_live_capabilities(self):
-        resp = build_status_response(_mgr([_live("reauthor", model="local")]))
-        caps = [ep.capability for ep in resp.endpoints]
-        assert "instruct" in caps
-        assert "reauthor" in caps
+    def test_reports_total_gpus_and_surfaces_fields(self):
+        resp = build_status_response(_mgr())
+        assert resp.total_gpus >= 0
+        assert hasattr(resp, "surfaces")
 
 
 class TestZndxServicerStatus:
@@ -65,7 +41,7 @@ class TestZndxServicerStatus:
         servicer = ZndxEngineServicer(_mgr())
         resp = servicer.Status(zpb.StatusRequest(), None)
         assert resp.project == "aegir"
-        assert any(ep.capability == "instruct" for ep in resp.endpoints)
+        assert list(resp.endpoints) == []
 
 
 class TestReflection:
@@ -86,7 +62,7 @@ class TestReflection:
             assert "grpc.reflection.v1alpha.ServerReflection" in names
             r = zpbg.EngineStub(ch).Status(zpb.StatusRequest(), timeout=3)
             assert r.project == "aegir"
-            assert any(ep.capability == "instruct" for ep in r.endpoints)
+            assert list(r.endpoints) == []
             ch.close()
         finally:
             server.stop(grace=0)

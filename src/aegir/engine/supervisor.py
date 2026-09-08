@@ -10,7 +10,7 @@ What it does, in order:
 1. **GPU-exclusivity guard** (``gpu_guard.claim_gpus``) up front — refuse to start if the engine's GPU
    range is already claimed by another instance or a foreign process. Fail fast, loud.
 2. **Spawn** the server in its OWN process group (``start_new_session=True``), exactly like
-   ``vllm_manager`` does for vLLM, so we can kill the whole tree.
+   the retired vLLM manager did for vLLM, so we can kill the whole tree.
 3. **Readiness wait** after each (re)start (``readiness.wait_for_ready``) — log when the engine is actually
    serving (or that it failed to come up), so the picture is "supervised AND warm", not just "process running".
 4. **Detect exit**: when the child exits, log the reason (return code, signal, recent log tail), then:
@@ -19,7 +19,7 @@ What it does, in order:
 5. **Restart storm guard**: retries are counted in a rolling ``window_s``; > ``max_retries`` crashes inside
    one window ⇒ give up (a tight crash loop is a real bug, not a transient — don't thrash GPUs forever).
 6. **Clean shutdown preserved**: on SIGINT/SIGTERM to the supervisor we ``killpg`` the child's group
-   (mirroring ``vllm_manager.shutdown`` / ``server._stop``) so vLLM TP workers don't leak VRAM, then exit.
+   (mirroring ``server._stop``) so nothing leaks, then exit. (Ægir hosts no model since 2026-09-08.)
 
 The supervisor itself imports NO vLLM and grabs NO GPU — it only spawns the server child (which owns all of
 that) and polls it. That keeps it safe to unit-test in isolation: :class:`EngineSupervisor` takes injectable
@@ -70,9 +70,9 @@ def _default_spawn(log_path: Path) -> subprocess.Popen:
     """Spawn ``python -m aegir.engine.server`` in its own session, mirroring the live-run launch.
 
     Uses the SAME interpreter that is running the supervisor (``sys.executable``) so we stay inside aegir's
-    main venv (the server itself launches the *foreign* vLLM venv internally — see ``vllm_manager``). We do
+    main venv (the server hosts no model since 2026-09-08 — inference is forwarded to the federation). We do
     NOT scrub LD_LIBRARY_PATH here: the gRPC server runs in the main env and needs the cuda-driver-libs
-    unmask the caller already exported; vLLM-venv isolation happens inside ``vllm_manager._launch``.
+    unmask the caller already exported.
     """
     log_path.parent.mkdir(parents=True, exist_ok=True)
     fh = open(log_path, "a")
@@ -201,7 +201,7 @@ class EngineSupervisor:
 
     def shutdown_child(self, sig: int = signal.SIGTERM) -> None:
         """Clean shutdown of the current child: killpg the whole process group (so vLLM TP workers die),
-        mirroring ``vllm_manager.shutdown`` / ``server._stop`` — never orphan VRAM-holding workers."""
+        mirroring ``server._stop`` — never orphan child processes."""
         proc = self._proc
         if proc is None or proc.poll() is not None:
             return
@@ -257,6 +257,9 @@ class EngineSupervisor:
         if self.cfg.gpu_guard and getattr(self, "_use_default_guard", True):
             from aegir.engine.gpu_guard import GpuClaimError, claim_gpus, engine_gpu_ids
             gpu_ids = self._gpu_ids if self._gpu_ids is not None else engine_gpu_ids()
+            if not gpu_ids:
+                self.log("gpu_claim_skipped", reason="aegir hosts no model; inference is forwarded")
+                return _NoopCtx()
             try:
                 cm = claim_gpus(gpu_ids)
                 cm.__enter__()

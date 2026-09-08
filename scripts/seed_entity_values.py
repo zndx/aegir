@@ -5,7 +5,7 @@ The deterministic row generator (:mod:`aegir.ontology.rows`) grounds *typed* col
 *enumerated* columns (skos:definition value sets) and *generic-string* columns (curated pools). What
 it cannot ground are the **concept-specific entity columns** — a table's subject head (``labrun``,
 ``ebpfprogram``, ``mass``), its named relation targets, and its ``name`` attribute — which fall back to
-``"<Concept> NN"`` placeholders. This script asks the **local capability engine** (Qwen3.6 via the gRPC
+``"<Concept> NN"`` placeholders. This script asks the **local capability engine** (Qwen3.8-27B via the gRPC
 client — strict layering, never vLLM directly) for a pool of realistic *domain* instance values per such
 column, seeded by the template's concept + verbalization, and caches them to a committed resource the
 generator reads.
@@ -151,7 +151,7 @@ def seed_one(template, family: str, dp_meta: dict, *, capability: str, temperatu
     if not cols:
         return {}, cols, "", ""
     verbalization = (template.frames()[0] if template.frames() else template.verbal_template) or ""
-    # Generous budget: Qwen3.6 thinking is RETAINED (engine policy) and leaks into content for this
+    # Generous budget: Qwen3.8-27B thinking is RETAINED (engine policy) and leaks into content for this
     # prompt shape, so the 'VALUES …' lines land AFTER a long reasoning preamble — the sentinel parser
     # skips the preamble but the budget must be large enough to reach the tagged lines (we wait for it).
     out = complete_detailed(_prompt(_concept(template), verbalization, cols), capability=capability,

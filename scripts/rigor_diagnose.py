@@ -3,7 +3,7 @@
 The metrology (`ontology_metrology.compute`) reports only AGGREGATES; the failing-class sets are
 closures inside it. This replicates its exact predicates (parents/anchor `:86-115`, defined `:83`,
 has_def `:137-139`) to DUMP the per-class worklist a rigor-closing pass (and the autonomous
-Qwen3.6 loop) needs:
+Qwen3.8-27B loop) needs:
 
   ungrounded  — anchor(c) is None  (== the orphans; no genus reaches a BFO IRI)   → bfo_grounded
   unannotated — no rdfs:comment / IAO_0000115 / skos:definition                    → def_annotation

@@ -17,7 +17,7 @@ not a lattice-only process. Accept is lattice Status **and** product surfaces.
 | Gateway | `:8091` — `http://127.0.0.1:8091/api/health` |
 | Vite UI | `:5173` |
 | Postgres | `:5555` — never Signals `:5455` / RustFS `:9010` |
-| Capability | `instruct` |
+| Capability | none hosted — `instruct` / `thinking` are forwarded to the peer hosting Qwen3.8-27B (Gaius); `Status.endpoints` empty is honest |
 | Status.project | `aegir` |
 | Status.surfaces | `kind=primary` → product UI (`AEGIR_PRIMARY_UI` / `:5173`) |
 | ServerQuery | remotes + head, configured peers, same surfaces |

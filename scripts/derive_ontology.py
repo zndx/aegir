@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Content-first ontology derivation — the RIGHT-ARROW flow: FinePDFs text → Qwen3.6 DERIVES primitives →
+"""Content-first ontology derivation — the RIGHT-ARROW flow: FinePDFs text → Qwen3.8-27B DERIVES primitives →
 the pattern library constrains structure → the membrane verifies → **the ontology grows from the content**.
 
 The flaw this fixes (RH, 2026-06-20): the prototype 540 templates became the reference frame. The coverage
@@ -9,7 +9,7 @@ the arrow pointed the wrong way (content measured against ontology, never mining
 
 This inverts it. For each unit of real-world text:
 
-  1. DERIVE   — Qwen3.6 READS the passage and derives the domain primitives it implies (entities, relations,
+  1. DERIVE   — Qwen3.8-27B READS the passage and derives the domain primitives it implies (entities, relations,
                 attributes, value-sets, processes), choosing the best-fit axiom PATTERN per primitive from the
                 structural vocabulary (``patterns.py``: FHIR-minimum / OWL2 / ODP / SysMLv2). The LLM supplies
                 SEMANTICS; the pattern enforces STRUCTURE.
@@ -24,7 +24,7 @@ This is "leverage the LLM to its fullest" applied to the most upstream, highest-
 ontology_realization + aegir-convergence-loop). Clean-room unchanged: FHIR CC0 structure only, no proprietary
 terminology content; every IRI is sdg:-coined original expression. Full thinking traces retained.
 
-    just engine-serve   # (Qwen3.6 up)
+    just engine-serve   # (engine up; instruct is forwarded to the federation)
     uv run --no-sync python scripts/derive_ontology.py --n-docs 12 --max-primitives 4         # derive + gate
     uv run --no-sync python scripts/derive_ontology.py --n-docs 200 --skip-docs 0 \
         --write-candidates --verify-jvm --advance-cursor                                       # streaming growth
@@ -194,7 +194,7 @@ def _pattern_catalog() -> tuple[str, dict]:
 
 def derive(passage: str, catalog_text: str, *, capability: str,
            temperature: float, max_primitives: int) -> dict:
-    """Ask Qwen3.6 to derive pattern-conforming primitives FROM the passage. Returns proposals + trace.
+    """Ask Qwen3.8-27B to derive pattern-conforming primitives FROM the passage. Returns proposals + trace.
     No anti-repetition instruction: structural diversity emerges from faithful representation (gates 2/3
     enforce richness, not the prompt)."""
     from aegir.engine.client import complete_detailed

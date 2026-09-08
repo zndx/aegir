@@ -71,7 +71,7 @@ catalog -> realize
 realize -> publish
 ```
 
-- **Derive** — the engine (Qwen3.6-35B over vLLM gRPC,
+- **Derive** — the engine (`instruct` on the federation's Qwen3.8-27B over gRPC,
   `src/aegir/engine/`) reads aperture-filtered FinePDFs passages and
   derives axiom-pattern-bound primitives
   (`scripts/derive_ontology.py`), staged in `catalog.candidate.json`.

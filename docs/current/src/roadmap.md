@@ -270,9 +270,9 @@ Both artifacts depend on shared substrate beyond the ontology:
   stay rebuildable-from-the-ontology-or-it's-a-bug, never a master
   (Atlas edits *suggest*, never *commit*). See the Signals Programme's
   source-of-truth diagram.
-- **The engine and meta-harness.** A gRPC engine serving
-  Qwen3.6-35B-A3B-FP8 via vLLM under strict layering (engine→vLLM,
-  workloads→gRPC), and the agent-mediated RETE/FSM control spine
+- **The engine and meta-harness.** A gRPC engine that hosts no model and forwards
+  `instruct` / `thinking` to the federation peer hosting Qwen3.8-27B under strict
+  layering (engine→protocol, workloads→gRPC), and the agent-mediated RETE/FSM control spine
   (`src/aegir/meta_harness/`) that orchestrates membrane-gated proposal.
 - **Worktree-aware development tooling.** `git worktree`-based
   cross-checkout dev with shared `.git` and per-worktree service gating;

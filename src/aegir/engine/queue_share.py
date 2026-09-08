@@ -40,7 +40,7 @@ class ResourceClass:
     max_applications: int = 1
 
 
-# Default instruct is TP=4 (Qwen3.6-35B-A3B-FP8) — same leaf as Gaius HEAVY.
+# Default instruct is TP=4 (Qwen3.8-27B) — same leaf as Gaius HEAVY.
 HEAVY = ResourceClass(
     name="internal.inference.heavy",
     queue="root.internal.inference.heavy",
@@ -82,19 +82,10 @@ def resource_class_for_capability(
     pp: int | None = None,
 ) -> ResourceClass:
     """Map an Aegir capability + tp/pp packing requirement to a declared leaf."""
-    if tp is None or pp is None:
-        from aegir.engine.config import CAPABILITY_MODELS
-        spec = CAPABILITY_MODELS.get(capability)
-        if spec is not None:
-            if tp is None:
-                tp = int(spec.tensor_parallel_size)
-            if pp is None:
-                pp = int(getattr(spec, "pipeline_parallel_size", 1) or 1)
-        else:
-            if tp is None:
-                tp = 4
-            if pp is None:
-                pp = 1
+    if tp is None:
+        tp = 4  # Ægir hosts no model (2026-09-08); the historical instruct packing was TP=4
+    if pp is None:
+        pp = 1
     return leaf_for_gpu_tokens(int(tp) * int(pp))
 
 

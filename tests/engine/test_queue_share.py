@@ -108,10 +108,8 @@ def test_module_never_writes_queues_yaml() -> None:
     assert "do not write queues.yaml" in src
     assert "open(" not in src
     assert "write_text" not in src
-    mgr = Path("src/aegir/engine/vllm_manager.py").read_text()
-    assert "notify_admit" in mgr
-    assert "notify_release" in mgr
-    assert "queues.yaml" not in mgr or "Never writes queues.yaml" in mgr
+    fwd = Path("src/aegir/engine/forwarder.py").read_text()
+    assert "queues.yaml" not in fwd and "open(" not in fwd  # a forwarder holds no scheduler state
 
 
 def _serve(servicer) -> tuple[grpc.Server, str]:
@@ -259,72 +257,6 @@ def test_notify_admit_unimplemented_ok(monkeypatch) -> None:
         server.stop(grace=0)
 
 
-def test_ensure_calls_share_before_launch(monkeypatch) -> None:
-    from aegir.engine.vllm_manager import VllmManager
-
-    called = {}
-
-    def fake_admit(kind, tp=None, pp=None):
-        called["kind"] = kind
-        called["tp"] = tp
-        called["pp"] = pp
-        return True
-
-    monkeypatch.setattr("aegir.engine.queue_share.notify_admit", fake_admit)
-    mgr = VllmManager()
-    launched = {}
-
-    def fake_launch(capability):
-        launched["cap"] = capability
-        return SimpleNamespace(
-            capability=capability, spec=None, port=8100, gpu_ids=[0, 1, 2, 3],
-            proc=SimpleNamespace(poll=lambda: None), healthy=True, log_path=None)
-
-    monkeypatch.setattr(mgr, "_launch", fake_launch)
-    monkeypatch.setattr(mgr, "_wait_healthy", lambda ep: None)
-    mgr.ensure("instruct")
-    assert called["kind"] == "instruct"
-    assert called["tp"] == 4
-    assert called["pp"] == 1
-    assert launched["cap"] == "instruct"
-
-
-def test_ensure_does_not_launch_on_rejected(monkeypatch) -> None:
-    from aegir.engine.vllm_manager import VllmManager
-
-    def boom(kind, tp=None, pp=None):
-        raise RuntimeError(f"{GURU_SHAREFAIL} REJECTED")
-
-    monkeypatch.setattr("aegir.engine.queue_share.notify_admit", boom)
-    mgr = VllmManager()
-    launched: list[str] = []
-    monkeypatch.setattr(mgr, "_launch", lambda cap: launched.append(cap))
-    monkeypatch.setattr(mgr, "_wait_healthy", lambda ep: None)
-    with pytest.raises(RuntimeError, match="SHAREFAIL"):
-        mgr.ensure("instruct")
-    assert launched == []
-
-
-def test_shutdown_sends_zero_floor(monkeypatch) -> None:
-    from aegir.engine.vllm_manager import VllmManager
-
-    released = []
-
-    def fake_release(kind, tp=None, pp=None):
-        released.append((kind, tp, pp))
-        return True
-
-    monkeypatch.setattr("aegir.engine.queue_share.notify_release", fake_release)
-    mgr = VllmManager()
-    mgr._ep["instruct"] = SimpleNamespace(
-        capability="instruct",
-        spec=SimpleNamespace(tensor_parallel_size=4, pipeline_parallel_size=1),
-        proc=None,
-    )
-    mgr.shutdown()
-    assert released == [("instruct", 4, 1)]
-
-
 def test_declared_queues_are_leaf_shape_not_occupancy() -> None:
     from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
     from aegir.engine.s2s import declared_queues, local_response
@@ -342,33 +274,12 @@ def test_declared_queues_are_leaf_shape_not_occupancy() -> None:
     assert [h.path for h in q.queues] == [h.path for h in hints]
 
 
-def test_workloads_not_in_queue_name() -> None:
-    """WORKLOADS carries the typed WorkloadOffer (protocol 7cc9ad1, 2026-08-27):
-    model + capabilities + WorkloadRequirements (backend / parallelism / footprint)
-    + ResourceClass — never a queue path, never tp/pp folded into a name."""
-    from aegir.engine.config import CAPABILITY_MODELS
+def test_workloads_offer_nothing_hosted() -> None:
+    """Ægir hosts no model (2026-09-08): no WorkloadOffer, hence no queue path / tp / pp to leak."""
     from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
-    from aegir.engine.s2s import _resource_class_enum, declared_workloads, local_response
+    from aegir.engine.s2s import declared_workloads, local_response
 
-    offers = declared_workloads()
-    by_cap = {c: o for o in offers for c in o.capabilities}
-    instruct = by_cap["instruct"]
-    spec = CAPABILITY_MODELS["instruct"]
-    tp = spec.tensor_parallel_size
-    pp = getattr(spec, "pipeline_parallel_size", 1) or 1
-    assert instruct.peer == "aegir"
-    assert instruct.model == spec.model
-    assert instruct.requirements.backend == zpb.SERVING_BACKEND_VLLM_LOCAL
-    assert instruct.requirements.parallelism.tensor_parallel == tp
-    assert instruct.requirements.parallelism.pipeline_parallel == pp
-    assert instruct.requirements.parallelism.data_parallel == 1
-    assert instruct.requirements.footprint.gpu == tp * pp == 4
-    assert instruct.resource_class == _resource_class_enum(4)
-    assert instruct.resource_class != zpb.RESOURCE_CLASS_UNSPECIFIED
-    assert "root.internal" not in instruct.model
-    assert instruct.queue == ""  # occupancy is a hint chosen at RequestQueueShare, not baked here
+    assert declared_workloads() == []
     q = local_response(zpb.SERVER_QUERY_KIND_WORKLOADS)
-    assert [(w.peer, w.model, list(w.capabilities)) for w in q.workloads] == [
-        (o.peer, o.model, list(o.capabilities)) for o in offers
-    ]
+    assert list(q.workloads) == []
     assert list(q.queues) == []

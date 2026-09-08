@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-"""Dynamic ontology-primitive generation — Qwen3.6 adds SEMANTIC RICHNESS, patterns.py enforces STRUCTURE.
+"""Dynamic ontology-primitive generation — Qwen3.8-27B adds SEMANTIC RICHNESS, patterns.py enforces STRUCTURE.
 
 The capability the ontology has lacked: in response to diverse inputs (FHIR resource concepts, FinePDFs gap
-topics, or any seed), the local engine (Qwen3.6) proposes semantically-rich ontology primitives that CONFORM
+topics, or any seed), the local engine (Qwen3.8-27B) proposes semantically-rich ontology primitives that CONFORM
 to an axiom-pattern from ``patterns.py`` (the structural contract), and NOTHING enters the catalog until it
 passes the verification membrane — the "next few gates":
 
@@ -15,11 +15,11 @@ passes the verification membrane — the "next few gates":
   5. JVM membrane — DeepOnto verbalizable + HermiT consistent/non-trivial + BFO-ancestry (``--verify-jvm``;
                     the deep reasoner gate, batched, best-effort — the inc-2a oracle).
 
-FHIR (CC0) + the pattern library set the floor; Qwen3.6 levels up with domain-rich content that still
+FHIR (CC0) + the pattern library set the floor; Qwen3.8-27B levels up with domain-rich content that still
 conforms. Clean-room: FHIR resource CONCEPTS (names) are CC0; we generate original axioms + sdg:-derived
 identifiers, never proprietary code content. Thinking traces retained (corpus value-add). Engine = LOCAL.
 
-    just engine-serve   # (Qwen3.6 up)
+    just engine-serve   # (engine up; instruct is forwarded to the federation)
     uv run --no-sync python scripts/generate_ontology_primitives.py --per-concept 2 --concepts fhir   # propose+gate
     uv run --no-sync python scripts/generate_ontology_primitives.py --write-candidates --verify-jvm    # full membrane
 """
@@ -105,7 +105,7 @@ def _norm_structure(m: str) -> str:
 
 
 def propose(pattern: patterns.AxiomPattern, concept: str, *, capability: str, temperature: float) -> dict:
-    """Ask Qwen3.6 for a pattern-conforming primitive (JSON). Returns the parsed proposal + trace."""
+    """Ask Qwen3.8-27B for a pattern-conforming primitive (JSON). Returns the parsed proposal + trace."""
     from aegir.engine.client import complete_detailed
     prompt = (f"PATTERN '{pattern.name}' (tier {pattern.tier}, grounds {pattern.grounds_ddl}):\n"
               f"  skeleton: {pattern.manchester_skeleton}\n  anchor guidance: {pattern.bfo_cco_anchor}\n"

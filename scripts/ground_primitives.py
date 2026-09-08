@@ -98,7 +98,7 @@ def main() -> int:
         pending = [t for t in targets if t not in accepted]
         if not pending:
             break
-        # BATCH small: Qwen3.6 spends ~4-9k reasoning tokens PER concept, so a big batch overflows max_tokens
+        # BATCH small: Qwen3.8-27B spends ~4-9k reasoning tokens PER concept, so a big batch overflows max_tokens
         # and truncates before the content json emits (silently → 0 proposed). 4/call keeps content in budget.
         proposed: dict[str, tuple] = {}
         for bi in range(0, len(pending), args.batch):

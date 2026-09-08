@@ -26,9 +26,9 @@ def _fake_nvidia(monkeypatch, apps, uuids):
 
 
 def test_engine_gpu_ids_mirrors_config():
-    # Default config is FIRST_GPU=0, tp=4 → [0,1,2,3]; explicit args compute the contiguous range.
     assert engine_gpu_ids(first_gpu=2, tp=3) == [2, 3, 4]
-    assert engine_gpu_ids() == list(range(engine_gpu_ids()[0], engine_gpu_ids()[0] + len(engine_gpu_ids())))
+    # Ægir hosts no model (2026-09-08): the default claim is EMPTY — the supervisor skips the guard.
+    assert engine_gpu_ids() == []
 
 
 def test_probe_free_gpus_returns_empty(monkeypatch):

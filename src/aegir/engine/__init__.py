@@ -1,7 +1,10 @@
-"""Aegir capability/gRPC engine — the local LLM substrate (mirrors the Gaius engine pattern).
+"""Ægir capability/gRPC engine — the federation face of a project that HOSTS NO MODEL.
 
-**Strict layering:** the engine is the SOLE vLLM client and owns the capability→model mapping;
-**workloads connect ONLY to the gRPC engine** (`client.complete`) — never to vLLM, never handed an
-endpoint URL. Serves Qwen3.6-35B-A3B-FP8 across the local GPUs (tensor-parallel). Federation with the
-Gaius engine is a roadmap config flag (`AEGIR_ENGINE_FEDERATE`).
+**Strict layering:** workloads connect ONLY to this gRPC engine (`client.complete`) and name a
+CAPABILITY, never a model or an endpoint. The engine FORWARDS inference capabilities (`instruct`,
+`thinking`) over `zndx.engine.v1` to the peer that hosts the model (Gaius, Qwen3.8-27B) — never a
+vLLM port, never an OpenAI-compatible URL. `instruct` is an operating profile of that model
+(thinking on, effort low; signals-protocol capabilities.md). No local vLLM, no fallback
+(2026-09-08; Qwen3.8-27B retired). Ægir still serves `Remediate`, `Announce` (peer
+directory), `ServerQuery`, `Status` (endpoints empty — honest), and the KServe OIP face.
 """
