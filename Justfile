@@ -346,7 +346,7 @@ engine-ready timeout="1200":
     uv run --no-sync python -c "import sys; from aegir.engine.readiness import wait_for_ready, Readiness; r = wait_for_ready(level=Readiness.SERVING, timeout=float('{{timeout}}')); print(r.detail); sys.exit(0 if r.ok else 1)"
 
 # Regenerate the engine's gRPC stubs — all three registered faces: native (aegir_engine.proto,
-# in-tree), zndx.engine.v1 + zndx.scheduler.v1 + zndx.supervision.v1 (from the signals-protocol
+# in-tree), zndx.engine.v1 + zndx.scheduler.v1 + zndx.supervision.v1 + zndx.agent.v1 (from the signals-protocol
 # submodule; supervision is the Nautilus/EngineSupervision grammar Gaius and Hermes already serve), and KServe OIP
 # (open_inference_grpc.proto, vendored from upstream KServe — byte-identical to the Gaius copy;
 # that symmetry is the interop contract). The -I root is each proto's OWN root, NOT src: the
@@ -363,13 +363,16 @@ engine-proto-gen:
         -I components/signals-protocol/proto --python_out=src/aegir/engine/proto --grpc_python_out=src/aegir/engine/proto \
         components/signals-protocol/proto/zndx/engine/v1/engine.proto \
         components/signals-protocol/proto/zndx/scheduler/v1/scheduler.proto \
-        components/signals-protocol/proto/zndx/supervision/v1/supervision.proto
+        components/signals-protocol/proto/zndx/supervision/v1/supervision.proto \
+        components/signals-protocol/proto/zndx/agent/v1/agent.proto
     sed -i 's/^import aegir_engine_pb2 as/from aegir.engine.proto import aegir_engine_pb2 as/' src/aegir/engine/proto/aegir_engine_pb2_grpc.py
     sed -i 's/^import open_inference_grpc_pb2 as/from aegir.engine.proto import open_inference_grpc_pb2 as/' src/aegir/engine/proto/open_inference_grpc_pb2_grpc.py
     sed -i 's/^from zndx.engine.v1 import/from aegir.engine.proto.zndx.engine.v1 import/' src/aegir/engine/proto/zndx/engine/v1/engine_pb2_grpc.py
     sed -i 's/^from zndx.engine.v1 import/from aegir.engine.proto.zndx.engine.v1 import/' src/aegir/engine/proto/zndx/scheduler/v1/scheduler_pb2.py
     sed -i 's/^from zndx.scheduler.v1 import/from aegir.engine.proto.zndx.scheduler.v1 import/' src/aegir/engine/proto/zndx/scheduler/v1/scheduler_pb2_grpc.py
     sed -i 's/^from zndx.supervision.v1 import/from aegir.engine.proto.zndx.supervision.v1 import/' src/aegir/engine/proto/zndx/supervision/v1/supervision_pb2_grpc.py
+    sed -i 's/^from zndx.engine.v1 import/from aegir.engine.proto.zndx.engine.v1 import/' src/aegir/engine/proto/zndx/agent/v1/agent_pb2.py
+    sed -i 's/^from zndx.agent.v1 import/from aegir.engine.proto.zndx.agent.v1 import/' src/aegir/engine/proto/zndx/agent/v1/agent_pb2_grpc.py
 
 # ── mdbook documentation ──────────────────────────────────────
 #
