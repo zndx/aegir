@@ -30,6 +30,7 @@ on the target.
 | Area | Paths |
 |------|--------|
 | Collection emission | `scripts/build_collections.py`, `scripts/relational_collections.py` |
+| Holdout reference sample | `scripts/emit_holdout_reference.py` (`just emit-holdout-reference`) |
 | FinePDFs / SchemaPile | `scripts/emit_finepdfs_postings.py`, `scripts/emit_schemapile_postings.py` |
 | SKOS | `scripts/build_skos_vocab.py`, `scripts/author_skos_surfaces.py` |
 | Atelier release / score | `scripts/build_atelier_release.py`, `scripts/score_atelier_predictions.py` |

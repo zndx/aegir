@@ -261,6 +261,14 @@ kb-snapshot *args:
 kb-sync *args:
     uv run --no-sync python -m aegir.lineup sync {{args}}
 
+# Disjoint NHSVM-train reference sample for Atelier's holdout target
+# (docs/current/src/operations/atelier_holdout_reference.md). SchemaPile +
+# FinePDFs collections; accept gate is Atelier assert_pair, not a second checker.
+#   just emit-holdout-reference
+#   just emit-holdout-reference --install-corpora
+emit-holdout-reference *ARGS:
+    uv run --no-sync python scripts/emit_holdout_reference.py {{ARGS}}
+
 # TAG: the sdg-corpora release tag the CERTIFICATE earns (RH 2026-07-26). Not a judgement
 # call — the certification tier decides: level=certified → vX.Y, level=rc → vX.Y-rcNN
 # (zero-padded, monotonic), refused/uncertified → no tag at all. A HermiT budget backstop

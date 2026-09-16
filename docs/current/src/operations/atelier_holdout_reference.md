@@ -145,3 +145,24 @@ or emit in sdg-corpora on this pin and let
 Sources: **finepdfs** (`scripts/emit_finepdfs_postings.py`) and
 **SchemaPile** (`scripts/emit_schemapile_postings.py` /
 `build_collections.py`). Do not use GitTables fixture lanes.
+
+## Status (2026-09-16)
+
+Reference sample is on disk. Accept gate:
+
+```
+perfect_possible True
+skos_missing ()
+```
+
+| | |
+|--|--|
+| Sample dir | Atelier `build/sdg_sample/b24ef9f60660_reference` |
+| Slugs (disjoint) | `staff-assignment-590faea4`, `crystal-assay-4fec7485` |
+| SchemaPile | `sp:450157` (HR), `sp:033482` (recruiting), `sp:555914` (mzTab chemistry) |
+| FinePDFs lineage | `fp:104813:51b4c0cd`, `fp:107423:8d197e5c`, `fp:81923:c7603e10` |
+| Regenerate | `just emit-holdout-reference` (`scripts/emit_holdout_reference.py`) |
+
+Live `PairReport.skos_missing` is empty. The emit list above is the
+vocabulary that was driven (entity + column gaps authored as `SDG.DOM.*`
+and realized on the two collections). Do not train on the target.
