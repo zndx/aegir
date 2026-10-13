@@ -1,11 +1,29 @@
 #!/usr/bin/env python
 """Emit the relational CTA/SKOS answer key for the published sdg-corpora collections.
 
-One row per column of every collection table. ``reference_code`` is a recorded
-link into ``vocabulary/annotations.csv`` — the construct's column concept, or
-the entity's genus when the column identifies that entity — and is empty when
-no such link exists. Codes are never invented and never taken from a fuzzy
-name match against the vocabulary.
+One row per column of every collection table. The tables were realized from a
+per-construct OWL document, so each column's association is that record:
+
+* ``class_iri`` — the OWL class the column is grounded in (the table's realized
+  class, or the referenced class for a foreign key)
+* ``property_iri`` — the OWL property the generator assigned (empty for a
+  surrogate identifier, and for an audit timestamp, which asserts no property)
+* ``range_iri`` — the Manchester restriction filler (``xsd:*`` or a class); for
+  a foreign key or a surrogate identifier, the class the values denote
+* ``reference_code`` — the SKOS concept that grounding entails, and only a code
+  already in ``vocabulary/annotations.csv``
+
+A foreign key or surrogate identifier denotes its class, so the code is that
+class's vocabulary concept, else the SKOS anchor entailed by its recorded
+BFO/CCO genus. An attribute denotes a property of the domain class: a
+vocabulary concept named by the property wins; a restriction whose filler is
+another entity in the same construct is coded from that entity (``range-class``
+/ ``range-genus`` / ``range-name``); otherwise the code is the domain class's
+entailed anchor (``domain-genus`` / ``domain-name``). That anchor types the
+class the property restricts, and ``property_iri`` stays the column's own
+identity. Audit timestamps stay uncoded. A coined ``sdg:`` genus that is not
+itself a vocabulary concept stays uncoded (``genus-unmapped``); the genus IRI
+is the recorded parent, and no ``SDG.GENERIC`` stand-in is written.
 
     uv run python scripts/emit_column_answer_key.py
     uv run python scripts/emit_column_answer_key.py --check
@@ -60,12 +78,35 @@ GENUS_TO_ANCHOR = {
 
 COLUMNS = [
     "collection", "construct_id", "table", "column", "ordinal",
-    "role", "concept", "xsd", "references_table", "references_column",
+    "role", "concept", "xsd",
+    "class_iri", "property_iri", "range_iri",
+    "references_table", "references_column",
     "entity", "genus", "reference_code", "reference_label", "ref_basis",
 ]
 # Generator lifecycle plumbing. Domain attributes such as creation_date stay
 # attribute columns; only these recorded names are audit timestamps.
 AUDIT_NAMES = {"created", "updated", "created_at", "updated_at", "createdAt", "updatedAt"}
+# Bases that carry no SKOS code. The OWL fields are still filled.
+NO_CODE_BASES = {"unresolved", "genus-unmapped", "audit-unclaimed"}
+_RESTRICTION = re.compile(
+    r"(sdg:\w+)\s+(?:some|only|exactly\s+\d+|min\s+\d+|max\s+\d+)\s+(\S+)"
+)
+
+
+def camel(name: str) -> str:
+    """Match ``aegir.ontology.entities.camel`` so class IRIs agree with the omn."""
+    parts = re.split(r"[^A-Za-z0-9]+", (name or "").strip())
+    return "".join(p[:1].upper() + p[1:] for p in parts if p)
+
+
+def prop_name(name: str) -> str:
+    """Match ``aegir.ontology.entities.prop_name`` so property IRIs agree with the omn."""
+    parts = [p for p in re.split(r"[^A-Za-z0-9]+", (name or "").strip()) if p]
+    if not parts:
+        return ""
+    head = parts[0][:1].lower() + parts[0][1:]
+    rest = "".join(p[:1].upper() + p[1:] for p in parts[1:])
+    return head + rest
 
 
 def snake(name: str) -> str:
@@ -80,7 +121,7 @@ def scream(name: str) -> str:
 
 def table_aliases(entity_name: str) -> set[str]:
     s = snake(entity_name)
-    aliases = {s, s + "s", s + "es"}
+    aliases = {s, s + "s", s + "es", entity_name, camel(entity_name)}
     if len(s) > 1 and s.endswith("y") and s[-2] not in "aeiou":
         aliases.add(s[:-1] + "ies")
     return {a for a in aliases if a}
@@ -139,11 +180,42 @@ def _pk_names(table: dict) -> list[str]:
     return []
 
 
+def _entity_named(local: str, entities: dict[str, dict]) -> str:
+    if local in entities:
+        return local
+    for name in entities:
+        if camel(name) == local:
+            return name
+    return ""
+
+
+def _plan_entities(construct: dict, entities: dict[str, dict]) -> dict[str, tuple[str, str]]:
+    """Table name → (entity name, class IRI) from the construct key plan.
+
+    The plan is the generator's table←class record, including prefixed names
+    (``clie_client_engagements`` → ``sdg:ClientEngagement``) that a snake-plural
+    alias of the entity does not reach. Junction tables are not in the plan.
+    """
+    out: dict[str, tuple[str, str]] = {}
+    plans = (construct.get("key_plan") or {}).get("plans") or {}
+    for iri, plan in plans.items():
+        table = plan.get("table") or ""
+        local = str(iri).split(":")[-1]
+        name = _entity_named(local, entities)
+        if table and name:
+            out[table] = (name, str(iri))
+    return out
+
+
 def _entity_for_table(table: dict, entities: dict[str, dict]) -> str:
+    """Fallback when a published table is absent from the key plan."""
     cols = {c.get("name"): c for c in table.get("columns") or []}
     pks = _pk_names(table)
     if len(pks) == 1:
         concept = (cols.get(pks[0]) or {}).get("concept") or ""
+        named = _entity_named(camel(concept), entities) if concept else ""
+        if named:
+            return named
         if concept in entities:
             return concept
     hits = [name for name in entities if table.get("name") in table_aliases(name)]
@@ -152,28 +224,111 @@ def _entity_for_table(table: dict, entities: dict[str, dict]) -> str:
     return ""
 
 
-def _resolve_entity(entity_name: str, entity: dict | None, concept: str,
+def _parse_omn(omn: str) -> tuple[dict[str, dict[str, str]], dict[str, str]]:
+    """Class IRI → ({property IRI: filler}, genus) from each SubClassOf frame."""
+    restrictions: dict[str, dict[str, str]] = {}
+    genera: dict[str, str] = {}
+    for part in re.split(r"(?m)^Class:\s+", omn or "")[1:]:
+        lines = part.splitlines()
+        if not lines:
+            continue
+        head = lines[0].strip()
+        restr: dict[str, str] = {}
+        genus = ""
+        for i, line in enumerate(lines[1:], start=1):
+            if "SubClassOf:" not in line:
+                continue
+            text = line.split("SubClassOf:", 1)[1]
+            for nxt in lines[i + 1:]:
+                if not nxt.startswith((" ", "\t")):
+                    break
+                if re.match(r"\s*(Annotations|SubClassOf|EquivalentTo|HasKey|Characteristics):", nxt):
+                    break
+                text += " " + nxt.strip()
+            for bit in text.split(","):
+                bit = bit.strip().rstrip(".")
+                matched = _RESTRICTION.match(bit)
+                if matched:
+                    restr[matched.group(1)] = matched.group(2).rstrip(".")
+                elif bit and " " not in bit and not genus:
+                    genus = bit
+            break
+        restrictions[head] = restr
+        genera[head] = genus
+    return restrictions, genera
+
+
+def _genus_skos(genus: str, vocab: dict, by_abbrev: dict, by_label: dict,
+                *, domain: bool) -> tuple[str, str]:
+    """SKOS concept entailed by a recorded genus. No code is coined."""
+    anchor = GENUS_TO_ANCHOR.get(genus, "")
+    if anchor and anchor in vocab:
+        return anchor, ("domain-genus" if domain else "genus-anchor")
+    local = genus.split(":")[-1] if ":" in (genus or "") else ""
+    if local:
+        code = lookup(local, vocab, by_abbrev, by_label)
+        if code:
+            return code, ("domain-name" if domain else "genus-name")
+    if genus:
+        return "", "genus-unmapped"
+    return "", "unresolved"
+
+
+def _skos_for_class(entity_name: str, entity: dict | None,
                     vocab: dict, by_abbrev: dict, by_label: dict,
                     *, via_fk: bool) -> tuple[str, str]:
-    """(code, basis) for a column that designates an entity."""
+    """(code, basis) for a column that denotes a class."""
     tried: set[str] = set()
-    for candidate in (entity_name, (entity or {}).get("label") or "", concept):
+    for candidate in (entity_name, (entity or {}).get("label") or ""):
         if not candidate or candidate in tried:
             continue
         tried.add(candidate)
         code = lookup(candidate, vocab, by_abbrev, by_label)
         if code:
             return code, ("fk-target" if via_fk else "entity-leaf")
-    genus = (entity or {}).get("genus") or ""
-    anchor = GENUS_TO_ANCHOR.get(genus, "")
-    if anchor and anchor in vocab:
-        return anchor, "genus-anchor"
-    local = genus.split(":")[-1] if ":" in genus else ""
-    if local and local not in tried:
-        code = lookup(local, vocab, by_abbrev, by_label)
-        if code:
-            return code, "genus-name"
-    return "", "unresolved"
+    return _genus_skos((entity or {}).get("genus") or "", vocab, by_abbrev, by_label, domain=False)
+
+
+def _relation_iri(entities: dict[str, dict], owner: str, concept: str,
+                  target_name: str) -> str:
+    """Object-property IRI for a foreign key, when one relation records it.
+
+    The non-property side of a junction stores the referenced table name as its
+    concept and has no property of its own; that returns empty rather than a guess.
+    """
+    def candidates(rels: list) -> list[str]:
+        iris = []
+        for rel in rels:
+            prop = prop_name(str(rel.get("prop") or ""))
+            if concept and prop == concept:
+                target = camel(str(rel.get("target") or ""))
+                if not target_name or not target or target == camel(target_name):
+                    iris.append("sdg:" + prop)
+        return iris
+
+    if owner and owner in entities:
+        iris = candidates(entities[owner].get("relations") or [])
+        if len(set(iris)) == 1:
+            return iris[0]
+        if len(set(iris)) > 1:
+            return ""
+    if not concept:
+        return ""
+    found: list[str] = []
+    for ent in entities.values():
+        found.extend(candidates(ent.get("relations") or []))
+    uniq = set(found)
+    if len(uniq) == 1:
+        return next(iter(uniq))
+    return ""
+
+
+def _attribute(entity: dict | None, concept: str) -> dict | None:
+    for attr in (entity or {}).get("attributes") or []:
+        recorded = str(attr.get("name") or "")
+        if recorded == concept or prop_name(recorded) == concept:
+            return attr
+    return None
 
 
 def build_rows(collections: Path, run: Path, vocab: dict[str, dict]) -> list[dict]:
@@ -195,6 +350,8 @@ def build_rows(collections: Path, run: Path, vocab: dict[str, dict]) -> list[dic
             for ent in json.loads(entity_path.read_text(encoding="utf-8")).get("entities") or []:
                 if ent.get("name"):
                     entities[ent["name"]] = ent
+        restrictions, omn_genus = _parse_omn(construct.get("ontology_omn") or "")
+        planned = _plan_entities(construct, entities)
         published = {t["name"]: t.get("columns") or [] for t in manifest.get("tables") or []}
         constructed = {t.get("name"): t for t in construct.get("tables") or []}
         # The projection may drop construct columns (enum-ish extras, degenerate
@@ -203,67 +360,137 @@ def build_rows(collections: Path, run: Path, vocab: dict[str, dict]) -> list[dic
         missing_tables = set(published) - set(constructed)
         if missing_tables:
             raise SystemExit(f"{cdir.name}: published tables absent from the construct: {sorted(missing_tables)}")
-        table_entity = {name: _entity_for_table(t, entities) for name, t in constructed.items()}
+
+        def resolve_table(tname: str) -> tuple[str, str]:
+            if tname in planned:
+                return planned[tname]
+            table = constructed.get(tname) or {}
+            name = _entity_for_table(table, entities)
+            iri = f"sdg:{camel(name)}" if name else ""
+            return name, iri
+
         for spec in manifest.get("tables") or []:
             tname = spec["name"]
             table = constructed[tname]
             by_name = {c.get("name"): c for c in table.get("columns") or []}
             missing_cols = [c for c in spec.get("columns") or [] if c not in by_name]
             if missing_cols:
-                raise SystemExit(f"{cdir.name}.{tname}: published columns absent from the construct: {missing_cols}")
+                raise SystemExit(
+                    f"{cdir.name}.{tname}: published columns absent from the construct: {missing_cols}")
             fks = {f.get("col"): f for f in table.get("fks") or []}
             pks = set(_pk_names(table))
-            owner_name = table_entity.get(tname) or ""
+            owner_name, owner_iri = resolve_table(tname)
             owner = entities.get(owner_name) or {}
-            attr_xsd = {a.get("name"): a.get("xsd") or "" for a in owner.get("attributes") or []}
+            if owner_name and not owner.get("genus"):
+                owner = {**owner, "genus": omn_genus.get(owner_iri, "")}
             for ordinal, cname in enumerate(spec.get("columns") or []):
                 col = by_name[cname]
                 concept = col.get("concept") or ""
                 fk = fks.get(cname)
                 if fk:
                     role = "sdg:ForeignKeyColumn"
-                    target = fk.get("ref_table") or ""
-                    ent_name = table_entity.get(target) or ""
-                    ent = entities.get(ent_name) or {}
-                    code, basis = _resolve_entity(
-                        ent_name, ent, "", vocab, by_abbrev, by_label, via_fk=True)
-                    genus = ent.get("genus") or ""
-                    xsd = ""
-                    ref_table, ref_col = target, fk.get("ref_col") or ""
+                    target_table = fk.get("ref_table") or ""
+                    target_name, target_iri = resolve_table(target_table)
+                    target = entities.get(target_name) or {}
+                    if target_name and not target.get("genus"):
+                        target = {**target, "genus": omn_genus.get(target_iri, "")}
+                    code, basis = _skos_for_class(
+                        target_name, target, vocab, by_abbrev, by_label, via_fk=True)
+                    prop = _relation_iri(entities, owner_name, concept, target_name)
+                    # A stored property_iri (normalized constructs) wins over the
+                    # reconstructed relation when the concept no longer matches.
+                    stored = col.get("property_iri") or ""
+                    if stored:
+                        prop = stored
+                    class_iri = col.get("references_class") or target_iri
+                    row = {
+                        "role": role, "concept": concept, "xsd": "",
+                        "class_iri": class_iri, "property_iri": prop, "range_iri": class_iri,
+                        "references_table": target_table,
+                        "references_column": fk.get("ref_col") or "",
+                        "entity": target_name, "genus": target.get("genus") or "",
+                        "reference_code": code, "ref_basis": basis,
+                    }
+                elif cname in AUDIT_NAMES or concept in AUDIT_NAMES:
+                    row = {
+                        "role": "sdg:AuditTimestampColumn", "concept": concept, "xsd": "",
+                        "class_iri": owner_iri, "property_iri": "", "range_iri": "",
+                        "references_table": "", "references_column": "",
+                        "entity": owner_name, "genus": owner.get("genus") or "",
+                        "reference_code": "", "ref_basis": "audit-unclaimed",
+                    }
+                elif (len(pks) == 1 and cname in pks and owner_name
+                      and (concept in entities or camel(concept) == camel(owner_name))):
+                    class_iri = col.get("of_class") or owner_iri
+                    denoted = owner_name if camel(concept) == camel(owner_name) else (
+                        concept if concept in entities else owner_name)
+                    denoted_ent = entities.get(denoted) or owner
+                    code, basis = _skos_for_class(
+                        denoted, denoted_ent, vocab, by_abbrev, by_label, via_fk=False)
+                    row = {
+                        "role": "sdg:SurrogateIdentifierColumn", "concept": concept, "xsd": "",
+                        "class_iri": class_iri, "property_iri": "", "range_iri": class_iri,
+                        "references_table": "", "references_column": "",
+                        "entity": denoted, "genus": denoted_ent.get("genus") or "",
+                        "reference_code": code, "ref_basis": basis,
+                    }
                 else:
-                    ent_name, ent, genus = owner_name, owner, owner.get("genus") or ""
-                    ref_table = ref_col = ""
-                    if cname in AUDIT_NAMES or concept in AUDIT_NAMES:
-                        role = "sdg:AuditTimestampColumn"
-                    elif cname in pks:
-                        role = "sdg:SurrogateIdentifierColumn"
+                    attr = _attribute(owner, concept)
+                    prop = ""
+                    xsd = ""
+                    if attr:
+                        prop = "sdg:" + prop_name(str(attr.get("name") or ""))
+                        xsd = str(attr.get("xsd") or "")
+                    stored = col.get("property_iri") or ""
+                    if stored:
+                        prop = stored
+                    restr = restrictions.get(owner_iri) or {}
+                    if prop and prop not in restr and (prop + "Detail") in restr:
+                        prop = prop + "Detail"
+                    range_iri = restr.get(prop, "")
+                    if not range_iri and xsd:
+                        range_iri = f"xsd:{xsd}"
+                    leaf = lookup(concept, vocab, by_abbrev, by_label) or lookup(
+                        cname, vocab, by_abbrev, by_label)
+                    if leaf:
+                        code, basis = leaf, "leaf"
                     else:
-                        role = "sdg:AttributeColumn"
-                    if role == "sdg:SurrogateIdentifierColumn":
-                        code, basis = _resolve_entity(
-                            ent_name, ent, concept, vocab, by_abbrev, by_label, via_fk=False)
-                        xsd = ""
-                    else:
-                        code = lookup(concept, vocab, by_abbrev, by_label) or lookup(
-                            cname, vocab, by_abbrev, by_label)
-                        basis = "leaf" if code else "unresolved"
-                        xsd = attr_xsd.get(concept) or ""
+                        code, basis = _genus_skos(
+                            owner.get("genus") or "", vocab, by_abbrev, by_label, domain=True)
+                        # An object restriction onto another entity denotes that
+                        # entity (the way a foreign key does). Enumeration Kind
+                        # classes are not entities and keep the domain anchor.
+                        filler = ""
+                        if range_iri.startswith("sdg:"):
+                            filler = _entity_named(range_iri.split(":", 1)[-1], entities)
+                        if filler:
+                            fcode, fbasis = _skos_for_class(
+                                filler, entities.get(filler), vocab, by_abbrev, by_label,
+                                via_fk=True)
+                            remap = {
+                                "fk-target": "range-class",
+                                "entity-leaf": "range-class",
+                                "genus-anchor": "range-genus",
+                                "genus-name": "range-name",
+                            }
+                            if fcode and fbasis in remap:
+                                code, basis = fcode, remap[fbasis]
+                    row = {
+                        "role": "sdg:AttributeColumn", "concept": concept, "xsd": xsd,
+                        "class_iri": owner_iri, "property_iri": prop, "range_iri": range_iri,
+                        "references_table": "", "references_column": "",
+                        "entity": owner_name, "genus": owner.get("genus") or "",
+                        "reference_code": code, "ref_basis": basis,
+                    }
+                code = row["reference_code"]
                 rows.append({
                     "collection": cdir.name,
                     "construct_id": cid,
                     "table": tname,
                     "column": cname,
                     "ordinal": ordinal,
-                    "role": role,
-                    "concept": concept,
-                    "xsd": xsd,
-                    "references_table": ref_table,
-                    "references_column": ref_col,
-                    "entity": ent_name,
-                    "genus": genus,
-                    "reference_code": code,
+                    **row,
                     "reference_label": (vocab.get(code) or {}).get("label") or "",
-                    "ref_basis": basis,
                 })
     if not rows:
         raise SystemExit(f"no columns under {collections}")
@@ -278,14 +505,22 @@ def validate(rows: list[dict], collections: Path, vocab: dict[str, dict]) -> Non
         if key in seen:
             raise SystemExit(f"duplicate answer-key row {key}")
         code = row.get("reference_code") or ""
+        basis = row.get("ref_basis") or ""
         if code and code not in vocab:
             raise SystemExit(f"{key}: reference_code {code} is not in the vocabulary")
         if code and row.get("reference_label") != (vocab[code].get("label") or ""):
             raise SystemExit(f"{key}: reference_label does not match {code}")
-        if not code and row.get("ref_basis") != "unresolved":
-            raise SystemExit(f"{key}: empty code with basis {row.get('ref_basis')}")
-        if code and row.get("ref_basis") == "unresolved":
-            raise SystemExit(f"{key}: code set with basis unresolved")
+        if (not code) != (basis in NO_CODE_BASES):
+            raise SystemExit(f"{key}: basis {basis} disagrees with code {code!r}")
+        if not row.get("class_iri"):
+            raise SystemExit(f"{key}: no class_iri — the construct records no OWL class")
+        role = row.get("role") or ""
+        if role == "sdg:AttributeColumn" and not row.get("property_iri"):
+            raise SystemExit(f"{key}: attribute without a recorded property")
+        if role == "sdg:SurrogateIdentifierColumn" and row.get("property_iri"):
+            raise SystemExit(f"{key}: surrogate identifier carries a property")
+        if role == "sdg:AuditTimestampColumn" and row.get("property_iri"):
+            raise SystemExit(f"{key}: audit timestamp carries a property")
         seen[key] = row
     n_manifest = 0
     for cdir in sorted(p for p in collections.iterdir() if p.is_dir()):
@@ -310,12 +545,17 @@ def validate(rows: list[dict], collections: Path, vocab: dict[str, dict]) -> Non
 def summarize(rows: list[dict], vocab: dict[str, dict], run_label: str) -> dict:
     by_role = Counter(r["role"] for r in rows)
     by_basis = Counter(r["ref_basis"] for r in rows)
-    gaps = Counter(r["concept"] or r["column"] for r in rows if r["ref_basis"] == "unresolved")
+    gaps = Counter(
+        (r["genus"] or r["concept"] or r["column"])
+        for r in rows if r["ref_basis"] in NO_CODE_BASES and r["ref_basis"] != "audit-unclaimed"
+    )
     return {
         "n_collections": len({r["collection"] for r in rows}),
         "n_columns": len(rows),
         "n_with_code": sum(1 for r in rows if r["reference_code"]),
         "n_unresolved": sum(1 for r in rows if not r["reference_code"]),
+        "n_with_class_iri": sum(1 for r in rows if r["class_iri"]),
+        "n_with_property_iri": sum(1 for r in rows if r["property_iri"]),
         "by_role": dict(sorted(by_role.items())),
         "by_basis": dict(sorted(by_basis.items())),
         "n_unresolved_concepts": len(gaps),
@@ -417,7 +657,8 @@ def main() -> int:
     summary = summarize(fresh, vocab, args.run.name)
     write_outputs(fresh, summary, args.out)
     print(json.dumps({k: summary[k] for k in
-                      ("n_collections", "n_columns", "n_with_code", "n_unresolved", "by_basis")},
+                      ("n_collections", "n_columns", "n_with_code", "n_unresolved",
+                       "n_with_class_iri", "n_with_property_iri", "by_basis")},
                      indent=2))
     print(f"wrote {args.out / 'answer_key.csv'}")
     return 0
