@@ -20,11 +20,20 @@ the code follows that class's recorded ``SubClassOf`` parent until a BFO/CCO
 anchor (``genus-walk`` / ``domain-walk``). An attribute uses the same chain
 for its domain class when the property is not itself a vocabulary concept.
 An audit timestamp asserts no property, and it carries the domain class's
-code when that class has an anchor. A genus the ontology does not place under
-a specific anchor stays uncoded (``genus-unmapped``). ``SDG.GENERIC`` is the
-vocabulary's anchorless bucket — its children are not one structural kind —
-so it is never written as a stand-in. A column receives a ``SDG.GENERIC.*``
-code only when its recorded name is that concept.
+code when that class has an anchor. ``SDG.GENERIC`` is the vocabulary's
+anchorless bucket — its children are not one structural kind — so it is
+never written as a stand-in. A column receives a ``SDG.GENERIC.*`` code only
+when its recorded name is that concept and the genus already entails nothing
+richer.
+
+A genus the published ontology does not place under a specific anchor is
+tagged with an authored column kind (``kind-authored``) when
+``column_kinds.omn`` covers that class. The kind is an OWL subclass of a
+BFO or CCO class, and the code is the kind, so an unseen entity of the same
+kind aligns to it. The tag is applied only when the recorded genus itself
+has no anchor. A leaf concept such as jurisdiction stays. A class whose
+genus already entails an anchor is left on that anchor. A published class
+with no anchor and no authored kind is an error.
 
     uv run python scripts/emit_column_answer_key.py
     uv run python scripts/emit_column_answer_key.py --check
@@ -52,6 +61,8 @@ from collections import Counter
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO / "src"))
+from aegir.ontology.column_kinds import unanchored_kind  # noqa: E402
 CORPORA = REPO / "corpora"
 COLLECTIONS = CORPORA / "corpus" / "collections"
 VOCAB_CSV = CORPORA / "vocabulary" / "annotations.csv"
@@ -144,6 +155,11 @@ def vocab_indexes(vocab: dict[str, dict]) -> tuple[dict[str, str], dict[str, str
     by_abbrev: dict[str, str] = {}
     by_label: dict[str, str] = {}
     for code, row in vocab.items():
+        # Authored kinds are assigned by class IRI once the genus walk has
+        # no anchor. Indexing their abbrevs would retag a column that shares
+        # a name, such as Facility, and whose genus already entails an anchor.
+        if (row.get("family") or "") == "column-kinds":
+            continue
         abbrev = (row.get("abbrev") or "").strip().upper()
         if abbrev:
             by_abbrev.setdefault(abbrev, code)
@@ -350,6 +366,28 @@ def _genus_skos(genus: str, vocab: dict, by_abbrev: dict, by_label: dict,
     if genus:
         return "", "genus-unmapped"
     return "", "unresolved"
+
+
+def _apply_authored_kind(row: dict, vocab: dict, by_abbrev: dict, by_label: dict) -> None:
+    """Tag an unanchored class with its authored kind.
+
+    The recorded genus is what decides. A genus that already entails an
+    anchor stays on that anchor, including when the class name matches an
+    example. A leaf concept stays. The kind code is the structural genus.
+    """
+    _code, genus_basis = _genus_skos(
+        row.get("genus") or "", vocab, by_abbrev, by_label, domain=False)
+    if genus_basis != "genus-unmapped":
+        return
+    if row.get("ref_basis") == "leaf":
+        return
+    kind = unanchored_kind(row.get("class_iri") or "")
+    if not kind:
+        return
+    code = row.get("reference_code") or ""
+    if row.get("ref_basis") in {"genus-unmapped", "entity-leaf", "fk-target"} or code.startswith("SDG.GENERIC"):
+        row["reference_code"] = kind
+        row["ref_basis"] = "kind-authored"
 
 
 def _skos_for_class(entity_name: str, entity: dict | None,
@@ -562,6 +600,7 @@ def build_rows(collections: Path, run: Path, vocab: dict[str, dict]) -> list[dic
                         "entity": owner_name, "genus": owner.get("genus") or "",
                         "reference_code": code, "ref_basis": basis,
                     }
+                _apply_authored_kind(row, vocab, by_abbrev, by_label)
                 code = row["reference_code"]
                 rows.append({
                     "collection": cdir.name,
@@ -574,6 +613,13 @@ def build_rows(collections: Path, run: Path, vocab: dict[str, dict]) -> list[dic
                 })
     if not rows:
         raise SystemExit(f"no columns under {collections}")
+    open_genus = [r for r in rows if r["ref_basis"] == "genus-unmapped"]
+    if open_genus:
+        sample = open_genus[0]
+        raise SystemExit(
+            f"{len(open_genus)} columns have a genus with no anchor and no authored kind, "
+            f"e.g. {sample['collection']}.{sample['table']}.{sample['column']} "
+            f"class {sample['class_iri']} genus {sample['genus']}")
     return rows
 
 

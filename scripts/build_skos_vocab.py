@@ -199,6 +199,20 @@ def build_records() -> list[dict]:
                                 "notation": f"{a_notation}.D{hi}.{mi}", "parent_code": hyp_code,
                                 "taxonomy": "sdg", "description": f"Domain concept under {t['hypernym']}.",
                                 "common_names": "domain_member", "example_values": ""})
+    # Column kinds are authored OWL (column_kinds.omn), projected here so a
+    # regeneration keeps them. They are appended: an earlier abbrev keeps the
+    # name lookup, and the emitter assigns a kind by class IRI.
+    from aegir.ontology.column_kinds import vocab_records
+    taken_codes = {r["code"] for r in records}
+    taken_notations = {r.get("notation") or "" for r in records}
+    for rec in vocab_records():
+        if rec["code"] in taken_codes:
+            raise SystemExit(f"column-kind code collides with the vocabulary: {rec['code']}")
+        if rec["notation"] in taken_notations:
+            raise SystemExit(f"column-kind notation collides with the vocabulary: {rec['notation']}")
+        taken_codes.add(rec["code"])
+        taken_notations.add(rec["notation"])
+        records.append(rec)
     build_records.bridges = bridges
     return records
 
