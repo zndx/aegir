@@ -15,15 +15,14 @@ per-construct OWL document, so each column's association is that record:
 
 A foreign key or surrogate identifier denotes its class, so the code is that
 class's vocabulary concept, else the SKOS anchor entailed by its recorded
-BFO/CCO genus. An attribute denotes a property of the domain class: a
-vocabulary concept named by the property wins; a restriction whose filler is
-another entity in the same construct is coded from that entity (``range-class``
-/ ``range-genus`` / ``range-name``); otherwise the code is the domain class's
-entailed anchor (``domain-genus`` / ``domain-name``). That anchor types the
-class the property restricts, and ``property_iri`` stays the column's own
-identity. Audit timestamps stay uncoded. A coined ``sdg:`` genus that is not
-itself a vocabulary concept stays uncoded (``genus-unmapped``); the genus IRI
-is the recorded parent, and no ``SDG.GENERIC`` stand-in is written.
+genus. A coined ``sdg:`` genus is itself a class in the published ontology;
+the code follows that class's recorded ``SubClassOf`` parent until a BFO/CCO
+anchor (``genus-walk`` / ``domain-walk``). An attribute uses the same chain
+for its domain class when the property is not itself a vocabulary concept.
+An audit timestamp asserts no property, and it carries the domain class's
+code. A genus the ontology does not place under a specific anchor — ``bfo:0000001``,
+``bfo:0000003``, a bare declaration — is ``SDG.GENERIC`` (``genus-generic`` /
+``domain-generic``), the vocabulary's residual concept.
 
     uv run python scripts/emit_column_answer_key.py
     uv run python scripts/emit_column_answer_key.py --check
@@ -258,6 +257,66 @@ def _parse_omn(omn: str) -> tuple[dict[str, dict[str, str]], dict[str, str]]:
     return restrictions, genera
 
 
+_GENUS_PARENTS: dict[str, str] | None = None
+
+
+def _first_bare_parent(header: str, body: list[str]) -> str:
+    """The first class conjunct of a SubClassOf frame, including a same-line header."""
+    chunks: list[str] = []
+    if "SubClassOf:" in header:
+        chunks.append(header.split("SubClassOf:", 1)[1])
+    for i, line in enumerate(body):
+        if "SubClassOf:" not in line:
+            continue
+        text = line.split("SubClassOf:", 1)[1]
+        for nxt in body[i + 1:]:
+            if not nxt.startswith((" ", "\t")):
+                break
+            if re.match(r"\s*(Annotations|EquivalentTo|HasKey|Characteristics):", nxt):
+                break
+            text += " " + nxt.strip()
+        chunks.append(text)
+        break
+    for chunk in chunks:
+        for bit in chunk.split(","):
+            bit = bit.strip().rstrip(".")
+            if bit and " " not in bit and not _RESTRICTION.match(bit):
+                return bit
+    return ""
+
+
+def genus_parents() -> dict[str, str]:
+    """Class IRI → recorded parent class in the published ontology.
+
+    Coined genera such as ``sdg:EducationalEntity`` are classes there, with a
+    ``SubClassOf`` BFO/CCO anchor. A later frame that restates the class without
+    a parent does not erase one already read.
+    """
+    global _GENUS_PARENTS
+    if _GENUS_PARENTS is not None:
+        return _GENUS_PARENTS
+    found: dict[str, str] = {}
+    ont = CORPORA / "ontology"
+    for name in ("sdg-ontology.omn", "sdg-ontology-comprehensive.omn"):
+        path = ont / name
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for part in re.split(r"(?m)^Class:\s+", text)[1:]:
+            lines = part.splitlines()
+            if not lines:
+                continue
+            header = lines[0].strip()
+            head = header.split()[0]
+            if not head or head.startswith("<"):
+                continue
+            parent = _first_bare_parent(header, lines[1:])
+            if parent and not found.get(head):
+                found[head] = parent
+    _GENUS_PARENTS = found
+    return found
+
+
 def _genus_skos(genus: str, vocab: dict, by_abbrev: dict, by_label: dict,
                 *, domain: bool) -> tuple[str, str]:
     """SKOS concept entailed by a recorded genus. No code is coined."""
@@ -265,10 +324,29 @@ def _genus_skos(genus: str, vocab: dict, by_abbrev: dict, by_label: dict,
     if anchor and anchor in vocab:
         return anchor, ("domain-genus" if domain else "genus-anchor")
     local = genus.split(":")[-1] if ":" in (genus or "") else ""
-    if local:
+    if local and genus.startswith("sdg:"):
         code = lookup(local, vocab, by_abbrev, by_label)
         if code:
             return code, ("domain-name" if domain else "genus-name")
+    seen = {genus} if genus else set()
+    current = genus
+    parents = genus_parents()
+    for _ in range(8):
+        nxt = parents.get(current, "")
+        if not nxt or nxt in seen:
+            break
+        seen.add(nxt)
+        anchor = GENUS_TO_ANCHOR.get(nxt, "")
+        if anchor and anchor in vocab:
+            return anchor, ("domain-walk" if domain else "genus-walk")
+        if nxt.startswith("sdg:"):
+            hopped = nxt.split(":")[-1]
+            code = lookup(hopped, vocab, by_abbrev, by_label)
+            if code:
+                return code, ("domain-name" if domain else "genus-name")
+        current = nxt
+    if genus and "SDG.GENERIC" in vocab:
+        return "SDG.GENERIC", ("domain-generic" if domain else "genus-generic")
     if genus:
         return "", "genus-unmapped"
     return "", "unresolved"
@@ -412,12 +490,14 @@ def build_rows(collections: Path, run: Path, vocab: dict[str, dict]) -> list[dic
                         "reference_code": code, "ref_basis": basis,
                     }
                 elif cname in AUDIT_NAMES or concept in AUDIT_NAMES:
+                    code, basis = _genus_skos(
+                        owner.get("genus") or "", vocab, by_abbrev, by_label, domain=True)
                     row = {
                         "role": "sdg:AuditTimestampColumn", "concept": concept, "xsd": "",
                         "class_iri": owner_iri, "property_iri": "", "range_iri": "",
                         "references_table": "", "references_column": "",
                         "entity": owner_name, "genus": owner.get("genus") or "",
-                        "reference_code": "", "ref_basis": "audit-unclaimed",
+                        "reference_code": code, "ref_basis": basis,
                     }
                 elif (len(pks) == 1 and cname in pks and owner_name
                       and (concept in entities or camel(concept) == camel(owner_name))):
