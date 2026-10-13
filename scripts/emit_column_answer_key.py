@@ -20,9 +20,11 @@ the code follows that class's recorded ``SubClassOf`` parent until a BFO/CCO
 anchor (``genus-walk`` / ``domain-walk``). An attribute uses the same chain
 for its domain class when the property is not itself a vocabulary concept.
 An audit timestamp asserts no property, and it carries the domain class's
-code. A genus the ontology does not place under a specific anchor — ``bfo:0000001``,
-``bfo:0000003``, a bare declaration — is ``SDG.GENERIC`` (``genus-generic`` /
-``domain-generic``), the vocabulary's residual concept.
+code when that class has an anchor. A genus the ontology does not place under
+a specific anchor stays uncoded (``genus-unmapped``). ``SDG.GENERIC`` is the
+vocabulary's anchorless bucket — its children are not one structural kind —
+so it is never written as a stand-in. A column receives a ``SDG.GENERIC.*``
+code only when its recorded name is that concept.
 
     uv run python scripts/emit_column_answer_key.py
     uv run python scripts/emit_column_answer_key.py --check
@@ -345,8 +347,6 @@ def _genus_skos(genus: str, vocab: dict, by_abbrev: dict, by_label: dict,
             if code:
                 return code, ("domain-name" if domain else "genus-name")
         current = nxt
-    if genus and "SDG.GENERIC" in vocab:
-        return "SDG.GENERIC", ("domain-generic" if domain else "genus-generic")
     if genus:
         return "", "genus-unmapped"
     return "", "unresolved"
