@@ -6,8 +6,9 @@ generated around) + its **chapters** (the prose + embedded views, as TEXT in the
 **relational tables underlying the views** those chapters embed (the polyglot DDL spine, with this
 release's *semantic* columns) + the **ontology terms** grounding them + a **manifest** of the
 cross-links. This is the collection-structured, chapters-in-tree release form of sdg-corpora —
-the corpus content lives in the distribution; only the Atelier answer-key stays withheld
-(a separate release artifact). Deterministic; no LLM / GPU / network.
+the corpus content lives in the distribution. The CTA/SKOS answer key is
+``corpus/tagging/`` (``scripts/emit_column_answer_key.py``), not a column of these
+tables. Deterministic; no LLM / GPU / network.
 
     corpus/collections/topic-NNN-<family>/
       README.md          collection card (topic gist · chapters · terms · tables)

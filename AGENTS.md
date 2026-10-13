@@ -30,6 +30,7 @@ on the target.
 | Area | Paths |
 |------|--------|
 | Collection emission | `scripts/build_collections.py`, `scripts/relational_collections.py` |
+| CTA/SKOS answer key | `scripts/emit_column_answer_key.py` → `corpora/corpus/tagging/` |
 | Holdout reference sample | `scripts/emit_holdout_reference.py` (`just emit-holdout-reference`) |
 | FinePDFs / SchemaPile | `scripts/emit_finepdfs_postings.py`, `scripts/emit_schemapile_postings.py` |
 | SKOS | `scripts/build_skos_vocab.py`, `scripts/author_skos_surfaces.py` |

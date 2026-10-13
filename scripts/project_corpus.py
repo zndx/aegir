@@ -19,6 +19,8 @@ a natural + a semantic chapter. So a COLLECTION here = one construct:
 Values are real GitTables particulars with retained lineage (provenance ≻ exclusion; see the
 ``provenance/gittables_value_sampling`` strategy component). The source passage is referenced by content-hash
 basename only — never its text (that is licensed FinePDFs material, not ours to redistribute).
+The CTA/SKOS answer key for these tables is ``corpus/tagging/``
+(``scripts/emit_column_answer_key.py``), derived from the same construct run.
 
 Deterministic; no LLM / GPU / network.
 

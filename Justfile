@@ -269,6 +269,14 @@ kb-sync *args:
 emit-holdout-reference *ARGS:
     uv run --no-sync python scripts/emit_holdout_reference.py {{ARGS}}
 
+# Relational CTA/SKOS answer key for the published collections.
+# Writes corpora/corpus/tagging/answer_key.{csv,parquet} + summary.json.
+#   just emit-column-answer-key                 # derive from corpus-v06
+#   just emit-column-answer-key --check         # committed key vs manifests + vocabulary
+#   just emit-column-answer-key --check --run <run>
+emit-column-answer-key *ARGS:
+    uv run --no-sync python scripts/emit_column_answer_key.py {{ARGS}}
+
 # TAG: the sdg-corpora release tag the CERTIFICATE earns (RH 2026-07-26). Not a judgement
 # call — the certification tier decides: level=certified → vX.Y, level=rc → vX.Y-rcNN
 # (zero-padded, monotonic), refused/uncertified → no tag at all. A HermiT budget backstop
