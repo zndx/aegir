@@ -39,5 +39,6 @@
 - [Development Guide](./development.md)
 - [Signals Peer Unit](./operations/peer-unit.md)
 - [Atelier holdout / reference sample](./operations/atelier_holdout_reference.md)
+- [Augmented sdg-corpora for thin SKOS terms](./operations/augmented-sdg-corpora.md)
 - [Worktree Aware Development](./worktree_aware.md)
   - [Cross-worktree SAE streaming](./worktree_aware/sae_streaming.md)

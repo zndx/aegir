@@ -29,7 +29,8 @@ on the target.
 
 | Area | Paths |
 |------|--------|
-| Collection emission | `scripts/build_collections.py`, `scripts/relational_collections.py` |
+| Collection emission | `scripts/project_corpus.py` (live). `scripts/build_collections.py` and `scripts/relational_collections.py` are the vestigial topic-era writers |
+| Augmented collections (2026-10-14) | `docs/current/src/operations/augmented-sdg-corpora.md` |
 | CTA/SKOS answer key | `scripts/emit_column_answer_key.py` → `corpora/corpus/tagging/` |
 | Holdout reference sample | `scripts/emit_holdout_reference.py` (`just emit-holdout-reference`) |
 | FinePDFs / SchemaPile | `scripts/emit_finepdfs_postings.py`, `scripts/emit_schemapile_postings.py` |
