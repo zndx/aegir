@@ -13,7 +13,12 @@ GRPC_PORT="${AEGIR_ENGINE_PORT:-50151}"
 
 echo "aegir.service: peer-scoped full-stack stop (devenv down + engine on :${GRPC_PORT})"
 
-/bin/bash -lc "cd \"$ROOT\" && export PATH=\"/usr/local/bin:\$PATH\" && (just down 2>/dev/null || devenv processes down || true)" || true
+# Same boundary as start: a foreign direnv must not make `devenv processes
+# down` target another project's process-compose.
+unset DIRENV_FILE DIRENV_DIR DIRENV_DIFF DIRENV_WATCHES DIRENV_ACTIVE \
+  DEVENV_STATE DEVENV_ROOT DEVENV_DOTFILE DEVENV_PROFILE DEVENV_RUNTIME \
+  DEVENV_CMDLINE DEVENV_TASKS DEVENV_TASK_FILE LD_LIBRARY_PATH LD_PRELOAD
+/bin/bash -lc "cd \"$ROOT\" && (just down 2>/dev/null || devenv processes down || true)" || true
 
 stop_pid() {
   local pid="$1"
