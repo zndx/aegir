@@ -261,6 +261,24 @@ class ZndxEngineServicer:
         )
         return zpb.AnnounceAck(accepted=ok, ttl_seconds=ttl, error=err)
 
+    def Decide(self, request, context):
+        """d3-flash decisions are Gaius. Ægir does not host that replica."""
+        context.abort(
+            grpc.StatusCode.UNIMPLEMENTED,
+            "Decide is served by the engine that hosts d3-flash")
+
+    def PutAgendaItem(self, request, context):
+        """The Agenda is held by Gaius. Other engines answer UNIMPLEMENTED."""
+        context.abort(
+            grpc.StatusCode.UNIMPLEMENTED,
+            "PutAgendaItem is served by the engine that holds the Agenda")
+
+    def AdmitSession(self, request_iterator, context):
+        """Replaced by the aperture servicer in the following commit."""
+        context.abort(
+            grpc.StatusCode.UNIMPLEMENTED,
+            "AdmitSession is not bound yet")
+
 
 class OipInferenceServicer:
     """The STANDARD face — inference.GRPCInferenceService (KServe Open Inference Protocol),

@@ -365,7 +365,9 @@ engine-ready timeout="1200":
 # in-tree), zndx.engine.v1 + zndx.scheduler.v1 + zndx.supervision.v1 + zndx.agent.v1 (from the signals-protocol
 # submodule; supervision is the Nautilus/EngineSupervision grammar Gaius and Hermes already serve), and KServe OIP
 # (open_inference_grpc.proto, vendored from upstream KServe — byte-identical to the Gaius copy;
-# that symmetry is the interop contract). The -I root is each proto's OWN root, NOT src: the
+# that symmetry is the interop contract). zndx.platform.v1 is generated because engine.proto
+# imports it (ServerQuery platforms = 23). Aegir does not register the Platforms service.
+# The -I root is each proto's OWN root, NOT src: the
 # descriptor-pool canonical name must stay the SHARED bare path (`zndx/engine/v1/engine.proto`,
 # `open_inference_grpc.proto`) that every federation peer's stubs also register — a src-rooted
 # name is a different file identity and collides with a peer's copy in shared processes. The sed
@@ -380,7 +382,8 @@ engine-proto-gen:
         components/signals-protocol/proto/zndx/engine/v1/engine.proto \
         components/signals-protocol/proto/zndx/scheduler/v1/scheduler.proto \
         components/signals-protocol/proto/zndx/supervision/v1/supervision.proto \
-        components/signals-protocol/proto/zndx/agent/v1/agent.proto
+        components/signals-protocol/proto/zndx/agent/v1/agent.proto \
+        components/signals-protocol/proto/zndx/platform/v1/platform.proto
     sed -i 's/^import aegir_engine_pb2 as/from aegir.engine.proto import aegir_engine_pb2 as/' src/aegir/engine/proto/aegir_engine_pb2_grpc.py
     sed -i 's/^import open_inference_grpc_pb2 as/from aegir.engine.proto import open_inference_grpc_pb2 as/' src/aegir/engine/proto/open_inference_grpc_pb2_grpc.py
     sed -i 's/^from zndx.engine.v1 import/from aegir.engine.proto.zndx.engine.v1 import/' src/aegir/engine/proto/zndx/engine/v1/engine_pb2_grpc.py
@@ -389,6 +392,8 @@ engine-proto-gen:
     sed -i 's/^from zndx.supervision.v1 import/from aegir.engine.proto.zndx.supervision.v1 import/' src/aegir/engine/proto/zndx/supervision/v1/supervision_pb2_grpc.py
     sed -i 's/^from zndx.engine.v1 import/from aegir.engine.proto.zndx.engine.v1 import/' src/aegir/engine/proto/zndx/agent/v1/agent_pb2.py
     sed -i 's/^from zndx.agent.v1 import/from aegir.engine.proto.zndx.agent.v1 import/' src/aegir/engine/proto/zndx/agent/v1/agent_pb2_grpc.py
+    sed -i 's/^from zndx.platform.v1 import/from aegir.engine.proto.zndx.platform.v1 import/' src/aegir/engine/proto/zndx/platform/v1/platform_pb2_grpc.py
+    sed -i 's/^from zndx.platform.v1 import/from aegir.engine.proto.zndx.platform.v1 import/' src/aegir/engine/proto/zndx/engine/v1/engine_pb2.py
 
 # ── mdbook documentation ──────────────────────────────────────
 #

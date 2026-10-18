@@ -173,6 +173,16 @@ def test_servicer_server_query_and_yield() -> None:
     assert y.process_ended is False
 
 
+def test_server_query_platforms_is_empty() -> None:
+    """Ægir holds no vendor credential. Kind PLATFORMS is an honest empty list."""
+    q = local_response(zpb.SERVER_QUERY_KIND_PLATFORMS)
+    assert q.project == "aegir"
+    assert list(q.platforms) == []
+    via_svc = ZndxEngineServicer(_mgr()).ServerQuery(
+        zpb.ServerQueryRequest(kind=zpb.SERVER_QUERY_KIND_PLATFORMS), None)
+    assert list(via_svc.platforms) == []
+
+
 def test_server_query_workloads_offers_nothing_hosted() -> None:
     """Ægir hosts no model: WORKLOADS is empty and never names instruct/thinking (honest)."""
     from aegir.engine.s2s import declared_workloads
