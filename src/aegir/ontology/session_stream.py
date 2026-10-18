@@ -172,6 +172,39 @@ def fill_aperture_cache(segments: list[str], cache: dict[str, list]) -> None:
         raise AdmitError("aperture query failed") from exc
 
 
+def committed_spans(texts: list[str]) -> list[tuple[int, int]]:
+    """One span per finished frame. The frame text does not grow after it is sent."""
+
+    spans: list[tuple[int, int]] = []
+    cursor = 0
+    for text in texts:
+        start = cursor
+        cursor += len(text or "")
+        if text:
+            spans.append((start, cursor))
+    return spans
+
+
+def admit_committed(text: str, spans: list[tuple[int, int]], *, cache: dict[str, list]) -> list[dict]:
+    """Score each finished frame now.
+
+    A 512-token window stays open until 768 tokens have arrived, which is
+    too late for a live call. A frame is a whole utterance, so its genus
+    can travel back before the next turn.
+    """
+
+    from aegir.ontology.domain_index import armed_admission_filter
+
+    segments = [text[start:end] for start, end in spans if end > start]
+    fill_aperture_cache(segments, cache)
+
+    def query(segment: str) -> list:
+        return cache.get(segment, [])
+
+    exclude = set(armed_admission_filter().get("effective_exclude") or ())
+    return qualify(text, windows=lambda _body: spans, query=query, exclude_codes=exclude, tau=TAU)
+
+
 def default_admit(text: str, *, flush: bool, cache: dict[str, list]) -> list[dict]:
     """Window ``text`` on the aiming aperture and return the stable genus spans."""
 

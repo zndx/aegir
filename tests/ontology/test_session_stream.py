@@ -3,7 +3,13 @@
 
 from types import SimpleNamespace
 
-from aegir.ontology.session_stream import concat, qualify, select_admissions, stable_indexes
+from aegir.ontology.session_stream import (
+    committed_spans,
+    concat,
+    qualify,
+    select_admissions,
+    stable_indexes,
+)
 
 
 def test_one_window_is_offsets_not_a_copy_of_the_text() -> None:
@@ -43,6 +49,11 @@ def test_a_root_hit_is_not_returned() -> None:
         return [{"score": 0.9, "code": "ROOT", "iri": "https://signals.zndx.org/sdg#ROOT", "pref_label": "Root"}]
 
     assert qualify("xxxx", windows=windows, query=query, exclude_codes={"ROOT"}) == []
+
+
+def test_a_finished_frame_is_its_own_span() -> None:
+    assert committed_spans(["hello", "", "world"]) == [(0, 5), (5, 10)]
+    assert committed_spans(["xxxxHELLO"]) == [(0, 9)]
 
 
 def test_a_full_neighbor_makes_the_earlier_window_stable() -> None:

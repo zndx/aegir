@@ -295,7 +295,13 @@ class ZndxEngineServicer:
             frames.append(frame)
             try:
                 body, last = concat(frames)
-                rows = admit(body, flush=bool(getattr(frame, "end", False)), cache=cache)
+                if admit is default_admit:
+                    from aegir.ontology.session_stream import admit_committed, committed_spans
+
+                    texts = [str(getattr(item, "text", "") or "") for item in frames]
+                    rows = admit_committed(body, committed_spans(texts), cache=cache)
+                else:
+                    rows = admit(body, flush=bool(getattr(frame, "end", False)), cache=cache)
             except grpc.RpcError:
                 raise
             except Exception:
