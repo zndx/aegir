@@ -139,6 +139,11 @@ in {
 
   enterShell = ''
     export KUBECONFIG="$HOME/.config/kube/rke2.yaml"   # RKE2 for the Metaflow service plane
+    # nodejs-wheel installs a host ELF named `node` into the venv
+    # (/lib64/ld-linux, glibc 2.35). The venv bin directory is ahead of
+    # the profile, so that binary shadows nodejs_22 and then dies on the
+    # Nix libstdc++ this shell exports. PGlite and Vite use nodejs_22.
+    export PATH="${pkgs.nodejs_22}/bin:$PATH"
     if [ "${worktreeRole}" != "primary" ]; then
       echo "[aegir] devenv: worktree role = ${worktreeRole}; skipping postgres/qdrant/gateway/vite-dev."
       echo "        These services run only in the primary checkout to avoid port collisions."
@@ -493,10 +498,6 @@ in {
     vite-dev = {
       exec = ''
         python3 bin/reclaim-port.py vite-dev 5173
-        # Devenv Node is a Nix ELF on glibc 2.42. The venv nodejs-wheel and
-        # host /usr/lib are the Ubuntu 2.35 libc. Either one in front of
-        # this PATH or LD_LIBRARY_PATH mixes the two and Node will not start.
-        export PATH="${pkgs.nodejs}/bin:$PATH"
         cd ui && pnpm install --silent --prefer-offline && pnpm dev
       '';
       process-compose.depends_on.gateway.condition = "process_healthy";

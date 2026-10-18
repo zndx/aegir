@@ -51,9 +51,15 @@ elif stack_ok; then
 fi
 
 info "starting full product stack (devenv up -d) incl. capability-engine :${GRPC_PORT}"
+# A caller that already has another project's direnv loaded (or a host
+# LD_LIBRARY_PATH) would otherwise be included in this stack. Drop that
+# and let `devenv up` build this tree's shell.
+unset DIRENV_FILE DIRENV_DIR DIRENV_DIFF DIRENV_WATCHES DIRENV_ACTIVE \
+  DEVENV_STATE DEVENV_ROOT DEVENV_DOTFILE DEVENV_PROFILE DEVENV_RUNTIME \
+  DEVENV_CMDLINE DEVENV_TASKS DEVENV_TASK_FILE LD_LIBRARY_PATH LD_PRELOAD
 # Prefer detached process-compose. Do NOT run bare `devenv up` (blocks forever).
 # just up = devenv up -d + stack-health; still fine if it returns.
-if ! /bin/bash -lc "cd \"$ROOT\" && export PATH=\"/usr/local/bin:\$PATH\" && export NIXPKGS_ALLOW_INSECURE=1 && (devenv up -d || just up)"; then
+if ! /bin/bash -lc "cd \"$ROOT\" && devenv up -d || just up"; then
   info "up reported failure — will still poll (stack may already be live)"
 fi
 
