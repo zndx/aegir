@@ -493,10 +493,10 @@ in {
     vite-dev = {
       exec = ''
         python3 bin/reclaim-port.py vite-dev 5173
-        # Nix node and gcc 15 libstdc++ need glibc 2.38. This host's libc is 2.35.
-        # Use the venv's nodejs-wheel (built for this libc) and the host libstdc++.
-        export PATH="${config.devenv.root}/.devenv/state/venv/lib/python3.12/site-packages/nodejs_wheel/bin:$PATH"
-        export LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        # Devenv Node is a Nix ELF on glibc 2.42. The venv nodejs-wheel and
+        # host /usr/lib are the Ubuntu 2.35 libc. Either one in front of
+        # this PATH or LD_LIBRARY_PATH mixes the two and Node will not start.
+        export PATH="${pkgs.nodejs}/bin:$PATH"
         cd ui && pnpm install --silent --prefer-offline && pnpm dev
       '';
       process-compose.depends_on.gateway.condition = "process_healthy";
