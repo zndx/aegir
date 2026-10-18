@@ -99,6 +99,7 @@ def item_scan(text: str, *, url: "str | None" = None, collection: "str | None" =
             "root_strong": is_root_top and base_margin >= tau,
             "code": str(genus_top.get("code", "")),
             "label": str(genus_top.get("pref_label", "")),
+            "iri": str(genus_top.get("iri", "")),
             "genus_margin": round(genus_margin, 4),
             "admitted_raw": bool(genus_top) and genus_margin >= tau,
             "suppressed": False})
@@ -130,7 +131,8 @@ def item_scan(text: str, *, url: "str | None" = None, collection: "str | None" =
                           "code": (best or {}).get("code", ""),
                           "genus_margin": (best or {}).get("genus_margin", 0.0)})
         items.append({"span": [c0, c1], "admitted": True, "code": k["code"],
-                      "label": k["label"], "genus_margin": k["genus_margin"]})
+                      "label": k["label"], "iri": k.get("iri", ""),
+                      "genus_margin": k["genus_margin"]})
         cursor = c1
     if cursor < len(text):
         items.append({"span": [cursor, len(text)], "admitted": False, "code": "",
