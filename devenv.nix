@@ -493,6 +493,9 @@ in {
     vite-dev = {
       exec = ''
         python3 bin/reclaim-port.py vite-dev 5173
+        # Nix gcc 15 libstdc++ needs glibc 2.38. This host's libc is 2.35.
+        # Node must resolve the system libstdc++ before that Nix library.
+        export LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         cd ui && pnpm install --silent --prefer-offline && pnpm dev
       '';
       process-compose.depends_on.gateway.condition = "process_healthy";
