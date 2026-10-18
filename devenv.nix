@@ -58,8 +58,6 @@ in {
     mdbook-katex
     mdbook-mermaid
     ninja
-    nodejs_22      # PGlite + Vite
-    pnpm           # UI package manager
     protobuf
     presenterm
     flatbuffers
@@ -98,6 +96,15 @@ in {
 
   languages.rust = {
     enable = true;
+  };
+
+  # Node 22 owns PGlite and Vite. pkgs.pnpm is built against the nixpkgs
+  # default Node (24) and the venv's nodejs-wheel is a host ELF; either one
+  # in front of this runtime loads the wrong libc.
+  languages.javascript = {
+    enable = true;
+    package = pkgs.nodejs_22;
+    pnpm.enable = true;
   };
   # ── Disk routing for model weights + caches ──────────────────
   #
@@ -498,6 +505,10 @@ in {
     vite-dev = {
       exec = ''
         python3 bin/reclaim-port.py vite-dev 5173
+        # Process PATH prepends the venv after enterShell. The venv `node`
+        # is nodejs-wheel (host libc). This Node is the one languages.javascript
+        # pinned, so it has to be first here.
+        export PATH="${pkgs.nodejs_22}/bin:$PATH"
         cd ui && pnpm install --silent --prefer-offline && pnpm dev
       '';
       process-compose.depends_on.gateway.condition = "process_healthy";
