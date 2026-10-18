@@ -10,6 +10,12 @@ into the result.
 from __future__ import annotations
 
 TAU = 0.10
+WINDOW_SIZE = 512
+WINDOW_STRIDE = 256
+
+
+class AdmitError(RuntimeError):
+    """Aperture scoring failed. The message must not contain the transcript."""
 
 
 def _margin(hits: list[dict]) -> tuple[dict, float]:
@@ -65,6 +71,122 @@ def qualify(
         kept.append(candidate)
     kept.sort(key=lambda item: item["start"])
     return kept
+
+
+def stable_indexes(
+    n_tokens: int,
+    n_windows: int,
+    *,
+    flush: bool,
+    size: int = WINDOW_SIZE,
+    stride: int = WINDOW_STRIDE,
+) -> set[int]:
+    """Windows whose text and overlapping rivals can no longer change.
+
+    Window ``k`` starts at token ``k * stride``. A later append can still
+    lengthen the partial tail and can still outrank a neighbor that overlaps
+    that tail. A window is ready once the next overlapping start is a full
+    window, which is ``size + stride`` tokens after its own start. ``flush``
+    is the caller's last frame: the tail is then final.
+    """
+
+    if flush:
+        return set(range(n_windows))
+    ready: set[int] = set()
+    for k in range(n_windows):
+        if n_tokens >= k * stride + size + stride:
+            ready.add(k)
+    return ready
+
+
+def select_admissions(
+    text: str,
+    spans: list[tuple[int, int]],
+    *,
+    n_tokens: int,
+    flush: bool,
+    query,
+    exclude_codes: set[str] | None = None,
+    tau: float = TAU,
+    size: int = WINDOW_SIZE,
+    stride: int = WINDOW_STRIDE,
+) -> list[dict]:
+    """``qualify`` the spans, then drop any window that a later append could still move."""
+
+    kept = qualify(text, windows=lambda _body: spans, query=query, tau=tau, exclude_codes=exclude_codes)
+    ready = stable_indexes(n_tokens, len(spans), flush=flush, size=size, stride=stride)
+    by_span = {spans[k]: k for k in ready}
+    return [row for row in kept if (row["start"], row["end"]) in by_span]
+
+
+def spans_for_session(
+    text: str,
+    *,
+    size: int = WINDOW_SIZE,
+    stride: int = WINDOW_STRIDE,
+) -> tuple[list[tuple[int, int]], int]:
+    """Every 512/256 window of ``text``. The harvest cap of 16 does not apply."""
+
+    try:
+        from aegir.ontology.admission_items import token_windows
+        from aegir.ontology.colbert_encoder import get_encoder
+
+        tk = get_encoder()._tokenizer(
+            text, truncation=False, return_offsets_mapping=True, add_special_tokens=False)
+        n_tokens = len([pair for pair in tk["offset_mapping"] if pair[1] > pair[0]])
+        cap = max(1, n_tokens)
+        return token_windows(text, size=size, stride=stride, max_windows=cap), n_tokens
+    except Exception as exc:
+        raise AdmitError("aperture query failed") from exc
+
+
+def fill_aperture_cache(segments: list[str], cache: dict[str, list]) -> None:
+    """Encode each new window once and store its MaxSim hits under the segment text."""
+
+    missing: list[str] = []
+    seen: set[str] = set()
+    for segment in segments:
+        if segment in cache or segment in seen:
+            continue
+        seen.add(segment)
+        missing.append(segment)
+    if not missing:
+        return
+    try:
+        from aegir.ontology import domain_index as DI
+        from aegir.ontology.colbert_encoder import get_encoder
+
+        vecs = get_encoder().encode(missing)
+        client = DI._client(DI.DEFAULT_QDRANT_URL)
+        for segment, vec in zip(missing, vecs):
+            points = client.query_points(
+                collection_name=DI.DEFAULT_APERTURE,
+                query=vec.tolist(),
+                limit=10,
+                with_payload=True,
+            ).points
+            cache[segment] = [{"score": float(point.score), **(point.payload or {})} for point in points]
+    except AdmitError:
+        raise
+    except Exception as exc:
+        raise AdmitError("aperture query failed") from exc
+
+
+def default_admit(text: str, *, flush: bool, cache: dict[str, list]) -> list[dict]:
+    """Window ``text`` on the aiming aperture and return the stable genus spans."""
+
+    from aegir.ontology.domain_index import armed_admission_filter
+
+    spans, n_tokens = spans_for_session(text)
+    segments = [text[start:end] for start, end in spans if end > start]
+    fill_aperture_cache(segments, cache)
+
+    def query(segment: str) -> list:
+        return cache.get(segment, [])
+
+    exclude = set(armed_admission_filter().get("effective_exclude") or ())
+    return select_admissions(
+        text, spans, n_tokens=n_tokens, flush=flush, query=query, exclude_codes=exclude)
 
 
 def concat(frames: list) -> tuple[str, int]:

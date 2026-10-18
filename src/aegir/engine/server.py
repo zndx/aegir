@@ -118,8 +118,9 @@ class ZndxEngineServicer:
     still get UNIMPLEMENTED — measured by Atelier on the first live cross-engine call, 2026-07-03).
     Delegates to the same CapabilityForwarder; nothing engine-private crosses (there is no local vLLM)."""
 
-    def __init__(self, mgr) -> None:
+    def __init__(self, mgr, admit=None) -> None:
         self.mgr = mgr
+        self._admit = admit
 
     def Complete(self, request, context):
         """Forward VERBATIM (tools_json / messages_json / capabilities[] ride along) to the peer whose
@@ -274,10 +275,47 @@ class ZndxEngineServicer:
             "PutAgendaItem is served by the engine that holds the Agenda")
 
     def AdmitSession(self, request_iterator, context):
-        """Replaced by the aperture servicer in the following commit."""
-        context.abort(
-            grpc.StatusCode.UNIMPLEMENTED,
-            "AdmitSession is not bound yet")
+        """Window the caller's transcript. Yield genus offsets. Do not echo the text."""
+        from aegir.engine.proto.zndx.engine.v1 import engine_pb2 as zpb
+        from aegir.ontology.session_stream import concat, default_admit
+
+        frames: list = []
+        session_id: str | None = None
+        sent: set[tuple[int, int, str]] = set()
+        cache: dict[str, list] = {}
+        admit = self._admit or default_admit
+        for frame in request_iterator:
+            sid = str(getattr(frame, "session_id", "") or "")
+            if session_id is None:
+                session_id = sid
+            elif sid != session_id:
+                context.abort(
+                    grpc.StatusCode.INVALID_ARGUMENT,
+                    "session_id changed on an open AdmitSession")
+            frames.append(frame)
+            try:
+                body, last = concat(frames)
+                rows = admit(body, flush=bool(getattr(frame, "end", False)), cache=cache)
+            except grpc.RpcError:
+                raise
+            except Exception:
+                context.abort(grpc.StatusCode.INTERNAL, "aperture query failed")
+            for row in rows or []:
+                key = (int(row["start"]), int(row["end"]), str(row.get("genus_iri") or ""))
+                if key in sent:
+                    continue
+                sent.add(key)
+                yield zpb.SegmentAdmission(
+                    session_id=session_id or "",
+                    seq=int(last),
+                    start=key[0],
+                    end=key[1],
+                    genus_iri=key[2],
+                    genus_code=str(row.get("genus_code") or ""),
+                    genus_label=str(row.get("genus_label") or ""),
+                    rel_margin_h=float(row.get("rel_margin_h") or 0.0),
+                    tau=float(row.get("tau") or 0.0),
+                )
 
 
 class OipInferenceServicer:
@@ -412,7 +450,7 @@ def serve(port: int = ENGINE_GRPC_PORT) -> None:
     server.add_insecure_port(f"[::]:{port}")
     server.start()
     print(f"aegir-engine gRPC listening on :{port} — services: aegir.engine.AegirEngine + "
-          f"zndx.engine.v1.Engine (federation face) + inference.GRPCInferenceService (KServe OIP) "
+          f"zndx.engine.v1.Engine (federation face, AdmitSession) + inference.GRPCInferenceService (KServe OIP) "
           f"+ reflection; hosts no model — inference capabilities are forwarded to the federation",
           flush=True)
 
