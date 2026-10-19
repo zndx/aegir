@@ -448,6 +448,27 @@
     skos:broader <https://signals.zndx.org/sdg#PRODML> ;
     skos:inScheme <https://signals.zndx.org/sdg/scheme> .
 
+# Expanded-IRI ship copies of the Engineering sector and the MBSE genus. The
+# aperture overlay in sysmlv2_integration.ttl is the authoring home (prefixed
+# subjects). This file is what sdg-corpora publishes, so the genus IRI has to
+# be written out in full here. Facts match that overlay.
+
+<https://signals.zndx.org/sdg#Engineering> a skos:Concept ;
+    skos:prefLabel "Engineering" ;
+    skos:altLabel "Engineering" ;
+    skos:notation "18" ;
+    skos:definition "The sector-tier top for engineering topic domains within SDG — initially hosting the model-based systems engineering genus (sdg:MBSE), organizing without admitting. Deliberately broader than any one language or standards body: SysMLv2 and KerML contribute through their integration schemes, and future engineering contributors join as siblings. A sector-tier forest top (a sdg:TopicDomain, member of sdg:TopicDomains) — no parent above it." ;
+    skos:inScheme <https://signals.zndx.org/sdg/scheme> .
+
+<https://signals.zndx.org/sdg#MBSE> a skos:Concept ;
+    skos:prefLabel "Model-Based Systems Engineering" ;
+    skos:altLabel "MBSE" ;
+    skos:notation "18.1" ;
+    skos:definition "The engineering discipline in which systems are specified, analyzed, and verified through coherent models rather than documents. MBSE contributes a set of modeling PRINCIPLES — requirement traceability, structural decomposition, behavioral and parametric modeling, verification cases — applied across domains (manufacturing operations among them, sdg:MFG). The concrete SysMLv2 SYNTAX that realizes these principles is an engineering practice housed beneath this genus (sdg:SYSML); domain semantics are represented atop that syntax but grounded in their own sectors. MBSE is the discipline, not the syntax — hence a plain topic genus, not an sdg:SysMLv2Concept." ;
+    skos:scopeNote "Covers the modeled system across its engineering lifecycle — requirement definitions with satisfaction and verification traceability; structural decomposition into parts, ports, and connection usages; behavioral modeling of actions, states, and sequence-structured occurrences; parametric constraints; and verification cases binding requirements to analysis, inspection, and test evidence. Terminology traces to the OMG SysMLv2 language atop the KerML kernel — the methodology axis: manufacturing and other domain semantics are represented atop it as domain-specific elements, grounded in their own sectors." ;
+    skos:broader <https://signals.zndx.org/sdg#Engineering> ;
+    skos:inScheme <https://signals.zndx.org/sdg#SysMLv2IntegrationScheme> .
+
 <https://signals.zndx.org/sdg#SYSML> a skos:Concept ;
     skos:prefLabel "SysMLv2" ;
     skos:altLabel "SYSML" ;

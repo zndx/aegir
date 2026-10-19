@@ -217,7 +217,9 @@ def _regen_vocabulary() -> bool:
         return False
     # the SCHEME layer ships verbatim (RH 2026-07-23: six tops + PRODML/SYSML mapped-spec
     # schemes CONFIRMED — the overlay is the ConceptScheme SoT; vocabulary.ttl carries
-    # the derived concept census, this file carries the graduated organization)
+    # the derived concept census, this file carries the graduated organization).
+    # Release consumers parse expanded IRIs in this file only. Integration overlays
+    # use prefixed subjects, so Engineering and MBSE are also declared here.
     shutil.copy2(SRC_ONTO / "domain_concepts.ttl", CORPORA / "vocabulary" / "domain-concepts.ttl")
     print("   scheme layer shipped → vocabulary/domain-concepts.ttl (confirmed tops + "
           "mapped-spec schemes)")

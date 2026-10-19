@@ -57,7 +57,10 @@ sdg:SysMLv2IntegrationScheme a skos:ConceptScheme ;
 # ── the sector tier (sdg:Engineering, natural-cased tier-mate of
 # FinancialSector/Healthcare/HeavyIndustries — a FOREST TOP; topic-domain-hood is
 # INSTANTIATION via the sdg:TopicDomain class + sdg:TopicDomains membership, both
-# declared in fibo_integration.ttl, never a broader link) ───────────────────────
+# declared in fibo_integration.ttl, never a broader link). The same two articles
+# are repeated with expanded IRIs in domain_concepts.ttl: lineup sync ships that
+# file verbatim, and release consumers parse full IRIs only. Keep the facts
+# identical (notation 18 / 18.1, prefLabels, broader). ─────────────────────────
 
 sdg:Engineering a skos:Concept, sdg:TopicDomain ;
     skos:prefLabel "Engineering" ;
