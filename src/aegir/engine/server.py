@@ -59,12 +59,8 @@ class AegirEngineServicer(pbg.AegirEngineServicer):
         eps = [pb.EndpointStatus(capability=r.capability, model=r.model, healthy=True, port=0,
                                  gpu_ids=list(r.gpu_ids), detail=f"forwarded → {r.label}")
                for r in self.mgr.routes()]
-        try:
-            import torch
-            n = torch.cuda.device_count() if torch.cuda.is_available() else 0
-        except Exception:  # noqa: BLE001
-            n = 0
-        return pb.EngineStatusResponse(endpoints=eps, total_gpus=n)
+        from aegir.engine.gpu_guard import visible_gpu_count
+        return pb.EngineStatusResponse(endpoints=eps, total_gpus=visible_gpu_count())
 
 
 PROJECT = "aegir"
@@ -90,14 +86,10 @@ def build_status_response(mgr):
     eps = [zpb.Endpoint(capability=e.capability, model=e.spec.model, healthy=e.healthy,
                         gpu_ids=list(e.gpu_ids))
            for e in mgr.status()]
-    try:
-        import torch
-        n = torch.cuda.device_count() if torch.cuda.is_available() else 0
-    except Exception:  # noqa: BLE001 — Status must answer even without torch/CUDA
-        n = 0
+    from aegir.engine.gpu_guard import visible_gpu_count
     from aegir.engine.s2s import local_surfaces
     return zpb.StatusResponse(
-        project=PROJECT, endpoints=eps, total_gpus=n, surfaces=local_surfaces())
+        project=PROJECT, endpoints=eps, total_gpus=visible_gpu_count(), surfaces=local_surfaces())
 
 
 def enable_reflection(server) -> None:

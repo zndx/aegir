@@ -241,6 +241,21 @@ def _read_owner(path: Path) -> str:
         return "an unknown process"
 
 
+def visible_gpu_count(root: "Path | None" = None) -> int:
+    """How many GPUs the machine exposes, without creating a CUDA context.
+
+    ``torch.cuda.is_available()`` initializes the runtime on device 0 and
+    holds about 1 GiB for the life of the process. Ægir hosts no model, so
+    that context is not a Signals claim, and Gaius then treats GPU 0 as
+    leased and slides thinking onto the leftover pair.
+    """
+    probe = root or Path("/proc/driver/nvidia/gpus")
+    try:
+        return sum(1 for child in probe.iterdir() if child.is_dir())
+    except OSError:
+        return 0
+
+
 def engine_gpu_ids(first_gpu: "int | None" = None, tp: "int | None" = None) -> list[int]:
     """The GPU range the engine would pin for a HOSTED model — empty since 2026-09-08: Ægir hosts no
     model (inference is forwarded to the federation), so the supervisor claims nothing. An explicit

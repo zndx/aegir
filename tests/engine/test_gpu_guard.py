@@ -9,7 +9,13 @@ import json
 import pytest
 
 from aegir.engine import gpu_guard
-from aegir.engine.gpu_guard import GpuClaimError, claim_gpus, engine_gpu_ids, probe_gpus
+from aegir.engine.gpu_guard import (
+    GpuClaimError,
+    claim_gpus,
+    engine_gpu_ids,
+    probe_gpus,
+    visible_gpu_count,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -23,6 +29,14 @@ def _fake_nvidia(monkeypatch, apps, uuids):
     """Install fake nvidia-smi responses. ``apps`` = [(pid, used_mib, uuid)]; ``uuids`` = {uuid: index}."""
     monkeypatch.setattr(gpu_guard, "_nvidia_compute_apps", lambda: apps)
     monkeypatch.setattr(gpu_guard, "_nvidia_gpu_uuids", lambda: uuids)
+
+
+def test_visible_gpu_count_does_not_need_a_cuda_context(tmp_path):
+    (tmp_path / "0000").mkdir()
+    (tmp_path / "0001").mkdir()
+    (tmp_path / "readme").write_text("not a gpu")
+    assert visible_gpu_count(tmp_path) == 2
+    assert visible_gpu_count(tmp_path / "missing") == 0
 
 
 def test_engine_gpu_ids_mirrors_config():
